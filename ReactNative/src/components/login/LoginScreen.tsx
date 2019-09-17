@@ -2,6 +2,10 @@ import React from 'react';
 import { Container, Content, Icon, Item as FormItem, Input, Label, Text, Button, View } from 'native-base'
 
 export default class LoginScreen extends React.Component {
+    onLoginPressed = () => {
+        console.log('pressed login')
+    }
+
     render() {
         return (
             <Container>
@@ -31,6 +35,7 @@ export default class LoginScreen extends React.Component {
                             block
                             rounded
                             success
+                            onPress={this.onLoginPressed}
                         >
                             <Icon name="ios-mail" color="white" fontSize={30} />
                             <Text>Login</Text>
