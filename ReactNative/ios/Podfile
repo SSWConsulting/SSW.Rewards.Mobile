@@ -32,4 +32,12 @@ target 'ReactNative' do
 
   use_unimodules!
 
+  pod 'appcenter', :path => '../node_modules/appcenter'
+
+  pod 'appcenter-crashes', :path => '../node_modules/appcenter-crashes'
+
+  pod 'appcenter-analytics', :path => '../node_modules/appcenter-analytics'
+
+  pod 'appcenter-auth', :path => '../node_modules/appcenter-auth'
+
 end
