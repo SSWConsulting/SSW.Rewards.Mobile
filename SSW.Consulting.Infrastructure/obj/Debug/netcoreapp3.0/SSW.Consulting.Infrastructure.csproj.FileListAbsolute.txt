@@ -1,0 +1,15 @@
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.deps.json
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.pdb
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Application.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Common.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Domain.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Application.pdb
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Common.pdb
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\bin\Debug\netcoreapp3.0\SSW.Consulting.Domain.pdb
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.csprojAssemblyReference.cache
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.AssemblyInfoInputs.cache
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.AssemblyInfo.cs
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.csproj.CopyComplete
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Infrastructure\obj\Debug\netcoreapp3.0\SSW.Consulting.Infrastructure.pdb

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj": {}
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.csproj": {}
   },
   "projects": {
-    "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj": {
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj",
+        "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.csproj",
         "projectName": "SSW.Consulting",
-        "projectPath": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj",
-        "packagesPath": "C:\\Users\\andre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\obj\\",
+        "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\andre\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,7 +25,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "http://nuget.sitefinity.com/nuget": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -41,11 +40,31 @@
       },
       "frameworks": {
         "netcoreapp3.0": {
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.AzureADB2C.UI": {
+              "target": "Package",
+              "version": "[3.0.0-rc1.19457.4, )"
+            }
+          },
           "imports": [
-            "net461"
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100-rc1-014190\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SSW.Consulting.Application\SSW.Consulting.Application.csproj" />
+    <ProjectReference Include="..\SSW.Consulting.Common\SSW.Consulting.Common.csproj" />
+  </ItemGroup>
+
+</Project>

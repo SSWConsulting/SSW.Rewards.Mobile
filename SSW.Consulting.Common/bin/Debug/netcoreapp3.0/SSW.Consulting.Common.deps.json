@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.0": {
+      "SSW.Consulting.Common/1.0.0": {
+        "runtime": {
+          "SSW.Consulting.Common.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SSW.Consulting.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

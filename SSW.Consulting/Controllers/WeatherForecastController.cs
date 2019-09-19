@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace SSW.Consulting.Controllers
+namespace SSW.Consulting.WebAPI.Controllers
 {
 	[Authorize]
 	[ApiController]
 	[Route("[controller]")]
-	public class WeatherForecastController : ControllerBase
+	public class WeatherForecastController : BaseController
 	{
 		private static readonly string[] Summaries = new[]
 		{

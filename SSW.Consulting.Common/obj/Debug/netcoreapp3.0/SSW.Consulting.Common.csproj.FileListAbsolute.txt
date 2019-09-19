@@ -1,0 +1,7 @@
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\bin\Debug\netcoreapp3.0\SSW.Consulting.Common.deps.json
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\bin\Debug\netcoreapp3.0\SSW.Consulting.Common.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\bin\Debug\netcoreapp3.0\SSW.Consulting.Common.pdb
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\obj\Debug\netcoreapp3.0\SSW.Consulting.Common.AssemblyInfoInputs.cache
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\obj\Debug\netcoreapp3.0\SSW.Consulting.Common.AssemblyInfo.cs
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\obj\Debug\netcoreapp3.0\SSW.Consulting.Common.dll
+C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Common\obj\Debug\netcoreapp3.0\SSW.Consulting.Common.pdb

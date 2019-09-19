@@ -1,30 +1,121 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.0": {}
+    ".NETCoreApp,Version=v3.0": {
+      "SSW.Consulting.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "dependencies": {
+          "SSW.Consulting.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SSW.Consulting.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SSW.Consulting.Application.dll": {}
+        }
+      },
+      "SSW.Consulting.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "compile": {
+          "bin/placeholder/SSW.Consulting.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SSW.Consulting.Common.dll": {}
+        }
+      },
+      "SSW.Consulting.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "compile": {
+          "bin/placeholder/SSW.Consulting.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SSW.Consulting.Domain.dll": {}
+        }
+      },
+      "SSW.Consulting.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "dependencies": {
+          "SSW.Consulting.Application": "1.0.0",
+          "SSW.Consulting.Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SSW.Consulting.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SSW.Consulting.Infrastructure.dll": {}
+        }
+      },
+      "SSW.Consulting.Persistence/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "dependencies": {
+          "SSW.Consulting.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SSW.Consulting.Persistence.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SSW.Consulting.Persistence.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "SSW.Consulting.Application/1.0.0": {
+      "type": "project",
+      "path": "../SSW.Consulting.Application/SSW.Consulting.Application.csproj",
+      "msbuildProject": "../SSW.Consulting.Application/SSW.Consulting.Application.csproj"
+    },
+    "SSW.Consulting.Common/1.0.0": {
+      "type": "project",
+      "path": "../SSW.Consulting.Common/SSW.Consulting.Common.csproj",
+      "msbuildProject": "../SSW.Consulting.Common/SSW.Consulting.Common.csproj"
+    },
+    "SSW.Consulting.Domain/1.0.0": {
+      "type": "project",
+      "path": "../SSW.Consulting.Domain/SSW.Consulting.Domain.csproj",
+      "msbuildProject": "../SSW.Consulting.Domain/SSW.Consulting.Domain.csproj"
+    },
+    "SSW.Consulting.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../SSW.Consulting.Infrastructure/SSW.Consulting.Infrastructure.csproj",
+      "msbuildProject": "../SSW.Consulting.Infrastructure/SSW.Consulting.Infrastructure.csproj"
+    },
+    "SSW.Consulting.Persistence/1.0.0": {
+      "type": "project",
+      "path": "../SSW.Consulting.Persistence/SSW.Consulting.Persistence.csproj",
+      "msbuildProject": "../SSW.Consulting.Persistence/SSW.Consulting.Persistence.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.0": []
+    ".NETCoreApp,Version=v3.0": [
+      "SSW.Consulting.Common >= 1.0.0",
+      "SSW.Consulting.Infrastructure >= 1.0.0",
+      "SSW.Consulting.Persistence >= 1.0.0"
+    ]
   },
   "packageFolders": {
-    "C:\\Users\\andre\\.nuget\\packages\\": {},
+    "C:\\Users\\Greg\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj",
-      "projectName": "SSW.Consulting",
-      "projectPath": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\SSW.Consulting.csproj",
-      "packagesPath": "C:\\Users\\andre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andre\\source\\repos\\SSW.Rewards\\SSW.Consulting\\obj\\",
+      "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.WebAPI.csproj",
+      "projectName": "SSW.Consulting.WebAPI",
+      "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\SSW.Consulting.WebAPI.csproj",
+      "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+      "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\andre\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -32,12 +123,21 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "http://nuget.sitefinity.com/nuget": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj": {
+              "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj"
+            },
+            "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj": {
+              "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj"
+            },
+            "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Persistence\\SSW.Consulting.Persistence.csproj": {
+              "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Persistence\\SSW.Consulting.Persistence.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

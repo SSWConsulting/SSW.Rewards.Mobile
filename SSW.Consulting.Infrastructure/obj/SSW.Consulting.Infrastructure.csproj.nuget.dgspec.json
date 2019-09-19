@@ -1,0 +1,195 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj": {}
+  },
+  "projects": {
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\SSW.Consulting.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\SSW.Consulting.Application.csproj",
+        "projectName": "SSW.Consulting.Application",
+        "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\SSW.Consulting.Application.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {
+              "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\SSW.Consulting.Domain.csproj": {
+                "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\SSW.Consulting.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj",
+        "projectName": "SSW.Consulting.Common",
+        "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\SSW.Consulting.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\SSW.Consulting.Domain.csproj",
+        "projectName": "SSW.Consulting.Domain",
+        "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\SSW.Consulting.Domain.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj",
+        "projectName": "SSW.Consulting.Infrastructure",
+        "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\SSW.Consulting.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.0": {
+            "projectReferences": {
+              "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\SSW.Consulting.Application.csproj": {
+                "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Application\\SSW.Consulting.Application.csproj"
+              },
+              "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj": {
+                "projectPath": "C:\\OneDrive - SSW\\Repos\\SSW.Consulting\\SSW.Consulting.Common\\SSW.Consulting.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.0": {
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}
