@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container, Header, Left, Body, Title, Right, Button, Icon } from 'native-base';
+import { Container, Header, Left, Body, Title, Right, Button, Icon, Content } from 'native-base';
 import LoginScreen from './components/login/LoginScreen'
 
 export default function App() {
@@ -19,8 +19,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  textInput: {
-    height: 40
+    width: '100%'
   }
 });
