@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Container, Header, Left, Body, Title, Right, Button, Icon } from 'native-base';
 import LoginScreen from './components/login/LoginScreen'
 
 export default function App() {
 
 
   return (
-    <View style={styles.container}>
+    <Container style={styles.container}>
       <LoginScreen />
-    </View>
+    </Container>
   );
 }
 

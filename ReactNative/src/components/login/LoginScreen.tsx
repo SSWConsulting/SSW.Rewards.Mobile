@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Content, Icon, Item as FormItem, Input, Label, Text, Button, View } from 'native-base'
+import { Container, Content, Icon, Item as FormItem, Input, Label, Text, Button, View, List, ListItem } from 'native-base'
 import Analytics from 'appcenter-analytics';
 import Auth from 'appcenter-auth'
 import axios from "axios";
@@ -8,7 +8,8 @@ export default class LoginScreen extends React.Component {
     state = {
         isLoggedIn: false,
         username: '',
-        token: null
+        token: null,
+        data: []
     }
 
     onLoginPressed = () => {
@@ -46,16 +47,20 @@ export default class LoginScreen extends React.Component {
     }
 
     testApi = () => {
-        // let config = {
-        //     headers: {
-        //         Authorization: 'Bearer ' + this.state.token
-        //     }
-        // }
-        // console.log('Sending config', config)
-
-        axios.get('https://10.0.2.2:44375/weatherforecast')
+        let config = {
+            headers: {
+                Authorization: 'Bearer ' + this.state.token
+            }
+        }
+        console.log('Sending config', config)
+        let api = 'https://b2csampleapi20190919105829.azurewebsites.net/weatherforecast';
+        console.log('Clicked test api:', api)
+        axios.get(api, config)
             .then(res => {
                 console.log('Response', res);
+                let state = this.state;
+                state.data = res.data;
+                this.setState(state);
             })
             .catch(err => console.log('API Error:', err));
     }
@@ -89,6 +94,11 @@ export default class LoginScreen extends React.Component {
                             <Icon name="ios-cloud" color="white" fontSize={30} />
                             <Text>Test API</Text>
                         </Button>
+                        <List>
+                            {this.state.data.map((item, index) => (
+                                <ListItem key={index}><Text>{item.temperatureC} - {item.summary} - {new Date(item.date).toDateString()}</Text></ListItem>
+                            ))}
+                        </List>
                     </View>
                     : null }
                 </Content>
