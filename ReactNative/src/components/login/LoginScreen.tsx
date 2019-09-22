@@ -1,23 +1,25 @@
 import React from 'react';
-import { Container, Content, Icon, Item as FormItem, Input, Label, Text, Button, View, List, ListItem, Header, Left, Right, Body, Title } from 'native-base'
-import Analytics from 'appcenter-analytics';
+import { Container, Content, Icon, Text, Button, View, List, ListItem } from 'native-base'
 import Auth from 'appcenter-auth'
-import axios from "axios";
+import axios from 'axios';
 import { StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import LoginHeader from './LoginHeader';
 
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
+
     state = {
         isLoggedIn: false,
         loadingSignIn: false,
         username: '',
-        loadingApi: false,
         token: null,
+        loadingApi: false,
         data: []
     }
 
     onLoginPressed = () => {
-        Analytics.trackEvent('Login clicked', { Category: 'Sign in', name: 'test' })
         console.log('pressed login');
+
         let s = this.state;
         if (this.state.isLoggedIn) {
             Auth.signOut();
@@ -71,38 +73,24 @@ export default class LoginScreen extends React.Component {
         let api = 'https://b2csampleapi20190919105829.azurewebsites.net/weatherforecast';
         console.log('Clicked test api:', api)
         axios.get(api, config)
-            .then(res => {
-                console.log('Response', res);
-                let state = this.state;
-                state.data = res.data;
-                this.setState(state);
-            })
-            .catch(err => console.log('API Error:', err))
-            .finally(() => {
-                let s = this.state;
-                s.loadingApi = false;
-                this.setState(s);
-            });
+        .then(res => {
+            console.log('Response', res);
+            let state = this.state;
+            state.data = res.data;
+            this.setState(state);
+        })
+        .catch(err => console.log('API Error:', err))
+        .finally(() => {
+            let s = this.state;
+            s.loadingApi = false;
+            this.setState(s);
+        });
     }
 
     render() {
         return (
             <Container style={styles.container}>
-                <Header>
-                    <Left>
-                    <Button transparent>
-                        <Icon name="arrow-back" />
-                    </Button>
-                    </Left>
-                    <Body>
-                    <Title>Header</Title>
-                    </Body>
-                    <Right>
-                    <Button transparent>
-                        <Icon name="menu" />
-                    </Button>
-                    </Right>
-                </Header>
+                <LoginHeader />
                 <Content>
                     <View padder>
                         <Text>You are{this.state.isLoggedIn ? '' : ' not'} logged in{this.state.isLoggedIn ? ': ' + this.state.username : ''}</Text>
@@ -146,4 +134,8 @@ const styles = StyleSheet.create({
     container: {
       width: '100%'
     }
-  });
+});
+
+export default connect((state) => ({
+
+}))(LoginScreen);

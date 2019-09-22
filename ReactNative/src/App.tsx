@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Container, Header, Left, Body, Title, Right, Button, Icon, Content } from 'native-base';
+import { StyleSheet } from 'react-native';
+import { Container } from 'native-base';
 import LoginScreen from './components/login/LoginScreen'
+import {Provider} from 'react-redux';
+import store from './store';
 
 export default function App() {
-
-
   return (
-    <Container style={styles.container}>
-      <LoginScreen />
-    </Container>
+    <Provider store={store}>
+      <Container style={styles.container}>
+        <LoginScreen />
+      </Container>
+    </Provider>
   );
 }
 
