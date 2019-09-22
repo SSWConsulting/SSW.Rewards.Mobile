@@ -1,7 +1,0 @@
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\bin\Debug\netcoreapp3.0\SSW.Consulting.Domain.deps.json
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\bin\Debug\netcoreapp3.0\SSW.Consulting.Domain.dll
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\bin\Debug\netcoreapp3.0\SSW.Consulting.Domain.pdb
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\obj\Debug\netcoreapp3.0\SSW.Consulting.Domain.AssemblyInfoInputs.cache
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\obj\Debug\netcoreapp3.0\SSW.Consulting.Domain.AssemblyInfo.cs
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\obj\Debug\netcoreapp3.0\SSW.Consulting.Domain.dll
-C:\OneDrive - SSW\Repos\SSW.Consulting\SSW.Consulting.Domain\obj\Debug\netcoreapp3.0\SSW.Consulting.Domain.pdb
