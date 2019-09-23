@@ -3,32 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Web.Config secrets
-[Ww]eb.[Ss]ecrets.config
-
-# Azure Resource Manager Template Parameters File
-local*.parameters.json
-
-# Local Deployment Script - has secrets that should never be committed to source control
-deploylocal.ps1
-
-# Azure Functions localsettings file
-local.settings.json
-
-# Azure Functions localsettings for test file
-test.settings.json
-*.js
-*.js.map
-**/.vscode/
-
-# DEFAULT INGORE
-
 # User-specific files
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -350,5 +329,3 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
-/src/SSW.Bots.DialogFlow.Fullfillment/functions/coverage
-azureblob.config.ts
