@@ -1,13 +1,13 @@
 import Auth from 'appcenter-auth'
 import { AuthTypes } from './types';
-import { AsyncStorage } from 'react-native';
+import { setAuthToken } from '../services/AuthService';
 
 export const signInAsync = () => {
     return async dispatch => {
-        console.log('dispatching sign in attempt')
         dispatch(signInAttempt());
         try {
             const userInformation = await Auth.signIn();
+            setAuthToken(userInformation.idToken);
             const parsedToken = userInformation.idToken.split('.');
             const payload = atob(parsedToken[1]);
             dispatch(signInSuccess(JSON.parse(payload)));
@@ -35,8 +35,8 @@ export const signInSuccess = (payload) => {
 }
 export const signOutAsync = () => {
     return dispatch => {
-        console.log('signed out');
         Auth.signOut();
+        setAuthToken(null);
         dispatch(signOut())
     }
 }

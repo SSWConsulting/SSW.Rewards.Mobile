@@ -6,16 +6,10 @@ import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import LoginHeader from './LoginHeader';
 import { signInAsync, signOutAsync } from '../../actions/AuthActions';
+import { getWeatherForecastAsync } from '../../actions/ApiActions';
 
 class LoginScreen extends React.Component {
-    state = {
-        token: null,
-        loadingApi: false,
-        data: []
-    }
-
     onLoginPressed = () => {
-        console.log('pressed login with dispatch');
         if (this.props.user) {
             this.props.signOutAsync();
         } else {
@@ -24,32 +18,8 @@ class LoginScreen extends React.Component {
     }
 
     testApi = () => {
-        let config = {
-            headers: {
-                Authorization: 'Bearer ' + this.state.token
-            }
-        }
-        let s = this.state;
-        s.loadingApi = true;
-        this.setState(s);
-        console.log('Sending config', config)
-        let api = 'https://b2csampleapi20190919105829.azurewebsites.net/weatherforecast';
-        console.log('Clicked test api:', api)
-        axios.get(api, config)
-        .then(res => {
-            console.log('Response', res);
-            let state = this.state;
-            state.data = res.data;
-            this.setState(state);
-        })
-        .catch(err => console.log('API Error:', err))
-        .finally(() => {
-            let s = this.state;
-            s.loadingApi = false;
-            this.setState(s);
-        });
+        this.props.getWeatherForecast();
     }
-
     render() {
         return (
             <Container style={styles.container}>
@@ -77,11 +47,11 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.testApi}
                         >
-                            <Icon name={this.state.loadingApi ? 'ios-refresh' : "ios-cloud"} color="white" fontSize={30} />
+                            <Icon name={this.props.loadingApi ? 'ios-refresh' : "ios-cloud"} color="white" fontSize={30} />
                             <Text>Test API</Text>
                         </Button>
                         <List>
-                            {this.state.data.map((item, index) => (
+                            {this.props.data && this.props.data.map((item, index) => (
                                 <ListItem key={index}><Text>{item.temperatureC} C - {item.summary} - {new Date(item.date).toDateString()}</Text></ListItem>
                             ))}
                         </List>
@@ -99,18 +69,23 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = ({ auth }) => {
+const mapStateToProps = ({ auth, api }) => {
     return {
         user: auth.user,
         loadingLogin: auth.loadingLogin,
-        loadingErrorMessage: auth.loadingErrorMessage
+        loadingErrorMessage: auth.loadingErrorMessage,
+            
+        loadingApi: api.loadingApi,
+        errorMessage: api.errorMessage,
+        data: api.data
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         signInAsync: () => dispatch(signInAsync()),
-        signOutAsync: () => dispatch(signOutAsync())
+        signOutAsync: () => dispatch(signOutAsync()),
+        getWeatherForecast: () => dispatch(getWeatherForecastAsync())
     };
 }
 
