@@ -11,8 +11,9 @@ export const signInAsync = () => {
             const parsedToken = userInformation.idToken.split('.');
             const payload = atob(parsedToken[1]);
             dispatch(signInSuccess(JSON.parse(payload)));
-        } catch (e) {
-            dispatch(signInFailure(e.message));
+        } catch (error) {
+            console.log(error);
+            dispatch(signInFailure(error.message));
         }
     }
 }
@@ -28,6 +29,7 @@ export const signInFailure = (errorMessage) => {
     }
 }
 export const signInSuccess = (payload) => {
+    console.log('sign in success:', payload)
     return {
         type: AuthTypes.SIGN_IN_SUCCESS,
         payload: payload

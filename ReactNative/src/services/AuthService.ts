@@ -12,6 +12,7 @@ export const getAuthToken = async () => {
 
 export const setAuthToken = async (token) => {
     try {
+        console.log('new token:', token)
         await AsyncStorage.setItem(CONSTANTS.AUTH_TOKEN, token);
     } catch (error) {
         console.log('Error fetching auth token', error);

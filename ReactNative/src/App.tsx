@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 import { Container } from 'native-base';
 import {Provider} from 'react-redux';
 import store from './store';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import LoginScreen from './components/login/LoginScreen';
 
@@ -92,3 +94,15 @@ const slides = [
     text: "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
   },
 ];
+
+const bottomTabNavigator = createBottomTabNavigator(
+  {
+    Home: LoginScreen
+  },
+  {
+    initialRouteName: 'Home'
+  }
+);
+
+
+const AppContainer = createAppContainer(bottomTabNavigator)

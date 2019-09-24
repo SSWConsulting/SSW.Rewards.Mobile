@@ -1,7 +1,5 @@
 import React from 'react';
 import { Container, Content, Icon, Text, Button, View, List, ListItem } from 'native-base'
-import Auth from 'appcenter-auth'
-import axios from 'axios';
 import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import LoginHeader from './LoginHeader';
@@ -26,7 +24,7 @@ class LoginScreen extends React.Component {
                 <LoginHeader />
                 <Content>
                     <View padder>
-                        <Text>You are{this.props.user ? '' : ' not'} logged in{this.props.user ? ': ' + this.props.user.name : ''}</Text>
+                        <Text>You are{this.props.user ? '' : ' not'} logged in{this.props.user ? `: ${this.props.user.given_name} ${this.props.user.family_name}` : ''}</Text>
                     </View>
                     <View padder>
                         <Button
@@ -35,7 +33,7 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.onLoginPressed}
                         >
-                            <Icon name={this.props.loadingLogin ? 'ios-refresh' : "ios-mail" } color="white" fontSize={30} />
+                            <Icon name={this.props.loadingLogin ? 'ios-refresh' : 'ios-mail' } color="white" fontSize={30} />
                             <Text>{this.props.user ? 'Sign Out' : 'Sign In'}</Text>
                         </Button>
                     </View>
@@ -47,7 +45,7 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.testApi}
                         >
-                            <Icon name={this.props.loadingApi ? 'ios-refresh' : "ios-cloud"} color="white" fontSize={30} />
+                            <Icon name={this.props.loadingApi ? 'ios-refresh' : 'ios-cloud' } color="white" fontSize={30} />
                             <Text>Test API</Text>
                         </Button>
                         <List>

@@ -11,7 +11,7 @@ export const getWeatherForecast = async () => {
     }
 
     try {
-        let { data } = await axios.get(`${CONSTANTS.API_URL}/weatherforecast`, config);
+        let { data } = await axios.get(`${CONSTANTS.API_URL}/api/weatherforecast/get`, config);
         return data;
     } catch (error) {
         console.log('API Error:', error)

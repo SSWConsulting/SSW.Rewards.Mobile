@@ -5,7 +5,7 @@ const CONSTANTS = {
     IS_ANDROID: Platform.OS === "android",
     IS_IOS: Platform.OS === "ios",
     IS_DEBUG_MODE_ENABLED: Boolean(window.navigator.userAgent),
-    API_URL: 'https://b2csampleapi20190919105829.azurewebsites.net',
+    API_URL: '',
 
     AUTH_TOKEN: 'AUTH_TOKEN'
 }
