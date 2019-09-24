@@ -27,9 +27,9 @@ namespace SSW.Consulting
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
-				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
-			services.AddControllers();
+            services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
+                .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
+            services.AddControllers();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,10 +44,10 @@ namespace SSW.Consulting
 
 			app.UseRouting();
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
 			});

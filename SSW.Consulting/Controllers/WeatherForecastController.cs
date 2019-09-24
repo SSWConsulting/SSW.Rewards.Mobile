@@ -8,10 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace SSW.Consulting.WebAPI.Controllers
 {
-	[Authorize]
-	[ApiController]
-	[Route("[controller]")]
-	public class WeatherForecastController : BaseController
+    [Authorize]
+    public class WeatherForecastController : BaseController
 	{
 		private static readonly string[] Summaries = new[]
 		{
