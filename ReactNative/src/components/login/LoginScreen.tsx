@@ -5,58 +5,21 @@ import axios from 'axios';
 import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import LoginHeader from './LoginHeader';
+import { signInAsync, signOutAsync } from '../../actions/AuthActions';
 
 class LoginScreen extends React.Component {
-
     state = {
-        isLoggedIn: false,
-        loadingSignIn: false,
-        username: '',
         token: null,
         loadingApi: false,
         data: []
     }
 
     onLoginPressed = () => {
-        console.log('pressed login');
-
-        let s = this.state;
-        if (this.state.isLoggedIn) {
-            Auth.signOut();
-            s = this.state;
-            s.isLoggedIn = false;
-            s.data = [];
-            this.setState(s);
+        console.log('pressed login with dispatch');
+        if (this.props.user) {
+            this.props.signOutAsync();
         } else {
-            this.signIn();
-        }
-    }
-
-    async signIn() {
-        try {
-            let s = this.state;
-            s.loadingSignIn = true;
-            this.setState(s);
-            const userInformation = await Auth.signIn();
-            console.log('user is logged in', userInformation)
-            const parsedToken = userInformation.idToken.split('.');
-            const rawPayload = parsedToken[1];
-            const decodedPayload = atob(rawPayload);
-            const claims = JSON.parse(decodedPayload);
-            console.log('claims', claims);
-            const { name, email } = claims;
-
-            let state = this.state;
-            state.isLoggedIn = true;
-            state.username = name;
-            state.token = userInformation.idToken;
-            state.loadingSignIn = false;
-            this.setState(state);
-        } catch (e) {
-            let state = this.state;
-            state.loadingSignIn = false;
-            this.setState(state);
-            console.log('Log failure', e)
+            this.props.signInAsync();
         }
     }
 
@@ -93,7 +56,7 @@ class LoginScreen extends React.Component {
                 <LoginHeader />
                 <Content>
                     <View padder>
-                        <Text>You are{this.state.isLoggedIn ? '' : ' not'} logged in{this.state.isLoggedIn ? ': ' + this.state.username : ''}</Text>
+                        <Text>You are{this.props.user ? '' : ' not'} logged in{this.props.user ? ': ' + this.props.user.name : ''}</Text>
                     </View>
                     <View padder>
                         <Button
@@ -102,11 +65,11 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.onLoginPressed}
                         >
-                            <Icon name={this.state.loadingSignIn ? 'ios-refresh' : "ios-mail" } color="white" fontSize={30} />
-                            <Text>{this.state.isLoggedIn ? 'Sign Out' : 'Sign In'}</Text>
+                            <Icon name={this.props.loadingLogin ? 'ios-refresh' : "ios-mail" } color="white" fontSize={30} />
+                            <Text>{this.props.user ? 'Sign Out' : 'Sign In'}</Text>
                         </Button>
                     </View>
-                    {this.state.isLoggedIn ?
+                    {this.props.user ?
                     <View padder>
                         <Button
                             block
@@ -136,6 +99,19 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect((state) => ({
+const mapStateToProps = ({ auth }) => {
+    return {
+        user: auth.user,
+        loadingLogin: auth.loadingLogin,
+        loadingErrorMessage: auth.loadingErrorMessage
+    };
+}
 
-}))(LoginScreen);
+const mapDispatchToProps = dispatch => {
+    return {
+        signInAsync: () => dispatch(signInAsync()),
+        signOutAsync: () => dispatch(signOutAsync())
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
