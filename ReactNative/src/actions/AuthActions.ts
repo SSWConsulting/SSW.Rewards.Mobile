@@ -1,16 +1,19 @@
 import Auth from 'appcenter-auth'
 import { AuthTypes } from './types';
+import { setAuthToken } from '../services/AuthService';
 
 export const signInAsync = () => {
     return async dispatch => {
-        dispatch(AuthTypes.SIGN_IN_ATTEMPT);
+        dispatch(signInAttempt());
         try {
             const userInformation = await Auth.signIn();
+            setAuthToken(userInformation.idToken);
             const parsedToken = userInformation.idToken.split('.');
             const payload = atob(parsedToken[1]);
-            dispatch(AuthTypes.SIGN_IN_SUCCESS, JSON.parse(payload));
-        } catch (e) {
-            dispatch(AuthTypes.SIGN_IN_FAILURE, e.message);
+            dispatch(signInSuccess(JSON.parse(payload)));
+        } catch (error) {
+            console.log(error);
+            dispatch(signInFailure(error.message));
         }
     }
 }
@@ -19,14 +22,24 @@ export const signInAttempt = () => {
         type: AuthTypes.SIGN_IN_ATTEMPT
     }
 }
-export const signInFailure = () => {
+export const signInFailure = (errorMessage) => {
     return {
-        type: AuthTypes.SIGN_IN_FAILURE
+        type: AuthTypes.SIGN_IN_FAILURE,
+        payload: errorMessage
     }
 }
-export const signInSuccess = () => {
+export const signInSuccess = (payload) => {
+    console.log('sign in success:', payload)
     return {
-        type: AuthTypes.SIGN_IN_SUCCESS
+        type: AuthTypes.SIGN_IN_SUCCESS,
+        payload: payload
+    }
+}
+export const signOutAsync = () => {
+    return dispatch => {
+        Auth.signOut();
+        setAuthToken(null);
+        dispatch(signOut())
     }
 }
 export const signOut = () => {

@@ -1,3 +1,5 @@
+import { AuthTypes } from '../actions/types';
+
 const INITIAL_STATE = {
     loadingLogin: false,
     loginErrorMessage: '',
@@ -6,12 +8,14 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case 'SIGN_IN_ATTEMPT':
+        case AuthTypes.SIGN_IN_ATTEMPT:
             return { ...state, loginErrorMessage: '', loadingLogin: true }
-        case 'SIGN_IN_SUCCESS':
+        case AuthTypes.SIGN_IN_SUCCESS:
             return { ...INITIAL_STATE, user: action.payload }
-        case 'SIGN_IN_FAILURE':
-            return { ...state, loginErrorMessage: '', loadingLogin: false }
+        case AuthTypes.SIGN_IN_FAILURE:
+            return { ...state, loginErrorMessage: action.payload, loadingLogin: false }
+        case AuthTypes.SIGN_OUT:
+            return { ...INITIAL_STATE }
         default:
             return state;
     }

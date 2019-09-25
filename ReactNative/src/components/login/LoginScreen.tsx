@@ -1,99 +1,30 @@
 import React from 'react';
 import { Container, Content, Icon, Text, Button, View, List, ListItem } from 'native-base'
-import Auth from 'appcenter-auth'
-import axios from 'axios';
 import { StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import LoginHeader from './LoginHeader';
+import { signInAsync, signOutAsync } from '../../actions/AuthActions';
+import { getWeatherForecastAsync } from '../../actions/ApiActions';
 
 class LoginScreen extends React.Component {
-
-    state = {
-        isLoggedIn: false,
-        loadingSignIn: false,
-        username: '',
-        token: null,
-        loadingApi: false,
-        data: []
-    }
-
     onLoginPressed = () => {
-        console.log('pressed login');
-
-        let s = this.state;
-        if (this.state.isLoggedIn) {
-            Auth.signOut();
-            s = this.state;
-            s.isLoggedIn = false;
-            s.data = [];
-            this.setState(s);
+        if (this.props.user) {
+            this.props.signOutAsync();
         } else {
-            this.signIn();
-        }
-    }
-
-    async signIn() {
-        try {
-            let s = this.state;
-            s.loadingSignIn = true;
-            this.setState(s);
-            const userInformation = await Auth.signIn();
-            console.log('user is logged in', userInformation)
-            const parsedToken = userInformation.idToken.split('.');
-            const rawPayload = parsedToken[1];
-            const decodedPayload = atob(rawPayload);
-            const claims = JSON.parse(decodedPayload);
-            console.log('claims', claims);
-            const { name, email } = claims;
-
-            let state = this.state;
-            state.isLoggedIn = true;
-            state.username = name;
-            state.token = userInformation.idToken;
-            state.loadingSignIn = false;
-            this.setState(state);
-        } catch (e) {
-            let state = this.state;
-            state.loadingSignIn = false;
-            this.setState(state);
-            console.log('Log failure', e)
+            this.props.signInAsync();
         }
     }
 
     testApi = () => {
-        let config = {
-            headers: {
-                Authorization: 'Bearer ' + this.state.token
-            }
-        }
-        let s = this.state;
-        s.loadingApi = true;
-        this.setState(s);
-        console.log('Sending config', config)
-        let api = 'https://b2csampleapi20190919105829.azurewebsites.net/weatherforecast';
-        console.log('Clicked test api:', api)
-        axios.get(api, config)
-        .then(res => {
-            console.log('Response', res);
-            let state = this.state;
-            state.data = res.data;
-            this.setState(state);
-        })
-        .catch(err => console.log('API Error:', err))
-        .finally(() => {
-            let s = this.state;
-            s.loadingApi = false;
-            this.setState(s);
-        });
+        this.props.getWeatherForecast();
     }
-
     render() {
         return (
             <Container style={styles.container}>
                 <LoginHeader />
                 <Content>
                     <View padder>
-                        <Text>You are{this.state.isLoggedIn ? '' : ' not'} logged in{this.state.isLoggedIn ? ': ' + this.state.username : ''}</Text>
+                        <Text>You are{this.props.user ? '' : ' not'} logged in{this.props.user ? `: ${this.props.user.given_name} ${this.props.user.family_name}` : ''}</Text>
                     </View>
                     <View padder>
                         <Button
@@ -102,11 +33,11 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.onLoginPressed}
                         >
-                            <Icon name={this.state.loadingSignIn ? 'ios-refresh' : "ios-mail" } color="white" fontSize={30} />
-                            <Text>{this.state.isLoggedIn ? 'Sign Out' : 'Sign In'}</Text>
+                            <Icon name={this.props.loadingLogin ? 'ios-refresh' : 'ios-mail' } color="white" fontSize={30} />
+                            <Text>{this.props.user ? 'Sign Out' : 'Sign In'}</Text>
                         </Button>
                     </View>
-                    {this.state.isLoggedIn ?
+                    {this.props.user ?
                     <View padder>
                         <Button
                             block
@@ -114,11 +45,11 @@ class LoginScreen extends React.Component {
                             success
                             onPress={this.testApi}
                         >
-                            <Icon name={this.state.loadingApi ? 'ios-refresh' : "ios-cloud"} color="white" fontSize={30} />
+                            <Icon name={this.props.loadingApi ? 'ios-refresh' : 'ios-cloud' } color="white" fontSize={30} />
                             <Text>Test API</Text>
                         </Button>
                         <List>
-                            {this.state.data.map((item, index) => (
+                            {this.props.data && this.props.data.map((item, index) => (
                                 <ListItem key={index}><Text>{item.temperatureC} C - {item.summary} - {new Date(item.date).toDateString()}</Text></ListItem>
                             ))}
                         </List>
@@ -136,6 +67,24 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect((state) => ({
+const mapStateToProps = ({ auth, api }) => {
+    return {
+        user: auth.user,
+        loadingLogin: auth.loadingLogin,
+        loadingErrorMessage: auth.loadingErrorMessage,
+            
+        loadingApi: api.loadingApi,
+        errorMessage: api.errorMessage,
+        data: api.data
+    };
+}
 
-}))(LoginScreen);
+const mapDispatchToProps = dispatch => {
+    return {
+        signInAsync: () => dispatch(signInAsync()),
+        signOutAsync: () => dispatch(signOutAsync()),
+        getWeatherForecast: () => dispatch(getWeatherForecastAsync())
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
