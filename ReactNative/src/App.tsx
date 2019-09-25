@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Container } from 'native-base';
 import {Provider} from 'react-redux';
@@ -7,11 +7,22 @@ import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import LoginScreen from './components/login/LoginScreen';
+import AsyncStorage from '@react-native-community/async-storage';
+import CONSTANTS from './config/constants';
 
 export default function App() {
-  const [showRealApp, setShowRealApp] = useState(false);
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
-  this.renderApp = () => {
+  useEffect(() => {
+    console.log('getting onboarding state from storage');
+    const getPersistedState = async () => {
+      const value = await AsyncStorage.getItem(CONSTANTS.COMPLETED_ONBOARDING);
+      setIsOnboardingComplete(value === '1');
+    };
+    getPersistedState();
+  }, []);
+
+  const renderApp = () => {
     return (
       <Provider store={store}>
         <Container style={styles.container}>
@@ -21,23 +32,19 @@ export default function App() {
     );
   };
 
-  this.onOnboardingDone = () => {
-    console.log('onboarding done');
-    // TODO: persist onboarding completion to disk so that this is a one time event
-    setShowRealApp(true);
+  const onOnboardingDone = async () => {
+    console.log('onOnboardingDone: setting state in storage');
+    await AsyncStorage.setItem(CONSTANTS.COMPLETED_ONBOARDING, '1');
+    setIsOnboardingComplete(true);
   };
 
-  this.renderOnboarding = () => {
+  const renderOnboarding = () => {
     return (
-      <AppIntroSlider slides={slides} onDone={this.onOnboardingDone} />
+      <AppIntroSlider slides={slides} onDone={onOnboardingDone} />
     );
   };
 
-  if (showRealApp) {
-    return this.renderApp();
-  } else {
-    return this.renderOnboarding();
-  }
+  return isOnboardingComplete ? renderApp() : renderOnboarding();
 }
 
 const styles = StyleSheet.create({

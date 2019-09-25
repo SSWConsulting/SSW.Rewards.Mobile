@@ -7,7 +7,8 @@ const CONSTANTS = {
     IS_DEBUG_MODE_ENABLED: Boolean(window.navigator.userAgent),
     API_URL: '',
 
-    AUTH_TOKEN: 'AUTH_TOKEN'
+    AUTH_TOKEN: 'AUTH_TOKEN',
+    COMPLETED_ONBOARDING: 'COMPLETED_ONBOARDING',
 }
 
 export default CONSTANTS;
