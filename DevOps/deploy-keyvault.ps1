@@ -14,9 +14,10 @@ param(
 )
 
 $keyVaultName = "$($Project.ToLower())-$($Environment.ToLower())".Replace(".", "");
+$modifiedDate = (Get-Date).ToString('yyyy/MM/dd')
 
 Write-Host "Creating KeyVault: $($keyVaultName)" -ForegroundColor Yellow
-az keyvault create --name $keyVaultName --resource-group $ResourceGroupName --location $Location --enabled-for-template-deployment true
+az keyvault create --name $keyVaultName --resource-group $ResourceGroupName --location $Location --enabled-for-template-deployment true --tags project=$Project environment=$Environment modifiedDate=$modifiedDate
 
 Write-Host "Getting latest deployment for $($ResourceGroupName)" -ForegroundColor Yellow
 $latestDeployments = (az group deployment list -g $ResourceGroupName --top 1) | ConvertFrom-Json
