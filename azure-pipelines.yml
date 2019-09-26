@@ -1,0 +1,23 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'DevOps'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/DevOps'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/DevOps'
+    ArtifactName: 'DevOps'
+    publishLocation: 'Container'
