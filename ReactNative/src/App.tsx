@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { Container } from 'native-base';
+import { Container, Icon } from 'native-base';
 import {Provider} from 'react-redux';
 import store from './store';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import LoginScreen from './components/login/LoginScreen';
+import LeaderboardScreen from './components/leaderboard/LeaderboardScreen';
 import AsyncStorage from '@react-native-community/async-storage';
 import CONSTANTS from './config/constants';
 
@@ -25,9 +26,7 @@ export default function App() {
   const renderApp = () => {
     return (
       <Provider store={store}>
-        <Container style={styles.container}>
-          <LoginScreen />
-        </Container>
+        <Router />
       </Provider>
     );
   };
@@ -104,12 +103,26 @@ const slides = [
 
 const bottomTabNavigator = createBottomTabNavigator(
   {
-    Home: LoginScreen
+    Login: {
+      screen: LoginScreen,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="home" fontSize={25} color={tintColor} />
+        )
+      }
+    },
+    Leaderboard: {
+      screen: LeaderboardScreen,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="star" fontSize={25} color={tintColor} />
+        )
+      }
+    }
   },
   {
-    initialRouteName: 'Home'
+    initialRouteName: 'Login'
   }
 );
 
-
-const AppContainer = createAppContainer(bottomTabNavigator)
+const Router = createAppContainer(bottomTabNavigator)
