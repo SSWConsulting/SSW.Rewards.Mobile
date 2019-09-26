@@ -15,4 +15,5 @@ $androidRoot = "ReactNative\android\app"
 
 # copy/modify appcenter-config
 ReplaceSecrets (Join-Path $androidRoot "src\main\assets\appcenter-config.template.json")
-ReplaceSecrets (Join-Path $androidRoot "src\main\res\values\secrets.template.xml")
+ReplaceSecrets (Join-Path $androidRoot "src\main\assets\secrets.template.xml")
+Move-Item -Path (Join-Path $androidRoot "src\main\assets\secrets.xml") -Destination (Join-Path $androidRoot "src\main\res\values\secrets.xml")
