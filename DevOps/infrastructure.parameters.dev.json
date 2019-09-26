@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"environment": {
+			"value": "dev"
+		},
+		"hostingPlanName": {
+			"value": "Default1"
+		},
+		"serverFarmResourceGroup": {
+			"value": "SSW.AppServicePlans"
+		},
+		"serverFarmLocation": {
+			"value": "australiaeast"
+		},
+		"hostingEnvironment": {
+			"value": ""
+		},
+		"cosmosThroughput": {
+			"value": 500
+		},
+		"locationNames": {
+			"value": {
+				"australiaeast": "Australia East", 
+				"australiasoutheast": "Australia Southeast"
+			}
+		}
+	}
+}
