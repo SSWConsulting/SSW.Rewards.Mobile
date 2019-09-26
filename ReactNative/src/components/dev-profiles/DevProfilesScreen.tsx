@@ -1,12 +1,12 @@
 import React from 'react';
-import { Text, Container } from 'native-base';
+import { Container, Text } from "native-base";
 import { StyleSheet } from 'react-native';
 
-export default function LeaderboardScreen() {
+export default function DevProfilesScreen() {
     const render = () => {
         return (
             <Container style={styles.Container}>
-                <Text>This is the Leaderboard screen</Text>
+                <Text>This is the Developer Profiles screen</Text>
             </Container>
         );
     }

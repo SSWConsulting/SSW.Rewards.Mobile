@@ -1,60 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Container, Icon } from 'native-base';
 import {Provider} from 'react-redux';
 import store from './store';
-import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import LoginScreen from './components/login/LoginScreen';
-import LeaderboardScreen from './components/leaderboard/LeaderboardScreen';
 import AsyncStorage from '@react-native-community/async-storage';
 import CONSTANTS from './config/constants';
+import { RootStack } from './Routes';
 
 export default function App() {
-  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+  // const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
-  useEffect(() => {
-    console.log('getting onboarding state from storage');
-    const getPersistedState = async () => {
-      const value = await AsyncStorage.getItem(CONSTANTS.COMPLETED_ONBOARDING);
-      setIsOnboardingComplete(value === '1');
-    };
-    getPersistedState();
-  }, []);
+  // useEffect(() => {
+  //   console.log('getting onboarding state from storage');
+  //   const getPersistedState = async () => {
+  //     const value = await AsyncStorage.getItem(CONSTANTS.COMPLETED_ONBOARDING);
+  //     setIsOnboardingComplete(value === '1');
+  //   };
+  //   getPersistedState();
+  // }, []);
 
   const renderApp = () => {
     return (
       <Provider store={store}>
-        <Router />
+        <RootStack />
       </Provider>
     );
   };
 
-  const onOnboardingDone = async () => {
-    console.log('onOnboardingDone: setting state in storage');
-    await AsyncStorage.setItem(CONSTANTS.COMPLETED_ONBOARDING, '1');
-    setIsOnboardingComplete(true);
-  };
+  // const onOnboardingDone = async () => {
+  //   console.log('onOnboardingDone: setting state in storage');
+  //   await AsyncStorage.setItem(CONSTANTS.COMPLETED_ONBOARDING, '1');
+  //   setIsOnboardingComplete(true);
+  // };
 
-  const renderOnboarding = () => {
-    return (
-      <AppIntroSlider slides={slides} onDone={onOnboardingDone} />
-    );
-  };
+  // const renderOnboarding = () => {
+  //   return (
+  //     <AppIntroSlider slides={slides} onDone={onOnboardingDone} />
+  //   );
+  // };
 
-  return isOnboardingComplete ? renderApp() : renderOnboarding();
+  // return isOnboardingComplete ? renderApp() : renderOnboarding();
+  return renderApp();
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%'
-  }
-});
 
 const slides = [
   {
@@ -100,29 +86,3 @@ const slides = [
     text: "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
   },
 ];
-
-const bottomTabNavigator = createBottomTabNavigator(
-  {
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="home" fontSize={25} color={tintColor} />
-        )
-      }
-    },
-    Leaderboard: {
-      screen: LeaderboardScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="star" fontSize={25} color={tintColor} />
-        )
-      }
-    }
-  },
-  {
-    initialRouteName: 'Login'
-  }
-);
-
-const Router = createAppContainer(bottomTabNavigator)
