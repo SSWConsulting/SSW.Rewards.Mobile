@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# ignore the azure credential files, it is generated and contains a service principle password
+azure.json
+
+# ignore Local/Personal ARM Parameters
+infrastructure.parameters.local.json
+
+# ignore Custom/Personal WebApp appSettings
+appsettings.*.json
+
 # User-specific files
 *.suo
 *.user
