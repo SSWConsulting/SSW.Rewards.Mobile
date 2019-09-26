@@ -1,0 +1,18 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'DevOps'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/DevOps'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/DevOps'
+    ArtifactName: 'DevOps'
+    publishLocation: 'Container'
