@@ -89,4 +89,5 @@ if(1 -eq $LASTEXITCODE)  {
 	-ParametersFile $ParametersFile `
 	-SubscriptionId $azure.subscription `
 	-ResourceGroupName $ResourceGroupName `
-	-Location $Location
+	-Location $Location `
+	-ServicePrincipleObjectId $azure.spObjectId

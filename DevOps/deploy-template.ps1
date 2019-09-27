@@ -17,7 +17,10 @@ param(
 	[ValidateNotNullOrEmpty()][string]$ResourceGroupName,
 	
 	[Parameter(Mandatory = $true)]
-	[ValidateNotNullOrEmpty()][string]$Location
+	[ValidateNotNullOrEmpty()][string]$Location,
+
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()][string]$ServicePrincipleObjectId	
 )
 
 function DeployTemplate {
@@ -27,7 +30,8 @@ function DeployTemplate {
 		[string]$Location,
 		[string]$SubscriptionId,
 		[string]$Template,
-		[string]$Parameters
+		[string]$Parameters,
+		[string]$ServicePrincipleObjectId
 	)
 
 	Write-Host "Creating resource group: $ResourceGroupName ($Location)" -ForegroundColor Magenta
@@ -40,11 +44,12 @@ function DeployTemplate {
 
 	$deployment = az group deployment create `
 		--verbose `
+		--debug `
 		--name $DeploymentName `
 		--resource-group $ResourceGroupName `
 		--template-file $Template `
 		--subscription $SubscriptionId `
-		--parameters $Parameters
+		--parameters $Parameters servicePrincipleObjectId=$ServicePrincipleObjectId
 
 	# Write-Host ($deployment | ConvertTo-Json) -ForegroundColor Magenta
 
@@ -58,7 +63,5 @@ DeployTemplate `
 	-Location $Location `
 	-SubscriptionId $SubscriptionId `
 	-Template $TemplateFile `
-	-Parameters $ParametersFile
-	
-# TODO: Check success of the deployment before going ahead with keyVault 
-.\deploy-keyvault.ps1 -ResourceGroupName $ResourceGroupName -Location $Location -Environment $Environment -Project $Project
+	-Parameters $ParametersFile `
+	-ServicePrincipleObjectId $ServicePrincipleObjectId

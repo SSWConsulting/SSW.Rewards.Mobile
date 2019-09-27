@@ -35,6 +35,10 @@ Write-Host "Service Principle AppID: $($servicePrincipalAppId)" -ForegroundColor
 Write-Host "Service Principle AppID: $($servicePrincipalAppId[0])" -ForegroundColor Gray
 Write-Host "Service Principle AppID: $($servicePrincipalAppId[1])" -ForegroundColor Gray
 
+# get the object id of the service principal
+$servicePrincipalObjectId = az ad sp list --display-name $appName --query "[].objectId" | ConvertFrom-Json
+Write-Host "Service Principle ObjectID: $($servicePrincipalObjectId)" -ForegroundColor Gray
+
 # get the tenant id
 Write-Host "Getting Service Principle Tenant ID" -ForegroundColor Cyan
 $tenantId = $(az account show --query tenantId -o tsv)
@@ -47,5 +51,6 @@ $credsFile = "$($PSScriptRoot)\azure.json"
     "username"="$($servicePrincipalAppId[0])"; 
     "password"="$($sp.password)"; 
     "tenant"="$($tenantId)"; 
-    "subscription"="$($subscriptionId)" 
+    "subscription"="$($subscriptionId)";
+    "spObjectId"="$($servicePrincipalObjectId)";
 } | ConvertTo-Json | Set-Content $credsFile

@@ -1,252 +1,330 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-	"contentVersion": "1.0.0.0",
-	"parameters": {
-		"environment": {
-			"type": "string",
-			"defaultValue": "dev",
-			"allowedValues": [
-				"dev",
-				"test",
-				"staging",
-				"prod",
-				"demo",
-				"uat",
-				"qa"
-			]
-		},
-		"hostingPlanName": {
-			"type": "string",
-			"defaultValue": "Default1",
-			"metadata": {
-				"description": "Name of the App Service Plan to host the App Service (Web App)."
-			}
-		},
-		"serverFarmResourceGroup": {
-			"type": "string",
-			"defaultValue": "SSW.AppServicePlans",
-			"metadata": {
-				"description": "Resource Group name that contains the App Service Plan resource."
-			}
-		},
-		"serverFarmLocation": {
-			"type": "string",
-			"defaultValue": "australiaeast"
-		},
-		"hostingEnvironment": {
-			"type": "string",
-			"defaultValue": ""
-		},
-		"cosmosThroughput": {
-			"type": "int",
-			"defaultValue": 500,
-			"minValue": 500,
-			"maxValue": 5000
-		},
-		"locationNames": {
-			"type": "object",
-			"defaultValue": {
-				"australiaeast": "Australia East",
-				"australiasoutheast": "Australia Southeast"
-			}
-		},
-		"now": {
-			"type": "string",
-			"defaultValue": "[utcNow('yyyy/MM/dd')]"
-		}
-	},
-	"variables": {
-		"project": "SSW.Consulting",
-		"environment": "[tolower(parameters('environment'))]",
-		"modifiedDate": "[tolower(parameters('now'))]",
-		"entropy": "[take(uniqueString(resourceGroup().id), 5)]",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "servicePrincipleObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Run 'az login' and then run 'az ad sp list --display-name <YOUR SERVICE PRINCIPLE APP NAME> --query \"[].objectId\"' to obtain the ObjectID of the ServicePrincipal used to deploy your resources. You can also browse the Azure Portal to the App Registration to obtain the Service Principal Object ID."
+      }
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "dev",
+      "allowedValues": ["dev", "test", "staging", "prod", "demo", "uat", "qa"]
+    },
+    "hostingPlanName": {
+      "type": "string",
+      "defaultValue": "Default1",
+      "metadata": {
+        "description": "Name of the App Service Plan to host the App Service (Web App)."
+      }
+    },
+    "serverFarmResourceGroup": {
+      "type": "string",
+      "defaultValue": "SSW.AppServicePlans",
+      "metadata": {
+        "description": "Resource Group name that contains the App Service Plan resource."
+      }
+    },
+    "serverFarmLocation": {
+      "type": "string",
+      "defaultValue": "australiaeast"
+    },
+    "hostingEnvironment": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "cosmosThroughput": {
+      "type": "int",
+      "defaultValue": 500,
+      "minValue": 500,
+      "maxValue": 5000
+    },
+    "locationNames": {
+      "type": "object",
+      "defaultValue": {
+        "australiaeast": "Australia East",
+        "australiasoutheast": "Australia Southeast"
+      }
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow('yyyy/MM/dd')]"
+    }
+  },
+  "variables": {
+    "project": "SSW.Consulting",
+    "environment": "[tolower(parameters('environment'))]",
+    "modifiedDate": "[tolower(parameters('now'))]",
+    "entropy": "[take(uniqueString(resourceGroup().id), 5)]",
 
-		"contentStorageAccountName": "[take(tolower(replace(replace(concat(variables('project'), variables('environment'), variables('entropy')), '-', ''), '.','')), 24)]",
-		"contentStorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]",
-		"contentStorageLocation": "[resourceGroup().location]",
-		"imagesContainerName": "images",
-		
-		"appName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 60)]",
-		"appInsightsName": "[tolower(concat(variables('appName')))]",
-		
-		"cosmosAccountName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 31)]",
-		"cosmosLocation": "[resourceGroup().location]",
-		"cosmosLocationName": "[parameters('locationNames')[resourceGroup().location]]",
-		"cosmosDatabaseName": "sswconsulting"
-	},
-	"resources": [
-		{
-			"apiVersion": "2015-04-08",
-			"kind": "GlobalDocumentDB",
-			"type": "Microsoft.DocumentDb/databaseAccounts",
-			"name": "[variables('cosmosAccountName')]",
-			"location": "[variables('cosmosLocation')]",
-			"properties": {
-				"databaseAccountOfferType": "Standard",
-				"locations": [
-					{
-						"id": "[concat(variables('cosmosAccountName'), '-', variables('cosmosLocation'))]",
-						"failoverPriority": 0,
-						"locationName": "[variables('cosmosLocationName')]"
-					}
-				],
-				"enableMultipleWriteLocations": false,
-				"isVirtualNetworkFilterEnabled": false,
-				"dependsOn": []
-			},
-			"tags": {
-				"defaultExperience": "Core (SQL)",
-				"project": "[variables('project')]",
-				"environment": "[variables('environment')]",
-				"modifiedDate": "[variables('modifiedDate')]"
-			}
-		},
-		{
-			"type": "Microsoft.DocumentDB/databaseAccounts/apis/databases",
-			"name": "[concat(variables('cosmosAccountName'), '/sql/', variables('cosmosDatabaseName'))]",
-			"apiVersion": "2016-03-31",
-			"dependsOn": [
-				"[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
-			],
-			"properties": {
-				"resource": {
-					"id": "[variables('cosmosDatabaseName')]"
-				},
-				"options": {
-					"throughput": "[parameters('cosmosThroughput')]"
-				}
-			}
-		},
-		{
-			"type": "Microsoft.Storage/storageAccounts",
-			"name": "[variables('contentStorageAccountName')]",
-			"apiVersion": "2018-02-01",
-			"location": "[variables('contentStorageLocation')]",
-			"tags": {
-				"project": "[variables('project')]",
-				"environment": "[variables('environment')]",
-				"modifiedDate": "[variables('modifiedDate')]"
-			},
-			"kind": "StorageV2",
-			"sku": {
-				"name": "Standard_LRS",
-				"tier": "Standard"
-			},
-			"resources": [
-				{
-					"name": "[concat('default/', variables('imagesContainerName'))]",
-					"type": "blobServices/containers",
-					"apiVersion": "2018-03-01-preview",
-					"dependsOn": [
-						"[variables('contentStorageAccountName')]"
-					]
-				}
-			]
-		},
-		{
-			"apiVersion": "2015-05-01",
-			"name": "[variables('appInsightsName')]",
-			"type": "Microsoft.Insights/components",
-			"location": "Australia East",
-			"tags": {
-				"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('appName'))]": "Resource",
-				"project": "[variables('project')]",
-				"environment": "[variables('environment')]",
-				"modifiedDate": "[variables('modifiedDate')]"
-			},
-			"properties": {
-				"ApplicationId": "[variables('appName')]",
-				"Request_Source": "IbizaWebAppExtensionCreate",
-				"Application_Type": "web"
-			}
-		},
-		{
-			"apiVersion": "2018-02-01",
-			"name": "[variables('appName')]",
-			"type": "Microsoft.Web/sites",
-			"location": "[parameters('serverFarmLocation')]",
-			"identity": {
-				"type": "SystemAssigned"
-			},
-			"tags": {
-				"project": "[variables('project')]",
-				"environment": "[variables('environment')]",
-				"modifiedDate": "[variables('modifiedDate')]"
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Insights/components/', variables('appInsightsName'))]"
-			],
-			"properties": {
-				"name": "[variables('appName')]",
-				"serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-				"hostingEnvironment": "[parameters('hostingEnvironment')]",
-				"clientAffinityEnabled": true,
-				"siteConfig": {
-					"metadata": [
-						{
-							"name": "CURRENT_STACK",
-							"value": "dotnetcore"
-						}
-					],
-					"alwaysOn": true,
-					"appSettings": [
-						{
-							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-							"value": "[reference(concat('Microsoft.Insights/components/', variables('appInsightsName')), '2015-05-01').InstrumentationKey]"
-						},
-						{
-							"name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-							"value": "~2"
-						},
-						{
-							"name": "XDT_MicrosoftApplicationInsights_Mode",
-							"value": "default"
-						},
-						{
-							"name": "DiagnosticServices_EXTENSION_VERSION",
-							"value": "disabled"
-						},
-						{
-							"name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
-							"value": "disabled"
-						},
-						{
-							"name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
-							"value": "disabled"
-						},
-						{
-							"name": "InstrumentationEngine_EXTENSION_VERSION",
-							"value": "disabled"
-						},
-						{
-							"name": "SnapshotDebugger_EXTENSION_VERSION",
-							"value": "disabled"
-						},
-						{
-							"name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
-							"value": "disabled"
-						},
-						{
-							"name": "KeyVaultUrl",
-							"value": "[concat('https://', variables('appName'), '.vault.azure.net')]"
-						}
-					]
-				}
-			}
-		}
-	],
-	"outputs": {
-		"secret_contentConnectionString": {
-			"type": "string",
-			"value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('contentStorageAccountName'), ';AccountKey=', listKeys(variables('contentStorageAccountResourceId'),'2015-05-01-preview').key1)]"
-		},
-		"secret_cosmosAuthKey": {
-			"type": "string",
-			"value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
-		},
-		"secret_cosmosEndPoint": {
-			"type": "string",
-			"value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosAccountName'))).documentEndpoint]"
-		}
-	}
+    "contentStorageAccountName": "[take(tolower(replace(replace(concat(variables('project'), variables('environment'), variables('entropy')), '-', ''), '.','')), 24)]",
+    "contentStorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]",
+    "contentStorageLocation": "[resourceGroup().location]",
+    "imagesContainerName": "images",
+
+    "appName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 60)]",
+    "appInsightsName": "[tolower(concat(variables('appName')))]",
+
+    "cosmosAccountName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 31)]",
+    "cosmosLocation": "[resourceGroup().location]",
+    "cosmosLocationName": "[parameters('locationNames')[resourceGroup().location]]",
+    "cosmosDatabaseName": "sswconsulting",
+
+    "keyVaultName": "[take(toLower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 24)]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-04-08",
+      "kind": "GlobalDocumentDB",
+      "type": "Microsoft.DocumentDb/databaseAccounts",
+      "name": "[variables('cosmosAccountName')]",
+      "location": "[variables('cosmosLocation')]",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "locations": [
+          {
+            "id": "[concat(variables('cosmosAccountName'), '-', variables('cosmosLocation'))]",
+            "failoverPriority": 0,
+            "locationName": "[variables('cosmosLocationName')]"
+          }
+        ],
+        "enableMultipleWriteLocations": false,
+        "isVirtualNetworkFilterEnabled": false,
+        "dependsOn": []
+      },
+      "tags": {
+        "defaultExperience": "Core (SQL)",
+        "project": "[variables('project')]",
+        "environment": "[variables('environment')]",
+        "modifiedDate": "[variables('modifiedDate')]"
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/apis/databases",
+      "name": "[concat(variables('cosmosAccountName'), '/sql/', variables('cosmosDatabaseName'))]",
+      "apiVersion": "2016-03-31",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "[variables('cosmosDatabaseName')]"
+        },
+        "options": {
+          "throughput": "[parameters('cosmosThroughput')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('contentStorageAccountName')]",
+      "apiVersion": "2018-02-01",
+      "location": "[variables('contentStorageLocation')]",
+      "tags": {
+        "project": "[variables('project')]",
+        "environment": "[variables('environment')]",
+        "modifiedDate": "[variables('modifiedDate')]"
+      },
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "resources": [
+        {
+          "name": "[concat('default/', variables('imagesContainerName'))]",
+          "type": "blobServices/containers",
+          "apiVersion": "2018-03-01-preview",
+          "dependsOn": ["[variables('contentStorageAccountName')]"]
+        }
+      ]
+    },
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[variables('appInsightsName')]",
+      "type": "Microsoft.Insights/components",
+      "location": "Australia East",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('appName'))]": "Resource",
+        "project": "[variables('project')]",
+        "environment": "[variables('environment')]",
+        "modifiedDate": "[variables('modifiedDate')]"
+      },
+      "properties": {
+        "ApplicationId": "[variables('appName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate",
+        "Application_Type": "web"
+      }
+    },
+    {
+      "apiVersion": "2018-02-01",
+      "name": "[variables('appName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('serverFarmLocation')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "tags": {
+        "project": "[variables('project')]",
+        "environment": "[variables('environment')]",
+        "modifiedDate": "[variables('modifiedDate')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components/', variables('appInsightsName'))]"
+      ],
+      "properties": {
+        "name": "[variables('appName')]",
+        "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "hostingEnvironment": "[parameters('hostingEnvironment')]",
+        "clientAffinityEnabled": true,
+        "siteConfig": {
+          "metadata": [
+            {
+              "name": "CURRENT_STACK",
+              "value": "dotnetcore"
+            }
+          ],
+          "alwaysOn": true,
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(concat('Microsoft.Insights/components/', variables('appInsightsName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "default"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "KeyVaultUrl",
+              "value": "[concat('https://', variables('appName'), '.vault.azure.net')]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[variables('keyVaultName')]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "project": "[variables('project')]",
+        "environment": "[variables('environment')]",
+        "modifiedDate": "[variables('modifiedDate')]"
+      },
+      "dependsOn": [],
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "networkAcls": {
+          "value": {
+            "defaultAction": "Allow",
+            "bypass": "AzureServices"
+          }
+        },
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[parameters('servicePrincipleObjectId')]",
+            "permissions": {
+              "keys": ["list", "get", "create"],
+              "secrets": ["list", "get", "set"]
+            }
+          },
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('appName')), '2018-02-01', 'Full').identity.principalId]",
+            "permissions": {
+              "keys": ["list", "get"],
+              "secrets": ["list", "get"]
+            }
+          }
+        ],
+        "enabledForTemplateDeployment": true
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('keyVaultName'), '/', 'ContentStorageConnectionString')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('contentStorageAccountName'), ';AccountKey=', listKeys(variables('contentStorageAccountResourceId'),'2015-05-01-preview').key1)]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('keyVaultName'), '/', 'CosmosDbKey')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('keyVaultName'), '/', 'CosmosDbEndPoint')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosAccountName'))).documentEndpoint]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "secret_contentConnectionString": {
+      "type": "string",
+      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('contentStorageAccountName'), ';AccountKey=', listKeys(variables('contentStorageAccountResourceId'),'2015-05-01-preview').key1)]"
+    },
+    "secret_cosmosAuthKey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
+    },
+    "secret_cosmosEndPoint": {
+      "type": "string",
+      "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosAccountName'))).documentEndpoint]"
+    }
+  }
 }
