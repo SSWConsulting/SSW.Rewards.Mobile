@@ -42,6 +42,7 @@ namespace SSW.Consulting
 			ConfigureSecretsProviders(services);
 			ConfigureSettings(services);
 			ConfigureSecrets(services);
+			ConfigureStorageProviders(services);
 
 			// Add SSW Consulting DbContext
 			services.AddScoped<ISSWConsultingDbContent, SSWConsultingDbContent>();
@@ -51,7 +52,8 @@ namespace SSW.Consulting
 		{
 			// Add Secrets
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISecrets interface
-			services.AddSingleton<SSWConsultingDbContent.ISecrets, SSWConsultingDbContextSecrets>();
+			services.AddSingleton<SSWConsultingDbContent.ISecrets, Secrets>();
+			services.AddSingleton<CloudBlobClientProvider.ISecrets, Secrets>();
 		}
 
 		protected virtual void ConfigureSettings(IServiceCollection services)
@@ -76,6 +78,13 @@ namespace SSW.Consulting
 				services.AddSingleton<ISecretsProvider, KeyVaultSecretsProvider>();
 				services.AddSingleton<IKeyVaultClientProvider, KeyVaultClientProvider>();
 			}
+		}
+
+
+		protected virtual void ConfigureStorageProviders(IServiceCollection services)
+		{
+			services.AddSingleton<ICloudBlobClientProvider, CloudBlobClientProvider>();
+			services.AddSingleton<IStorageProvider, AzureStorageProvider>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

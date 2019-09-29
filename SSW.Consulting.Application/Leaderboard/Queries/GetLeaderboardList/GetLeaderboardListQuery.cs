@@ -12,16 +12,26 @@ namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
 		public sealed class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListViewModel>
 		{
 			private readonly ISSWConsultingDbContent _dbContext;
+			private readonly IStorageProvider _storage;
 
-			public Handler(ISSWConsultingDbContent dbContext)
+			public Handler(ISSWConsultingDbContent dbContext, IStorageProvider storage)
 			{
 				_dbContext = dbContext;
+				_storage = storage;
 			}
 
 			public async Task<LeaderboardListViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
 			{
 				// TODO: Remove - This is just a test to fire up cosmosdb and keyvault
 				var a = _dbContext.StaffMembers.Where(x => x.Name == "William");
+
+				// TODO: Write real integration tests!!
+				await _storage.UploadBlob("Testing", "a/b/c/imafile.txt", System.Text.Encoding.UTF8.GetBytes("Hello world!"));
+
+				byte[] blobContents = await _storage.DownloadBlob("Testing", "a/b/c/imafile.txt");
+
+				// throws BlobContainerNotFoundException :)
+				// byte[] noBlobContents = await _storage.DownloadBlob("NotTesting", "a/b/c/imnotafile.txt");
 
 				// TODO: get from Cosmos
 				var user1 = new LeaderboardUserDto() { Position = 1, Name = "Tan Wuhan", ImageUrl = "", Points = 120, Bonus = 35 };
