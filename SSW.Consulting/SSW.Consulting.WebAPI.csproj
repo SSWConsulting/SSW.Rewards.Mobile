@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SSW.Consulting.Application\SSW.Consulting.Application.csproj" />
     <ProjectReference Include="..\SSW.Consulting.Common\SSW.Consulting.Common.csproj" />
     <ProjectReference Include="..\SSW.Consulting.Infrastructure\SSW.Consulting.Infrastructure.csproj" />
     <ProjectReference Include="..\SSW.Consulting.Persistence\SSW.Consulting.Persistence.csproj" />
