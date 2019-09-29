@@ -1,13 +1,15 @@
 ﻿using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Infrastructure;
 using SSW.Consulting.Persistence;
 
 namespace SSW.Consulting.WebAPI.Settings
 {
-	public class SSWConsultingDbContextSecrets : SSWConsultingDbContent.ISecrets
+	public class Secrets : SSWConsultingDbContent.ISecrets,
+		CloudBlobClientProvider.ISecrets
 	{
 		private readonly ISecretsProvider _secrets;
 
-		public SSWConsultingDbContextSecrets(ISecretsProvider secrets)
+		public Secrets(ISecretsProvider secrets)
 		{
 			_secrets = secrets;
 		}
@@ -17,5 +19,7 @@ namespace SSW.Consulting.WebAPI.Settings
 		public string CosmosDbKey => _secrets.GetSecret(nameof(CosmosDbKey));
 
 		public string DatabaseName => "SSWConsulting";
+
+		public string ContentStorageConnectionString => _secrets.GetSecret(nameof(ContentStorageConnectionString));
 	}
 }
