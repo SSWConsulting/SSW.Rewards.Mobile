@@ -11,6 +11,7 @@ infrastructure.parameters.local.json
 
 # ignore Custom/Personal WebApp appSettings
 appsettings.*.json
+appsettings.Development.json
 
 # User-specific files
 *.suo
