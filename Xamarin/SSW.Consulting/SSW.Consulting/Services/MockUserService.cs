@@ -34,9 +34,19 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(4);
         }
 
+        public Task<string> GetTokenAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> IsLoggedInAsync()
         {
             return await Task.FromResult(true);
+        }
+
+        public Task SetTokenAsync(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

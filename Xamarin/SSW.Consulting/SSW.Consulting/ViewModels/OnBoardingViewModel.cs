@@ -9,7 +9,6 @@ namespace SSW.Consulting.ViewModels
     public class OnBoardingViewModel : BaseViewModel
     {
         public ICommand GetStartedTapped { get; set; }
-        public ICommand SignInTapped { get; set; }
 		public ICommand Swiped { get; set; }
         public ObservableCollection<CarouselViewModel> Items { get; set; }
         public int SelectedItem { get; set; }
@@ -24,7 +23,6 @@ namespace SSW.Consulting.ViewModels
         public OnBoardingViewModel()
         {
             GetStartedTapped = new Command(GetStarted);
-			SignInTapped = new Command(SignIn);
             Swiped = new Command(SetDetails);
             Properties = new string[] { "MainHeading", "SubHeading", "Content", "BackgroundColour", "TextColour", "LinkText" };
             Items = new ObservableCollection<CarouselViewModel>
@@ -99,22 +97,6 @@ namespace SSW.Consulting.ViewModels
             AppShell shell = new AppShell();
             Application.Current.MainPage = shell;
         }
-
-		private async void SignIn()
-		{
-			try
-			{
-				// Sign-in succeeded.
-				UserInformation userInfo = await Auth.SignInAsync();
-				string accountId = userInfo.AccountId;
-				Application.Current.MainPage.DisplayAlert("Message", accountId, "OK");
-			}
-			
-			catch (Exception e)
-			{
-				// Do something with sign-in failure.
-			}
-		}
 
         private void SetDetails()
         {

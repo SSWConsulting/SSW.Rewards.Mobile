@@ -11,5 +11,7 @@ namespace SSW.Consulting.Services
         Task<string> GetMyProfilePicAsync();
         Task<string> GetMyPointsAsync();
         Task<bool> IsLoggedInAsync();
+        Task<string> GetTokenAsync();
+        Task SetTokenAsync(string token);
     }
 }
