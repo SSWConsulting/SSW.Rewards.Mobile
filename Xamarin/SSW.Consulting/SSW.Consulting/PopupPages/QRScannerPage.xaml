@@ -31,7 +31,14 @@
                    HorizontalOptions="End"
                    VerticalOptions="Start"
                    TranslationX="30"
-                   TranslationY="-30"/>
+                   TranslationY="-30">
+                <Image.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="iOS">true</On>
+                        <On Platform="Android">false</On>
+                    </OnPlatform>
+                </Image.IsVisible>
+            </Image>
 
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"

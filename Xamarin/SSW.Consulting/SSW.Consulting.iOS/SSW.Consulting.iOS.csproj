@@ -757,15 +757,6 @@
     <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\onboarding.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -859,6 +850,9 @@
     <ImageAsset Include="Assets.xcassets\icon_close.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
