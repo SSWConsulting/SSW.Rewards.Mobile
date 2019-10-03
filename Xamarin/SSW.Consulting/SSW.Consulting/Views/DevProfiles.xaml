@@ -32,7 +32,7 @@
                                     TranslationY="10">
 
                     <cards:CarouselView.Behaviors>
-                        <behaviors:EventToCommandBehavior EventName="ItemDisappearing"
+                        <behaviors:EventToCommandBehavior EventName="ItemAppeared"
                                                           Command="{Binding OnCardSwiped}"/>
                     </cards:CarouselView.Behaviors>
 
@@ -57,7 +57,7 @@
                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.85,Constant=0}"
                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-
+    
                 <RelativeLayout HorizontalOptions="FillAndExpand"
                                 VerticalOptions="FillAndExpand">
 
@@ -71,12 +71,13 @@
 
                     <BoxView HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"
+                             CornerRadius="5"
                              Color="Black"
                              Opacity="0.5"
                              RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0,Constant=0}"
                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
-                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"/>
+                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1.5,Constant=0}"/>
 
                     <Image Source="scroll"
                            x:Name="imgScroll"
@@ -90,7 +91,88 @@
                         </Image.GestureRecognizers>
                     </Image>
 
-                    <Label Text="{Binding DevFirstName}"
+
+                    <StackLayout RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.01,Constant=0}"
+                                 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"
+                                 RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.8,Constant=0}">
+
+                        <Label Text="{Binding DevFirstName}"
+                               FontSize="32"
+                               TextColor="White"
+                               Margin="0,0,0,0"
+                               d:Text="Ulysses"/>
+
+                        <Label Text="{Binding DevTitle}"
+                               FontSize="Body"
+                               TextColor="White"
+                               Margin="0,0,0,10"
+                               d:Text="General Manager Sydney"/>
+
+                        <Label TextColor="White"
+                               Text="{Binding DevBio}"
+                               Style="{StaticResource Leaderboard}"
+                               x:Name="lblBio"
+                               Margin="5,5,5,10"
+                               FontSize="Body"/>
+
+                        <!--<Frame BackgroundColor="{StaticResource ContactButtonRed}"
+                               Margin="10,10,10,10"
+                               IsClippedToBounds="True"
+                               HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                        Command="{Binding OnContactTapped}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+                                       Text="Add to Contacts"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="End"/>
+
+                                <Image Grid.Column="1"
+                                       Source="icon_join"
+                                       Scale="2"
+                                       Opacity="0.5"/>
+                            </Grid>
+                        </Frame>-->
+
+                        <Frame BackgroundColor="{StaticResource TwitterBlue}"
+                               CornerRadius="10"
+                               IsClippedToBounds="True"
+                               Margin="10,10,10,10"
+                               HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                        Command="{Binding OnTwitterTapped}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0"
+                                       Text="Follow me Twitter"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="End"/>
+
+                                <Image Grid.Column="1"
+                                       Source="icon_twitter"
+                                       Scale="2"/>
+                            </Grid>
+                        </Frame>
+
+                    </StackLayout>
+                    <!--<Label Text="{Binding DevFirstName}"
                            FontSize="32"
                            TextColor="White"
                            d:Text="Ulysses"
@@ -178,7 +260,7 @@
 
 
                         </Grid>
-                    </Frame>
+                    </Frame>-->
                 </RelativeLayout>
             </Frame>
         </RelativeLayout>

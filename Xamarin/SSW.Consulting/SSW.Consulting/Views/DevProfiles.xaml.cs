@@ -48,6 +48,7 @@ namespace SSW.Consulting.Views
 
         public void SlideUp()
         {
+            MessagingCenter.Send<object>(this, "SlideOut");
             _originalY = bottomSheet.Y;
             imgScroll.RotateTo(0);
             bottomSheet.TranslateTo(bottomSheet.X, -450, 300, Easing.SinIn);
@@ -55,6 +56,7 @@ namespace SSW.Consulting.Views
 
         public void SlideDown()
         {
+            MessagingCenter.Send<object>(this, "SlideIn");
             bottomSheet.TranslateTo(bottomSheet.X, 0, 300, Easing.SinIn);
             imgScroll.RotateTo(180);
         }
