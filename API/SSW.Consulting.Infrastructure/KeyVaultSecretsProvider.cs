@@ -35,6 +35,11 @@ namespace SSW.Consulting.Infrastructure
 				return secret.Value;
 			}
 #if DEBUG
+            catch (AzureServiceTokenProviderException)
+            {
+                _log.LogInformation("ATTENTION DEVELOPER: You need may need to install the Azure CLI. Then try restart this application.");
+                throw;
+            }
 			catch (KeyVaultErrorException ex) when (ex.Response.StatusCode == HttpStatusCode.Unauthorized)
 			{
 				_log.LogInformation("ATTENTION DEVELOPER: You need to log into Azure using your own credentials. Using the Azure CLI, run 'az login', provide your credentials and then run 'az account set -s <YOUR SUBSCRIPTION ID>'. Then try restart this application.");

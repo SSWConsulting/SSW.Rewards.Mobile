@@ -10,5 +10,6 @@ namespace SSW.Consulting.Services
         Task<string> GetMyEmailAsync();
         Task<string> GetMyProfilePicAsync();
         Task<string> GetMyPointsAsync();
+        Task<bool> IsLoggedInAsync();
     }
 }

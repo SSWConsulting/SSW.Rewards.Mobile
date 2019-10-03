@@ -26,6 +26,13 @@
            CornerRadius="1">
 
         <StackLayout>
+
+            <Image Source="icon_close"
+                   HorizontalOptions="End"
+                   VerticalOptions="Start"
+                   TranslationX="30"
+                   TranslationY="-30"/>
+
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
