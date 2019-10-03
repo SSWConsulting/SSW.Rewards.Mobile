@@ -105,8 +105,25 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Command="{Binding GetStartedTapped}"/>
                 </Label.GestureRecognizers>
-            </Label>
+			</Label>
+			<Button
+				Text="SIGN IN"
+				Grid.Row="4"
+				Command="{Binding SignInTapped}"/>
+			<!--<Label HorizontalOptions="FillAndExpand"
+                   Grid.Row="4"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="White"
+                   TextColor="{Binding TextColour}"
+                   FontSize="Small"
+                   Margin="20,10,20,10"
+                   Text="SIGN IN">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Command="{Binding SignInTapped}"/>
+				</Label.GestureRecognizers>
+			</Label>-->
 
-        </Grid>
+		</Grid>
     </ContentPage.Content>
 </ContentPage>
