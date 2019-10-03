@@ -71,7 +71,7 @@ namespace SSW.Consulting.ViewModels
 
         public void SetDevDetails()
         {
-            int profileIndex = PositionSelected++;
+            int profileIndex = PositionSelected;
             Title = $"{Profiles[profileIndex].FirstName} {Profiles[profileIndex].LastName}";
             DevFirstName = Profiles[profileIndex].FirstName;
             DevTitle = Profiles[profileIndex].Title;

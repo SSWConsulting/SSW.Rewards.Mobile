@@ -15,8 +15,8 @@ namespace SSW.Consulting.Controls
         {
             InitializeComponent();
 
-            MessagingCenter.Subscribe<object>(this, "SlideUp", (obj) => { SlideOut(); });
-            MessagingCenter.Subscribe<object>(this, "SlideDown", (obj) => { SlideIn(); });
+            MessagingCenter.Subscribe<object>(this, "SlideOut", (obj) => { SlideOut(); });
+            MessagingCenter.Subscribe<object>(this, "SlideIn", (obj) => { SlideIn(); });
             MessagingCenter.Subscribe<object, int>(this, "DevChanged", (obj, args) => { DevChanged(args); });
         }
 
