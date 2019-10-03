@@ -6,6 +6,7 @@ import { Screen } from "../../components/screen"
 import { color } from "../../theme"
 import { NavigationScreenProps } from "react-navigation"
 import QRCodeScanner from "react-native-qrcode-scanner"
+import { Header } from "../../components/header"
 
 export interface QrScannerScreenProps extends NavigationScreenProps<{}> {
 }
@@ -21,6 +22,7 @@ export const QrScannerScreen: React.FunctionComponent<QrScannerScreenProps> = ob
   const readSuccess = (e) => console.log(e.data);
   return (
     <Screen style={ROOT} preset="scroll">
+      <Header headerText="Scan Code"/>
         <QRCodeScanner
           onRead={readSuccess}
           reactivate={true}

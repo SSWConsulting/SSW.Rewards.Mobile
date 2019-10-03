@@ -27,10 +27,11 @@ export const color = {
   item: palette.grey2,
   font: palette.grey3,
   headerBackground: palette.black2,
+  
   /**
    * The main tinting color.
    */
-  primary: palette.orange,
+  primary: palette.ssw,
   /**
    * The main tinting color, but darker.
    */

@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     highlighted: {
         backgroundColor: palette.white,
         borderLeftWidth: 3,
-        borderLeftColor: palette.red
+        borderLeftColor: color.primary
     },
     rank: {
         color: color.font,

@@ -12,5 +12,5 @@ export const palette = {
   lightGrey: "#939AA4",
   lighterGrey: "#CDD4DA",
   angry: "#dd3333",
-  red: "#dd3333"
+  ssw: "#e33232"
 }
