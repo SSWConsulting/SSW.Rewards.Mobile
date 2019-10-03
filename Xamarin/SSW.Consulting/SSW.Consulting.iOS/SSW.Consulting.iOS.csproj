@@ -571,6 +571,24 @@
     <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%403x.png" />
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%402x.png" />
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background.png" />
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%403x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%402x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large.png" />
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close.png" />
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -75,7 +75,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -130,7 +130,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -185,7 +185,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -240,7 +240,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -295,7 +295,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -350,7 +350,7 @@
                 </StackLayout>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leader Board"
+        <Tab Title="Leaderboard"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>

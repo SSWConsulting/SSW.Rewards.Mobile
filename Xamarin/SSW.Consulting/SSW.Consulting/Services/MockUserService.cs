@@ -33,5 +33,10 @@ namespace SSW.Consulting.Services
         {
             return await Task.FromResult(4);
         }
+
+        public async Task<bool> IsLoggedInAsync()
+        {
+            return await Task.FromResult(true);
+        }
     }
 }

@@ -100,7 +100,7 @@
                    TextColor="{Binding TextColour}"
                    FontSize="Small"
                    Margin="20,10,20,10"
-                   Text="GET STARTED">
+                   Text="{Binding LinkText}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Command="{Binding GetStartedTapped}"/>
