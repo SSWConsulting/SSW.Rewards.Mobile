@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SSW.Consulting.App">
+    <Application.Resources>
+
+        <Color x:Key="LeaderSummary">#e7e7e7</Color>
+        <Color x:Key="LeaderSummarySelected">White</Color>
+        <Color x:Key="LeaderboardBackground">#d8d8d8</Color>
+        <Color x:Key="SkillsBadgeBackgroundColour">#373737</Color>
+        <Color x:Key="ProfileBorder">#979797</Color>
+        <Color x:Key="FlyoutBackgroundColour">#222222</Color>
+        <Color x:Key="FlyoutItemColour">#1d1d1d</Color>
+        <Color x:Key="PointsColour">#ffc700</Color>
+        <Color x:Key="TwitterBlue">#007aff</Color>
+        <Color x:Key="ContactButtonRed">#ff453a</Color>
+        <Color x:Key="ProfileBackgroundColour">#232323</Color>
+        <Color x:Key="DividerColour">#5d5d5d</Color>
+        <Color x:Key="SSWRed">#cc4141</Color>
+
+        <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
+            <On Platform="iOS" Value="SFProDisplay"/>
+        </OnPlatform>
+
+        <Style x:Key="Leaderboard" TargetType="Label">
+            <Setter Property="FontFamily" Value="{StaticResource LeaderboardFont}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextColor" Value="#999999"/>
+        </Style>
+
+    </Application.Resources>
+</Application>

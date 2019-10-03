@@ -1,0 +1,612 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3EFE7A23-45C2-40AF-BC97-7E67EDA5614A}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TemplateGuid>{89a4fe7c-635d-49c9-8d8c-5cd363c0d68d}</TemplateGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SSW.Consulting.iOS</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>SSW.Consulting.iOS</AssemblyName>
+    <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
+    <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+    <MtouchDebug>true</MtouchDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <None Include="Entitlements.plist" />
+    <None Include="Info.plist" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Contacts.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon1024.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon180.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon167.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon152.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon120.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon87.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon80.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon76.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon60.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon58.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon40.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon29.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon20.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <BundleResource Include="Resources\tab_about.png" />
+    <BundleResource Include="Resources\tab_about%402x.png" />
+    <BundleResource Include="Resources\tab_about%403x.png" />
+    <BundleResource Include="Resources\tab_feed.png" />
+    <BundleResource Include="Resources\tab_feed%402x.png" />
+    <BundleResource Include="Resources\tab_feed%403x.png" />
+    <BundleResource Include="Resources\xamarin_logo.png" />
+    <BundleResource Include="Resources\xamarin_logo%402x.png" />
+    <BundleResource Include="Resources\xamarin_logo%403x.png" />
+    <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
+    <ImageAsset Include="Assets.xcassets\adam.imageset\adam%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\adam.imageset\adam%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\adam.imageset\adam.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\adam.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Calum.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattG.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Uly.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Tan.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\RedStar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\RedStar.imageset\RedStar%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\RedStar.imageset\RedStar%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\RedStar.imageset\RedStar.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\polygon.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\user.imageset\user%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\user.imageset\user%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\user.imageset\user.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\user.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qrcode.imageset\qrcode%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qrcode.imageset\qrcode%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qrcode.imageset\qrcode.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qrcode.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sswsq.imageset\sswsq%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sswsq.imageset\sswsq%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sswsq.imageset\sswsq.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sswsq.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\calendar.imageset\calendar%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\calendar.imageset\calendar%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\calendar.imageset\calendar.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\calendar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW%403x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW%402x.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW.jpg">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\MattW.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logout.imageset\logout%403x.png" />
+    <ImageAsset Include="Assets.xcassets\logout.imageset\logout%402x.png" />
+    <ImageAsset Include="Assets.xcassets\logout.imageset\logout.png" />
+    <ImageAsset Include="Assets.xcassets\logout.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\information.imageset\information%403x.png" />
+    <ImageAsset Include="Assets.xcassets\information.imageset\information%402x.png" />
+    <ImageAsset Include="Assets.xcassets\information.imageset\information.png" />
+    <ImageAsset Include="Assets.xcassets\information.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\dice.imageset\dice%403x.png" />
+    <ImageAsset Include="Assets.xcassets\dice.imageset\dice%402x.png" />
+    <ImageAsset Include="Assets.xcassets\dice.imageset\dice.png" />
+    <ImageAsset Include="Assets.xcassets\dice.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\polygon.imageset\polygon%403x.png" />
+    <ImageAsset Include="Assets.xcassets\polygon.imageset\polygon%402x.png" />
+    <ImageAsset Include="Assets.xcassets\polygon.imageset\polygon.png" />
+    <ImageAsset Include="Assets.xcassets\adam_ndc.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\camera.imageset\camera%403x.png" />
+    <ImageAsset Include="Assets.xcassets\camera.imageset\camera%402x.png" />
+    <ImageAsset Include="Assets.xcassets\camera.imageset\camera.png" />
+    <ImageAsset Include="Assets.xcassets\camera.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\ndc_jean.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\scroll.imageset\scroll%403x.png" />
+    <ImageAsset Include="Assets.xcassets\scroll.imageset\scroll%402x.png" />
+    <ImageAsset Include="Assets.xcassets\scroll.imageset\scroll.png" />
+    <ImageAsset Include="Assets.xcassets\scroll.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_angular.imageset\skill_angular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_angular.imageset\skill_angular%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_angular.imageset\skill_angular.png" />
+    <ImageAsset Include="Assets.xcassets\skill_angular.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer.png" />
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\skill_dancing%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\skill_dancing%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\skill_dancing.png" />
+    <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_netcore.imageset\skill_netcore%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_netcore.imageset\skill_netcore%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_netcore.imageset\skill_netcore.png" />
+    <ImageAsset Include="Assets.xcassets\skill_netcore.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_powerbi.imageset\skill_powerbi%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_powerbi.imageset\skill_powerbi%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_powerbi.imageset\skill_powerbi.png" />
+    <ImageAsset Include="Assets.xcassets\skill_powerbi.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\skill_smoking%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\skill_smoking%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\skill_smoking.png" />
+    <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc%403x.png" />
+    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc%402x.png" />
+    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc.png" />
+    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_quiz.imageset\points_quiz%403x.png" />
+    <ImageAsset Include="Assets.xcassets\points_quiz.imageset\points_quiz%402x.png" />
+    <ImageAsset Include="Assets.xcassets\points_quiz.imageset\points_quiz.png" />
+    <ImageAsset Include="Assets.xcassets\points_quiz.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_presentations.imageset\points_presentations%403x.png" />
+    <ImageAsset Include="Assets.xcassets\points_presentations.imageset\points_presentations%402x.png" />
+    <ImageAsset Include="Assets.xcassets\points_presentations.imageset\points_presentations.png" />
+    <ImageAsset Include="Assets.xcassets\points_presentations.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_twiitter.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_youtube.imageset\points_youtube%403x.png" />
+    <ImageAsset Include="Assets.xcassets\points_youtube.imageset\points_youtube%402x.png" />
+    <ImageAsset Include="Assets.xcassets\points_youtube.imageset\points_youtube.png" />
+    <ImageAsset Include="Assets.xcassets\points_youtube.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_twitter.imageset\points_twitter%403x.png" />
+    <ImageAsset Include="Assets.xcassets\points_twitter.imageset\points_twitter%402x.png" />
+    <ImageAsset Include="Assets.xcassets\points_twitter.imageset\points_twitter.png" />
+    <ImageAsset Include="Assets.xcassets\points_twitter.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_background.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_background.imageset\points_background%403x.png" />
+    <ImageAsset Include="Assets.xcassets\points_background.imageset\points_background%402x.png" />
+    <ImageAsset Include="Assets.xcassets\points_background.imageset\points_background.png" />
+    <ImageAsset Include="Assets.xcassets\icoin_join.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_badge.imageset\icon_badge%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_badge.imageset\icon_badge%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_badge.imageset\icon_badge.png" />
+    <ImageAsset Include="Assets.xcassets\icon_badge.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_calendar.imageset\icon_calendar%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_calendar.imageset\icon_calendar%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_calendar.imageset\icon_calendar.png" />
+    <ImageAsset Include="Assets.xcassets\icon_calendar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_code.imageset\icon_code%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_code.imageset\icon_code%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_code.imageset\icon_code.png" />
+    <ImageAsset Include="Assets.xcassets\icon_code.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_goldstar.imageset\icon_goldstar%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_goldstar.imageset\icon_goldstar%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_goldstar.imageset\icon_goldstar.png" />
+    <ImageAsset Include="Assets.xcassets\icon_goldstar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_howto.imageset\icon_howto%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_howto.imageset\icon_howto%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_howto.imageset\icon_howto.png" />
+    <ImageAsset Include="Assets.xcassets\icon_howto.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_logout.imageset\icon_logout%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_logout.imageset\icon_logout%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_logout.imageset\icon_logout.png" />
+    <ImageAsset Include="Assets.xcassets\icon_logout.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_qrcode.imageset\icon_qrcode%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qrcode.imageset\icon_qrcode%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qrcode.imageset\icon_qrcode.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qrcode.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_spade.imageset\icon_spade%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_spade.imageset\icon_spade%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_spade.imageset\icon_spade.png" />
+    <ImageAsset Include="Assets.xcassets\icon_spade.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_ssw.imageset\icon_ssw%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_ssw.imageset\icon_ssw%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_ssw.imageset\icon_ssw.png" />
+    <ImageAsset Include="Assets.xcassets\icon_ssw.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_star.imageset\icon_star%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_star.imageset\icon_star%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_star.imageset\icon_star.png" />
+    <ImageAsset Include="Assets.xcassets\icon_star.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_sswdevs.imageset\icon_sswdevs%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_sswdevs.imageset\icon_sswdevs%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_sswdevs.imageset\icon_sswdevs.png" />
+    <ImageAsset Include="Assets.xcassets\icon_sswdevs.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\adamndc.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc%403x.png" />
+    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc%402x.png" />
+    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc.png" />
+    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc%403x.png" />
+    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc%402x.png" />
+    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc.png" />
+    <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\icon_twitter%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\icon_twitter%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\icon_twitter.png" />
+    <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_join.imageset\icon_join%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_join.imageset\icon_join%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_join.imageset\icon_join.png" />
+    <ImageAsset Include="Assets.xcassets\icon_join.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%403x.png" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%402x.png" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png" />
+    <ImageAsset Include="Assets.xcassets\chip_bonus.imageset\chip_bonus%403x.png" />
+    <ImageAsset Include="Assets.xcassets\chip_bonus.imageset\chip_bonus%402x.png" />
+    <ImageAsset Include="Assets.xcassets\chip_bonus.imageset\chip_bonus.png" />
+    <ImageAsset Include="Assets.xcassets\chip_bonus.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qr_filter.imageset\qr_filter%403x.png" />
+    <ImageAsset Include="Assets.xcassets\qr_filter.imageset\qr_filter%402x.png" />
+    <ImageAsset Include="Assets.xcassets\qr_filter.imageset\qr_filter.png" />
+    <ImageAsset Include="Assets.xcassets\qr_filter.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\qr_reticle%403x.png" />
+    <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\qr_reticle%402x.png" />
+    <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\qr_reticle.png" />
+    <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_consultation.imageset\prize_consultation%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_consultation.imageset\prize_consultation%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_consultation.imageset\prize_consultation.png" />
+    <ImageAsset Include="Assets.xcassets\prize_consultation.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_googlehome.imageset\prize_googlehome%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_googlehome.imageset\prize_googlehome%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_googlehome.imageset\prize_googlehome.png" />
+    <ImageAsset Include="Assets.xcassets\prize_googlehome.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax.png" />
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_miband.imageset\prize_miband%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_miband.imageset\prize_miband%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_miband.imageset\prize_miband.png" />
+    <ImageAsset Include="Assets.xcassets\prize_miband.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\prize_superpowers%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\prize_superpowers%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\prize_superpowers.png" />
+    <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%403x.gif" />
+    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%402x.gif" />
+    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder.gif" />
+    <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.815419" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
+    <PackageReference Include="Autofac">
+      <Version>4.9.4</Version>
+    </PackageReference>
+    <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
+      <Version>3.0.0.5</Version>
+    </PackageReference>
+    <PackageReference Include="CardsView">
+      <Version>2.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="ZXing.Net.Mobile">
+      <Version>2.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="ZXing.Net.Mobile.Forms">
+      <Version>2.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Rg.Plugins.Popup">
+      <Version>1.1.5.188</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\SSW.Consulting\SSW.Consulting.csproj">
+      <Project>{B98A315F-FDC2-489E-A8E5-94757CF3DD9F}</Project>
+      <Name>SSW.Consulting</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

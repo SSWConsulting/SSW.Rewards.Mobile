@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Consulting.Controls.FlyoutHeader"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:circle="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
+             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+             HeightRequest="150">
+    <Grid HeightRequest="100"
+          Margin="5,5,5,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <circle:CircleImage Grid.Column="0"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Aspect="AspectFit"
+                            Source="{Binding ProfilePic}"
+                            d:Source="MattGMain"
+                            HeightRequest="150"
+                            WidthRequest="150"
+                            VerticalOptions="Center"
+                            Margin="10,0,5,0"/>
+
+        <Label Grid.Column="1"
+               Grid.Row="0"
+               Style="{StaticResource Leaderboard}"
+               VerticalOptions="End"
+               FontSize="16"
+               Text="{Binding Name}"
+               d:Text="Matt Goldman"/>
+
+        <Label Grid.Column="1"
+               Grid.Row="1"
+               Style="{StaticResource Leaderboard}"
+               VerticalOptions="Start"
+               Text="{Binding Email}"
+               d:Text="mattgoldman@ssw.com.au"/>
+
+    </Grid>
+</ContentView>
