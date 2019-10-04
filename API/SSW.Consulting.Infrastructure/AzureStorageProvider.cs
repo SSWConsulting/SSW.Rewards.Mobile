@@ -3,10 +3,11 @@ using SSW.Consulting.Application.Exceptions;
 using System.IO;
 using System.Threading.Tasks;
 using SSW.Consulting.Application.Interfaces;
+using System;
 
 namespace SSW.Consulting.Infrastructure
 {
-	public class AzureStorageProvider : IStorageProvider
+    public class AzureStorageProvider : IStorageProvider
 	{
 		private readonly CloudBlobClient _client;
 
@@ -17,22 +18,22 @@ namespace SSW.Consulting.Infrastructure
 
 		public async Task UploadBlob(string containerName, string filename, byte[] contents)
 		{
-			CloudBlobContainer container = _client.GetContainerReference(containerName.ToLower());
+            var container = _client.GetContainerReference(containerName.ToLower());
 			await container.CreateIfNotExistsAsync();
 
-			CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+            var blob = container.GetBlockBlobReference(filename);
 			await blob.UploadFromByteArrayAsync(contents, 0, contents.Length);
 		}
 
 		public async Task<byte[]> DownloadBlob(string containerName, string blobName)
 		{
-			CloudBlobContainer container = _client.GetContainerReference(containerName.ToLower());
+            var container = _client.GetContainerReference(containerName.ToLower());
 			if (!container.Exists())
 			{
 				throw new BlobContainerNotFoundException(containerName);
 			}
 
-			CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            var blob = container.GetBlockBlobReference(blobName);
 			if (!blob.Exists())
 			{
 				throw new BlobNotFoundException(containerName, blobName);
@@ -43,8 +44,32 @@ namespace SSW.Consulting.Infrastructure
 				await blob.DownloadToStreamAsync(ms);
 				return ms.ToArray();
 			}
-		}
-	}
+        }
+
+        public async Task<Uri> GetUri(string containerName, string blobName)
+        {
+            var container = _client.GetContainerReference(containerName.ToLower());
+            if (!container.Exists())
+            {
+                throw new BlobContainerNotFoundException(containerName);
+            }
+
+            var blob = container.GetBlockBlobReference(blobName);
+            return await blob.ExistsAsync() ? blob.Uri : null;
+        }
+
+        public async Task<bool> Exists(string containerName, string blobName)
+        {
+            var container = _client.GetContainerReference(containerName.ToLower());
+            if (!container.Exists())
+            {
+                throw new BlobContainerNotFoundException(containerName);
+            }
+
+            var blob = container.GetBlockBlobReference(blobName);
+            return await blob.ExistsAsync();
+        }
+    }
 
 
 }

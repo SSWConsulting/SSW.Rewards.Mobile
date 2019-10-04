@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.AspNetCore.Builder;
@@ -6,17 +5,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SSW.Consulting.Application;
+using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Application.Interfaces;
 using SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Consulting.Infrastructure;
 using SSW.Consulting.Persistence;
+using SSW.Consulting.WebAPI.Services;
 using SSW.Consulting.WebAPI.Settings;
 using System;
 using System.Reflection;
 
 namespace SSW.Consulting
 {
-	public class Startup
+    public class Startup
 	{
 		public Startup(IWebHostEnvironment environment, IConfiguration configuration)
 		{
@@ -33,26 +35,24 @@ namespace SSW.Consulting
 			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
 				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
-			services.AddControllers();
+            services.AddInfrastructure(Configuration);
+            services.AddPersistence(Configuration);
+            services.AddApplication();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddHttpContextAccessor();
 
-			// Add MediatR
-			services.AddMediatR(typeof(GetLeaderboardListQuery).GetTypeInfo().Assembly);
+            services.AddControllers();
 
-			// Configure all the stuffs
-			ConfigureSecretsProviders(services);
+            // Configure all the stuffs
 			ConfigureSettings(services);
 			ConfigureSecrets(services);
-			ConfigureStorageProviders(services);
-
-			// Add SSW Consulting DbContext
-			services.AddScoped<ISSWConsultingDbContent, SSWConsultingDbContent>();
-		}
+        }
 
 		protected virtual void ConfigureSecrets(IServiceCollection services)
 		{
 			// Add Secrets
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISecrets interface
-			services.AddSingleton<SSWConsultingDbContent.ISecrets, Secrets>();
+			services.AddSingleton<SSWConsultingDbContext.ISecrets, Secrets>();
 			services.AddSingleton<CloudBlobClientProvider.ISecrets, Secrets>();
 		}
 
@@ -61,30 +61,6 @@ namespace SSW.Consulting
 			// Add Settings
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISettings interface
 			services.AddSingleton<KeyVaultSecretsProvider.ISettings, AppSettings>();
-		}
-
-		protected virtual void ConfigureSecretsProviders(IServiceCollection services)
-		{
-			// Add Secrets Provider
-#if DEBUG
-			bool useLocalSecrets = Convert.ToBoolean(Configuration["UseLocalSecrets"]);
-			if (useLocalSecrets)
-			{
-				services.AddSingleton<ISecretsProvider, LocalSecretsProvider>();
-			}
-			else
-#endif
-			{
-				services.AddSingleton<ISecretsProvider, KeyVaultSecretsProvider>();
-				services.AddSingleton<IKeyVaultClientProvider, KeyVaultClientProvider>();
-			}
-		}
-
-
-		protected virtual void ConfigureStorageProviders(IServiceCollection services)
-		{
-			services.AddSingleton<ICloudBlobClientProvider, CloudBlobClientProvider>();
-			services.AddSingleton<IStorageProvider, AzureStorageProvider>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
