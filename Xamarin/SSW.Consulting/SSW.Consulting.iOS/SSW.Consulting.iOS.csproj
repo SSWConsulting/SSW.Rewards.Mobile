@@ -120,7 +120,6 @@
     <BundleResource Include="Resources\xamarin_logo.png" />
     <BundleResource Include="Resources\xamarin_logo%402x.png" />
     <BundleResource Include="Resources\xamarin_logo%403x.png" />
-    <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
     <ImageAsset Include="Assets.xcassets\adam.imageset\adam%403x.jpg">
       <Visible>false</Visible>
     </ImageAsset>
@@ -865,6 +864,7 @@
     <ImageAsset Include="Assets.xcassets\logo_splash.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
