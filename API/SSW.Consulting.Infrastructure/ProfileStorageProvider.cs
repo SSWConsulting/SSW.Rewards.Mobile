@@ -15,9 +15,7 @@ namespace SSW.Consulting.Infrastructure
             _storageProvider = storageProvider;
         }
 
-        public async Task<Uri> GetProfileUri(string staffMemberName) => await _storageProvider.GetUri(CONTAINER_NAME, staffMemberName);
+        public async Task<Uri> GetProfileUri(string staffMemberName) => await _storageProvider.GetUri(CONTAINER_NAME, $"{staffMemberName.ToLower()}.png");
 
     }
-
-
 }

@@ -4,9 +4,9 @@ using SSW.Consulting.Domain.Entities;
 
 namespace SSW.Consulting.Persistence.Configurations
 {
-    public class StaffMemberConfiguration : IEntityTypeConfiguration<StaffMember>
+    public class SkillConfiguration : IEntityTypeConfiguration<Skill>
     {
-        public void Configure(EntityTypeBuilder<StaffMember> builder)
+        public void Configure(EntityTypeBuilder<Skill> builder)
         {
         }
     }

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Consulting.Application.Interfaces;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,20 +29,25 @@ namespace SSW.Consulting.Application.Staff.Queries.GetStaffList
 
             public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
             {
-                var staff = await _dbContext
+                var staffDtos = await _dbContext
                     .StaffMembers
+                    .Include(s => s.StaffMemberSkills)
+                        .ThenInclude(sms => sms.Skill)
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                foreach (var staffMember in staff)
-                {
-                    staffMember.ProfilePhoto = await _storage.GetProfileUri(staffMember.Name);
-                }
+                var staffDtosWithProfilePhotos = await Task.WhenAll(staffDtos.Select(staffMember => GetProfilePhoto(staffMember)));
 
                 return new StaffListViewModel
                 {
-                    Staff = staff
+                    Staff = staffDtosWithProfilePhotos
                 };
+            }
+
+            private async Task<StaffDto> GetProfilePhoto(StaffDto staffMember)
+            {
+                staffMember.ProfilePhoto = await _storage.GetProfileUri(staffMember.Name);
+                return staffMember;
             }
         }
     }
