@@ -4,7 +4,7 @@ using SSW.Consulting.Persistence;
 
 namespace SSW.Consulting.WebAPI.Settings
 {
-	public class Secrets : SSWConsultingDbContent.ISecrets,
+	public class Secrets : SSWConsultingDbContext.ISecrets,
 		CloudBlobClientProvider.ISecrets
 	{
 		private readonly ISecretsProvider _secrets;

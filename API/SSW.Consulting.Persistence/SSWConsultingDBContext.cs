@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using SSW.Consulting.Application.Interfaces;
 using SSW.Consulting.Domain.Entities;
+using System.Linq;
 
 namespace SSW.Consulting.Persistence
 {
-	public class SSWConsultingDbContent : DbContext, ISSWConsultingDbContent
+	public class SSWConsultingDbContext : DbContext, ISSWConsultingDbContext
     {
 		public interface ISecrets
 		{
@@ -15,7 +17,7 @@ namespace SSW.Consulting.Persistence
 
 		private readonly ISecrets _secrets;
 
-		public SSWConsultingDbContent(ISecrets secrets)
+		public SSWConsultingDbContext(ISecrets secrets)
         {
 			_secrets = secrets;
 		}
@@ -33,7 +35,10 @@ namespace SSW.Consulting.Persistence
             modelBuilder.HasDefaultContainer("Staff");
 
             modelBuilder.Entity<StaffMember>()
-                .ToContainer("Staff");
+                .ToContainer("Staff")
+                .Property(s => s.Id).HasValueGenerator<GuidValueGenerator>();
+            modelBuilder.Entity<StaffMember>()
+                .OwnsMany<Skill>(s => s.Skills);
 
             //modelBuilder.Entity<Order>()
             //    .HasPartitionKey(o => o.PartitionKey);

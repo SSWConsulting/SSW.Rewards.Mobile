@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
@@ -35,24 +36,26 @@ namespace SSW.Consulting
 
 			services.AddControllers();
 
-			// Add MediatR
-			services.AddMediatR(typeof(GetLeaderboardListQuery).GetTypeInfo().Assembly);
+			// Add MediatR & AutoMapper
+			services
+                .AddMediatR(typeof(GetLeaderboardListQuery).GetTypeInfo().Assembly)
+                .AddAutoMapper(typeof(GetLeaderboardListQuery).GetTypeInfo().Assembly);
 
-			// Configure all the stuffs
-			ConfigureSecretsProviders(services);
+            // Configure all the stuffs
+            ConfigureSecretsProviders(services);
 			ConfigureSettings(services);
 			ConfigureSecrets(services);
 			ConfigureStorageProviders(services);
 
 			// Add SSW Consulting DbContext
-			services.AddScoped<ISSWConsultingDbContent, SSWConsultingDbContent>();
+			services.AddScoped<ISSWConsultingDbContext, SSWConsultingDbContext>();
 		}
 
 		protected virtual void ConfigureSecrets(IServiceCollection services)
 		{
 			// Add Secrets
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISecrets interface
-			services.AddSingleton<SSWConsultingDbContent.ISecrets, Secrets>();
+			services.AddSingleton<SSWConsultingDbContext.ISecrets, Secrets>();
 			services.AddSingleton<CloudBlobClientProvider.ISecrets, Secrets>();
 		}
 

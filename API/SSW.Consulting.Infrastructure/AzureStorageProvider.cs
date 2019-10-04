@@ -44,7 +44,12 @@ namespace SSW.Consulting.Infrastructure
 				return ms.ToArray();
 			}
 		}
-	}
+
+        public Task<bool> Exists(string containerName, string blobName)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 
 
 }
