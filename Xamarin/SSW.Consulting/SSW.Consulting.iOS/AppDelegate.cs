@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Foundation;
 using ImageCircle.Forms.Plugin.iOS;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Auth;
+using Microsoft.AppCenter.Crashes;
 using PanCardView.iOS;
 using SSW.Consulting.Services;
 using UIKit;
@@ -28,6 +32,9 @@ namespace SSW.Consulting.iOS
             global::Xamarin.Forms.Forms.SetFlags("Shell_Experimental", "Visual_Experimental", "CollectionView_Experimental", "FastRenderers_Experimental");
 
             Rg.Plugins.Popup.Popup.Init();
+
+            //AppCenter.Start("e33283b1-7326-447d-baae-e783ece0789b",
+            //      typeof(Auth), typeof(Analytics), typeof(Crashes));
 
             global::Xamarin.Forms.Forms.Init();
 

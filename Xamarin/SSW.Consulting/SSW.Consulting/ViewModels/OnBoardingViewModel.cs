@@ -3,6 +3,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Xamarin.Essentials;
+using SSW.Consulting.Views;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -94,8 +96,15 @@ namespace SSW.Consulting.ViewModels
 
         private void GetStarted()
         {
-            AppShell shell = new AppShell();
-            Application.Current.MainPage = shell;
+            if(Preferences.Get("LoggedIn", false))
+            {
+                Application.Current.MainPage = new LoginPage();
+            }
+            else
+            {
+                AppShell shell = new AppShell();
+                Application.Current.MainPage = shell;
+            }
         }
 
         private void SetDetails()

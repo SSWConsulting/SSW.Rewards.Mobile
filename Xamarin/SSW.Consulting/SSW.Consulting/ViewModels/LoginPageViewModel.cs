@@ -20,27 +20,8 @@ namespace SSW.Consulting.ViewModels
 
         private async void SignIn()
         {
-            try
-            {
-                // Sign-in succeeded.
-                UserInformation userInfo = await Auth.SignInAsync();
-                string accountId = userInfo.AccountId;
-                //Application.Current.MainPage.DisplayAlert("Message", accountId, "OK");
-                if(!string.IsNullOrWhiteSpace(accountId))
-                {
-                    await _userService.SetTokenAsync(accountId);
-                    Preferences.Set("LoggedIn", true);
-                }
-                else
-                {
-                    //TODO: handle login error
-                }
-            }
-
-            catch (Exception e)
-            {
-                // Do something with sign-in failure.
-            }
+            UserInformation userInfo = await Auth.SignInAsync();
+            await _userService.SignInAsync(userInfo);
         }
     }
 }
