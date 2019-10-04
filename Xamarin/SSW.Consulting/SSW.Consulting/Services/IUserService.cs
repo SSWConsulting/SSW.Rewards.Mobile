@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AppCenter.Auth;
 
 namespace SSW.Consulting.Services
 {
@@ -13,7 +12,7 @@ namespace SSW.Consulting.Services
         Task<string> GetMyPointsAsync();
         Task<bool> IsLoggedInAsync();
         Task<string> GetTokenAsync();
-        Task SignInAsync(UserInformation userInfo);
+        Task<bool> SignInAsync();
         Task SignOutAsync();
     }
 }

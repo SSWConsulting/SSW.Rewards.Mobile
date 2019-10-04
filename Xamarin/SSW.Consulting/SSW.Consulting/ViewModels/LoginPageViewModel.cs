@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Microsoft.AppCenter.Auth;
 using SSW.Consulting.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
@@ -20,8 +19,10 @@ namespace SSW.Consulting.ViewModels
 
         private async void SignIn()
         {
-            UserInformation userInfo = await Auth.SignInAsync();
-            await _userService.SignInAsync(userInfo);
+            if(await _userService.SignInAsync())
+            {
+                Application.Current.MainPage = new AppShell();
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AppCenter.Auth;
 
 namespace SSW.Consulting.Services
 {
@@ -50,9 +49,9 @@ namespace SSW.Consulting.Services
             throw new NotImplementedException();
         }
 
-        public Task SignInAsync(UserInformation userInfo)
+        public async Task<bool> SignInAsync()
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(true);
         }
 
         public Task SignOutAsync()

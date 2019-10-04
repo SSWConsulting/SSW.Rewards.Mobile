@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Foundation;
 using ImageCircle.Forms.Plugin.iOS;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Auth;
-using Microsoft.AppCenter.Crashes;
 using PanCardView.iOS;
 using SSW.Consulting.Services;
 using UIKit;
@@ -49,5 +45,11 @@ namespace SSW.Consulting.iOS
 
             return base.FinishedLaunching(app, options);
         }
+        /*
+        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+        {
+            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
+            return true;
+        }*/
     }
 }
