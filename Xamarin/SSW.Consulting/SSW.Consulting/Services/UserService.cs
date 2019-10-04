@@ -16,27 +16,32 @@ namespace SSW.Consulting.Services
 
         public async Task<string> GetMyEmailAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            return await Task.FromResult("mattgoldman@ssw.com.au");
         }
 
         public async Task<string> GetMyNameAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            return await Task.FromResult("Matt Goldman");
         }
 
         public async Task<string> GetMyPointsAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            return await Task.FromResult("136");
         }
 
         public async Task<string> GetMyProfilePicAsync()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return await Task.FromResult("MattGMain");
         }
 
         public async Task<int> GetMyUserIdAsync()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return await Task.FromResult(4);
         }
 
         public async Task<string> GetTokenAsync()
@@ -49,10 +54,11 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(Preferences.Get("LoggedIn", false));
         }
 
-        public  async Task SignInAsync(UserInformation userInfo)
+        public async Task<bool> SignInAsync()
         {
             try
             {
+                UserInformation userInfo = await Auth.SignInAsync();
                 // Sign-in succeeded.
                 string accountId = userInfo.AccountId;
                 if (!string.IsNullOrWhiteSpace(accountId))
@@ -72,18 +78,19 @@ namespace SSW.Consulting.Services
                             Preferences.Set("Claim", claimValue);
                         }
 
+                        Preferences.Set("LoggedIn", true);
+                        return true;
                     }
                     catch(ArgumentException)
                     {
                         //TODO: Handle error decoding JWT
+                        return false;
                     }
-
-
-                    Preferences.Set("LoggedIn", true);
                 }
                 else
                 {
                     //TODO: handle login error
+                    return false;
                 }
             }
 
@@ -91,6 +98,7 @@ namespace SSW.Consulting.Services
             {
                 // Do something with sign-in failure.
                 Console.Write(e);
+                return false;
             }
         }
 

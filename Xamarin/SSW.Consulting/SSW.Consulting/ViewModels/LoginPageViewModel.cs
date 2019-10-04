@@ -11,6 +11,7 @@ namespace SSW.Consulting.ViewModels
     {
         public ICommand LoginTappedCommand { get; set; }
         private IUserService _userService { get; set; }
+        public bool isRunning { get; set; }
 
         public LoginPageViewModel(IUserService userService)
         {
@@ -20,8 +21,16 @@ namespace SSW.Consulting.ViewModels
 
         private async void SignIn()
         {
-            UserInformation userInfo = await Auth.SignInAsync();
-            await _userService.SignInAsync(userInfo);
+            isRunning = true;
+            OnPropertyChanged("isRunning");
+
+            if(await _userService.SignInAsync())
+            {
+                Application.Current.MainPage = new AppShell();
+            }
+
+            isRunning = false;
+            OnPropertyChanged("isRunning");
         }
     }
 }

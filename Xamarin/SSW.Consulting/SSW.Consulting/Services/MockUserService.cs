@@ -50,9 +50,9 @@ namespace SSW.Consulting.Services
             throw new NotImplementedException();
         }
 
-        public Task SignInAsync(UserInformation userInfo)
+        public async Task<bool> SignInAsync()
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(true);
         }
 
         public Task SignOutAsync()

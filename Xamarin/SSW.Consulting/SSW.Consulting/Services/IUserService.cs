@@ -13,7 +13,7 @@ namespace SSW.Consulting.Services
         Task<string> GetMyPointsAsync();
         Task<bool> IsLoggedInAsync();
         Task<string> GetTokenAsync();
-        Task SignInAsync(UserInformation userInfo);
+        Task<bool> SignInAsync();
         Task SignOutAsync();
     }
 }
