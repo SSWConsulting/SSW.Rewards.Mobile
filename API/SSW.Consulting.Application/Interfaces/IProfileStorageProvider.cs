@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace SSW.Consulting.Application.Interfaces
 {
     public interface IProfileStorageProvider
     {
-
+        Task<Uri> GetProfileUri(string staffMemberName);
     }
 }

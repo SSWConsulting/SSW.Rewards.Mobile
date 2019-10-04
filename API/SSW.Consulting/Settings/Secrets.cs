@@ -14,11 +14,7 @@ namespace SSW.Consulting.WebAPI.Settings
 			_secrets = secrets;
 		}
 
-		public string CosmosDbEndPoint => _secrets.GetSecret(nameof(CosmosDbEndPoint));
-
-		public string CosmosDbKey => _secrets.GetSecret(nameof(CosmosDbKey));
-
-		public string DatabaseName => "SSWConsulting";
+		public string SqlConnectionString => _secrets.GetSecret(nameof(SqlConnectionString));
 
 		public string ContentStorageConnectionString => _secrets.GetSecret(nameof(ContentStorageConnectionString));
 	}

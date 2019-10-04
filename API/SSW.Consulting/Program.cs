@@ -3,10 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SSW.Consulting.Application.System.Commands.SeedData;
+using SSW.Consulting.Persistence;
 
 namespace SSW.Consulting
 {
@@ -22,6 +24,9 @@ namespace SSW.Consulting
 
                 try
                 {
+                    var dbContext = services.GetRequiredService<SSWConsultingDbContext>();
+                    dbContext.Database.Migrate();
+
                     var mediator = services.GetRequiredService<IMediator>();
                     await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
                 }
