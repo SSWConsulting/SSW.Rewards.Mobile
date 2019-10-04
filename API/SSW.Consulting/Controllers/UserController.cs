@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SSW.Consulting.Application.User.Queries.GetUser;
 
 namespace SSW.Consulting.WebAPI.Controllers
 {
     public class UserController : BaseController
     {
         [HttpGet]
-        public string Get()
+        public async Task<ActionResult<UserViewModel>> Get()
         {
-            return User.Identity.Name;
+            return Ok(await Mediator.Send(new GetCurrentUserQuery()));
         }
-
-        //public async Task<ActionResult<UserViewModel>> Get()
-        //{ 
-        //    return Ok(await Mediator.Send(new GetActiveUserQuery()));
-        //}
-
     }
 }
