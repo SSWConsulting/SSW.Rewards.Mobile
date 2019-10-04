@@ -60,6 +60,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Effects\iOSTooltipEffect.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
@@ -832,36 +833,72 @@
     <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%403x.png" />
-    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%402x.png" />
-    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background.png" />
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\login_background.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%403x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%402x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large.png" />
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\logo_large.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%403x.png" />
-    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%402x.png" />
-    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close.png" />
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_close.imageset\icon_close.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_close.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png" />
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png" />
-    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png" />
-    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%403x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%402x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour.png" />
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%403x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%402x.png" />
-    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash.png" />
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\logo_splash.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -875,6 +912,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="EasyTipView">
+      <Version>1.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>2.1.1</Version>
     </PackageReference>
