@@ -24,7 +24,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid d:BackgroundColor="{StaticResource SSWRed}"
+        <Grid d:BackgroundColor="White"
               BackgroundColor="{Binding BackgroundColour}">
 
             <Grid.RowDefinitions>
@@ -35,7 +35,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Label d:TextColor="White"
+            <Label d:TextColor="Black"
                    TextColor="{Binding TextColour}"
                    HorizontalTextAlignment="Center"
                    VerticalOptions="FillAndExpand"
@@ -76,7 +76,7 @@
             <StackLayout Grid.Row="2">
                 <Label HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
-                       d:TextColor="White"
+                       d:TextColor="Black"
                        TextColor="{Binding TextColour}"
                        FontSize="Large"
                        Text="{Binding SubHeading}"
@@ -84,7 +84,7 @@
 
                 <Label HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
-                       d:TextColor="White"
+                       d:TextColor="Black"
                        TextColor="{Binding TextColour}"
                        FontSize="Small"
                        Margin="20,10,20,10"
@@ -96,8 +96,9 @@
             <Label HorizontalOptions="FillAndExpand"
                    Grid.Row="3"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="White"
+                   d:TextColor="Black"
                    TextColor="{Binding TextColour}"
+                   d:Text="SKIP INTRO"
                    FontSize="Small"
                    Margin="20,10,20,10"
                    Text="{Binding LinkText}">
@@ -106,6 +107,15 @@
                                           Command="{Binding GetStartedTapped}"/>
                 </Label.GestureRecognizers>
 			</Label>
+
+            <StackLayout Grid.Row="4"
+                         Grid.RowSpan="2"
+                         VerticalOptions="FillAndExpand"
+                         Padding="10">
+                <Image Source="logo_ssw_colour"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"/>
+            </StackLayout>
 		</Grid>
     </ContentPage.Content>
 </ContentPage>

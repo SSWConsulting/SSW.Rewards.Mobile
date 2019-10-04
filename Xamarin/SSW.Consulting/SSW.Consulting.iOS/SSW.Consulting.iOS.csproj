@@ -853,6 +853,12 @@
     <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%403x.png" />
     <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding%402x.png" />
     <ImageAsset Include="Assets.xcassets\onboarding.imageset\onboarding.png" />
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%403x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%402x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour.png" />
+    <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
