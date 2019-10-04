@@ -859,6 +859,12 @@
     <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%403x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash%402x.png" />
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\logo_splash.png" />
+    <ImageAsset Include="Assets.xcassets\logo_splash.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
