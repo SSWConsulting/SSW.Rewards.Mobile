@@ -13,6 +13,7 @@ namespace SSW.Consulting.Persistence
     {
         private readonly ISSWConsultingDbContext _context;
         private Dictionary<string, Skill> _skills;
+        private Dictionary<int, StaffMember> _staffMembers;
 
         public SampleDataSeeder(ISSWConsultingDbContext context)
         {
@@ -23,13 +24,13 @@ namespace SSW.Consulting.Persistence
         {
             await SeedSkillsAsync(cancellationToken);
             await SeedStaffMembers(cancellationToken);
+            await SeedAchievementsAsync(cancellationToken);
         }
 
         private async Task SeedSkillsAsync(CancellationToken cancellationToken)
         {
             if (!await _context.Skills.AnyAsync(cancellationToken))
             {
-
                 var skills = new[] {
                     "Angular",
                     "React",
@@ -54,17 +55,39 @@ namespace SSW.Consulting.Persistence
 
         private async Task SeedStaffMembers(CancellationToken cancellationToken)
         {
-            if (await _context.StaffMembers.AnyAsync(cancellationToken))
+            if (!await _context.StaffMembers.AnyAsync(cancellationToken))
+            {
+                var staff = new[] {
+                    new StaffMember { Name = "Adam Cogan", Title = "Chief Architect", Email = "adamcogan@ssw.com.au", TwitterUsername = "adamcogan", StaffMemberSkills = GetSkills("PowerBI", "Angular", "NETCore", "Scrum"), Profile = "This is profile text" },
+                };
+
+                await _context.StaffMembers.AddRangeAsync(staff, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            _staffMembers = await _context.StaffMembers.ToDictionaryAsync(sm => sm.Id, sm => sm, cancellationToken);
+        }
+
+        private async Task SeedAchievementsAsync(CancellationToken cancellationToken)
+        {
+            if (await _context.Achievements.AnyAsync(cancellationToken))
             {
                 return;
             }
 
-            var staff = new[] {
-                new StaffMember { Name = "Adam Cogan", Title = "Chief Architect", Email = "adamcogan@ssw.com.au", TwitterUsername = "adamcogan", StaffMemberSkills = GetSkills("PowerBI", "Angular", "NETCore", "Scrum"), Profile = "This is profile text" },
-            };
+            var achievements = _staffMembers
+                .Values
+                .Select(sm => new Achievement
+                {
+                    Name = sm.Name,
+                    Value = 10
+                })
+                .ToList();
 
-            await _context.StaffMembers.AddRangeAsync(staff, cancellationToken);
+            await _context.Achievements.AddRangeAsync(achievements, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+
+            await _context.Achievements.ToDictionaryAsync(a => a.Id, a => a, cancellationToken);
         }
 
         private ICollection<StaffMemberSkill> GetSkills(params string[] skills)
