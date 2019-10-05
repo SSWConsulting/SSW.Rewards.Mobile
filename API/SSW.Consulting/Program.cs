@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using SSW.Consulting.Application.System.Commands.SeedData;
 using SSW.Consulting.Persistence;
 
@@ -34,6 +35,7 @@ namespace SSW.Consulting
                 {
                     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+                    return;
                 }
             }
 
@@ -44,7 +46,9 @@ namespace SSW.Consulting
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+	                webBuilder
+		                .UseStartup<Startup>()
+		                .UseSerilog();
                 });
     }
 }
