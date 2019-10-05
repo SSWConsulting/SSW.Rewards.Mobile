@@ -284,6 +284,118 @@
         },
         "accessPolicies": [
           {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "99a78837-69d6-4fe1-8f3b-00ea0d3bb923",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "ba21b0de-b44f-4119-b357-4d3e3e0b07a0",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "24ffe149-ae17-4505-acab-95dd0fd092c2",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "1315b5b8-9f17-4526-bfb2-9f43ab7cdae7",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "04e907fc-f681-48f1-87ab-75e0790b4ce6",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "7ddccbbb-6d7a-491e-992b-436e071f1caf",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
+            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
+            "objectId": "bc9f532b-d5ff-4699-a4f8-11107f5fe6b2",
+            "permissions": {
+              "keys": [
+                "List",
+                "Get"
+              ],
+              "secrets": [
+                "List",
+                "Get"
+              ],
+              "certificates": [
+              ]
+            }
+          },
+          {
             "tenantId": "[subscription().tenantId]",
             "objectId": "[parameters('servicePrincipleObjectId')]",
             "permissions": {
