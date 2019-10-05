@@ -37,7 +37,9 @@ namespace SSW.Consulting
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
 
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson();
 
             // Configure all the stuffs
 			ConfigureSettings(services);
