@@ -34,8 +34,10 @@ namespace SSW.Consulting
             services.AddInfrastructure(Configuration);
             services.AddPersistence(Configuration);
             services.AddApplication();
+
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
+            services.AddApplicationInsightsTelemetry();
 
             services
                 .AddControllers()
