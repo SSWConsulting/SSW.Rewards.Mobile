@@ -8,10 +8,21 @@
         "description": "Run 'az login' and then run 'az ad sp list --display-name <YOUR SERVICE PRINCIPLE APP NAME> --query \"[].objectId\"' to obtain the ObjectID of the ServicePrincipal used to deploy your resources. You can also browse the Azure Portal to the App Registration to obtain the Service Principal Object ID."
       }
     },
+    "project": {
+      "type": "string"
+    },
     "environment": {
       "type": "string",
       "defaultValue": "dev",
-      "allowedValues": ["dev", "test", "staging", "prod", "demo", "uat", "qa"]
+      "allowedValues": [
+        "dev",
+        "test",
+        "staging",
+        "prod",
+        "demo",
+        "uat",
+        "qa"
+      ]
     },
     "hostingPlanName": {
       "type": "string",
@@ -35,18 +46,21 @@
       "type": "string",
       "defaultValue": ""
     },
-    "cosmosThroughput": {
-      "type": "int",
-      "defaultValue": 500,
-      "minValue": 500,
-      "maxValue": 5000
+    "sqlServerLocation": {
+      "type": "string",
+      "defaultValue": "australiaeast"
     },
-    "locationNames": {
-      "type": "object",
-      "defaultValue": {
-        "australiaeast": "Australia East",
-        "australiasoutheast": "Australia Southeast"
-      }
+    "sqlDatabaseTier": {
+      "type": "string",
+      "defaultValue": "Standard"
+    },
+    "sqlDatabaseSkuName": {
+      "type": "string",
+      "defaultValue": "S0"
+    },
+    "sqlDatabaseCollation": {
+      "type": "string",
+      "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
     },
     "now": {
       "type": "string",
@@ -54,11 +68,11 @@
     }
   },
   "variables": {
-    "project": "SSW.Consulting",
+    "project": "[replace(replace(tolower(parameters('project')),'.',''), '-','')]",
     "environment": "[tolower(parameters('environment'))]",
     "modifiedDate": "[tolower(parameters('now'))]",
     "entropy": "[take(uniqueString(resourceGroup().id), 5)]",
-
+    "random": "[take(uniqueString(variables('modifiedDate')), 5)]",
     "contentStorageAccountName": "[take(tolower(replace(replace(concat(variables('project'), variables('environment'), variables('entropy')), '-', ''), '.','')), 24)]",
     "contentStorageAccountResourceId": "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]",
     "contentStorageLocation": "[resourceGroup().location]",
@@ -67,55 +81,65 @@
     "appName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 60)]",
     "appInsightsName": "[tolower(concat(variables('appName')))]",
 
-    "cosmosAccountName": "[take(tolower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 31)]",
-    "cosmosLocation": "[resourceGroup().location]",
-    "cosmosLocationName": "[parameters('locationNames')[resourceGroup().location]]",
-    "cosmosDatabaseName": "sswconsulting",
+    "keyVaultName": "[take(toLower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 24)]",
 
-    "keyVaultName": "[take(toLower(replace(concat(variables('project'), '-', variables('environment')), '.','')), 24)]"
+    "sqlServerAdminUsername": "sswadmin",
+    "sqlServerAdminPassword": "[concat('!#', guid('sqlAdminPassword', variables('random')))]",
+    "sqlServerName": "[concat(variables('project'), '-', variables('environment'))]",
+    "sqlDatabaseName": "[concat(variables('project'), '-', variables('environment'))]"
   },
   "resources": [
     {
-      "apiVersion": "2015-04-08",
-      "kind": "GlobalDocumentDB",
-      "type": "Microsoft.DocumentDb/databaseAccounts",
-      "name": "[variables('cosmosAccountName')]",
-      "location": "[variables('cosmosLocation')]",
-      "properties": {
-        "databaseAccountOfferType": "Standard",
-        "locations": [
-          {
-            "id": "[concat(variables('cosmosAccountName'), '-', variables('cosmosLocation'))]",
-            "failoverPriority": 0,
-            "locationName": "[variables('cosmosLocationName')]"
-          }
-        ],
-        "enableMultipleWriteLocations": false,
-        "isVirtualNetworkFilterEnabled": false,
-        "dependsOn": []
-      },
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('sqlServerLocation')]",
+      "type": "Microsoft.Sql/servers",
       "tags": {
-        "defaultExperience": "Core (SQL)",
-        "project": "[variables('project')]",
+        "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
         "modifiedDate": "[variables('modifiedDate')]"
-      }
-    },
-    {
-      "type": "Microsoft.DocumentDB/databaseAccounts/apis/databases",
-      "name": "[concat(variables('cosmosAccountName'), '/sql/', variables('cosmosDatabaseName'))]",
-      "apiVersion": "2016-03-31",
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
-      ],
+      },
+      "name": "[variables('sqlServerName')]",
       "properties": {
-        "resource": {
-          "id": "[variables('cosmosDatabaseName')]"
+        "administratorLogin": "[variables('sqlServerAdminUsername')]",
+        "administratorLoginPassword": "[variables('sqlServerAdminPassword')]",
+        "version": "12.0"
+      },
+      "resources": [
+        {
+          "apiVersion": "2017-10-01-preview",
+          "type": "databases",
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+          ],
+          "location": "[parameters('sqlServerLocation')]",
+          "tags": {
+            "project": "[parameters('project')]",
+            "environment": "[variables('environment')]",
+            "modifiedDate": "[variables('modifiedDate')]"
+          },
+          "name": "[variables('sqlDatabaseName')]",
+          "properties": {
+            "collation": "[parameters('sqlDatabaseCollation')]"
+          },
+          "sku": {
+            "name": "[parameters('sqlDatabaseSkuName')]",
+            "tier": "[parameters('sqlDatabaseTier')]"
+          }
         },
-        "options": {
-          "throughput": "[parameters('cosmosThroughput')]"
+        {
+          "type": "firewallrules",
+          "apiVersion": "2014-04-01-preview",
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+          ],
+          "location": "[resourceGroup().location]",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
         }
-      }
+      ]
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
@@ -123,7 +147,7 @@
       "apiVersion": "2018-02-01",
       "location": "[variables('contentStorageLocation')]",
       "tags": {
-        "project": "[variables('project')]",
+        "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
         "modifiedDate": "[variables('modifiedDate')]"
       },
@@ -137,7 +161,9 @@
           "name": "[concat('default/', variables('imagesContainerName'))]",
           "type": "blobServices/containers",
           "apiVersion": "2018-03-01-preview",
-          "dependsOn": ["[variables('contentStorageAccountName')]"]
+          "dependsOn": [
+            "[variables('contentStorageAccountName')]"
+          ]
         }
       ]
     },
@@ -148,7 +174,7 @@
       "location": "Australia East",
       "tags": {
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('appName'))]": "Resource",
-        "project": "[variables('project')]",
+        "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
         "modifiedDate": "[variables('modifiedDate')]"
       },
@@ -167,7 +193,7 @@
         "type": "SystemAssigned"
       },
       "tags": {
-        "project": "[variables('project')]",
+        "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
         "modifiedDate": "[variables('modifiedDate')]"
       },
@@ -238,11 +264,12 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "tags": {
-        "project": "[variables('project')]",
+        "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
         "modifiedDate": "[variables('modifiedDate')]"
       },
-      "dependsOn": [],
+      "dependsOn": [
+      ],
       "properties": {
         "tenantId": "[subscription().tenantId]",
         "sku": {
@@ -260,16 +287,30 @@
             "tenantId": "[subscription().tenantId]",
             "objectId": "[parameters('servicePrincipleObjectId')]",
             "permissions": {
-              "keys": ["list", "get", "create"],
-              "secrets": ["list", "get", "set"]
+              "keys": [
+                "list",
+                "get",
+                "create"
+              ],
+              "secrets": [
+                "list",
+                "get",
+                "set"
+              ]
             }
           },
           {
             "tenantId": "[subscription().tenantId]",
             "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('appName')), '2018-02-01', 'Full').identity.principalId]",
             "permissions": {
-              "keys": ["list", "get"],
-              "secrets": ["list", "get"]
+              "keys": [
+                "list",
+                "get"
+              ],
+              "secrets": [
+                "list",
+                "get"
+              ]
             }
           }
         ],
@@ -290,41 +331,41 @@
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
-      "name": "[concat(variables('keyVaultName'), '/', 'CosmosDbKey')]",
+      "name": "[concat(variables('keyVaultName'), '/', 'SqlServerAdminUsername')]",
       "apiVersion": "2015-06-01",
       "properties": {
-        "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
+        "value": "[variables('sqlServerAdminUsername')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
+        "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
       ]
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
-      "name": "[concat(variables('keyVaultName'), '/', 'CosmosDbEndPoint')]",
+      "name": "[concat(variables('keyVaultName'), '/', 'SqlServerAdminPassword')]",
       "apiVersion": "2015-06-01",
       "properties": {
-        "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosAccountName'))).documentEndpoint]"
+        "value": "[variables('sqlServerAdminPassword')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts/', variables('cosmosAccountName'))]"
+        "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('keyVaultName'), '/', 'SqlConnectionString')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "value": "[concat('Server=tcp:', variables('sqlServerName'), '.database.windows.net,1433;Initial Catalog=', variables('sqlDatabaseName'), ';Persist Security Info=False;User ID=', variables('sqlServerAdminUsername'), ';Password=', variables('sqlServerAdminPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+        "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
       ]
     }
   ],
   "outputs": {
-    "secret_contentConnectionString": {
-      "type": "string",
-      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('contentStorageAccountName'), ';AccountKey=', listKeys(variables('contentStorageAccountResourceId'),'2015-05-01-preview').key1)]"
-    },
-    "secret_cosmosAuthKey": {
-      "type": "string",
-      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
-    },
-    "secret_cosmosEndPoint": {
-      "type": "string",
-      "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosAccountName'))).documentEndpoint]"
-    }
   }
 }
