@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using System;
 
 namespace SSW.Consulting.Infrastructure

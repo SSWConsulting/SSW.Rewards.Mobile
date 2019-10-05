@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Persistence;
 using System.Threading;
 using System.Threading.Tasks;

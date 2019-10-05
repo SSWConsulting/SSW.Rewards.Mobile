@@ -7,14 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSW.Consulting.Application;
 using SSW.Consulting.Application.Common.Interfaces;
-using SSW.Consulting.Application.Interfaces;
-using SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Consulting.Infrastructure;
 using SSW.Consulting.Persistence;
 using SSW.Consulting.WebAPI.Services;
 using SSW.Consulting.WebAPI.Settings;
-using System;
-using System.Reflection;
 
 namespace SSW.Consulting
 {

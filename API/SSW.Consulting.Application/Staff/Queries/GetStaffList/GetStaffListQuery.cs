@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

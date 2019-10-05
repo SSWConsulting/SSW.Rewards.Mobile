@@ -2,13 +2,13 @@
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Logging;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Infrastructure
 {
-	public class KeyVaultSecretsProvider : ISecretsProvider
+    public class KeyVaultSecretsProvider : ISecretsProvider
 	{
 		private readonly ISettings _settings;
 		private readonly ILogger<KeyVaultSecretsProvider> _log;

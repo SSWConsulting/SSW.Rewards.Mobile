@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using SSW.Consulting.Application.Interfaces;
 using System;
+using SSW.Consulting.Application.Common.Interfaces;
 
 namespace SSW.Consulting.Infrastructure
 {

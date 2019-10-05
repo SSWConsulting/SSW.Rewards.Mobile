@@ -1,9 +1,9 @@
 ﻿using Microsoft.Azure.Storage.Blob;
-using SSW.Consulting.Application.Exceptions;
 using System.IO;
 using System.Threading.Tasks;
-using SSW.Consulting.Application.Interfaces;
 using System;
+using SSW.Consulting.Application.Common.Exceptions;
+using SSW.Consulting.Application.Common.Interfaces;
 
 namespace SSW.Consulting.Infrastructure
 {

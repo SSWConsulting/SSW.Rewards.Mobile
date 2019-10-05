@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Domain.Entities;
 
 namespace SSW.Consulting.Persistence
@@ -21,6 +21,7 @@ namespace SSW.Consulting.Persistence
         public DbSet<StaffMember> StaffMembers { get; set; }
         public DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }
         public DbSet<Skill> Skills { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(_secrets.SqlConnectionString);

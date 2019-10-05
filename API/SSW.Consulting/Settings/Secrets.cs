@@ -1,10 +1,10 @@
-﻿using SSW.Consulting.Application.Interfaces;
+﻿using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Infrastructure;
 using SSW.Consulting.Persistence;
 
 namespace SSW.Consulting.WebAPI.Settings
 {
-	public class Secrets : SSWConsultingDbContext.ISecrets,
+    public class Secrets : SSWConsultingDbContext.ISecrets,
 		CloudBlobClientProvider.ISecrets
 	{
 		private readonly ISecretsProvider _secrets;

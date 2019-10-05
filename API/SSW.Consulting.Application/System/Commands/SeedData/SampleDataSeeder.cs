@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Domain.Entities;
 using System;
 using System.Collections.Generic;

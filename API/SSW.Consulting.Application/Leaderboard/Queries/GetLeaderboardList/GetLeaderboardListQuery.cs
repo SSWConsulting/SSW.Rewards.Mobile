@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
 {
-	public class GetLeaderboardListQuery : IRequest<LeaderboardListViewModel>
+    public class GetLeaderboardListQuery : IRequest<LeaderboardListViewModel>
     {
 		public sealed class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListViewModel>
 		{
