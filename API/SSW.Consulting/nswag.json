@@ -132,7 +132,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../../Xamarin/SSW.Consulting/SSW.Consulting/ApiClient.cs"
+      "output": "../../Xamarin/SSW.Consulting/SSW.Consulting/Helpers/ApiClient.g.cs"
     }
   }
 }

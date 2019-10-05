@@ -5,6 +5,8 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using SSW.Consulting.Views;
+using SSW.Consulting.Services;
+using System.Threading.Tasks;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -22,8 +24,11 @@ namespace SSW.Consulting.ViewModels
         public Color TextColour { get; set; }
         public string[] Properties { get; set; }
 
-        public OnBoardingViewModel()
+        private IUserService _userService { get; set; }
+
+        public OnBoardingViewModel(IUserService userService)
         {
+            _userService = userService;
             GetStartedTapped = new Command(GetStarted);
             Swiped = new Command(SetDetails);
             Properties = new string[] { "MainHeading", "SubHeading", "Content", "BackgroundColour", "TextColour", "LinkText" };
@@ -94,17 +99,21 @@ namespace SSW.Consulting.ViewModels
             SetDetails();
         }
 
-        private void GetStarted()
+        private async void GetStarted()
         {
-            if(Preferences.Get("LoggedIn", false))
+            if(await _userService.IsLoggedInAsync())
             {
-                AppShell shell = new AppShell();
-                Application.Current.MainPage = shell;
+                await Navigation.PopModalAsync();
+
+                /*AppShell shell = new AppShell();
+                //Application.Current.MainPage = shell;
+                Navigation.PushAsync(shell);*/
                 
             }
             else
             {
-                Application.Current.MainPage = new LoginPage();
+                //Application.Current.MainPage = new LoginPage();
+                await Navigation.PushAsync(new LoginPage());
             }
         }
 

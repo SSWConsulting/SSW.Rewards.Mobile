@@ -8,6 +8,7 @@
              xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
+             NavigationPage.HasNavigationBar="False"
              x:Class="SSW.Consulting.Views.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>

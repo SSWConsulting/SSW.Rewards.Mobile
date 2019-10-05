@@ -23,7 +23,7 @@ namespace SSW.Consulting
             if(Preferences.Get("FirstRun", true))
             {
                 Preferences.Set("FirstRun", false);
-                MainPage = new OnBoarding();
+                MainPage = new NavigationPage(new OnBoarding());
             }
             else
             {

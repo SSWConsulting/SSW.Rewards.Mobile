@@ -26,6 +26,7 @@ namespace SSW.Consulting.ViewModels
             if(await _userService.SignInAsync())
             {
                 Application.Current.MainPage = new AppShell();
+                await Shell.Current.GoToAsync("//main");
             }
 
             isRunning = false;

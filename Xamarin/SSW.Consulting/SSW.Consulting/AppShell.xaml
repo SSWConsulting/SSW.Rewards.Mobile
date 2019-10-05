@@ -35,47 +35,53 @@
         <controls:FlyoutHeader/>
     </Shell.FlyoutHeader>
 
-    <!-- How to Play-->
-    <FlyoutItem Title="How to Play"
-                Style="{StaticResource BaseStyle}">
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <StackLayout HeightRequest="80">
+                <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
+                    <Grid.Padding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="5" />
+                            <On Platform="iOS" Value="0" />
+                        </OnPlatform>
+                    </Grid.Padding>
+                    <Grid.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="5,10" />
+                            <On Platform="iOS" Value="10,5,10,0" />
+                        </OnPlatform>
+                    </Grid.Margin>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0"
+                            HorizontalOptions="Start"
+                            Margin="5"
+                            HeightRequest="80"
+                            WidthRequest="80"
+                            Source="{Binding Icon}"/>
+
+                    <Label Grid.Column="1"
+                            Style="{StaticResource Leaderboard}"
+                            VerticalOptions="Center"
+                            FontSize="18"
+                            Text="{Binding Text}"/>
+                </Grid>
+            </StackLayout>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
+    <FlyoutItem Style="{StaticResource BaseStyle}">
         <Shell.ItemTemplate>
             <DataTemplate>
-                <StackLayout HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_howto"/>
-
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="How to Play"/>
-                    </Grid>
-                </StackLayout>
+                <StackLayout HeightRequest="1"
+                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
         <Tab Title="Leaderboard"
+             Route="main"
                  Icon="icon_star">
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
@@ -89,331 +95,28 @@
         </Tab>
     </FlyoutItem>
 
-      <!--About SSW-->
-    <FlyoutItem Title="About SSW"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
+    <MenuItem Text="How to Play"
+              IconImageSource="icon_howto"
+              Clicked="Handle_HowToPlayClicked"/>
 
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_ssw"/>
+    <MenuItem Text="About SSW"
+              IconImageSource="icon_ssw"
+              Clicked="Handle_AboutClicked"/>
 
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="About SSW"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-                 Icon="icon_star">
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
-        </Tab>
-        <Tab Title="Earn Points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
-        </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
-        </Tab>
-    </FlyoutItem>
-    
-    <!--Join us @SSW-->
-    <FlyoutItem Title="Join us @SSW"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
+    <MenuItem Text="Join us @SSW"
+              IconImageSource="icon_join"
+              Clicked="Handle_JoinClicked"/>
 
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_join"/>
+    <MenuItem Text="Events"
+              IconImageSource="icon_calendar"
+              Clicked="Handle_EventsClicked"/>
 
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="Join us @SSW"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-                 Icon="icon_star">
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
-        </Tab>
-        <Tab Title="Earn Points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
-        </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
-        </Tab>
-    </FlyoutItem>
+    <MenuItem Text="Tech Quiz"
+              IconImageSource="icon_code"
+              Clicked="Handle_QuizClicked"/>
 
-    <!-- Events-->
-    <FlyoutItem Title="Events"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_calendar"/>
-
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="Events"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-                 Icon="icon_star">
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
-        </Tab>
-        <Tab Title="Earn Points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
-        </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
-        </Tab>
-    </FlyoutItem>
-
-    <!--Tech Quiz-->
-    <FlyoutItem Title="Tech Quiz"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_code"/>
-
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="Tech Quiz"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-                 Icon="icon_star">
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
-        </Tab>
-        <Tab Title="Earn Points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
-        </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
-        </Tab>
-    </FlyoutItem>
-
-    <!--Log Out-->
-    <FlyoutItem Title="Log Out"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5,10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="icon_logout"/>
-
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="Log Out"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-                 Icon="icon_star">
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
-        </Tab>
-        <Tab Title="Earn Points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
-        </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
-        </Tab>
-    </FlyoutItem>
-
-    <!--
-    <FlyoutItem Title="Scratch"
-                Style="{StaticResource BaseStyle}">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <StackLayout Margin="10,5,10,0"
-                             HeightRequest="80">
-                    <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="10" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
-                            <ColumnDefinition Width="6*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Source="sswsq"/>
-
-                        <Label Grid.Column="1"
-                               Style="{StaticResource Leaderboard}"
-                               VerticalOptions="Center"
-                               FontSize="18"
-                               Text="Scratch"/>
-                    </Grid>
-                </StackLayout>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <Tab Title="Scratch Page"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:ScratchPage}" />
-        </Tab>
-        <Tab Title="Scratch Page"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:ScratchPage}" />
-        </Tab>
-    </FlyoutItem>
-    -->
+    <MenuItem Text="Log Out"
+              IconImageSource="icon_logout"
+              Clicked="Handle_LogOutClicked"/>
 
 </Shell>
