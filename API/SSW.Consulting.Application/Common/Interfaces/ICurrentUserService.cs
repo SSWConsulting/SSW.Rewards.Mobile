@@ -1,4 +1,4 @@
-﻿using SSW.Consulting.Application.User.Queries.GetUser;
+﻿using SSW.Consulting.Application.User.Queries.GetCurrentUser;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +11,6 @@ namespace SSW.Consulting.Application.Common.Interfaces
         string GetUserFullName();
         string GetUserAvatar();
 
-        Task<UserViewModel> GetCurrentUser(CancellationToken cancellationToken);
+        Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken);
     }
 }
