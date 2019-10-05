@@ -34,7 +34,7 @@ namespace SSW.Consulting
             //If adding a repository or DB, add here as a singleton, e.g.:
             //ContainerBuilder.RegisterType<LeadersRepository>().SingleInstance();
             ContainerBuilder.RegisterType<MockLeaderService>().As<ILeaderService>();
-            ContainerBuilder.RegisterType<MockUserService>().As<IUserService>();
+            ContainerBuilder.RegisterType<UserService>().As<IUserService>();
             ContainerBuilder.RegisterType<MockDevService>().As<IDevService>();
             ContainerBuilder.RegisterType<MockChallengeService>().As<IChallengeService>();
         }

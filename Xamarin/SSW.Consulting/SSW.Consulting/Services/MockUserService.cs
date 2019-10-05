@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AppCenter.Auth;
 
 namespace SSW.Consulting.Services
 {
@@ -45,6 +46,16 @@ namespace SSW.Consulting.Services
         }
 
         public Task SetTokenAsync(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> SignInAsync()
+        {
+            return await Task.FromResult(true);
+        }
+
+        public Task SignOutAsync()
         {
             throw new NotImplementedException();
         }

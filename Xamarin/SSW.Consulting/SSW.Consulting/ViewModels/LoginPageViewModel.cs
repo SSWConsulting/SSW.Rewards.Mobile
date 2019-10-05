@@ -11,6 +11,7 @@ namespace SSW.Consulting.ViewModels
     {
         public ICommand LoginTappedCommand { get; set; }
         private IUserService _userService { get; set; }
+        public bool isRunning { get; set; }
 
         public LoginPageViewModel(IUserService userService)
         {
@@ -20,27 +21,16 @@ namespace SSW.Consulting.ViewModels
 
         private async void SignIn()
         {
-            try
+            isRunning = true;
+            OnPropertyChanged("isRunning");
+
+            if(await _userService.SignInAsync())
             {
-                // Sign-in succeeded.
-                UserInformation userInfo = await Auth.SignInAsync();
-                string accountId = userInfo.AccountId;
-                //Application.Current.MainPage.DisplayAlert("Message", accountId, "OK");
-                if(!string.IsNullOrWhiteSpace(accountId))
-                {
-                    await _userService.SetTokenAsync(accountId);
-                    Preferences.Set("LoggedIn", true);
-                }
-                else
-                {
-                    //TODO: handle login error
-                }
+                Application.Current.MainPage = new AppShell();
             }
 
-            catch (Exception e)
-            {
-                // Do something with sign-in failure.
-            }
+            isRunning = false;
+            OnPropertyChanged("isRunning");
         }
     }
 }

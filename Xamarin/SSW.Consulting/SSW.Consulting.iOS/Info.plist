@@ -34,5 +34,18 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Please allow access to the camera to scan QR Codes</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.companyname.SSW.Consulting</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msale33283b1-7326-447d-baae-e783ece0789b</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

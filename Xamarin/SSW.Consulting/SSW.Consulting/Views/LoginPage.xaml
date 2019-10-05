@@ -32,9 +32,16 @@
 
                     <Label TextColor="White"
                            HorizontalTextAlignment="Center"
+                           InputTransparent="True"
                            Text="Sign up / Log in"/>
                 </Frame>
             </StackLayout>
+
+            <ActivityIndicator HorizontalOptions="FillAndExpand"
+                               Color="Red"
+                               VerticalOptions="FillAndExpand"
+                               IsVisible="{Binding isRunning}"
+                               IsRunning="{Binding isRunning}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
