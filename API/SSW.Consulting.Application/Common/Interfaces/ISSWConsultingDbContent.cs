@@ -11,6 +11,8 @@ namespace SSW.Consulting.Application.Common.Interfaces
         DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }
         DbSet<Skill> Skills { get; set; }
         DbSet<Domain.Entities.User> Users { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

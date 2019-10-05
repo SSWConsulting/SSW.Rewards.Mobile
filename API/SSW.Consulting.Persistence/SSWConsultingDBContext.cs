@@ -22,6 +22,8 @@ namespace SSW.Consulting.Persistence
         public DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(_secrets.SqlConnectionString);
