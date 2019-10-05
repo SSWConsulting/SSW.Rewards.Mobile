@@ -80,47 +80,52 @@
                              WidthRequest="250"/>
 
 
-                    <CollectionView ItemsSource="{Binding ChallengeList}"
-                                    BindingContext="{Binding Source={x:Reference ProfilePage}, Path=BindingContext}"
-                                    Grid.Row="1">
-                        <CollectionView.ItemTemplate>
+                    <ListView ItemsSource="{Binding ChallengeList}"
+                              HasUnevenRows="True"
+                              SeparatorVisibility="None"
+                              BackgroundColor="{StaticResource ProfileBackgroundColour}"
+                              BindingContext="{Binding Source={x:Reference ProfilePage}, Path=BindingContext}"
+                              Grid.Row="1">
+                        <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Padding="0,5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="6*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                    </Grid.ColumnDefinitions>
+                                <ViewCell>
+                                    <Grid Padding="0,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <StackLayout Orientation="Horizontal"
-                                                 Margin="0,15,0,15"
-                                                 Grid.ColumnSpan="3"
-                                                 IsVisible="{Binding IsHeader}"
-                                                 Grid.Row="0">
-                                        <Image Source="icon_badge"
-                                               Scale="0.6"/>
-                                        <Label Text="{Binding HeaderTitle}"
-                                               VerticalTextAlignment="Center"
+                                        <StackLayout Orientation="Horizontal"
+                                                     Margin="0,15,0,15"
+                                                     Grid.ColumnSpan="3"
+                                                     IsVisible="{Binding IsHeader}"
+                                                     Grid.Row="0">
+                                            <Image Source="icon_badge"
+                                                   Scale="0.6"/>
+                                            <Label Text="{Binding HeaderTitle}"
+                                                   VerticalTextAlignment="Center"
+                                                   TextColor="White"
+                                                   FontSize="Body"/>
+                                        </StackLayout>
+
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Challenge.Title}"
+                                               TextColor="White"/>
+
+                                        <Image Source="chip_bonus"
+                                               Grid.Column="1"
+                                               IsVisible="{Binding Challenge.IsBonus}"/>
+
+                                        <Label Text="{Binding Challenge.Points, StringFormat='{0} pts'}"
+                                               IsVisible="{Binding IsRow}"
                                                TextColor="White"
-                                               FontSize="Body"/>
-                                    </StackLayout>
-
-                                    <Label Grid.Column="0"
-                                           Text="{Binding Challenge.Title}"
-                                           TextColor="White"/>
-
-                                    <Image Source="chip_bonus"
-                                           Grid.Column="1"
-                                           IsVisible="{Binding Challenge.IsBonus}"/>
-
-                                    <Label Text="{Binding Challenge.Points, StringFormat='{0} pts'}"
-                                           IsVisible="{Binding IsRow}"
-                                           TextColor="White"
-                                           Grid.Column="2"/>
-                                </Grid>
+                                               Grid.Column="2"/>
+                                    </Grid>
+                                </ViewCell>
                             </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>                                                          
+                        </ListView.ItemTemplate>
+                    </ListView>                                                          
                 </StackLayout>
             </RelativeLayout>
         </Grid>
