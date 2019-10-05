@@ -27,7 +27,7 @@ namespace SSW.Consulting
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
-		{
+		{	
 			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
 				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
@@ -38,8 +38,9 @@ namespace SSW.Consulting
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry();
+            services.AddDistributedMemoryCache();
 
-            services
+			services
                 .AddControllers()
                 .AddNewtonsoftJson();
 
