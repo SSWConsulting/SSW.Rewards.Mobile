@@ -10,7 +10,7 @@
              xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
              mc:Ignorable="d"
              Title="{Binding Title}"
-             d:Title="Ulyses Maclaren">
+             d:Title="Ulysses Maclaren">
     <ContentPage.Content>
         <RelativeLayout Padding="0"
                         HorizontalOptions="FillAndExpand"
@@ -115,34 +115,6 @@
                                Margin="5,5,5,10"
                                FontSize="Body"/>
 
-                        <!--<Frame BackgroundColor="{StaticResource ContactButtonRed}"
-                               Margin="10,10,10,10"
-                               IsClippedToBounds="True"
-                               HasShadow="False">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                        Command="{Binding OnContactTapped}"/>
-                            </Frame.GestureRecognizers>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="6*"/>
-                                    <ColumnDefinition Width="2*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Column="0"
-                                       Text="Add to Contacts"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="White"
-                                       HorizontalOptions="End"/>
-
-                                <Image Grid.Column="1"
-                                       Source="icon_join"
-                                       Scale="2"
-                                       Opacity="0.5"/>
-                            </Grid>
-                        </Frame>-->
-
                         <Frame BackgroundColor="{StaticResource TwitterBlue}"
                                CornerRadius="10"
                                IsClippedToBounds="True"
@@ -172,95 +144,6 @@
                         </Frame>
 
                     </StackLayout>
-                    <!--<Label Text="{Binding DevFirstName}"
-                           FontSize="32"
-                           TextColor="White"
-                           d:Text="Ulysses"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.01,Constant=0}"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"/>
-
-                    <Label Text="{Binding DevTitle}"
-                           FontSize="Body"
-                           TextColor="White"
-                           d:Text="General Manager Sydney"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.06,Constant=0}"/>
-
-                    <Label TextColor="White"
-                           Text="{Binding DevBio}"
-                           Style="{StaticResource Leaderboard}"
-                           x:Name="lblBio"
-                           FontSize="Body"
-                           d:Text="Lorem Ipsum blah blah blah and so on and so forth blah blah blah blah jdflkfdkjls dslkjdlsjkf kljslkj ljklj sdf"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.13,Constant=0}"
-                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.9,Constant=0}"/>
-
-                    <Frame RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.15,Constant=0}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=lblBio, Property=Height,Factor=0.5,Constant=0}"
-                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.7,Constant=0}"
-                           RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.08,Constant=0}"
-                           BackgroundColor="{StaticResource ContactButtonRed}"
-                           IsClippedToBounds="True"
-                           HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                    Command="{Binding OnContactTapped}"/>
-                        </Frame.GestureRecognizers>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0"
-                                   Text="Add to Contacts"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="White"
-                                   HorizontalOptions="End"/>
-
-                            <Image Grid.Column="1"
-                                   Source="icon_join"
-                                   Scale="2"
-                                   Opacity="0.5"/>
-
-
-                        </Grid>
-                    </Frame>
-
-
-                    <Frame RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.15,Constant=0}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.6,Constant=0}"
-                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.7,Constant=0}"
-                           RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.08,Constant=0}"
-                           BackgroundColor="{StaticResource TwitterBlue}"
-                           IsClippedToBounds="True"
-                           HasShadow="False">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                    Command="{Binding OnTwitterTapped}"/>
-                        </Frame.GestureRecognizers>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0"
-                                   Text="Follow me Twitter"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="White"
-                                   HorizontalOptions="End"/>
-
-                            <Image Grid.Column="1"
-                                   Source="icon_twitter"
-                                   Scale="2"/>
-
-
-                        </Grid>
-                    </Frame>-->
                 </RelativeLayout>
             </Frame>
         </RelativeLayout>

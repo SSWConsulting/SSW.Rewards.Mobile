@@ -34,8 +34,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Converters\" />
-    <Folder Include="Controls\" />
     <Folder Include="Behaviors\" />
     <Folder Include="PopupPages\" />
   </ItemGroup>

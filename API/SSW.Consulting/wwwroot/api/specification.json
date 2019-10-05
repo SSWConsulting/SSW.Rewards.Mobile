@@ -1,0 +1,186 @@
+﻿{
+  "x-generator": "NSwag v13.1.2.0 (NJsonSchema v10.0.24.0 (Newtonsoft.Json v12.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Northwind Traders API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/Leaderboard/Get": {
+      "get": {
+        "tags": [
+          "Leaderboard"
+        ],
+        "operationId": "Leaderboard_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/Get": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/Get": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LeaderboardListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "users": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/LeaderboardUserDto"
+            }
+          }
+        }
+      },
+      "LeaderboardUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bonus": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "StaffListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "staff": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/StaffDto"
+            }
+          }
+        }
+      },
+      "StaffDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "profile": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "twitterUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "skills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UserViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "picture": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}
