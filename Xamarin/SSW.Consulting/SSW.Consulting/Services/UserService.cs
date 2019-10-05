@@ -5,43 +5,43 @@ using Xamarin.Essentials;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SSW.Consulting.Services
 {
     public class UserService : IUserService
     {
+        private UserClient _userClient { get; set; }
+        private HttpClient _httpClient { get; set; }
+
         public UserService()
         {
         }
 
         public async Task<string> GetMyEmailAsync()
         {
-            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
-            return await Task.FromResult("mattgoldman@ssw.com.au");
+            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
         }
 
         public async Task<string> GetMyNameAsync()
         {
-            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
-            return await Task.FromResult("Matt Goldman");
+            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
         }
 
-        public async Task<string> GetMyPointsAsync()
+        public async Task<int> GetMyPointsAsync()
         {
-            //return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
-            return await Task.FromResult("136");
+            return await Task.FromResult(Preferences.Get("MyPoints", 0));
         }
 
         public async Task<string> GetMyProfilePicAsync()
         {
-            //throw new NotImplementedException();
-            return await Task.FromResult("MattGMain");
+            return await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
         }
 
         public async Task<int> GetMyUserIdAsync()
         {
-            //throw new NotImplementedException();
-            return await Task.FromResult(4);
+            return await Task.FromResult(Preferences.Get("MyUserId", 0));
         }
 
         public async Task<string> GetTokenAsync()
@@ -72,12 +72,37 @@ namespace SSW.Consulting.Services
                     {
                         var jwToken = tokenHandler.ReadJwtToken(userInfo.IdToken);
 
-                        var claimValue = jwToken.Claims.FirstOrDefault(t => t.Type == "claimtype e.g. name")?.Value;
+                        var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
+                        var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
+                        var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
+                        var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
 
-                        if(!string.IsNullOrWhiteSpace(claimValue))
+                        string fullName = firstName + " " + familyName;
+
+                        if (!string.IsNullOrWhiteSpace(fullName))
                         {
-                            Preferences.Set("Claim", claimValue);
+                            Preferences.Set("MyName", fullName);
                         }
+
+                        if (!string.IsNullOrWhiteSpace(jobTitle))
+                        {
+                            Preferences.Set("JobTitle", jobTitle);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(email))
+                        {
+                            Preferences.Set("MyEmail", email);
+                        }
+
+                        _httpClient = new HttpClient();
+                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        //TODO: Don't hard code this URL
+                        _userClient = new UserClient("https://sswconsulting-dev.azurewebsites.net", _httpClient);
+
+                        var user = await _userClient.GetAsync();
+
+                        Preferences.Set("MyUserId", user.Id);
+                        Preferences.Set("MyProfilePic", user.Picture);
 
                         Preferences.Set("LoggedIn", true);
                         return true;
@@ -106,7 +131,7 @@ namespace SSW.Consulting.Services
         public async Task SignOutAsync()
         {
             Auth.SignOut();
-            SecureStorage.RemoveAll();// SetAsync("auth_token", string.Empty);
+            SecureStorage.RemoveAll();
             Preferences.Clear();
         }
     }

@@ -34,7 +34,8 @@ namespace SSW.Consulting.ViewModels
             ProfilePic = await _userService.GetMyProfilePicAsync();
             Name = await _userService.GetMyNameAsync();
             Email = await _userService.GetMyEmailAsync();
-            Points = await _userService.GetMyPointsAsync();
+            int points = await _userService.GetMyPointsAsync();
+            Points = points.ToString();
 
             var challenges = await _challengeService.GetMyChallengesAsync();
 

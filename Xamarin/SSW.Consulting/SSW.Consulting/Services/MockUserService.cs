@@ -19,9 +19,9 @@ namespace SSW.Consulting.Services
             return await Task.FromResult("Matt Goldman");
         }
 
-        public async Task<string> GetMyPointsAsync()
+        public async Task<int> GetMyPointsAsync()
         {
-            return await Task.FromResult("136");
+            return await Task.FromResult(136);
         }
 
         public async Task<string> GetMyProfilePicAsync()
@@ -44,7 +44,32 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(true);
         }
 
-        public Task SetTokenAsync(string token)
+        public Task<bool> SetMyEmailAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetMyNameAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetMyPointsAsync(int points)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetMyProfilePicAsync(string picUri)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetMyUserIdAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetTokenAsync(string token)
         {
             throw new NotImplementedException();
         }

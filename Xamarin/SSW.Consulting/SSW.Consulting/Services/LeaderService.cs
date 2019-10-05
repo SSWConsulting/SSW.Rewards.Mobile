@@ -26,7 +26,7 @@ namespace SSW.Consulting.Services
         {
             string token = await _userService.GetTokenAsync();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _leaderBoardClient = new LeaderboardClient("https://sswconsulting-dev.azurewebsites.net", _httpClient);
+            _leaderBoardClient = new LeaderboardClient("https://sswconsulting-dev.azurewebsites.net", _httpClient); //TODO: don't hard code this
         }
 
         public async Task<IEnumerable<LeaderSummary>> GetLeadersAsync(bool forceRefresh)
