@@ -98,12 +98,13 @@ namespace SSW.Consulting.ViewModels
         {
             if(Preferences.Get("LoggedIn", false))
             {
-                Application.Current.MainPage = new LoginPage();
+                AppShell shell = new AppShell();
+                Application.Current.MainPage = shell;
+                
             }
             else
             {
-                AppShell shell = new AppShell();
-                Application.Current.MainPage = shell;
+                Application.Current.MainPage = new LoginPage();
             }
         }
 

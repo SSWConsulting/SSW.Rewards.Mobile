@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SSW.Consulting.Domain.Entities
 {
-    public class StaffMember
+    public class StaffMember : Entity
     {
-        public StaffMember()
-        {
-        }
-
-        public string Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Email { get; set; }
+        public string Profile { get; set; }
+        public string TwitterUsername { get; set; }
+        public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
     }
 }
 

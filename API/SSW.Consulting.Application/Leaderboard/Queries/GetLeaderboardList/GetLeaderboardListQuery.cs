@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SSW.Consulting.Application.Interfaces;
+using SSW.Consulting.Application.Common.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
 {
-	public class GetLeaderboardListQuery : IRequest<LeaderboardListViewModel>
+    public class GetLeaderboardListQuery : IRequest<LeaderboardListViewModel>
     {
 		public sealed class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListViewModel>
 		{
-			private readonly ISSWConsultingDbContent _dbContext;
+			private readonly ISSWConsultingDbContext _dbContext;
 			private readonly IStorageProvider _storage;
 
-			public Handler(ISSWConsultingDbContent dbContext, IStorageProvider storage)
+			public Handler(ISSWConsultingDbContext dbContext, IStorageProvider storage)
 			{
 				_dbContext = dbContext;
 				_storage = storage;
@@ -26,7 +26,7 @@ namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
 				var a = _dbContext.StaffMembers.Where(x => x.Name == "William");
 
 				// TODO: Write real integration tests!!
-				await _storage.UploadBlob("Testing", "a/b/c/imafile.txt", System.Text.Encoding.UTF8.GetBytes("Hello world!"));
+				//await _storage.UploadBlob("Testing", "a/b/c/imafile.txt", System.Text.Encoding.UTF8.GetBytes("Hello world!"));
 
 				byte[] blobContents = await _storage.DownloadBlob("Testing", "a/b/c/imafile.txt");
 

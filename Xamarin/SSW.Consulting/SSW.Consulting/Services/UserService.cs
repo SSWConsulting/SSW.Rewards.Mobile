@@ -54,10 +54,11 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(Preferences.Get("LoggedIn", false));
         }
 
-        public  async Task<bool> SignInAsync(UserInformation userInfo)
+        public async Task<bool> SignInAsync()
         {
             try
             {
+                UserInformation userInfo = await Auth.SignInAsync();
                 // Sign-in succeeded.
                 string accountId = userInfo.AccountId;
                 if (!string.IsNullOrWhiteSpace(accountId))
@@ -77,11 +78,8 @@ namespace SSW.Consulting.Services
                             Preferences.Set("Claim", claimValue);
                         }
 
-
                         Preferences.Set("LoggedIn", true);
-
                         return true;
-
                     }
                     catch(ArgumentException)
                     {

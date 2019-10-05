@@ -81,8 +81,8 @@
 
 
                     <CollectionView ItemsSource="{Binding ChallengeList}"
-                                        BindingContext="{Binding Source={x:Reference ProfilePage}, Path=BindingContext}"
-                                        Grid.Row="1">
+                                    BindingContext="{Binding Source={x:Reference ProfilePage}, Path=BindingContext}"
+                                    Grid.Row="1">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Padding="0,5">

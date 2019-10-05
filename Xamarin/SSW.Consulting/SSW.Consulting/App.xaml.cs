@@ -36,9 +36,7 @@ namespace SSW.Consulting
 
         protected override void OnStart()
         {
-            //AppCenter.LogLevel = LogLevel.Verbose;
-
-            /*AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
+            AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
 				  "ios=e33283b1-7326-447d-baae-e783ece0789b",
 				  typeof(Auth), typeof(Analytics), typeof(Crashes));*/
 		}

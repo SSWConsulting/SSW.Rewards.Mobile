@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SSW.Consulting.Effects;
 using SSW.Consulting.Models;
 using Xamarin.Forms;
 
@@ -29,21 +30,40 @@ namespace SSW.Consulting.Controls
 
         private void SlideIn()
         {
+			DismissToolTips();
             int devId = int.Parse(DevName.Text);
-            if(devId == _selectedDevId)
-                BadgeCollection.TranslateTo(0, 0);
-        }
+			if (devId == _selectedDevId)
+			{
+				BadgeCollection.TranslateTo(0, 0);
+			}
+		}
 
         private void SlideOut()
         {
+			DismissToolTips();
             int devId = int.Parse(DevName.Text);
-            if(devId == _selectedDevId)
-                BadgeCollection.TranslateTo(150, 0);
-        }
+			if (devId == _selectedDevId)
+			{
+				BadgeCollection.TranslateTo(150, 0);
+			}
+		}
 
         private void DevChanged(int id)
         {
+			DismissToolTips();
             _selectedDevId = id;
-        }
-    }
+		}
+
+		private void DismissToolTips()
+		{
+			foreach (var c in DevCardGrid.Children)
+			{
+				if (TooltipEffect.GetHasTooltip(c))
+				{
+					TooltipEffect.SetHasTooltip(c, false);
+					TooltipEffect.SetHasTooltip(c, true);
+				}
+			}
+		}
+	}
 }

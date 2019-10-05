@@ -29,8 +29,8 @@ namespace SSW.Consulting.iOS
 
             Rg.Plugins.Popup.Popup.Init();
 
-            //AppCenter.Start("e33283b1-7326-447d-baae-e783ece0789b",
-            //      typeof(Auth), typeof(Analytics), typeof(Crashes));
+            AppCenter.Start("e33283b1-7326-447d-baae-e783ece0789b",
+                  typeof(Auth), typeof(Analytics), typeof(Crashes));
 
             global::Xamarin.Forms.Forms.Init();
 
