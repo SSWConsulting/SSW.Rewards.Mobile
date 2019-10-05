@@ -12,7 +12,7 @@ namespace SSW.Consulting.Application.Common.Interfaces
         DbSet<Skill> Skills { get; set; }
         DbSet<Domain.Entities.User> Users { get; set; }
         public DbSet<UserAchievement> UserAchievements { get; set; }
-        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<Domain.Entities.Achievement> Achievements { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
