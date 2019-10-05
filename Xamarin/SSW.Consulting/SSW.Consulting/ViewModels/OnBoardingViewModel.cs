@@ -22,6 +22,7 @@ namespace SSW.Consulting.ViewModels
         public string LinkText { get; set; }
         public Color BackgroundColour { get; set; }
         public Color TextColour { get; set; }
+        public TextAlignment TextAlignment { get; set; }
         public string[] Properties { get; set; }
 
         private IUserService _userService { get; set; }
@@ -31,7 +32,7 @@ namespace SSW.Consulting.ViewModels
             _userService = userService;
             GetStartedTapped = new Command(GetStarted);
             Swiped = new Command(SetDetails);
-            Properties = new string[] { "MainHeading", "SubHeading", "Content", "BackgroundColour", "TextColour", "LinkText" };
+            Properties = new string[] { "MainHeading", "SubHeading", "Content", "BackgroundColour", "TextColour", "LinkText", "TextAlignment" };
             Items = new ObservableCollection<CarouselViewModel>
             {
                 new CarouselViewModel
@@ -42,7 +43,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Welcome",
                     SubHeading = "How to get them?",
                     TextColour = Color.Black,
-                    LinkText = "SKIP INTRO"
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
                 },
                 new CarouselViewModel
                 {
@@ -52,7 +54,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Earn Rewards",
                     SubHeading = "Google Home",
                     TextColour = Color.Black,
-                    LinkText = "SKIP INTRO"
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
                 },
                 new CarouselViewModel
                 {
@@ -62,7 +65,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Earn Rewards",
                     SubHeading = "Google Hub Max",
                     TextColour = Color.Black,
-                    LinkText = "SKIP INTRO"
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
                 },
                 new CarouselViewModel
                 {
@@ -72,7 +76,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Earn Rewards",
                     SubHeading = "MI Band",
                     TextColour = Color.Black,
-                    LinkText = "SKIP INTRO"
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
                 },
                 new CarouselViewModel
                 {
@@ -82,7 +87,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Earn Rewards",
                     SubHeading = "Free Consultation",
                     TextColour = Color.Black,
-                    LinkText = "SKIP INTRO"
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
                 },
                 new CarouselViewModel
                 {
@@ -92,7 +98,8 @@ namespace SSW.Consulting.ViewModels
                     MainHeading = "Earn Rewards",
                     SubHeading = ".NET CORE Superpowers",
                     TextColour = Color.Black,
-                    LinkText = "GET STARTED"
+                    LinkText = "GET STARTED",
+                    textAlignment = TextAlignment.End
                 }
             };
 
@@ -126,6 +133,7 @@ namespace SSW.Consulting.ViewModels
             BackgroundColour = Items[itemIndex].backgroundColour;
             LinkText = Items[itemIndex].LinkText;
             TextColour = Items[itemIndex].TextColour;
+            TextAlignment = Items[itemIndex].textAlignment;
             RaisePropertyChanged(Properties);
         }
     }
@@ -139,5 +147,6 @@ namespace SSW.Consulting.ViewModels
         public string LinkText { get; set; }
         public Color backgroundColour { get; set; }
         public Color TextColour { get; set; }
+        public TextAlignment textAlignment { get; set; }
     }
 }

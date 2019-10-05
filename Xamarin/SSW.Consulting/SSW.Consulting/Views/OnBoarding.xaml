@@ -96,7 +96,7 @@
 
             <Label HorizontalOptions="FillAndExpand"
                    Grid.Row="3"
-                   HorizontalTextAlignment="Center"
+                   HorizontalTextAlignment="{Binding TextAlignment}"
                    d:TextColor="Black"
                    TextColor="{Binding TextColour}"
                    d:Text="SKIP INTRO"
@@ -111,8 +111,13 @@
 
             <StackLayout Grid.Row="4"
                          Grid.RowSpan="2"
-                         VerticalOptions="FillAndExpand"
-                         Padding="10">
+                         VerticalOptions="FillAndExpand">
+                <StackLayout.Padding>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On Platform="Android">10</On>
+                        <On Platform="iOS">20,0,0,0</On>
+                    </OnPlatform>
+                </StackLayout.Padding>
                 <Image Source="logo_ssw_colour"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"/>

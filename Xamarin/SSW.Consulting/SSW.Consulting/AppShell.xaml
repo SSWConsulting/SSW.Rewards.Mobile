@@ -95,28 +95,28 @@
         </Tab>
     </FlyoutItem>
 
-    <MenuItem Text="How to Play"
+    <MenuItem Text="Earn Rewards"
               IconImageSource="icon_howto"
               Clicked="Handle_HowToPlayClicked"/>
-
-    <MenuItem Text="About SSW"
-              IconImageSource="icon_ssw"
-              Clicked="Handle_AboutClicked"/>
-
-    <MenuItem Text="Join us @SSW"
-              IconImageSource="icon_join"
-              Clicked="Handle_JoinClicked"/>
-
-    <MenuItem Text="Events"
-              IconImageSource="icon_calendar"
-              Clicked="Handle_EventsClicked"/>
 
     <MenuItem Text="Tech Quiz"
               IconImageSource="icon_code"
               Clicked="Handle_QuizClicked"/>
 
+    <MenuItem Text="Events"
+              IconImageSource="icon_calendar"
+              Clicked="Handle_EventsClicked"/>
+
+    <MenuItem Text="Join us @SSW"
+              IconImageSource="icon_join"
+              Clicked="Handle_JoinClicked"/>
+
     <MenuItem Text="Log Out"
               IconImageSource="icon_logout"
               Clicked="Handle_LogOutClicked"/>
+
+    <MenuItem Text="About SSW"
+              IconImageSource="icon_ssw"
+              Clicked="Handle_AboutClicked"/>
 
 </Shell>

@@ -61,9 +61,10 @@ namespace SSW.Consulting.Services
                 UserInformation userInfo = await Auth.SignInAsync();
                 // Sign-in succeeded.
                 string accountId = userInfo.AccountId;
-                if (!string.IsNullOrWhiteSpace(accountId))
+                string token = userInfo.AccessToken;
+                if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
                 {
-                    await SecureStorage.SetAsync("auth_token", accountId);
+                    await SecureStorage.SetAsync("auth_token", token);
 
                     var tokenHandler = new JwtSecurityTokenHandler();
 

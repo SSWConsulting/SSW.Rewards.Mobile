@@ -23,7 +23,8 @@ namespace SSW.Consulting.Services
 
         private async Task Initialise()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _userService.GetTokenAsync());
+            string token = await _userService.GetTokenAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _leaderBoardClient = new LeaderboardClient("https://sswconsulting-dev.azurewebsites.net", _httpClient);
         }
 
@@ -38,10 +39,10 @@ namespace SSW.Consulting.Services
                 LeaderSummary leaderSummary = new LeaderSummary
                 {
                     BaseScore = Leader.Points,
-                    BonusScore = Leader.Bonus,
+                    id = Leader.UserId,
                     Name = Leader.Name,
-                    Rank = Leader.Position,
-                    ProfilePic = Leader.ImageUrl
+                    Rank = Leader.Rank,
+                    ProfilePic = Leader.ProfilePic.ToString()
                 };
 
                 summaries.Add(leaderSummary);
