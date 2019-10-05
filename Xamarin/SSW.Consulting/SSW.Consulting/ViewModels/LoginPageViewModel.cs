@@ -25,7 +25,7 @@ namespace SSW.Consulting.ViewModels
 
             if(await _userService.SignInAsync())
             {
-                Application.Current.MainPage = new AppShell();
+                Application.Current.MainPage = Resolver.Resolve<AppShell>();
                 await Shell.Current.GoToAsync("//main");
             }
 

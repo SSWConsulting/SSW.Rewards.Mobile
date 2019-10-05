@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SSW.Consulting.Models;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
+using Microsoft.AppCenter.Auth;
 
 namespace SSW.Consulting.Services
 {
@@ -30,22 +31,37 @@ namespace SSW.Consulting.Services
 
         public async Task<IEnumerable<LeaderSummary>> GetLeadersAsync(bool forceRefresh)
         {
-            var apiLeaderList = await _leaderBoardClient.GetAsync();
-
             List<LeaderSummary> summaries = new List<LeaderSummary>();
 
-            foreach(var Leader in apiLeaderList.Users)
+            try
             {
-                LeaderSummary leaderSummary = new LeaderSummary
-                {
-                    BaseScore = Leader.Points,
-                    id = Leader.UserId,
-                    Name = Leader.Name,
-                    Rank = Leader.Rank,
-                    ProfilePic = Leader.ProfilePic.ToString()
-                };
+                var apiLeaderList = await _leaderBoardClient.GetAsync();
 
-                summaries.Add(leaderSummary);
+                foreach (var Leader in apiLeaderList.Users)
+                {
+                    LeaderSummary leaderSummary = new LeaderSummary
+                    {
+                        BaseScore = Leader.Points,
+                        id = Leader.UserId,
+                        Name = Leader.Name,
+                        Rank = Leader.Rank,
+                        ProfilePic = Leader.ProfilePic.ToString()
+                    };
+
+                    summaries.Add(leaderSummary);
+                }
+            }
+            catch(ApiException e)
+            {
+                //Console.Write(e);
+                if(e.StatusCode == 401)
+                {
+                    //TODO: re-authneticate
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                }
             }
 
             return summaries;

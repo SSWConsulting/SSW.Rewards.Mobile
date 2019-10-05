@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AppCenter.Auth;
+using SSW.Consulting.Services;
 using SSW.Consulting.Views;
 using Xamarin.Forms;
 
@@ -8,9 +9,12 @@ namespace SSW.Consulting
 {
     public partial class AppShell : Xamarin.Forms.Shell
     {
-        public void Handle_LogOutClicked(object sender, EventArgs e)
+        private IUserService _userService { get; set; }
+
+        public async void Handle_LogOutClicked(object sender, EventArgs e)
         {
-            Auth.SignOut();
+            await _userService.SignOutAsync();
+            await Navigation.PushModalAsync(new LoginPage());
         }
 
         public void Handle_QuizClicked(object sender, EventArgs e)
@@ -38,9 +42,10 @@ namespace SSW.Consulting
             Navigation.PushModalAsync(new OnBoarding());
         }
 
-        public AppShell()
+        public AppShell(IUserService userService)
         {
             InitializeComponent();
+            _userService = userService;
         }
     }
 }

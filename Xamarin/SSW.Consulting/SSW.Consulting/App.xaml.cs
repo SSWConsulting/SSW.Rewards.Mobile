@@ -29,7 +29,7 @@ namespace SSW.Consulting
             {
                 if (Preferences.Get("LoggedIn", false))
                 {
-                    MainPage = new AppShell();
+                    MainPage = Resolver.Resolve<AppShell>();
                 }
                 else
                 {

@@ -115,7 +115,7 @@
                 <StackLayout.Padding>
                     <OnPlatform x:TypeArguments="Thickness">
                         <On Platform="Android">10</On>
-                        <On Platform="iOS">20,0,0,0</On>
+                        <On Platform="iOS">25,0,0,0</On>
                     </OnPlatform>
                 </StackLayout.Padding>
                 <Image Source="logo_ssw_colour"
