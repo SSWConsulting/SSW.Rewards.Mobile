@@ -38,9 +38,9 @@
                 </Frame>
             </StackLayout>
 
-            <ActivityIndicator HorizontalOptions="FillAndExpand"
+            <ActivityIndicator HorizontalOptions="Center"
                                Color="Red"
-                               VerticalOptions="FillAndExpand"
+                               VerticalOptions="Center"
                                IsVisible="{Binding isRunning}"
                                IsRunning="{Binding isRunning}"/>
         </Grid>

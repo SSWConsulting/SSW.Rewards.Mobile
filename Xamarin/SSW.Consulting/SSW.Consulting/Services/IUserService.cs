@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSW.Consulting.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Services
@@ -11,7 +12,7 @@ namespace SSW.Consulting.Services
         Task<string> GetMyProfilePicAsync();
         Task<int> GetMyPointsAsync();
         Task<string> GetTokenAsync();
-        Task<bool> SignInAsync();
+        Task<ApiStatus> SignInAsync();
         Task SignOutAsync();
         Task<bool> IsLoggedInAsync();
     }

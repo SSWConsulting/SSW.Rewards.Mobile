@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using SSW.Consulting.Models;
 
 namespace SSW.Consulting.Services
 {
@@ -54,7 +55,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(Preferences.Get("LoggedIn", false));
         }
 
-        public async Task<bool> SignInAsync()
+        public async Task<ApiStatus> SignInAsync()
         {
             try
             {
@@ -96,8 +97,10 @@ namespace SSW.Consulting.Services
 
                         _httpClient = new HttpClient();
                         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                        //TODO: Don't hard code this URL
-                        _userClient = new UserClient("https://sswconsulting-dev.azurewebsites.net", _httpClient);
+
+                        string baseUrl = Constants.ApiBaseUrl;
+
+                        _userClient = new UserClient(baseUrl, _httpClient);
 
                         var user = await _userClient.GetAsync();
 
@@ -105,26 +108,33 @@ namespace SSW.Consulting.Services
                         Preferences.Set("MyProfilePic", user.Picture);
 
                         Preferences.Set("LoggedIn", true);
-                        return true;
+                        return ApiStatus.Success;
                     }
                     catch(ArgumentException)
                     {
                         //TODO: Handle error decoding JWT
-                        return false;
+                        return ApiStatus.Error;
                     }
                 }
                 else
                 {
-                    //TODO: handle login error
-                    return false;
+                    return ApiStatus.LoginFailure;
                 }
             }
 
-            catch (Exception e)
+            catch (ApiException e)
             {
-                // Do something with sign-in failure.
-                Console.Write(e);
-                return false;
+                if(e.StatusCode == 404)
+                {
+                    return ApiStatus.Unavailable;
+                }
+                else if(e.StatusCode == 401)
+                {
+                    return ApiStatus.LoginFailure;
+                }
+
+                return ApiStatus.Error;
+                
             }
         }
 

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using SSW.Consulting.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using SSW.Consulting.Models;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -23,10 +24,23 @@ namespace SSW.Consulting.ViewModels
             isRunning = true;
             OnPropertyChanged("isRunning");
 
-            if(await _userService.SignInAsync())
+            ApiStatus status = await _userService.SignInAsync();
+
+            switch(status)
             {
-                Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                await Shell.Current.GoToAsync("//main");
+                case ApiStatus.Success:
+                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                    await Shell.Current.GoToAsync("//main");
+                    break;
+                case ApiStatus.Unavailable:
+                    await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
+                    break;
+                case ApiStatus.LoginFailure:
+                    await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                    break;
+                default:
+                    await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
+                    break;
             }
 
             isRunning = false;
