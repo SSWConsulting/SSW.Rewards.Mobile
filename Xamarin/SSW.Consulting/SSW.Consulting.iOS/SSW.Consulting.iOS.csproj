@@ -98,45 +98,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon1024.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon180.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon167.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon152.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon120.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon87.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon80.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon76.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon60.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon58.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon40.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon29.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon20.png">
-      <Visible>false</Visible>
-    </ImageAsset>
     <BundleResource Include="Resources\tab_about.png" />
     <BundleResource Include="Resources\tab_about%402x.png" />
     <BundleResource Include="Resources\tab_about%403x.png" />
@@ -927,6 +888,24 @@
       <Visible>False</Visible>
     </ImageAsset>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-app-store.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad%402x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x-1.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone167.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-1.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight20.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%403x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x-1.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad60.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-2.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -953,9 +932,6 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Autofac">
       <Version>4.9.4</Version>
-    </PackageReference>
-    <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
-      <Version>3.0.0.5</Version>
     </PackageReference>
     <PackageReference Include="CardsView">
       <Version>2.2.2</Version>

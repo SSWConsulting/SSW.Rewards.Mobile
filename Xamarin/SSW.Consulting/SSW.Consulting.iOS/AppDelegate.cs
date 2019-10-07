@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
-using ImageCircle.Forms.Plugin.iOS;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Auth;
@@ -40,7 +39,7 @@ namespace SSW.Consulting.iOS
 
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             CardsViewRenderer.Preserve();
-            ImageCircleRenderer.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             Bootstrapper.Init();
 
             DependencyService.Register<IContacts, Contacts>();

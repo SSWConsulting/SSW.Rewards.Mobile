@@ -5,7 +5,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using ImageCircle.Forms.Plugin.Droid;
 using PanCardView.Droid;
 using Xamarin.Forms;
 using SSW.Consulting.Services;
@@ -29,7 +28,7 @@ namespace SSW.Consulting.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             CardsViewRenderer.Preserve();
-            ImageCircleRenderer.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
             Bootstrapper.Init();
 
             DependencyService.Register<IContacts, Contacts>();

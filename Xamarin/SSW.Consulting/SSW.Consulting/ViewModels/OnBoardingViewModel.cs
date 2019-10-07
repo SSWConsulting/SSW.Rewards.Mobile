@@ -38,10 +38,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White /*(Color) Application.Current.Resources["SSWRed"]*/,
-                    Content = "Talk to SSW people, attend talks QR codes will be shown at the end of the presentations or complete the techquiz in this app.",
+                    Content = "Talk to SSW people, attend their talks and scan their QR codes, and take the Tech Quiz to earn points.",
                     Image = "onboarding",
                     MainHeading = "Welcome",
-                    SubHeading = "How to get them?",
+                    SubHeading = "Earn rewards...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -49,10 +49,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
+                    Content = "Earn points and you could win yourself a Google Home.",
                     Image = "prize_googlehome",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "Google Home",
+                    SubHeading = "...like a Google Home...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -60,10 +60,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
+                    Content = "Get on the top of the leaderboard and win a Google Hub Max.",
                     Image = "prize_hubmax",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "Google Hub Max",
+                    SubHeading = "...or a Google Hub Max...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -71,10 +71,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
+                    Content = "Get on the top of the leaderboard and win one of the MI Wirst bands",
                     Image = "prize_miband",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "MI Band",
+                    SubHeading = "...or a MI Band",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -93,7 +93,7 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Get on the top of the leaderboard and win a Google Hub Max or one of the MI Wirst bands",
+                    Content = "Win a free place at one of our Superpowers tours events.",
                     Image = "prize_superpowers",
                     MainHeading = "Earn Rewards",
                     SubHeading = ".NET CORE Superpowers",
