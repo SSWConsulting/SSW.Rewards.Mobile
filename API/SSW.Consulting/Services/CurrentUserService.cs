@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Application.User.Commands.UpsertCurrentUser;
+using SSW.Consulting.Application.User.Queries.GetCurrentUser;
 using SSW.Consulting.Application.User.Queries.GetUser;
 using System.Security.Claims;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace SSW.Consulting.WebAPI.Services
         private readonly IMediator _mediatr;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private UserViewModel _currentUser;
+        private CurrentUserViewModel _currentUser;
 
         public CurrentUserService(
             IMediator mediatr, 
@@ -37,7 +38,7 @@ namespace SSW.Consulting.WebAPI.Services
 
         public string GetUserAvatar() => "https://ui-avatars.com/api/?name=J+Doe";
 
-        public async Task<UserViewModel> GetCurrentUser(CancellationToken cancellationToken)
+        public async Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken)
         {
             if (_currentUser != null)
             {
@@ -54,7 +55,7 @@ namespace SSW.Consulting.WebAPI.Services
 
             await _mediatr.Send(new UpsertCurrentUserCommand(), cancellationToken);
 
-            return _currentUser = await _mediatr.Send(new GetCurrentUserQuery { Email = GetUserEmail() }, cancellationToken);
+            return _currentUser = await _mediatr.Send(new GetCurrentUserQuery(), cancellationToken);
         }
     }
 }
