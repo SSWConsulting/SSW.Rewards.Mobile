@@ -29,6 +29,7 @@ namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
                 var users = await _context
                     .Users
                     .Include(u => u.UserAchievements)
+                    .ThenInclude(ua => ua.Achievement)
                     .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 

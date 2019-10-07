@@ -91,7 +91,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserViewModel"
+                  "$ref": "#/components/schemas/CurrentUserViewModel"
                 }
               }
             }
@@ -193,7 +193,7 @@
           }
         }
       },
-      "UserViewModel": {
+      "CurrentUserViewModel": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -212,6 +212,10 @@
           "picture": {
             "type": "string",
             "nullable": true
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }
