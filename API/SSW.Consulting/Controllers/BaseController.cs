@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using SSW.Consulting.WebAPI.Filters;
 using SSW.Consulting.WebAPI.Security;
 
 namespace SSW.Consulting.WebAPI.Controllers
 {
-    [Authorize]
+    [Authorize,Restricted]
+    [CustomExceptionFilter]
     [ApiController]
-    [Restricted]
     [Route("api/[controller]/[action]")]
     public abstract class BaseController : ControllerBase
     {

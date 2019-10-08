@@ -6,7 +6,7 @@ using Xamarin.Forms.Xaml;
 
 namespace SSW.Consulting.Converters
 {
-    public class SkillToBadgConverter : IValueConverter, IMarkupExtension
+    public class SkillToBadgeConverter : IValueConverter, IMarkupExtension
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -29,10 +29,16 @@ namespace SSW.Consulting.Converters
                 case DevSkills.DevOps:
                     imageResourceName = "skill_devops";
                     break;
+                case DevSkills.Scrum:
+                    imageResourceName = "skill_scrum";
+                    break;
+                case DevSkills.SharePoint:
+                    imageResourceName = "skill_sharepoint";
+                    break;
                 case DevSkills.iOS:
                     imageResourceName = "skill_ios";
                     break;
-                case DevSkills.NetCore:
+                case DevSkills.NETCore:
                     imageResourceName = "skill_netcore";
                     break;
                 case DevSkills.Node:
