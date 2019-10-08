@@ -26,7 +26,8 @@ namespace SSW.Consulting.Infrastructure
             // ConfigureStorageProviders
             services.AddSingleton<ICloudBlobClientProvider, CloudBlobClientProvider>();
             services.AddSingleton<IStorageProvider, AzureStorageProvider>();
-            services.AddSingleton<IProfileStorageProvider, ProfileStorageProvider>();
+
+            services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
 
             return services;
         }
