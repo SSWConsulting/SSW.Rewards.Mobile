@@ -3,6 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
                  xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 BackgroundColor="Transparent"
                  x:Class="SSW.Consulting.PopupPages.AboutSSW">
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
@@ -15,6 +16,39 @@
                                    EasingOut="SinIn"
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
-    <ContentPage.Content>
-    </ContentPage.Content>
+    <Frame WidthRequest="350"
+           HeightRequest="350"
+           CornerRadius="3"
+           HasShadow="True"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}">
+        <StackLayout>
+            <Label HorizontalTextAlignment="Center"
+                   TextColor="{StaticResource SSWRed}"
+                   FontSize="Large"
+                   Text="About SSW"/>
+            <Label HorizontalTextAlignment="Center"
+                   Margin="20"
+                   TextColor="White"
+                   Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."
+                   />
+            <Label HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   Margin="20"
+                   Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."
+                   />
+            <Frame BackgroundColor="{StaticResource SSWRed}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="TapGestureRecognizer_Tapped"/>
+                </Frame.GestureRecognizers>
+                <Grid>
+                    <Label Text="Find out more..."
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center"/>
+                    <Image Source="external"
+                           HorizontalOptions="End"/>
+                </Grid>
+            </Frame>
+        </StackLayout>
+    </Frame>
 </pages:PopupPage>
