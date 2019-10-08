@@ -33,7 +33,7 @@ namespace SSW.Consulting.Persistence
 
             await SeedSkillsAsync(profiles.SelectMany(p => p.Skills).Distinct(), cancellationToken);
             await SeedStaffMembers(profiles, cancellationToken);
-            //await SeedAchievementsAsync(cancellationToken);
+            await SeedAchievementsAsync(cancellationToken);
         }
 
         private async Task SeedSkillsAsync(IEnumerable<string> newSkills, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ namespace SSW.Consulting.Persistence
 
             //add/update profiles
             var existingStaffMembers = await _context.StaffMembers.ToListAsync(cancellationToken);
-            var existingAcheivements = await _context.Achievements.ToListAsync(cancellationToken);
+            var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
             profiles.ForEach(p =>
             {
                 var staffMember = existingStaffMembers.FirstOrDefault(sm => sm.Name == p.Name) ?? new StaffMember();
@@ -71,25 +71,50 @@ namespace SSW.Consulting.Persistence
                 staffMember.StaffMemberSkills = p.Skills.Select(s => new StaffMemberSkill { SkillId = _skills[s] }).ToArray();
                 staffMember.Profile = p.Profile;
 
-                if(staffMember.Id == 0)
+                if (staffMember.Id == 0)
                 {
                     _context.StaffMembers.Add(staffMember);
                 }
 
-                var achievement = existingAcheivements.FirstOrDefault(a => a.Name.Contains(p.Name)) ?? new Achievement();
-                achievement.Name = staffMember.Name;
-                var codeData = Encoding.ASCII.GetBytes(achievement.Name);
-                achievement.Code = Convert.ToBase64String(codeData);
-                achievement.Value = p.Value;
-
-                if (achievement.Id == 0)
-                {
-                    _context.Achievements.Add(achievement);
-                }
+                SetupAchievement(existingAchievements, p.Name, p.Value);
             });
 
             await _context.SaveChangesAsync(cancellationToken);
             _staffMembers = await _context.StaffMembers.ToDictionaryAsync(s => s.Name, s => s);
+        }
+
+        private async Task SeedAchievementsAsync(CancellationToken cancellationToken)
+        {
+            var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
+
+            // prizes
+            SetupAchievement(existingAchievements, "SSW Water Bottle", 50);
+            SetupAchievement(existingAchievements, "Xiaomi Mi Band 4", 50);
+
+            //talks
+            SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
+            SetupAchievement(existingAchievements, "How to put a Penguin in a Cloud: Linux on Azure", 500);
+            SetupAchievement(existingAchievements, "Clean Architecture with ASP.NET Core 3.0", 500);
+            SetupAchievement(existingAchievements, "Real-time Face Recognition With Microsoft Cognitive Services", 500);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetupAchievement(IEnumerable<Achievement> existingAchievements, string name, int value)
+        {
+            var achievement = existingAchievements
+                .FirstOrDefault(a => a.Name.Equals(name, StringComparison.InvariantCulture))
+                ?? new Achievement();
+
+            achievement.Name = name;
+            var codeData = Encoding.ASCII.GetBytes(name);
+            achievement.Code = Convert.ToBase64String(codeData);
+            achievement.Value = value;
+
+            if (achievement.Id == 0)
+            {
+                _context.Achievements.Add(achievement);
+            }
         }
 
         private IEnumerable<UserProfile> GetProfiles(byte[] profileData)
