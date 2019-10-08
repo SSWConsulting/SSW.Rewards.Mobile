@@ -22,8 +22,8 @@
            VerticalOptions="Center"
            HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
-        <Grid>
-            <StackLayout>
+        <Grid InputTransparent="True">
+            <StackLayout InputTransparent="True">
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
                        FontSize="Large"
@@ -54,6 +54,7 @@
             </StackLayout>
             <Image Source="icon_close"
                    VerticalOptions="Start"
+                   InputTransparent="True"
                    HorizontalOptions="End"
                    TranslationX="25"
                    TranslationY="-25">

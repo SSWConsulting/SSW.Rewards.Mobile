@@ -104,17 +104,9 @@ namespace SSW.Consulting.Services
                 AchievementViewModel response = await _achievementClient.AddAsync(achievementString);
 
                 if (response != null)
-                {
                     return ChallengeResult.Added;
-                }
-                else if (response.Id == 206)
-                {
-                    return ChallengeResult.Duplicate;
-                }
                 else
-                {
                     return ChallengeResult.NotFound;
-                }
             }
             catch
             {

@@ -35,7 +35,7 @@ namespace SSW.Consulting.ViewModels
                 case ChallengeResult.NotFound:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "Oops...";
-                    ResultBody = "This doesn't look like one of our codes!";
+                    ResultBody = "Is this one of our codes? Have you already scanned it?";
                     HeadingColour = Color.White;
                     break;
             }
