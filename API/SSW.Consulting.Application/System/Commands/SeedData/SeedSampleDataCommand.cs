@@ -13,17 +13,21 @@ namespace SSW.Consulting.Application.System.Commands.SeedData
     public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
     {
         private readonly ISSWConsultingDbContext _context;
+        private readonly IProfileStorageProvider _storageProvider;
 
-        public SeedSampleDataCommandHandler(ISSWConsultingDbContext context)
+        public SeedSampleDataCommandHandler(
+            ISSWConsultingDbContext context,
+            IProfileStorageProvider storageProvider)
         {
             _context = context;
+            _storageProvider = storageProvider;
         }
 
         public async Task<Unit> Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
         {
             var seeder = new SampleDataSeeder(_context);
-
-            await seeder.SeedAllAsync(cancellationToken);
+            var profileData = await _storageProvider.GetProfileData();
+            await seeder.SeedAllAsync(profileData, cancellationToken);
 
             return Unit.Value;
         }
