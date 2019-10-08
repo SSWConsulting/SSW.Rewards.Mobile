@@ -94,6 +94,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Contacts.cs" />
+    <Compile Include="ScanResultViewModel.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -925,6 +926,9 @@
     <ImageAsset Include="Assets.xcassets\skill_node.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <BundleResource Include="trophy.json" />
+    <BundleResource Include="empty-box.json" />
+    <BundleResource Include="judgement.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
