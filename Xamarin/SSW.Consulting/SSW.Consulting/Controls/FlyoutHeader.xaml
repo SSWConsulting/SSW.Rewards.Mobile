@@ -26,6 +26,8 @@
                              Grid.RowSpan="3"
                              Aspect="AspectFit"
                              Source="{Binding ProfilePic}"
+                             LoadingPlaceholder="icon_avatar"
+                             ErrorPlaceholder="icon_avatar"
                              CacheType="Disk"
                              CacheDuration="90"
                              d:Source="MattGMain"

@@ -63,6 +63,8 @@
                                                d:Text="2"/>
 
                                         <ffimage:CachedImage Source="{Binding ProfilePic}"
+                                                             LoadingPlaceholder="icon_avatar"
+                                                             ErrorPlaceholder="icon_avatar"
                                                              d:Source="MattG"
                                                              CacheType="Disk"
                                                              CacheDuration="90"

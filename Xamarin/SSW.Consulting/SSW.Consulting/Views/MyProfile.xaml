@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:circle="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
@@ -35,6 +34,8 @@
                                      CacheDuration="90"
                                      Aspect="AspectFill"
                                      Source="{Binding ProfilePic}"
+                                     LoadingPlaceholder="icon_avatar"
+                                     ErrorPlaceholder="icon_avatar"
                                      d:Source="MattGMain"
                                      RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
                                      RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}">

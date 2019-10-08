@@ -13,6 +13,7 @@ namespace SSW.Consulting.ViewModels
         public ICommand LoginTappedCommand { get; set; }
         private IUserService _userService { get; set; }
         public bool isRunning { get; set; }
+        public bool LoginButtonEnabled { get { return !isRunning; } }
 
         public string ButtonText { get; set; }
 
@@ -28,7 +29,7 @@ namespace SSW.Consulting.ViewModels
         private async void SignIn()
         {
             isRunning = true;
-            OnPropertyChanged("isRunning");
+            RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
 
             ApiStatus status = await _userService.SignInAsync();
 
@@ -61,7 +62,7 @@ namespace SSW.Consulting.ViewModels
             {
                 isRunning = true;
                 ButtonText = "Logging you in...";
-                RaisePropertyChanged("isRunning", "ButtonText");
+                RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
                 
                 UserInformation userInfo = await Auth.SignInAsync();
                 string token = userInfo.AccessToken;

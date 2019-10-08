@@ -995,6 +995,12 @@
     <BundleResource Include="trophy.json" />
     <BundleResource Include="empty-box.json" />
     <BundleResource Include="judgement.json" />
+    <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\icon_avatar%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\icon_avatar%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\icon_avatar.png" />
+    <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

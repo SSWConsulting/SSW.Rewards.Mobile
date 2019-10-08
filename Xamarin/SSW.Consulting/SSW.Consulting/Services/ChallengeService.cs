@@ -101,15 +101,13 @@ namespace SSW.Consulting.Services
         {
             try
             {
-                FileResponse response = await _achievementClient.AddAsync(achievementString);
+                AchievementViewModel response = await _achievementClient.AddAsync(achievementString);
 
-                var code = response.StatusCode;
-
-                if (code == 200)
+                if (response != null)
                 {
                     return ChallengeResult.Added;
                 }
-                else if (code == 206)
+                else if (response.Id == 206)
                 {
                     return ChallengeResult.Duplicate;
                 }
