@@ -888,24 +888,60 @@
       <Visible>False</Visible>
     </ImageAsset>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-app-store.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x-1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone167.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight29.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight20.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%403x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x-1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad60.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-2.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-app-store.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight%402x-1.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-iphone167.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight29.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-1.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight20.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x-1.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad60.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-2.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

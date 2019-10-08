@@ -35,7 +35,7 @@ namespace SSW.Consulting
             //ContainerBuilder.RegisterType<LeadersRepository>().SingleInstance();
             ContainerBuilder.RegisterType<MockLeaderService>().As<ILeaderService>();
             ContainerBuilder.RegisterType<MockUserService>().As<IUserService>();
-            ContainerBuilder.RegisterType<MockDevService>().As<IDevService>();
+            ContainerBuilder.RegisterType<DevService>().As<IDevService>();
             ContainerBuilder.RegisterType<MockChallengeService>().As<IChallengeService>();
         }
 

@@ -32,7 +32,7 @@ namespace SSW.Consulting.Converters
 				case DevSkills.iOS:
 					label = "iOS";
 					break;
-				case DevSkills.NetCore:
+				case DevSkills.NETCore:
 					label = ".NET Core";
 					break;
 				case DevSkills.Node:
