@@ -21,6 +21,7 @@ namespace SSW.Consulting.Infrastructure
 		public interface ISettings
 		{
 			string KeyVaultUrl { get; }
+			int SecretCacheTimeoutMinutes { get; }
 		}
 
 		// TODO: Add IMemoryCache or something so that we can cache secrets for a minute or 5, otherwise keyvault could get hammered too much
@@ -47,7 +48,7 @@ namespace SSW.Consulting.Infrastructure
 				{
 					await _cache.SetStringAsync(secretName, secret.Value, new DistributedCacheEntryOptions()
 					{
-						SlidingExpiration = TimeSpan.FromHours(4)
+						SlidingExpiration = TimeSpan.FromHours(_settings.SecretCacheTimeoutMinutes)
 					}, cancellationToken);
 				}
 
