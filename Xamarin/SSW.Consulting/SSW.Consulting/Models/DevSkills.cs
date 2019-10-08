@@ -7,11 +7,13 @@ namespace SSW.Consulting.Models
         Dancing,
         React,
         Angular,
-        NetCore,
+        NETCore,
         Node,
         iOS,
         Beer,
         Smoking,
-        DevOps
+        DevOps,
+        Scrum,
+        SharePoint
     }
 }

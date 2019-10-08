@@ -41,7 +41,7 @@ In his spare time, he is one of Australia's top Salsa teachers and is the 5 time
                     LastName="Cogan",
                     Title = "Chief Architect",
                     Picture = "adamndc",
-                    Skills = new List<DevSkills> { DevSkills.Angular, DevSkills.PowerBI, DevSkills.NetCore, DevSkills.DevOps },
+                    Skills = new List<DevSkills> { DevSkills.Angular, DevSkills.PowerBI, DevSkills.NETCore, DevSkills.DevOps },
                     TwitterID = "AdamCogan",
                     Bio = jeanBio,
                     id = 2,
