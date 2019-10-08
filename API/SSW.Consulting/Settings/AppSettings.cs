@@ -4,9 +4,10 @@ using SSW.Consulting.Infrastructure;
 namespace SSW.Consulting.WebAPI.Settings
 {
 
-	public class AppSettings :
-		KeyVaultSecretsProvider.ISettings
-	{
+    public class AppSettings :
+		KeyVaultSecretsProvider.ISettings,
+        IWWWRedirectSettings
+    {
 		private readonly IConfiguration _config;
 
 		public AppSettings(IConfiguration config)
@@ -16,7 +17,9 @@ namespace SSW.Consulting.WebAPI.Settings
 
 		public string KeyVaultUrl => _config[nameof(KeyVaultUrl)];
 
-		public AzureAdB2CSettings AzureAdB2C
+        public string TechQuizUrl => _config[nameof(TechQuizUrl)];
+
+        public AzureAdB2CSettings AzureAdB2C
 		{
 			get
 			{

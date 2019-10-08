@@ -58,6 +58,27 @@
         }
       }
     },
+    "/api/Achievement/TechQuiz": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_TechQuiz",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Leaderboard/Get": {
       "get": {
         "tags": [
