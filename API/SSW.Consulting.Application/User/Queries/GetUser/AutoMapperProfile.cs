@@ -1,5 +1,6 @@
 using AutoMapper;
 using SSW.Consulting.Application.User.Queries.GetUser;
+using SSW.Consulting.Application.User.Queries.GetUserAchievements;
 using SSW.Consulting.Domain.Entities;
 using System.Linq;
 
