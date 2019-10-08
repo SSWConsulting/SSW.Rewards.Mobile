@@ -1,5 +1,8 @@
 trigger:
 - master
+  paths:
+    include:
+    - DevOps/*
 
 pool:
   vmImage: 'ubuntu-latest'
