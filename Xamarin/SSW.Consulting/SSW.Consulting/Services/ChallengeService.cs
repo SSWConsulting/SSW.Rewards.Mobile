@@ -1,22 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using SSW.Consulting.Models;
+using SSW.Consulting.Helpers;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Collections.ObjectModel;
 
 namespace SSW.Consulting.Services
 {
-    public class MockChallengeService : IChallengeService
+    public class ChallengeService : IChallengeService
     {
-        public MockChallengeService()
-        {
-            _challenges = new ObservableCollection<Challenge>();
-            _myChallenges = new ObservableCollection<MyChallenge>();
-        }
-
+        private AchievementClient _achievementClient { get; set; }
+        private HttpClient _httpClient { get; set; }
+        private IUserService _userService;
         private ObservableCollection<Challenge> _challenges { get; set; }
         private ObservableCollection<MyChallenge> _myChallenges { get; set; }
-        
+
+        public ChallengeService(IUserService userService)
+        {
+            _userService = userService;
+            _httpClient = new HttpClient();
+            _challenges = new ObservableCollection<Challenge>();
+            _myChallenges = new ObservableCollection<MyChallenge>();
+            Initialise();
+        }
+
+        private async Task Initialise()
+        {
+            string token = await _userService.GetTokenAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            string baseUrl = Constants.ApiBaseUrl;
+
+            _achievementClient = new AchievementClient(baseUrl, _httpClient);
+        }
+
         public async Task<IEnumerable<Challenge>> GetChallengesAsync()
         {
             var challenges = new List<Challenge>
@@ -31,7 +50,7 @@ namespace SSW.Consulting.Services
                 new Challenge { id = 8, Badge = "link", IsBonus = false, Points = 10, Title="Follow SSW on LinkedIn", Picture = "points_twitter"}
             };
 
-            foreach(var challenge in challenges)
+            foreach (var challenge in challenges)
             {
                 _challenges.Add(challenge);
             }
@@ -78,9 +97,26 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges);
         }
 
-        public Task<ChallengeResult> PostChallengeAsync(string achievementString)
+        public async Task<ChallengeResult> PostChallengeAsync(string achievementString)
         {
-            throw new NotImplementedException();
+            FileResponse response = await _achievementClient.AddAsync(achievementString);
+
+            var code = response.StatusCode;
+
+            if(code == 200)
+            {
+                return ChallengeResult.Added;
+            }
+            else if(code == 500)
+            {
+                return ChallengeResult.NotFound;
+            }
+            else
+            {
+                return ChallengeResult.NotFound;
+            }
+
+            //throw new NotImplementedException();
         }
     }
 }

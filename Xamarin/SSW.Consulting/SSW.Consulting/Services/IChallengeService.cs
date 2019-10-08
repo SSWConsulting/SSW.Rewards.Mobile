@@ -9,5 +9,6 @@ namespace SSW.Consulting.Services
     {
         Task<IEnumerable<Challenge>> GetChallengesAsync();
         Task<IEnumerable<MyChallenge>> GetMyChallengesAsync();
+        Task<ChallengeResult> PostChallengeAsync(string achievementString);
     }
 }

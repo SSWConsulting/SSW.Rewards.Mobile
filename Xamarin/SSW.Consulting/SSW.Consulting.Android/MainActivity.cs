@@ -8,6 +8,7 @@ using Android.OS;
 using PanCardView.Droid;
 using Xamarin.Forms;
 using SSW.Consulting.Services;
+using Lottie.Forms.Droid;
 
 namespace SSW.Consulting.Droid
 {
@@ -28,6 +29,7 @@ namespace SSW.Consulting.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             CardsViewRenderer.Preserve();
+            AnimationViewRenderer.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
             Bootstrapper.Init();
 

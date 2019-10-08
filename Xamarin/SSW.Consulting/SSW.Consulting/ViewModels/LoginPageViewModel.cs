@@ -4,6 +4,7 @@ using SSW.Consulting.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using SSW.Consulting.Models;
+using Microsoft.AppCenter.Auth;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -13,10 +14,15 @@ namespace SSW.Consulting.ViewModels
         private IUserService _userService { get; set; }
         public bool isRunning { get; set; }
 
+        public string ButtonText { get; set; }
+
         public LoginPageViewModel(IUserService userService)
         {
             _userService = userService;
             LoginTappedCommand = new Command(SignIn);
+            ButtonText = "Sign up / Log in";
+            OnPropertyChanged("ButtonText");
+            Refresh();
         }
 
         private async void SignIn()
@@ -45,6 +51,25 @@ namespace SSW.Consulting.ViewModels
 
             isRunning = false;
             OnPropertyChanged("isRunning");
+        }
+
+        private async void Refresh()
+        {
+            bool loggedIn = await _userService.IsLoggedInAsync();
+
+            if (loggedIn)
+            {
+                isRunning = true;
+                ButtonText = "Logging you in...";
+                RaisePropertyChanged("isRunning", "ButtonText");
+                
+                UserInformation userInfo = await Auth.SignInAsync();
+                string token = userInfo.AccessToken;
+                await SecureStorage.SetAsync("auth_token", token);
+
+                Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                await Shell.Current.GoToAsync("//main");
+            }
         }
     }
 }

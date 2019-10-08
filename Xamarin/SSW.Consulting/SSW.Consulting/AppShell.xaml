@@ -57,11 +57,11 @@
                     </Grid.ColumnDefinitions>
 
                     <Image Grid.Column="0"
-                            HorizontalOptions="Start"
-                            Margin="5"
-                            HeightRequest="80"
-                            WidthRequest="80"
-                            Source="{Binding Icon}"/>
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           Source="{Binding Icon}"/>
 
                     <Label Grid.Column="1"
                             Style="{StaticResource Leaderboard}"
@@ -111,12 +111,12 @@
               IconImageSource="icon_join"
               Clicked="Handle_JoinClicked"/>
 
-    <MenuItem Text="Log Out"
-              IconImageSource="icon_logout"
-              Clicked="Handle_LogOutClicked"/>
-
     <MenuItem Text="About SSW"
               IconImageSource="icon_ssw"
               Clicked="Handle_AboutClicked"/>
+
+    <MenuItem Text="Log Out"
+              IconImageSource="icon_logout"
+              Clicked="Handle_LogOutClicked"/>
 
 </Shell>

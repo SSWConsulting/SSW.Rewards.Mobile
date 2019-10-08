@@ -72,6 +72,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <MtouchArch>x86_64</MtouchArch>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhone'">
     <DebugSymbols>true</DebugSymbols>
@@ -906,6 +907,12 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-setting%402x-1.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-ipad60.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-2.png" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -943,7 +950,7 @@
       <Version>2.4.1</Version>
     </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
-      <Version>1.1.5.188</Version>
+      <Version>1.2.0.223</Version>
     </PackageReference>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt">
       <Version>5.5.0</Version>
@@ -956,6 +963,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
       <Version>2.4.0-preview</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie">
+      <Version>3.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
