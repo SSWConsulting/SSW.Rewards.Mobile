@@ -36,7 +36,7 @@ namespace SSW.Consulting.WebAPI.Services
             return $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}";
         }
 
-        public string GetUserAvatar() => "https://ui-avatars.com/api/?name=J+Doe";
+        public string GetUserAvatar() => null;
 
         public async Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken)
         {
