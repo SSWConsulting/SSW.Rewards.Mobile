@@ -8,16 +8,15 @@ namespace SSW.Consulting.WebAPI.Controllers
     public class AchievementController : BaseController
     {
         [HttpGet]
-        public async Task<ActionResult<AchievementViewModel>> List()
+        public async Task<ActionResult<AchievementListViewModel>> List()
         {
             return Ok(await Mediator.Send(new GetAchievementListQuery()));
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add([FromQuery] string achievementCode)
+        public async Task<ActionResult<AchievementViewModel>> Add([FromQuery] string achievementCode)
         {
-            await Mediator.Send(new AddAchievementCommand { Code = achievementCode });
-            return Ok();
+            return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
         }
     }
 }

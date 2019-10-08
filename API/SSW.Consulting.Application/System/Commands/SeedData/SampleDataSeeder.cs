@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -77,6 +78,8 @@ namespace SSW.Consulting.Persistence
 
                 var achievement = existingAcheivements.FirstOrDefault(a => a.Name.Contains(p.Name)) ?? new Achievement();
                 achievement.Name = staffMember.Name;
+                var codeData = Encoding.ASCII.GetBytes(achievement.Name);
+                achievement.Code = Convert.ToBase64String(codeData);
                 achievement.Value = p.Value;
 
                 if (achievement.Id == 0)

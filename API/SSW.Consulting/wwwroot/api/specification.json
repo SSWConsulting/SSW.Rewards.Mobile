@@ -18,7 +18,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AchievementViewModel"
+                  "$ref": "#/components/schemas/AchievementListViewModel"
                 }
               }
             }
@@ -48,10 +48,9 @@
           "200": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/AchievementViewModel"
                 }
               }
             }
@@ -154,6 +153,19 @@
   },
   "components": {
     "schemas": {
+      "AchievementListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "achievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/AchievementViewModel"
+            }
+          }
+        }
+      },
       "AchievementViewModel": {
         "type": "object",
         "additionalProperties": false,
