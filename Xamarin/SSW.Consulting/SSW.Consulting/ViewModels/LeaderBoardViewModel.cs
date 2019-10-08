@@ -12,6 +12,7 @@ namespace SSW.Consulting.ViewModels
 {
     public class LeaderBoardViewModel : BaseViewModel
     {
+        public bool IsRunning { get; set; }
         private ILeaderService _leaderService;
         private IUserService _userService;
         public ICommand LeaderTapped
@@ -35,6 +36,8 @@ namespace SSW.Consulting.ViewModels
 
         private async void Initialise()
         {
+            IsRunning = true;
+            RaisePropertyChanged("IsRunning");
             var summaries = await _leaderService.GetLeadersAsync(false);
             int myId = await _userService.GetMyUserIdAsync();
 
@@ -45,6 +48,9 @@ namespace SSW.Consulting.ViewModels
 
                 Leaders.Add(vm);
             }
+
+            IsRunning = false;
+            RaisePropertyChanged("IsRunning");
         }
 
         private void HandleLeaderTapped(LeaderSummaryViewModel leader)

@@ -63,7 +63,7 @@
 								   effects:TooltipEffect.HasTooltip="True"
 								   effects:TooltipEffect.Text="{Binding ., Converter={converters:SkillToLabelConverter}}">
                                 <Image d:Source="{Binding .}"
-                                       Source="{Binding ., Converter={converters:SkillToBadgConverter}}"/>
+                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
 								<!--<Frame.GestureRecognizers>
 									<TapGestureRecognizer NumberOfTapsRequired="1"
 														  Tapped="TooltipTapped"/>

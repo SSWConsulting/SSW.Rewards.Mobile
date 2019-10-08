@@ -13,6 +13,8 @@
              x:Class="SSW.Consulting.Views.LeaderBoard">
     <ContentPage.Content>
         <StackLayout Padding="10">
+            <ActivityIndicator IsRunning="{Binding IsRunning}"
+                               IsVisible="{Binding IsRunning}"/>
             <CollectionView ItemsSource="{Binding Leaders}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -72,7 +74,7 @@
                                                              Margin="0"
                                                              Grid.Column="1">
                                             <ffimage:CachedImage.Transformations>
-                                                <transforms:CircleTransformation 
+                                                <transforms:CircleTransformation BorderSize="20"
                                                                                  BorderHexColor="#979797"/>
                                             </ffimage:CachedImage.Transformations>
                                         </ffimage:CachedImage>

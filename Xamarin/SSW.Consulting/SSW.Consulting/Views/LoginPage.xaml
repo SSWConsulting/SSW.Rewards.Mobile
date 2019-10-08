@@ -34,7 +34,7 @@
                     <Label TextColor="White"
                            HorizontalTextAlignment="Center"
                            InputTransparent="True"
-                           Text="Sign up / Log in"/>
+                           Text="{Binding ButtonText}"/>
                 </Frame>
             </StackLayout>
 

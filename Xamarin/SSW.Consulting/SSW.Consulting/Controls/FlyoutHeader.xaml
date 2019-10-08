@@ -34,7 +34,8 @@
                              VerticalOptions="Center"
                              Margin="10,0,5,0">
             <ffimage:CachedImage.Transformations>
-                <transforms:CircleTransformation />
+                <transforms:CircleTransformation BorderHexColor="#979797"
+                                                 BorderSize="30"/>
             </ffimage:CachedImage.Transformations>
         </ffimage:CachedImage>
 

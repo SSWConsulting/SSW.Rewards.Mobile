@@ -8,6 +8,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
+using System.Threading.Tasks;
 
 namespace SSW.Consulting
 {
@@ -20,21 +21,14 @@ namespace SSW.Consulting
 
             DependencyService.Register<MockDataStore>();
             //MainPage = new AppShell();
-            if(Preferences.Get("FirstRun", true))
+            if (Preferences.Get("FirstRun", true))
             {
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
             }
             else
             {
-                if (Preferences.Get("LoggedIn", false))
-                {
-                    MainPage = Resolver.Resolve<AppShell>();
-                }
-                else
-                {
-                    MainPage = new LoginPage();
-                }
+                MainPage = new LoginPage();
             }
         }
 
@@ -43,7 +37,9 @@ namespace SSW.Consulting
             AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
 				  "ios=e33283b1-7326-447d-baae-e783ece0789b",
 				  typeof(Auth), typeof(Analytics), typeof(Crashes));
-		}
+
+            UpdateAccessTokenAsync();
+        }
 
         protected override void OnSleep()
         {
@@ -53,6 +49,23 @@ namespace SSW.Consulting
         protected override void OnResume()
         {
             // Handle when your app resumes
+            //UpdateAccessTokenAsync();
+            
+        }
+
+        private async Task UpdateAccessTokenAsync()
+        {
+            bool loggedIn = Preferences.Get("LoggedIn", false);
+
+            if (loggedIn)
+            {
+                UserInformation userInfo = await Auth.SignInAsync();
+                string token = userInfo.AccessToken;
+                await SecureStorage.SetAsync("auth_token", token);
+
+                Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                await Shell.Current.GoToAsync("//main");
+            }
         }
     }
 }

@@ -39,8 +39,8 @@
                                      RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
                                      RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}">
                         <ffimage:CachedImage.Transformations>
-                            <transforms:CircleTransformation 
-                                                             BorderHexColor="{StaticResource ProfileBorder}"/>
+                            <transforms:CircleTransformation BorderSize="20"
+                                                             BorderHexColor="#979797"/>
                         </ffimage:CachedImage.Transformations>
                     </ffimage:CachedImage>
 

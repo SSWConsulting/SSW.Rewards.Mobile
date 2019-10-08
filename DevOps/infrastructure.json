@@ -228,27 +228,27 @@
             },
             {
               "name": "DiagnosticServices_EXTENSION_VERSION",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "InstrumentationEngine_EXTENSION_VERSION",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "SnapshotDebugger_EXTENSION_VERSION",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
-              "value": "disabled"
+              "value": "enabled"
             },
             {
               "name": "KeyVaultUrl",
