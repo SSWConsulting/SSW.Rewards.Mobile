@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AppCenter.Auth;
+using Rg.Plugins.Popup.Services;
+using SSW.Consulting.PopupPages;
 using SSW.Consulting.Services;
 using SSW.Consulting.Views;
 using Xamarin.Forms;
@@ -32,9 +34,9 @@ namespace SSW.Consulting
             throw new NotImplementedException();
         }
 
-        public void Handle_AboutClicked(object sender, EventArgs e)
+        public async void Handle_AboutClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            await PopupNavigation.Instance.PushAsync(new AboutSSW()); ;
         }
 
         public void Handle_HowToPlayClicked(object sender, EventArgs e)
