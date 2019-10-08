@@ -99,24 +99,29 @@ namespace SSW.Consulting.Services
 
         public async Task<ChallengeResult> PostChallengeAsync(string achievementString)
         {
-            FileResponse response = await _achievementClient.AddAsync(achievementString);
-
-            var code = response.StatusCode;
-
-            if(code == 200)
+            try
             {
-                return ChallengeResult.Added;
+                FileResponse response = await _achievementClient.AddAsync(achievementString);
+
+                var code = response.StatusCode;
+
+                if (code == 200)
+                {
+                    return ChallengeResult.Added;
+                }
+                else if (code == 206)
+                {
+                    return ChallengeResult.Duplicate;
+                }
+                else
+                {
+                    return ChallengeResult.NotFound;
+                }
             }
-            else if(code == 500)
+            catch
             {
                 return ChallengeResult.NotFound;
             }
-            else
-            {
-                return ChallengeResult.NotFound;
-            }
-
-            //throw new NotImplementedException();
         }
     }
 }

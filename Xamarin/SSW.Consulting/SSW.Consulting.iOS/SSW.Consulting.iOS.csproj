@@ -390,15 +390,6 @@
     <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops.png">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_devops.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -911,6 +902,27 @@
     <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif" />
     <ImageAsset Include="Assets.xcassets\external.imageset\external.gif" />
     <ImageAsset Include="Assets.xcassets\external.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops.png" />
+    <ImageAsset Include="Assets.xcassets\skill_sharepoint.imageset\skill_sharepoint%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_sharepoint.imageset\skill_sharepoint%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_sharepoint.imageset\skill_sharepoint.png" />
+    <ImageAsset Include="Assets.xcassets\skill_sharepoint.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_scrum.imageset\skill_scrum%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_scrum.imageset\skill_scrum%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_scrum.imageset\skill_scrum.png" />
+    <ImageAsset Include="Assets.xcassets\skill_scrum.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%403x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%402x.png" />
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node.png" />
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
   </ItemGroup>

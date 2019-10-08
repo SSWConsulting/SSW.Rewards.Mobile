@@ -980,42 +980,6 @@
       <Generator>
       </Generator>
     </AndroidResource>
-    <AndroidResource Include="Resources\drawable-xxxhdpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\drawable-xxhdpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\drawable-xhdpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\drawable-hdpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\drawable-mdpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\drawable-ldpi\skill_devops.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
     <AndroidResource Include="Resources\drawable-xxxhdpi\skill_netcore.png">
       <SubType>
       </SubType>
@@ -2507,6 +2471,102 @@
       <Generator></Generator>
     </AndroidResource>
     <AndroidResource Include="Resources\drawable-ldpi\external.gif">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxhdpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xhdpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-mdpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-ldpi\skill_devops.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxhdpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xhdpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-mdpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-ldpi\skill_sharepoint.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxhdpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xhdpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-mdpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-ldpi\skill_scrum.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\skill_node.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xxhdpi\skill_node.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-xhdpi\skill_node.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\skill_node.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-mdpi\skill_node.png">
+      <SubType></SubType>
+      <Generator></Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-ldpi\skill_node.png">
       <SubType></SubType>
       <Generator></Generator>
     </AndroidResource>
