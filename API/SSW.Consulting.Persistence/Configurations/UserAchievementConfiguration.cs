@@ -13,7 +13,8 @@ namespace SSW.Consulting.Persistence.Configurations
                 .WithMany(u => u.UserAchievements);
 
             builder
-                .HasOne(ua => ua.Achievement);
+                .HasOne(ua => ua.Achievement)
+                .WithMany(u => u.UserAchievements);
 
             builder
                 .Property(ua => ua.AwardedAt)
