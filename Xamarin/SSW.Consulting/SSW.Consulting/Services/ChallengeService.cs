@@ -12,6 +12,7 @@ namespace SSW.Consulting.Services
     public class ChallengeService : IChallengeService
     {
         private AchievementClient _achievementClient { get; set; }
+        private UserClient _userClient { get; set; }
         private HttpClient _httpClient { get; set; }
         private IUserService _userService;
         private ObservableCollection<Challenge> _challenges { get; set; }
@@ -60,38 +61,20 @@ namespace SSW.Consulting.Services
 
         public async Task<IEnumerable<MyChallenge>> GetMyChallengesAsync()
         {
-            var myChallenges = new List<MyChallenge>
-            {
-                new MyChallenge { id = 1, Badge = "link", IsBonus = false, Points = 10, Title="Ulysses Maclaren", Picture = "points_twitter", Completed = true},
-                new MyChallenge { id = 2, Badge = "link", IsBonus = true, Points = 10, Title="A. Cogan's Chinafy Talk", Picture = "points_quiz", Completed = true},
-                new MyChallenge { id = 3, Badge = "external", IsBonus = false, Points = 10, Title="Matt Wicks", Picture = "points_youtube", Completed = true},
-                new MyChallenge { id = 4, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 5, Badge = "link", IsBonus = true, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 6, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 7, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 8, Badge = "link", IsBonus = false, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 9, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 10, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 11, Badge = "link", IsBonus = false, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 12, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 1, Badge = "link", IsBonus = false, Points = 10, Title="Ulysses Maclaren", Picture = "points_twitter", Completed = true},
-                new MyChallenge { id = 2, Badge = "link", IsBonus = true, Points = 10, Title="A. Cogan's Chinafy Talk", Picture = "points_quiz", Completed = true},
-                new MyChallenge { id = 3, Badge = "external", IsBonus = false, Points = 10, Title="Matt Wicks", Picture = "points_youtube", Completed = true},
-                new MyChallenge { id = 4, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 5, Badge = "link", IsBonus = true, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 6, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 7, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 8, Badge = "link", IsBonus = false, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 9, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 10, Badge = "link", IsBonus = false, Points = 10, Title="Penny Walker", Picture = "points_presentations", Completed = false},
-                new MyChallenge { id = 11, Badge = "link", IsBonus = false, Points = 10, Title="SSW TV", Picture = "points_youtube", Completed = false},
-                new MyChallenge { id = 12, Badge = "link", IsBonus = false, Points = 10, Title="Tech Quiz", Picture = "points_presentations", Completed = false}
+            _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
 
-            };
+            var myChallenges = await _userClient.AchievementsAsync(await _userService.GetMyUserIdAsync());
 
-            foreach (var challenge in myChallenges)
+            foreach (var challenge in myChallenges.UserAchievements)
             {
-                _myChallenges.Add(challenge);
+                _myChallenges.Add(new MyChallenge
+                {
+                    Badge = "link",
+                    Completed = challenge.Complete,
+                    Title = challenge.AchievementName,
+                    Points = challenge.AchievementValue,
+                    IsBonus = false
+                });
             }
 
             return await Task.FromResult(_myChallenges);
