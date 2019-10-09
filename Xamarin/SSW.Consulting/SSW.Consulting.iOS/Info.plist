@@ -21,9 +21,9 @@
 	<key>MinimumOSVersion</key>
 	<string>8.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>SSW.Consulting</string>
+	<string>SSW</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.SSW.Consulting</string>
+	<string>com.SSW.SSW.Consulting</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>UILaunchStoryboardName</key>
