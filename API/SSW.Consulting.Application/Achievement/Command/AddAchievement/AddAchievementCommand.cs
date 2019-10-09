@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
 using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,8 +63,14 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
                         AchievementId = achievement.Id
                     });
 
-                await _context.SaveChangesAsync(cancellationToken);
-
+                try
+                {
+                    await _context.SaveChangesAsync(cancellationToken);
+                }
+                catch(Exception)
+                {
+                    throw new AlreadyAwardedException(user.Id, achievement.Name);
+                }
 
                 return _mapper.Map<AchievementViewModel>(achievement);
             }
