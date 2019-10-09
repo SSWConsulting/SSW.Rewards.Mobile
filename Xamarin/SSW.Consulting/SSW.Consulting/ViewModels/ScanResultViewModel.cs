@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Rg.Plugins.Popup.Services;
 using SSW.Consulting.Models;
+using SSW.Consulting.Services;
 using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
@@ -13,10 +15,12 @@ namespace SSW.Consulting.ViewModels
         public string ResultBody { get; set; }
         public ICommand OnOkCommand { get; set; }
         public Color HeadingColour { get; set; }
+        private IUserService _userService { get; set; }
 
-        public ScanResultViewModel(ChallengeResult result)
+        public ScanResultViewModel(ChallengeResult result, IUserService userService)
         {
             OnOkCommand = new Command(DismissPopups);
+            _userService = userService;
 
             switch (result)
             {
@@ -41,11 +45,19 @@ namespace SSW.Consulting.ViewModels
             }
 
             RaisePropertyChanged(new string[] { "AnimationRef", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour" });
+
+            if (result == ChallengeResult.Added)
+                CollectNewPointsAsync();
         }
 
         private async void DismissPopups()
         {
             await PopupNavigation.Instance.PopAllAsync();
+        }
+
+        private async Task CollectNewPointsAsync()
+        {
+            await _userService.UpdateMyDetailsAsync();
         }
     }
 }
