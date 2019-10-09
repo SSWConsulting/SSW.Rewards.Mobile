@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Title="{Binding Title}"
+			 x:Name="EarnPointsView"
              x:Class="SSW.Consulting.Views.EarnPointsPage">
     <ContentPage.Content>
         <Grid Padding="0">
@@ -18,7 +19,7 @@
                 <CollectionView AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="All"
                                 Margin="10"
-                                ItemsSource="{Binding Challenges}">
+                                ItemsSource="{Binding ExternalRewards}">
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout Orientation="Vertical"
                                          Span="2"/>
@@ -36,40 +37,51 @@
                                 <Frame WidthRequest="100"
                                        HeightRequest="220"
                                        CornerRadius="20"
+									   x:Name="Item"
                                        Margin="10"
                                        Padding="0"
                                        BackgroundColor="{StaticResource LeaderboardBackground}"
                                        HasShadow="True">
 
-                                    <AbsoluteLayout Padding="0">                                      
+                                    <AbsoluteLayout Padding="0"
+													InputTransparent="True">                                      
                                         <Image Source="{Binding Picture}"
+											   InputTransparent="True"
                                                 AbsoluteLayout.LayoutBounds="0,0,1,0.6"
                                                 AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Image Source="points_background"
+										<Image Source="points_background"
+											   InputTransparent="True"
                                                AbsoluteLayout.LayoutBounds="1,0.52,0.6,0.5"
                                                Opacity="0.4"
                                                AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Image Source="icon_goldstar"
-                                                     AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
-                                                     AbsoluteLayout.LayoutFlags="All"/>
+										<Image Source="icon_goldstar"
+												InputTransparent="True"
+                                                AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
+                                                AbsoluteLayout.LayoutFlags="All"/>
 
                                         <Label Text="{Binding Points, StringFormat='{0} pts'}"
                                                TextColor="{StaticResource PointsColour}"
+											   InputTransparent="True"
                                                FontAttributes="Bold"
                                                FontSize="22"
                                                VerticalTextAlignment="Center"
                                                AbsoluteLayout.LayoutBounds="0.995,0.51,0.4,0.2"
                                                AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Label Text="{Binding Title}"
+										<Label Text="{Binding Title}"
+											   InputTransparent="True"
                                                VerticalOptions="End"
                                                TextColor="Black"
                                                Margin="5,10"
                                                AbsoluteLayout.LayoutBounds="0.1,0.8,0.8,0.3"
                                                AbsoluteLayout.LayoutFlags="All"/>
                                     </AbsoluteLayout>
+
+									<Frame.GestureRecognizers>
+										<TapGestureRecognizer BindingContext="{Binding Source={x:Reference EarnPointsView}, Path=BindingContext}" Command="{Binding OnEventTapped}" CommandParameter="{Binding  Source={x:Reference Item}, Path=BindingContext.Url}" NumberOfTapsRequired="1" />
+									</Frame.GestureRecognizers>
                                 </Frame>
                             </ContentView>
                         </DataTemplate>
