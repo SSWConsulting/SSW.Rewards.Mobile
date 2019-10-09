@@ -62,13 +62,9 @@
 								   effects:TooltipEffect.TextColor="White"
 								   effects:TooltipEffect.HasTooltip="True"
 								   effects:TooltipEffect.Text="{Binding ., Converter={converters:SkillToLabelConverter}}">
-                                <Image d:Source="{Binding .}"
+								<Image d:Source="{Binding .}"
                                        Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
-								<!--<Frame.GestureRecognizers>
-									<TapGestureRecognizer NumberOfTapsRequired="1"
-														  Tapped="TooltipTapped"/>
-								</Frame.GestureRecognizers>-->
-                            </Frame>
+							</Frame>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

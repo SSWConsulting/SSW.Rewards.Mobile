@@ -59,6 +59,7 @@ namespace SSW.Consulting
 
             if (loggedIn)
             {
+				await Auth.SetEnabledAsync(true);
                 UserInformation userInfo = await Auth.SignInAsync();
                 string token = userInfo.AccessToken;
                 await SecureStorage.SetAsync("auth_token", token);
