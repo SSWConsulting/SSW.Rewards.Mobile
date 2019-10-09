@@ -45,8 +45,9 @@ namespace SSW.Consulting
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry();
+            services.AddDistributedMemoryCache();
 
-            services
+			services
                 .AddControllers()
                 .AddNewtonsoftJson();
         }
