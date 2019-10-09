@@ -13,46 +13,7 @@ namespace SSW.Consulting.Converters
 		{
 			if (value == null)
 				return string.Empty;
-			string label;
-
-			switch ((DevSkills)value)
-			{
-				case DevSkills.Angular:
-					label = "Angular";
-					break;
-				case DevSkills.Beer:
-					label = "Beer";
-					break;
-				case DevSkills.Dancing:
-					label = "Dancing";
-					break;
-				case DevSkills.DevOps:
-					label = "Dev Ops";
-					break;
-				case DevSkills.iOS:
-					label = "iOS";
-					break;
-				case DevSkills.NETCore:
-					label = ".NET Core";
-					break;
-				case DevSkills.Node:
-					label = "NodeJS";
-					break;
-				case DevSkills.PowerBI:
-					label = "Power BI";
-					break;
-				case DevSkills.React:
-					label = "React";
-					break;
-				case DevSkills.Smoking:
-					label = "Smoking";
-					break;
-				default:
-					label = "";
-					break;
-			}
-
-			return label;
+			return "";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

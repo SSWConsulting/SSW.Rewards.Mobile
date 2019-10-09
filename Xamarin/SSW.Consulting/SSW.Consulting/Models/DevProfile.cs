@@ -14,6 +14,6 @@ namespace SSW.Consulting.Models
         public string TwitterID { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public List<DevSkills> Skills { get; set; }
+        public List<string> Skills { get; set; }
     }
 }

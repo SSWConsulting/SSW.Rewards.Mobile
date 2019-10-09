@@ -41,7 +41,7 @@ namespace SSW.Consulting.ViewModels
 
         private async void OpenURL(string url)
         {
-            await Browser.OpenAsync(url);
+            await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
         }
 
         private async void OpenQRScanner()

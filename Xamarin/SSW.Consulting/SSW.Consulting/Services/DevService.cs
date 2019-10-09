@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -34,7 +35,7 @@ namespace SSW.Consulting.Services
 
         public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
         {
-            List<DevProfile> profiles = new List<DevProfile>();
+			List<DevProfile> profiles = new List<DevProfile>();
 
             try
             {
@@ -45,23 +46,13 @@ namespace SSW.Consulting.Services
                     DevProfile dev = new DevProfile
                     {
                         FirstName = profile.Name,
-                        LastName = "",
                         Bio = profile.Profile,
                         Email = profile.Email,
-                        Phone = "",
-                        Picture = profile.ProfilePhoto.ToString(),
-                        Title = profile.Title,
+                        Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "placeholder" : profile.ProfilePhoto.ToString(),
+						Title = profile.Title,
                         TwitterID = profile.TwitterUsername,
-                    };
-
-                    List<DevSkills> skills = new List<DevSkills>();
-                    foreach (var apiSkill in profile.Skills)
-                    {
-                        var skill = (DevSkills)Enum.Parse(typeof(DevSkills), apiSkill);
-                        skills.Add(skill);
-                    }
-
-                    dev.Skills = skills;
+						Skills = profile.Skills?.ToList()
+					};
 
                     profiles.Add(dev);
                 }
@@ -77,7 +68,6 @@ namespace SSW.Consulting.Services
                 {
                     await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the profiles. Please try again soon.", "OK");
                 }
-
             }
 
             return profiles;

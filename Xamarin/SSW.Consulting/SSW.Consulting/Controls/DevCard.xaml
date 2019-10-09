@@ -10,8 +10,8 @@
              BackgroundColor="Transparent"
              x:Class="SSW.Consulting.Controls.DevCard">
     <ContentView.Content>
-		<Grid Margin="25,70,25,0"
-			 x:Name="DevCardGrid">
+        <Grid Margin="25,70,25,0"
+             x:Name="DevCardGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -49,23 +49,25 @@
                 </d:CollectionView.ItemsSource>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-						<Grid Padding="50,10,0,0"
+                        <Grid Padding="50,10,0,0"
                               HeightRequest="75"
                               WidthRequest="5">
-							<Frame BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
+                            <Frame BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
                                    HasShadow="False"
                                    HeightRequest="30"
                                    WidthRequest="30"
                                    BorderColor="Transparent"
                                    CornerRadius="4"
-								   effects:TooltipEffect.Position="Left"
-								   effects:TooltipEffect.BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
-								   effects:TooltipEffect.TextColor="White"
-								   effects:TooltipEffect.HasTooltip="True"
-								   effects:TooltipEffect.Text="{Binding ., Converter={converters:SkillToLabelConverter}}">
-								<Image d:Source="{Binding .}"
-                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
-							</Frame>
+                                   effects:TooltipEffect.Position="Left"
+                                   effects:TooltipEffect.BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
+                                   effects:TooltipEffect.TextColor="White"
+                                   effects:TooltipEffect.HasTooltip="True"
+                                   effects:TooltipEffect.Text="{Binding .}">
+                                <ffimage:CachedImage d:Source="{Binding .}"
+                                                     CacheType="Disk"
+                                                     CacheDuration="90"
+                                                     Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
+                            </Frame>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
