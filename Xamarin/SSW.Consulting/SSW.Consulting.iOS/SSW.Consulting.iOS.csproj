@@ -871,6 +871,12 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
     <BundleResource Include="placeholder.gif" />
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%403x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%402x.png" />
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles.png" />
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
