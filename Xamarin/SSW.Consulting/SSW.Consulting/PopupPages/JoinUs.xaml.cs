@@ -21,7 +21,6 @@ namespace SSW.Consulting.PopupPages
 
         public async void Handle_CloseTapped(object sender, EventArgs args)
         {
-            //            DisplayAlert("Close Tapped", "Close", "OK");
             await PopupNavigation.Instance.PopAllAsync();
         }
     }

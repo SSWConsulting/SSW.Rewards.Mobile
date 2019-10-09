@@ -56,9 +56,7 @@
             </StackLayout>
             <Image Source="icon_close"
                    VerticalOptions="Start"
-                   HorizontalOptions="End"
-                   TranslationX="15"
-                   TranslationY="-15">
+                   HorizontalOptions="End">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_CloseTapped"/>
