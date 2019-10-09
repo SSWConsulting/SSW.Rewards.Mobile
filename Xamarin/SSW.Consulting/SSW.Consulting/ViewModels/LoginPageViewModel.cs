@@ -31,9 +31,17 @@ namespace SSW.Consulting.ViewModels
             isRunning = true;
             RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
 
-            ApiStatus status = await _userService.SignInAsync();
+            ApiStatus status;
+            try
+            {
+                status = await _userService.SignInAsync();
+            }
+            catch (Exception)
+            {
+                status = ApiStatus.LoginFailure;
+            }
 
-            switch(status)
+            switch (status)
             {
                 case ApiStatus.Success:
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();
@@ -51,7 +59,7 @@ namespace SSW.Consulting.ViewModels
             }
 
             isRunning = false;
-            OnPropertyChanged("isRunning");
+            RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
         }
 
         private async void Refresh()
@@ -63,7 +71,7 @@ namespace SSW.Consulting.ViewModels
                 isRunning = true;
                 ButtonText = "Logging you in...";
                 RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
-                
+
                 UserInformation userInfo = await Auth.SignInAsync();
                 string token = userInfo.AccessToken;
                 await SecureStorage.SetAsync("auth_token", token);
