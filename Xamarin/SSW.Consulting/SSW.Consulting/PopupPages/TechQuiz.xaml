@@ -22,7 +22,7 @@
            VerticalOptions="Center"
            HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
-        <Grid InputTransparent="True">
+        <Grid>
             <StackLayout>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
@@ -54,17 +54,14 @@
                     </Grid>
                 </Frame>
             </StackLayout>
-            <!--<Image Source="icon_close"
+            <Image Source="icon_close"
                    VerticalOptions="Start"
-                   InputTransparent="True"
-                   HorizontalOptions="End"
-                   TranslationX="25"
-                   TranslationY="-25">
+                   HorizontalOptions="End">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_CloseTapped"/>
                 </Image.GestureRecognizers>
-            </Image>-->
+            </Image>
         </Grid>
     </Frame>
 </pages:PopupPage>

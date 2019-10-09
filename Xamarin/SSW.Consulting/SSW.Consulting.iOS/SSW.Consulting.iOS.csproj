@@ -103,83 +103,11 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <BundleResource Include="Resources\tab_about.png" />
-    <BundleResource Include="Resources\tab_about%402x.png" />
-    <BundleResource Include="Resources\tab_about%403x.png" />
-    <BundleResource Include="Resources\tab_feed.png" />
-    <BundleResource Include="Resources\tab_feed%402x.png" />
-    <BundleResource Include="Resources\tab_feed%403x.png" />
-    <BundleResource Include="Resources\xamarin_logo.png" />
-    <BundleResource Include="Resources\xamarin_logo%402x.png" />
-    <BundleResource Include="Resources\xamarin_logo%403x.png" />
-    <ImageAsset Include="Assets.xcassets\adam.imageset\adam%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adam.imageset\adam%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adam.imageset\adam.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\adam.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Andreas.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Calum.imageset\Calum.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Calum.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattG.imageset\MattG.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattG.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Uly.imageset\Uly.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\Uly.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Tan.imageset\Tan.png">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\Tan.imageset\Contents.json">
       <Visible>False</Visible>
@@ -198,15 +126,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\polygon.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\user.imageset\user%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\user.imageset\user%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\user.imageset\user.png">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\user.imageset\Contents.json">
       <Visible>False</Visible>
@@ -235,18 +154,6 @@
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\MattGMain.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sswsq.imageset\sswsq%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -270,15 +177,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\calendar.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW%403x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW%402x.jpg">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattW.imageset\MattW.jpg">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\MattW.imageset\Contents.json">
       <Visible>False</Visible>
@@ -432,15 +330,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\uly_ndc.png">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\Contents.json">
       <Visible>False</Visible>
@@ -646,26 +535,8 @@
     <ImageAsset Include="Assets.xcassets\adamndc.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\jeanndc.png">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\jeanndc.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adamndc.imageset\adamndc.png">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\icon_twitter%403x.png">
       <Visible>false</Visible>
@@ -802,15 +673,6 @@
     <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%403x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%402x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -938,15 +800,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\app-icon-spotlight-2.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\external.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -1010,6 +863,14 @@
     <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif" />
+    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
+    <BundleResource Include="placeholder.gif" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -48,7 +48,7 @@ namespace SSW.Consulting.Services
                         FirstName = profile.Name,
                         Bio = profile.Profile,
                         Email = profile.Email,
-                        Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "placeholder" : profile.ProfilePhoto.ToString(),
+                        Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "dev_placeholder" : profile.ProfilePhoto.ToString(),
 						Title = profile.Title,
                         TwitterID = profile.TwitterUsername,
 						Skills = profile.Skills?.ToList()

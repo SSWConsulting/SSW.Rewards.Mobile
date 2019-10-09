@@ -22,8 +22,8 @@
            VerticalOptions="Center"
            HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
-        <Grid InputTransparent="True">
-            <StackLayout InputTransparent="True">
+        <Grid Padding="0">
+            <StackLayout>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
                        FontSize="Large"
@@ -53,11 +53,9 @@
                 </Frame>
             </StackLayout>
             <Image Source="icon_close"
+                   Margin="0"
                    VerticalOptions="Start"
-                   InputTransparent="True"
-                   HorizontalOptions="End"
-                   TranslationX="25"
-                   TranslationY="-25">
+                   HorizontalOptions="End">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_CloseTapped"/>
