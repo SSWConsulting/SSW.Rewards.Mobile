@@ -21,8 +21,8 @@ namespace SSW.Consulting.PopupPages
 
         public async void Handle_OnScanResult(Result result)
         {
+            scannerView.IsScanning = false;
             await _viewModel.CheckAchievement(result);
-            //await Application.Current.MainPage.DisplayAlert("Scanned result", result.Text, "OK");
         }
     }
 }
