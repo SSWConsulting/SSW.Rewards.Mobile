@@ -72,8 +72,10 @@
             </CollectionView>
 
             <ffimage:CachedImage Source="{Binding Picture}"
-                                 LoadingPlaceholder="placeholder"
-                                 ErrorPlaceholder="placeholder"
+                                 LoadingPlaceholder="dev_placeholder"
+                                 ErrorPlaceholder="dev_placeholder"
+                                 CacheType="Disk"
+                                 CacheDuration="90"
                                  d:Source="uly_ndc"
                                  Grid.Row="0"
                                  Grid.Column="0"
