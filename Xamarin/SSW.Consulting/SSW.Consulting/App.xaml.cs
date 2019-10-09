@@ -17,10 +17,13 @@ namespace SSW.Consulting
 
         public App()
         {
+            AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
+				  "ios=e33283b1-7326-447d-baae-e783ece0789b",
+				  typeof(Auth), typeof(Analytics), typeof(Crashes));
+
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            //MainPage = new AppShell();
             if (Preferences.Get("FirstRun", true))
             {
                 Preferences.Set("FirstRun", false);
@@ -34,10 +37,6 @@ namespace SSW.Consulting
 
         protected override void OnStart()
         {
-            AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
-				  "ios=e33283b1-7326-447d-baae-e783ece0789b",
-				  typeof(Auth), typeof(Analytics), typeof(Crashes));
-
             UpdateAccessTokenAsync();
         }
 
@@ -49,8 +48,6 @@ namespace SSW.Consulting
         protected override void OnResume()
         {
             // Handle when your app resumes
-            //UpdateAccessTokenAsync();
-            
         }
 
         private async Task UpdateAccessTokenAsync()
@@ -59,7 +56,7 @@ namespace SSW.Consulting
 
             if (loggedIn)
             {
-				await Auth.SetEnabledAsync(true);
+				//await Auth.SetEnabledAsync(true);
                 UserInformation userInfo = await Auth.SignInAsync();
                 string token = userInfo.AccessToken;
                 await SecureStorage.SetAsync("auth_token", token);
