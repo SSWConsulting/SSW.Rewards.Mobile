@@ -2,11 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
 using SSW.Consulting.Application.User.Commands.UpsertUser;
+using SSW.Consulting.WebAPI.Settings;
 
 namespace SSW.Consulting.WebAPI.Controllers
 {
     public class AchievementController : BaseController
     {
+        private readonly IWWWRedirectSettings _redirectSettings;
+
+        public AchievementController(IWWWRedirectSettings redirectSettings)
+        {
+            _redirectSettings = redirectSettings;
+        }
+
         [HttpGet]
         public async Task<ActionResult<AchievementListViewModel>> List()
         {
@@ -18,5 +26,8 @@ namespace SSW.Consulting.WebAPI.Controllers
         {
             return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
         }
+
+        [HttpGet]
+        public ActionResult TechQuiz() => Redirect(_redirectSettings.TechQuizUrl);
     }
 }

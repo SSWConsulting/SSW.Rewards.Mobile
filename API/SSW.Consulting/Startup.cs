@@ -61,7 +61,8 @@ namespace SSW.Consulting
 			// Add Settings
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISettings interface
 			services.AddSingleton<KeyVaultSecretsProvider.ISettings, AppSettings>();
-		}
+            services.AddSingleton<IWWWRedirectSettings, AppSettings>();
+        }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

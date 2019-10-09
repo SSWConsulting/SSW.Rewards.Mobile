@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using System;
 using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
+using System.Collections.Generic;
 
 namespace SSW.Consulting.Infrastructure
 {
     public class AzureStorageProvider : IStorageProvider
     {
         private readonly CloudBlobClient _client;
+        private ICollection<string> _createdContainers = new HashSet<string>();
 
         public AzureStorageProvider(ICloudBlobClientProvider clientProvider)
         {
@@ -57,8 +59,14 @@ namespace SSW.Consulting.Infrastructure
         private async Task<CloudBlobContainer> GetContainerReference(string containerName)
         {
             var container = _client.GetContainerReference(containerName.ToLower());
-            await container.CreateIfNotExistsAsync();
-            await container.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+
+            if (!_createdContainers.Contains(containerName.ToLower()))
+            {
+                await container.CreateIfNotExistsAsync();
+                await container.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+                _createdContainers.Add(containerName.ToLower());
+            }
+
             return container;
         }
     }
