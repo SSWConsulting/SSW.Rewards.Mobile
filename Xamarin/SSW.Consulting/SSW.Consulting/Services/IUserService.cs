@@ -15,5 +15,6 @@ namespace SSW.Consulting.Services
         Task<ApiStatus> SignInAsync();
         Task SignOutAsync();
         Task<bool> IsLoggedInAsync();
+        Task UpdateMyDetailsAsync();
     }
 }

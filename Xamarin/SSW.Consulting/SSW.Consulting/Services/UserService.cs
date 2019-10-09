@@ -27,7 +27,7 @@ namespace SSW.Consulting.Services
 
         public async Task<string> GetMyNameAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            return await Task.FromResult(Preferences.Get("MyName", string.Empty));
         }
 
         public async Task<int> GetMyPointsAsync()
@@ -37,7 +37,11 @@ namespace SSW.Consulting.Services
 
         public async Task<string> GetMyProfilePicAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
+            string profilePic = await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
+            if (!string.IsNullOrWhiteSpace(profilePic))
+                return profilePic;
+
+            return "icon_avatar";
         }
 
         public async Task<int> GetMyUserIdAsync()
@@ -107,6 +111,11 @@ namespace SSW.Consulting.Services
                         Preferences.Set("MyUserId", user.Id);
                         Preferences.Set("MyProfilePic", user.Picture);
 
+                        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
+                        {
+                            Preferences.Set("MyPoints", user.Points);
+                        }
+
                         Preferences.Set("LoggedIn", true);
                         return ApiStatus.Success;
                     }
@@ -143,6 +152,48 @@ namespace SSW.Consulting.Services
             Auth.SignOut();
             SecureStorage.RemoveAll();
             Preferences.Clear();
+        }
+
+        public async Task UpdateMyDetailsAsync()
+        {
+            if(_userClient == null)
+            {
+                if(_httpClient == null)
+                {
+                    string token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient = new HttpClient();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+            }
+
+            var user = await _userClient.GetAsync();
+
+            if (!string.IsNullOrWhiteSpace(user.FullName))
+            {
+                Preferences.Set("MyName", user.FullName);
+            }
+            
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                Preferences.Set("MyEmail", user.Email);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Id.ToString()))
+            {
+                Preferences.Set("MyUserId", user.Id);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Picture))
+            {
+                Preferences.Set("MyProfilePic", user.Picture);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
+            {
+                Preferences.Set("MyPoints", user.Points);
+            }
         }
     }
 }

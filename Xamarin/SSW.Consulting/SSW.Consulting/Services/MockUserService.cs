@@ -84,5 +84,10 @@ namespace SSW.Consulting.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateMyDetailsAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -20,17 +20,28 @@
                      IsVisible="{Binding IsMe}"
                      d:IsVisible="true"/>
 
-            <StackLayout Orientation="Horizontal"
-                         HorizontalOptions="StartAndExpand"
-                         VerticalOptions="Center"
-                         Padding="5">
+            <Grid HorizontalOptions="FillAndExpand"
+                  VerticalOptions="Center"
+                  Padding="5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="0"
                        FontSize="18"
                        Text="{Binding Rank}"
                        VerticalOptions="Center"
                        Margin="5,0,0,0"
                        d:Text="2"/>
+
                 <ffimage:CachedImage Source="{Binding ProfilePic}"
+                                     Grid.Column="1"
                                      LoadingPlaceholder="icon_avatar"
                                      ErrorPlaceholder="icon_avatar"
                                      d:Source="MattG"
@@ -45,28 +56,30 @@
                                                          BorderHexColor="{StaticResource ProfileBorder}"/>
                     </ffimage:CachedImage.Transformations>
                 </ffimage:CachedImage>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="2"
                        Text="{Binding Name}"
                        VerticalOptions="Center"
                        d:Text="Matt Goldman"/>
-            </StackLayout>
 
-            <StackLayout Orientation="Horizontal"
-                         HorizontalOptions="EndAndExpand"
-                         VerticalOptions="Center"
-                         Padding="5">
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="3"
                        Text="{Binding BaseScore, StringFormat='{0}pts'}"
                        d:Text="120pts"
                        VerticalOptions="Center"
+                       HorizontalOptions="End"
                        Margin="0,0,5,0"/>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="4"
                        Text="{Binding BaseScore, StringFormat='{0} Bonus'}"
                        d:Text="35 Bonus"
                        VerticalOptions="Center"
+                       HorizontalOptions="End"
                        Margin="0,0,10,0"/>
-            </StackLayout>
 
+                </Grid>
         </StackLayout>
   </ViewCell.View>
 </ViewCell>

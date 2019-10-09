@@ -68,6 +68,8 @@ namespace SSW.Consulting.ViewModels
                 string token = userInfo.AccessToken;
                 await SecureStorage.SetAsync("auth_token", token);
 
+                await _userService.UpdateMyDetailsAsync();
+
                 Application.Current.MainPage = Resolver.Resolve<AppShell>();
                 await Shell.Current.GoToAsync("//main");
             }
