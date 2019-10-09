@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:SSW.Consulting.Converters"
              xmlns:effects="clr-namespace:SSW.Consulting.Effects"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              BackgroundColor="Transparent"
              x:Class="SSW.Consulting.Controls.DevCard">
@@ -74,15 +75,17 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Image Source="{Binding Picture}"
-                   d:Source="uly_ndc"
-                   Grid.Row="0"
-                   Grid.Column="0"
-                   Grid.RowSpan="7"
-                   Grid.ColumnSpan="4"
-                   Scale="1.15"
-                   TranslationY="-20"
-                   TranslationX="-10"/>
+            <ffimage:CachedImage Source="{Binding Picture}"
+                                 LoadingPlaceholder="placeholder"
+                                 ErrorPlaceholder="placeholder"
+                                 d:Source="uly_ndc"
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 Grid.RowSpan="7"
+                                 Grid.ColumnSpan="4"
+                                 Scale="1.15"
+                                 TranslationY="-20"
+                                 TranslationX="-10"/>
         </Grid>
     </ContentView.Content>
 </ContentView>
