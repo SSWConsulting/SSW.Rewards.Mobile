@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using SSW.Consulting.Models;
 
 namespace SSW.Consulting.Services
 {
@@ -26,7 +27,7 @@ namespace SSW.Consulting.Services
 
         public async Task<string> GetMyNameAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            return await Task.FromResult(Preferences.Get("MyName", string.Empty));
         }
 
         public async Task<int> GetMyPointsAsync()
@@ -36,7 +37,11 @@ namespace SSW.Consulting.Services
 
         public async Task<string> GetMyProfilePicAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
+            string profilePic = await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
+            if (!string.IsNullOrWhiteSpace(profilePic))
+                return profilePic;
+
+            return "icon_avatar";
         }
 
         public async Task<int> GetMyUserIdAsync()
@@ -54,7 +59,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(Preferences.Get("LoggedIn", false));
         }
 
-        public async Task<bool> SignInAsync()
+        public async Task<ApiStatus> SignInAsync()
         {
             try
             {
@@ -96,35 +101,49 @@ namespace SSW.Consulting.Services
 
                         _httpClient = new HttpClient();
                         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                        //TODO: Don't hard code this URL
-                        _userClient = new UserClient("https://sswconsulting-dev.azurewebsites.net", _httpClient);
+
+                        string baseUrl = Constants.ApiBaseUrl;
+
+                        _userClient = new UserClient(baseUrl, _httpClient);
 
                         var user = await _userClient.GetAsync();
 
                         Preferences.Set("MyUserId", user.Id);
                         Preferences.Set("MyProfilePic", user.Picture);
 
+                        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
+                        {
+                            Preferences.Set("MyPoints", user.Points);
+                        }
+
                         Preferences.Set("LoggedIn", true);
-                        return true;
+                        return ApiStatus.Success;
                     }
                     catch(ArgumentException)
                     {
                         //TODO: Handle error decoding JWT
-                        return false;
+                        return ApiStatus.Error;
                     }
                 }
                 else
                 {
-                    //TODO: handle login error
-                    return false;
+                    return ApiStatus.LoginFailure;
                 }
             }
 
-            catch (Exception e)
+            catch (ApiException e)
             {
-                // Do something with sign-in failure.
-                Console.Write(e);
-                return false;
+                if(e.StatusCode == 404)
+                {
+                    return ApiStatus.Unavailable;
+                }
+                else if(e.StatusCode == 401)
+                {
+                    return ApiStatus.LoginFailure;
+                }
+
+                return ApiStatus.Error;
+                
             }
         }
 
@@ -133,6 +152,48 @@ namespace SSW.Consulting.Services
             Auth.SignOut();
             SecureStorage.RemoveAll();
             Preferences.Clear();
+        }
+
+        public async Task UpdateMyDetailsAsync()
+        {
+            if(_userClient == null)
+            {
+                if(_httpClient == null)
+                {
+                    string token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient = new HttpClient();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+            }
+
+            var user = await _userClient.GetAsync();
+
+            if (!string.IsNullOrWhiteSpace(user.FullName))
+            {
+                Preferences.Set("MyName", user.FullName);
+            }
+            
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                Preferences.Set("MyEmail", user.Email);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Id.ToString()))
+            {
+                Preferences.Set("MyUserId", user.Id);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Picture))
+            {
+                Preferences.Set("MyProfilePic", user.Picture);
+            }
+
+            if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
+            {
+                Preferences.Set("MyPoints", user.Points);
+            }
         }
     }
 }

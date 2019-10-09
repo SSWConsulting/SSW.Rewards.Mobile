@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:SSW.Consulting.Converters"
              xmlns:effects="clr-namespace:SSW.Consulting.Effects"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              BackgroundColor="Transparent"
              x:Class="SSW.Consulting.Controls.DevCard">
@@ -62,27 +63,27 @@
 								   effects:TooltipEffect.TextColor="White"
 								   effects:TooltipEffect.HasTooltip="True"
 								   effects:TooltipEffect.Text="{Binding ., Converter={converters:SkillToLabelConverter}}">
-                                <Image d:Source="{Binding .}"
-                                       Source="{Binding ., Converter={converters:SkillToBadgConverter}}"/>
-								<!--<Frame.GestureRecognizers>
-									<TapGestureRecognizer NumberOfTapsRequired="1"
-														  Tapped="TooltipTapped"/>
-								</Frame.GestureRecognizers>-->
-                            </Frame>
+								<Image d:Source="{Binding .}"
+                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
+							</Frame>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Image Source="{Binding Picture}"
-                   d:Source="uly_ndc"
-                   Grid.Row="0"
-                   Grid.Column="0"
-                   Grid.RowSpan="7"
-                   Grid.ColumnSpan="4"
-                   Scale="1.15"
-                   TranslationY="-20"
-                   TranslationX="-10"/>
+            <ffimage:CachedImage Source="{Binding Picture}"
+                                 LoadingPlaceholder="placeholder"
+                                 ErrorPlaceholder="dev_placeholder"
+                                 CacheType="Disk"
+                                 CacheDuration="90"
+                                 d:Source="uly_ndc"
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 Grid.RowSpan="7"
+                                 Grid.ColumnSpan="4"
+                                 Scale="1.15"
+                                 TranslationY="-20"
+                                 TranslationX="-10"/>
         </Grid>
     </ContentView.Content>
 </ContentView>

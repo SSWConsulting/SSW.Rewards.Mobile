@@ -149,7 +149,8 @@ namespace SSW.Consulting.Persistence.Migrations
 
                     b.HasIndex("AchievementId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "AchievementId")
+                        .IsUnique();
 
                     b.ToTable("UserAchievements");
                 });
@@ -172,7 +173,7 @@ namespace SSW.Consulting.Persistence.Migrations
             modelBuilder.Entity("SSW.Consulting.Domain.Entities.UserAchievement", b =>
                 {
                     b.HasOne("SSW.Consulting.Domain.Entities.Achievement", "Achievement")
-                        .WithMany()
+                        .WithMany("UserAchievements")
                         .HasForeignKey("AchievementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSW.Consulting.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Services
@@ -74,12 +75,17 @@ namespace SSW.Consulting.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SignInAsync()
+        public async Task<ApiStatus> SignInAsync()
         {
-            return await Task.FromResult(true);
+            return await Task.FromResult(ApiStatus.Success);
         }
 
         public Task SignOutAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateMyDetailsAsync()
         {
             throw new NotImplementedException();
         }

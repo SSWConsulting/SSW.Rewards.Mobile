@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:circle="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              mc:Ignorable="d"
              x:Name="ProfilePage"
              x:Class="SSW.Consulting.Views.MyProfile">
@@ -25,17 +26,24 @@
 
                 </Frame>
 
-                <circle:CircleImage BorderThickness="2"
-                                    VerticalOptions="Center"
-                                    HeightRequest="125"
-                                    WidthRequest="125"
-                                    TranslationY="-100"
-                                    Aspect="AspectFill"
-                                    Source="{Binding ProfilePic}"
-                                    d:Source="MattGMain"
-                                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
-                                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}"
-                                    />
+                <ffimage:CachedImage VerticalOptions="Center"
+                                     HeightRequest="125"
+                                     WidthRequest="125"
+                                     TranslationY="-100"
+                                     CacheType="Disk"
+                                     CacheDuration="90"
+                                     Aspect="AspectFill"
+                                     Source="{Binding ProfilePic}"
+                                     LoadingPlaceholder="icon_avatar"
+                                     ErrorPlaceholder="icon_avatar"
+                                     d:Source="MattGMain"
+                                     RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
+                                     RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}">
+                        <ffimage:CachedImage.Transformations>
+                            <transforms:CircleTransformation BorderSize="20"
+                                                             BorderHexColor="#979797"/>
+                        </ffimage:CachedImage.Transformations>
+                    </ffimage:CachedImage>
 
                 <StackLayout RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.25,Constant=0}"
                              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=X,Factor=0,Constant=0}"

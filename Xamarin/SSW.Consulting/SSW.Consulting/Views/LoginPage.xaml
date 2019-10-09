@@ -18,8 +18,16 @@
                        HorizontalOptions="Center"
                        Margin="0,30,0,0"/>
 
+                <Button Text="{Binding ButtonText}"
+                        Command="{Binding LoginTappedCommand}"
+                        TextColor="White"
+                        VerticalOptions="EndAndExpand"
+                        Margin="50,0,50,150"
+                        IsEnabled="{Binding LoginButtonEnabled}"
+                        BackgroundColor="Black"
+                        BorderColor="{Binding ButtonBorder}"/>
 
-                <Frame BorderColor="{StaticResource ButtonBorder}"
+                <!--<Frame BorderColor="{StaticResource ButtonBorder}"
                        VerticalOptions="EndAndExpand"
                        Margin="50,0,50,150"
                        HasShadow="False"
@@ -34,13 +42,13 @@
                     <Label TextColor="White"
                            HorizontalTextAlignment="Center"
                            InputTransparent="True"
-                           Text="Sign up / Log in"/>
-                </Frame>
+                           Text="{Binding ButtonText}"/>
+                </Frame>-->
             </StackLayout>
 
-            <ActivityIndicator HorizontalOptions="FillAndExpand"
+            <ActivityIndicator HorizontalOptions="Center"
                                Color="Red"
-                               VerticalOptions="FillAndExpand"
+                               VerticalOptions="Center"
                                IsVisible="{Binding isRunning}"
                                IsRunning="{Binding isRunning}"/>
         </Grid>

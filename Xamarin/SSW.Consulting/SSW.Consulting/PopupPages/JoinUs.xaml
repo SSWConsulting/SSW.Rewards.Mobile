@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 BackgroundColor="Transparent"
+                 x:Class="SSW.Consulting.PopupPages.JoinUs">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame CornerRadius="3"
+           HorizontalOptions="Center"
+           Margin="10"
+           VerticalOptions="Center"
+           HasShadow="True"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}">
+        <Grid>
+            <StackLayout>
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource SSWRed}"
+                       FontSize="Large"
+                       Text="Join Us @SSW"/>
+                <Label HorizontalTextAlignment="Center"
+                       Margin="20"
+                       TextColor="White"
+                       Text="We're always looking for exceptional candidates at SSW."
+                       />
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="White"
+                       Margin="20"
+                       Text="SSW has offices in Sydney, Brisbane, Melbourne and 2 offices in China (Beijing and Hangzhou). We have employees from all around the world. We're flexible, and in this fast paced industry, we're on the forefront of cutting edge technology. We're enthusiastic and have a 'Make it happen' culture. We love engaging with the software development community."
+                       />
+                <Frame BackgroundColor="{StaticResource SSWRed}">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="FindoutMore_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Grid>
+                        <Label Text="Find out more..."
+                               HorizontalTextAlignment="Center"
+                               HorizontalOptions="Center"/>
+                        <Image Source="external"
+                               HorizontalOptions="End"/>
+                    </Grid>
+                </Frame>
+            </StackLayout>
+            <Image Source="icon_close"
+                   VerticalOptions="Start"
+                   HorizontalOptions="End">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_CloseTapped"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </Grid>
+    </Frame>
+</pages:PopupPage>

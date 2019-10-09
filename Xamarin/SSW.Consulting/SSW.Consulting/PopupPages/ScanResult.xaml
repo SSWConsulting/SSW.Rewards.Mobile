@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             x:Class="SSW.Consulting.PopupPages.ScanResult"
+             BackgroundColor="Transparent">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame WidthRequest="400"
+           HeightRequest="400"
+           Margin="10"
+           Padding="10"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}"
+           HorizontalOptions="Center"
+           VerticalOptions="Center">
+        <StackLayout>
+            <Label Text="{Binding ResultHeading}"
+                   FontSize="24"
+                   Margin="10"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{Binding HeadingColour}"/>
+            <lottie:AnimationView x:Name="ResultAnimation"
+                                  Animation="{Binding AnimationRef}"
+                                  AutoPlay="True"
+                                  Loop="False"
+                                  VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="CenterAndExpand"
+                                  HeightRequest="200"
+                                  WidthRequest="200"
+                                  Scale="1"/>
+            <Label Text="{Binding ResultBody}"
+                   TextColor="White"
+                   HorizontalTextAlignment="Center"
+                   Margin="10"/>
+
+            <Button Text="OK"
+                    HorizontalOptions="Center"
+                    WidthRequest="50"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    TextColor="White"
+                    Command="{Binding OnOkCommand}"/>
+        </StackLayout>
+    </Frame>
+</pages:PopupPage>

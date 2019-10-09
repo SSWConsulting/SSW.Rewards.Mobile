@@ -15,6 +15,8 @@ namespace SSW.Consulting.Infrastructure
             _storageProvider = storageProvider;
         }
 
+        public async Task<byte[]> GetProfileData() => await _storageProvider.DownloadBlob(CONTAINER_NAME, "NDC-Profiles-2019.xlsx");
+
         public async Task<Uri> GetProfileUri(string staffMemberName) => await _storageProvider.GetUri(CONTAINER_NAME, $"{staffMemberName.ToLower()}.png");
 
     }

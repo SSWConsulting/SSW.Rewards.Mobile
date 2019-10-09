@@ -6,6 +6,26 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Achievement/List": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_List",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Achievement/Add": {
       "post": {
         "tags": [
@@ -24,6 +44,26 @@
             "x-position": 1
           }
         ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Achievement/TechQuiz": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_TechQuiz",
         "responses": {
           "200": {
             "description": "",
@@ -91,7 +131,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserViewModel"
+                  "$ref": "#/components/schemas/CurrentUserViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/Achievements": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_Achievements",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAchievementsViewModel"
                 }
               }
             }
@@ -102,6 +174,37 @@
   },
   "components": {
     "schemas": {
+      "AchievementListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "achievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/AchievementViewModel"
+            }
+          }
+        }
+      },
+      "AchievementViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "LeaderboardListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -193,7 +296,7 @@
           }
         }
       },
-      "UserViewModel": {
+      "CurrentUserViewModel": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -211,6 +314,53 @@
           },
           "picture": {
             "type": "string",
+            "nullable": true
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UserAchievementsViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userAchievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserAchievementViewModel"
+            }
+          }
+        }
+      },
+      "UserAchievementViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "achievementName": {
+            "type": "string",
+            "nullable": true
+          },
+          "achievementValue": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "complete": {
+            "type": "boolean"
+          },
+          "awardedAt": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         }

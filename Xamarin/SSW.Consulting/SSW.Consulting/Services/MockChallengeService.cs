@@ -77,5 +77,10 @@ namespace SSW.Consulting.Services
 
             return await Task.FromResult(_myChallenges);
         }
+
+        public Task<ChallengeResult> PostChallengeAsync(string achievementString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

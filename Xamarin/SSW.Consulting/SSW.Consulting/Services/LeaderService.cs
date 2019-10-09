@@ -6,6 +6,7 @@ using SSW.Consulting.Models;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using Microsoft.AppCenter.Auth;
+using Xamarin.Forms;
 
 namespace SSW.Consulting.Services
 {
@@ -26,7 +27,10 @@ namespace SSW.Consulting.Services
         {
             string token = await _userService.GetTokenAsync();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _leaderBoardClient = new LeaderboardClient("https://sswconsulting-dev.azurewebsites.net", _httpClient); //TODO: don't hard code this
+
+            string baseUrl = Constants.ApiBaseUrl;
+
+            _leaderBoardClient = new LeaderboardClient(baseUrl, _httpClient);
         }
 
         public async Task<IEnumerable<LeaderSummary>> GetLeadersAsync(bool forceRefresh)
@@ -45,7 +49,7 @@ namespace SSW.Consulting.Services
                         id = Leader.UserId,
                         Name = Leader.Name,
                         Rank = Leader.Rank,
-                        ProfilePic = Leader.ProfilePic.ToString()
+                        ProfilePic = string.IsNullOrWhiteSpace(Leader.ProfilePic?.ToString()) ? "icon_avatar" : Leader.ProfilePic.ToString()
                     };
 
                     summaries.Add(leaderSummary);
@@ -56,7 +60,8 @@ namespace SSW.Consulting.Services
                 //Console.Write(e);
                 if(e.StatusCode == 401)
                 {
-                    //TODO: re-authneticate
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
                 }
                 else
                 {

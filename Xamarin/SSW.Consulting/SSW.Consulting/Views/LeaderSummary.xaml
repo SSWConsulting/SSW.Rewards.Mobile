@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ViewCell xmlns="http://xamarin.com/schemas/2014/forms" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
-             xmlns:converters="clr-namespace:SSW.Consulting.Converters"
-             mc:Ignorable="d"
-             x:Class="SSW.Consulting.Views.LeaderSummary">
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+          xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+          xmlns:converters="clr-namespace:SSW.Consulting.Converters"
+          mc:Ignorable="d"
+          x:Class="SSW.Consulting.Views.LeaderSummary">
   <ViewCell.View>
 
         <StackLayout Orientation="Horizontal"
@@ -19,46 +20,66 @@
                      IsVisible="{Binding IsMe}"
                      d:IsVisible="true"/>
 
-            <StackLayout Orientation="Horizontal"
-                         HorizontalOptions="StartAndExpand"
-                         VerticalOptions="Center"
-                         Padding="5">
+            <Grid HorizontalOptions="FillAndExpand"
+                  VerticalOptions="Center"
+                  Padding="5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="0"
                        FontSize="18"
                        Text="{Binding Rank}"
                        VerticalOptions="Center"
                        Margin="5,0,0,0"
                        d:Text="2"/>
-                <controls:CircleImage Source="{Binding ProfilePic}"
-                                      d:Source="MattG"
-                                      Aspect="AspectFill"
-                                      VerticalOptions="Center"
-                                      WidthRequest="40"
-                                      Margin="10,0,5,0"
-                                      BorderColor="{StaticResource ProfileBorder}"
-                                      BorderThickness="5"/>
+
+                <ffimage:CachedImage Source="{Binding ProfilePic}"
+                                     Grid.Column="1"
+                                     LoadingPlaceholder="icon_avatar"
+                                     ErrorPlaceholder="icon_avatar"
+                                     d:Source="MattG"
+                                     Aspect="AspectFill"
+                                     CacheType="Disk"
+                                     CacheDuration="5"
+                                     VerticalOptions="Center"
+                                     WidthRequest="40"
+                                     Margin="10,0,5,0">
+                    <ffimage:CachedImage.Transformations>
+                        <transforms:CircleTransformation BorderSize="5"
+                                                         BorderHexColor="{StaticResource ProfileBorder}"/>
+                    </ffimage:CachedImage.Transformations>
+                </ffimage:CachedImage>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="2"
                        Text="{Binding Name}"
                        VerticalOptions="Center"
                        d:Text="Matt Goldman"/>
-            </StackLayout>
 
-            <StackLayout Orientation="Horizontal"
-                         HorizontalOptions="EndAndExpand"
-                         VerticalOptions="Center"
-                         Padding="5">
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="3"
                        Text="{Binding BaseScore, StringFormat='{0}pts'}"
                        d:Text="120pts"
                        VerticalOptions="Center"
+                       HorizontalOptions="End"
                        Margin="0,0,5,0"/>
+
                 <Label Style="{StaticResource Leaderboard}"
+                       Grid.Column="4"
                        Text="{Binding BaseScore, StringFormat='{0} Bonus'}"
                        d:Text="35 Bonus"
                        VerticalOptions="Center"
+                       HorizontalOptions="End"
                        Margin="0,0,10,0"/>
-            </StackLayout>
 
+                </Grid>
         </StackLayout>
   </ViewCell.View>
 </ViewCell>

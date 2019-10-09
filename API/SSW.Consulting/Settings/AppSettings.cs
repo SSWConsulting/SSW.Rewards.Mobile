@@ -19,7 +19,8 @@ namespace SSW.Consulting.WebAPI.Settings
 	/// 
 	/// </summary>
 	public class AppSettings :
-		KeyVaultSecretsProvider.ISettings
+		KeyVaultSecretsProvider.ISettings,
+		IWWWRedirectSettings
 	{
 		private readonly ILogger<AppSettings> _logger;
 		private readonly IConfiguration _config;
@@ -31,7 +32,9 @@ namespace SSW.Consulting.WebAPI.Settings
 		}
 
 		public string KeyVaultUrl => _config[nameof(KeyVaultUrl)];
-		
+
+        public string TechQuizUrl => _config[nameof(TechQuizUrl)];
+
 		public int SecretCacheTimeoutMinutes => GetValue(nameof(SecretCacheTimeoutMinutes), 60);
 
 		public AzureAdB2CSettings AzureAdB2C

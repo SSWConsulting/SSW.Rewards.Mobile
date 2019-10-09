@@ -1,31 +1,37 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
 using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Application.User.Commands.UpsertUser
 {
-    public class AddAchievementCommand : IRequest<Unit>
+    public class AddAchievementCommand : IRequest<AchievementViewModel>
     {
         public string Code { get; set; }
 
-        public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, Unit>
+        public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AchievementViewModel>
         {
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWConsultingDbContext _context;
+            private readonly IMapper _mapper;
 
             public AddAchievementCommandHandler(
                 ICurrentUserService currentUserService,
-                ISSWConsultingDbContext context)
+                ISSWConsultingDbContext context,
+                IMapper mapper)
             {
                 _currentUserService = currentUserService;
                 _context = context;
+                _mapper = mapper;
             }
 
-            public async Task<Unit> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
+            public async Task<AchievementViewModel> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
             {
                 var achievement = await _context
                     .Achievements
@@ -57,10 +63,16 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
                         AchievementId = achievement.Id
                     });
 
-                await _context.SaveChangesAsync(cancellationToken);
+                try
+                {
+                    await _context.SaveChangesAsync(cancellationToken);
+                }
+                catch(Exception)
+                {
+                    throw new AlreadyAwardedException(user.Id, achievement.Name);
+                }
 
-
-                return Unit.Value;
+                return _mapper.Map<AchievementViewModel>(achievement);
             }
         }
     }

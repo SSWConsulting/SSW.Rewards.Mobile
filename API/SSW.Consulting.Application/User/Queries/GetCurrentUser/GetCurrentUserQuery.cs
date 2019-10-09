@@ -4,24 +4,21 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
-using SSW.Consulting.Application.User.Queries.GetUser;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.Application.User.Queries.GetCurrentUserQuery
+namespace SSW.Consulting.Application.User.Queries.GetCurrentUser
 {
-    public class GetCurrentUserQuery : IRequest<UserViewModel>
+    public class GetCurrentUserQuery : IRequest<CurrentUserViewModel>
     {
-        public string Email { get; set; }
-
-        public class GetUserQueryHandler : IRequestHandler<GetCurrentUserQuery, UserViewModel>
+        public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
         {
             private readonly IMapper _mapper;
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWConsultingDbContext _context;
 
-            public GetUserQueryHandler(
+            public GetCurrentUserQueryHandler(
                 IMapper mapper,
                 ICurrentUserService currentUserService,
                 ISSWConsultingDbContext context)
@@ -31,16 +28,20 @@ namespace SSW.Consulting.Application.User.Queries.GetCurrentUserQuery
                 _context = context;
             }
 
-            public async Task<UserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+            public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
             {
+                // need to use current user's email address to look up these details since b2c's id is not being stored
+                var currentUserEmail =  _currentUserService.GetUserEmail();
                 var user = await _context.Users
-                    .Where(u => u.Email == _currentUserService.GetUserEmail())
-                    .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
+                    .Include(u => u.UserAchievements)
+                    .ThenInclude(ua => ua.Achievement)
+                    .Where(u => u.Email == currentUserEmail)
+                    .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);
 
                 if (user == null)
                 {
-                    throw new NotFoundException(nameof(User), request.Email);
+                    throw new NotFoundException(nameof(User), currentUserEmail);
                 }
 
                 return user;

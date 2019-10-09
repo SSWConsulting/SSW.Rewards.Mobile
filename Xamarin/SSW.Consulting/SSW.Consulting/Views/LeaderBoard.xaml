@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:converters="clr-namespace:SSW.Consulting.Converters"
-             xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
              mc:Ignorable="d"
              x:Name="LeaderboardPage"
              Title="{Binding Title}"
@@ -12,11 +13,11 @@
              x:Class="SSW.Consulting.Views.LeaderBoard">
     <ContentPage.Content>
         <StackLayout Padding="10">
+            <ActivityIndicator IsRunning="{Binding IsRunning}"
+                               IsVisible="{Binding IsRunning}"/>
             <CollectionView ItemsSource="{Binding Leaders}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <!--<ViewCell>
-                            <ViewCell.View> -->
                         <Frame Padding="10,5"
                                BackgroundColor="Transparent"
                                HasShadow="False">
@@ -61,17 +62,24 @@
                                                Grid.Column="0"
                                                d:Text="2"/>
 
-                                        <controls:CircleImage Source="{Binding ProfilePic}"
-                                                              d:Source="MattG"
-                                                              VerticalOptions="Center"
-                                                              InputTransparent="True"
-                                                              WidthRequest="50"
-                                                              HeightRequest="50"
-                                                              Aspect="AspectFill"
-                                                              Margin="0"
-                                                              Grid.Column="1"
-                                                              BorderColor="{StaticResource ProfileBorder}"
-                                                              BorderThickness="2"/>
+                                        <ffimage:CachedImage Source="{Binding ProfilePic}"
+                                                             LoadingPlaceholder="icon_avatar"
+                                                             ErrorPlaceholder="icon_avatar"
+                                                             d:Source="MattG"
+                                                             CacheType="Disk"
+                                                             CacheDuration="90"
+                                                             VerticalOptions="Center"
+                                                             InputTransparent="True"
+                                                             WidthRequest="50"
+                                                             HeightRequest="50"
+                                                             Aspect="AspectFill"
+                                                             Margin="0"
+                                                             Grid.Column="1">
+                                            <ffimage:CachedImage.Transformations>
+                                                <transforms:CircleTransformation BorderSize="20"
+                                                                                 BorderHexColor="#979797"/>
+                                            </ffimage:CachedImage.Transformations>
+                                        </ffimage:CachedImage>
 
                                         <Label Style="{StaticResource Leaderboard}"
                                                Text="{Binding Name}"
@@ -97,61 +105,9 @@
                                                Margin="0"
                                                Grid.Column="4"/>
                                     </Grid>
-
-                                    <!--
-                                    <StackLayout Orientation="Horizontal"
-                                                 HorizontalOptions="StartAndExpand"
-                                                 VerticalOptions="Center"
-                                                 InputTransparent="True"
-                                                 Padding="5">
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               FontSize="18"
-                                               Text="{Binding Rank}"
-                                               VerticalOptions="Center"
-                                               InputTransparent="True"
-                                               Margin="5,0,0,0"
-                                               d:Text="2"/>
-                                        <controls:CircleImage Source="{Binding ProfilePic}"
-                                                              d:Source="MattG"
-                                                              VerticalOptions="Center"
-                                                              InputTransparent="True"
-                                                              WidthRequest="50"
-                                                              HeightRequest="50"
-                                                              Margin="0,0,5,0"
-                                                              BorderColor="{StaticResource ProfileBorder}"
-                                                              BorderThickness="2"/>
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               Text="{Binding Name}"
-                                               InputTransparent="True"
-                                               VerticalOptions="Center"
-                                               d:Text="Matt Goldman"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal"
-                                                 HorizontalOptions="EndAndExpand"
-                                                 InputTransparent="True"
-                                                 VerticalOptions="Center"
-                                                 Padding="5">
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               Text="{Binding BaseScore, StringFormat='{0} pts'}"
-                                               InputTransparent="True"
-                                               d:Text="120pts"
-                                               VerticalOptions="Center"
-                                               Margin="0,0,5,0"/>
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               Text="{Binding BonusScore, StringFormat='{0} Bonus'}"
-                                               InputTransparent="True"
-                                               d:Text="35 Bonus"
-                                               VerticalOptions="Center"
-                                               Margin="0,0,5,0"/>
-                                    </StackLayout>
-                                    -->
-
                                 </StackLayout>
                             </Frame>
                         </Frame>
-                            <!--</ViewCell.View>
-                        </ViewCell>-->
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

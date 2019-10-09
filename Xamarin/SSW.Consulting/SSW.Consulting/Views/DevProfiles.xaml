@@ -131,7 +131,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0"
-                                       Text="Follow me Twitter"
+                                       Text="Follow me on Twitter"
                                        FontSize="18"
                                        FontAttributes="Bold"
                                        TextColor="White"

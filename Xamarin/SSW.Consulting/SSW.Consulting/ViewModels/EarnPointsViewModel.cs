@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Rg.Plugins.Popup.Services;
 using SSW.Consulting.Models;
 using SSW.Consulting.PopupPages;
 using SSW.Consulting.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
@@ -12,25 +14,34 @@ namespace SSW.Consulting.ViewModels
     public class EarnPointsViewModel : BaseViewModel
     {
         private IChallengeService _challengeService { get; set; }
-        public ObservableCollection<Challenge> Challenges { get; set; }
+        public ObservableCollection<ExternalReward> ExternalRewards { get; set; }
         public ICommand OnScanTapped { get; set; }
+        public ICommand OnEventTapped { get; set; }
 
         public EarnPointsViewModel(IChallengeService challengeService)
         {
             Title = "Earn Points";
             _challengeService = challengeService;
-            Challenges = new ObservableCollection<Challenge>();
+            ExternalRewards = new ObservableCollection<ExternalReward>();
             OnScanTapped = new Command(OpenQRScanner);
-            Initialise();
+			OnEventTapped = new Command<string>((x) => OpenURL(x));
+			Initialise();
         }
 
         private async void Initialise()
         {
-            var challenges = await _challengeService.GetChallengesAsync();
-            foreach(var challenge in challenges)
+            ExternalRewards = new ObservableCollection<ExternalReward>
             {
-                Challenges.Add(challenge);
-            }
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Follow us on Twitter", Picture = "points_twitter", Url = "https://twitter.com/SSW_TV"},
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Take SSW tech quiz", Picture = "points_quiz", Url = Constants.ApiBaseUrl + "/api/achievements/techquiz" },
+                new ExternalReward { Badge = "external", IsBonus = false, Points = 10, Title="Subscribe to SSW TV", Picture = "points_youtube", Url = "https://www.youtube.com/channel/UCBFgwtV9lIIhvoNh0xoQ7Pg"},
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="See SSW events", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Events/?upcomingeventsonly=true"}
+            };
+        }
+
+        private async void OpenURL(string url)
+        {
+            await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
         }
 
         private async void OpenQRScanner()
