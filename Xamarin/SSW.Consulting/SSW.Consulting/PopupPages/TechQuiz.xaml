@@ -23,7 +23,7 @@
            HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
         <Grid InputTransparent="True">
-            <StackLayout InputTransparent="True">
+            <StackLayout>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
                        FontSize="Large"
@@ -43,16 +43,18 @@
                         <TapGestureRecognizer NumberOfTapsRequired="1"
                                               Tapped="FindoutMore_Tapped"/>
                     </Frame.GestureRecognizers>
-                    <Grid>
+                    <Grid InputTransparent="True">
                         <Label Text="Take Quiz..."
+                               InputTransparent="True"
                                HorizontalTextAlignment="Center"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
+                               InputTransparent="True"
                                HorizontalOptions="End"/>
                     </Grid>
                 </Frame>
             </StackLayout>
-            <Image Source="icon_close"
+            <!--<Image Source="icon_close"
                    VerticalOptions="Start"
                    InputTransparent="True"
                    HorizontalOptions="End"
@@ -62,7 +64,7 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_CloseTapped"/>
                 </Image.GestureRecognizers>
-            </Image>
+            </Image>-->
         </Grid>
     </Frame>
 </pages:PopupPage>

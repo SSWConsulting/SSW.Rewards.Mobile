@@ -19,24 +19,24 @@ namespace SSW.Consulting
             await Navigation.PushModalAsync(new LoginPage());
         }
 
-        public void Handle_QuizClicked(object sender, EventArgs e)
+        public async void Handle_QuizClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            await PopupNavigation.Instance.PushAsync(new TechQuiz());
         }
 
-        public void Handle_EventsClicked(object sender, EventArgs e)
+        public async void Handle_EventsClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            await PopupNavigation.Instance.PushAsync(new Events());
         }
 
-        public void Handle_JoinClicked(object sender, EventArgs e)
+        public async void Handle_JoinClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            await PopupNavigation.Instance.PushAsync(new JoinUs());
         }
 
         public async void Handle_AboutClicked(object sender, EventArgs e)
         {
-            await PopupNavigation.Instance.PushAsync(new AboutSSW()); ;
+            await PopupNavigation.Instance.PushAsync(new AboutSSW());
         }
 
         public void Handle_HowToPlayClicked(object sender, EventArgs e)
