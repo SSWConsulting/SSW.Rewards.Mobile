@@ -106,15 +106,6 @@
     <ImageAsset Include="Assets.xcassets\adam.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Andreas.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Calum.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattG.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\Uly.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -161,9 +152,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattGMain.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sswsq.imageset\sswsq%403x.png">
@@ -685,15 +673,6 @@
     <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%403x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder%402x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\placeholder.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -887,12 +866,11 @@
     <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif" />
     <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif" />
     <ImageAsset Include="Assets.xcassets\external.imageset\external.gif" />
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%403x.png" />
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%402x.png" />
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder.png" />
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
+    <BundleResource Include="placeholder.gif" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
