@@ -1,0 +1,19 @@
+{
+  "Serilog": {
+    "WriteTo": [
+      {
+        "Name": "Async",
+        "Args": {
+          "configure": [
+            {
+              "Name": "Console",
+              "Args": {
+                "restrictedToMinimumLevel": "Verbose"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
