@@ -19,6 +19,8 @@ namespace SSW.Consulting.ViewModels
         private bool _profileExpanded { get; set; }
         public bool IsRunning { get; set; }
 
+        public bool TwitterEnabled { get; set; }
+
         public ObservableCollection<DevProfile> Profiles { get; set; }
 
         public int PositionSelected { get; set; }
@@ -42,6 +44,7 @@ namespace SSW.Consulting.ViewModels
         public DevProfilesViewModel(IDevService devService)
         {
             IsRunning = true;
+            TwitterEnabled = true;
             OnPropertyChanged("IsRunning");
             _devService = devService;
             OnCardSwiped = new Command(SetDevDetails);
@@ -53,7 +56,7 @@ namespace SSW.Consulting.ViewModels
 
             OverlayLayoutBounds = new Rectangle(1, 1, 1, 0.2);
             _profileExpanded = false;
-            OnSwipedUpdatePropertyList = new string[] { "Title", "DevFirstName", "DevTitle", "DevBio" };
+            OnSwipedUpdatePropertyList = new string[] { "Title", "DevFirstName", "DevTitle", "DevBio", "TwitterEnabled" };
             Initialise();
         }
 
@@ -77,7 +80,12 @@ namespace SSW.Consulting.ViewModels
             DevFirstName = Profiles[profileIndex].FirstName;
             DevTitle = Profiles[profileIndex].Title;
             DevBio = Profiles[profileIndex].Bio;
-            _twitterURI = "https://twitter.com/" + Profiles[profileIndex].TwitterID;
+            string twitterID = Profiles[profileIndex].TwitterID;
+            _twitterURI = "https://twitter.com/" + twitterID;
+            if (string.IsNullOrWhiteSpace(twitterID))
+                TwitterEnabled = false;
+            else
+                TwitterEnabled = true;
             _devEmail = Profiles[profileIndex].Email;
             _devPhone = Profiles[profileIndex].Phone;
             RaisePropertyChanged(OnSwipedUpdatePropertyList);

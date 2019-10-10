@@ -60,21 +60,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Earn points and you could win yourself a Google Home.",
-                    Image = "prize_googlehome",
-                    MainHeading = "Earn Rewards",
-                    SubHeading = "...or a Google Home...",
-                    TextColour = Color.Black,
-                    LinkText = "SKIP INTRO",
-                    textAlignment = TextAlignment.Start
-                },
-                new CarouselViewModel
-                {
-                    backgroundColour = Color.White,
                     Content = "Get on the top of the leaderboard and win a Google Hub Max.",
                     Image = "prize_hubmax",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a Google Hub Max...",
+                    SubHeading = "...or a Google Nest Hub Max...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -85,7 +74,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Get on the top of the leaderboard and win one of the MI Wirst bands",
                     Image = "prize_miband",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a MI Band",
+                    SubHeading = "...or a MI Band 4",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -107,7 +96,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Win a free place at one of our Superpowers tours events.",
                     Image = "prize_superpowers",
                     MainHeading = "Earn Rewards",
-                    SubHeading = ".NET CORE Superpowers",
+                    SubHeading = "Superpowers Tours",
                     TextColour = Color.Black,
                     LinkText = "GET STARTED",
                     textAlignment = TextAlignment.End

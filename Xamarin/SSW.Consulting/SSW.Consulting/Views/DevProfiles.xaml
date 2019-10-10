@@ -118,6 +118,7 @@
                         <Frame BackgroundColor="{StaticResource TwitterBlue}"
                                CornerRadius="10"
                                IsClippedToBounds="True"
+                               IsVisible="{Binding TwitterEnabled}"
                                Margin="10,10,10,10"
                                HasShadow="False">
                             <Frame.GestureRecognizers>

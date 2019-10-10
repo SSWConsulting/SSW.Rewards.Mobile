@@ -19,7 +19,10 @@
                       SelectionMode="None"
                       BackgroundColor="Transparent"
                       HasUnevenRows="True"
-                      SeparatorVisibility="None">
+                      SeparatorVisibility="None"
+                      IsPullToRefreshEnabled="True"
+                      IsRefreshing="{Binding IsRefreshing}"
+                      RefreshCommand="{Binding OnRefreshCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

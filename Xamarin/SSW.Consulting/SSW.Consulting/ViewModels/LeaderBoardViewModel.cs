@@ -13,6 +13,8 @@ namespace SSW.Consulting.ViewModels
     public class LeaderBoardViewModel : BaseViewModel
     {
         public bool IsRunning { get; set; }
+        public bool IsRefreshing { get; set; }
+
         private ILeaderService _leaderService;
         private IUserService _userService;
         public ICommand LeaderTapped
@@ -22,12 +24,14 @@ namespace SSW.Consulting.ViewModels
                 return new Command<LeaderSummaryViewModel>((x) => HandleLeaderTapped(x));
             }
         }
+        public ICommand OnRefreshCommand { get; set; }
 
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
             Title = "SSW Leaderboard";
+            OnRefreshCommand = new Command(Refresh);
             _leaderService = leaderService;
             _userService = userService;
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
@@ -51,6 +55,28 @@ namespace SSW.Consulting.ViewModels
 
             IsRunning = false;
             RaisePropertyChanged("IsRunning");
+        }
+
+        public async void Refresh()
+        {
+            //IsRunning = true;
+            //RaisePropertyChanged("IsRunning");
+            var summaries = await _leaderService.GetLeadersAsync(false);
+            int myId = await _userService.GetMyUserIdAsync();
+
+            Leaders.Clear();
+
+            foreach (var summary in summaries)
+            {
+                LeaderSummaryViewModel vm = new LeaderSummaryViewModel(summary);
+                vm.IsMe = (summary.id == myId);
+
+                Leaders.Add(vm);
+            }
+
+            //IsRunning = false;
+            IsRefreshing = false;
+            RaisePropertyChanged("IsRefreshing");
         }
 
         private void HandleLeaderTapped(LeaderSummaryViewModel leader)
