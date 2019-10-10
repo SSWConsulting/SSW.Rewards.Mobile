@@ -33,7 +33,7 @@ namespace SSW.Consulting.ViewModels
             ExternalRewards = new ObservableCollection<ExternalReward>
             {
                 new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Follow us on Twitter", Picture = "points_twitter", Url = "https://twitter.com/SSW_TV"},
-                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Take SSW tech quiz", Picture = "points_quiz", Url = Constants.ApiBaseUrl + "/api/achievements/techquiz" },
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Take SSW tech quiz", Picture = "points_quiz", Url = Constants.ApiBaseUrl + "/api/techquiz" },
                 new ExternalReward { Badge = "external", IsBonus = false, Points = 10, Title="Subscribe to SSW TV", Picture = "points_youtube", Url = "https://www.youtube.com/channel/UCBFgwtV9lIIhvoNh0xoQ7Pg"},
                 new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="See SSW events", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Events/?upcomingeventsonly=true"}
             };
@@ -41,7 +41,7 @@ namespace SSW.Consulting.ViewModels
 
         private async void OpenURL(string url)
         {
-            await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+            await Browser.OpenAsync(url, BrowserLaunchMode.External);
         }
 
         private async void OpenQRScanner()

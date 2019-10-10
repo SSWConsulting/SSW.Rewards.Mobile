@@ -26,9 +26,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignKey>iPhone Distribution: Superior Software for Windows Pty Ltd (B5652JTA7Q)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodesignProvision>Automatic:AppStore</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -38,8 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <CodesignKey>iPhone Distribution: Superior Software for Windows Pty Ltd (B5652JTA7Q)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,10 +49,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Distribution: Superior Software for Windows Pty Ltd (B5652JTA7Q)</CodesignKey>
+    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>Matt G SSW Distro Provisioning Profile</CodesignProvision>
+    <CodesignProvision>Matt G Dev Profile SSW Mobile App</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -65,7 +64,8 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <CodesignProvision>Matt G Dev Profile SSW Mobile App</CodesignProvision>
+    <Commandlineparameters></Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhoneSimulator'">
     <DebugSymbols>true</DebugSymbols>
@@ -881,6 +881,12 @@
     <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%402x.png" />
     <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles.png" />
     <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\dev_loading_placeholder.imageset\dev_loading_placeholder%403x.png" />
+    <ImageAsset Include="Assets.xcassets\dev_loading_placeholder.imageset\dev_loading_placeholder%402x.png" />
+    <ImageAsset Include="Assets.xcassets\dev_loading_placeholder.imageset\dev_loading_placeholder.png" />
+    <ImageAsset Include="Assets.xcassets\dev_loading_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%403x.png" />

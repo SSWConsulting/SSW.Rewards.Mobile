@@ -72,7 +72,7 @@
             </CollectionView>
 
             <ffimage:CachedImage Source="{Binding Picture}"
-                                 LoadingPlaceholder="placeholder"
+                                 LoadingPlaceholder="dev_loading_placeholder"
                                  ErrorPlaceholder="dev_placeholder"
                                  CacheType="Disk"
                                  CacheDuration="90"

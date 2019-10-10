@@ -19,6 +19,7 @@ namespace SSW.Consulting.ViewModels
         public ICommand OnContactTapped { get; set; }
 
         private bool _profileExpanded { get; set; }
+        public bool IsRunning { get; set; }
 
         public ObservableCollection<DevProfile> Profiles { get; set; }
 
@@ -42,6 +43,8 @@ namespace SSW.Consulting.ViewModels
 
         public DevProfilesViewModel(IDevService devService)
         {
+            IsRunning = true;
+            OnPropertyChanged("IsRunning");
             _devService = devService;
             //_contacts = contacts;
             OnCardSwiped = new Command(SetDevDetails);
@@ -67,6 +70,8 @@ namespace SSW.Consulting.ViewModels
             }
             OnPropertyChanged("Profiles");
             SetDevDetails();
+            IsRunning = false;
+            OnPropertyChanged("IsRunning");
         }
 
         public void SetDevDetails()

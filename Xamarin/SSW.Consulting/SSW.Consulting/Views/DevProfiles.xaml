@@ -146,6 +146,10 @@
                     </StackLayout>
                 </RelativeLayout>
             </Frame>
+            <ActivityIndicator IsVisible="{Binding IsRunning}"
+                               IsRunning="{Binding IsRunning}"
+                               RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.5,Constant=0}"
+                               RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.5,Constant=0}"/>
         </RelativeLayout>
     </ContentPage.Content>
 </ContentPage>

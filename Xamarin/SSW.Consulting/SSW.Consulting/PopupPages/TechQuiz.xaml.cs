@@ -16,9 +16,9 @@ namespace SSW.Consulting.PopupPages
 
         private async void FindoutMore_Tapped(object sender, EventArgs e)
         {
-            string url = Constants.ApiBaseUrl + "/TechQuiz";
+            string url = Constants.ApiBaseUrl + "/api/achievement/TechQuiz";
 
-            await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+            await Browser.OpenAsync(url, BrowserLaunchMode.External);
         }
 
         public async void Handle_CloseTapped(object sender, EventArgs args)

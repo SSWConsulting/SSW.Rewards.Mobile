@@ -15,93 +15,100 @@
         <StackLayout Padding="10">
             <ActivityIndicator IsRunning="{Binding IsRunning}"
                                IsVisible="{Binding IsRunning}"/>
-            <CollectionView ItemsSource="{Binding Leaders}">
-                <CollectionView.ItemTemplate>
+            <ListView ItemsSource="{Binding Leaders}"
+                      SelectionMode="None"
+                      BackgroundColor="Transparent"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="None">
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10,5"
-                               BackgroundColor="Transparent"
-                               HasShadow="False">
-                            <Frame HeightRequest="70"
-                                   WidthRequest="200"
-                                   x:Name="Item"
-                                   Padding="0"
-                                   CornerRadius="2"
-                                   HasShadow="True">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                          CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
-                                                          BindingContext="{Binding Source={x:Reference LeaderboardPage}, Path=BindingContext}"
-                                                          Command="{Binding LeaderTapped}"/>
-                                </Frame.GestureRecognizers>
-                                <StackLayout Orientation="Horizontal"
-                                             HorizontalOptions="FillAndExpand"
-                                             InputTransparent="True"
-                                             BackgroundColor="{Binding IsMe, Converter={converters:IsMeToColorConverter}}">
+                        <ViewCell>
+                            <Frame Padding="10,5"
+                                   BackgroundColor="Transparent"
+                                   HasShadow="False">
+                                <Frame HeightRequest="70"
+                                       WidthRequest="200"
+                                       x:Name="Item"
+                                       Padding="0"
+                                       CornerRadius="2"
+                                       HasShadow="True">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                              CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
+                                                              BindingContext="{Binding Source={x:Reference LeaderboardPage}, Path=BindingContext}"
+                                                              Command="{Binding LeaderTapped}"/>
+                                    </Frame.GestureRecognizers>
+                                    <StackLayout Orientation="Horizontal"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 InputTransparent="True"
+                                                 BackgroundColor="{Binding IsMe, Converter={converters:IsMeToColorConverter}}">
 
-                                    <BoxView HeightRequest="100"
-                                             WidthRequest="5"
-                                             InputTransparent="True"
-                                             BackgroundColor="{Binding IsMe, Converter={converters:IsMeTagConverter}}"
-                                             d:IsVisible="true"/>
+                                        <BoxView HeightRequest="100"
+                                                 WidthRequest="5"
+                                                 InputTransparent="True"
+                                                 BackgroundColor="{Binding IsMe, Converter={converters:IsMeTagConverter}}"
+                                                 d:IsVisible="true"/>
 
-                                    <Grid HorizontalOptions="FillAndExpand">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="50"/>
-                                            <ColumnDefinition Width="4*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                        </Grid.ColumnDefinitions>
+                                        <Grid HorizontalOptions="FillAndExpand">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="3*"/>
+                                            </Grid.ColumnDefinitions>
 
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               FontSize="18"
-                                               Text="{Binding Rank}"
-                                               VerticalOptions="Center"
-                                               InputTransparent="True"
-                                               Margin="0"
-                                               Grid.Column="0"
-                                               d:Text="2"/>
+                                            <Label Style="{StaticResource Leaderboard}"
+                                                   FontSize="18"
+                                                   Text="{Binding Rank}"
+                                                   VerticalOptions="Center"
+                                                   InputTransparent="True"
+                                                   Margin="0"
+                                                   Grid.Column="0"
+                                                   d:Text="2"/>
 
-                                        <ffimage:CachedImage Source="{Binding ProfilePic}"
-                                                             LoadingPlaceholder="icon_avatar"
-                                                             ErrorPlaceholder="icon_avatar"
-                                                             d:Source="MattG"
-                                                             CacheType="Disk"
-                                                             CacheDuration="90"
-                                                             VerticalOptions="Center"
-                                                             InputTransparent="True"
-                                                             WidthRequest="50"
-                                                             HeightRequest="50"
-                                                             Aspect="AspectFill"
-                                                             Margin="0"
-                                                             Grid.Column="1">
-                                            <ffimage:CachedImage.Transformations>
-                                                <transforms:CircleTransformation BorderSize="20"
-                                                                                 BorderHexColor="#979797"/>
-                                            </ffimage:CachedImage.Transformations>
-                                        </ffimage:CachedImage>
+                                            <ffimage:CachedImage Source="{Binding ProfilePic}"
+                                                                 LoadingPlaceholder="icon_avatar"
+                                                                 ErrorPlaceholder="icon_avatar"
+                                                                 d:Source="MattG"
+                                                                 CacheType="Disk"
+                                                                 CacheDuration="90"
+                                                                 VerticalOptions="Center"
+                                                                 InputTransparent="True"
+                                                                 WidthRequest="50"
+                                                                 HeightRequest="50"
+                                                                 Aspect="AspectFill"
+                                                                 Margin="0"
+                                                                 Grid.Column="1">
+                                                <ffimage:CachedImage.Transformations>
+                                                    <transforms:CircleTransformation BorderSize="20"
+                                                                                     BorderHexColor="#979797"/>
+                                                </ffimage:CachedImage.Transformations>
+                                            </ffimage:CachedImage>
 
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               Text="{Binding Name}"
-                                               InputTransparent="True"
-                                               VerticalOptions="Center"
-                                               Margin="10,0"
-                                               Grid.Column="2"
-                                               d:Text="Matt Goldman"/>
+                                            <Label Style="{StaticResource Leaderboard}"
+                                                   Text="{Binding Name}"
+                                                   InputTransparent="True"
+                                                   VerticalOptions="Center"
+                                                   Margin="10,0"
+                                                   Grid.Column="2"
+                                                   d:Text="Matt Goldman"/>
 
-                                        <Label Style="{StaticResource Leaderboard}"
-                                               Text="{Binding BaseScore, StringFormat='{0} points'}"
-                                               InputTransparent="True"
-                                               d:Text="120pts"
-                                               VerticalOptions="Center"
-                                               Grid.Column="3"
-                                               Margin="0"/>
-                                    </Grid>
-                                </StackLayout>
+                                            <Label Style="{StaticResource Leaderboard}"
+                                                   Text="{Binding BaseScore, StringFormat='{0} points'}"
+                                                   InputTransparent="True"
+                                                   d:Text="120pts"
+                                                   VerticalOptions="Center"
+                                                   Margin="0,0,15,0"
+                                                   HorizontalTextAlignment="End"
+                                                   Grid.Column="3"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </Frame>
                             </Frame>
-                        </Frame>
+                        </ViewCell>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
