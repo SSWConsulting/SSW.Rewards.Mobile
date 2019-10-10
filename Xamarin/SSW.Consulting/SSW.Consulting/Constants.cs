@@ -11,7 +11,7 @@ namespace SSW.Consulting
 #elif QA
         public const string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
-        public const string ApiBaseUrl = "https://sswconsulting.azurewebsites.net";
+        public const string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #endif
     }
 }
