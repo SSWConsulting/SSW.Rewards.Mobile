@@ -14,7 +14,7 @@ namespace SSW.Consulting.Converters
             if (value == null)
                 return string.Empty;
             //ImageSource source;
-            string imageResourceName = ((string)value).ToLower().Replace(" ", string.Empty).Replace(".", string.Empty);
+            string imageResourceName = ((string)value).ToLower().Replace(" ", string.Empty).Replace(".", string.Empty).Replace("#", string.Empty);
 
             return $"skill_{imageResourceName}";
         }
