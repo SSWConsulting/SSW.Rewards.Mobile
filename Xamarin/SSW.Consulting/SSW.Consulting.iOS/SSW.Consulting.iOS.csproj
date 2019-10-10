@@ -896,9 +896,15 @@
     <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%403x.png" />
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%402x.png" />
-    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder.png" />
+    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
