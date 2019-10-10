@@ -18,7 +18,6 @@ namespace SSW.Consulting.Persistence
         private readonly ISSWConsultingDbContext _context;
 
         private Dictionary<string, int> _skills;
-        private Dictionary<string, StaffMember> _staffMembers;
 
         public SampleDataSeeder(ISSWConsultingDbContext context)
         {
@@ -80,12 +79,14 @@ namespace SSW.Consulting.Persistence
             });
 
             await _context.SaveChangesAsync(cancellationToken);
-            _staffMembers = await _context.StaffMembers.ToDictionaryAsync(s => s.Name, s => s);
         }
 
         private async Task SeedAchievementsAsync(CancellationToken cancellationToken)
         {
             var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
+
+            // tech quiz
+            SetupAchievement(existingAchievements, "SSW Tech Quiz", 500);
 
             // prizes
             SetupAchievement(existingAchievements, "SSW Water Bottle", 50);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading;
+using Microsoft.Extensions.Configuration;
 using SSW.Consulting.Application.Common.Interfaces;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace SSW.Consulting.Infrastructure
 			return _config[secretName];
 		}
 
-		public async Task<string> GetSecretAsync(string secretName)
+		public async Task<string> GetSecretAsync(string secretName, CancellationToken cancellationToken)
 		{
 			return await Task.FromResult(_config[secretName]);
 		}

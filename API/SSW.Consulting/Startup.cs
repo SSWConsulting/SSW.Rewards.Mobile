@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.AspNetCore.Builder;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using SSW.Consulting.Application;
 using SSW.Consulting.Application.Common.Interfaces;
 using SSW.Consulting.Infrastructure;
@@ -28,6 +30,11 @@ namespace SSW.Consulting
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// Configure all the stuffs
+			ConfigureSettings(services);
+			ConfigureSecrets(services);
+			ConfigureLogging(services);
+
 			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
 				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
@@ -38,15 +45,26 @@ namespace SSW.Consulting
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry();
+            services.AddDistributedMemoryCache();
 
-            services
+			services
                 .AddControllers()
                 .AddNewtonsoftJson();
-
-            // Configure all the stuffs
-			ConfigureSettings(services);
-			ConfigureSecrets(services);
         }
+
+		public virtual void ConfigureLogging(IServiceCollection services)
+		{
+			Log.Logger = new LoggerConfiguration()
+				.ReadFrom.Configuration(Configuration)
+				.Enrich.FromLogContext()
+				.Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
+#if DEBUG
+				// Used to filter out potentially bad data due debugging.
+				// Very useful when doing Seq dashboards and want to remove logs under debugging session.
+				.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached)
+#endif
+				.CreateLogger();
+		}
 
 		protected virtual void ConfigureSecrets(IServiceCollection services)
 		{
@@ -78,7 +96,7 @@ namespace SSW.Consulting
 
 			app.UseAuthentication();
 			app.UseAuthorization();
-
+			
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();

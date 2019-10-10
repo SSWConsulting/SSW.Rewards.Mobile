@@ -17,6 +17,10 @@ namespace SSW.Consulting.Persistence.Configurations
                 .WithMany(u => u.UserAchievements);
 
             builder
+                .HasIndex(ua => new { ua.UserId, ua.AchievementId })
+                .IsUnique();
+
+            builder
                 .Property(ua => ua.AwardedAt)
                 .HasDefaultValueSql("getdate()")
                 .ValueGeneratedOnAdd();

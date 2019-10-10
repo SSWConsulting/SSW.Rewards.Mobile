@@ -1,37 +1,57 @@
-﻿using Microsoft.Azure.KeyVault;
+﻿using System;
+using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Logging;
 using SSW.Consulting.Application.Common.Interfaces;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace SSW.Consulting.Infrastructure
 {
     public class KeyVaultSecretsProvider : ISecretsProvider
 	{
 		private readonly ISettings _settings;
+		private readonly IDistributedCache _cache;
 		private readonly ILogger<KeyVaultSecretsProvider> _log;
 		private readonly KeyVaultClient _client;
 
 		public interface ISettings
 		{
 			string KeyVaultUrl { get; }
+			int SecretCacheTimeoutMinutes { get; }
 		}
 
 		// TODO: Add IMemoryCache or something so that we can cache secrets for a minute or 5, otherwise keyvault could get hammered too much
-		public KeyVaultSecretsProvider(ILogger<KeyVaultSecretsProvider> log, ISettings settings, IKeyVaultClientProvider provider)
+		public KeyVaultSecretsProvider(ILogger<KeyVaultSecretsProvider> log, ISettings settings, IKeyVaultClientProvider provider, IDistributedCache cache)
 		{
 			_settings = settings;
+			_cache = cache;
 			_log = log;
 			_client = provider.GetClient();
 		}
 
-		public async Task<string> GetSecretAsync(string secretName)
+		public async Task<string> GetSecretAsync(string secretName, CancellationToken cancellationToken)
 		{
 			try
 			{
-				SecretBundle secret = await _client.GetSecretAsync(_settings.KeyVaultUrl, secretName);
+				string cachedSecret = await _cache.GetStringAsync(secretName, cancellationToken);
+				if (!string.IsNullOrWhiteSpace(cachedSecret))
+				{
+					return cachedSecret;
+				}
+
+				SecretBundle secret = await _client.GetSecretAsync(_settings.KeyVaultUrl, secretName, cancellationToken);
+				if (!string.IsNullOrWhiteSpace(secret.Value))
+				{
+					await _cache.SetStringAsync(secretName, secret.Value, new DistributedCacheEntryOptions()
+					{
+						SlidingExpiration = TimeSpan.FromHours(_settings.SecretCacheTimeoutMinutes)
+					}, cancellationToken);
+				}
+
 				return secret.Value;
 			}
 #if DEBUG
@@ -60,7 +80,7 @@ namespace SSW.Consulting.Infrastructure
 
 		public string GetSecret(string secretName)
 		{
-			return GetSecretAsync(secretName).ConfigureAwait(false).GetAwaiter().GetResult();
+			return GetSecretAsync(secretName, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 	}
 
