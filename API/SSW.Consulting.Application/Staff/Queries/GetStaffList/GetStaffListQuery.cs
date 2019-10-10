@@ -37,11 +37,12 @@ namespace SSW.Consulting.Application.Staff.Queries.GetStaffList
                     .ToListAsync(cancellationToken);
 
                 var staffDtosWithProfilePhotos = await Task.WhenAll(staffDtos.Select(staffMember => GetProfilePhoto(staffMember)));
+				var staffDtosWithOnlyProfilePhotos = staffDtosWithProfilePhotos.Where(staffMember => staffMember.ProfilePhoto != null).Select(staff => staff);
 
                 return new StaffListViewModel
                 {
-                    Staff = staffDtosWithProfilePhotos
-                };
+                    Staff = staffDtosWithOnlyProfilePhotos
+				};
             }
 
             private async Task<StaffDto> GetProfilePhoto(StaffDto staffMember)
