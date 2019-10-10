@@ -10,13 +10,11 @@ namespace SSW.Consulting.ViewModels
     public class DevProfilesViewModel : BaseViewModel
     {
         private IDevService _devService;
-        private IContacts _contacts;
 
         public ICommand OnCardSwiped { get; set; }
         public ICommand HandleProfileTapped { get; set; }
         public ICommand HandleScrollTapped { get; set; }
         public ICommand OnTwitterTapped { get; set; }
-        public ICommand OnContactTapped { get; set; }
 
         private bool _profileExpanded { get; set; }
 
@@ -43,12 +41,10 @@ namespace SSW.Consulting.ViewModels
         public DevProfilesViewModel(IDevService devService)
         {
             _devService = devService;
-            //_contacts = contacts;
             OnCardSwiped = new Command(SetDevDetails);
             HandleProfileTapped = new Command(ExpandCollapseProfile);
             HandleScrollTapped = new Command(ExpandCollapseProfile);
             OnTwitterTapped = new Command(OpenTwitter);
-            OnContactTapped = new Command(SaveSelectedContact);
 
             Profiles = new ObservableCollection<DevProfile>();
 
@@ -108,11 +104,6 @@ namespace SSW.Consulting.ViewModels
             //Uri twitterURI = new Uri("https://twitter.com/" + devTwitter);
 
             Device.OpenUri(new Uri(_twitterURI));
-        }
-
-        private async void SaveSelectedContact()
-        {
-            //_contacts.SaveContact(Title, _devPhone, _devEmail);
         }
     }
 }

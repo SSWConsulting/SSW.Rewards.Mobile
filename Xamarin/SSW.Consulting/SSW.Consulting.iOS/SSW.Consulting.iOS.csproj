@@ -96,7 +96,6 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Contacts.cs" />
     <Compile Include="ScanResultViewModel.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
   </ItemGroup>
   <ItemGroup>
@@ -863,17 +862,31 @@
     <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
     <BundleResource Include="placeholder.gif" />
-    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%403x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%402x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles.png" />
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\prize_waterbottles.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
