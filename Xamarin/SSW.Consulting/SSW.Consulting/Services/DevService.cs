@@ -36,6 +36,7 @@ namespace SSW.Consulting.Services
         public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
         {
 			List<DevProfile> profiles = new List<DevProfile>();
+            int id = 0;
 
             try
             {
@@ -45,6 +46,7 @@ namespace SSW.Consulting.Services
                 {
                     DevProfile dev = new DevProfile
                     {
+                        id = id,
                         FirstName = profile.Name,
                         Bio = profile.Profile,
                         Email = profile.Email,
@@ -55,6 +57,7 @@ namespace SSW.Consulting.Services
 					};
 
                     profiles.Add(dev);
+                    id++;
                 }
             }
             catch (ApiException e)

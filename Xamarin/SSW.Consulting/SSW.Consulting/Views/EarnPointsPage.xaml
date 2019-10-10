@@ -11,8 +11,8 @@
         <Grid Padding="0">
             <Image Aspect="AspectFill"
                    Source="polygon"
-                   RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
-                   RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"/>
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"/>
 
             <AbsoluteLayout>
 
@@ -50,7 +50,7 @@
                                                 AbsoluteLayout.LayoutBounds="0,0,1,0.6"
                                                 AbsoluteLayout.LayoutFlags="All"/>
 
-										<Image Source="points_background"
+										<!--<Image Source="points_background"
 											   InputTransparent="True"
                                                AbsoluteLayout.LayoutBounds="1,0.52,0.6,0.5"
                                                Opacity="0.4"
@@ -68,7 +68,7 @@
                                                FontSize="22"
                                                VerticalTextAlignment="Center"
                                                AbsoluteLayout.LayoutBounds="0.995,0.51,0.4,0.2"
-                                               AbsoluteLayout.LayoutFlags="All"/>
+                                               AbsoluteLayout.LayoutFlags="All"/>-->
 
 										<Label Text="{Binding Title}"
 											   InputTransparent="True"

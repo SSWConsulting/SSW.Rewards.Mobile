@@ -76,7 +76,8 @@ namespace SSW.Consulting.ViewModels
             _devEmail = Profiles[profileIndex].Email;
             _devPhone = Profiles[profileIndex].Phone;
             RaisePropertyChanged(OnSwipedUpdatePropertyList);
-            MessagingCenter.Send<object, int>(this, "DevChanged", Profiles[profileIndex].id);
+            int devId = Profiles[profileIndex].id;
+            MessagingCenter.Send<object, int>(this, "DevChanged", devId);
 
             //App.Current.MainPage.DisplayAlert("Twitter", "ID: " + _twitterURI + Environment.NewLine + "Index: " + profileIndex, "OK");
         }

@@ -65,19 +65,11 @@
 
                 <Label Style="{StaticResource Leaderboard}"
                        Grid.Column="3"
-                       Text="{Binding BaseScore, StringFormat='{0}pts'}"
+                       Text="{Binding BaseScore, StringFormat='{0} points'}"
                        d:Text="120pts"
                        VerticalOptions="Center"
                        HorizontalOptions="End"
                        Margin="0,0,5,0"/>
-
-                <Label Style="{StaticResource Leaderboard}"
-                       Grid.Column="4"
-                       Text="{Binding BaseScore, StringFormat='{0} Bonus'}"
-                       d:Text="35 Bonus"
-                       VerticalOptions="Center"
-                       HorizontalOptions="End"
-                       Margin="0,0,10,0"/>
 
                 </Grid>
         </StackLayout>

@@ -48,7 +48,7 @@
                                HorizontalTextAlignment="Center"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
-                               HorizontalOptions="End"/>
+                               HorizontalOptions="Center"/>
                     </Grid>
                 </Frame>
             </StackLayout>
