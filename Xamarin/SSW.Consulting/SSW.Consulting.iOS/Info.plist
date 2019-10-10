@@ -39,7 +39,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.companyname.SSW.Consulting</string>
+			<string>com.SSW.SSW.Consulting</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>msale33283b1-7326-447d-baae-e783ece0789b</string>

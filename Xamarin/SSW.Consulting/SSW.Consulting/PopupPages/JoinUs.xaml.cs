@@ -16,7 +16,7 @@ namespace SSW.Consulting.PopupPages
 
         private async void FindoutMore_Tapped(object sender, EventArgs e)
         {
-            await Browser.OpenAsync("https://www.ssw.com.au/ssw/Employment/default.aspx", BrowserLaunchMode.SystemPreferred);
+            await Browser.OpenAsync("https://www.ssw.com.au/ssw/Employment/default.aspx", BrowserLaunchMode.External);
         }
 
         public async void Handle_CloseTapped(object sender, EventArgs args)

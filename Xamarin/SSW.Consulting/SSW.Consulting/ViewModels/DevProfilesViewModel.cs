@@ -17,6 +17,7 @@ namespace SSW.Consulting.ViewModels
         public ICommand OnTwitterTapped { get; set; }
 
         private bool _profileExpanded { get; set; }
+        public bool IsRunning { get; set; }
 
         public ObservableCollection<DevProfile> Profiles { get; set; }
 
@@ -40,6 +41,8 @@ namespace SSW.Consulting.ViewModels
 
         public DevProfilesViewModel(IDevService devService)
         {
+            IsRunning = true;
+            OnPropertyChanged("IsRunning");
             _devService = devService;
             OnCardSwiped = new Command(SetDevDetails);
             HandleProfileTapped = new Command(ExpandCollapseProfile);
@@ -63,6 +66,8 @@ namespace SSW.Consulting.ViewModels
             }
             OnPropertyChanged("Profiles");
             SetDevDetails();
+            IsRunning = false;
+            OnPropertyChanged("IsRunning");
         }
 
         public void SetDevDetails()
