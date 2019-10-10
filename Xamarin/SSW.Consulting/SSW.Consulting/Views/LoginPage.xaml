@@ -16,7 +16,7 @@
                 <Image Source="logo_large"
                        VerticalOptions="Start"
                        HorizontalOptions="Center"
-                       Margin="0,30,0,0"/>
+                       Margin="0,60,0,0"/>
 
                 <Button Text="{Binding ButtonText}"
                         Command="{Binding LoginTappedCommand}"
