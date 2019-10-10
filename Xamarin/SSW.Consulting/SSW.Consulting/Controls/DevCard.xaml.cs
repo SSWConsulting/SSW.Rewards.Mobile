@@ -30,7 +30,7 @@ namespace SSW.Consulting.Controls
 
         private void SlideIn()
         {
-			DismissToolTips();
+			//DismissToolTips();
             int devId = int.Parse(DevName.Text);
 			if (devId == _selectedDevId)
 			{
@@ -40,7 +40,7 @@ namespace SSW.Consulting.Controls
 
         private void SlideOut()
         {
-			DismissToolTips();
+			//DismissToolTips();
             int devId = int.Parse(DevName.Text);
 			if (devId == _selectedDevId)
 			{
@@ -50,20 +50,23 @@ namespace SSW.Consulting.Controls
 
         private void DevChanged(int id)
         {
-			DismissToolTips();
+			//DismissToolTips();
             _selectedDevId = id;
 		}
 
-		private void DismissToolTips()
+		/*private void DismissToolTips()
 		{
-			foreach (var c in DevCardGrid.Children)
+            var elements = GetChildElements(BadgeCollection);
+
+			foreach (var c in BadgeCollection.GetChildElements)
 			{
-				if (TooltipEffect.GetHasTooltip(c))
+                bool hasToolTip = TooltipEffect.GetHasTooltip(c);
+				if (hasToolTip)
 				{
 					TooltipEffect.SetHasTooltip(c, false);
 					TooltipEffect.SetHasTooltip(c, true);
 				}
 			}
-		}
+		}*/
 	}
 }

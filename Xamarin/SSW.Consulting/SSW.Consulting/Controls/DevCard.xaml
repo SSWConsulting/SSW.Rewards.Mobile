@@ -10,8 +10,7 @@
              BackgroundColor="Transparent"
              x:Class="SSW.Consulting.Controls.DevCard">
     <ContentView.Content>
-		<Grid Margin="25,70,25,0"
-			 x:Name="DevCardGrid">
+		<Grid Margin="25,70,25,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -57,13 +56,23 @@
                                    HeightRequest="30"
                                    WidthRequest="30"
                                    BorderColor="Transparent"
-                                   CornerRadius="4"
+                                   CornerRadius="4"><!--
 								   effects:TooltipEffect.Position="Left"
 								   effects:TooltipEffect.BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
 								   effects:TooltipEffect.TextColor="White"
 								   effects:TooltipEffect.HasTooltip="True"
-								   effects:TooltipEffect.Text="{Binding ., Converter={converters:SkillToLabelConverter}}">
-								<Image d:Source="{Binding .}"
+								   effects:TooltipEffect.Text="{Binding .}">
+                                <StackLayout>
+                                    <Image d:Source="{Binding .}"
+                                           Scale="1.5"
+                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
+                                    <Label FontSize="Micro"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"
+                                           Text="{Binding .}"/>
+                                </StackLayout>-->
+                                <Image d:Source="{Binding .}"
+                                           Scale="1.5"
                                        Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
 							</Frame>
                         </Grid>
