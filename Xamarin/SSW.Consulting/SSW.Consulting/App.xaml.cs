@@ -14,7 +14,6 @@ namespace SSW.Consulting
 {
     public partial class App : Application
     {
-
         public App()
         {
             AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +

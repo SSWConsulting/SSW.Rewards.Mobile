@@ -43,8 +43,6 @@ namespace SSW.Consulting.iOS
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             Bootstrapper.Init();
 
-            DependencyService.Register<IContacts, Contacts>();
-
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
