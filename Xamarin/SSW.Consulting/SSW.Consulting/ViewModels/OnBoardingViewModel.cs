@@ -60,6 +60,17 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
+                    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
+                    Image = "prize_lid",
+                    MainHeading = "Earn Rewards",
+                    SubHeading = "...like an SSW Smart Keepcup...",
+                    TextColour = Color.Black,
+                    LinkText = "SKIP INTRO",
+                    textAlignment = TextAlignment.Start
+                },
+                new CarouselViewModel
+                {
+                    backgroundColour = Color.White,
                     Content = "Get on the leaderboard for a chance to win a Google Hub Max.",
                     Image = "prize_hubmax",
                     MainHeading = "Earn Rewards",

@@ -29,6 +29,7 @@ namespace SSW.Consulting.ViewModels
                     ResultHeading = "Achivement Added!";
                     ResultBody = "You have got the points for this achivement";
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
+                    MessagingCenter.Send<object>(this, "NewAchievement");
                     break;
                 case ChallengeResult.Duplicate:
                     AnimationRef = "judgement.json";
