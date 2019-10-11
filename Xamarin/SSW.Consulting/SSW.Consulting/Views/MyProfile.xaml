@@ -34,8 +34,8 @@
                                      CacheDuration="90"
                                      Aspect="AspectFill"
                                      Source="{Binding ProfilePic}"
-                                     LoadingPlaceholder="icon_avatar"
-                                     ErrorPlaceholder="icon_avatar"
+                                     LoadingPlaceholder="placeholder_user"
+                                     ErrorPlaceholder="placeholder_user"
                                      d:Source="MattGMain"
                                      RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
                                      RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}">

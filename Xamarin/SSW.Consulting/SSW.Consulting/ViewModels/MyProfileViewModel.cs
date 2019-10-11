@@ -55,6 +55,8 @@ namespace SSW.Consulting.ViewModels
                 if (!challenge.Completed)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
+
+            RaisePropertyChanged("Points", "ChallengeList");
         }
     }
 }

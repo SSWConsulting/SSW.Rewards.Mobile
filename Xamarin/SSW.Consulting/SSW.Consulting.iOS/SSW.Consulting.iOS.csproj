@@ -1404,6 +1404,12 @@
     <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%403x.png" />
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%402x.png" />
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user.png" />
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

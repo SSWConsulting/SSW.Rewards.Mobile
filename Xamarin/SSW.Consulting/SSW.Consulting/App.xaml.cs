@@ -65,7 +65,7 @@ namespace SSW.Consulting
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();
                     await Shell.Current.GoToAsync("//main");
                 }
-                catch
+                catch(Exception e)
                 {
                     await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
                 }
