@@ -778,15 +778,6 @@
     <ImageAsset Include="Assets.xcassets\icon_avatar.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external.gif">
-      <Visible>false</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -1094,6 +1085,9 @@
     <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.png" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
