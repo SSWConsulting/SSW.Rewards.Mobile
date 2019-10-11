@@ -62,6 +62,10 @@
       "type": "string",
       "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
     },
+    "secretCacheTimeoutMinutes": {
+      "type": "int",
+      "defaultValue": 60
+    },
     "now": {
       "type": "string",
       "defaultValue": "[utcNow('yyyy/MM/dd')]"
@@ -256,19 +260,31 @@
               "value": "[concat('https://', variables('appName'), '.vault.azure.net')]"
             },
             {
+              "name": "SecretCacheTimeoutMinutes",
+              "value": "[parameters('secretCacheTimeoutMinutes')]"
+            },
+            {
               "name": "Serilog:Using:0",
+              "value": "Serilog.Sinks.Async"
+            },
+            {
+              "name": "Serilog:Using:1",
               "value": "Serilog.Sinks.ApplicationInsights"
             },
             {
               "name": "Serilog:WriteTo:0:Name",
+              "value": "Async"
+            },
+            {
+              "name": "Serilog:WriteTo:0:Args:configure:0:Name",
               "value": "ApplicationInsights"
             },
             {
-              "name": "Serilog:WriteTo:0:Args:restrictedToMinimumLevel",
+              "name": "Serilog:WriteTo:0:Args:configure:0:Args:restrictedToMinimumLevel",
               "value": "Information"
             },
             {
-              "name": "Serilog:WriteTo:0:Args:telemetryConverter",
+              "name": "Serilog:WriteTo:0:Args:configure:0:Args:telemetryConverter",
               "value": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
             }
           ]
