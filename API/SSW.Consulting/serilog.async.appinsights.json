@@ -1,22 +1,4 @@
 {
-  "KeyVaultUrl": "https://<YOUR KEYVAULT NAME>.vault.azure.net/",
-  "TechQuizUrl": "https://www.ssw.com.au",
-  "UseLocalSecrets": false,
-  "SecretCacheTimeoutMinutes": 60,
-  "AzureAdB2C": {
-    "Instance": "",
-    "ClientId": "",
-    "Domain": "",
-    "SignUpSignInPolicyId": ""
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
-  },
-  "AllowedHosts": "*",
   "Serilog": {
     "WriteTo": [
       {
@@ -36,3 +18,4 @@
     ]
   }
 }
+
