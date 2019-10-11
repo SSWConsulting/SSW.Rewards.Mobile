@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
+using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -26,6 +27,7 @@ namespace SSW.Consulting.ViewModels
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
+            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Initialise(); });
             Initialise();
         }
 

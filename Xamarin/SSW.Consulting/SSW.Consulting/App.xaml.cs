@@ -55,13 +55,20 @@ namespace SSW.Consulting
 
             if (loggedIn)
             {
-				//await Auth.SetEnabledAsync(true);
-                UserInformation userInfo = await Auth.SignInAsync();
-                string token = userInfo.AccessToken;
-                await SecureStorage.SetAsync("auth_token", token);
+                try
+                {
+                    //await Auth.SetEnabledAsync(true);
+                    UserInformation userInfo = await Auth.SignInAsync();
+                    string token = userInfo.AccessToken;
+                    await SecureStorage.SetAsync("auth_token", token);
 
-                Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                await Shell.Current.GoToAsync("//main");
+                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                    await Shell.Current.GoToAsync("//main");
+                }
+                catch
+                {
+                    await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ using SSW.Consulting.Helpers;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SSW.Consulting.Services
 {
@@ -77,7 +78,7 @@ namespace SSW.Consulting.Services
                 });
             }
 
-            return await Task.FromResult(_myChallenges);
+            return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
         }
 
         public async Task<ChallengeResult> PostChallengeAsync(string achievementString)
