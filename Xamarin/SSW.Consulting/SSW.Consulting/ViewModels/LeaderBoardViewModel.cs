@@ -35,6 +35,7 @@ namespace SSW.Consulting.ViewModels
             _leaderService = leaderService;
             _userService = userService;
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
+            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
             Initialise();
         }
 

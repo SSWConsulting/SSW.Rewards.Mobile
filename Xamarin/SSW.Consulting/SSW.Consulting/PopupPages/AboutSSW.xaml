@@ -46,9 +46,10 @@
                     <Grid>
                         <Label Text="Find out more..."
                                HorizontalTextAlignment="Center"
+                               TextColor="White"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
-                               HorizontalOptions="Center"/>
+                               HorizontalOptions="End"/>
                     </Grid>
                 </Frame>
             </StackLayout>

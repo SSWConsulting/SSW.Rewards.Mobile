@@ -47,6 +47,7 @@
                         <Label Text="Take Quiz..."
                                InputTransparent="True"
                                HorizontalTextAlignment="Center"
+                               TextColor="White"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
                                InputTransparent="True"
