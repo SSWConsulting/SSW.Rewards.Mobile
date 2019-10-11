@@ -1392,12 +1392,24 @@
     <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.png" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external.png" />
-    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid%403x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid%402x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid.png" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\prize_lid.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_lid.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
