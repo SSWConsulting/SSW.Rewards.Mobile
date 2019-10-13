@@ -30,7 +30,7 @@ namespace SSW.Consulting.Persistence
                 .Where(p => !string.IsNullOrWhiteSpace(p.Profile))
                 .ToList();
 
-            await SeedSkillsAsync(profiles.SelectMany(p => p.Skills).Distinct(), cancellationToken);
+            await SeedSkillsAsync(profiles.SelectMany(p => p.Skills), cancellationToken);
             await SeedStaffMembers(profiles, cancellationToken);
             await SeedAchievementsAsync(cancellationToken);
         }
@@ -43,7 +43,17 @@ namespace SSW.Consulting.Persistence
             _context.Skills.RemoveRange(await _context.Skills.ToArrayAsync(cancellationToken));
             await _context.SaveChangesAsync(cancellationToken);
 
-            await _context.Skills.AddRangeAsync(newSkills.Select(s => new Skill { Name = s }), cancellationToken);
+            // group by lowered name to ensure no dupes
+            var skillsToInsert = newSkills
+                .Select(s => new
+                {
+                    Key = s.ToLower(),
+                    Value = s
+                })
+                .GroupBy(p => p.Key)
+                .Select(g => new Skill { Name = g.First().Value })
+                .ToArray();
+            await _context.Skills.AddRangeAsync(skillsToInsert, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             _skills = await _context.Skills.ToDictionaryAsync(s => s.Name.ToLower(), s => s.Id);
@@ -68,8 +78,9 @@ namespace SSW.Consulting.Persistence
                 var staffMember = existingStaffMembers.FirstOrDefault(sm => sm.Name == p.Name) ?? new StaffMember();
                 staffMember.Name = p.Name;
                 staffMember.Title = p.Title;
-                staffMember.StaffMemberSkills = p.Skills.Select(s => new StaffMemberSkill { SkillId = _skills[s] }).ToArray();
+                staffMember.StaffMemberSkills = p.Skills.Select(s => new StaffMemberSkill { SkillId = _skills[s.ToLower()] }).ToArray();
                 staffMember.Profile = p.Profile;
+                staffMember.TwitterUsername = p.TwitterUsername;
 
                 if (staffMember.Id == 0)
                 {
@@ -99,12 +110,12 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "Clean Architecture with ASP.NET Core 3.0", 500);
             SetupAchievement(existingAchievements, "Real-time Face Recognition With Microsoft Cognitive Services", 500);
 
-			// superpowers
-			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
-			SetupAchievement(existingAchievements, "Azure Superpowers", 500);
-			SetupAchievement(existingAchievements, ".NET Superpowers", 500);
+            // superpowers
+            SetupAchievement(existingAchievements, "Angular Superpowers", 500);
+            SetupAchievement(existingAchievements, "Azure Superpowers", 500);
+            SetupAchievement(existingAchievements, ".NET Superpowers", 500);
 
-			await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private void SetupAchievement(IEnumerable<Achievement> existingAchievements, string name, int value)
@@ -137,12 +148,13 @@ namespace SSW.Consulting.Persistence
                         Name = reader.GetString(0)?.Trim(),
                         Title = reader.GetString(1)?.Trim(),
                         Skills = Enumerable.Range(2, 4)
-                            .Select(i => reader.GetString(i)?.Trim().ToLower())
+                            .Select(i => reader.GetString(i)?.Trim())
                             .Where(s => !string.IsNullOrWhiteSpace(s))
                             .Distinct()
                             .ToArray(),
                         Profile = reader.GetString(6)?.Trim(),
-                        Value = (int)reader.GetDouble(7)
+                        Value = (int)reader.GetDouble(7),
+                        TwitterUsername = reader.GetString(8)?.Trim()
                     };
                 }
             }
@@ -154,6 +166,7 @@ namespace SSW.Consulting.Persistence
             public string Title { get; set; }
             public string[] Skills { get; set; }
             public string Profile { get; set; }
+            public string TwitterUsername { get; set; }
             public int Value { get; set; }
         }
     }
