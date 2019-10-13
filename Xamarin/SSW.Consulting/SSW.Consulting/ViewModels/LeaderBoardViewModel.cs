@@ -6,6 +6,7 @@ using System.Windows.Input;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
 using SSW.Consulting.Views;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
@@ -27,6 +28,8 @@ namespace SSW.Consulting.ViewModels
         public ICommand OnRefreshCommand { get; set; }
 
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
+
+        public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
@@ -56,6 +59,9 @@ namespace SSW.Consulting.ViewModels
 
             IsRunning = false;
             RaisePropertyChanged("IsRunning");
+
+            var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
+            ScrollToMe?.Invoke(mysummary);
         }
 
         public async void Refresh()

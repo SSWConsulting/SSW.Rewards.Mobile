@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Consulting.Persistence;
 
 namespace SSW.Consulting.Persistence.Migrations
 {
     [DbContext(typeof(SSWConsultingDbContext))]
-    partial class SSWConsultingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191013025355_AddUniqueConstraintOnStaffMemberSkills")]
+    partial class AddUniqueConstraintOnStaffMemberSkills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
