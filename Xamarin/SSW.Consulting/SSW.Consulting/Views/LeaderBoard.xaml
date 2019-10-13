@@ -21,6 +21,7 @@
                       HasUnevenRows="True"
                       SeparatorVisibility="None"
                       IsPullToRefreshEnabled="True"
+                      x:Name="leaderList"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding OnRefreshCommand}">
                 <ListView.ItemTemplate>
@@ -64,6 +65,7 @@
                                                    FontSize="18"
                                                    Text="{Binding Rank}"
                                                    VerticalOptions="Center"
+                                                   FontAttributes="{Binding fontAttribute}"
                                                    InputTransparent="True"
                                                    Margin="0"
                                                    Grid.Column="0"
@@ -90,6 +92,7 @@
 
                                             <Label Style="{StaticResource Leaderboard}"
                                                    Text="{Binding Name}"
+                                                   FontAttributes="{Binding fontAttribute}"
                                                    InputTransparent="True"
                                                    VerticalOptions="Center"
                                                    Margin="10,0"

@@ -1356,57 +1356,123 @@
     <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.png" />
-    <ImageAsset Include="Assets.xcassets\external.imageset\external.png" />
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\external.imageset\external.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_lid.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup%403x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup%402x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup.png" />
+    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp.png" />
+    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\skill_csharp.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_csharp.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops.png" />
-    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship.png" />
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_devops.imageset\skill_devops.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\skill_entrepreneurship.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_entrepreneurship.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node.png" />
-    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer.png" />
-    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting.png" />
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_node.imageset\skill_node.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_beer.imageset\skill_beer.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\skill_presenting.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_presenting.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube.png" />
-    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin%403x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin%402x.png" />
-    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin.png" />
+    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_youtube.imageset\skill_youtube.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\skill_xamarin.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_xamarin.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%403x.png" />
-    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%402x.png" />
-    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user.png" />
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\placeholder_user.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
+using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -26,6 +27,17 @@ namespace SSW.Consulting.ViewModels
         }
 
         private bool _isMe;
+
+        public FontAttributes fontAttribute
+        {
+            get
+            {
+                if (_isMe)
+                    return FontAttributes.Bold;
+                else
+                    return FontAttributes.None;
+            }
+        }
 
         private LeaderSummary _summary;
 
