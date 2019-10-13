@@ -9,6 +9,10 @@ namespace SSW.Consulting.Persistence.Configurations
         public void Configure(EntityTypeBuilder<StaffMemberSkill> builder)
         {
             builder
+                .HasIndex(sms => new { sms.SkillId, sms.StaffMemberId })
+                .IsUnique();
+
+            builder
                 .HasOne(bc => bc.StaffMember)
                 .WithMany(c => c.StaffMemberSkills);
 

@@ -37,19 +37,20 @@ namespace SSW.Consulting.Persistence
 
         private async Task SeedSkillsAsync(IEnumerable<string> newSkills, CancellationToken cancellationToken)
         {
-            var existingSkills = await _context.Skills.ToListAsync(cancellationToken);
-            _context.Skills.RemoveRange(existingSkills.Where(s => !newSkills.Contains(s.Name)));
-            await _context.Skills.AddRangeAsync(newSkills.Where(s => !existingSkills.Any(es => es.Name == s)).Select(s => new Skill { Name = s }), cancellationToken);
+            //nuke all skills (will be re-added later)
+            _context.StaffMemberSkills.RemoveRange(await _context.StaffMemberSkills.ToArrayAsync(cancellationToken));
+
+            _context.Skills.RemoveRange(await _context.Skills.ToArrayAsync(cancellationToken));
             await _context.SaveChangesAsync(cancellationToken);
-            _skills = await _context.Skills.ToDictionaryAsync(s => s.Name, s => s.Id);
+
+            await _context.Skills.AddRangeAsync(newSkills.Select(s => new Skill { Name = s }), cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            _skills = await _context.Skills.ToDictionaryAsync(s => s.Name.ToLower(), s => s.Id);
         }
 
         private async Task SeedStaffMembers(IEnumerable<UserProfile> profiles, CancellationToken cancellationToken)
         {
-            //nuke all skills (will be re-added later)
-            _context.StaffMemberSkills.RemoveRange(await _context.StaffMemberSkills.ToArrayAsync(cancellationToken));
-            await _context.SaveChangesAsync(cancellationToken);
-
             //remove removed profiles
             var profileNames = profiles.Select(p => p.Name).ToArray();
             var profilesToRemove = await _context
@@ -136,8 +137,9 @@ namespace SSW.Consulting.Persistence
                         Name = reader.GetString(0)?.Trim(),
                         Title = reader.GetString(1)?.Trim(),
                         Skills = Enumerable.Range(2, 4)
-                            .Select(i => reader.GetString(i)?.Trim())
+                            .Select(i => reader.GetString(i)?.Trim().ToLower())
                             .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Distinct()
                             .ToArray(),
                         Profile = reader.GetString(6)?.Trim(),
                         Value = (int)reader.GetDouble(7)
