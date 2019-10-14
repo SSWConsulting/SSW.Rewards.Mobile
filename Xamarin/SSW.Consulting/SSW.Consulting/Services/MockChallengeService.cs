@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using SSW.Consulting.Models;
+using SSW.Consulting.ViewModels;
 
 namespace SSW.Consulting.Services
 {
@@ -78,7 +79,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges);
         }
 
-        public Task<ChallengeResult> PostChallengeAsync(string achievementString)
+        public Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
         {
             throw new NotImplementedException();
         }

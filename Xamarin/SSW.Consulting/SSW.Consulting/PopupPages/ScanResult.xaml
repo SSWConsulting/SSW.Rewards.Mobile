@@ -4,6 +4,9 @@
              xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
              xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
              xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
              x:Class="SSW.Consulting.PopupPages.ScanResult"
              BackgroundColor="Transparent">
     <pages:PopupPage.Animation>
@@ -26,9 +29,17 @@
            VerticalOptions="Center">
         <StackLayout>
             <Label Text="{Binding ResultHeading}"
+                   d:Text="Achievement Unlocked"
                    FontSize="24"
-                   Margin="10"
+                   Margin="10,10,10,0"
                    HorizontalTextAlignment="Center"
+                   d:TextColor="Gold"
+                   TextColor="{Binding HeadingColour}"/>
+            <Label Text="{Binding AchievementHeading}"
+                   d:Text="Angular Superpowers Tour"
+                   FontSize="18"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="Gold"
                    TextColor="{Binding HeadingColour}"/>
             <lottie:AnimationView x:Name="ResultAnimation"
                                   Animation="{Binding AnimationRef}"
@@ -40,6 +51,7 @@
                                   WidthRequest="200"
                                   Scale="1"/>
             <Label Text="{Binding ResultBody}"
+                   d:Text="You have unlocked this achievement"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
                    Margin="10"/>

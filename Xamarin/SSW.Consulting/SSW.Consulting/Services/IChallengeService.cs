@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SSW.Consulting.Models;
+using SSW.Consulting.ViewModels;
 
 namespace SSW.Consulting.Services
 {
@@ -9,6 +10,6 @@ namespace SSW.Consulting.Services
     {
         Task<IEnumerable<Challenge>> GetChallengesAsync();
         Task<IEnumerable<MyChallenge>> GetMyChallengesAsync();
-        Task<ChallengeResult> PostChallengeAsync(string achievementString);
+        Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString);
     }
 }

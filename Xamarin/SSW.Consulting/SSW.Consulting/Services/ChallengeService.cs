@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using System.Linq;
+using SSW.Consulting.ViewModels;
 
 namespace SSW.Consulting.Services
 {
@@ -81,21 +82,29 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
         }
 
-        public async Task<ChallengeResult> PostChallengeAsync(string achievementString)
+        public async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
         {
+            ChallengeResultViewModel vm = new ChallengeResultViewModel();
+
             try
             {
                 AchievementViewModel response = await _achievementClient.AddAsync(achievementString);
 
                 if (response != null)
-                    return ChallengeResult.Added;
+                {
+                    vm.result = ChallengeResult.Added;
+                    vm.Title = response.Name;
+                    vm.Points = response.Value;
+                }
                 else
-                    return ChallengeResult.NotFound;
+                    vm.result = ChallengeResult.NotFound;
             }
             catch
             {
-                return ChallengeResult.NotFound;
+                vm.result =  ChallengeResult.NotFound;
             }
+
+            return vm;
         }
     }
 }

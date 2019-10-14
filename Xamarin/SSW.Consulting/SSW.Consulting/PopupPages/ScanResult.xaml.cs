@@ -10,7 +10,7 @@ namespace SSW.Consulting.PopupPages
 {
     public partial class ScanResult : PopupPage
     {
-        public ScanResult(ChallengeResult result)
+        public ScanResult(ChallengeResultViewModel result)
         {
             InitializeComponent();
             ScanResultViewModel viewModel = new ScanResultViewModel(result, Resolver.Resolve<IUserService>());
