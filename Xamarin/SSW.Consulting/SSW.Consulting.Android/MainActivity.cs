@@ -44,14 +44,14 @@ namespace SSW.Consulting.Droid
 
         public override void OnBackPressed()
         {
-            if(Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
-            {
-                
-            }
-            else
-            {
-                base.OnBackPressed();
-            }
+			if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
+			{
+
+			}
+			else
+			{
+				//base.OnBackPressed();
+			}
         }
     }
 }
