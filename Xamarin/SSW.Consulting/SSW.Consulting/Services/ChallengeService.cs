@@ -75,6 +75,7 @@ namespace SSW.Consulting.Services
                     Completed = challenge.Complete,
                     Title = challenge.AchievementName,
                     Points = challenge.AchievementValue,
+                    awardedAt = challenge.AwardedAt,
                     IsBonus = false
                 });
             }

@@ -13,5 +13,6 @@ namespace SSW.Consulting.Models
         public int Points { get; set; }
         public string Picture { get; set; }
         public bool IsBonus { get; set; }
+        public DateTimeOffset? awardedAt { get; set; }
     }
 }

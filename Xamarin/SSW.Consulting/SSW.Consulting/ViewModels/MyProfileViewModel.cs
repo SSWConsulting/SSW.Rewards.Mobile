@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
 using Xamarin.Forms;
@@ -50,6 +51,9 @@ namespace SSW.Consulting.ViewModels
             var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
 
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            userChallenges = userChallenges.OrderBy(c => c.awardedAt);
+
             foreach (MyChallenge challenge in userChallenges)
             {
                 if (challenge.Completed)
@@ -57,6 +61,9 @@ namespace SSW.Consulting.ViewModels
             }
 
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            userChallenges = userChallenges.OrderBy(c => c.Points);
+
             foreach (MyChallenge challenge in userChallenges)
             {
                 if (!challenge.Completed)
@@ -78,11 +85,16 @@ namespace SSW.Consulting.ViewModels
 
             //TODO: Get rid of this nasty hack and group/display the data properly
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            challenges = challenges.OrderBy(c => c.awardedAt);
+
             foreach (MyChallenge challenge in challenges)
             {
                 if (challenge.Completed)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
+
+            challenges = challenges.OrderBy(c => c.Points);
 
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
             foreach (MyChallenge challenge in challenges)
