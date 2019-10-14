@@ -1,5 +1,6 @@
 ﻿using System;
 using SSW.Consulting.Services;
+using Xamarin.Essentials;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -10,6 +11,7 @@ namespace SSW.Consulting.ViewModels
         public string ProfilePic{ get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string VersionInfo { get; set; }
 
         public FlyoutHeaderViewModel(IUserService userService)
         {
@@ -22,6 +24,7 @@ namespace SSW.Consulting.ViewModels
             ProfilePic = await _userService.GetMyProfilePicAsync();
             Name = await _userService.GetMyNameAsync();
             Email = await _userService.GetMyEmailAsync();
+            VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
         }
     }
 }
