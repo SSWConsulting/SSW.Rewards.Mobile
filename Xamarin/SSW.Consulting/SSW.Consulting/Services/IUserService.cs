@@ -1,5 +1,6 @@
 ﻿using SSW.Consulting.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Services
@@ -16,5 +17,6 @@ namespace SSW.Consulting.Services
         Task SignOutAsync();
         Task<bool> IsLoggedInAsync();
         Task UpdateMyDetailsAsync();
+        Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId);
     }
 }

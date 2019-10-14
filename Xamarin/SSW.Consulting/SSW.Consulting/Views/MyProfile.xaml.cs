@@ -21,5 +21,13 @@ namespace SSW.Consulting.Views
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
         }
+
+        public MyProfile(LeaderSummaryViewModel vm)
+        {
+            InitializeComponent();
+            var viewModel = new MyProfileViewModel(vm);
+            viewModel.Navigation = Navigation;
+            BindingContext = viewModel;
+        }
     }
 }

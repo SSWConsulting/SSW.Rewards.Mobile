@@ -1,5 +1,6 @@
 ﻿using SSW.Consulting.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SSW.Consulting.Services
@@ -33,6 +34,11 @@ namespace SSW.Consulting.Services
         public async Task<int> GetMyUserIdAsync()
         {
             return await Task.FromResult(4);
+        }
+
+        public Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<string> GetTokenAsync()

@@ -90,6 +90,8 @@ namespace SSW.Consulting.ViewModels
         {
             if (leader.IsMe)
                 Shell.Current.Navigation.PushAsync(new MyProfile());
+            else
+                Shell.Current.Navigation.PushAsync(new MyProfile(leader));
         }
     }
 }

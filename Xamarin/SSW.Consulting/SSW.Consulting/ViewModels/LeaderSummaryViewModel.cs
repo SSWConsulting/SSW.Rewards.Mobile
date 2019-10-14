@@ -14,6 +14,7 @@ namespace SSW.Consulting.ViewModels
         public string Name { get { return _summary.Name; } }
         public int BaseScore { get { return _summary.BaseScore; } }
         public int BonusScore { get { return _summary.BonusScore; } }
+        public int Id { get { return _summary.id; } }
         public bool IsMe
         {
             get

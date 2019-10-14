@@ -31,6 +31,41 @@ namespace SSW.Consulting.ViewModels
             Initialise();
         }
 
+        public MyProfileViewModel(LeaderSummaryViewModel vm)
+        {
+            _challengeService = Resolver.Resolve<IChallengeService>();
+            _userService = Resolver.Resolve<IUserService>();
+            ProfilePic = vm.ProfilePic;
+            Name = vm.Name;
+            Email = vm.Title;
+            Points = vm.BaseScore.ToString();
+            CompletedChallenges = new ObservableCollection<MyChallenge>();
+            OutstandingChallenges = new ObservableCollection<MyChallenge>();
+            ChallengeList = new ObservableCollection<ChallengeListViewModel>();
+            InitialiseOther(vm.Id);
+        }
+
+        public async void InitialiseOther(int userId)
+        {
+            var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
+
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            foreach (MyChallenge challenge in userChallenges)
+            {
+                if (challenge.Completed)
+                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
+            }
+
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            foreach (MyChallenge challenge in userChallenges)
+            {
+                if (!challenge.Completed)
+                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
+            }
+
+            RaisePropertyChanged("Points", "ChallengeList");
+        }
+
         private async void Initialise()
         {
             ProfilePic = await _userService.GetMyProfilePicAsync();

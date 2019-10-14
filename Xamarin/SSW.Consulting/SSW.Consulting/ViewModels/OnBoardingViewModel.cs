@@ -49,10 +49,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
-                    Image = "prize_keepcup",
+                    Content = "Get on the leaderboard for a chance to win a Google Hub Max.",
+                    Image = "prize_hubmax",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...like an SSW Smart Keepcup...",
+                    SubHeading = "...like a Google Nest Hub Max...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -60,10 +60,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Get on the leaderboard for a chance to win a Google Hub Max.",
-                    Image = "prize_hubmax",
+                    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
+                    Image = "prize_keepcup",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a Google Nest Hub Max...",
+                    SubHeading = "...or an SSW Smart Keepcup...",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start

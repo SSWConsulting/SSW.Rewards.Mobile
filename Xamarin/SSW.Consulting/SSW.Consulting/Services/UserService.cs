@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using SSW.Consulting.Models;
+using System.Collections.Generic;
 
 namespace SSW.Consulting.Services
 {
@@ -195,5 +196,37 @@ namespace SSW.Consulting.Services
                 Preferences.Set("MyPoints", user.Points);
             }
         }
+        
+        public async Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId)
+        {
+            List<MyChallenge> challenges = new List<MyChallenge>();
+
+            if (_userClient == null)
+            {
+                if (_httpClient == null)
+                {
+                    string token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient = new HttpClient();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+            }
+
+            var SOCA = await _userClient.AchievementsAsync(userId);
+
+            foreach(var achievement in SOCA.UserAchievements)
+            {
+                challenges.Add(new MyChallenge
+                {
+                    Completed = achievement.Complete,
+                    Points = achievement.AchievementValue,
+                    Title = achievement.AchievementName
+                });
+            }
+
+            return challenges;
+        }
+    
     }
 }
