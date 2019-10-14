@@ -13,41 +13,45 @@ namespace SSW.Consulting.ViewModels
         public string AnimationRef { get; set; }
         public string ResultHeading { get; set; }
         public string ResultBody { get; set; }
+        public string AchievementHeading { get; set; }
         public ICommand OnOkCommand { get; set; }
         public Color HeadingColour { get; set; }
         private IUserService _userService { get; set; }
 
-        public ScanResultViewModel(ChallengeResult result, IUserService userService)
+        public ScanResultViewModel(ChallengeResultViewModel result, IUserService userService)
         {
             OnOkCommand = new Command(DismissPopups);
             _userService = userService;
 
-            switch (result)
+            switch (result.result)
             {
                 case ChallengeResult.Added:
                     AnimationRef = "trophy.json";
                     ResultHeading = "Achivement Added!";
-                    ResultBody = "You have got the points for this achivement";
+                    ResultBody = string.Format($"You have earned {0} points for this achivement", result.Points.ToString());
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
+                    AchievementHeading = result.Title;
                     MessagingCenter.Send<object>(this, "NewAchievement");
                     break;
                 case ChallengeResult.Duplicate:
                     AnimationRef = "judgement.json";
                     ResultHeading = "Already Scanned!";
                     ResultBody = "Are you scanning a bit too aggressively?";
+                    AchievementHeading = string.Empty;
                     HeadingColour = Color.White;
                     break;
                 case ChallengeResult.NotFound:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "Oops...";
                     ResultBody = "Is this one of our codes? Have you already scanned it?";
+                    AchievementHeading = string.Empty;
                     HeadingColour = Color.White;
                     break;
             }
 
-            RaisePropertyChanged(new string[] { "AnimationRef", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour" });
+            RaisePropertyChanged(new string[] { "AnimationRef", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
 
-            if (result == ChallengeResult.Added)
+            if (result.result == ChallengeResult.Added)
                 CollectNewPointsAsync();
         }
 
