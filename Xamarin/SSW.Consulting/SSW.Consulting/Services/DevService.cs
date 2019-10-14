@@ -73,7 +73,7 @@ namespace SSW.Consulting.Services
                 }
             }
 
-            return profiles;
+            return profiles.OrderBy(d => d.FirstName);
         }
     }
 }
