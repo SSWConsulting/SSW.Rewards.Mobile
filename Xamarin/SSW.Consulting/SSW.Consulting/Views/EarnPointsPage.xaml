@@ -57,7 +57,7 @@
                                                AbsoluteLayout.LayoutFlags="All">
                                             <Image.IsVisible>
                                                 <OnPlatform x:TypeArguments="x:Boolean">
-                                                    <On Platform="iOS">{Binding IsBonus}</On>
+                                                    <On Platform="iOS" Value="{Binding IsBonus}"/>
                                                     <On Platform="Android">False</On>
                                                 </OnPlatform>
                                             </Image.IsVisible>
