@@ -222,7 +222,8 @@ namespace SSW.Consulting.Services
                     Completed = achievement.Complete,
                     Points = achievement.AchievementValue,
                     Title = achievement.AchievementName,
-                    awardedAt = achievement.AwardedAt
+                    awardedAt = achievement.AwardedAt,
+                    IsBonus = achievement.AchievementValue == 0 ? true : false
                 });
             }
 

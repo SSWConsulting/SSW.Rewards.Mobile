@@ -118,12 +118,14 @@
                                         </StackLayout>
 
                                         <Label Grid.Column="0"
+                                               Grid.ColumnSpan="2"
                                                Text="{Binding Challenge.Title}"
                                                TextColor="White"/>
 
                                         <Image Source="chip_bonus"
                                                Grid.Column="1"
-                                               IsVisible="{Binding Challenge.IsBonus}"/>
+                                               IsVisible="False"/>
+                                        <!--IsVisible="{Binding Challenge.IsBonus}"/>-->
 
                                         <Label Text="{Binding Challenge.Points, StringFormat='{0} pts'}"
                                                IsVisible="{Binding IsRow}"

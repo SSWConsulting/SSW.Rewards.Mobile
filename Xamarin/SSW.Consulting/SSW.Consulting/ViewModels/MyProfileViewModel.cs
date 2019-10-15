@@ -50,13 +50,35 @@ namespace SSW.Consulting.ViewModels
         {
             var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
 
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
             userChallenges = userChallenges.OrderBy(c => c.awardedAt);
+            
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
 
             foreach (MyChallenge challenge in userChallenges)
             {
-                if (challenge.Completed)
+                if (challenge.IsBonus)
+                {
+                    ChallengeListViewModel vm = new ChallengeListViewModel();
+                    vm.IsHeader = false;
+                    vm.IsRow = false;
+
+                    if(challenge.Completed)
+                    {
+                        challenge.Title = "🏆 WON: " + challenge.Title;
+                    }
+
+                    vm.Challenge = challenge;
+
+
+                    ChallengeList.Add(vm);//new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
+                }
+            }
+
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            foreach (MyChallenge challenge in userChallenges)
+            {
+                if (challenge.Completed && !challenge.IsBonus)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
 
@@ -66,7 +88,7 @@ namespace SSW.Consulting.ViewModels
 
             foreach (MyChallenge challenge in userChallenges)
             {
-                if (!challenge.Completed)
+                if (!challenge.Completed && !challenge.IsBonus)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
 
@@ -84,13 +106,36 @@ namespace SSW.Consulting.ViewModels
             var challenges = await _challengeService.GetMyChallengesAsync();
 
             //TODO: Get rid of this nasty hack and group/display the data properly
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            foreach (MyChallenge challenge in challenges)
+            {
+                if (challenge.IsBonus)
+                {
+                    ChallengeListViewModel vm = new ChallengeListViewModel();
+                    vm.IsHeader = false;
+                    vm.IsRow = false;
+
+                    if (challenge.Completed)
+                    {
+                        challenge.Title = "🏆 WON: " + challenge.Title;
+                    }
+
+                    vm.Challenge = challenge;
+
+
+                    ChallengeList.Add(vm);
+                }
+            }
+
+
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
 
             challenges = challenges.OrderBy(c => c.awardedAt);
 
             foreach (MyChallenge challenge in challenges)
             {
-                if (challenge.Completed)
+                if (challenge.Completed && !challenge.IsBonus)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
 
@@ -99,7 +144,7 @@ namespace SSW.Consulting.ViewModels
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
             foreach (MyChallenge challenge in challenges)
             {
-                if (!challenge.Completed)
+                if (!challenge.Completed && !challenge.IsBonus)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
 
