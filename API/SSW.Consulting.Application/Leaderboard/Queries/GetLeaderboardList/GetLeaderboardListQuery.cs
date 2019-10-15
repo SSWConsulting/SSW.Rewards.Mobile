@@ -37,6 +37,7 @@ namespace SSW.Consulting.Application.Leaderboard.Queries.GetLeaderboardList
                 {
                     // need to set rank outside of AutoMapper
                     Users = users
+						.Where(u => !string.IsNullOrWhiteSpace(u.Name))
                         .OrderByDescending(u => u.Points)
                         .Select((u, i) =>
                         {

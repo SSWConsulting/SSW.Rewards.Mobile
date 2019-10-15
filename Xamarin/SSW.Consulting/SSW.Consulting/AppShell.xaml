@@ -37,7 +37,7 @@
 
     <Shell.MenuItemTemplate>
         <DataTemplate>
-            <StackLayout HeightRequest="80">
+            <StackLayout>
                 <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
                     <Grid.Padding>
                         <OnPlatform x:TypeArguments="Thickness">
@@ -47,27 +47,51 @@
                     </Grid.Padding>
                     <Grid.Margin>
                         <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="Android" Value="5,10" />
+                            <On Platform="Android" Value="20,5" />
                             <On Platform="iOS" Value="10,5,10,0" />
                         </OnPlatform>
                     </Grid.Margin>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="6*"/>
                     </Grid.ColumnDefinitions>
 
                     <Image Grid.Column="0"
                            HorizontalOptions="Start"
                            Margin="5"
-                           HeightRequest="80"
-                           WidthRequest="80"
-                           Source="{Binding Icon}"/>
+                           Source="{Binding Icon}">
+                        <Image.HeightRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">80</On>
+                                <On Platform="Android">30</On>
+                            </OnPlatform>
+                        </Image.HeightRequest>
+                        <Image.WidthRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">80</On>
+                                <On Platform="Android">30</On>
+                            </OnPlatform>
+                        </Image.WidthRequest>
+                        <Image.Scale>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">1</On>
+                                <On Platform="Android">0.8</On>
+                            </OnPlatform>
+                        </Image.Scale>
+                    </Image>
 
                     <Label Grid.Column="1"
                             Style="{StaticResource Leaderboard}"
                             VerticalOptions="Center"
                             FontSize="18"
-                            Text="{Binding Text}"/>
+                            Text="{Binding Text}">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">18</On>
+                                <On Platform="Android">18</On>
+                            </OnPlatform>
+                        </Label.FontSize>
+                    </Label>
                 </Grid>
             </StackLayout>
         </DataTemplate>

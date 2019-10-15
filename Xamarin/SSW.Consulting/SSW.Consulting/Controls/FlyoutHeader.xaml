@@ -18,8 +18,8 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
         <ffimage:CachedImage Grid.Column="0"
@@ -61,7 +61,7 @@
                Grid.Column="0"
                Grid.ColumnSpan="2"
                HorizontalOptions="End"
-               Margin="10,0,0,0"
+               Margin="10,0,10,0"
                Source="SSWwhite"/>
 
         <Label Grid.Row="3"
@@ -69,7 +69,7 @@
                Grid.ColumnSpan="2"
                HorizontalOptions="End"
                Text="{Binding VersionInfo}"
-               Margin="10,0,0,0"
+               Margin="10,0,10,0"
                Style="{StaticResource Leaderboard}"
                d:Text="Version 1.1.0"/>
 

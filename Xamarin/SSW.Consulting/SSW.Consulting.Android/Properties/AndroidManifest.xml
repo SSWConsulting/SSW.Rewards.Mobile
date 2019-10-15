@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="4" android:versionName="1.3" package="com.ssw.consulting" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5" android:versionName="1.4" package="com.ssw.consulting" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
 	<application android:label="SSW" android:icon="@drawable/icon">
 		<activity android:name="com.microsoft.identity.client.BrowserTabActivity">
