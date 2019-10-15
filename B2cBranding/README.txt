@@ -33,6 +33,17 @@ The branding changes the following:
 		- Select "Use custom page"
 		- Enter the URL https://sswconsultingb2c.blob.core.windows.net/b2csigninsignout/exception.html
 
+- Update the B2C_1_SignUpAndSignIn User flow
+	Home > Azure AD B2C - User flows (policies) > B2C_1_PasswordReset
+	
+	- Under "Page layouts"
+	1. Forgot password page
+		- Select "Use custom page"
+		- Enter the URL https://sswconsultingb2c.blob.core.windows.net/b2csigninsignout/selfAsserted.html
+	2. Error page
+		- Select "Use custom page"
+		- Enter the URL https://sswconsultingb2c.blob.core.windows.net/b2csigninsignout/exception.html
+
 3) Ensure the Background colour is set for the branding
 	Home > SSW.Consulting - Company branding > Default | Advanced settings	
 
