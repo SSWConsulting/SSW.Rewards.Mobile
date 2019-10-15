@@ -23,8 +23,6 @@
 	<string>SSW</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.SSW.SSW.Consulting</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
@@ -47,6 +45,8 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
+	<key>CFBundleVersion</key>
+	<string>2.0</string>
 </dict>
 </plist>

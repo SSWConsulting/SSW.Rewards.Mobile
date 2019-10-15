@@ -30,7 +30,7 @@
                 <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
-            <Label Text="from a SSW Employee or Presentation"
+            <Label Text="from an SSW Employee or Presentation"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
             </StackLayout>

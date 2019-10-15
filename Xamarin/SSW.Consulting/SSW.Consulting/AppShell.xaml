@@ -122,7 +122,7 @@
     </FlyoutItem>
 
     <MenuItem Text="Earn Rewards"
-              IconImageSource="icon_howto"
+              IconImageSource="icon_badge"
               Clicked="Handle_HowToPlayClicked"/>
 
     <MenuItem Text="Tech Quiz"
@@ -142,7 +142,6 @@
               Clicked="Handle_AboutClicked"/>
 
     <MenuItem Text="Log Out"
-              IconImageSource="icon_logout"
               Clicked="Handle_LogOutClicked"/>
 
 </Shell>

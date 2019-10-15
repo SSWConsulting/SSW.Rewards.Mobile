@@ -91,6 +91,7 @@
                                  Grid.RowSpan="7"
                                  Grid.ColumnSpan="4"
                                  Scale="1.15"
+                                 Aspect="AspectFit"
                                  TranslationX="-10"/>
         </Grid>
     </ContentView.Content>

@@ -27,8 +27,8 @@ namespace SSW.Consulting.ViewModels
             {
                 case ChallengeResult.Added:
                     AnimationRef = "trophy.json";
-                    ResultHeading = "Achievement Added!";
-                    ResultBody = string.Format($"You have earned {0} points for this achievement", result.Points.ToString());
+                    ResultHeading = "Achivement Added!";
+                    ResultBody = string.Format("You have earned {0} points for this achivement", result.Points.ToString());
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     MessagingCenter.Send<object>(this, "NewAchievement");

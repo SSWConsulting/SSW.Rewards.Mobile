@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AppCenter.Auth;
 using Rg.Plugins.Popup.Services;
 using SSW.Consulting.PopupPages;
@@ -44,7 +45,19 @@ namespace SSW.Consulting
             Navigation.PushModalAsync(new OnBoarding());
         }
 
-        public AppShell(IUserService userService)
+		protected override bool OnBackButtonPressed()
+		{
+			if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
+			{
+				return base.OnBackButtonPressed();
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		public AppShell(IUserService userService)
         {
             InitializeComponent();
             _userService = userService;
