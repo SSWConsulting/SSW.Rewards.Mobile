@@ -50,25 +50,28 @@
                                                 AbsoluteLayout.LayoutBounds="0,0,1,0.6"
                                                 AbsoluteLayout.LayoutFlags="All"/>
 
-										<!--<Image Source="points_background"
+										<Image Source="points_background"
 											   InputTransparent="True"
                                                AbsoluteLayout.LayoutBounds="1,0.52,0.6,0.5"
+                                               IsVisible="{Binding IsBonus}"
                                                Opacity="0.4"
                                                AbsoluteLayout.LayoutFlags="All"/>
 
 										<Image Source="icon_goldstar"
-												InputTransparent="True"
-                                                AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
-                                                AbsoluteLayout.LayoutFlags="All"/>
+											   InputTransparent="True"
+                                               IsVisible="{Binding IsBonus}"
+                                               AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
+                                               AbsoluteLayout.LayoutFlags="All"/>
 
                                         <Label Text="{Binding Points, StringFormat='{0} pts'}"
                                                TextColor="{StaticResource PointsColour}"
+                                               IsVisible="{Binding IsBonus}"
 											   InputTransparent="True"
                                                FontAttributes="Bold"
                                                FontSize="22"
                                                VerticalTextAlignment="Center"
                                                AbsoluteLayout.LayoutBounds="0.995,0.51,0.4,0.2"
-                                               AbsoluteLayout.LayoutFlags="All"/>-->
+                                               AbsoluteLayout.LayoutFlags="All"/>
 
 										<Label Text="{Binding Title}"
 											   InputTransparent="True"

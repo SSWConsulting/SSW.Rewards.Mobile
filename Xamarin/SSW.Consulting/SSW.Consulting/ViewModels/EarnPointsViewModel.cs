@@ -37,11 +37,11 @@ namespace SSW.Consulting.ViewModels
 
             ExternalRewards = new ObservableCollection<ExternalReward>
             {
-                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Follow us on Twitter", Picture = "points_twitter", Url = "https://twitter.com/SSW_TV"},
-                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Take SSW's Tech Quiz", Picture = "points_quiz", Url = quizUri },
-                new ExternalReward { Badge = "external", IsBonus = false, Points = 10, Title="Subscribe to SSW TV", Picture = "points_youtube", Url = "https://www.youtube.com/channel/UCBFgwtV9lIIhvoNh0xoQ7Pg"},
-                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="See SSW's events", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Events/?upcomingeventsonly=true"},
-                new ExternalReward { Badge = "link", IsBonus = false, Points = 10, Title="Check out SSW Software Audits", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Consulting/Software-Audit.aspx"}
+                new ExternalReward { Badge = "link", IsBonus = true, Points = 100, Title="Follow us on Twitter", Picture = "points_twitter", Url = "https://twitter.com/SSW_TV"},
+                new ExternalReward { Badge = "link", IsBonus = true, Points = 500, Title="Take SSW's Tech Quiz", Picture = "points_quiz", Url = quizUri },
+                new ExternalReward { Badge = "external", IsBonus = true, Points = 100, Title="Subscribe to SSW TV", Picture = "points_youtube", Url = "https://www.youtube.com/channel/UCBFgwtV9lIIhvoNh0xoQ7Pg"},
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 0, Title="See SSW's events", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Events/?upcomingeventsonly=true"},
+                new ExternalReward { Badge = "link", IsBonus = false, Points = 0, Title="Check out SSW Software Audits", Picture = "points_presentations", Url = "https://www.ssw.com.au/ssw/Consulting/Software-Audit.aspx"}
             };
         }
 
