@@ -1,8 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Xamarin"
+    "\\API",
+    "\\API\\SSW.Consulting.Application",
+    "\\Xamarin\\SSW.Consulting",
+    "\\Xamarin\\SSW.Consulting\\SSW.Consulting",
+    "\\Xamarin\\SSW.Consulting\\SSW.Consulting\\Services"
   ],
-  "SelectedNode": "\\Xamarin\\SSW.Consulting.sln",
+  "SelectedNode": "\\API\\SSW.Consulting.sln",
   "PreviewInSolutionExplorer": false
 }

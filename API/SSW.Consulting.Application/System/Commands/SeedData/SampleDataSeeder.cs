@@ -101,8 +101,8 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "SSW Tech Quiz", 500);
 
             // prizes
-            SetupAchievement(existingAchievements, "SSW Water Bottle", 50);
-            SetupAchievement(existingAchievements, "Xiaomi Mi Band 4", 50);
+            SetupAchievement(existingAchievements, "SSW Water Bottle", 0);
+            SetupAchievement(existingAchievements, "Xiaomi Mi Band 4", 0);
 
             //talks
             SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
@@ -114,6 +114,10 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Superpowers", 500);
+
+            //social media
+            SetupAchievement(existingAchievements, "SSW TV", 100);
+            SetupAchievement(existingAchievements, "SSW/SSW TV Twitter", 100);
 
             await _context.SaveChangesAsync(cancellationToken);
         }
