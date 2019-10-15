@@ -110,6 +110,7 @@
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
         <Tab Title="Earn Points"
+             Route="points"
                  Icon="icon_qrcode">
             <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
         </Tab>
