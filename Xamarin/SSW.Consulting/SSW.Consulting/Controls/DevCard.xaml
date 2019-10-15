@@ -37,6 +37,7 @@
                             Grid.RowSpan="5"
                             Grid.ColumnSpan="2"
                             HorizontalOptions="End"
+                            VerticalOptions="Start"
                             ItemsSource="{Binding Skills}"
                             x:Name="BadgeCollection">
                 <d:CollectionView.ItemsSource>
