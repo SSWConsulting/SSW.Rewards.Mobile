@@ -40,6 +40,7 @@
 									   x:Name="Item"
                                        Margin="10"
                                        Padding="0"
+                                       IsClippedToBounds="True"
                                        BackgroundColor="{StaticResource LeaderboardBackground}"
                                        HasShadow="True">
 
@@ -50,26 +51,20 @@
                                                 AbsoluteLayout.LayoutBounds="0,0,1,0.6"
                                                 AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Image Source="points_background"
+										<Image Source="points_background"
 											   InputTransparent="True"
                                                AbsoluteLayout.LayoutBounds="1,0.52,0.6,0.5"
+                                               IsVisible="{Binding IsBonus}"
                                                Opacity="0.4"
-                                               AbsoluteLayout.LayoutFlags="All">
-                                            <Image.IsVisible>
-                                                <OnPlatform x:TypeArguments="x:Boolean">
-                                                    <On Platform="iOS">{Binding IsBonus}</On>
-                                                    <On Platform="Android">False</On>
-                                                </OnPlatform>
-                                            </Image.IsVisible>
-                                        </Image>
+                                               AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Image Source="icon_goldstar"
+										<Image Source="icon_goldstar"
 											   InputTransparent="True"
                                                IsVisible="{Binding IsBonus}"
                                                AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
                                                AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Label Text="{Binding Points}"
+                                        <Label Text="{Binding Points, StringFormat='{0} pts'}"
                                                TextColor="{StaticResource PointsColour}"
                                                IsVisible="{Binding IsBonus}"
 											   InputTransparent="True"
