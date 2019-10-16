@@ -50,7 +50,7 @@ namespace SSW.Consulting.ViewModels
         {
             var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
 
-            userChallenges = userChallenges.OrderBy(c => c.awardedAt);
+            userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
             
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
 
