@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "872073221188",
+    "firebase_url": "https://ssw-mobile-app.firebaseio.com",
+    "project_id": "ssw-mobile-app",
+    "storage_bucket": "ssw-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872073221188:android:8cac95fe7e1ddeb9239811",
+        "android_client_info": {
+          "package_name": "com.ssw.consulting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872073221188-o4acn6fo0poluhh7m1d6tlgih02c74lu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsgLO9KUToDCY3viKNEnhcY7wlX7EAGSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872073221188-o4acn6fo0poluhh7m1d6tlgih02c74lu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
