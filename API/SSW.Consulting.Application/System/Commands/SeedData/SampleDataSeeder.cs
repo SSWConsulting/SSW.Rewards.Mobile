@@ -109,6 +109,7 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "How to put a Penguin in a Cloud: Linux on Azure", 500);
             SetupAchievement(existingAchievements, "Clean Architecture with ASP.NET Core 3.0", 500);
             SetupAchievement(existingAchievements, "Real-time Face Recognition With Microsoft Cognitive Services", 500);
+            SetupAchievement(existingAchievements, "Azure SpendOps – The Art of Effectively Managing Azure Costs", 500);
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);

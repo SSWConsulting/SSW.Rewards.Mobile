@@ -28,8 +28,12 @@ namespace SSW.Consulting.WebAPI.Controllers
             return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
         }
 
-		[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
-        public ActionResult TechQuiz() => Redirect(_redirectSettings.TechQuizUrl);
+        public ActionResult TechQuiz([FromQuery]string user)
+        {
+            string url = string.Concat(_redirectSettings.TechQuizUrl, user);
+            return Redirect(url);
+        }
     }
 }
