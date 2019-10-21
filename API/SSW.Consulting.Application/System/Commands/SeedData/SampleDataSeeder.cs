@@ -113,20 +113,24 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "Clean Architecture with ASP.NET Core 3.0", 500);
             SetupAchievement(existingAchievements, "Real-time Face Recognition With Microsoft Cognitive Services", 500);
             SetupAchievement(existingAchievements, "Azure SpendOps – The Art of Effectively Managing Azure Costs", 500);
-            SetupAchievement(existingAchievements, "Angular Superpowers - Brisbane", 500);
-            SetupAchievement(existingAchievements, "Azure Superpowers - Brisbane", 500);
-            SetupAchievement(existingAchievements, ".NET Superpowers - Brisbane", 500);
-            SetupAchievement(existingAchievements, "Angular Superpowers - Melbourne", 500);
-            SetupAchievement(existingAchievements, "Azure Superpowers - Melbourne", 500);
-            SetupAchievement(existingAchievements, ".NET Superpowers - Melbourne", 500);
-            SetupAchievement(existingAchievements, "Angular Superpowers - Sydney", 500);
-            SetupAchievement(existingAchievements, "Azure Superpowers - Sydney", 500);
-            SetupAchievement(existingAchievements, ".NET Superpowers - Sydney", 500);
+            SetupAchievement(existingAchievements, "NETUG October 2019", 500);
+
+            
+            //individual superpowers talks
+            //SetupAchievement(existingAchievements, "Angular Superpowers - Brisbane", 500);
+            //SetupAchievement(existingAchievements, "Azure Superpowers - Brisbane", 500);
+            //SetupAchievement(existingAchievements, ".NET Superpowers - Brisbane", 500);
+            //SetupAchievement(existingAchievements, "Angular Superpowers - Melbourne", 500);
+            //SetupAchievement(existingAchievements, "Azure Superpowers - Melbourne", 500);
+            //SetupAchievement(existingAchievements, ".NET Superpowers - Melbourne", 500);
+            //SetupAchievement(existingAchievements, "Angular Superpowers - Sydney", 500);
+            //SetupAchievement(existingAchievements, "Azure Superpowers - Sydney", 500);
+            //SetupAchievement(existingAchievements, ".NET Superpowers - Sydney", 500);
 
             // superpowers
-            //SetupAchievement(existingAchievements, "Angular Superpowers", 500);
-            //SetupAchievement(existingAchievements, "Azure Superpowers", 500);
-            //SetupAchievement(existingAchievements, ".NET Superpowers", 500);
+            SetupAchievement(existingAchievements, "Angular Superpowers", 500);
+            SetupAchievement(existingAchievements, "Azure Superpowers", 500);
+            SetupAchievement(existingAchievements, ".NET Superpowers", 500);
 
             //social media
             SetupAchievement(existingAchievements, "SSW TV", 100);
