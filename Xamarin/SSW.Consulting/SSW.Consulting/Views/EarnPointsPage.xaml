@@ -40,10 +40,8 @@
 									   x:Name="Item"
                                        Margin="10"
                                        Padding="0"
-                                       IsClippedToBounds="True"
                                        BackgroundColor="{StaticResource LeaderboardBackground}"
                                        HasShadow="True">
-
                                     <AbsoluteLayout Padding="0"
 													InputTransparent="True">                                      
                                         <Image Source="{Binding Picture}"
@@ -56,13 +54,25 @@
                                                AbsoluteLayout.LayoutBounds="1,0.52,0.6,0.5"
                                                IsVisible="{Binding IsBonus}"
                                                Opacity="0.4"
-                                               AbsoluteLayout.LayoutFlags="All"/>
+                                               AbsoluteLayout.LayoutFlags="All">
+                                            <Image.TranslationY>
+                                                <OnPlatform x:TypeArguments="x:Double">
+                                                    <On Platform="Android">-10</On>
+                                                </OnPlatform>
+                                            </Image.TranslationY>
+                                        </Image>
 
 										<Image Source="icon_goldstar"
 											   InputTransparent="True"
                                                IsVisible="{Binding IsBonus}"
                                                AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
-                                               AbsoluteLayout.LayoutFlags="All"/>
+                                               AbsoluteLayout.LayoutFlags="All">
+                                            <Image.TranslationY>
+                                                <OnPlatform x:TypeArguments="x:Double">
+                                                    <On Platform="Android">-10</On>
+                                                </OnPlatform>
+                                            </Image.TranslationY>
+                                        </Image>
 
                                         <Label Text="{Binding Points}"
                                                TextColor="{StaticResource PointsColour}"
@@ -72,7 +82,13 @@
                                                FontSize="22"
                                                VerticalTextAlignment="Center"
                                                AbsoluteLayout.LayoutBounds="0.995,0.51,0.4,0.2"
-                                               AbsoluteLayout.LayoutFlags="All"/>
+                                               AbsoluteLayout.LayoutFlags="All">
+                                            <Label.TranslationY>
+                                                <OnPlatform x:TypeArguments="x:Double">
+                                                    <On Platform="Android">-10</On>
+                                                </OnPlatform>
+                                            </Label.TranslationY>
+                                        </Label>
 
 										<Label Text="{Binding Title}"
 											   InputTransparent="True"
