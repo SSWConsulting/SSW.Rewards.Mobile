@@ -64,7 +64,7 @@
                                                AbsoluteLayout.LayoutBounds="0.5,0.51,0.15,0.15"
                                                AbsoluteLayout.LayoutFlags="All"/>
 
-                                        <Label Text="{Binding Points, StringFormat='{0} pts'}"
+                                        <Label Text="{Binding Points}"
                                                TextColor="{StaticResource PointsColour}"
                                                IsVisible="{Binding IsBonus}"
 											   InputTransparent="True"

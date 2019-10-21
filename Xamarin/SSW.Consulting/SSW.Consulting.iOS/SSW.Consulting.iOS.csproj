@@ -1476,9 +1476,15 @@
     <ImageAsset Include="Assets.xcassets\placeholder_user.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit%403x.png" />
-    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit%402x.png" />
-    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit.png" />
+    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\points_audit.imageset\points_audit.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_audit.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
