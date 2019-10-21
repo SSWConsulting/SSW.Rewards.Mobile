@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SSW.Consulting.ViewModels;
+using Xamarin.Forms;
 
 namespace SSW.Consulting.Services
 {
@@ -63,21 +64,36 @@ namespace SSW.Consulting.Services
 
         public async Task<IEnumerable<MyChallenge>> GetMyChallengesAsync()
         {
-            _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
-
-            var myChallenges = await _userClient.AchievementsAsync(await _userService.GetMyUserIdAsync());
-
-            foreach (var challenge in myChallenges.UserAchievements)
+            try
             {
-                _myChallenges.Add(new MyChallenge
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+
+                var myChallenges = await _userClient.AchievementsAsync(await _userService.GetMyUserIdAsync());
+
+                foreach (var challenge in myChallenges.UserAchievements)
                 {
-                    Badge = "link",
-                    Completed = challenge.Complete,
-                    Title = challenge.AchievementName,
-                    Points = challenge.AchievementValue,
-                    awardedAt = challenge.AwardedAt,
-                    IsBonus = challenge.AchievementValue == 0 ? true : false
-                });
+                    _myChallenges.Add(new MyChallenge
+                    {
+                        Badge = "link",
+                        Completed = challenge.Complete,
+                        Title = challenge.AchievementName,
+                        Points = challenge.AchievementValue,
+                        awardedAt = challenge.AwardedAt,
+                        IsBonus = challenge.AchievementValue == 0 ? true : false
+                    });
+                }
+            }
+            catch(ApiException e)
+            {
+                if (e.StatusCode == 401)
+                {
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading your profile. Please try again soon.", "OK");
+                }
             }
 
             return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
@@ -99,6 +115,18 @@ namespace SSW.Consulting.Services
                 }
                 else
                     vm.result = ChallengeResult.NotFound;
+            }
+            catch(ApiException e)
+            {
+                if (e.StatusCode == 401)
+                {
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem logging this achievement. Please try again soon.", "OK");
+                }
             }
             catch
             {
