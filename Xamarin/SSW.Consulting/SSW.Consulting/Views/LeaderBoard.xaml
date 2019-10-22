@@ -6,6 +6,7 @@
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:converters="clr-namespace:SSW.Consulting.Converters"
+             xmlns:behaviors="clr-namespace:SSW.Consulting.Behaviors"
              mc:Ignorable="d"
              x:Name="LeaderboardPage"
              Title="{Binding Title}"
@@ -16,9 +17,14 @@
            <SearchBar
                x:Name="searchBar"
                Placeholder="Search ..."
-               SearchCommand="{Binding PerformSearch}"
-               SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"
-              />
+              >
+               <SearchBar.Behaviors>
+                        <behaviors:EventToCommandBehavior EventName="TextChanged"
+                                                          Command="{Binding SearchTextChanged}"
+                                                          CommandParameter="{Binding Text, Source={x:Reference searchBar}}"
+                                                          />
+                 </SearchBar.Behaviors>
+               </SearchBar>
         <StackLayout Padding="10,0,10,0">
             <ActivityIndicator IsRunning="{Binding IsRunning}"
                                IsVisible="{Binding IsRunning}"/>

@@ -49,7 +49,7 @@ namespace SSW.Consulting.ViewModels
             Initialise();
         }
 
-        public ICommand PerformSearch => new Command<string>((string query) =>
+        public ICommand SearchTextChanged => new Command<string>((string query) =>
         {
             if (query != null || query != String.Empty)
             {
