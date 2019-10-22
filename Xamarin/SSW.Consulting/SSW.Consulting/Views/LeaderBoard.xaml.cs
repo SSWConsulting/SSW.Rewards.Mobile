@@ -52,6 +52,7 @@ namespace SSW.Consulting.Views
             {
                 searchBar.Unfocus();
             }
+        }
             
         protected override void OnAppearing()
         {
