@@ -43,7 +43,7 @@ namespace SSW.Consulting.Views
         }
 
 
-        private void SearchFocused(object sender,EventArgs e)
+        private void SearchBarFocused(object sender,EventArgs e)
         {
             focus = DateTime.Now;
 
@@ -77,7 +77,8 @@ namespace SSW.Consulting.Views
                 Console.WriteLine("You are scrolling down");
                 UnfocusSearchBar();
 
-            }   else
+            }
+                else
             {
                 Console.WriteLine("You are scrolling Up");
                 UnfocusSearchBar();
@@ -88,14 +89,14 @@ namespace SSW.Consulting.Views
         {
             if (e.ItemIndex > lastItemOut)
             {
-                Console.WriteLine("You are scrolling up");
-                UnfocusSearchBar();
+                //Console.WriteLine("You are scrolling up");
+                //UnfocusSearchBar();
 
             }
             else
             {
-                Console.WriteLine("You are scrolling Down");
-                UnfocusSearchBar();
+                //Console.WriteLine("You are scrolling Down");
+                //UnfocusSearchBar();
             }
             lastItemOut = e.ItemIndex;
         }

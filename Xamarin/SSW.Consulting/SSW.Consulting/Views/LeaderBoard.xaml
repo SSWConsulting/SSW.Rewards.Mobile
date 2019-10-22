@@ -20,14 +20,14 @@
                        Padding="-5,0,0,0"
                        
                         RelativeLayout.WidthConstraint="{ConstraintExpression
-            Type=RelativeToParent,Property=Width,Factor=1,Constant=90}"
+            Type=RelativeToParent,Property=Width,Factor=1,Constant=1}"
         RelativeLayout.HeightConstraint="{ConstraintExpression
-            Type=RelativeToParent,Property=Height,Factor=0.05,Constant=34}" >
+            Type=RelativeToParent,Property=Height,Factor=0.038,Constant=45}" >
                <SearchBar
                x:Name="searchBar"
                Placeholder="Search ..."
                    SearchButtonPressed="SearchUnfocus"
-                   Focused="SearchFocused"
+                   Focused="SearchBarFocused"
                    Unfocused="SearchBarUnfocused">
                     <SearchBar.Behaviors>
                         <behaviors:EventToCommandBehavior EventName="TextChanged"

@@ -7,7 +7,5 @@
 		<string>$(AppIdentifierPrefix)com.companyname.SSW.Consulting</string>
 		<string>$(AppIdentifierPrefix)com.microsoft.adalcache</string>
 	</array>
-	<key>aps-environment</key>
-	<string>development</string>
 </dict>
 </plist>
