@@ -100,7 +100,7 @@
                                                    d:Text="Matt Goldman"/>
 
                                             <Label Style="{StaticResource Leaderboard}"
-                                                   Text="{Binding BaseScore, StringFormat='{0} points'}"
+                                                   Text="{Binding BaseScore, StringFormat='{0:n0} points'}"
                                                    InputTransparent="True"
                                                    d:Text="120pts"
                                                    VerticalOptions="Center"

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
 using Xamarin.Forms;
@@ -39,7 +41,7 @@ namespace SSW.Consulting.ViewModels
             ProfilePic = vm.ProfilePic;
             Name = vm.Name;
             Email = vm.Title;
-            Points = vm.BaseScore.ToString();
+            Points = String.Format("{0:n0}", vm.BaseScore);//.ToString();
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
@@ -51,7 +53,10 @@ namespace SSW.Consulting.ViewModels
             var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
 
             userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
+
+            UpdateChallengeList(userChallenges);
             
+            /*
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
 
             foreach (MyChallenge challenge in userChallenges)
@@ -93,6 +98,7 @@ namespace SSW.Consulting.ViewModels
             }
 
             RaisePropertyChanged("Points", "ChallengeList");
+            */
         }
 
         private async void Initialise()
@@ -101,11 +107,62 @@ namespace SSW.Consulting.ViewModels
             Name = await _userService.GetMyNameAsync();
             Email = await _userService.GetMyEmailAsync();
             int points = await _userService.GetMyPointsAsync();
-            Points = points.ToString();
+            Points = String.Format("{0:n0}", points);//.ToString();
 
             var challenges = await _challengeService.GetMyChallengesAsync();
 
+            UpdateChallengeList(challenges);
+
+            /*
             //TODO: Get rid of this nasty hack and group/display the data properly
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            foreach (MyChallenge challenge in challenges)
+            {
+                if (challenge.IsBonus)
+                {
+                    ChallengeListViewModel vm = new ChallengeListViewModel();
+                    vm.IsHeader = false;
+                    vm.IsRow = false;
+
+                    if (challenge.Completed)
+                    {
+                        challenge.Title = "🏆 WON: " + challenge.Title;
+                    }
+
+                    vm.Challenge = challenge;
+
+
+                    ChallengeList.Add(vm);
+                }
+            }
+
+
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+
+            challenges = challenges.OrderBy(c => c.awardedAt);
+
+            foreach (MyChallenge challenge in challenges)
+            {
+                if (challenge.Completed && !challenge.IsBonus)
+                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
+            }
+
+            challenges = challenges.OrderBy(c => c.Points);
+
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            foreach (MyChallenge challenge in challenges)
+            {
+                if (!challenge.Completed && !challenge.IsBonus)
+                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
+            }
+
+            RaisePropertyChanged("Points", "ChallengeList");
+            */
+        }
+
+        private async Task UpdateChallengeList(IEnumerable<MyChallenge> challenges)
+        {
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
 
             foreach (MyChallenge challenge in challenges)
