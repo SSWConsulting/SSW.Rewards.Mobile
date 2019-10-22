@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,20 +26,19 @@ namespace SSW.Consulting.Views
             var vm = Resolver.Resolve<LeaderBoardViewModel>();
             vm.Navigation = Navigation;
             BindingContext = vm;
-
             focus = DateTime.Now;
-
-
             ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
             {
                 leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
             });
+
         }
 
         private void Tapped(object sender, EventArgs e)
         {
             DisplayAlert("Tapped", "","OK");
         }
+
 
         private void SearchFocused(object sender,EventArgs e)
         {
@@ -53,6 +52,14 @@ namespace SSW.Consulting.Views
             {
                 searchBar.Unfocus();
             }
+            
+        protected override void OnAppearing()
+        {
+            ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
+            {
+                leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
+            });
+            base.OnAppearing();
         }
     }
 }

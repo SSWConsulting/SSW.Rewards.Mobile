@@ -18,6 +18,8 @@ namespace SSW.Consulting.ViewModels
         public Color HeadingColour { get; set; }
         private IUserService _userService { get; set; }
 
+        private bool _wonPrize { get; set; }
+
         public ScanResultViewModel(ChallengeResultViewModel result, IUserService userService)
         {
             OnOkCommand = new Command(DismissPopups);
@@ -31,6 +33,7 @@ namespace SSW.Consulting.ViewModels
                     ResultBody = string.Format("You have earned {0} points for this achivement", result.Points.ToString());
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
+                    _wonPrize = true;
                     MessagingCenter.Send<object>(this, "NewAchievement");
                     break;
                 case ChallengeResult.Duplicate:
@@ -39,12 +42,14 @@ namespace SSW.Consulting.ViewModels
                     ResultBody = "Are you scanning a bit too aggressively?";
                     AchievementHeading = string.Empty;
                     HeadingColour = Color.White;
+                    _wonPrize = false;
                     break;
                 case ChallengeResult.NotFound:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "Oops...";
                     ResultBody = "Is this one of our codes? Have you already scanned it?";
                     AchievementHeading = string.Empty;
+                    _wonPrize = false;
                     HeadingColour = Color.White;
                     break;
             }
@@ -57,7 +62,15 @@ namespace SSW.Consulting.ViewModels
 
         private async void DismissPopups()
         {
-            await PopupNavigation.Instance.PopAllAsync();
+            if(_wonPrize)
+            {
+                await Shell.Current.GoToAsync("//main");
+                await PopupNavigation.Instance.PopAllAsync();
+            }
+            else
+            {
+                await PopupNavigation.Instance.PopAllAsync();
+            }
         }
 
         private async Task CollectNewPointsAsync()
