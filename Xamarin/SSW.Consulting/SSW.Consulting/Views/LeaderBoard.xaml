@@ -14,18 +14,32 @@
              x:Class="SSW.Consulting.Views.LeaderBoard">
     <ContentPage.Content>
            <StackLayout>
+               <RelativeLayout>
+
+                   <Frame
+                       Padding="-5,0,0,0"
+                       
+                        RelativeLayout.WidthConstraint="{ConstraintExpression
+            Type=RelativeToParent,Property=Width,Factor=1,Constant=90}"
+        RelativeLayout.HeightConstraint="{ConstraintExpression
+            Type=RelativeToParent,Property=Height,Factor=0.05,Constant=34}" >
                <SearchBar
                x:Name="searchBar"
                Placeholder="Search ..."
                    SearchButtonPressed="SearchUnfocus"
-                   Focused="SearchFocused">
+                   Focused="SearchFocused"
+                   Unfocused="SearchBarUnfocused">
                     <SearchBar.Behaviors>
                         <behaviors:EventToCommandBehavior EventName="TextChanged"
                                                           Command="{Binding SearchTextChanged}"
                                                           CommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
                     </SearchBar.Behaviors>
                </SearchBar>
-        <StackLayout Padding="10,10,10,0">
+                       </Frame>
+                           </RelativeLayout>
+
+        <StackLayout Padding="0,0,0,0"
+                     Margin="0,-30,0,0">
             <ActivityIndicator IsRunning="{Binding IsRunning}"
                                IsVisible="{Binding IsRunning}"/>
             <ListView ItemsSource="{Binding SearchResults}"
@@ -88,7 +102,6 @@
                                             <ffimage:CachedImage Source="{Binding ProfilePic}"
                                                                  LoadingPlaceholder="icon_avatar"
                                                                  ErrorPlaceholder="icon_avatar"
-                                                                 d:Source="MattG"
                                                                  CacheType="Disk"
                                                                  CacheDuration="90"
                                                                  VerticalOptions="Center"

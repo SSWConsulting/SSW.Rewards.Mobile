@@ -43,11 +43,19 @@ namespace SSW.Consulting.Views
         private void SearchFocused(object sender,EventArgs e)
         {
             focus = DateTime.Now;
+
         }
+
+        private async void SearchBarUnfocused(object sender, EventArgs e)
+        {
+            await searchBar.FadeTo(0.5, 450);
+        }
+
+
         private void SearchUnfocus(object sender, EventArgs e)
         {
             var now = DateTime.Now;
-            var shouldDismiss = (now - focus).Duration().Milliseconds > 600;
+            var shouldDismiss = (now - focus).Duration().Milliseconds > 400;
             if (searchBar.IsFocused && shouldDismiss)
             {
                 searchBar.Unfocus();
