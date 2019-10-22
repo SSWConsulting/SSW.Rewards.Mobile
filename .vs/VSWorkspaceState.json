@@ -2,12 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\API",
+    "\\API\\SSW.Consulting",
+    "\\API\\SSW.Consulting.Application\\System",
     "\\API\\SSW.Consulting.Application\\System\\Commands",
     "\\API\\SSW.Consulting.Application\\System\\Commands\\SeedData",
+    "\\API\\SSW.Consulting\\Controllers",
+    "\\Xamarin",
     "\\Xamarin\\SSW.Consulting",
     "\\Xamarin\\SSW.Consulting\\SSW.Consulting",
     "\\Xamarin\\SSW.Consulting\\SSW.Consulting\\Services"
   ],
-  "SelectedNode": "\\API\\SSW.Consulting.sln",
+  "SelectedNode": "\\Xamarin\\SSW.Consulting.sln",
   "PreviewInSolutionExplorer": false
 }

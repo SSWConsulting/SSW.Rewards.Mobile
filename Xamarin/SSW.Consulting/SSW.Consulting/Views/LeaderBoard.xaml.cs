@@ -25,16 +25,20 @@ namespace SSW.Consulting.Views
             var vm = Resolver.Resolve<LeaderBoardViewModel>();
             vm.Navigation = Navigation;
             BindingContext = vm;
-
-            ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
-            {
-                leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
-            });
         }
 
         private void Tapped(object sender, EventArgs e)
         {
             DisplayAlert("Tapped", "","OK");
+        }
+
+        protected override void OnAppearing()
+        {
+            ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
+            {
+                leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
+            });
+            base.OnAppearing();
         }
     }
 }
