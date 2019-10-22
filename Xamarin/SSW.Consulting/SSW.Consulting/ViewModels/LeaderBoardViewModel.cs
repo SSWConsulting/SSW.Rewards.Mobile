@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows.Input;
-using SSW.Consulting.Models;
 using SSW.Consulting.Services;
 using SSW.Consulting.Views;
 using System.Linq;
 using Xamarin.Forms;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace SSW.Consulting.ViewModels
 {
     public class LeaderBoardViewModel : BaseViewModel
     {
-
-
         public bool IsRunning { get; set; }
         public bool IsRefreshing { get; set; }
-
-   
-
 
         private ILeaderService _leaderService;
         private IUserService _userService;
@@ -78,10 +69,6 @@ namespace SSW.Consulting.ViewModels
             }
         }
 
-
-
-
-
         private async void Initialise()
         {
             IsRunning = true;
@@ -110,7 +97,7 @@ namespace SSW.Consulting.ViewModels
 
         public async void Refresh()
         {
-            //IsRunning = true;
+            // = true;
             //RaisePropertyChanged("IsRunning");
             var summaries = await _leaderService.GetLeadersAsync(false);
             int myId = await _userService.GetMyUserIdAsync();
@@ -125,7 +112,6 @@ namespace SSW.Consulting.ViewModels
                 Leaders.Add(vm);
             }
 
-            //IsRunning = false;
             IsRefreshing = false;
             RaisePropertyChanged("IsRefreshing");
         }

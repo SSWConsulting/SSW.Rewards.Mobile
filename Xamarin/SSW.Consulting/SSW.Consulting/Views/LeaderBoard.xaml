@@ -19,15 +19,13 @@
                Placeholder="Search ..."
                    SearchButtonPressed="SearchUnfocus"
                    Focused="SearchFocused">
-               <SearchBar.Behaviors>
+                    <SearchBar.Behaviors>
                         <behaviors:EventToCommandBehavior EventName="TextChanged"
                                                           Command="{Binding SearchTextChanged}"
-                                                          CommandParameter="{Binding Text, Source={x:Reference searchBar}}"
-                                                          />
-                 </SearchBar.Behaviors>
+                                                          CommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
+                    </SearchBar.Behaviors>
                </SearchBar>
         <StackLayout Padding="10,10,10,0">
-                
             <ActivityIndicator IsRunning="{Binding IsRunning}"
                                IsVisible="{Binding IsRunning}"/>
             <ListView ItemsSource="{Binding SearchResults}"
@@ -40,11 +38,9 @@
                       ItemAppearing="SearchUnfocus"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding OnRefreshCommand}">
-           
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-
                             <Frame Padding="10,5"
                                    BackgroundColor="Transparent"
                                    HasShadow="False">
