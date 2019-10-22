@@ -12,10 +12,17 @@
              BackgroundColor="{StaticResource LeaderboardBackground}"
              x:Class="SSW.Consulting.Views.LeaderBoard">
     <ContentPage.Content>
-        <StackLayout Padding="10">
+           <StackLayout>
+           <SearchBar
+               x:Name="searchBar"
+               Placeholder="Search ..."
+               SearchCommand="{Binding PerformSearch}"
+               SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"
+              />
+        <StackLayout Padding="10,0,10,0">
             <ActivityIndicator IsRunning="{Binding IsRunning}"
                                IsVisible="{Binding IsRunning}"/>
-            <ListView ItemsSource="{Binding Leaders}"
+            <ListView ItemsSource="{Binding SearchResults}"
                       SelectionMode="None"
                       BackgroundColor="Transparent"
                       HasUnevenRows="True"
@@ -115,6 +122,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+        </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
