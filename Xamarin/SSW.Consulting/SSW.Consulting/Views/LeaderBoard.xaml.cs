@@ -13,6 +13,9 @@ namespace SSW.Consulting.Views
     public partial class LeaderBoard : ContentPage
     {
         private DateTime focus;
+        private int lastItemOut;
+        private int lastItemIn;
+
         public LeaderBoard(LeaderBoardViewModel viewModel)
         {
             InitializeComponent();
@@ -54,14 +57,49 @@ namespace SSW.Consulting.Views
 
         private void SearchUnfocus(object sender, EventArgs e)
         {
+            UnfocusSearchBar();
+        }
+
+        private void UnfocusSearchBar()
+        {
             var now = DateTime.Now;
-            var shouldDismiss = (now - focus).Duration().Milliseconds > 400;
+            var shouldDismiss = (now - focus).Duration().Milliseconds > 300;
             if (searchBar.IsFocused && shouldDismiss)
             {
                 searchBar.Unfocus();
             }
         }
-            
+
+        private void ItemAppearing(object sender, ItemVisibilityEventArgs e)
+        {
+            if(e.ItemIndex > lastItemIn )
+            {
+                Console.WriteLine("You are scrolling down");
+                UnfocusSearchBar();
+
+            }   else
+            {
+                Console.WriteLine("You are scrolling Up");
+                UnfocusSearchBar();
+            }
+            lastItemIn = e.ItemIndex;
+        }
+        private void ItemDisappearing(object sender, ItemVisibilityEventArgs e)
+        {
+            if (e.ItemIndex > lastItemOut)
+            {
+                Console.WriteLine("You are scrolling up");
+                UnfocusSearchBar();
+
+            }
+            else
+            {
+                Console.WriteLine("You are scrolling Down");
+                UnfocusSearchBar();
+            }
+            lastItemOut = e.ItemIndex;
+        }
+
         protected override void OnAppearing()
         {
             ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
