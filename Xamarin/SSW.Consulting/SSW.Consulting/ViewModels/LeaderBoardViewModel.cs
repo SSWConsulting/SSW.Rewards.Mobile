@@ -20,6 +20,9 @@ namespace SSW.Consulting.ViewModels
         public bool IsRunning { get; set; }
         public bool IsRefreshing { get; set; }
 
+   
+
+
         private ILeaderService _leaderService;
         private IUserService _userService;
         public ICommand LeaderTapped

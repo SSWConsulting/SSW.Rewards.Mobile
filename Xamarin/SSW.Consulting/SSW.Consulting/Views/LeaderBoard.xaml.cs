@@ -12,6 +12,7 @@ namespace SSW.Consulting.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LeaderBoard : ContentPage
     {
+        private DateTime focus;
         public LeaderBoard(LeaderBoardViewModel viewModel)
         {
             InitializeComponent();
@@ -26,6 +27,9 @@ namespace SSW.Consulting.Views
             vm.Navigation = Navigation;
             BindingContext = vm;
 
+            focus = DateTime.Now;
+
+
             ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
             {
                 leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
@@ -35,6 +39,20 @@ namespace SSW.Consulting.Views
         private void Tapped(object sender, EventArgs e)
         {
             DisplayAlert("Tapped", "","OK");
+        }
+
+        private void SearchFocused(object sender,EventArgs e)
+        {
+            focus = DateTime.Now;
+        }
+        private void SearchUnfocus(object sender, EventArgs e)
+        {
+            var now = DateTime.Now;
+            var shouldDismiss = (now - focus).Duration().Milliseconds > 600;
+            if (searchBar.IsFocused && shouldDismiss)
+            {
+                searchBar.Unfocus();
+            }
         }
     }
 }
