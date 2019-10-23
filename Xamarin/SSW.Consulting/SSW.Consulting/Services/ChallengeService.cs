@@ -116,16 +116,16 @@ namespace SSW.Consulting.Services
                 else
                     vm.result = ChallengeResult.NotFound;
             }
+            catch(AlreadyAwardedException e)
+            {
+                vm.result = ChallengeResult.Duplicate;
+            }
             catch(ApiException e)
             {
                 if (e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
                     Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
-                }
-                else if(e.StatusCode == 409)
-                {
-                    vm.result = ChallengeResult.Duplicate;
                 }
                 else
                 {
