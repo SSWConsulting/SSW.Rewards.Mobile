@@ -58,11 +58,6 @@ namespace SSW.Consulting.Views
             UnfocusSearchBar(false);
         }
 
-        private void ListRefreshed(object senbder,EventArgs e)
-        {
-            lastRefreshed = DateTime.Now;
-        }
-
         private void UnfocusSearchBar(bool debounce)
         {
             var shouldDismiss = debounce ? (DateTime.Now - dismiss).Duration().Milliseconds > 600 : true;
@@ -75,8 +70,7 @@ namespace SSW.Consulting.Views
 
         private void ToggleSearchBar()
         {
-            if ((DateTime.Now - lastRefreshed).Duration().Milliseconds > 2000)
-            {
+            
                 if (showBar)
                 {
                     searchFrame.FadeTo(0, 100);
@@ -91,7 +85,7 @@ namespace SSW.Consulting.Views
                     leaderList.Margin = new Thickness(0, 60, 0, 0);
                     showBar = true;
                 }
-            }
+            
         }
 
         private void ItemAppearing(object sender, ItemVisibilityEventArgs e)

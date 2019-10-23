@@ -29,7 +29,6 @@
                       IsPullToRefreshEnabled="True"
                       x:Name="leaderList" Margin="0,60,0,0"
                       ItemAppearing="ItemAppearing"
-                      Refreshing="ListRefreshed"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding OnRefreshCommand}">
                 <ListView.ItemTemplate>
