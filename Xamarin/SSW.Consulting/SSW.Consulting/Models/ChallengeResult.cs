@@ -5,6 +5,7 @@ namespace SSW.Consulting.Models
     {
         Added,
         Duplicate,
-        NotFound
+        NotFound,
+        Error
     }
 }

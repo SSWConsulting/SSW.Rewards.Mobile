@@ -1488,6 +1488,7 @@
     <ImageAsset Include="Assets.xcassets\points_audit.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <BundleResource Include="qr-code-scanner.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

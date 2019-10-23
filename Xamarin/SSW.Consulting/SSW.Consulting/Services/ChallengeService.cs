@@ -123,14 +123,18 @@ namespace SSW.Consulting.Services
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
                     Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
                 }
+                else if(e.StatusCode == 409)
+                {
+                    vm.result = ChallengeResult.Duplicate;
+                }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem logging this achievement. Please try again soon.", "OK");
+                    vm.result = ChallengeResult.NotFound;
                 }
             }
             catch
             {
-                vm.result =  ChallengeResult.NotFound;
+                vm.result = ChallengeResult.Error;
             }
 
             return vm;

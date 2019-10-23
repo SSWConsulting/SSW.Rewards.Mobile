@@ -18,8 +18,8 @@ namespace SSW.Consulting
         public App()
         {
             AppCenter.Start("android=60b96e0a-c6dd-4320-855f-ed58e44ffd00;" +
-				  "ios=e33283b1-7326-447d-baae-e783ece0789b",
-				  typeof(Auth), typeof(Analytics), typeof(Crashes), typeof(Push));
+                  "ios=e33283b1-7326-447d-baae-e783ece0789b",
+                  typeof(Auth), typeof(Analytics), typeof(Crashes));//, typeof(Push));
 
             InitializeComponent();
 
