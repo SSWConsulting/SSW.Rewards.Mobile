@@ -53,7 +53,8 @@ namespace SSW.Consulting.ViewModels
                     MessagingCenter.Send<object>(this, "NewAchievement");
                     break;
                 case ChallengeResult.Duplicate:
-                    AnimationRef = "judgement.json";
+                    AnimationRef = "rapid-scan.json";
+                    AnimationLoop = true;
                     ResultHeading = "Already Scanned!";
                     ResultBody = "Are you scanning a bit too aggressively?";
                     AchievementHeading = string.Empty;
@@ -62,8 +63,16 @@ namespace SSW.Consulting.ViewModels
                     break;
                 case ChallengeResult.NotFound:
                     AnimationRef = "empty-box.json";
-                    ResultHeading = "Oops...";
-                    ResultBody = "Is this one of our codes? Have you already scanned it?";
+                    ResultHeading = "Unrecognised";
+                    ResultBody = "This doesn't look like an SSW code";
+                    AchievementHeading = string.Empty;
+                    _wonPrize = false;
+                    HeadingColour = Color.White;
+                    break;
+                case ChallengeResult.Error:
+                    AnimationRef = "empty-box.json";
+                    ResultHeading = "It's not you it's me...";
+                    ResultBody = "Something went wrong there. Please try again.";
                     AchievementHeading = string.Empty;
                     _wonPrize = false;
                     HeadingColour = Color.White;

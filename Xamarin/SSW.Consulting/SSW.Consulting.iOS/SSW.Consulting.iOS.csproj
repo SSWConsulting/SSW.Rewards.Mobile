@@ -1489,6 +1489,7 @@
       <Visible>False</Visible>
     </ImageAsset>
     <BundleResource Include="qr-code-scanner.json" />
+    <BundleResource Include="rapid-scan.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
