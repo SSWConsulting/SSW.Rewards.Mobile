@@ -1502,6 +1502,9 @@
     <PackageReference Include="EasyTipView">
       <Version>1.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.6.0</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.FFImageLoading">
       <Version>2.4.11.982</Version>
     </PackageReference>
