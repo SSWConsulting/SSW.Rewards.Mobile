@@ -13,43 +13,23 @@
              BackgroundColor="{StaticResource LeaderboardBackground}"
              x:Class="SSW.Consulting.Views.LeaderBoard">
     <ContentPage.Content>
-           <StackLayout>
-               <RelativeLayout>
+        <RelativeLayout>
 
-                   <Frame
-                       Padding="-5,0,0,0"
-                       
-                        RelativeLayout.WidthConstraint="{ConstraintExpression
-            Type=RelativeToParent,Property=Width,Factor=1,Constant=1}"
-        RelativeLayout.HeightConstraint="{ConstraintExpression
-            Type=RelativeToParent,Property=Height,Factor=0.038,Constant=45}" >
-               <SearchBar
-               x:Name="searchBar"
-               Placeholder="Search ..."
-                   SearchButtonPressed="SearchUnfocus"
-                   Focused="SearchBarFocused"
-                   Unfocused="SearchBarUnfocused">
-                    <SearchBar.Behaviors>
-                        <behaviors:EventToCommandBehavior EventName="TextChanged"
-                                                          Command="{Binding SearchTextChanged}"
-                                                          CommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
-                    </SearchBar.Behaviors>
-               </SearchBar>
-                       </Frame>
-                           </RelativeLayout>
+            <ActivityIndicator x:Name="activity"
+                               IsRunning="{Binding IsRunning}"
+                               IsVisible="{Binding IsRunning}" />
 
-        <StackLayout Padding="0,0,0,0"
-                     Margin="0,-30,0,0">
-            <ActivityIndicator IsRunning="{Binding IsRunning}"
-                               IsVisible="{Binding IsRunning}"/>
-            <ListView ItemsSource="{Binding SearchResults}"
+            <ListView RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Y,Factor=0.045,Constant=1}"
+                      RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=1}"
+                      ItemsSource="{Binding SearchResults}"
                       SelectionMode="None"
                       BackgroundColor="Transparent"
                       HasUnevenRows="True"
                       SeparatorVisibility="None"
                       IsPullToRefreshEnabled="True"
-                      x:Name="leaderList"
-                      ItemAppearing="SearchUnfocus"
+                      x:Name="leaderList" Margin="0,60,0,0"
+                      ItemAppearing="ItemAppearing"
+                      Refreshing="ListRefreshed"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding OnRefreshCommand}">
                 <ListView.ItemTemplate>
@@ -68,7 +48,7 @@
                                         <TapGestureRecognizer NumberOfTapsRequired="1"
                                                               CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
                                                               BindingContext="{Binding Source={x:Reference LeaderboardPage}, Path=BindingContext}"
-                                                              Command="{Binding LeaderTapped}"/>
+                                                              Command="{Binding LeaderTapped}" />
                                     </Frame.GestureRecognizers>
                                     <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="FillAndExpand"
@@ -79,19 +59,18 @@
                                                  WidthRequest="5"
                                                  InputTransparent="True"
                                                  BackgroundColor="{Binding IsMe, Converter={converters:IsMeTagConverter}}"
-                                                 d:IsVisible="true"/>
+                                                 d:IsVisible="true" />
 
                                         <Grid HorizontalOptions="FillAndExpand">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="50"/>
-                                                <ColumnDefinition Width="4*"/>
-                                                <ColumnDefinition Width="3*"/>
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="4*" />
+                                                <ColumnDefinition Width="3*" />
                                             </Grid.ColumnDefinitions>
 
                                             <Label Style="{StaticResource Leaderboard}"
-                                                   FontSize="18"
-                                                   Text="{Binding Rank}"
+                                                   FontSize="18" Text="{Binding Rank}"
                                                    VerticalOptions="Center"
                                                    FontAttributes="{Binding fontAttribute}"
                                                    InputTransparent="True"
@@ -113,10 +92,9 @@
                                                                  Grid.Column="1">
                                                 <ffimage:CachedImage.Transformations>
                                                     <transforms:CircleTransformation BorderSize="20"
-                                                                                     BorderHexColor="#979797"/>
+                                                                                     BorderHexColor="#979797" />
                                                 </ffimage:CachedImage.Transformations>
                                             </ffimage:CachedImage>
-
                                             <Label Style="{StaticResource Leaderboard}"
                                                    Text="{Binding Name}"
                                                    FontAttributes="{Binding fontAttribute}"
@@ -124,7 +102,7 @@
                                                    VerticalOptions="Center"
                                                    Margin="10,0"
                                                    Grid.Column="2"
-                                                   d:Text="Matt Goldman"/>
+                                                   d:Text="Matt Goldman" />
 
                                             <Label Style="{StaticResource Leaderboard}"
                                                    Text="{Binding BaseScore, StringFormat='{0} points'}"
@@ -133,7 +111,7 @@
                                                    VerticalOptions="Center"
                                                    Margin="0,0,15,0"
                                                    HorizontalTextAlignment="End"
-                                                   Grid.Column="3"/>
+                                                   Grid.Column="3" />
                                         </Grid>
                                     </StackLayout>
                                 </Frame>
@@ -142,7 +120,21 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackLayout>
-        </StackLayout>
+            <Frame x:Name="searchFrame"
+                   Padding="-5,0,0,0"
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=1}"
+                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.045,Constant=35}" >
+                <SearchBar x:Name="searchView"
+                           Placeholder="Search..."
+                           SearchButtonPressed="SearchButtonPress"
+                           TextChanged="TextChanged">
+                    <SearchBar.Behaviors>
+                        <behaviors:EventToCommandBehavior EventName="TextChanged"
+                                                          Command="{Binding SearchTextChanged}"
+                                                          CommandParameter="{Binding Text, Source={x:Reference searchView}}" />
+                    </SearchBar.Behaviors>
+                </SearchBar>
+            </Frame>
+        </RelativeLayout>
     </ContentPage.Content>
 </ContentPage>
