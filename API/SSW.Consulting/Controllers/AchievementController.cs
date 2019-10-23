@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
@@ -23,6 +24,8 @@ namespace SSW.Consulting.WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AchievementViewModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(AlreadyAwardedException))]
         public async Task<ActionResult<AchievementViewModel>> Add([FromQuery] string achievementCode)
         {
             return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));

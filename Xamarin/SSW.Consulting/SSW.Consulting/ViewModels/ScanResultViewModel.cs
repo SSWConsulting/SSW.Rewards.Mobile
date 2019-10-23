@@ -11,19 +11,35 @@ namespace SSW.Consulting.ViewModels
     public class ScanResultViewModel : BaseViewModel
     {
         public string AnimationRef { get; set; }
+        public bool AnimationLoop { get; set; }
         public string ResultHeading { get; set; }
         public string ResultBody { get; set; }
         public string AchievementHeading { get; set; }
         public ICommand OnOkCommand { get; set; }
         public Color HeadingColour { get; set; }
         private IUserService _userService { get; set; }
+        private IChallengeService _challengeService { get; set; }
 
         private bool _wonPrize { get; set; }
 
-        public ScanResultViewModel(ChallengeResultViewModel result, IUserService userService)
+        public ScanResultViewModel(string scanData, IUserService userService)
         {
             OnOkCommand = new Command(DismissPopups);
             _userService = userService;
+            _challengeService = Resolver.Resolve<IChallengeService>();
+            CheckScanData(scanData);
+        }
+
+        private async void CheckScanData(string data)
+        {
+            AnimationRef = "qr-code-scanner.json";
+            AnimationLoop = true;
+            ResultHeading = "Verifying your QR code...";
+            RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
+
+            ChallengeResultViewModel result = await _challengeService.PostChallengeAsync(data);
+
+            AnimationLoop = false;
 
             switch (result.result)
             {
@@ -54,10 +70,10 @@ namespace SSW.Consulting.ViewModels
                     break;
             }
 
-            RaisePropertyChanged(new string[] { "AnimationRef", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
+            RaisePropertyChanged(new string[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
 
             if (result.result == ChallengeResult.Added)
-                CollectNewPointsAsync();
+                await CollectNewPointsAsync();
         }
 
         private async void DismissPopups()

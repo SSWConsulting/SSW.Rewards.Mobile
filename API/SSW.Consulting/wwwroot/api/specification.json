@@ -54,6 +54,16 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlreadyAwardedException"
+                }
+              }
+            }
           }
         }
       }
@@ -64,6 +74,18 @@
           "Achievement"
         ],
         "operationId": "Achievement_TechQuiz",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -202,6 +224,42 @@
           "value": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "AlreadyAwardedException": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Exception"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "Exception": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stackTrace": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "innerException": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Exception"
+              }
+            ]
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

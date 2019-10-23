@@ -44,7 +44,7 @@
             <lottie:AnimationView x:Name="ResultAnimation"
                                   Animation="{Binding AnimationRef}"
                                   AutoPlay="True"
-                                  Loop="False"
+                                  Loop="{Binding AnimationLoop}"
                                   VerticalOptions="CenterAndExpand"
                                   HorizontalOptions="CenterAndExpand"
                                   HeightRequest="200"

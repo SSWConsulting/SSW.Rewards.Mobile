@@ -48,60 +48,16 @@ namespace SSW.Consulting.ViewModels
             InitialiseOther(vm.Id);
         }
 
-        public async void InitialiseOther(int userId)
+        public async Task InitialiseOther(int userId)
         {
             var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
 
             userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
 
-            UpdateChallengeList(userChallenges);
-            
-            /*
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
-            foreach (MyChallenge challenge in userChallenges)
-            {
-                if (challenge.IsBonus)
-                {
-                    ChallengeListViewModel vm = new ChallengeListViewModel();
-                    vm.IsHeader = false;
-                    vm.IsRow = false;
-
-                    if(challenge.Completed)
-                    {
-                        challenge.Title = "🏆 WON: " + challenge.Title;
-                    }
-
-                    vm.Challenge = challenge;
-
-
-                    ChallengeList.Add(vm);//new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
-                }
-            }
-
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
-            foreach (MyChallenge challenge in userChallenges)
-            {
-                if (challenge.Completed && !challenge.IsBonus)
-                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
-            }
-
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
-            userChallenges = userChallenges.OrderBy(c => c.Points);
-
-            foreach (MyChallenge challenge in userChallenges)
-            {
-                if (!challenge.Completed && !challenge.IsBonus)
-                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
-            }
-
-            RaisePropertyChanged("Points", "ChallengeList");
-            */
+            await UpdateChallengeList(userChallenges);
         }
 
-        private async void Initialise()
+        private async Task Initialise()
         {
             ProfilePic = await _userService.GetMyProfilePicAsync();
             Name = await _userService.GetMyNameAsync();
@@ -111,54 +67,7 @@ namespace SSW.Consulting.ViewModels
 
             var challenges = await _challengeService.GetMyChallengesAsync();
 
-            UpdateChallengeList(challenges);
-
-            /*
-            //TODO: Get rid of this nasty hack and group/display the data properly
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
-            foreach (MyChallenge challenge in challenges)
-            {
-                if (challenge.IsBonus)
-                {
-                    ChallengeListViewModel vm = new ChallengeListViewModel();
-                    vm.IsHeader = false;
-                    vm.IsRow = false;
-
-                    if (challenge.Completed)
-                    {
-                        challenge.Title = "🏆 WON: " + challenge.Title;
-                    }
-
-                    vm.Challenge = challenge;
-
-
-                    ChallengeList.Add(vm);
-                }
-            }
-
-
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-
-            challenges = challenges.OrderBy(c => c.awardedAt);
-
-            foreach (MyChallenge challenge in challenges)
-            {
-                if (challenge.Completed && !challenge.IsBonus)
-                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
-            }
-
-            challenges = challenges.OrderBy(c => c.Points);
-
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
-            foreach (MyChallenge challenge in challenges)
-            {
-                if (!challenge.Completed && !challenge.IsBonus)
-                    ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
-            }
-
-            RaisePropertyChanged("Points", "ChallengeList");
-            */
+            await UpdateChallengeList(challenges);
         }
 
         private async Task UpdateChallengeList(IEnumerable<MyChallenge> challenges)

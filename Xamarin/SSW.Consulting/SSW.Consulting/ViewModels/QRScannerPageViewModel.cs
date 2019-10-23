@@ -22,8 +22,8 @@ namespace SSW.Consulting.ViewModels
 
         public async Task CheckAchievement(Result result)
         {
-            ChallengeResultViewModel challenge = await _challengeService.PostChallengeAsync(result.Text);
-            await PopupNavigation.Instance.PushAsync(new ScanResult(challenge));
+            //ChallengeResultViewModel challenge = await _challengeService.PostChallengeAsync(result.Text);
+            await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
         }
     }
 }

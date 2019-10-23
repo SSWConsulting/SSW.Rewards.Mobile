@@ -116,6 +116,10 @@ namespace SSW.Consulting.Services
                 else
                     vm.result = ChallengeResult.NotFound;
             }
+            catch(AlreadyAwardedException e)
+            {
+                vm.result = ChallengeResult.Duplicate;
+            }
             catch(ApiException e)
             {
                 if (e.StatusCode == 401)
@@ -125,12 +129,12 @@ namespace SSW.Consulting.Services
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem logging this achievement. Please try again soon.", "OK");
+                    vm.result = ChallengeResult.NotFound;
                 }
             }
             catch
             {
-                vm.result =  ChallengeResult.NotFound;
+                vm.result = ChallengeResult.Error;
             }
 
             return vm;
