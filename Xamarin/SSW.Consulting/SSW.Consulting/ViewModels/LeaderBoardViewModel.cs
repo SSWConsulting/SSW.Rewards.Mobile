@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows.Input;
-using SSW.Consulting.Models;
 using SSW.Consulting.Services;
 using SSW.Consulting.Views;
 using System.Linq;
@@ -31,6 +29,9 @@ namespace SSW.Consulting.ViewModels
 
         public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
 
+        private List<LeaderSummaryViewModel> searchResults = new List<LeaderSummaryViewModel>();
+
+
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
             Title = "SSW Leaderboard";
@@ -40,6 +41,32 @@ namespace SSW.Consulting.ViewModels
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
             MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
             Initialise();
+        }
+
+        public ICommand SearchTextChanged => new Command<string>((string query) =>
+        {
+            if (query != null || query != String.Empty)
+            {
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(query.ToLower())).ToList();
+                SearchResults = filtered;
+                return;
+            }
+            SearchResults = Leaders.ToList();
+
+        });
+
+        public List<LeaderSummaryViewModel> SearchResults
+        {
+            get
+            {
+                return searchResults;
+            }
+            set
+            {
+                searchResults = value;
+                RaisePropertyChanged("SearchResults");
+
+            }
         }
 
         private async void Initialise()
@@ -60,13 +87,17 @@ namespace SSW.Consulting.ViewModels
             IsRunning = false;
             RaisePropertyChanged("IsRunning");
 
+            SearchResults = Leaders.ToList();
+            RaisePropertyChanged("SearchResults");
+
+
             var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
             ScrollToMe?.Invoke(mysummary);
         }
 
         public async void Refresh()
         {
-            //IsRunning = true;
+            // = true;
             //RaisePropertyChanged("IsRunning");
             var summaries = await _leaderService.GetLeadersAsync(false);
             int myId = await _userService.GetMyUserIdAsync();
@@ -81,7 +112,6 @@ namespace SSW.Consulting.ViewModels
                 Leaders.Add(vm);
             }
 
-            //IsRunning = false;
             IsRefreshing = false;
             RaisePropertyChanged("IsRefreshing");
         }

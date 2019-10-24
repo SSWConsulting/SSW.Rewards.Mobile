@@ -53,6 +53,7 @@ namespace SSW.Consulting
 			}
 			else
 			{
+				System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
 				return true;
 			}
 		}

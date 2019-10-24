@@ -12,7 +12,7 @@ using Lottie.Forms.Droid;
 
 namespace SSW.Consulting.Droid
 {
-    [Activity(Label = "SSW", Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation =ScreenOrientation.Portrait)]
+    [Activity(Label = "SSW", Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_launcher_round", Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation =ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -42,17 +42,5 @@ namespace SSW.Consulting.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-
-        public override void OnBackPressed()
-        {
-			if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
-			{
-
-			}
-			else
-			{
-				//base.OnBackPressed();
-			}
-        }
-    }
+	}
 }
