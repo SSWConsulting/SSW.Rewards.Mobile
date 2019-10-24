@@ -18,6 +18,7 @@ namespace SSW.Consulting.ViewModels
         public string Name { get; set; }
         public string Email { get; set; }
         public string Points { get; set; }
+        public string PointsIndicator { get; set; }
 
         public ObservableCollection<MyChallenge> CompletedChallenges { get; set; }
         public ObservableCollection<MyChallenge> OutstandingChallenges { get; set; }
@@ -72,7 +73,7 @@ namespace SSW.Consulting.ViewModels
 
         private async Task UpdateChallengeList(IEnumerable<MyChallenge> challenges)
         {
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false, IsPointsHeader = false });
 
             foreach (MyChallenge challenge in challenges)
             {
@@ -95,7 +96,7 @@ namespace SSW.Consulting.ViewModels
             }
 
 
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Completed", Challenge = new MyChallenge { IsBonus = true }, IsRow = false, IsPointsHeader = true });
 
             challenges = challenges.OrderBy(c => c.awardedAt);
 
@@ -107,7 +108,7 @@ namespace SSW.Consulting.ViewModels
 
             challenges = challenges.OrderBy(c => c.Points);
 
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = false }, IsRow = false });
+            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Outstanding", Challenge = new MyChallenge { IsBonus = true }, IsRow = false, IsPointsHeader = true });
             foreach (MyChallenge challenge in challenges)
             {
                 if (!challenge.Completed && !challenge.IsBonus)

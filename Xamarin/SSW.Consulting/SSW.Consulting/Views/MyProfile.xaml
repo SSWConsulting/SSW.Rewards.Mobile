@@ -50,7 +50,7 @@
                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=1.1,Constant=0}"
                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.75,Constant=0}"
                              HorizontalOptions="CenterAndExpand"
-                             Padding="50,0,50,0"
+                             Padding="50,0"
                              VerticalOptions="Start">
                     <Label Text="{Binding Name}"
                            d:Text="Matt Goldman"
@@ -76,11 +76,11 @@
                         <Image Source="badge_goldstar"
                                Scale="0.6"/>
 
-                        <Label Text="{Binding Points, StringFormat='{0} pts'}"
+                        <Label Text="{Binding Points}"
                                TextColor="{StaticResource PointsColour}"
                                VerticalTextAlignment="Center"
                                FontSize="40"
-                               d:Text="125 pts"/>
+                               d:Text="1,5525"/>
                     </StackLayout>
 
                     <BoxView HeightRequest="2"
@@ -127,9 +127,17 @@
                                                IsVisible="False"/>
                                         <!--IsVisible="{Binding Challenge.IsBonus}"/>-->
 
-                                        <Label Text="{Binding Challenge.Points, StringFormat='{0} pts'}"
+                                        <Label Text="{Binding Challenge.Points}"
                                                IsVisible="{Binding IsRow}"
+                                               HorizontalTextAlignment="Center"
                                                TextColor="White"
+                                               Grid.Column="2"/>
+
+                                        <Label Text="★"
+                                               IsVisible="{Binding IsPointsHeader}"
+                                               TextColor="White"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"
                                                Grid.Column="2"/>
                                     </Grid>
                                 </ViewCell>
