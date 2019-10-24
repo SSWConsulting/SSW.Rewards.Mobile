@@ -53,8 +53,6 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
-    <PublicSign>false</PublicSign>
-    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
     <NoWarn></NoWarn>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -511,15 +509,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%403x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%402x.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png">
-      <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\chip_bonus.imageset\chip_bonus%403x.png">
       <Visible>false</Visible>
@@ -1494,6 +1483,9 @@
     </ImageAsset>
     <BundleResource Include="qr-code-scanner.json" />
     <BundleResource Include="rapid-scan.json" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%403x.png" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%402x.png" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

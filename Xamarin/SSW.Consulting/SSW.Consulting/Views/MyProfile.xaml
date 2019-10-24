@@ -73,8 +73,7 @@
                     <StackLayout Orientation="Horizontal"
                                  HorizontalOptions="Center">
 
-                        <Image Source="badge_goldstar"
-                               Scale="0.6"/>
+                        <Image Source="badge_goldstar"/>
 
                         <Label Text="{Binding Points}"
                                TextColor="{StaticResource PointsColour}"
