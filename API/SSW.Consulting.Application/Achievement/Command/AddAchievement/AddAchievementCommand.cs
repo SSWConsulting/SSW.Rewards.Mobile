@@ -9,13 +9,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.Application.User.Commands.UpsertUser
+namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
 {
-    public class AddAchievementCommand : IRequest<AchievementViewModel>
+    public class AddAchievementCommand : IRequest<AddAchievementResult>
     {
         public string Code { get; set; }
 
-        public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AchievementViewModel>
+        public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AddAchievementResult>
         {
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWConsultingDbContext _context;
@@ -31,7 +31,7 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
                 _mapper = mapper;
             }
 
-            public async Task<AchievementViewModel> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
+            public async Task<AddAchievementResult> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
             {
                 var achievement = await _context
                     .Achievements
@@ -40,7 +40,11 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
 
                 if (achievement == null)
                 {
-                    throw new NotFoundException(request.Code, nameof(Domain.Entities.Achievement));
+                    return new AddAchievementResult
+                    {
+                        viewModel = new AchievementViewModel(),
+                        status = Status.NotFound
+                    };
                 }
 
                 var user = await _currentUserService.GetCurrentUser(cancellationToken);
@@ -52,7 +56,11 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
 
                 if (userHasAchievement)
                 {
-                    throw new AlreadyAwardedException(user.Id, achievement.Name);
+                    return new AddAchievementResult
+                    {
+                        viewModel = new AchievementViewModel(),
+                        status = Status.Duplicate
+                    };
                 }
 
                 await _context
@@ -69,10 +77,20 @@ namespace SSW.Consulting.Application.User.Commands.UpsertUser
                 }
                 catch(Exception)
                 {
-                    throw new AlreadyAwardedException(user.Id, achievement.Name);
+                    return new AddAchievementResult
+                    {
+                        viewModel = new AchievementViewModel(),
+                        status = Status.Error
+                    };
                 }
 
-                return _mapper.Map<AchievementViewModel>(achievement);
+                var achievementModel = _mapper.Map<AchievementViewModel>(achievement);
+
+                return new AddAchievementResult
+                {
+                    viewModel = achievementModel,
+                    status = Status.Added
+                };
             }
         }
     }

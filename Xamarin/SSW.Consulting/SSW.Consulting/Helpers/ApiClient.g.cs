@@ -27,7 +27,7 @@ namespace SSW.Consulting
             _httpClient = httpClient; 
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() => 
             {
-                var settings = new Newtonsoft.Json.JsonSerializerSettings { Converters = new Newtonsoft.Json.JsonConverter[] { new JsonExceptionConverter() } };
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
@@ -112,16 +112,14 @@ namespace SSW.Consulting
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        /// <exception cref="ApiException{AlreadyAwardedException}">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<AchievementViewModel> AddAsync(string achievementCode)
+        public System.Threading.Tasks.Task<AddAchievementResult> AddAsync(string achievementCode)
         {
             return AddAsync(achievementCode, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        /// <exception cref="ApiException{AlreadyAwardedException}">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<AchievementViewModel> AddAsync(string achievementCode, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AddAchievementResult> AddAsync(string achievementCode, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Achievement/Add?");
@@ -157,18 +155,8 @@ namespace SSW.Consulting
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AchievementViewModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AddAchievementResult>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == "500") 
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<AlreadyAwardedException>(response_, headers_).ConfigureAwait(false);
-                            var responseObject_ = objectResponse_.Object != null ? objectResponse_.Object : new AlreadyAwardedException();
-                            responseObject_.Data.Add("HttpStatus", status_);
-                            responseObject_.Data.Add("HttpHeaders", headers_);
-                            responseObject_.Data.Add("HttpResponse", objectResponse_.Text);
-                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, objectResponse_.Text, headers_, responseObject_);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -177,7 +165,7 @@ namespace SSW.Consulting
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(AchievementViewModel);
+                        return default(AddAchievementResult);
                     }
                     finally
                     {
@@ -366,7 +354,7 @@ namespace SSW.Consulting
             _httpClient = httpClient; 
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() => 
             {
-                var settings = new Newtonsoft.Json.JsonSerializerSettings { Converters = new Newtonsoft.Json.JsonConverter[] { new JsonExceptionConverter() } };
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
@@ -556,7 +544,7 @@ namespace SSW.Consulting
             _httpClient = httpClient; 
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() => 
             {
-                var settings = new Newtonsoft.Json.JsonSerializerSettings { Converters = new Newtonsoft.Json.JsonConverter[] { new JsonExceptionConverter() } };
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
@@ -746,7 +734,7 @@ namespace SSW.Consulting
             _httpClient = httpClient; 
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() => 
             {
-                var settings = new Newtonsoft.Json.JsonSerializerSettings { Converters = new Newtonsoft.Json.JsonConverter[] { new JsonExceptionConverter() } };
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
@@ -1018,9 +1006,27 @@ namespace SSW.Consulting
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.24.0 (Newtonsoft.Json v12.0.0.0)")]
-    [Newtonsoft.Json.JsonObjectAttribute]
-    public partial class AlreadyAwardedException : System.Exception
+    public partial class AddAchievementResult 
     {
+        [Newtonsoft.Json.JsonProperty("viewModel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public AchievementViewModel ViewModel { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Status Status { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.24.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum Status
+    {
+        Added = 0,
+    
+        NotFound = 1,
+    
+        Duplicate = 2,
+    
+        Error = 3,
     
     }
     
@@ -1212,159 +1218,6 @@ namespace SSW.Consulting
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.1.2.0 (NJsonSchema v10.0.24.0 (Newtonsoft.Json v12.0.0.0))")]
-    internal class JsonExceptionConverter : Newtonsoft.Json.JsonConverter
-    {
-        private readonly Newtonsoft.Json.Serialization.DefaultContractResolver _defaultContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-        private readonly System.Collections.Generic.IDictionary<string, System.Reflection.Assembly> _searchedNamespaces;
-        private readonly bool _hideStackTrace = false;
-        
-        public JsonExceptionConverter()
-        {
-            _searchedNamespaces = new System.Collections.Generic.Dictionary<string, System.Reflection.Assembly> { { typeof(AlreadyAwardedException).Namespace, System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(AlreadyAwardedException)).Assembly } };
-        }
-        
-        public override bool CanWrite => true;
-        
-        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var exception = value as System.Exception;
-            if (exception != null)
-            {
-                var resolver = serializer.ContractResolver as Newtonsoft.Json.Serialization.DefaultContractResolver ?? _defaultContractResolver;
-        
-                var jObject = new Newtonsoft.Json.Linq.JObject();
-                jObject.Add(resolver.GetResolvedPropertyName("discriminator"), exception.GetType().Name);
-                jObject.Add(resolver.GetResolvedPropertyName("Message"), exception.Message);
-                jObject.Add(resolver.GetResolvedPropertyName("StackTrace"), _hideStackTrace ? "HIDDEN" : exception.StackTrace);
-                jObject.Add(resolver.GetResolvedPropertyName("Source"), exception.Source);
-                jObject.Add(resolver.GetResolvedPropertyName("InnerException"),
-                    exception.InnerException != null ? Newtonsoft.Json.Linq.JToken.FromObject(exception.InnerException, serializer) : null);
-        
-                foreach (var property in GetExceptionProperties(value.GetType()))
-                {
-                    var propertyValue = property.Key.GetValue(exception);
-                    if (propertyValue != null)
-                    {
-                        jObject.AddFirst(new Newtonsoft.Json.Linq.JProperty(resolver.GetResolvedPropertyName(property.Value),
-                            Newtonsoft.Json.Linq.JToken.FromObject(propertyValue, serializer)));
-                    }
-                }
-        
-                value = jObject;
-            }
-        
-            serializer.Serialize(writer, value);
-        }
-        
-        public override bool CanConvert(System.Type objectType)
-        {
-            return System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(System.Exception)).IsAssignableFrom(System.Reflection.IntrospectionExtensions.GetTypeInfo(objectType));
-        }
-        
-        public override object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var jObject = serializer.Deserialize<Newtonsoft.Json.Linq.JObject>(reader);
-            if (jObject == null)
-                return null;
-        
-            var newSerializer = new Newtonsoft.Json.JsonSerializer();
-            newSerializer.ContractResolver = (Newtonsoft.Json.Serialization.IContractResolver)System.Activator.CreateInstance(serializer.ContractResolver.GetType());
-        
-            var field = GetField(typeof(Newtonsoft.Json.Serialization.DefaultContractResolver), "_sharedCache");
-            if (field != null)
-                field.SetValue(newSerializer.ContractResolver, false);
-        
-            dynamic resolver = newSerializer.ContractResolver;
-            if (System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(newSerializer.ContractResolver.GetType(), "IgnoreSerializableAttribute") != null)
-                resolver.IgnoreSerializableAttribute = true;
-            if (System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperty(newSerializer.ContractResolver.GetType(), "IgnoreSerializableInterface") != null)
-                resolver.IgnoreSerializableInterface = true;
-        
-            Newtonsoft.Json.Linq.JToken token;
-            if (jObject.TryGetValue("discriminator", System.StringComparison.OrdinalIgnoreCase, out token))
-            {
-                var discriminator = Newtonsoft.Json.Linq.Extensions.Value<string>(token);
-                if (objectType.Name.Equals(discriminator) == false)
-                {
-                    var exceptionType = System.Type.GetType("System." + discriminator, false);
-                    if (exceptionType != null)
-                        objectType = exceptionType;
-                    else
-                    {
-                        foreach (var pair in _searchedNamespaces)
-                        {
-                            exceptionType = pair.Value.GetType(pair.Key + "." + discriminator);
-                            if (exceptionType != null)
-                            {
-                                objectType = exceptionType;
-                                break;
-                            }
-                        }
-        
-                    }
-                }
-            }
-        
-            var value = jObject.ToObject(objectType, newSerializer);
-            foreach (var property in GetExceptionProperties(value.GetType()))
-            {
-                var jValue = jObject.GetValue(resolver.GetResolvedPropertyName(property.Value));
-                var propertyValue = (object)jValue?.ToObject(property.Key.PropertyType);
-                if (property.Key.SetMethod != null)
-                    property.Key.SetValue(value, propertyValue);
-                else
-                {
-                    field = GetField(objectType, "m_" + property.Value.Substring(0, 1).ToLowerInvariant() + property.Value.Substring(1));
-                    if (field != null)
-                        field.SetValue(value, propertyValue);
-                }
-            }
-        
-            SetExceptionFieldValue(jObject, "Message", value, "_message", resolver, newSerializer);
-            SetExceptionFieldValue(jObject, "StackTrace", value, "_stackTraceString", resolver, newSerializer);
-            SetExceptionFieldValue(jObject, "Source", value, "_source", resolver, newSerializer);
-            SetExceptionFieldValue(jObject, "InnerException", value, "_innerException", resolver, serializer);
-        
-            return value;
-        }
-        
-        private System.Reflection.FieldInfo GetField(System.Type type, string fieldName)
-        {
-            var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(type).GetDeclaredField(fieldName);
-            if (field == null && System.Reflection.IntrospectionExtensions.GetTypeInfo(type).BaseType != null)
-                return GetField(System.Reflection.IntrospectionExtensions.GetTypeInfo(type).BaseType, fieldName);
-            return field;
-        }
-        
-        private System.Collections.Generic.IDictionary<System.Reflection.PropertyInfo, string> GetExceptionProperties(System.Type exceptionType)
-        {
-            var result = new System.Collections.Generic.Dictionary<System.Reflection.PropertyInfo, string>();
-            foreach (var property in System.Linq.Enumerable.Where(System.Reflection.RuntimeReflectionExtensions.GetRuntimeProperties(exceptionType), 
-                p => p.GetMethod?.IsPublic == true))
-            {
-                var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<Newtonsoft.Json.JsonPropertyAttribute>(property);
-                var propertyName = attribute != null ? attribute.PropertyName : property.Name;
-        
-                if (!System.Linq.Enumerable.Contains(new[] { "Message", "StackTrace", "Source", "InnerException", "Data", "TargetSite", "HelpLink", "HResult" }, propertyName))
-                    result[property] = propertyName;
-            }
-            return result;
-        }
-        
-        private void SetExceptionFieldValue(Newtonsoft.Json.Linq.JObject jObject, string propertyName, object value, string fieldName, Newtonsoft.Json.Serialization.IContractResolver resolver, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(System.Exception)).GetDeclaredField(fieldName);
-            var jsonPropertyName = resolver is Newtonsoft.Json.Serialization.DefaultContractResolver ? ((Newtonsoft.Json.Serialization.DefaultContractResolver)resolver).GetResolvedPropertyName(propertyName) : propertyName;
-            var property = System.Linq.Enumerable.FirstOrDefault(jObject.Properties(), p => System.String.Equals(p.Name, jsonPropertyName, System.StringComparison.OrdinalIgnoreCase));
-            if (property != null)
-            {
-                var fieldValue = property.Value.ToObject(field.FieldType, serializer);
-                field.SetValue(value, fieldValue);
-            }
         }
     }
 

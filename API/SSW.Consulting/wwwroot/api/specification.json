@@ -50,17 +50,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AchievementViewModel"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlreadyAwardedException"
+                  "$ref": "#/components/schemas/AddAchievementResult"
                 }
               }
             }
@@ -227,41 +217,38 @@
           }
         }
       },
-      "AlreadyAwardedException": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Exception"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "Exception": {
+      "AddAchievementResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "stackTrace": {
-            "type": "string",
-            "nullable": true
-          },
-          "message": {
-            "type": "string"
-          },
-          "innerException": {
+          "viewModel": {
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/Exception"
+                "$ref": "#/components/schemas/AchievementViewModel"
               }
             ]
           },
-          "source": {
-            "type": "string",
-            "nullable": true
+          "status": {
+            "$ref": "#/components/schemas/Status"
           }
         }
+      },
+      "Status": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Added",
+          "NotFound",
+          "Duplicate",
+          "Error"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "LeaderboardListViewModel": {
         "type": "object",
