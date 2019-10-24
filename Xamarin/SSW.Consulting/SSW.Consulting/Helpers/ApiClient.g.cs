@@ -1012,13 +1012,13 @@ namespace SSW.Consulting
         public AchievementViewModel ViewModel { get; set; }
     
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Status Status { get; set; }
+        public AchievementStatus Status { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.24.0 (Newtonsoft.Json v12.0.0.0)")]
-    public enum Status
+    public enum AchievementStatus
     {
         Added = 0,
     

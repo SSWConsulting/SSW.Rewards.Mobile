@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
-using SSW.Consulting.Application.Achievement.Commands.AddAchievement;
+using SSW.Consulting.Application.Achievement.Command.AddAchievement;
 using SSW.Consulting.WebAPI.Settings;
 
 namespace SSW.Consulting.WebAPI.Controllers

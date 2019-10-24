@@ -230,11 +230,11 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/Status"
+            "$ref": "#/components/schemas/AchievementStatus"
           }
         }
       },
-      "Status": {
+      "AchievementStatus": {
         "type": "integer",
         "description": "",
         "x-enumNames": [

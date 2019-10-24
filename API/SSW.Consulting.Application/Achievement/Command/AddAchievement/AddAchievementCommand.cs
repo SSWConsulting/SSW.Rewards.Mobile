@@ -2,14 +2,13 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Consulting.Application.Achievement.Queries.GetAchievementList;
-using SSW.Consulting.Application.Common.Exceptions;
 using SSW.Consulting.Application.Common.Interfaces;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SSW.Consulting.Application.Achievement.Command.AddAchievement;
 
-namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
+namespace SSW.Consulting.Application.Achievement.Command.AddAchievement
 {
     public class AddAchievementCommand : IRequest<AddAchievementResult>
     {
@@ -42,8 +41,7 @@ namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
                 {
                     return new AddAchievementResult
                     {
-                        viewModel = new AchievementViewModel(),
-                        status = Status.NotFound
+                        Status = AchievementStatus.NotFound
                     };
                 }
 
@@ -58,8 +56,7 @@ namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
                 {
                     return new AddAchievementResult
                     {
-                        viewModel = new AchievementViewModel(),
-                        status = Status.Duplicate
+                        Status = AchievementStatus.Duplicate
                     };
                 }
 
@@ -69,27 +66,16 @@ namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
                     {
                         UserId = user.Id,
                         AchievementId = achievement.Id
-                    });
+                    }, cancellationToken);
 
-                try
-                {
-                    await _context.SaveChangesAsync(cancellationToken);
-                }
-                catch(Exception)
-                {
-                    return new AddAchievementResult
-                    {
-                        viewModel = new AchievementViewModel(),
-                        status = Status.Error
-                    };
-                }
+                await _context.SaveChangesAsync(cancellationToken);
 
-                var achievementModel = _mapper.Map<AchievementViewModel>(achievement);
+				var achievementModel = _mapper.Map<AchievementViewModel>(achievement);
 
                 return new AddAchievementResult
                 {
-                    viewModel = achievementModel,
-                    status = Status.Added
+                    ViewModel = achievementModel,
+                    Status = AchievementStatus.Added
                 };
             }
         }
