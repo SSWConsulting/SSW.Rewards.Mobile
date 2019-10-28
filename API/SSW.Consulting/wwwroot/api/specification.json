@@ -54,13 +54,35 @@
                 }
               }
             }
-          },
-          "500": {
+          }
+        }
+      }
+    },
+    "/api/Achievement/Post": {
+      "post": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Post",
+        "parameters": [
+          {
+            "name": "achievementCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AlreadyAwardedException"
+                  "$ref": "#/components/schemas/PostAchievementResult"
                 }
               }
             }
@@ -227,41 +249,38 @@
           }
         }
       },
-      "AlreadyAwardedException": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Exception"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "Exception": {
+      "PostAchievementResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "stackTrace": {
-            "type": "string",
-            "nullable": true
-          },
-          "message": {
-            "type": "string"
-          },
-          "innerException": {
+          "viewModel": {
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/Exception"
+                "$ref": "#/components/schemas/AchievementViewModel"
               }
             ]
           },
-          "source": {
-            "type": "string",
-            "nullable": true
+          "status": {
+            "$ref": "#/components/schemas/AchievementStatus"
           }
         }
+      },
+      "AchievementStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Added",
+          "NotFound",
+          "Duplicate",
+          "Error"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "LeaderboardListViewModel": {
         "type": "object",

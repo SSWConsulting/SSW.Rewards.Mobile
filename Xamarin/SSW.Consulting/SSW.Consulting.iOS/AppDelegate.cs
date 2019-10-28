@@ -7,6 +7,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Push;
 using PanCardView.iOS;
 using SSW.Consulting.Services;
 using UIKit;
@@ -33,9 +34,6 @@ namespace SSW.Consulting.iOS
 
             Rg.Plugins.Popup.Popup.Init();
 
-            /*AppCenter.Start("e33283b1-7326-447d-baae-e783ece0789b",
-                  typeof(Auth), typeof(Analytics), typeof(Crashes));*/
-
             global::Xamarin.Forms.Forms.Init();
             AnimationViewRenderer.Init();
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
@@ -47,11 +45,5 @@ namespace SSW.Consulting.iOS
 
             return base.FinishedLaunching(app, options);
         }
-        /*
-        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
-        {
-            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
-            return true;
-        }*/
     }
 }

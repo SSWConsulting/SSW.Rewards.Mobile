@@ -26,9 +26,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Distribution: Superior Software for Windows Pty Ltd (B5652JTA7Q)</CodesignKey>
+    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>Automatic:AppStore</CodesignProvision>
+    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -49,12 +49,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <NoWarn></NoWarn>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -66,11 +69,13 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
-    <CodesignProvision>Matt G Dev Profile SSW Mobile App</CodesignProvision>
     <BuildIpa>true</BuildIpa>
     <IpaIncludeArtwork>false</IpaIncludeArtwork>
     <Commandlineparameters>
     </Commandlineparameters>
+    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
+    <Nullable></Nullable>
+    <OnDemandResourcesInitialInstallTags></OnDemandResourcesInitialInstallTags>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhoneSimulator'">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +90,8 @@
     <MtouchArch>x86_64</MtouchArch>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhone'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,9 +102,15 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile></DocumentationFile>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <ConsolePause>true</ConsolePause>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <NoStdLib>false</NoStdLib>
+    <OnDemandResourcesInitialInstallTags></OnDemandResourcesInitialInstallTags>
+    <OnDemandResourcesPrefetchOrder></OnDemandResourcesPrefetchOrder>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Effects\iOSTooltipEffect.cs" />
