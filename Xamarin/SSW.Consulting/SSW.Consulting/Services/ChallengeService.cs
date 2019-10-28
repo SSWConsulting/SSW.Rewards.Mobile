@@ -105,20 +105,37 @@ namespace SSW.Consulting.Services
 
             try
             {
-                AchievementViewModel response = await _achievementClient.AddAsync(achievementString);
+                PostAchievementResult response = await _achievementClient.PostAsync(achievementString);
 
                 if (response != null)
                 {
-                    vm.result = ChallengeResult.Added;
-                    vm.Title = response.Name;
-                    vm.Points = response.Value;
+                    switch(response.Status)
+                    {
+                        case AchievementStatus.Added:
+                            vm.result = ChallengeResult.Added;
+                            vm.Title = response.ViewModel.Name;
+                            vm.Points = response.ViewModel.Value;
+                            break;
+                        case AchievementStatus.Duplicate:
+                            vm.result = ChallengeResult.Duplicate;
+                            vm.Title = "Duplicate";
+                            vm.Points = 0;
+                            break;
+                        case AchievementStatus.Error:
+                            vm.result = ChallengeResult.Error;
+                            vm.Title = "Error";
+                            vm.Points = 0;
+                            break;
+                        case AchievementStatus.NotFound:
+                            vm.result = ChallengeResult.NotFound;
+                            vm.Title = "Unrecognised";
+                            vm.Points = 0;
+                            break;
+                    }
+                    
                 }
                 else
-                    vm.result = ChallengeResult.NotFound;
-            }
-            catch(AlreadyAwardedException e)
-            {
-                vm.result = ChallengeResult.Duplicate;
+                    vm.result = ChallengeResult.Error;
             }
             catch(ApiException e)
             {
@@ -129,7 +146,7 @@ namespace SSW.Consulting.Services
                 }
                 else
                 {
-                    vm.result = ChallengeResult.NotFound;
+                    vm.result = ChallengeResult.Error;
                 }
             }
             catch
