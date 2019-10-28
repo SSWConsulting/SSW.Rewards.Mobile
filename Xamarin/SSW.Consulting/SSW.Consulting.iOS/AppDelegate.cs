@@ -7,6 +7,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Push;
 using PanCardView.iOS;
 using SSW.Consulting.Services;
 using UIKit;
@@ -53,5 +54,14 @@ namespace SSW.Consulting.iOS
             AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(url);
             return true;
         }*/
+        //public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+        //{
+        //    Push.FailedToRegisterForRemoteNotifications(error);
+        //}
+
+        //public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        //{
+        //    Push.RegisteredForRemoteNotifications(deviceToken);
+        //}
     }
 }
