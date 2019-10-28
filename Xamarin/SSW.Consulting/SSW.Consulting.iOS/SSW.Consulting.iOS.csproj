@@ -67,6 +67,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
     <CodesignProvision>Matt G Dev Profile SSW Mobile App</CodesignProvision>
+    <BuildIpa>true</BuildIpa>
+    <IpaIncludeArtwork>false</IpaIncludeArtwork>
     <Commandlineparameters>
     </Commandlineparameters>
   </PropertyGroup>
