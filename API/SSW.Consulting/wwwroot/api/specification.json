@@ -50,7 +50,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddAchievementResult"
+                  "$ref": "#/components/schemas/AchievementViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Achievement/Post": {
+      "post": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Post",
+        "parameters": [
+          {
+            "name": "achievementCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostAchievementResult"
                 }
               }
             }
@@ -217,7 +249,7 @@
           }
         }
       },
-      "AddAchievementResult": {
+      "PostAchievementResult": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -230,11 +262,11 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/Status"
+            "$ref": "#/components/schemas/AchievementStatus"
           }
         }
       },
-      "Status": {
+      "AchievementStatus": {
         "type": "integer",
         "description": "",
         "x-enumNames": [

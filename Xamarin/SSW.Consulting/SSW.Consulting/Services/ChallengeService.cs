@@ -105,28 +105,28 @@ namespace SSW.Consulting.Services
 
             try
             {
-                AddAchievementResult response = await _achievementClient.AddAsync(achievementString);
+                PostAchievementResult response = await _achievementClient.PostAsync(achievementString);
 
                 if (response != null)
                 {
                     switch(response.Status)
                     {
-                        case Status.Added:
+                        case AchievementStatus.Added:
                             vm.result = ChallengeResult.Added;
                             vm.Title = response.ViewModel.Name;
                             vm.Points = response.ViewModel.Value;
                             break;
-                        case Status.Duplicate:
+                        case AchievementStatus.Duplicate:
                             vm.result = ChallengeResult.Duplicate;
                             vm.Title = "Duplicate";
                             vm.Points = 0;
                             break;
-                        case Status.Error:
+                        case AchievementStatus.Error:
                             vm.result = ChallengeResult.Error;
                             vm.Title = "Error";
                             vm.Points = 0;
                             break;
-                        case Status.NotFound:
+                        case AchievementStatus.NotFound:
                             vm.result = ChallengeResult.NotFound;
                             vm.Title = "Unrecognised";
                             vm.Points = 0;

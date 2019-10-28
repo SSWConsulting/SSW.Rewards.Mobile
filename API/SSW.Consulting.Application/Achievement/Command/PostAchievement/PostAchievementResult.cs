@@ -3,15 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
+namespace SSW.Consulting.Application.Achievement.Command.PostAchievement
 {
-    public class AddAchievementResult
+    public class PostAchievementResult
     {
         public AchievementViewModel viewModel { get; set; }
-        public Status status { get; set; }
+        public AchievementStatus status { get; set; }
     }
-
-    public enum Status
+    public enum AchievementStatus
     {
         Added,
         NotFound,
