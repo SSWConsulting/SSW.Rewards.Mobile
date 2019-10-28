@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace SSW.Consulting.Application.Achievement.Command.AddAchievement
+namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
 {
     public class AddAchievementCommandValidator : AbstractValidator<AddAchievementCommand>
     {
