@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SSW.Consulting.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -27,7 +28,7 @@ namespace SSW.Consulting.Views
             Initialise();
         }
 
-        private async void Initialise()
+        private void Initialise()
         {
             MessagingCenter.Subscribe<object>(this, "SlideUp", (obj) => { SlideUp(); });
             MessagingCenter.Subscribe<object>(this, "SlideDown", (obj) => { SlideDown(); });

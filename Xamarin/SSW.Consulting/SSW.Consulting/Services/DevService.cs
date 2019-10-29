@@ -20,7 +20,7 @@ namespace SSW.Consulting.Services
         {
             _userService = userService;
             _httpClient = new HttpClient();
-            Initialise();
+            Task.Run(async () => { await Initialise(); });
         }
 
         private async Task Initialise()

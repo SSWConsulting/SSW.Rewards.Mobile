@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -26,9 +27,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignKey>Apple Development: Jack Kranz (J3X598PACS)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
+    <CodesignProvision>SSW Mobile App Jack Dev Profile</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -49,14 +50,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignKey>Apple Development: Jack Kranz (J3X598PACS)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>SdkOnly</MtouchLink>
     <NoWarn></NoWarn>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
+    <CodesignProvision>SSW Mobile App Jack Dev Profile</CodesignProvision>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -126,15 +127,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adam.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Uly.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Tan.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\RedStar.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -148,9 +140,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\polygon.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\user.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\qrcode.imageset\qrcode%403x.png">
@@ -201,9 +190,6 @@
     <ImageAsset Include="Assets.xcassets\calendar.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\MattW.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\logout.imageset\logout%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -228,9 +214,6 @@
     <ImageAsset Include="Assets.xcassets\information.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\dice.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\polygon.imageset\polygon%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -239,9 +222,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\polygon.imageset\polygon.png">
       <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adam_ndc.imageset\Contents.json">
-      <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\camera.imageset\camera%403x.png">
       <Visible>false</Visible>
@@ -253,9 +233,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\camera.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\ndc_jean.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\scroll.imageset\scroll%403x.png">
@@ -276,9 +253,6 @@
     <ImageAsset Include="Assets.xcassets\skill_beer.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_dancing.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_devops.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
@@ -286,12 +260,6 @@
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_powerbi.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_quiz.imageset\points_quiz%403x.png">
@@ -316,9 +284,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_presentations.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\points_twiitter.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_youtube.imageset\points_youtube%403x.png">
@@ -356,9 +321,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_background.imageset\points_background.png">
       <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\icoin_join.imageset\Contents.json">
-      <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_badge.imageset\icon_badge%403x.png">
       <Visible>false</Visible>
@@ -492,12 +454,6 @@
     <ImageAsset Include="Assets.xcassets\icon_sswdevs.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\adamndc.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\jeanndc.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_twitter.imageset\icon_twitter%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -576,9 +532,6 @@
     <ImageAsset Include="Assets.xcassets\prize_consultation.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\prize_googlehome.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -613,9 +566,6 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_superpowers.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\login_background.imageset\login_background%403x.png">
@@ -772,13 +722,7 @@
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
     <BundleResource Include="placeholder.gif" />
-    <ImageAsset Include="Assets.xcassets\prize_waterbottles.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\dev_loading_placeholder.imageset\dev_loading_placeholder%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -1372,9 +1316,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\external.imageset\external.png">
       <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\prize_lid.imageset\Contents.json">
-      <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_keepcup.imageset\prize_keepcup%403x.png">
       <Visible>false</Visible>

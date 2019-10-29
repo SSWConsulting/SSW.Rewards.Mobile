@@ -27,7 +27,7 @@ namespace SSW.Consulting.Services
             _httpClient = new HttpClient();
             _challenges = new ObservableCollection<Challenge>();
             _myChallenges = new ObservableCollection<MyChallenge>();
-            Initialise();
+            Task.Run(async () => { await Initialise(); });
         }
 
         private async Task Initialise()

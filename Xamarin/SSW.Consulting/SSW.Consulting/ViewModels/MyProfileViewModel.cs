@@ -31,8 +31,8 @@ namespace SSW.Consulting.ViewModels
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
-            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Initialise(); });
-            Initialise();
+            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => Task.Run(async ()=> { await Initialise(); }));
+            Task.Run(async () => { await Initialise(); });
         }
 
         public MyProfileViewModel(LeaderSummaryViewModel vm)
@@ -46,7 +46,7 @@ namespace SSW.Consulting.ViewModels
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
-            InitialiseOther(vm.Id);
+            Task.Run(async () => { await InitialiseOther(vm.Id); });
         }
 
         public async Task InitialiseOther(int userId)
@@ -55,7 +55,7 @@ namespace SSW.Consulting.ViewModels
 
             userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
 
-            await UpdateChallengeList(userChallenges);
+            UpdateChallengeList(userChallenges);
         }
 
         private async Task Initialise()
@@ -68,10 +68,10 @@ namespace SSW.Consulting.ViewModels
 
             var challenges = await _challengeService.GetMyChallengesAsync();
 
-            await UpdateChallengeList(challenges);
+            UpdateChallengeList(challenges);
         }
 
-        private async Task UpdateChallengeList(IEnumerable<MyChallenge> challenges)
+        private void UpdateChallengeList(IEnumerable<MyChallenge> challenges)
         {
             ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false, IsPointsHeader = false });
 

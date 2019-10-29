@@ -12,11 +12,9 @@ namespace SSW.Consulting.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LeaderBoard : ContentPage
     {
-        private DateTime lastRefreshed;
         private DateTime typed;
         private DateTime dismiss;
         private int lastItemIn;
-        private int lastItemCount;
         private bool showBar = true;
 
         public LeaderBoard(LeaderBoardViewModel viewModel)

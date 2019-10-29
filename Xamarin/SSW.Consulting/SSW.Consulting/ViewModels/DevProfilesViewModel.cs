@@ -95,7 +95,7 @@ namespace SSW.Consulting.ViewModels
             //App.Current.MainPage.DisplayAlert("Twitter", "ID: " + _twitterURI + Environment.NewLine + "Index: " + profileIndex, "OK");
         }
 
-        private async void ExpandCollapseProfile()
+        private void ExpandCollapseProfile()
         {
             if(_profileExpanded)
             {
@@ -113,7 +113,7 @@ namespace SSW.Consulting.ViewModels
             _profileExpanded = !_profileExpanded;
         }
 
-        private async void OpenTwitter()
+        private void OpenTwitter()
         {
             //Uri twitterURI = new Uri("https://twitter.com/" + devTwitter);
 

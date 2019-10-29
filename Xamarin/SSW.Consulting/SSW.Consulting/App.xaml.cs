@@ -38,7 +38,7 @@ namespace SSW.Consulting
 
         protected override void OnStart()
         {
-            UpdateAccessTokenAsync();
+            Task.Run(async () => { await UpdateAccessTokenAsync(); });
         }
 
         protected override void OnSleep()
@@ -68,6 +68,8 @@ namespace SSW.Consulting
                 }
                 catch(Exception e)
                 {
+                    Console.WriteLine("Service Unavailable");
+                    Console.WriteLine(e);
                     //await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
                 }
             }
