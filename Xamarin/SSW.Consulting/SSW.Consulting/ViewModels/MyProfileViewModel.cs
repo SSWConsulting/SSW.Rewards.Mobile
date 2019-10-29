@@ -31,8 +31,8 @@ namespace SSW.Consulting.ViewModels
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
-            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => Task.Run(async ()=> { await Initialise(); }));
-            Task.Run(async () => { await Initialise(); });
+            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { _ = Initialise(); });
+            _ = Initialise(); 
         }
 
         public MyProfileViewModel(LeaderSummaryViewModel vm)
@@ -46,7 +46,7 @@ namespace SSW.Consulting.ViewModels
             CompletedChallenges = new ObservableCollection<MyChallenge>();
             OutstandingChallenges = new ObservableCollection<MyChallenge>();
             ChallengeList = new ObservableCollection<ChallengeListViewModel>();
-            Task.Run(async () => { await InitialiseOther(vm.Id); });
+            _ = InitialiseOther(vm.Id);
         }
 
         public async Task InitialiseOther(int userId)

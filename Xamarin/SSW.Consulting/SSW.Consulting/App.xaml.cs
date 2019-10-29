@@ -38,7 +38,7 @@ namespace SSW.Consulting
 
         protected override void OnStart()
         {
-            Task.Run(async () => { await UpdateAccessTokenAsync(); });
+            _ = UpdateAccessTokenAsync();
         }
 
         protected override void OnSleep()
