@@ -72,6 +72,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignKey>iPhone Developer</CodesignKey>
     <BuildIpa>true</BuildIpa>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IpaIncludeArtwork>false</IpaIncludeArtwork>
     <Commandlineparameters>
     </Commandlineparameters>
