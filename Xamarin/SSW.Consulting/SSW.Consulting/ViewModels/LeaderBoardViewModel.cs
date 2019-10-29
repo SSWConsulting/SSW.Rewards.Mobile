@@ -6,6 +6,7 @@ using SSW.Consulting.Services;
 using SSW.Consulting.Views;
 using System.Linq;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace SSW.Consulting.ViewModels
 {
@@ -40,8 +41,9 @@ namespace SSW.Consulting.ViewModels
             _userService = userService;
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
             MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
-            Initialise();
+            _ = Initialise();
         }
+
 
         public ICommand SearchTextChanged => new Command<string>((string query) =>
         {
@@ -69,14 +71,14 @@ namespace SSW.Consulting.ViewModels
             }
         }
 
-        private async void Initialise()
+        private async Task Initialise()
         {
             IsRunning = true;
             RaisePropertyChanged("IsRunning");
-            var summaries = await _leaderService.GetLeadersAsync(false);
+            IEnumerable<Models.LeaderSummary> summaries = await _leaderService.GetLeadersAsync(false);
             int myId = await _userService.GetMyUserIdAsync();
 
-            foreach(var summary in summaries)
+            foreach (Models.LeaderSummary summary in summaries)
             {
                 LeaderSummaryViewModel vm = new LeaderSummaryViewModel(summary);
                 vm.IsMe = (summary.id == myId);
@@ -90,10 +92,10 @@ namespace SSW.Consulting.ViewModels
             SearchResults = Leaders.ToList();
             RaisePropertyChanged("SearchResults");
 
-
             var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
             ScrollToMe?.Invoke(mysummary);
         }
+
 
         public async void Refresh()
         {
