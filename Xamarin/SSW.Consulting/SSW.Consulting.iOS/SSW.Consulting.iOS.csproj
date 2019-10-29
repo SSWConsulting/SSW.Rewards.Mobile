@@ -68,12 +68,11 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignKey>iPhone Distribution</CodesignKey>
     <BuildIpa>true</BuildIpa>
     <IpaIncludeArtwork>false</IpaIncludeArtwork>
     <Commandlineparameters>
     </Commandlineparameters>
-    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
     <Nullable></Nullable>
     <OnDemandResourcesInitialInstallTags></OnDemandResourcesInitialInstallTags>
   </PropertyGroup>
