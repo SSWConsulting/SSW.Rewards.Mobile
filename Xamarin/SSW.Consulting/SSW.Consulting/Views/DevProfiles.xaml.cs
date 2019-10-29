@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SSW.Consulting.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using System.Threading.Tasks;
 
 namespace SSW.Consulting.Views
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using SSW.Consulting.Services;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 
 namespace SSW.Consulting.ViewModels
@@ -16,10 +17,10 @@ namespace SSW.Consulting.ViewModels
         public FlyoutHeaderViewModel(IUserService userService)
         {
             _userService = userService;
-            Initialise();
+            _ = Initialise();
         }
 
-        private async void Initialise()
+        private async Task Initialise()
         {
             ProfilePic = await _userService.GetMyProfilePicAsync();
             Name = await _userService.GetMyNameAsync();
