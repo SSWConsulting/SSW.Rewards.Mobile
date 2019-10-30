@@ -38,7 +38,9 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
-    <CodesignKey>iPhone Distribution: Superior Software for Windows Pty Ltd (B5652JTA7Q)</CodesignKey>
+    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +55,8 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>SdkOnly</MtouchLink>
-    <NoWarn></NoWarn>
+    <NoWarn>
+    </NoWarn>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
@@ -68,12 +71,16 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <BuildIpa>true</BuildIpa>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IpaIncludeArtwork>false</IpaIncludeArtwork>
     <Commandlineparameters>
     </Commandlineparameters>
-    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
-    <Nullable></Nullable>
-    <OnDemandResourcesInitialInstallTags></OnDemandResourcesInitialInstallTags>
+    <Nullable>
+    </Nullable>
+    <OnDemandResourcesInitialInstallTags>
+    </OnDemandResourcesInitialInstallTags>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhoneSimulator'">
     <DebugSymbols>true</DebugSymbols>
@@ -100,15 +107,18 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
     <CodesignKey>iPhone Developer: Matt Goldman (6PWNLK79PZ)</CodesignKey>
     <ConsolePause>true</ConsolePause>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <NoStdLib>false</NoStdLib>
-    <OnDemandResourcesInitialInstallTags></OnDemandResourcesInitialInstallTags>
-    <OnDemandResourcesPrefetchOrder></OnDemandResourcesPrefetchOrder>
+    <OnDemandResourcesInitialInstallTags>
+    </OnDemandResourcesInitialInstallTags>
+    <OnDemandResourcesPrefetchOrder>
+    </OnDemandResourcesPrefetchOrder>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Effects\iOSTooltipEffect.cs" />
@@ -287,9 +297,6 @@
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\skill_smoking.imageset\Contents.json">
-      <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\uly_ndc.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\points_quiz.imageset\points_quiz%403x.png">
@@ -1496,9 +1503,15 @@
     </ImageAsset>
     <BundleResource Include="qr-code-scanner.json" />
     <BundleResource Include="rapid-scan.json" />
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%403x.png" />
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%402x.png" />
-    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png" />
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png">
+      <Visible>false</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -1524,7 +1537,7 @@
     <PackageReference Include="Xamarin.FFImageLoading.Transformations">
       <Version>2.4.11.982</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.815419" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Autofac">
       <Version>4.9.4</Version>

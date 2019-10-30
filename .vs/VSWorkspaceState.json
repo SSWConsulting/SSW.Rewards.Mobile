@@ -3,10 +3,7 @@
     "",
     "\\API",
     "\\API\\SSW.Consulting",
-    "\\API\\SSW.Consulting\\Controllers",
-    "\\Xamarin\\SSW.Consulting",
-    "\\Xamarin\\SSW.Consulting\\SSW.Consulting",
-    "\\Xamarin\\SSW.Consulting\\SSW.Consulting\\ViewModels"
+    "\\API\\SSW.Consulting\\Controllers"
   ],
   "SelectedNode": "\\API\\SSW.Consulting.sln",
   "PreviewInSolutionExplorer": false
