@@ -150,7 +150,7 @@ namespace SSW.Consulting.Services
 
         public void SignOut()
         {
-            await Task.Run(Auth.SignOut);
+            Auth.SignOut();
             SecureStorage.RemoveAll();
             Preferences.Clear();
         }
