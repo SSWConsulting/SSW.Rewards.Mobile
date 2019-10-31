@@ -12,13 +12,10 @@ namespace SSW.Consulting.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LeaderBoard : ContentPage
     {
-        private DateTime lastRefreshed;
         private DateTime typed;
         private DateTime show;
-
         private DateTime dismiss;
         private int lastItemIn;
-        private int lastItemCount;
         private bool showBar = true;
 
         public LeaderBoard(LeaderBoardViewModel viewModel)
@@ -39,7 +36,6 @@ namespace SSW.Consulting.Views
             {
                 leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
             });
-
         }
 
         private void Tapped(object sender, EventArgs e)
@@ -80,24 +76,21 @@ namespace SSW.Consulting.Views
                 return;
             }
             if (showBar)
-                {
-                    searchFrame.FadeTo(0, 100);
-                    searchFrame.TranslateTo(0, -50, 150);
-                    leaderList.Margin = new Thickness(0, 0, 0, 0);
-                    showBar = false;
-                show = DateTime.Now;
-
+            {
+                 searchFrame.FadeTo(0, 100);
+                 searchFrame.TranslateTo(0, -50, 150);
+                 leaderList.Margin = new Thickness(0, 0, 0, 0);
+                 showBar = false;
+                 show = DateTime.Now;
             }
             else
-                {
-                    searchFrame.FadeTo(1, 150);
-                    searchFrame.TranslateTo(0, 0, 100);
-                    leaderList.Margin = new Thickness(0, 60, 0, 0);
-                    showBar = true;
-                show = DateTime.Now;
-
+            {
+                 searchFrame.FadeTo(1, 150);
+                 searchFrame.TranslateTo(0, 0, 100);
+                 leaderList.Margin = new Thickness(0, 60, 0, 0);
+                 showBar = true;
+                 show = DateTime.Now;
             }
-
         }
 
         private void ItemAppearing(object sender, ItemVisibilityEventArgs e)
@@ -119,14 +112,10 @@ namespace SSW.Consulting.Views
                         UnfocusSearchBar(true);
                         ToggleSearchBar();
                     }
-
-
                 }
                 lastItemIn = e.ItemIndex;
             }
-            
         }
-
 
         protected override void OnAppearing()
         {
