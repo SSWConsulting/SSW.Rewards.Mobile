@@ -14,7 +14,7 @@ namespace SSW.Consulting.Services
         Task<int> GetMyPointsAsync();
         Task<string> GetTokenAsync();
         Task<ApiStatus> SignInAsync();
-        Task SignOutAsync();
+        void SignOut();
         Task<bool> IsLoggedInAsync();
         Task UpdateMyDetailsAsync();
         Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId);

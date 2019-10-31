@@ -148,7 +148,7 @@ namespace SSW.Consulting.Services
             }
         }
 
-        public async Task SignOutAsync()
+        public void SignOut()
         {
             await Task.Run(Auth.SignOut);
             SecureStorage.RemoveAll();
@@ -229,6 +229,5 @@ namespace SSW.Consulting.Services
 
             return challenges;
         }
-    
     }
 }
