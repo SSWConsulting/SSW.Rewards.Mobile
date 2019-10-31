@@ -10,6 +10,12 @@
 				<data android:host="auth" android:scheme="msal60b96e0a-c6dd-4320-855f-ed58e44ffd00" />
 			</intent-filter>
 		</activity>
+    <meta-data
+      android:name="com.google.firebase.messaging.default_notification_icon"
+      android:resource="@drawable/ic_notification" />
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/notification" />
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
