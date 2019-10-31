@@ -13,6 +13,7 @@ namespace SSW.Consulting.Views
     public partial class LeaderBoard : ContentPage
     {
         private DateTime typed;
+        private DateTime show;
         private DateTime dismiss;
         private int lastItemIn;
         private bool showBar = true;
@@ -30,11 +31,11 @@ namespace SSW.Consulting.Views
             var vm = Resolver.Resolve<LeaderBoardViewModel>();
             vm.Navigation = Navigation;
             BindingContext = vm;
+            show = DateTime.Now.AddMilliseconds(200);
             ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
             {
                 leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
             });
-
         }
 
         private void Tapped(object sender, EventArgs e)
@@ -58,32 +59,38 @@ namespace SSW.Consulting.Views
 
         private void UnfocusSearchBar(bool debounce)
         {
+            dismiss = DateTime.Now;
+
             var shouldDismiss = debounce ? (DateTime.Now - dismiss).Duration().Milliseconds > 600 : true;
             if (searchView.IsFocused && shouldDismiss)
             {
                 searchView.Unfocus();
-                dismiss = DateTime.Now;
             }
         }
 
         private void ToggleSearchBar()
         {
-            
-                if (showBar)
-                {
-                    searchFrame.FadeTo(0, 100);
-                    searchFrame.TranslateTo(0, -50, 150);
-                    leaderList.Margin = new Thickness(0, 0, 0, 0);
-                    showBar = false;
-                }
-                else
-                {
-                    searchFrame.FadeTo(1, 150);
-                    searchFrame.TranslateTo(0, 0, 100);
-                    leaderList.Margin = new Thickness(0, 60, 0, 0);
-                    showBar = true;
-                }
-            
+            var shouldDismiss = (DateTime.Now - show).Duration().Milliseconds > 200;
+            if (!shouldDismiss)
+            {
+                return;
+            }
+            if (showBar)
+            {
+                 searchFrame.FadeTo(0, 100);
+                 searchFrame.TranslateTo(0, -50, 150);
+                 leaderList.Margin = new Thickness(0, 0, 0, 0);
+                 showBar = false;
+                 show = DateTime.Now;
+            }
+            else
+            {
+                 searchFrame.FadeTo(1, 150);
+                 searchFrame.TranslateTo(0, 0, 100);
+                 leaderList.Margin = new Thickness(0, 60, 0, 0);
+                 showBar = true;
+                 show = DateTime.Now;
+            }
         }
 
         private void ItemAppearing(object sender, ItemVisibilityEventArgs e)
@@ -93,7 +100,7 @@ namespace SSW.Consulting.Views
             {
                 if (e.ItemIndex > lastItemIn)
                 {
-                    if(showBar && !leaderList.IsRefreshing){
+                    if(showBar){
                         UnfocusSearchBar(false);
                         ToggleSearchBar();
                     }
@@ -105,14 +112,10 @@ namespace SSW.Consulting.Views
                         UnfocusSearchBar(true);
                         ToggleSearchBar();
                     }
-
-
                 }
                 lastItemIn = e.ItemIndex;
             }
-            
         }
-
 
         protected override void OnAppearing()
         {
