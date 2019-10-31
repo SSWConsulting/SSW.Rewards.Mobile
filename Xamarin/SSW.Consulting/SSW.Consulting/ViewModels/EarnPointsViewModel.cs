@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Rg.Plugins.Popup.Services;
 using SSW.Consulting.Models;
@@ -31,10 +32,10 @@ namespace SSW.Consulting.ViewModels
             ExternalRewards = new ObservableCollection<ExternalReward>();
             OnScanTapped = new Command(OpenQRScanner);
 			OnEventTapped = new Command<string>((x) => OpenURL(x));
-			Initialise();
+            _ = Initialise();
         }
 
-        private async void Initialise()
+        private async Task Initialise()
         {
             string quizUri = Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + await _userService.GetMyEmailAsync();
 
