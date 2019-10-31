@@ -7,10 +7,6 @@ namespace SSW.Consulting.Services
 {
     public class MockUserService : IUserService
     {
-        public MockUserService()
-        {
-        }
-
         public async Task<string> GetMyEmailAsync()
         {
             return await Task.FromResult("mattgoldman@ssw.com.au");
@@ -84,6 +80,11 @@ namespace SSW.Consulting.Services
         public async Task<ApiStatus> SignInAsync()
         {
             return await Task.FromResult(ApiStatus.Success);
+        }
+
+        public void SignOut()
+        {
+            throw new NotImplementedException();
         }
 
         public Task SignOutAsync()

@@ -16,7 +16,7 @@ namespace SSW.Consulting
 
         public async void Handle_LogOutClicked(object sender, EventArgs e)
         {
-            await _userService.SignOutAsync();
+            _userService.SignOut();
             await Navigation.PushModalAsync(new LoginPage());
         }
 
