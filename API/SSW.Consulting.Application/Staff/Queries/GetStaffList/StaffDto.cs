@@ -12,6 +12,7 @@ namespace SSW.Consulting.Application.Staff.Queries.GetStaffList
         public string Profile { get; set; }
         public Uri ProfilePhoto { get; set; }
         public string TwitterUsername { get; set; }
+        public bool IsExternal { get; set; }
         public IEnumerable<string> Skills { get; set; } = Enumerable.Empty<string>();
     }
 }

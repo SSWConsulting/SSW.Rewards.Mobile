@@ -1158,6 +1158,9 @@ namespace SSW.Consulting
         [Newtonsoft.Json.JsonProperty("twitterUsername", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TwitterUsername { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("isExternal", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsExternal { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("skills", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Skills { get; set; }
     
