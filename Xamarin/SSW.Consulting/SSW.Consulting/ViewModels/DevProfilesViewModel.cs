@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using SSW.Consulting.Models;
 using SSW.Consulting.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Consulting.ViewModels
@@ -57,10 +59,10 @@ namespace SSW.Consulting.ViewModels
             OverlayLayoutBounds = new Rectangle(1, 1, 1, 0.2);
             _profileExpanded = false;
             OnSwipedUpdatePropertyList = new string[] { "Title", "DevFirstName", "DevTitle", "DevBio", "TwitterEnabled" };
-            Initialise();
+            _ = Initialise();
         }
 
-        private async void Initialise()
+        private async Task Initialise()
         {
             var profiles = await _devService.GetProfilesAsync();
             foreach(var profile in profiles)
@@ -95,7 +97,7 @@ namespace SSW.Consulting.ViewModels
             //App.Current.MainPage.DisplayAlert("Twitter", "ID: " + _twitterURI + Environment.NewLine + "Index: " + profileIndex, "OK");
         }
 
-        private async void ExpandCollapseProfile()
+        private void ExpandCollapseProfile()
         {
             if(_profileExpanded)
             {
@@ -113,11 +115,9 @@ namespace SSW.Consulting.ViewModels
             _profileExpanded = !_profileExpanded;
         }
 
-        private async void OpenTwitter()
+        private void OpenTwitter()
         {
-            //Uri twitterURI = new Uri("https://twitter.com/" + devTwitter);
-
-            Device.OpenUri(new Uri(_twitterURI));
+            Task.Run(async () => { await Launcher.OpenAsync(new Uri(_twitterURI)); });
         }
     }
 }
