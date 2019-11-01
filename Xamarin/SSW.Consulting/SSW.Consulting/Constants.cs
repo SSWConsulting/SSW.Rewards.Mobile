@@ -7,7 +7,7 @@ namespace SSW.Consulting
     class Constants
     {
 #if DEBUG
-        public const string ApiBaseUrl = "https://b8a0da34.ngrok.io";//"https://sswconsulting-dev.azurewebsites.net";
+        public const string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #elif QA
         public const string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
