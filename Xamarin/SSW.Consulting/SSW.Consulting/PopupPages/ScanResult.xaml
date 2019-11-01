@@ -21,7 +21,7 @@
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
     <Frame WidthRequest="400"
-           HeightRequest="400"
+           HeightRequest="450"
            Margin="10"
            Padding="10"
            BackgroundColor="{StaticResource ProfileBackgroundColour}"
@@ -58,9 +58,10 @@
 
             <Button Text="OK"
                     HorizontalOptions="Center"
-                    WidthRequest="50"
+                    WidthRequest="250"
                     BackgroundColor="{StaticResource SSWRed}"
                     TextColor="White"
+                    Margin="0,0,0,20"
                     Command="{Binding OnOkCommand}"/>
         </StackLayout>
     </Frame>
