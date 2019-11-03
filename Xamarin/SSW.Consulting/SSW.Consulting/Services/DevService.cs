@@ -53,7 +53,8 @@ namespace SSW.Consulting.Services
                         Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "dev_placeholder" : profile.ProfilePhoto.ToString(),
 						Title = profile.Title,
                         TwitterID = profile.TwitterUsername,
-						Skills = profile.Skills?.ToList()
+						Skills = profile.Skills?.ToList(),
+                        IsExternal = profile.IsExternal
 					};
 
                     profiles.Add(dev);

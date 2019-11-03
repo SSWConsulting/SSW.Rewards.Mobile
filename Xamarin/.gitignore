@@ -3,6 +3,7 @@
 
 # Visual Studio (>=2015) project-specific, machine local files
 .vs/
+.mfractor/
 
 # User-specific files
 *.suo

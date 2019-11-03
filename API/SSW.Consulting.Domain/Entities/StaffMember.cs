@@ -9,6 +9,7 @@ namespace SSW.Consulting.Domain.Entities
         public string Email { get; set; }
         public string Profile { get; set; }
         public string TwitterUsername { get; set; }
+        public bool IsExternal { get; set; }
         public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
     }
 }

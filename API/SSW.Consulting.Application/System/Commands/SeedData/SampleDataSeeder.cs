@@ -81,6 +81,7 @@ namespace SSW.Consulting.Persistence
                 staffMember.StaffMemberSkills = p.Skills.Select(s => new StaffMemberSkill { SkillId = _skills[s.ToLower()] }).ToArray();
                 staffMember.Profile = p.Profile;
                 staffMember.TwitterUsername = p.TwitterUsername;
+                staffMember.IsExternal = p.IsExternal;
 
                 if (staffMember.Id == 0)
                 {
@@ -163,7 +164,8 @@ namespace SSW.Consulting.Persistence
                             .ToArray(),
                         Profile = reader.GetString(6)?.Trim(),
                         Value = (int)reader.GetDouble(7),
-                        TwitterUsername = reader.GetString(8)?.Trim()
+                        TwitterUsername = reader.GetString(8)?.Trim(),
+                        IsExternal = reader.GetBoolean(9)
                     };
                 }
             }
@@ -177,6 +179,7 @@ namespace SSW.Consulting.Persistence
             public string Profile { get; set; }
             public string TwitterUsername { get; set; }
             public int Value { get; set; }
+            public bool IsExternal { get; set; }
         }
     }
 }

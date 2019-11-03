@@ -8,6 +8,8 @@ namespace SSW.Consulting.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<StaffMember> builder)
         {
+            builder.Property(s => s.IsExternal)
+                .HasDefaultValue(false);
         }
     }
 }
