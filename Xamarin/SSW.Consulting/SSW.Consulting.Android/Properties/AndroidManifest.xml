@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="8" android:versionName="1.6" package="com.ssw.consulting" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="9" android:versionName="1.6" package="com.ssw.consulting" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
-	<application android:label="SSW" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
+	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
 		<activity android:name="com.microsoft.identity.client.BrowserTabActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
