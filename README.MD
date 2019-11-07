@@ -9,7 +9,7 @@ Contributing to this repo
 - Create a feature branch
 - Open a Pull Request
 
-##Trends and Analytics
+## Trends and Analytics
 
 * App Analytics here: https://analytics.itunes.apple.com/#/overview?app=1482994853&interval=r&datesel=d7&pmeasure=units&smeasure=units&tmeasure=units
 (You need a login for this. See Adam Cogan for access)
