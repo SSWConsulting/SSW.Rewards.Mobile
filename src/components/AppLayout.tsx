@@ -68,13 +68,18 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
             <Divider />
             <List>
                 {routes.map((r) => {
-                    const Icon = r.icon;
                     const isCurrentRoute = props.location.pathname === r.path;
+                    const handleClick = () => {
+                        props.history.push(r.path);
+                        if(mobileOpen){
+                            handleDrawerToggle();
+                        }
+                    }
                     console.log(props.location)
                     return (
-                        <ListItem key={r.path} button onClick={() => props.history.push(r.path)}>
+                        <ListItem key={r.path} button onClick={handleClick}>
                             <ListItemIcon>
-                                <Icon style={isCurrentRoute ? {fill :`${SSWRed}`} : {}}/>
+                                <r.icon style={isCurrentRoute ? {fill :`${SSWRed}`} : {}}/>
                             </ListItemIcon>
                             <ListItemText primary={r.title} style={isCurrentRoute ? {color :`${SSWRed}`} : {}} />
                         </ListItem>
@@ -107,7 +112,6 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="app-drawer">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Hidden smUp implementation="css">
                     <Drawer
                         variant="temporary"
@@ -118,7 +122,7 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                             paper: classes.drawerPaper,
                         }}
                         ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
+                            keepMounted: true, 
                         }}
                     >
                         {drawer}
