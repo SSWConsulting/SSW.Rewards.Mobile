@@ -1,25 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
+import { ThemeProvider } from '@material-ui/core/styles'
 import './App.css';
+import theme from './config/theme';
+import AppLayout from './components/AppLayout';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import routes from './config/routes';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <AppLayout>
+          <Switch>
+            {routes.map(r => <Route key={r.title} path={r.path} exact >{r.component}</Route>)}
+          </Switch>
+        </AppLayout>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
