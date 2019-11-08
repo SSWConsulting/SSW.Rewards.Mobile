@@ -12,6 +12,7 @@
     "@types/react-dom": "16.9.4",
     "@types/react-router-dom": "^5.1.2",
     "react": "^16.11.0",
+    "react-azure-adb2c": "^0.2.0",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
