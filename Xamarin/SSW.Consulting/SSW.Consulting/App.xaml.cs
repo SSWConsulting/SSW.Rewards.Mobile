@@ -11,6 +11,7 @@ using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
 using System.Diagnostics;
+using SSW.Consulting.Helpers;
 
 namespace SSW.Consulting
 {
@@ -39,6 +40,7 @@ namespace SSW.Consulting
         protected override void OnStart()
         {
             _ = UpdateAccessTokenAsync();
+            _ = CheckApiCompatibilityAsync();
         }
 
         protected override void OnSleep()
@@ -73,6 +75,16 @@ namespace SSW.Consulting
                     //await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
                 }
             }
+        }
+
+        private async Task CheckApiCompatibilityAsync()
+        {
+            ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
+
+            bool compatible = await info.IsApiCompatibleAsync();
+
+            if (!compatible)
+                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expect.", "OK");
         }
     }
 }
