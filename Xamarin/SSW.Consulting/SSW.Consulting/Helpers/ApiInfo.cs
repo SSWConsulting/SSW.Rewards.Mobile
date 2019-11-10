@@ -18,7 +18,7 @@ namespace SSW.Consulting.Helpers
 
         public async Task<string> GetApiVersionAsync()
         {
-            string requestUri = _baseUrl + "/swagger/SSW.Consulting%20API/swagger.json";
+            Uri requestUri = new Uri(_baseUrl + "/swagger/SSW.Consulting%20API/swagger.json");
             var apiInfo = await _client.GetAsync(requestUri);
 
             if(apiInfo.IsSuccessStatusCode)
@@ -26,9 +26,7 @@ namespace SSW.Consulting.Helpers
                 var content = await apiInfo.Content.ReadAsStringAsync();
                 dynamic o = JObject.Parse(content);
 
-                string ver = o.info.version;
-
-                return ver;
+                return o.info.version;
             }
             else
             {
