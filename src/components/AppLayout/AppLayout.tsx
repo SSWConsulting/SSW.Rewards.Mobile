@@ -13,10 +13,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import routes from '../../config/routes';
+import routes from 'config/routes';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { SSWRed } from '../../config/theme';
-import { AuthContext } from '../Auth/B2CAuth'
+import { SSWRed } from 'config/theme';
+import { AuthContext } from 'containers/Auth/B2CAuth'
 
 const drawerWidth = 240;
 

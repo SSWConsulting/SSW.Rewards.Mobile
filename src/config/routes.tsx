@@ -1,5 +1,5 @@
 import HomeIcon from '@material-ui/icons/Home';
-import Home from '../containers/Home';
+import Home from 'containers/Home';
 
 interface Route  {
     path: string;

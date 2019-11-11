@@ -1,6 +1,6 @@
 import React, { useEffect, useState, PropsWithChildren } from 'react'
 import b2cauth from 'react-azure-adb2c';
-import Loader from '../Loader/Loader';
+import Loader from '../../components/Loader/Loader';
 import decodeJWT from 'jwt-decode';
 
 export interface DecodedJWT {

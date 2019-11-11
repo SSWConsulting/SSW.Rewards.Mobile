@@ -1,11 +1,11 @@
 import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles'
 import './App.css';
-import theme from './config/theme';
-import AppLayout from './components/AppLayout/AppLayout';
+import theme from 'config/theme';
+import AppLayout from 'components/AppLayout/AppLayout';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import routes from './config/routes';
-import B2CAuth from './components/Auth/B2CAuth';
+import routes from 'config/routes';
+import B2CAuth from 'containers/Auth/B2CAuth';
 
 const App: React.FC = () => {
   return (

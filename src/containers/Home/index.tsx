@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import authentication from 'react-azure-adb2c';
-import { AuthContext } from '../../components/Auth/B2CAuth';
+import { AuthContext } from 'containers/Auth/B2CAuth';
 
 
 const Home = (): JSX.Element => {
