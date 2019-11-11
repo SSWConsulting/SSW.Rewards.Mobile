@@ -9,7 +9,7 @@ A breaking change is defined as removing an endpoint, or changing an endpoint so
 
 Major new version releases will incur a major number increment, e.g. from 1.0 to 2.0. A major new release is considered one in which all endpoints in this version have either been retired or redesigned to the extent that previous consumers are no longer compatible.
 
-Legacy API specification versions will not be maintained indefinitely. Analytics and telemetry will be used ([see below](#trends-and-analytics)) to determine when client utilisation has dropped to negligible levels, at which point the legacy API version will be retired.
+Legacy API specification versions will not be maintained indefinitely. Analytics and telemetry will be used (see [Trends and Analytics] in ReadMe(https://github.com/SSWConsulting/SSW.Consulting/blob/master/README.MD)) to determine when client utilisation has dropped to negligible levels, at which point the legacy API version will be retired.
 
 ### Client
 Android and iOS versions of the app will be released simultaneously and with consistent version numbers. Version numbers will point incremented with new build releases. E.g. 1.9, 1.10, 1.11... etc.

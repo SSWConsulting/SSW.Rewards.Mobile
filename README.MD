@@ -6,16 +6,16 @@ Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win pr
 
 ## Contributing to this repo
 
-To contribute to this project follow the steps below. Please ensure you are following the [Developer Guidelines](https://github.com/SSWConsulting/SSW.Consulting/Docs/Developer_Guidelines.MD) when submitting a pull request.
+To contribute to this project follow the steps below. Please ensure you are following the [Developer Guidelines](https://github.com/SSWConsulting/SSW.Consulting/blob/master/Docs/Developer_Guidelines.MD) when submitting a pull request.
 
 1. Clone the repository
 2. Create a feature branch
 3. Open a Pull Request
 
 
-# Starting Development
+## Starting Development
 
-## Required Tools
+### Required Tools
 - Visual Studio 2019 v16.3+
 - Xamarin forms Visual Studio packages installed
 - Android SDK setup/ installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-sdk)
@@ -24,16 +24,16 @@ To contribute to this project follow the steps below. Please ensure you are foll
 - Azure Storage Emulator ( Web API )
 
 
-# The F5 Experience
+## The F5 Experience
 
-## Web API
+### Web API
 1. Get the source code
 `git clone https://github.com/SSWConsulting/SSW.Consulting.git`
 1. Grab connection strings from an existing dev to create local `secrets.json` file (https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows)
 1. Run Azure Storage Emulator
 1. Press f5
 
-## Mobile App Android
+### Mobile App Android
 1. Get the source code
 `git clone https://github.com/SSWConsulting/SSW.Consulting.git`
 1. Open the Xamarin project (/Xamarin/SSW.Consulting.sln)
@@ -41,7 +41,7 @@ To contribute to this project follow the steps below. Please ensure you are foll
 1. Set build target as desired device.
 1. Run / press f5
 
-## Mobile App iOS (Mac Only)
+### Mobile App iOS (Mac Only)
 1. Get the source code
 `git clone https://github.com/SSWConsulting/SSW.Consulting.git`
 1. Open the Xamarin project (/Xamarin/SSW.Consulting.sln)
@@ -57,7 +57,7 @@ To contribute to this project follow the steps below. Please ensure you are foll
 Apple Developer Program Team)
 
 
-## <a name="analytics"></a>Trends and Analytics
+### Trends and Analytics
 
 * App Analytics here: https://analytics.itunes.apple.com/#/overview?app=1482994853&interval=r&datesel=d7&pmeasure=units&smeasure=units&tmeasure=units
 (You need a login for this. See Adam Cogan for access)
