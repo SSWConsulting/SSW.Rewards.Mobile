@@ -122,6 +122,9 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
 
+            // workshops
+            SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
+
             // social media
             SetupAchievement(existingAchievements, "SSW TV", 100);
             SetupAchievement(existingAchievements, "SSW/SSW TV Twitter", 100);
