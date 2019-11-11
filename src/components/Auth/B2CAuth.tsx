@@ -3,12 +3,30 @@ import b2cauth from 'react-azure-adb2c';
 import Loader from '../Loader/Loader';
 import decodeJWT from 'jwt-decode';
 
-export const AuthContext = React.createContext({});
+export interface DecodedJWT {
+    iss: string;
+    exp: number;
+    nbf: number;
+    aud: string;
+    idp: string;
+    given_name: string;
+    family_name: string;
+    sub: string;
+    emails: string[];
+    tfp: string;
+    nonce: string;
+    scp: string;
+    azp: string;
+    ver: string;
+    iat: number;
+}
+
+export const AuthContext = React.createContext<DecodedJWT>({} as DecodedJWT);
 
 const B2CAuth = (props: PropsWithChildren<{}>): any => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUser, setCurrentUser] = useState({});
+    const [currentUser, setCurrentUser] = useState<DecodedJWT>({} as DecodedJWT);
 
     b2cauth.initialize({
         instance: 'https://sswconsultingapp.b2clogin.com/',
@@ -23,18 +41,11 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
 
     const getCurrentUser = () => {
         const decoded = decodeJWT(b2cauth.getAccessToken()) as any;
-        setCurrentUser({
-            name: decoded.name,
-            firstName: decoded.given_name,
-            lastName: decoded.family_name,
-            emails: decoded.emails,
-            city: decoded.city,
-            country: decoded.country,
-        });
+        setCurrentUser( decoded as DecodedJWT);
     }
 
     useEffect(() => {
-            setIsAuthenticated(b2cauth.getAccessToken());
+        setIsAuthenticated(b2cauth.getAccessToken());
         b2cauth.run(() => {
             setIsAuthenticated(b2cauth.getAccessToken());
             getCurrentUser();
@@ -42,15 +53,13 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
     }, [])
 
 
-  
+    const render = isAuthenticated ? props.children : <Loader />;
+    return (
+        <AuthContext.Provider value={currentUser}>
+            {render}
+        </AuthContext.Provider>
+    )
 
-const  render = isAuthenticated ? props.children : <Loader />;
-return (
-    <AuthContext.Provider value={currentUser}>
-        {render}
-    </AuthContext.Provider>
-)
-  
 }
 
 export default B2CAuth

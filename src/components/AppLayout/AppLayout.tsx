@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -16,6 +16,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import routes from '../../config/routes';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { SSWRed } from '../../config/theme';
+import { AuthContext } from '../Auth/B2CAuth'
 
 const drawerWidth = 240;
 
@@ -62,6 +63,9 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
         setMobileOpen(!mobileOpen);
     };
 
+    const user = useContext(AuthContext);
+
+
     const drawer = (
         <div>
             <div className={classes.toolbar} />
@@ -71,7 +75,7 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                     const isCurrentRoute = props.location.pathname === r.path;
                     const handleClick = () => {
                         props.history.push(r.path);
-                        if(mobileOpen){
+                        if (mobileOpen) {
                             handleDrawerToggle();
                         }
                     }
@@ -79,9 +83,9 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                     return (
                         <ListItem key={r.path} button onClick={handleClick}>
                             <ListItemIcon>
-                                <r.icon style={isCurrentRoute ? {fill :`${SSWRed}`} : {}}/>
+                                <r.icon style={isCurrentRoute ? { fill: `${SSWRed}` } : {}} />
                             </ListItemIcon>
-                            <ListItemText primary={r.title} style={isCurrentRoute ? {color :`${SSWRed}`} : {}} />
+                            <ListItemText primary={r.title} style={isCurrentRoute ? { color: `${SSWRed}` } : {}} />
                         </ListItem>
                     )
                 })}
@@ -89,8 +93,6 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
             <Divider />
         </div>
     );
-
-    const currentRoute = routes.find(r => r.path === props.location.pathname);
 
     return (
         <div className={classes.root}>
@@ -107,7 +109,7 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        SSW Rewards Admin - {currentRoute && currentRoute.title}
+                        Welcome {user && user.given_name},
           </Typography>
                 </Toolbar>
             </AppBar>
@@ -122,7 +124,7 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                             paper: classes.drawerPaper,
                         }}
                         ModalProps={{
-                            keepMounted: true, 
+                            keepMounted: true,
                         }}
                     >
                         {drawer}
