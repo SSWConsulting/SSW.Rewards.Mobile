@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import authentication from 'react-azure-adb2c';
 import { AuthContext } from 'containers/Auth/B2CAuth';
 
@@ -9,11 +9,6 @@ const Home = (): JSX.Element => {
         console.log('auth: ', authentication.getAccessToken());
         authentication.signOut();
     }
-
-    useEffect(() => {
-        console.log('haha')
-        
-    }, [])
 
     const u = useContext(AuthContext);
 

@@ -28,29 +28,48 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [currentUser, setCurrentUser] = useState<DecodedJWT>({} as DecodedJWT);
 
-    b2cauth.initialize({
-        instance: 'https://sswconsultingapp.b2clogin.com/',
-        validateAuthority: false,
-        tenant: 'sswconsultingapp.onmicrosoft.com',
-        signInPolicy: 'B2C_1_Admin-Signin',
-        applicationId: '33e787e1-caeb-475b-a6dc-7e014d0a252a',
-        cacheLocation: 'localStorage',
-        scopes: ['https://sswconsultingapp.onmicrosoft.com/admin/user_impersonation'],
-        postLogoutRedirectUri: window.location.origin,
-    });
+    // b2cauth.initialize({
+    //     instance: 'https://sswconsultingapp.b2clogin.com/',
+    //     validateAuthority: false,
+    //     tenant: 'sswconsultingapp.onmicrosoft.com',
+    //     signInPolicy: 'B2C_1_Admin-Signin',
+    //     applicationId: '33e787e1-caeb-475b-a6dc-7e014d0a252a',
+    //     cacheLocation: 'localStorage',
+    //     scopes: ['https://sswconsultingapp.onmicrosoft.com/admin/user_impersonation'],
+    //     postLogoutRedirectUri: window.location.origin,
+    // });
 
     const getCurrentUser = () => {
         const decoded = decodeJWT(b2cauth.getAccessToken()) as any;
-        setCurrentUser( decoded as DecodedJWT);
+        setCurrentUser(decoded as DecodedJWT);
     }
 
     useEffect(() => {
-        setIsAuthenticated(b2cauth.getAccessToken());
+        const token = b2cauth.getAccessToken();
+        if(!token){
+            b2cauth.initialize({
+                instance: 'https://sswconsultingapp.b2clogin.com/',
+                validateAuthority: false,
+                tenant: 'sswconsultingapp.onmicrosoft.com',
+                signInPolicy: 'B2C_1_Admin-Signin',
+                applicationId: '33e787e1-caeb-475b-a6dc-7e014d0a252a',
+                cacheLocation: 'localStorage',
+                scopes: ['https://sswconsultingapp.onmicrosoft.com/admin/user_impersonation'],
+                postLogoutRedirectUri: window.location.origin,
+            });
         b2cauth.run(() => {
-            setIsAuthenticated(b2cauth.getAccessToken());
-            getCurrentUser();
+            setIsAuthenticated(true);
         });
+    }
     }, [])
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            getCurrentUser();
+        }
+    }, [isAuthenticated])
+
+
 
 
     const render = isAuthenticated ? props.children : <Loader />;
