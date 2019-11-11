@@ -10,9 +10,9 @@ namespace SSW.Consulting.Helpers
         private string _baseUrl { get; set; }
         private HttpClient _client;
 
-        public ApiInfo(string BaseURL)
+        public ApiInfo(string baseUrl)
         {
-            _baseUrl = BaseURL;
+            _baseUrl = baseUrl;
             _client = new HttpClient();
         }
 
@@ -47,9 +47,13 @@ namespace SSW.Consulting.Helpers
             float appVerf = float.Parse(appVer);
 
             if (apiVerf > appVerf)
+            {
                 return false;
+            }
             else
+            {
                 return true;
+            }
         }
     }
 }

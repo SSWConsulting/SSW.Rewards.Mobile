@@ -84,7 +84,9 @@ namespace SSW.Consulting
             bool compatible = await info.IsApiCompatibleAsync();
 
             if (!compatible)
+            {
                 await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+            }
         }
     }
 }
