@@ -14,15 +14,16 @@ const Home = (): JSX.Element => {
         const token = authentication.getAccessToken();
         console.log(token);
         fetch('https://sswconsulting-dev.azurewebsites.net/api/leaderboard/get',{
-            mode: 'no-cors',
             headers:{
-            'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             Accept: 'application/json',
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             }
             
         }).then(e => {
-            console.log(e);
+            e.json().then(d => {
+                console.log(d);
+            })
         }).catch(e => {
             console.log(e);
         })
