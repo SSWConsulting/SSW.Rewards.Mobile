@@ -6,7 +6,7 @@ Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win pr
 
 ## Contributing to this repo
 
-To contribute to this project follow the steps below. Please ensure you are following the Developer Guidelines when submitting a pull request.
+To contribute to this project follow the steps below. Please ensure you are following the [Developer Guidelines](https://github.com/SSWConsulting/SSW.Consulting/Docs/Developer_Guidelines.MD) when submitting a pull request.
 
 1. Clone the repository
 2. Create a feature branch
