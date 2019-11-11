@@ -1,8 +1,8 @@
 # SSW Rewards Mobile App!
 
-This is a Xamarin Forms app with a .NET Core 3 Api backend.
+This is a Xamarin.Forms app with a .NET Core 3 Api backend.
 
-Use this app to scan SSW QR codes and get rewards!
+Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
 
 ## Contributing to this repo
 1. Clone the repository
@@ -41,7 +41,6 @@ This application adheres to Microsoft's REST API Guidelines. For more informatio
 
 This appliction strictly adheres to all guidelines defined with the keywords "MUST", "MUST NOT", "REQUIRED", "SHALL" and "SHALL NOT".
 Any deviation only occurs to guidelines defined with the keywords "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL". As per the RFC, in these instances the implications have been fully understood and an informed decision made to deviate from the guidelines.
-
 
 ## <a name="analytics"></a>Trends and Analytics
 
