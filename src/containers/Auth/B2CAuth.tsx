@@ -35,9 +35,10 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
 
     useEffect(() => {
         const token = b2cauth.getAccessToken();
-        if(!token){
+        if (!token) {
             b2cauth.initialize({
                 instance: 'https://sswconsultingapp.b2clogin.com/',
+                validateAuthority: false,
                 tenant: 'sswconsultingapp.onmicrosoft.com',
                 signInPolicy: 'B2C_1_Admin-Signin',
                 applicationId: '33e787e1-caeb-475b-a6dc-7e014d0a252a',
@@ -45,10 +46,10 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
                 scopes: ['https://sswconsultingapp.onmicrosoft.com/admin/user_impersonation'],
                 postLogoutRedirectUri: window.location.origin,
             });
-        b2cauth.run(() => {
-            setIsAuthenticated(true);
-        });
-    }
+            b2cauth.run(() => {
+                setIsAuthenticated(true);
+            });
+        }
     }, [])
 
     useEffect(() => {
@@ -57,16 +58,12 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
         }
     }, [isAuthenticated])
 
-
-
-
     const render = isAuthenticated ? props.children : <Loader />;
     return (
         <AuthContext.Provider value={currentUser}>
             {render}
         </AuthContext.Provider>
     )
-
 }
 
 export default B2CAuth
