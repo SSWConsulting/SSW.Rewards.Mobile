@@ -41,7 +41,9 @@ namespace SSW.Consulting.Helpers
             string apiVer = await GetApiVersionAsync();
 
             if (apiVer == appVer)
+            {
                 return true;
+            }
 
             float apiVerf = float.Parse(apiVer);
             float appVerf = float.Parse(appVer);
