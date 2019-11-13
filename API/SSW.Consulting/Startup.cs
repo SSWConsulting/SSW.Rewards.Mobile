@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using SSW.Consulting.Application;
 using SSW.Consulting.Application.Common.Interfaces;
@@ -13,6 +14,7 @@ using SSW.Consulting.Infrastructure;
 using SSW.Consulting.Persistence;
 using SSW.Consulting.WebAPI.Services;
 using SSW.Consulting.WebAPI.Settings;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace SSW.Consulting
 {
@@ -47,7 +49,16 @@ namespace SSW.Consulting
             services.AddApplicationInsightsTelemetry();
             services.AddDistributedMemoryCache();
 
-			services
+            services.AddOpenApiDocument(d =>
+            {
+                d.DocumentName = "SSW.Consulting API";
+                d.Version = "1.0";
+                d.Description = "API Specification for the SSW Rewards mobile app.";
+                d.Title = "SSW.Consulting API";
+            });
+
+
+            services
                 .AddControllers()
                 .AddNewtonsoftJson();
         }
@@ -94,7 +105,10 @@ namespace SSW.Consulting
 
 			app.UseRouting();
 
-			app.UseAuthentication();
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
+
+            app.UseAuthentication();
 			app.UseAuthorization();
 			
 			app.UseEndpoints(endpoints =>

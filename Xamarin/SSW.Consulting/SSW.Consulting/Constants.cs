@@ -13,5 +13,6 @@ namespace SSW.Consulting
 #else
         public const string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";
 #endif
+        public const string MaxApiSupportedVersion = "1.0";
     }
 }

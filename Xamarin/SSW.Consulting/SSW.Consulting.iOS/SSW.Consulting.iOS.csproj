@@ -1455,9 +1455,15 @@
     <ImageAsset Include="Assets.xcassets\badge_goldstar.imageset\badge_goldstar.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge%403x.png" />
-    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge%402x.png" />
-    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge.png" />
+    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\guest_badge.imageset\guest_badge.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\guest_badge.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
