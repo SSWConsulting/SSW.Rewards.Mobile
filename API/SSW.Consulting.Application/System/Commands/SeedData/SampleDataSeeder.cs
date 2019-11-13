@@ -116,9 +116,10 @@ namespace SSW.Consulting.Persistence
             SetupAchievement(existingAchievements, "Azure SpendOps – The Art of Effectively Managing Azure Costs", 500);
             SetupAchievement(existingAchievements, "NETUG October 2019 - 7 Deadly Presentation Sins", 500);
             SetupAchievement(existingAchievements, "NETUG November 2019 - gRPC in .NET Core 3", 500);
+			SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
 
-            // superpowers
-            SetupAchievement(existingAchievements, "Angular Superpowers", 500);
+			// superpowers
+			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
 
