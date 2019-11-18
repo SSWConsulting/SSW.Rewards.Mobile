@@ -266,6 +266,38 @@
           }
         }
       }
+    },
+    "/api/User/Rewards": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_Rewards",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRewardsViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -519,6 +551,45 @@
             "format": "int32"
           },
           "complete": {
+            "type": "boolean"
+          },
+          "awardedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "UserRewardsViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userRewards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserRewardViewModel"
+            }
+          }
+        }
+      },
+      "UserRewardViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewardName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rewardCost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "awarded": {
             "type": "boolean"
           },
           "awardedAt": {
