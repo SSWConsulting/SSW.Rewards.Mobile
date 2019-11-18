@@ -41,7 +41,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Talk to SSW people, attend their talks and scan their QR codes, and take the Tech Quiz to earn points.",
                     Image = "onboarding",
                     MainHeading = "Welcome",
-                    SubHeading = "Earn rewards...",
+                    SubHeading = "Earn rewards",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -52,7 +52,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Get on the leaderboard for a chance to win a Google Hub Max.",
                     Image = "prize_hubmax",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...like a Google Nest Hub Max...",
+                    SubHeading = "Google Nest Hub Max",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -63,7 +63,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
                     Image = "prize_keepcup",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or an SSW Smart Keepcup...",
+                    SubHeading = "SSW Smart Keepcup",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -74,7 +74,7 @@ namespace SSW.Consulting.ViewModels
                     Content = "Get on the leaderboard and earn a MI Wrist band. Just like a FitBit, except more functionality and a month's battery life!",
                     Image = "prize_miband",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a MI Band 4",
+                    SubHeading = "MI Band 4",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -82,10 +82,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "SSW Architects audit your enterprise applications.",
+                    Content = "SSW Architects will help you successfully implement your project.",
                     Image = "prize_consultation",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a half price software audit...",
+                    SubHeading = "Half Price Specification Review",
                     TextColour = Color.Black,
                     LinkText = "SKIP INTRO",
                     textAlignment = TextAlignment.Start
@@ -93,10 +93,10 @@ namespace SSW.Consulting.ViewModels
                 new CarouselViewModel
                 {
                     backgroundColour = Color.White,
-                    Content = "Win a free place at one of our Superpowers tours events.",
+                    Content = "Win a free place at one of our Superpowers tours events. You can choose to attend to our .NET Core, Angular or Azure one-day training.",
                     Image = "prize_superpowers",
                     MainHeading = "Earn Rewards",
-                    SubHeading = "...or a free SuperPowers ticket",
+                    SubHeading = "SuperPowers ticket",
                     TextColour = Color.Black,
                     LinkText = "GET STARTED",
                     textAlignment = TextAlignment.End
