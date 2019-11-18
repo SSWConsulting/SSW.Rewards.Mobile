@@ -8,6 +8,7 @@ namespace SSW.Consulting.Domain.Entities
         public string Email { get; set; }
         public string Avatar { get; set; }
         public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
+        public ICollection<UserReward> UserRewards { get; set; } = new HashSet<UserReward>();
     }
 }
 
