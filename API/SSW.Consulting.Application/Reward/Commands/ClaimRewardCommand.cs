@@ -1,0 +1,84 @@
+﻿
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using SSW.Consulting.Application.Common.Interfaces;
+using SSW.Consulting.Application.Reward.Queries.GetRewardList;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SSW.Consulting.Application.Reward.Commands
+{
+    public class ClaimRewardCommand : IRequest<ClaimRewardResult>
+    {
+        public string Code { get; set; }
+
+        public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
+        {
+            private readonly ICurrentUserService _currentUserService;
+            private readonly ISSWConsultingDbContext _context;
+            private readonly IMapper _mapper;
+
+            public ClaimRewardCommandHandler(
+                ICurrentUserService currentUserService,
+                ISSWConsultingDbContext context,
+                IMapper mapper)
+            {
+                _currentUserService = currentUserService;
+                _context = context;
+                _mapper = mapper;
+            }
+
+            public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
+            {
+                var reward = await _context
+                    .Rewards
+                    .Where(r => r.Code == request.Code)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if(reward == null)
+                {
+                    return new ClaimRewardResult
+                    {
+                        status = RewardStatus.NotFound
+                    };
+                }
+
+                var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
+                var userHasReward = await _context
+                    .UserRewards
+                    .Where(ur => ur.UserId == user.Id)
+                    .Where(ur => ur.RewardId == reward.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if(userHasReward != null && userHasReward.AwardedAt >= DateTime.Now.AddMinutes(-5))
+                {
+                    return new ClaimRewardResult
+                    {
+                        status = RewardStatus.Duplicate
+                    };
+                }
+
+                await _context
+                    .UserRewards
+                    .AddAsync(new Domain.Entities.UserReward
+                    {
+                        UserId = user.Id,
+                        RewardId = reward.Id
+                    }, cancellationToken);
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                var rewardModel = _mapper.Map<RewardViewModel>(reward);
+
+                return new ClaimRewardResult
+                {
+                    viewModel = rewardModel,
+                    status = RewardStatus.Claimed
+                };
+            }
+        }
+    }
+}

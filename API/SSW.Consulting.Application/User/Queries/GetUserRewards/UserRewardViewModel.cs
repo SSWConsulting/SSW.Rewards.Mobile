@@ -4,7 +4,11 @@ using System.Text;
 
 namespace SSW.Consulting.Application.User.Queries.GetUserRewards
 {
-    class UserRewardViewModel
+    public class UserRewardViewModel
     {
+        public string RewardName { get; set; }
+        public int RewardCost { get; set; }
+        public bool Awarded { get; set; }
+        public DateTime? AwardedAt { get; set; }
     }
 }

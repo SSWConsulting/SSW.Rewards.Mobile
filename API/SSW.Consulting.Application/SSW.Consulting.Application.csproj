@@ -19,8 +19,4 @@
     <ProjectReference Include="..\SSW.Consulting.Domain\SSW.Consulting.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Reward\Commands\" />
-  </ItemGroup>
-
 </Project>

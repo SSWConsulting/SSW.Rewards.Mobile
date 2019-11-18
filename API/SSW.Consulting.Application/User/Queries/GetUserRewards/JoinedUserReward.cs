@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SSW.Consulting.Domain.Entities;
 
 namespace SSW.Consulting.Application.User.Queries.GetUserRewards
 {
-    class JoinedUserReward
+    internal class JoinedUserReward
     {
+        public Domain.Entities.Reward Reward { get; set; }
+        public UserReward UserReward { get; set; }
     }
 }

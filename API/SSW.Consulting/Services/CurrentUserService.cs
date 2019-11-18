@@ -38,7 +38,7 @@ namespace SSW.Consulting.WebAPI.Services
 
         public string GetUserAvatar() => null;
 
-        public async Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken)
+        public async Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken)
         {
             if (_currentUser != null)
             {

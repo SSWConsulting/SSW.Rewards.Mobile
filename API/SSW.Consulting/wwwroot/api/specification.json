@@ -143,6 +143,58 @@
         }
       }
     },
+    "/api/Reward/List": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_List",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Reward/Add": {
+      "post": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_Add",
+        "parameters": [
+          {
+            "name": "rewardCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Staff/Get": {
       "get": {
         "tags": [
@@ -317,6 +369,37 @@
             "nullable": true
           },
           "points": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RewardListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RewardViewModel"
+            }
+          }
+        }
+      },
+      "RewardViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "cost": {
             "type": "integer",
             "format": "int32"
           }

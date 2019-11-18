@@ -97,16 +97,17 @@ namespace SSW.Consulting.Persistence
         private async Task SeedAchievementsAsync(CancellationToken cancellationToken)
         {
             var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
+            var existingRewards = await _context.Rewards.ToListAsync(cancellationToken);
 
             // tech quiz
             SetupAchievement(existingAchievements, "SSW Tech Quiz", 500);
 
             // prizes
-            SetupAchievement(existingAchievements, "SSW Water Bottle", 0);
-            SetupAchievement(existingAchievements, "Xiaomi Mi Band 4", 0);
-            SetupAchievement(existingAchievements, "Free Ticket - Angular Superpowers", 0);
-            SetupAchievement(existingAchievements, "Free Ticket - Azure Superpowers", 0);
-            SetupAchievement(existingAchievements, "Free Ticket - .NET Core Superpowers", 0);
+            SetupReward(existingRewards, "SSW Smart Keepcup", 4000);
+            SetupReward(existingRewards, "Xiaomi Mi Band 4", 5000);
+            SetupReward(existingRewards, "Free Ticket - Angular Superpowers", 2000);
+            SetupReward(existingRewards, "Free Ticket - Azure Superpowers", 2000);
+            SetupReward(existingRewards, "Free Ticket - .NET Core Superpowers", 2000);
 
             // talks
             SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
@@ -147,6 +148,23 @@ namespace SSW.Consulting.Persistence
             if (achievement.Id == 0)
             {
                 _context.Achievements.Add(achievement);
+            }
+        }
+
+        private void SetupReward(IEnumerable<Reward> existingRewards, string name, int cost)
+        {
+            var reward = existingRewards
+                .FirstOrDefault(r => r.Name.Equals(name, StringComparison.InvariantCulture))
+                ?? new Reward();
+
+            reward.Name = name;
+            var codeData = Encoding.ASCII.GetBytes(name);
+            reward.Code = Convert.ToBase64String(codeData);
+            reward.Cost = cost;
+
+            if(reward.Id == 0)
+            {
+                _context.Rewards.Add(reward);
             }
         }
 

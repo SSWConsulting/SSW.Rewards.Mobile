@@ -11,6 +11,6 @@ namespace SSW.Consulting.Application.Common.Interfaces
         string GetUserFullName();
         string GetUserAvatar();
 
-        Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken);
+        Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken);
     }
 }

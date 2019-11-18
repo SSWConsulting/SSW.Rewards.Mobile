@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SSW.Consulting.Application.User.Queries.GetUserRewards
 {
-    class UserRewardsViewModel
+    public class UserRewardsViewModel
     {
+        public int UserId { get; set; }
+        public IEnumerable<UserRewardViewModel> UserRewards { get; set; }
     }
 }
