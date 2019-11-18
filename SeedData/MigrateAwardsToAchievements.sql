@@ -7,15 +7,16 @@ DECLARE @netCoreSuperpowersReward NVARCHAR(50)
 DECLARE @srcAchievementId INT
 DECLARE @dstRewardId INT
 
-SET @cupReward = 'SSW Smart Keepcup'
+SET @cupRewardDst = 'SSW Smart Keepcup'
+SET @cupRewardSrc = 'SSW Water Bottle'
 SET @bandReward = 'Xiaomi Mi Band 4'
 SET @angularSuperpowersReward = 'Free Ticket - Angular Superpowers'
 SET @azureSuperpowersReward = 'Free Ticket - Azure Superpowers'
 SET @netCoreSuperpowersReward = 'Free Ticket - .NET Core Superpowers'
 
 -- Cup
-SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @cupReward
-SELECT @dstRewardId = Id FROM Rewards WHERE Name = @cupReward
+SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @cupRewardSrc
+SELECT @dstRewardId = Id FROM Rewards WHERE Name = @cupRewardDst
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
