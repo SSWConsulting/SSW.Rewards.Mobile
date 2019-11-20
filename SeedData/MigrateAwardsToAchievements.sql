@@ -15,42 +15,52 @@ SET @azureSuperpowersReward = 'Free Ticket - Azure Superpowers'
 SET @netCoreSuperpowersReward = 'Free Ticket - .NET Core Superpowers'
 
 -- Cup
+BEGIN TRANSACTION
 SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @cupRewardSrc
 SELECT @dstRewardId = Id FROM Rewards WHERE Name = @cupRewardDst
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
 WHERE AchievementId = @srcAchievementId
+COMMIT
 
 -- Mi Band
+BEGIN TRANSACTION
 SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @bandReward
 SELECT @dstRewardId = Id FROM Rewards WHERE Name = @bandReward
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
 WHERE AchievementId = @srcAchievementId
+COMMIT
+
 
 -- Angular Superpowers
+BEGIN TRANSACTION
 SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @angularSuperpowersReward
 SELECT @dstRewardId = Id FROM Rewards WHERE Name = @angularSuperpowersReward
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
 WHERE AchievementId = @srcAchievementId
-
+COMMIT
 
 -- Azure Superpowers
+BEGIN TRANSACTION
 SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @azureSuperpowersReward
 SELECT @dstRewardId = Id FROM Rewards WHERE Name = @azureSuperpowersReward
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
 WHERE AchievementId = @srcAchievementId
+COMMIT
 
 -- .NET Core Superpowers
+BEGIN TRANSACTION
 SELECT @srcAchievementId = Id FROM Achievements WHERE Name = @netCoreSuperpowersReward
 SELECT @dstRewardId = Id FROM Rewards WHERE Name = @netCoreSuperpowersReward
 
 INSERT INTO UserRewards (UserId, RewardId, AwardedAt)
 SELECT @dstRewardId, UserId, CURRENT_TIMESTAMP FROM UserAchievements
 WHERE AchievementId = @srcAchievementId
+COMMIT
