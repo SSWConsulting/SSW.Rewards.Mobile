@@ -15,6 +15,7 @@ namespace SSW.Consulting.Services
     public class ChallengeService : IChallengeService
     {
         private AchievementClient _achievementClient { get; set; }
+        private RewardClient _rewardClient { get; set; }
         private UserClient _userClient { get; set; }
         private HttpClient _httpClient { get; set; }
         private IUserService _userService;
@@ -38,6 +39,7 @@ namespace SSW.Consulting.Services
             string baseUrl = Constants.ApiBaseUrl;
 
             _achievementClient = new AchievementClient(baseUrl, _httpClient);
+            _rewardClient = new RewardClient(baseUrl, _httpClient);
         }
 
         public async Task<IEnumerable<Challenge>> GetChallengesAsync()
@@ -99,7 +101,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
         }
 
-        public async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
+        private async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
         {
             ChallengeResultViewModel vm = new ChallengeResultViewModel();
 
@@ -155,6 +157,82 @@ namespace SSW.Consulting.Services
             }
 
             return vm;
+        }
+
+        private async Task<ChallengeResultViewModel> PostRewardAsync(string rewardString)
+        {
+            ChallengeResultViewModel vm = new ChallengeResultViewModel();
+
+            try
+            {
+                ClaimRewardResult response = await _rewardClient.AddAsync(rewardString);
+
+                if(response != null)
+                {
+                    switch(response.Status)
+                    {
+                        case RewardStatus.Claimed:
+                            vm.result = ChallengeResult.Added;
+                            vm.Title = response.ViewModel.Name;
+                            break;
+                        case RewardStatus.Duplicate:
+                            vm.result = ChallengeResult.Duplicate;
+                            vm.Title = "Duplicate";
+                            break;
+                        case RewardStatus.Error:
+                            vm.result = ChallengeResult.Error;
+                            vm.Title = "Error";
+                            break;
+                        case RewardStatus.NotFound:
+                            vm.result = ChallengeResult.NotFound;
+                            vm.Title = "Unrecognised";
+                            break;
+                        default:
+                            vm.result = ChallengeResult.Error;
+                            vm.Title = "Error";
+                            break;
+                    }
+
+                }
+                else
+                {
+                    vm.result = ChallengeResult.Error;
+                }
+            }
+            catch(ApiException e)
+            {
+                if (e.StatusCode == 401)
+                {
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                }
+                else
+                {
+                    vm.result = ChallengeResult.Error;
+                }
+            }
+            catch
+            {
+                vm.result = ChallengeResult.Error;
+            }
+
+            return vm;
+        }
+
+        public async Task<ChallengeResultViewModel> ValidateQRCodeAsync(string qrCodeData)
+        {
+            var result = await PostRewardAsync(qrCodeData);
+
+            if(result.result == ChallengeResult.Added || result.result == ChallengeResult.Duplicate)
+            {
+                result.ChallengeType = ChallengeType.Reward;
+                return result;
+            }
+
+            result = await PostChallengeAsync(qrCodeData);
+            result.ChallengeType = ChallengeType.Achievement;
+
+            return result;
         }
     }
 }

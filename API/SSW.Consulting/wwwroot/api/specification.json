@@ -187,7 +187,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RewardViewModel"
+                  "$ref": "#/components/schemas/ClaimRewardResult"
                 }
               }
             }
@@ -436,6 +436,39 @@
             "format": "int32"
           }
         }
+      },
+      "ClaimRewardResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "viewModel": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RewardViewModel"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/RewardStatus"
+          }
+        }
+      },
+      "RewardStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Claimed",
+          "NotFound",
+          "Duplicate",
+          "Error"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "StaffListViewModel": {
         "type": "object",

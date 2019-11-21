@@ -697,14 +697,14 @@ namespace SSW.Consulting
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<RewardViewModel> AddAsync(string rewardCode)
+        public System.Threading.Tasks.Task<ClaimRewardResult> AddAsync(string rewardCode)
         {
             return AddAsync(rewardCode, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<RewardViewModel> AddAsync(string rewardCode, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ClaimRewardResult> AddAsync(string rewardCode, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Reward/Add?");
@@ -740,7 +740,7 @@ namespace SSW.Consulting
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<RewardViewModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ClaimRewardResult>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -750,7 +750,7 @@ namespace SSW.Consulting
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(RewardViewModel);
+                        return default(ClaimRewardResult);
                     }
                     finally
                     {
@@ -1477,6 +1477,31 @@ namespace SSW.Consulting
         [Newtonsoft.Json.JsonProperty("cost", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Cost { get; set; }
     
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.24.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ClaimRewardResult 
+    {
+        [Newtonsoft.Json.JsonProperty("viewModel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public RewardViewModel ViewModel { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public RewardStatus Status { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.0.24.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum RewardStatus
+    {
+        Claimed = 0,
+    
+        NotFound = 1,
+    
+        Duplicate = 2,
+    
+        Error = 3,
     
     }
     

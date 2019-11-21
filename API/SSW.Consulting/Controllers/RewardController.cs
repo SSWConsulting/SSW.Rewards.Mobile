@@ -23,7 +23,7 @@ namespace SSW.Consulting.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RewardViewModel>> Add([FromQuery] string rewardCode)
+        public async Task<ActionResult<ClaimRewardResult>> Add([FromQuery] string rewardCode)
         {
             return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));
         }

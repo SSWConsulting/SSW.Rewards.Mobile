@@ -44,9 +44,17 @@ namespace SSW.Consulting.ViewModels
             switch (result.result)
             {
                 case ChallengeResult.Added:
+                    if(result.ChallengeType == ChallengeType.Achievement)
+                    {
+                        ResultHeading = "Achivement Added!";
+                        ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
+                    }
+                    else if(result.ChallengeType == ChallengeType.Reward)
+                    {
+                        ResultHeading = "Congratulations!";
+                        ResultBody = string.Format("You have claimed this reward!", result.Points.ToString());
+                    }
                     AnimationRef = "trophy.json";
-                    ResultHeading = "Achivement Added!";
-                    ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
