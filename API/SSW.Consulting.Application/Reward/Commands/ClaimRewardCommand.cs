@@ -47,6 +47,15 @@ namespace SSW.Consulting.Application.Reward.Commands
                 }
 
                 var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
+
+                if(user.Points < reward.Cost)
+                {
+                    return new ClaimRewardResult
+                    {
+                        status = RewardStatus.NotEnoughPoints
+                    };
+                }
+
                 var userHasReward = await _context
                     .UserRewards
                     .Where(ur => ur.UserId == user.Id)

@@ -461,13 +461,15 @@
           "Claimed",
           "NotFound",
           "Duplicate",
+          "NotEnoughPoints",
           "Error"
         ],
         "enum": [
           0,
           1,
           2,
-          3
+          3,
+          4
         ]
       },
       "StaffListViewModel": {
