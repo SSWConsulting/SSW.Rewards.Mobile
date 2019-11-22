@@ -197,7 +197,7 @@ namespace SSW.Consulting.Services
             }
         }
         
-        public async Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId)
+        public async Task<IEnumerable<MyChallenge>> GetOtThersAchievementsAsync(int userId)
         {
             List<MyChallenge> challenges = new List<MyChallenge>();
 

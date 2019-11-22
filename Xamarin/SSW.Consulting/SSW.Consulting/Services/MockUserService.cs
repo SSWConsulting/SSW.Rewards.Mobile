@@ -32,7 +32,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(4);
         }
 
-        public Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId)
+        public Task<IEnumerable<MyChallenge>> GetOthersAchievementsAsync(int userId)
         {
             throw new NotImplementedException();
         }

@@ -79,7 +79,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges);
         }
 
-        public Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
+        public Task<ChallengeResultViewModel> ValidateQRCodeAsync(string achievementString)
         {
             throw new NotImplementedException();
         }
