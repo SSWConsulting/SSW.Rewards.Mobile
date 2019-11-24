@@ -51,7 +51,7 @@ namespace SSW.Consulting.ViewModels
 
         public async Task InitialiseOther(int userId)
         {
-            var userChallenges = await _userService.GetOThersAchievementsAsync(userId);
+            var userChallenges = await _userService.GetOthersAchievementsAsync(userId);
 
             userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
 

@@ -37,7 +37,7 @@ namespace SSW.Consulting.ViewModels
             ResultHeading = "Verifying your QR code...";
             RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
 
-            ChallengeResultViewModel result = await _challengeService.PostChallengeAsync(data);
+            ChallengeResultViewModel result = await _challengeService.ValidateQRCodeAsync(data);
 
             AnimationLoop = false;
 

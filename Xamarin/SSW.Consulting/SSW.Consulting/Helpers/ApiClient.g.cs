@@ -1501,7 +1501,9 @@ namespace SSW.Consulting
     
         Duplicate = 2,
     
-        Error = 3,
+        NotEnoughPoints = 3,
+    
+        Error = 4,
     
     }
     

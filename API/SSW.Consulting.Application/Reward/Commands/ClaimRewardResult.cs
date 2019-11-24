@@ -16,6 +16,7 @@ namespace SSW.Consulting.Application.Reward.Commands
         Claimed,
         NotFound,
         Duplicate,
+        NotEnoughPoints,
         Error
     }
 }

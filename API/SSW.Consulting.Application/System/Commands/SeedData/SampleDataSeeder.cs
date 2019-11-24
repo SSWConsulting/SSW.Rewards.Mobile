@@ -109,6 +109,13 @@ namespace SSW.Consulting.Persistence
             SetupReward(existingRewards, "Free Ticket - Azure Superpowers", 2000);
             SetupReward(existingRewards, "Free Ticket - .NET Core Superpowers", 2000);
 
+            // prizes
+            SetupAchievement(existingAchievements, "SSW Smart Keepcup", 0);
+            SetupAchievement(existingAchievements, "Xiaomi Mi Band 4", 0);
+            SetupAchievement(existingAchievements, "Free Ticket - Angular Superpowers", 0);
+            SetupAchievement(existingAchievements, "Free Ticket - Azure Superpowers", 0);
+            SetupAchievement(existingAchievements, "Free Ticket - .NET Core Superpowers", 0);
+
             // talks
             SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
             SetupAchievement(existingAchievements, "How to put a Penguin in a Cloud: Linux on Azure", 500);
