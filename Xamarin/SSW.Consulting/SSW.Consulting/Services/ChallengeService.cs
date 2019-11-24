@@ -101,7 +101,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
         }
 
-        private async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
+        public async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
         {
             ChallengeResultViewModel vm = new ChallengeResultViewModel();
 
