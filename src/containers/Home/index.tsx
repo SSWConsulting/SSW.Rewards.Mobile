@@ -1,9 +1,14 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import authentication from 'react-azure-adb2c';
 import { AuthContext } from 'containers/Auth/B2CAuth';
 
+import LeaderboardTable from 'components/LeaderboardTable/LeaderboardTable';
+
+import Paper from '@material-ui/core/Paper';
 
 const Home = (): JSX.Element => {
+
+    const [users, setUsers] = useState([])
 
     const signOut = () => {
         console.log('auth: ', authentication.getAccessToken());
@@ -23,20 +28,21 @@ const Home = (): JSX.Element => {
         }).then(e => {
             e.json().then(d => {
                 console.log(d);
+                setUsers(d.users);
             })
         }).catch(e => {
-            console.log(e);
+            console.error(e);
         })
     }, [])
 
-    const u = useContext(AuthContext);
-
     return (
         <div>
-            {JSON.stringify(u)}
+        <Paper>
+            <LeaderboardTable users={users}></LeaderboardTable>
             <p>
                 <button onClick={signOut}>Sign Out</button>
             </p>
+        </Paper>
         </div>
     )
 }
