@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+             xmlns:controls="clr-namespace:SSW.Consulting.Controls"
              mc:Ignorable="d"
              x:Name="ProfilePage"
              x:Class="SSW.Consulting.Views.MyProfile">
@@ -86,8 +87,55 @@
                              Color="{StaticResource DividerColour}"
                              WidthRequest="250"/>
 
+                    <ScrollView>
+                        <controls:RepeaterView ItemsSource="{Binding ChallengeList}">
+                            <controls:RepeaterView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <Grid Padding="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="6*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
 
-                    <ListView ItemsSource="{Binding ChallengeList}"
+                                            <StackLayout Orientation="Horizontal"
+                                                     Margin="0,15,0,15"
+                                                     Grid.ColumnSpan="3"
+                                                     IsVisible="{Binding IsHeader}"
+                                                     Grid.Row="0">
+                                                <Image Source="icon_badge"
+                                                   Scale="0.6"/>
+                                                <Label Text="{Binding HeaderTitle}"
+                                                   VerticalTextAlignment="Center"
+                                                   TextColor="White"
+                                                   FontSize="Body"/>
+                                            </StackLayout>
+
+                                            <Label Grid.Column="0"
+                                               Grid.ColumnSpan="2"
+                                               Text="{Binding Challenge.Title}"
+                                               TextColor="White"/>
+                                            <Label Text="{Binding Challenge.Points}"
+                                               IsVisible="{Binding IsRow}"
+                                               HorizontalTextAlignment="Center"
+                                               TextColor="White"
+                                               Grid.Column="2"/>
+
+                                        <Label Text="★"
+                                               IsVisible="{Binding IsPointsHeader}"
+                                               TextColor="White"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"
+                                               Grid.Column="2"/>
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                            </controls:RepeaterView.ItemTemplate>
+                        </controls:RepeaterView>
+                    </ScrollView>
+
+                    <!--<ListView ItemsSource="{Binding ChallengeList}"
                               HasUnevenRows="True"
                               SeparatorVisibility="None"
                               BackgroundColor="{StaticResource ProfileBackgroundColour}"
@@ -124,7 +172,7 @@
                                         <Image Source="chip_bonus"
                                                Grid.Column="1"
                                                IsVisible="False"/>
-                                        <!--IsVisible="{Binding Challenge.IsBonus}"/>-->
+                                        --><!--IsVisible="{Binding Challenge.IsBonus}"/>--><!--
 
                                         <Label Text="{Binding Challenge.Points}"
                                                IsVisible="{Binding IsRow}"
@@ -142,7 +190,7 @@
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                    </ListView>                                                          
+                    </ListView>-->                                                          
                 </StackLayout>
             </RelativeLayout>
         </Grid>

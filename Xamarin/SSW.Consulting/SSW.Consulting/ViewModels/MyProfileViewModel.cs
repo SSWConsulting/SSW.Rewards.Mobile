@@ -73,8 +73,12 @@ namespace SSW.Consulting.ViewModels
 
         private void UpdateChallengeList(IEnumerable<MyChallenge> challenges)
         {
-            ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false, IsPointsHeader = false });
-
+            for(int i = 0; i < 100; i++)
+            {
+                ChallengeList.Add(new ChallengeListViewModel { IsHeader = true, HeaderTitle = "Prizes", Challenge = new MyChallenge { IsBonus = false }, IsRow = false, IsPointsHeader = false });
+            }
+            
+            /*
             foreach (MyChallenge challenge in challenges)
             {
                 if (challenge.IsBonus)
@@ -114,7 +118,7 @@ namespace SSW.Consulting.ViewModels
                 if (!challenge.Completed && !challenge.IsBonus)
                     ChallengeList.Add(new ChallengeListViewModel { IsHeader = false, Challenge = challenge, IsRow = true });
             }
-
+            */
             RaisePropertyChanged("Points", "ChallengeList");
         }
     }
