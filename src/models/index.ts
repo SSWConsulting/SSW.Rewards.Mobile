@@ -5,4 +5,3 @@ export interface User {
     profilePic: string,
     points: number
 }
-

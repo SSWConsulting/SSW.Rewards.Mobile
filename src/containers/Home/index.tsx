@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import authentication from 'react-azure-adb2c';
-import { AuthContext } from 'containers/Auth/B2CAuth';
-
 import LeaderboardTable from 'components/LeaderboardTable/LeaderboardTable';
-
 import Paper from '@material-ui/core/Paper';
 
 const Home = (): JSX.Element => {
@@ -47,4 +44,4 @@ const Home = (): JSX.Element => {
     )
 }
 
-export default Home
+export default Home;
