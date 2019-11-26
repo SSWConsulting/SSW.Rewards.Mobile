@@ -123,6 +123,26 @@
         }
       }
     },
+    "/api/Admin/Get": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "Admin_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Leaderboard/Get": {
       "get": {
         "tags": [
