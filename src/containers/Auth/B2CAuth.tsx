@@ -40,10 +40,10 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
                 instance: 'https://sswconsultingapp.b2clogin.com/',
                 validateAuthority: false,
                 tenant: 'sswconsultingapp.onmicrosoft.com',
-                signInPolicy: 'B2C_1_Admin-Signin',
-                applicationId: '33e787e1-caeb-475b-a6dc-7e014d0a252a',
+                signInPolicy: 'B2C_1_SignUpAndSignIn',
+                applicationId: 'bb80971c-3a85-4d6d-aef4-cf0baf0f374b',
                 cacheLocation: 'localStorage',
-                scopes: ['https://sswconsultingapp.onmicrosoft.com/admin/user_impersonation'],
+                scopes: ['https://sswconsultingapp.onmicrosoft.com/api/user_impersonation'],
                 postLogoutRedirectUri: window.location.origin,
             });
             b2cauth.run(() => {
