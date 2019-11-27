@@ -7,8 +7,8 @@ namespace SSW.Consulting.Services
 {
     public interface IRewardService
     {
-        Task<IEnumerable<Reward>> GetAllRewardsAsync();
-        Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId);
+        Task<IEnumerable<Reward>> GetRewardsAsync();
+        Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ChallengeResultViewModel> PostRewardAsync(string qrCode);
     }
 }
