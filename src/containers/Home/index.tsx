@@ -33,14 +33,12 @@ const Home = (): JSX.Element => {
     }, [])
 
     return (
-        <div>
         <Paper>
             <LeaderboardTable users={users}></LeaderboardTable>
             <p>
                 <button onClick={signOut}>Sign Out</button>
             </p>
         </Paper>
-        </div>
     )
 }
 
