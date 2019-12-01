@@ -17,10 +17,6 @@ namespace SSW.Consulting.Services
         private UserClient _userClient { get; set; }
         private HttpClient _httpClient { get; set; }
 
-        public UserService()
-        {
-        }
-
         public async Task<string> GetMyEmailAsync()
         {
             return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
@@ -196,10 +192,20 @@ namespace SSW.Consulting.Services
                 Preferences.Set("MyPoints", user.Points);
             }
         }
-        
-        public async Task<IEnumerable<MyChallenge>> GetOthersAchievementsAsync(int userId)
+
+        public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
         {
-            List<MyChallenge> challenges = new List<MyChallenge>();
+            return await GetAchievementsForUserAsync(await GetMyUserIdAsync());
+        }
+
+        public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
+        {
+            return await GetAchievementsForUserAsync(userId);
+        }
+
+        private async Task<IEnumerable<Achievement>> GetAchievementsForUserAsync(int userId)
+        {
+            List<Achievement> achievements = new List<Achievement>();
 
             if (_userClient == null)
             {
@@ -213,21 +219,62 @@ namespace SSW.Consulting.Services
                 _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
             }
 
-            var SOCA = await _userClient.AchievementsAsync(userId);
+            var achievementsList = await _userClient.AchievementsAsync(userId);
 
-            foreach(var achievement in SOCA.UserAchievements)
+            foreach(UserAchievementViewModel achievement in achievementsList.UserAchievements)
             {
-                challenges.Add(new MyChallenge
+                achievements.Add(new Achievement
                 {
-                    Completed = achievement.Complete,
-                    Points = achievement.AchievementValue,
-                    Title = achievement.AchievementName,
-                    awardedAt = achievement.AwardedAt,
-                    IsBonus = achievement.AchievementValue == 0 ? true : false
+                    AwardedAt = achievement.AwardedAt.Value.DateTime,
+                    Complete = achievement.Complete,
+                    Name = achievement.AchievementName,
+                    Value = achievement.AchievementValue
                 });
             }
 
-            return challenges;
+            return achievements;
+        }
+
+        public async Task<IEnumerable<Reward>> GetRewardsAsync()
+        {
+            return await GetRewardsForUserAsync(await GetMyUserIdAsync());
+        }
+
+        public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)
+        {
+            return await GetRewardsForUserAsync(userId);
+        }
+
+        private async Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId)
+        {
+            List<Reward> rewards = new List<Reward>();
+
+            if (_userClient == null)
+            {
+                if (_httpClient == null)
+                {
+                    string token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient = new HttpClient();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+            }
+
+            var rewardsList = await _userClient.RewardsAsync(userId);
+
+            foreach (UserRewardViewModel userReward in rewardsList.UserRewards)
+            {
+                rewards.Add(new Reward
+                {
+                    awardedAt = userReward.AwardedAt.Value.DateTime,
+                    Awarded = userReward.Awarded,
+                    Name = userReward.RewardName,
+                    Cost = userReward.RewardCost
+                });
+            }
+
+            return rewards;
         }
     }
 }

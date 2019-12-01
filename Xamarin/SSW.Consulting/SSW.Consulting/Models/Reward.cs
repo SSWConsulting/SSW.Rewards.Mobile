@@ -10,5 +10,6 @@ namespace SSW.Consulting.Models
         public string Name { get; set; }
         public int Cost { get; set; }
         public DateTimeOffset? awardedAt { get; set; }
+        public bool Awarded { get; set; }
     }
 }

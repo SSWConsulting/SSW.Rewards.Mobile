@@ -7,7 +7,7 @@ using SSW.Consulting.Services;
 
 namespace SSW.Consulting.ViewModels
 {
-    public class ProfileViewModel
+    public class ProfileViewModel : BaseViewModel
     {
 
         private IAchievementService _achievementService;
@@ -20,6 +20,8 @@ namespace SSW.Consulting.ViewModels
         public string Email { get; set; }
         public string Points { get; set; }
 
+        private int userId { get; set; }
+
         public ObservableCollection<Reward> Rewards { get; set; }
         public ObservableCollection<Achievement> Achievements { get; set; }
 
@@ -28,6 +30,7 @@ namespace SSW.Consulting.ViewModels
             _achievementService = achievementService;
             _rewardService = rewardService;
             _userService = userService;
+            _ = Initialise(true);
         }
 
         public ProfileViewModel(LeaderSummaryViewModel vm)
@@ -36,22 +39,23 @@ namespace SSW.Consulting.ViewModels
             Name = vm.Name;
             Email = vm.Title;
             Points = String.Format("{0:n0}", vm.BaseScore);
-            _ = Initialise(vm.Id);
+            _ = Initialise(false);
         }
 
-        private async Task Initialise(int id)
+        private async Task Initialise(bool me)
         {
-            if(id == await _userService.GetMyUserIdAsync())
+            if(me)
             {
                 //initialise me
                 ProfilePic = await _userService.GetMyProfilePicAsync();
                 Name = await _userService.GetMyNameAsync();
                 Email = await _userService.GetMyEmailAsync();
-                Points = await _userService.GetMyPointsAsync();
+                Points = String.Format("{0:n2}",await _userService.GetMyPointsAsync());
             }
             else
             {
                 //initialise other
+                
             }
         }
     }
