@@ -8,6 +8,7 @@ using SSW.Consulting.Application.Common.Helpers;
 
 namespace SSW.Consulting.WebAPI.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AdminController : BaseController
     {
         [HttpGet]
