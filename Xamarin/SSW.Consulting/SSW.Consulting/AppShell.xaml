@@ -27,7 +27,7 @@
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
             </Style>
-            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+            <!--<Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />-->
         </ResourceDictionary>
     </Shell.Resources>
 
@@ -97,7 +97,7 @@
         </DataTemplate>
     </Shell.MenuItemTemplate>
 
-    <FlyoutItem Style="{StaticResource BaseStyle}">
+    <FlyoutItem>
         <Shell.ItemTemplate>
             <DataTemplate>
                 <StackLayout HeightRequest="1"

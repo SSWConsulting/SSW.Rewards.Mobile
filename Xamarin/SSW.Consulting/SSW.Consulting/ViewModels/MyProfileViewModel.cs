@@ -51,11 +51,11 @@ namespace SSW.Consulting.ViewModels
 
         public async Task InitialiseOther(int userId)
         {
-            var userChallenges = await _userService.GetOthersAchievementsAsync(userId);
+            var userChallenges = await _userService.GetAchievementsAsync(userId);
 
-            userChallenges = userChallenges.OrderByDescending(c => c.awardedAt);
+            userChallenges = userChallenges.OrderByDescending(c => c.AwardedAt);
 
-            UpdateChallengeList(userChallenges);
+            //UpdateChallengeList(userChallenges);
         }
 
         private async Task Initialise()
