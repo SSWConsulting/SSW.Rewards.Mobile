@@ -57,10 +57,10 @@ namespace SSW.Consulting
                 d.Title = "SSW.Consulting API";
             });
 
-
             services
                 .AddControllers()
                 .AddNewtonsoftJson();
+            services.AddCors();
         }
 
 		public virtual void ConfigureLogging(IServiceCollection services)
@@ -107,6 +107,11 @@ namespace SSW.Consulting
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
+
+            app.UseCors(options =>
+            {
+                options.WithOrigins("https://sswconsultingdevh2krk.z8.web.core.windows.net/");
+            });
 
             app.UseAuthentication();
 			app.UseAuthorization();
