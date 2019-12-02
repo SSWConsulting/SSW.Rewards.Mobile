@@ -17,6 +17,9 @@ namespace SSW.Consulting.Services
         void SignOut();
         Task<bool> IsLoggedInAsync();
         Task UpdateMyDetailsAsync();
-        Task<IEnumerable<MyChallenge>> GetOThersAchievementsAsync(int userId);
+        Task<IEnumerable<Achievement>> GetAchievementsAsync();
+        Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
+        Task<IEnumerable<Reward>> GetRewardsAsync();
+        Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
     }
 }

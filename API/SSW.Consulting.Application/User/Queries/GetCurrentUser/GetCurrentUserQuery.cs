@@ -33,8 +33,8 @@ namespace SSW.Consulting.Application.User.Queries.GetCurrentUser
                 // need to use current user's email address to look up these details since b2c's id is not being stored
                 var currentUserEmail =  _currentUserService.GetUserEmail();
                 var user = await _context.Users
-                    .Include(u => u.UserAchievements)
-                    .ThenInclude(ua => ua.Achievement)
+                    .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+                    .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
                     .Where(u => u.Email == currentUserEmail)
                     .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);

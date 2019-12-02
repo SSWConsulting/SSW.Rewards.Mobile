@@ -19,7 +19,7 @@ namespace SSW.Consulting.WebAPI.Security
         {
             var cus = context.HttpContext.RequestServices.GetService<ICurrentUserService>();
 
-            var u = await cus.GetCurrentUser(CancellationToken.None);
+            var u = await cus.GetCurrentUserAsync(CancellationToken.None);
             if (u == null)
             {
                 context.Result = new UnauthorizedResult();

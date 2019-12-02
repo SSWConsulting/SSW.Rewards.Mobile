@@ -12,17 +12,8 @@ namespace SSW.Consulting.ViewModels
 {
     public class QRScannerPageViewModel : BaseViewModel
     {
-        public Result Result { get; set; }
-        private IChallengeService _challengeService { get; set; }
-
-        public QRScannerPageViewModel(IChallengeService challengeService)
-        {
-            _challengeService = challengeService;
-        }
-
         public async Task CheckAchievement(Result result)
         {
-            //ChallengeResultViewModel challenge = await _challengeService.PostChallengeAsync(result.Text);
             await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
         }
     }

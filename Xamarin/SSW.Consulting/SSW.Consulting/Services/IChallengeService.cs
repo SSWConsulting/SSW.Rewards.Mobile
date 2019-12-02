@@ -9,7 +9,6 @@ namespace SSW.Consulting.Services
     public interface IChallengeService
     {
         Task<IEnumerable<Challenge>> GetChallengesAsync();
-        Task<IEnumerable<MyChallenge>> GetMyChallengesAsync();
-        Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString);
+        Task<ChallengeResultViewModel> ValidateQRCodeAsync(string achievementString);
     }
 }

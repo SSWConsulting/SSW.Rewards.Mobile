@@ -44,7 +44,7 @@ namespace SSW.Consulting.Application.Achievement.Commands.AddAchievement
                     throw new NotFoundException(request.Code, nameof(Domain.Entities.Achievement));
                 }
 
-                var user = await _currentUserService.GetCurrentUser(cancellationToken);
+                var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
                 var userHasAchievement = await _context
                     .UserAchievements
                     .Where(ua => ua.UserId == user.Id)

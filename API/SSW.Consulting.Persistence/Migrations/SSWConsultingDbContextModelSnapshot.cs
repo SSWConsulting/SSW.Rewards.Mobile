@@ -40,6 +40,27 @@ namespace SSW.Consulting.Persistence.Migrations
                     b.ToTable("Achievements");
                 });
 
+            modelBuilder.Entity("SSW.Consulting.Domain.Entities.Reward", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Cost")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rewards");
+                });
+
             modelBuilder.Entity("SSW.Consulting.Domain.Entities.Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -161,6 +182,34 @@ namespace SSW.Consulting.Persistence.Migrations
                     b.ToTable("UserAchievements");
                 });
 
+            modelBuilder.Entity("SSW.Consulting.Domain.Entities.UserReward", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AwardedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("RewardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RewardId");
+
+                    b.HasIndex("UserId", "RewardId")
+                        .IsUnique();
+
+                    b.ToTable("UserRewards");
+                });
+
             modelBuilder.Entity("SSW.Consulting.Domain.Entities.StaffMemberSkill", b =>
                 {
                     b.HasOne("SSW.Consulting.Domain.Entities.Skill", "Skill")
@@ -186,6 +235,21 @@ namespace SSW.Consulting.Persistence.Migrations
 
                     b.HasOne("SSW.Consulting.Domain.Entities.User", "User")
                         .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SSW.Consulting.Domain.Entities.UserReward", b =>
+                {
+                    b.HasOne("SSW.Consulting.Domain.Entities.Reward", "Reward")
+                        .WithMany("UserRewards")
+                        .HasForeignKey("RewardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SSW.Consulting.Domain.Entities.User", "User")
+                        .WithMany("UserRewards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
