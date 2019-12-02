@@ -25,7 +25,6 @@ namespace SSW.Consulting
 
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
             if (Preferences.Get("FirstRun", true))
             {
                 Preferences.Set("FirstRun", false);

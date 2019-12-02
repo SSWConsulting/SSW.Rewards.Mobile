@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Consulting.Views.Profile"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+             xmlns:controls="clr-namespace:SSW.Consulting.Controls"
+             mc:Ignorable="d"
+             x:Name="ProfilePage">
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="polygon"
+                   Aspect="AspectFill"/>
+
+            <RelativeLayout>
+                <Frame HasShadow="False"
+                       IsClippedToBounds="True"
+                       x:Name="ProfileFrame"
+                       CornerRadius="10"
+                       BackgroundColor="{StaticResource ProfileBackgroundColour}"
+                       RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.2,Constant=0}"
+                       RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.05,Constant=0}"
+                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.81,Constant=0}"
+                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.9,Constant=0}">
+
+                </Frame>
+
+                <ffimage:CachedImage VerticalOptions="Center"
+                                     HeightRequest="125"
+                                     WidthRequest="125"
+                                     TranslationY="-100"
+                                     CacheType="Disk"
+                                     CacheDuration="90"
+                                     Aspect="AspectFill"
+                                     Source="{Binding ProfilePic}"
+                                     LoadingPlaceholder="placeholder_user"
+                                     ErrorPlaceholder="placeholder_user"
+                                     d:Source="MattGMain"
+                                     RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Y,Factor=1,Constant=0}"
+                                     RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=0.5,Constant=-45}">
+                        <ffimage:CachedImage.Transformations>
+                            <transforms:CircleTransformation BorderSize="20"
+                                                             BorderHexColor="#979797"/>
+                        </ffimage:CachedImage.Transformations>
+                    </ffimage:CachedImage>
+
+                <StackLayout RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.25,Constant=0}"
+                             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=X,Factor=0,Constant=0}"
+                             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ProfileFrame, Property=Width,Factor=1.1,Constant=0}"
+                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.75,Constant=0}"
+                             HorizontalOptions="CenterAndExpand"
+                             Padding="50,0"
+                             VerticalOptions="Start">
+                    <Label Text="{Binding Name}"
+                           d:Text="Matt Goldman"
+                           TextColor="White"
+                           Margin="0"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="End"
+                           FontSize="Title"/>
+                    <Label Text="{Binding Email}"
+                           d:Text="mattgoldman@ssw.com.au"
+                           TextColor="White"
+                           Margin="0"
+                           VerticalTextAlignment="Start"
+                           HorizontalTextAlignment="Center"
+                           FontSize="Small"/>
+                    <BoxView HeightRequest="2"
+                             BackgroundColor="{StaticResource DividerColour}"
+                             WidthRequest="200"/>
+
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center">
+
+                        <Image Source="badge_goldstar"/>
+
+                        <Label Text="{Binding Points}"
+                               TextColor="{StaticResource PointsColour}"
+                               VerticalTextAlignment="Center"
+                               FontSize="40"
+                               d:Text="1,5525"/>
+                    </StackLayout>
+
+                    <BoxView HeightRequest="2"
+                             Color="{StaticResource DividerColour}"
+                             WidthRequest="250"/>
+
+                    <ScrollView>
+                        <StackLayout>
+
+                            <StackLayout Orientation="Horizontal"
+                                         Margin="0,15">
+                                <Image Source="icon_badge"
+                                    Scale="0.6"/>
+                                <Label Text="Prizes"
+                                       FontAttributes="Bold"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="White"
+                                       FontSize="Body"/>
+                            </StackLayout>
+                            <controls:RepeaterView ItemsSource="{Binding Rewards}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Label Text="{Binding Name}"
+                                                   TextColor="White"/>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
+
+                            <Grid Padding="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout Orientation="Horizontal"
+                                             Margin="0,15">
+                                    <Image Source="icon_badge"
+                                           Scale="0.6"/>
+                                    <Label Text="Completed"
+                                           FontAttributes="Bold"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="White"
+                                           FontSize="Body"/>
+                                </StackLayout>
+                                <Label Text="★"
+                                       TextColor="White"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       Grid.Column="1"/>
+                            </Grid>
+                            <controls:RepeaterView ItemsSource="{Binding CompletedAchievements}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Grid Padding="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="8*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label Grid.Column="0"
+                                                       TextColor="White"
+                                                       Text="{Binding Name}"/>
+                                                <Label Text="{Binding Value}"
+                                                       TextColor="White"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       Grid.Column="1"/>
+                                            </Grid>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
+
+                            <Grid Padding="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout Orientation="Horizontal"
+                                             Margin="0,15">
+                                    <Image Source="icon_badge"
+                                           Scale="0.6"/>
+                                    <Label Text="Outstanding"
+                                           FontAttributes="Bold"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="White"
+                                           FontSize="Body"/>
+                                </StackLayout>
+                                <Label Text="★"
+                                       TextColor="White"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       Grid.Column="1"/>
+                            </Grid>
+                            <controls:RepeaterView ItemsSource="{Binding OutstandingAchievements}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Grid Padding="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="8*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label Grid.Column="0"
+                                                       TextColor="White"
+                                                       Text="{Binding Name}"/>
+                                                <Label Text="{Binding Value}"
+                                                       TextColor="White"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       Grid.Column="1"/>
+                                            </Grid>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
+
+                        </StackLayout>
+                    </ScrollView>                                                        
+                </StackLayout>
+            </RelativeLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

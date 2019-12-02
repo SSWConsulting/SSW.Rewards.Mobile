@@ -10,5 +10,6 @@ namespace SSW.Consulting.ViewModels
         public int Points { get; set; }
         public string Title { get; set; }
         public ChallengeResult result { get; set; }
+        public ChallengeType ChallengeType { get; set; }
     }
 }

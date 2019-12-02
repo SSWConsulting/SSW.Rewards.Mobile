@@ -52,10 +52,10 @@ namespace SSW.Consulting.ViewModels
         private async void OpenURL(string url)
         {
             if(url.Contains("twitter"))
-                await _challengeService.PostChallengeAsync(_twitterAchievement);
+                await _challengeService.ValidateQRCodeAsync(_twitterAchievement);
              
             else if(url.Contains("youtube"))
-                await _challengeService.PostChallengeAsync(_sswTVAchievement);
+                await _challengeService.ValidateQRCodeAsync(_sswTVAchievement);
 
             await Browser.OpenAsync(url, BrowserLaunchMode.External);
             MessagingCenter.Send<object>(this, "NewAchievement");

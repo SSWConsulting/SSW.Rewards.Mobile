@@ -16,7 +16,7 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">Black</Color>
-            <Style x:Key="BaseStyle" TargetType="Element">
+            <Style x:Key="BaseStyle" TargetType="ShellItem">
                 <Setter Property="Shell.BackgroundColor" Value="Black" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />

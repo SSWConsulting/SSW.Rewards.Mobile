@@ -121,9 +121,9 @@ namespace SSW.Consulting.ViewModels
         private void HandleLeaderTapped(LeaderSummaryViewModel leader)
         {
             if (leader.IsMe)
-                Shell.Current.Navigation.PushAsync(new MyProfile());
+                Shell.Current.Navigation.PushAsync(new Profile());
             else
-                Shell.Current.Navigation.PushAsync(new MyProfile(leader));
+                Shell.Current.Navigation.PushAsync(new Profile(leader));
         }
     }
 }

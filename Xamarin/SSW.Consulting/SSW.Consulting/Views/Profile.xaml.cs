@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using SSW.Consulting.Services;
 using SSW.Consulting.ViewModels;
 using Xamarin.Forms;
 
 namespace SSW.Consulting.Views
 {
-    public partial class MyProfile : ContentPage
+    public partial class Profile : ContentPage
     {
-        public MyProfile()
+        public Profile()
         {
             InitializeComponent();
-            var viewModel = Resolver.Resolve<MyProfileViewModel>();
+            var viewModel = new ProfileViewModel(Resolver.Resolve<IUserService>());
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
         }
 
-        public MyProfile(MyProfileViewModel viewModel)
+        public Profile(ProfileViewModel viewModel)
         {
             InitializeComponent();
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
         }
 
-        public MyProfile(LeaderSummaryViewModel vm)
+        public Profile(LeaderSummaryViewModel vm)
         {
             InitializeComponent();
-            var viewModel = new MyProfileViewModel(vm);
+            var viewModel = new ProfileViewModel(vm);
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
         }
