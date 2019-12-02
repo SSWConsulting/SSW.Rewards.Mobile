@@ -27,10 +27,10 @@ namespace SSW.Consulting.ViewModels
             OnOkCommand = new Command(DismissPopups);
             _userService = userService;
             _challengeService = Resolver.Resolve<IChallengeService>();
-            CheckScanData(scanData);
+            _ = CheckScanData(scanData);
         }
 
-        private async void CheckScanData(string data)
+        private async Task CheckScanData(string data)
         {
             AnimationRef = "qr-code-scanner.json";
             AnimationLoop = true;
@@ -52,7 +52,7 @@ namespace SSW.Consulting.ViewModels
                     else if(result.ChallengeType == ChallengeType.Reward)
                     {
                         ResultHeading = "Congratulations!";
-                        ResultBody = string.Format("You have claimed this reward!", result.Points.ToString());
+                        ResultBody = string.Format("You have claimed this reward!");
                     }
                     AnimationRef = "trophy.json";
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
@@ -93,17 +93,27 @@ namespace SSW.Consulting.ViewModels
                 await CollectNewPointsAsync();
         }
 
-        private async void DismissPopups()
+        private void DismissPopups()
         {
             if(_wonPrize)
             {
-                await Shell.Current.GoToAsync("//main");
-                await PopupNavigation.Instance.PopAllAsync();
+                _ = DismissWithWon();
             }
             else
             {
-                await PopupNavigation.Instance.PopAllAsync();
+                _ = DismissWithoutWon();
             }
+        }
+
+        private async Task DismissWithWon()
+        {
+            await Shell.Current.GoToAsync("//main");
+            await PopupNavigation.Instance.PopAllAsync();
+        }
+
+        private async Task DismissWithoutWon()
+        {
+            await PopupNavigation.Instance.PopAllAsync();
         }
 
         private async Task CollectNewPointsAsync()

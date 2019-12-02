@@ -11,7 +11,6 @@ namespace SSW.Consulting.ViewModels
     public class ProfileViewModel : BaseViewModel
     {
         private IUserService _userService;
-        private HttpClient _httpClient;
 
         public string ProfilePic { get; set; }
         public string Name { get; set; }
@@ -51,7 +50,7 @@ namespace SSW.Consulting.ViewModels
                 ProfilePic = await _userService.GetMyProfilePicAsync();
                 Name = await _userService.GetMyNameAsync();
                 Email = await _userService.GetMyEmailAsync();
-                Points = String.Format("{0:n2}",await _userService.GetMyPointsAsync());
+                Points = String.Format("{0:n0}",await _userService.GetMyPointsAsync());
                 rewardList = await _userService.GetRewardsAsync();
                 achievementList = await _userService.GetAchievementsAsync();
             }

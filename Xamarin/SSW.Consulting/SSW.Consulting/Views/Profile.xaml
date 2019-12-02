@@ -95,9 +95,10 @@
                                 <Image Source="icon_badge"
                                     Scale="0.6"/>
                                 <Label Text="Prizes"
-                                    VerticalTextAlignment="Center"
-                                    TextColor="White"
-                                    FontSize="Body"/>
+                                       FontAttributes="Bold"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="White"
+                                       FontSize="Body"/>
                             </StackLayout>
                             <controls:RepeaterView ItemsSource="{Binding Rewards}">
                                 <controls:RepeaterView.ItemTemplate>
@@ -121,6 +122,7 @@
                                     <Image Source="icon_badge"
                                            Scale="0.6"/>
                                     <Label Text="Completed"
+                                           FontAttributes="Bold"
                                            VerticalTextAlignment="Center"
                                            TextColor="White"
                                            FontSize="Body"/>
@@ -166,6 +168,7 @@
                                     <Image Source="icon_badge"
                                            Scale="0.6"/>
                                     <Label Text="Outstanding"
+                                           FontAttributes="Bold"
                                            VerticalTextAlignment="Center"
                                            TextColor="White"
                                            FontSize="Body"/>

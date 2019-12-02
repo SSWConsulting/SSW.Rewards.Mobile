@@ -64,44 +64,7 @@ namespace SSW.Consulting.Services
             return await Task.FromResult(_challenges);
         }
 
-        public async Task<IEnumerable<MyChallenge>> GetMyChallengesAsync()
-        {
-            try
-            {
-                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
-
-                var myChallenges = await _userClient.AchievementsAsync(await _userService.GetMyUserIdAsync());
-
-                foreach (var challenge in myChallenges.UserAchievements)
-                {
-                    _myChallenges.Add(new MyChallenge
-                    {
-                        Badge = "link",
-                        Completed = challenge.Complete,
-                        Title = challenge.AchievementName,
-                        Points = challenge.AchievementValue,
-                        awardedAt = challenge.AwardedAt,
-                        IsBonus = challenge.AchievementValue == 0 ? true : false
-                    });
-                }
-            }
-            catch(ApiException e)
-            {
-                if (e.StatusCode == 401)
-                {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading your profile. Please try again soon.", "OK");
-                }
-            }
-
-            return await Task.FromResult(_myChallenges.OrderBy(c => c.Title));
-        }
-
-        public async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
+        private async Task<ChallengeResultViewModel> PostChallengeAsync(string achievementString)
         {
             ChallengeResultViewModel vm = new ChallengeResultViewModel();
 
