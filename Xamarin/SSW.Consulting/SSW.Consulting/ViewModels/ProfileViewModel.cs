@@ -19,6 +19,8 @@ namespace SSW.Consulting.ViewModels
 
         private int userId { get; set; }
 
+        public bool IsLoading { get; set; }
+
         public ObservableCollection<Reward> Rewards { get; set; }
         public ObservableCollection<Achievement> CompletedAchievements { get; set; }
         public ObservableCollection<Achievement> OutstandingAchievements { get; set; }
@@ -43,6 +45,9 @@ namespace SSW.Consulting.ViewModels
         {
             IEnumerable<Reward> rewardList = new List<Reward>();
             IEnumerable<Achievement> achievementList = new List<Achievement>();
+
+            IsLoading = true;
+            RaisePropertyChanged("ISLoading");
 
             if(me)
             {
@@ -94,7 +99,9 @@ namespace SSW.Consulting.ViewModels
                 }
             }
 
-            RaisePropertyChanged("Rewards", "CompletedAchievements", "OutstandingAchievements");
+            IsLoading = false;
+
+            RaisePropertyChanged("IsLoading", "Rewards", "CompletedAchievements", "OutstandingAchievements");
         }
     }
 }
