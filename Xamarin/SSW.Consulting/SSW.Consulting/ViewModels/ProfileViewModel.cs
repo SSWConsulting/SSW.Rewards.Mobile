@@ -63,11 +63,15 @@ namespace SSW.Consulting.ViewModels
                 achievementList = await _userService.GetAchievementsAsync(userId);
             }
 
+            Rewards = new ObservableCollection<Reward>();
+            CompletedAchievements = new ObservableCollection<Achievement>();
+            OutstandingAchievements = new ObservableCollection<Achievement>();
+
             foreach(Reward reward in rewardList)
             {
                 var profileReward = new Reward();
 
-                if(reward.Awarded)
+                if (reward.Awarded)
                 {
                     profileReward.Name = "🏆 WON: " + reward.Name;
                 }
@@ -81,15 +85,17 @@ namespace SSW.Consulting.ViewModels
 
             foreach(Achievement achievement in achievementList)
             {
-                if(achievement.Complete)
+                if(achievement.Complete && achievement.Value > 0)
                 {
                     CompletedAchievements.Add(achievement);
                 }
-                else
+                else if(achievement.Value > 0)
                 {
                     OutstandingAchievements.Add(achievement);
                 }
             }
+
+            RaisePropertyChanged("Rewards", "CompletedAchievements", "OutstandingAchievements");
         }
     }
 }

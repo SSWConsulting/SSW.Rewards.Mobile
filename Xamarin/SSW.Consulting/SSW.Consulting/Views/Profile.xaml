@@ -165,7 +165,7 @@
                                              Margin="0,15">
                                     <Image Source="icon_badge"
                                            Scale="0.6"/>
-                                    <Label Text="Completed"
+                                    <Label Text="Outstanding"
                                            VerticalTextAlignment="Center"
                                            TextColor="White"
                                            FontSize="Body"/>

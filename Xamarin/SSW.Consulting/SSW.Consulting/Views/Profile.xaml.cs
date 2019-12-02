@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SSW.Consulting.Services;
 using SSW.Consulting.ViewModels;
 using Xamarin.Forms;
 
@@ -10,7 +11,7 @@ namespace SSW.Consulting.Views
         public Profile()
         {
             InitializeComponent();
-            var viewModel = Resolver.Resolve<ProfileViewModel>();
+            var viewModel = new ProfileViewModel(Resolver.Resolve<IUserService>());
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
         }

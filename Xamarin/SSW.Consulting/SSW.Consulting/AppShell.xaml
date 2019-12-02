@@ -16,7 +16,7 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">Black</Color>
-            <Style x:Key="BaseStyle" TargetType="Element">
+            <Style x:Key="BaseStyle" TargetType="ShellItem">
                 <Setter Property="Shell.BackgroundColor" Value="Black" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
@@ -27,7 +27,7 @@
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
             </Style>
-            <!--<Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />-->
+            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
 
@@ -97,7 +97,7 @@
         </DataTemplate>
     </Shell.MenuItemTemplate>
 
-    <FlyoutItem>
+    <FlyoutItem Style="{StaticResource BaseStyle}">
         <Shell.ItemTemplate>
             <DataTemplate>
                 <StackLayout HeightRequest="1"

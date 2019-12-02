@@ -225,7 +225,6 @@ namespace SSW.Consulting.Services
             {
                 achievements.Add(new Achievement
                 {
-                    AwardedAt = achievement.AwardedAt.Value.DateTime,
                     Complete = achievement.Complete,
                     Name = achievement.AchievementName,
                     Value = achievement.AchievementValue
@@ -267,7 +266,6 @@ namespace SSW.Consulting.Services
             {
                 rewards.Add(new Reward
                 {
-                    awardedAt = userReward.AwardedAt.Value.DateTime,
                     Awarded = userReward.Awarded,
                     Name = userReward.RewardName,
                     Cost = userReward.RewardCost
