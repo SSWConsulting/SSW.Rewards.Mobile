@@ -88,51 +88,119 @@
                              WidthRequest="250"/>
 
                     <ScrollView>
-                        <controls:RepeaterView ItemsSource="{Binding Rewards}">
-                            <controls:RepeaterView.ItemTemplate>
-                                <DataTemplate>
-                                    <ViewCell>
-                                        <Grid Padding="0,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="6*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                            </Grid.ColumnDefinitions>
+                        <StackLayout>
 
-                                            <StackLayout Orientation="Horizontal"
-                                                     Margin="0,15,0,15"
-                                                     Grid.ColumnSpan="3"
-                                                     IsVisible="{Binding IsHeader}"
-                                                     Grid.Row="0">
-                                                <Image Source="icon_badge"
-                                                   Scale="0.6"/>
-                                                <Label Text="{Binding HeaderTitle}"
-                                                   VerticalTextAlignment="Center"
-                                                   TextColor="White"
-                                                   FontSize="Body"/>
-                                            </StackLayout>
+                            <StackLayout Orientation="Horizontal"
+                                         Margin="0,15">
+                                <Image Source="icon_badge"
+                                    Scale="0.6"/>
+                                <Label Text="Prizes"
+                                    VerticalTextAlignment="Center"
+                                    TextColor="White"
+                                    FontSize="Body"/>
+                            </StackLayout>
+                            <controls:RepeaterView ItemsSource="{Binding Rewards}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Label Text="{Binding Name}"
+                                                   TextColor="White"/>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
 
-                                            <Label Grid.Column="0"
-                                               Grid.ColumnSpan="2"
-                                               Text="{Binding Challenge.Title}"
-                                               TextColor="White"/>
-                                            <Label Text="{Binding Challenge.Points}"
-                                               IsVisible="{Binding IsRow}"
-                                               HorizontalTextAlignment="Center"
-                                               TextColor="White"
-                                               Grid.Column="2"/>
+                            <Grid Padding="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
 
-                                        <Label Text="★"
-                                               IsVisible="{Binding IsPointsHeader}"
-                                               TextColor="White"
-                                               HorizontalTextAlignment="Center"
-                                               VerticalTextAlignment="Center"
-                                               Grid.Column="2"/>
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                            </controls:RepeaterView.ItemTemplate>
-                        </controls:RepeaterView>
+                                <StackLayout Orientation="Horizontal"
+                                             Margin="0,15">
+                                    <Image Source="icon_badge"
+                                           Scale="0.6"/>
+                                    <Label Text="Completed"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="White"
+                                           FontSize="Body"/>
+                                </StackLayout>
+                                <Label Text="★"
+                                       TextColor="White"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       Grid.Column="1"/>
+                            </Grid>
+                            <controls:RepeaterView ItemsSource="{Binding CompletedAchievements}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Grid Padding="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="8*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label Grid.Column="0"
+                                                       TextColor="White"
+                                                       Text="{Binding Name}"/>
+                                                <Label Text="{Binding Value}"
+                                                       TextColor="White"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       Grid.Column="1"/>
+                                            </Grid>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
+
+                            <Grid Padding="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout Orientation="Horizontal"
+                                             Margin="0,15">
+                                    <Image Source="icon_badge"
+                                           Scale="0.6"/>
+                                    <Label Text="Completed"
+                                           VerticalTextAlignment="Center"
+                                           TextColor="White"
+                                           FontSize="Body"/>
+                                </StackLayout>
+                                <Label Text="★"
+                                       TextColor="White"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       Grid.Column="1"/>
+                            </Grid>
+                            <controls:RepeaterView ItemsSource="{Binding OutstandingAchievements}">
+                                <controls:RepeaterView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Grid Padding="0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="8*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Label Grid.Column="0"
+                                                       TextColor="White"
+                                                       Text="{Binding Name}"/>
+                                                <Label Text="{Binding Value}"
+                                                       TextColor="White"
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       Grid.Column="1"/>
+                                            </Grid>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </controls:RepeaterView.ItemTemplate>
+                            </controls:RepeaterView>
+
+                        </StackLayout>
                     </ScrollView>                                                        
                 </StackLayout>
             </RelativeLayout>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,9 +10,6 @@ namespace SSW.Consulting.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {
-
-        private IAchievementService _achievementService;
-        private IRewardService _rewardService;
         private IUserService _userService;
         private HttpClient _httpClient;
 
@@ -23,12 +21,11 @@ namespace SSW.Consulting.ViewModels
         private int userId { get; set; }
 
         public ObservableCollection<Reward> Rewards { get; set; }
-        public ObservableCollection<Achievement> Achievements { get; set; }
+        public ObservableCollection<Achievement> CompletedAchievements { get; set; }
+        public ObservableCollection<Achievement> OutstandingAchievements { get; set; }
 
-        public ProfileViewModel(IAchievementService achievementService, IRewardService rewardService, IUserService userService)
+        public ProfileViewModel(IUserService userService)
         {
-            _achievementService = achievementService;
-            _rewardService = rewardService;
             _userService = userService;
             _ = Initialise(true);
         }
@@ -38,12 +35,16 @@ namespace SSW.Consulting.ViewModels
             ProfilePic = vm.ProfilePic;
             Name = vm.Name;
             Email = vm.Title;
+            userId = vm.Id;
             Points = String.Format("{0:n0}", vm.BaseScore);
             _ = Initialise(false);
         }
 
         private async Task Initialise(bool me)
         {
+            IEnumerable<Reward> rewardList = new List<Reward>();
+            IEnumerable<Achievement> achievementList = new List<Achievement>();
+
             if(me)
             {
                 //initialise me
@@ -51,11 +52,43 @@ namespace SSW.Consulting.ViewModels
                 Name = await _userService.GetMyNameAsync();
                 Email = await _userService.GetMyEmailAsync();
                 Points = String.Format("{0:n2}",await _userService.GetMyPointsAsync());
+                rewardList = await _userService.GetRewardsAsync();
+                achievementList = await _userService.GetAchievementsAsync();
             }
             else
             {
                 //initialise other
-                
+                _userService = Resolver.Resolve<IUserService>();
+                rewardList = await _userService.GetRewardsAsync(userId);
+                achievementList = await _userService.GetAchievementsAsync(userId);
+            }
+
+            foreach(Reward reward in rewardList)
+            {
+                var profileReward = new Reward();
+
+                if(reward.Awarded)
+                {
+                    profileReward.Name = "🏆 WON: " + reward.Name;
+                }
+                else
+                {
+                    profileReward.Name = reward.Name;
+                }
+
+                Rewards.Add(profileReward);
+            }
+
+            foreach(Achievement achievement in achievementList)
+            {
+                if(achievement.Complete)
+                {
+                    CompletedAchievements.Add(achievement);
+                }
+                else
+                {
+                    OutstandingAchievements.Add(achievement);
+                }
             }
         }
     }
