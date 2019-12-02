@@ -6,10 +6,10 @@ namespace SSW.Consulting.Models
 {
     public class Reward
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
-        public DateTimeOffset? awardedAt { get; set; }
+        public DateTimeOffset? AwardedAt { get; set; }
         public bool Awarded { get; set; }
     }
 }
