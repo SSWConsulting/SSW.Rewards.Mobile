@@ -68,7 +68,7 @@ namespace SSW.Consulting
                 options.AddPolicy(AllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(Configuration.GetValue<string>("AllowedOrigin"));
+                        builder.WithOrigins("https://sswconsultingdevh2krk.z8.web.core.windows.net");
                     });
             });
         }
