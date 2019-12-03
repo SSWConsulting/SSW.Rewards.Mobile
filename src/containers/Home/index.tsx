@@ -17,7 +17,6 @@ const Home = (): JSX.Element => {
         console.log(token);
         fetch('https://sswconsulting-dev.azurewebsites.net/api/leaderboard/get',{
             headers:{
-                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: `Bearer ${token}`,
@@ -35,7 +34,6 @@ const Home = (): JSX.Element => {
 
     return (
         <Paper>
-            Leaderboard
             <LeaderboardTable users={users}></LeaderboardTable>
             <p>
                 <button onClick={signOut}>Sign Out</button>
