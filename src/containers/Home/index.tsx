@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import authentication from 'react-azure-adb2c';
 import LeaderboardTable from 'components/LeaderboardTable/LeaderboardTable';
 import Paper from '@material-ui/core/Paper';
@@ -17,6 +17,7 @@ const Home = (): JSX.Element => {
         console.log(token);
         fetch('https://sswconsulting-dev.azurewebsites.net/api/leaderboard/get',{
             headers:{
+                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: `Bearer ${token}`,
@@ -34,6 +35,7 @@ const Home = (): JSX.Element => {
 
     return (
         <Paper>
+            Leaderboard
             <LeaderboardTable users={users}></LeaderboardTable>
             <p>
                 <button onClick={signOut}>Sign Out</button>
