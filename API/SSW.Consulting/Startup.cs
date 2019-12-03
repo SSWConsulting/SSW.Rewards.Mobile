@@ -29,11 +29,13 @@ namespace SSW.Consulting
 		public IWebHostEnvironment Environment { get; }
 		public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
+        readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
 		{
-			// Configure all the stuffs
-			ConfigureSettings(services);
+            // Configure all the stuffs
+            ConfigureSettings(services);
 			ConfigureSecrets(services);
 			ConfigureLogging(services);
 
@@ -60,7 +62,15 @@ namespace SSW.Consulting
             services
                 .AddControllers()
                 .AddNewtonsoftJson();
-            services.AddCors();
+
+            services.AddCors(options => 
+            {
+                options.AddPolicy(AllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins(Configuration.GetValue<string>("AllowedOrigin"));
+                    });
+            });
         }
 
 		public virtual void ConfigureLogging(IServiceCollection services)
@@ -108,10 +118,7 @@ namespace SSW.Consulting
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
-            app.UseCors(options =>
-            {
-                options.WithOrigins("https://sswconsultingdevh2krk.z8.web.core.windows.net/");
-            });
+            app.UseCors(AllowSpecificOrigins);
 
             app.UseAuthentication();
 			app.UseAuthorization();
