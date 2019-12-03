@@ -27,12 +27,16 @@ namespace SSW.Consulting.ViewModels
 
         public ProfileViewModel(IUserService userService)
         {
+            IsLoading = true;
+            RaisePropertyChanged("IsLoading");
             _userService = userService;
             _ = Initialise(true);
         }
 
         public ProfileViewModel(LeaderSummaryViewModel vm)
         {
+            IsLoading = true;
+            RaisePropertyChanged("IsLoading");
             ProfilePic = vm.ProfilePic;
             Name = vm.Name;
             Email = vm.Title;
@@ -45,9 +49,6 @@ namespace SSW.Consulting.ViewModels
         {
             IEnumerable<Reward> rewardList = new List<Reward>();
             IEnumerable<Achievement> achievementList = new List<Achievement>();
-
-            IsLoading = true;
-            RaisePropertyChanged("ISLoading");
 
             if(me)
             {
