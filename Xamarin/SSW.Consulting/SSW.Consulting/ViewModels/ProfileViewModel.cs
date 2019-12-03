@@ -19,18 +19,24 @@ namespace SSW.Consulting.ViewModels
 
         private int userId { get; set; }
 
+        public bool IsLoading { get; set; }
+
         public ObservableCollection<Reward> Rewards { get; set; }
         public ObservableCollection<Achievement> CompletedAchievements { get; set; }
         public ObservableCollection<Achievement> OutstandingAchievements { get; set; }
 
         public ProfileViewModel(IUserService userService)
         {
+            IsLoading = true;
+            RaisePropertyChanged("IsLoading");
             _userService = userService;
             _ = Initialise(true);
         }
 
         public ProfileViewModel(LeaderSummaryViewModel vm)
         {
+            IsLoading = true;
+            RaisePropertyChanged("IsLoading");
             ProfilePic = vm.ProfilePic;
             Name = vm.Name;
             Email = vm.Title;
@@ -94,7 +100,9 @@ namespace SSW.Consulting.ViewModels
                 }
             }
 
-            RaisePropertyChanged("Rewards", "CompletedAchievements", "OutstandingAchievements");
+            IsLoading = false;
+
+            RaisePropertyChanged("IsLoading", "Rewards", "CompletedAchievements", "OutstandingAchievements");
         }
     }
 }

@@ -100,6 +100,11 @@
                                        TextColor="White"
                                        FontSize="Body"/>
                             </StackLayout>
+
+                            <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                               IsEnabled="{Binding IsLoading}"
+                                               IsRunning="{Binding IsLoading}"/>
+
                             <controls:RepeaterView ItemsSource="{Binding Rewards}">
                                 <controls:RepeaterView.ItemTemplate>
                                     <DataTemplate>
