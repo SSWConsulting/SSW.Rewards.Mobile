@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace SSW.Consulting.Helpers
+namespace SSW.Rewards.Helpers
 {
     public class ApiInfo
     {
@@ -18,7 +18,7 @@ namespace SSW.Consulting.Helpers
 
         public async Task<string> GetApiVersionAsync()
         {
-            Uri requestUri = new Uri(_baseUrl + "/swagger/SSW.Consulting%20API/swagger.json");
+            Uri requestUri = new Uri(_baseUrl + "/swagger/SSW.Rewards%20API/swagger.json");
             var apiInfo = await _client.GetAsync(requestUri);
 
             if(apiInfo.IsSuccessStatusCode)

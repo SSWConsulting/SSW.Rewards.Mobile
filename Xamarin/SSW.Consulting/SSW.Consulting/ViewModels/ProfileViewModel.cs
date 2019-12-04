@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SSW.Consulting.Models;
-using SSW.Consulting.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {

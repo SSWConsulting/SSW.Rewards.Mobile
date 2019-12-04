@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using SSW.Consulting.Effects;
-using SSW.Consulting.iOS.Effects;
+using SSW.Rewards.Effects;
+using SSW.Rewards.iOS.Effects;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("CrossGeeks")]
 [assembly: ExportEffect(typeof(iOSTooltipEffect), nameof(TooltipEffect))]
-namespace SSW.Consulting.iOS.Effects
+namespace SSW.Rewards.iOS.Effects
 {
 	public class iOSTooltipEffect : PlatformEffect
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SSW.Consulting.Models
+namespace SSW.Rewards.Models
 {
     public class DevProfile
     {

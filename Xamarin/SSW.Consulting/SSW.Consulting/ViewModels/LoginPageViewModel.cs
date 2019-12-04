@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
-using SSW.Consulting.Services;
+using SSW.Rewards.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
-using SSW.Consulting.Models;
+using SSW.Rewards.Models;
 using Microsoft.AppCenter.Auth;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class LoginPageViewModel : BaseViewModel
     {
@@ -48,7 +48,7 @@ namespace SSW.Consulting.ViewModels
                     await Shell.Current.GoToAsync("//main");
                     break;
                 case ApiStatus.Unavailable:
-                    await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
+                    await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
                     break;
                 case ApiStatus.LoginFailure:
                     await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");

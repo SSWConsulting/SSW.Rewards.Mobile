@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SSW.Consulting.Views.Profile"
+             x:Class="SSW.Rewards.Views.Profile"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
-             xmlns:controls="clr-namespace:SSW.Consulting.Controls"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              mc:Ignorable="d"
              x:Name="ProfilePage">
     <ContentPage.Content>

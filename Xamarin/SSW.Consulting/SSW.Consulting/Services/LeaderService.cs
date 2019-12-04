@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using SSW.Consulting.Models;
+using SSW.Rewards.Models;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using Microsoft.AppCenter.Auth;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Services
+namespace SSW.Rewards.Services
 {
     public class LeaderService : ILeaderService
     {
@@ -61,7 +61,7 @@ namespace SSW.Consulting.Services
                 if(e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                    Application.Current.MainPage = new SSW.Rewards.Views.LoginPage();
                 }
                 else
                 {

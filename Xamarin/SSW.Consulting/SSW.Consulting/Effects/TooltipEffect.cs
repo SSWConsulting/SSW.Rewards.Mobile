@@ -2,7 +2,7 @@
 using System.Linq;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Effects
+namespace SSW.Rewards.Effects
 {
 	public enum TooltipPosition
 	{

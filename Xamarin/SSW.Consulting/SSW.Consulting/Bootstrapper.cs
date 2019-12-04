@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using System.Linq;
 using Xamarin.Forms;
-using SSW.Consulting.Views;
-using SSW.Consulting.ViewModels;
-using SSW.Consulting.Services;
+using SSW.Rewards.Views;
+using SSW.Rewards.ViewModels;
+using SSW.Rewards.Services;
 using System.Reflection;
 
-namespace SSW.Consulting
+namespace SSW.Rewards
 {
     public abstract class Bootstrapper
     {

@@ -7,10 +7,10 @@ using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using SSW.Consulting.Models;
+using SSW.Rewards.Models;
 using System.Collections.Generic;
 
-namespace SSW.Consulting.Services
+namespace SSW.Rewards.Services
 {
     public class UserService : IUserService
     {

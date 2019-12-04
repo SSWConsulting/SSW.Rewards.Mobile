@@ -1,7 +1,7 @@
 ﻿using System;
-using SSW.Consulting.Models;
+using SSW.Rewards.Models;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class ChallengeListViewModel
     {

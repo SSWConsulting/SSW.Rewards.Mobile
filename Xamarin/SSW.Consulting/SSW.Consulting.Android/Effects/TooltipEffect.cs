@@ -1,15 +1,15 @@
 ﻿using System;
 using Android.Views;
 using Com.Tomergoldst.Tooltips;
-using SSW.Consulting.Droid.Effects;
-using SSW.Consulting.Effects;
+using SSW.Rewards.Droid.Effects;
+using SSW.Rewards.Effects;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using static Com.Tomergoldst.Tooltips.ToolTipsManager;
 
 [assembly: ResolutionGroupName("CrossGeeks")]
 [assembly: ExportEffect(typeof(DroidTooltipEffect), nameof(TooltipEffect))]
-namespace SSW.Consulting.Droid.Effects
+namespace SSW.Rewards.Droid.Effects
 {
 	public class DroidTooltipEffect : PlatformEffect
 	{

@@ -7,10 +7,10 @@ using Android.Widget;
 using Android.OS;
 using PanCardView.Droid;
 using Xamarin.Forms;
-using SSW.Consulting.Services;
+using SSW.Rewards.Services;
 using Lottie.Forms.Droid;
 
-namespace SSW.Consulting.Droid
+namespace SSW.Rewards.Droid
 {
     [Activity(Label = "SSW Rewards", Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_launcher_round", Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation =ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity

@@ -9,11 +9,11 @@ using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using PanCardView.iOS;
-using SSW.Consulting.Services;
+using SSW.Rewards.Services;
 using UIKit;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.iOS
+namespace SSW.Rewards.iOS
 {
     // The UIApplicationDelegate for the application. This class is responsible for launching the 
     // User Interface of the application, as well as listening (and optionally responding) to 

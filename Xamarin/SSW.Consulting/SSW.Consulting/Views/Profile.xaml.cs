@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using SSW.Consulting.Services;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.Services;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Views
+namespace SSW.Rewards.Views
 {
     public partial class Profile : ContentPage
     {

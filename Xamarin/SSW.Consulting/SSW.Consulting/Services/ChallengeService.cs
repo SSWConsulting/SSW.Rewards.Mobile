@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSW.Consulting.Models;
-using SSW.Consulting.Helpers;
+using SSW.Rewards.Models;
+using SSW.Rewards.Helpers;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using System.Linq;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Services
+namespace SSW.Rewards.Services
 {
     public class ChallengeService : IChallengeService
     {
@@ -107,7 +107,7 @@ namespace SSW.Consulting.Services
                 if (e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                    Application.Current.MainPage = new SSW.Rewards.Views.LoginPage();
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace SSW.Consulting.Services
                 if (e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    Application.Current.MainPage = new SSW.Consulting.Views.LoginPage();
+                    Application.Current.MainPage = new SSW.Rewards.Views.LoginPage();
                 }
                 else
                 {

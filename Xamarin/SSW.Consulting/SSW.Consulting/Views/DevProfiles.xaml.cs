@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.Views
+namespace SSW.Rewards.Views
 {
     public partial class DevProfiles : ContentPage
     {

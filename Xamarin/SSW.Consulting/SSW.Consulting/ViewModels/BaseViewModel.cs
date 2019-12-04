@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 
 using Xamarin.Forms;
 
-using SSW.Consulting.Models;
-using SSW.Consulting.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

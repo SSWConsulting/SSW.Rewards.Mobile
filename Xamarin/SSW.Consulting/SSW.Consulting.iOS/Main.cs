@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace SSW.Consulting.iOS
+namespace SSW.Rewards.iOS
 {
     public class Application
     {

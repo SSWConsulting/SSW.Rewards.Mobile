@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using SSW.Consulting.Models;
+using SSW.Rewards.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SSW.Consulting.Converters
+namespace SSW.Rewards.Converters
 {
     public class SkillToBadgeConverter : IValueConverter, IMarkupExtension
     {

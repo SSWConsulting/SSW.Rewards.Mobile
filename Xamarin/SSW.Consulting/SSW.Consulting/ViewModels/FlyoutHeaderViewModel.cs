@@ -1,9 +1,9 @@
 ﻿using System;
-using SSW.Consulting.Services;
+using SSW.Rewards.Services;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class FlyoutHeaderViewModel : BaseViewModel
     {

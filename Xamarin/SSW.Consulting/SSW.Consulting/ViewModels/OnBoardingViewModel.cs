@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Essentials;
-using SSW.Consulting.Views;
-using SSW.Consulting.Services;
+using SSW.Rewards.Views;
+using SSW.Rewards.Services;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class OnBoardingViewModel : BaseViewModel
     {

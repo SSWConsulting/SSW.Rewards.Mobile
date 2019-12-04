@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Controls
+namespace SSW.Rewards.Controls
 {
     public partial class FlyoutHeader : ContentView
     {

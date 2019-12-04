@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Rg.Plugins.Popup.Services;
-using SSW.Consulting.Models;
-using SSW.Consulting.PopupPages;
-using SSW.Consulting.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.PopupPages;
+using SSW.Rewards.Services;
 using Xamarin.Forms;
 using ZXing;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class QRScannerPageViewModel : BaseViewModel
     {

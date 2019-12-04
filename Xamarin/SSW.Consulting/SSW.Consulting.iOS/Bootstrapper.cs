@@ -1,8 +1,8 @@
 ﻿
 
-namespace SSW.Consulting.iOS
+namespace SSW.Rewards.iOS
 {
-    public class Bootstrapper : SSW.Consulting.Bootstrapper
+    public class Bootstrapper : SSW.Rewards.Bootstrapper
     {
         public static void Init()
         {

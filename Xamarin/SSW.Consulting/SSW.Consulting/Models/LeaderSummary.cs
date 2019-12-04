@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSW.Consulting.Models
+namespace SSW.Rewards.Models
 {
     public class LeaderSummary
     {

@@ -9,7 +9,7 @@ using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SSW.Consulting.PopupPages
+namespace SSW.Rewards.PopupPages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PastEvents : PopupPage

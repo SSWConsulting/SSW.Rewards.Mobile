@@ -1,8 +1,8 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using SSW.Consulting.Services;
-using SSW.Consulting.Views;
+using SSW.Rewards.Services;
+using SSW.Rewards.Views;
 using Xamarin.Essentials;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
@@ -11,9 +11,9 @@ using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
 using System.Diagnostics;
-using SSW.Consulting.Helpers;
+using SSW.Rewards.Helpers;
 
-namespace SSW.Consulting
+namespace SSW.Rewards
 {
     public partial class App : Application
     {
@@ -71,7 +71,7 @@ namespace SSW.Consulting
                 {
                     Console.WriteLine("Service Unavailable");
                     Console.WriteLine(e);
-                    //await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Consulting service is not currently available. Please try again later.", "OK");
+                    //await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
                 }
             }
         }

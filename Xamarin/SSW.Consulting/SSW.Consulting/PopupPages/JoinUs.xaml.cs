@@ -5,7 +5,7 @@ using Rg.Plugins.Popup.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.PopupPages
+namespace SSW.Rewards.PopupPages
 {
     public partial class JoinUs : PopupPage
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SSW.Consulting.Converters
+namespace SSW.Rewards.Converters
 {
     public class IsMeTagConverter: IValueConverter, IMarkupExtension
     {

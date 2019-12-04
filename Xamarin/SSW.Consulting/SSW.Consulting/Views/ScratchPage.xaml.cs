@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Views
+namespace SSW.Rewards.Views
 {
     public partial class ScratchPage : ContentPage
     {

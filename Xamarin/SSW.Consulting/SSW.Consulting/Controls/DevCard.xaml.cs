@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using SSW.Consulting.Effects;
-using SSW.Consulting.Models;
+using SSW.Rewards.Effects;
+using SSW.Rewards.Models;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Controls
+namespace SSW.Rewards.Controls
 {
     public partial class DevCard : ContentView
     {

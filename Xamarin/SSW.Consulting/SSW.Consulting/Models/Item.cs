@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SSW.Consulting.Models
+namespace SSW.Rewards.Models
 {
     public class Item
     {

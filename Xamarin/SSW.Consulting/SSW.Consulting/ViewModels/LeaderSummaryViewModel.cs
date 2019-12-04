@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SSW.Consulting.Models;
-using SSW.Consulting.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class LeaderSummaryViewModel : BaseViewModel
     {

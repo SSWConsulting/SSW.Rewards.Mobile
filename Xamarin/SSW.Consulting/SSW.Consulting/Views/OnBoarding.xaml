@@ -4,12 +4,12 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:behaviors="clr-namespace:SSW.Consulting.Behaviors"
+             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
              xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              NavigationPage.HasNavigationBar="False"
-             x:Class="SSW.Consulting.Views.OnBoarding">
+             x:Class="SSW.Rewards.Views.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="SelectedStyle" TargetType="Frame">

@@ -5,9 +5,9 @@
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
           xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
-          xmlns:converters="clr-namespace:SSW.Consulting.Converters"
+          xmlns:converters="clr-namespace:SSW.Rewards.Converters"
           mc:Ignorable="d"
-          x:Class="SSW.Consulting.Views.LeaderSummary">
+          x:Class="SSW.Rewards.Views.LeaderSummary">
   <ViewCell.View>
 
         <StackLayout Orientation="Horizontal"

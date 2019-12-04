@@ -1,9 +1,9 @@
-﻿using SSW.Consulting.Models;
-using SSW.Consulting.ViewModels;
+﻿using SSW.Rewards.Models;
+using SSW.Rewards.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.Services
+namespace SSW.Rewards.Services
 {
     public interface IRewardService
     {

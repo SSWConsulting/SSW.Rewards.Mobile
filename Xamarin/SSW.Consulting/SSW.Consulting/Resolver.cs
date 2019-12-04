@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace SSW.Consulting
+namespace SSW.Rewards
 {
     public static class Resolver
     {

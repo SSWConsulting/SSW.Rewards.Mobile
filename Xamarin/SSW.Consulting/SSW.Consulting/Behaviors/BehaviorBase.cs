@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Behaviors
+namespace SSW.Rewards.Behaviors
 {
     public class BehaviorBase<T> : Behavior<T> where T : BindableObject
     {

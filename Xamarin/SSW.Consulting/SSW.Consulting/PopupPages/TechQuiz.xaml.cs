@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Services;
-using SSW.Consulting.Services;
+using SSW.Rewards.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.PopupPages
+namespace SSW.Rewards.PopupPages
 {
     public partial class TechQuiz : PopupPage
     {

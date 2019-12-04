@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AppCenter.Auth;
 using Rg.Plugins.Popup.Services;
-using SSW.Consulting.PopupPages;
-using SSW.Consulting.Services;
-using SSW.Consulting.Views;
+using SSW.Rewards.PopupPages;
+using SSW.Rewards.Services;
+using SSW.Rewards.Views;
 using Xamarin.Forms;
 
-namespace SSW.Consulting
+namespace SSW.Rewards
 {
     public partial class AppShell : Xamarin.Forms.Shell
     {

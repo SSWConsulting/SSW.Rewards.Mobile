@@ -1,4 +1,4 @@
-﻿namespace SSW.Consulting.Models
+﻿namespace SSW.Rewards.Models
 {
     public enum ChallengeType
     {

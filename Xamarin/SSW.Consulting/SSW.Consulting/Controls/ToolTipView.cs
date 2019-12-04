@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace SSW.Consulting.Controls
+namespace SSW.Rewards.Controls
 {
 	public class ToolTipView : View
 	{

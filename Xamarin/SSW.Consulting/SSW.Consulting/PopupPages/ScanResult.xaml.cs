@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rg.Plugins.Popup.Pages;
-using SSW.Consulting.Models;
-using SSW.Consulting.Services;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.PopupPages
+namespace SSW.Rewards.PopupPages
 {
     public partial class ScanResult : PopupPage
     {

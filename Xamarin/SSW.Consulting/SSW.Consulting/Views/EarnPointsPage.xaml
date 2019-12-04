@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              Title="{Binding Title}"
 			 x:Name="EarnPointsView"
-             x:Class="SSW.Consulting.Views.EarnPointsPage">
+             x:Class="SSW.Rewards.Views.EarnPointsPage">
     <ContentPage.Content>
         <Grid Padding="0">
             <Image Aspect="AspectFill"

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using SSW.Consulting.Services;
-using SSW.Consulting.Views;
+using SSW.Rewards.Services;
+using SSW.Rewards.Views;
 using System.Linq;
 using Xamarin.Forms;
 using System.Threading.Tasks;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class LeaderBoardViewModel : BaseViewModel
     {

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.Behaviors
+namespace SSW.Rewards.Behaviors
 {
     public class EventToCommandBehavior : BehaviorBase<View>
     {

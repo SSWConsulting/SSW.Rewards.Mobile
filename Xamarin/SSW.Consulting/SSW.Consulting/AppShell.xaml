@@ -4,11 +4,11 @@
        xmlns:d="http://xamarin.com/schemas/2014/forms/design"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d"
-       xmlns:local="clr-namespace:SSW.Consulting.Views"
-       xmlns:controls="clr-namespace:SSW.Consulting.Controls"
-       Title="SSW.Consulting"
+       xmlns:local="clr-namespace:SSW.Rewards.Views"
+       xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+       Title="SSW.Rewards"
        FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
-       x:Class="SSW.Consulting.AppShell">
+       x:Class="SSW.Rewards.AppShell">
 
     <!-- 
         Styles and Resources 

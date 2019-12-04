@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Rg.Plugins.Popup.Pages;
 using Rg.Plugins.Popup.Services;
-using SSW.Consulting.ViewModels;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using ZXing;
 
-namespace SSW.Consulting.PopupPages
+namespace SSW.Rewards.PopupPages
 {
     public partial class QRScannerPage : PopupPage
     {

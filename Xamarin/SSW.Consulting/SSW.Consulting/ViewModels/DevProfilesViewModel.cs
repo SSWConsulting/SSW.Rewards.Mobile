@@ -2,12 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using SSW.Consulting.Models;
-using SSW.Consulting.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class DevProfilesViewModel : BaseViewModel
     {

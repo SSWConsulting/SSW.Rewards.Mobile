@@ -1,9 +1,9 @@
-﻿using SSW.Consulting.Models;
+﻿using SSW.Rewards.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSW.Consulting.ViewModels
+namespace SSW.Rewards.ViewModels
 {
     public class ChallengeResultViewModel
     {

@@ -1,7 +1,7 @@
 ﻿
-namespace SSW.Consulting.Droid
+namespace SSW.Rewards.Droid
 {
-    public class Bootstrapper : SSW.Consulting.Bootstrapper
+    public class Bootstrapper : SSW.Rewards.Bootstrapper
     {
         public static void Init()
         {

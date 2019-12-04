@@ -1,5 +1,5 @@
 ﻿using System;
-namespace SSW.Consulting.Helpers
+namespace SSW.Rewards.Helpers
 {
     public static class HttpService
     {

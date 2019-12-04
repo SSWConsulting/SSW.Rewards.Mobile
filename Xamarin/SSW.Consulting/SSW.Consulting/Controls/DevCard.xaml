@@ -3,12 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:SSW.Consulting.Converters"
-             xmlns:effects="clr-namespace:SSW.Consulting.Effects"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              BackgroundColor="Transparent"
-             x:Class="SSW.Consulting.Controls.DevCard">
+             x:Class="SSW.Rewards.Controls.DevCard">
     <ContentView.Content>
 		<Grid Margin="25,70,25,0">
             <Grid.ColumnDefinitions>
