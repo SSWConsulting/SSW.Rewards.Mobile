@@ -16,7 +16,6 @@ const Home = (): JSX.Element => {
         const token = authentication.getAccessToken();
         console.log(token);
         fetch('https://sswconsulting-dev.azurewebsites.net/api/leaderboard/get',{
-            credentials: 'include',
             headers:{
                 'Content-Type': 'application/json',
             Accept: 'application/json',
