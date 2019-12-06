@@ -13,11 +13,11 @@ namespace SSW.Rewards.Application.Achievement.Queries.GetAchievementList
         public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievementListQuery, AchievementListViewModel>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public GetAchievementListQueryHandler(
                 IMapper mapper,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _context = context;

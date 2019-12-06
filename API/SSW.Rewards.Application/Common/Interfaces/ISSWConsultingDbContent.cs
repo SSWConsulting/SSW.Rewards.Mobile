@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.Application.Common.Interfaces
 {
-    public interface ISSWConsultingDbContext
+    public interface ISSWRewardsDbContext
     {
         DbSet<StaffMember> StaffMembers { get; set; }
         DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }

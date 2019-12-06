@@ -15,12 +15,12 @@ namespace SSW.Rewards.Application.User.Commands.UpsertCurrentUser
         {
             private readonly IMapper _mapper;
             private readonly ICurrentUserService _currentUserService;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public UpsertUserCommandHandler(
                 IMapper mapper,
                 ICurrentUserService currentUserService,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _currentUserService = currentUserService;

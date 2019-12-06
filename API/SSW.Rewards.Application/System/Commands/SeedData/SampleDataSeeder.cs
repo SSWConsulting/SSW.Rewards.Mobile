@@ -15,11 +15,11 @@ namespace SSW.Rewards.Persistence
 {
     public class SampleDataSeeder
     {
-        private readonly ISSWConsultingDbContext _context;
+        private readonly ISSWRewardsDbContext _context;
 
         private Dictionary<string, int> _skills;
 
-        public SampleDataSeeder(ISSWConsultingDbContext context)
+        public SampleDataSeeder(ISSWRewardsDbContext context)
         {
             _context = context;
         }

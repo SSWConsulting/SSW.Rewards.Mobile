@@ -9,7 +9,7 @@ using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
-    [DbContext(typeof(SSWConsultingDbContext))]
+    [DbContext(typeof(SSWRewardsDbContext))]
     [Migration("20191009070223_AddUserAchievementUniqueIndex")]
     partial class AddUserAchievementUniqueIndex
     {

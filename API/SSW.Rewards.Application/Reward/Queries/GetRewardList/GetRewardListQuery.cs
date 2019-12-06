@@ -16,11 +16,11 @@ namespace SSW.Rewards.Application.Reward.Queries.GetRewardList
         public sealed class GetRewardListQueryHandler : IRequestHandler<GetRewardListQuery, RewardListViewModel>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public GetRewardListQueryHandler(
                 IMapper mapper,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _context = context;

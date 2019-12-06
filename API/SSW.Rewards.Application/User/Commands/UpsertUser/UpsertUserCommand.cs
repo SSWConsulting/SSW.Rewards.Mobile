@@ -21,11 +21,11 @@ namespace SSW.Rewards.Application.User.Commands.UpsertUser
         public class UpsertUserCommandHandler : IRequestHandler<UpsertUserCommand, Unit>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public UpsertUserCommandHandler(
                 IMapper mapper,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _context = context;

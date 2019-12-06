@@ -17,11 +17,11 @@ namespace SSW.Rewards.Application.User.Queries.GetUser
         public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserViewModel>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public GetUserQueryHandler(
                 IMapper mapper,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _context = context;

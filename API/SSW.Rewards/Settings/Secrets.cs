@@ -4,7 +4,7 @@ using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.WebAPI.Settings
 {
-    public class Secrets : SSWConsultingDbContext.ISecrets,
+    public class Secrets : SSWRewardsDbContext.ISecrets,
 		CloudBlobClientProvider.ISecrets
 	{
 		private readonly ISecretsProvider _secrets;

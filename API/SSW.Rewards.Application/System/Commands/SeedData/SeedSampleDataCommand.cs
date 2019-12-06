@@ -12,11 +12,11 @@ namespace SSW.Rewards.Application.System.Commands.SeedData
 
     public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
     {
-        private readonly ISSWConsultingDbContext _context;
+        private readonly ISSWRewardsDbContext _context;
         private readonly IProfileStorageProvider _storageProvider;
 
         public SeedSampleDataCommandHandler(
-            ISSWConsultingDbContext context,
+            ISSWRewardsDbContext context,
             IProfileStorageProvider storageProvider)
         {
             _context = context;

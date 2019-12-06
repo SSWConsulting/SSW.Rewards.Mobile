@@ -4,7 +4,7 @@ using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Persistence
 {
-    public class SSWConsultingDbContext : DbContext, ISSWConsultingDbContext
+    public class SSWRewardsDbContext : DbContext, ISSWRewardsDbContext
     {
 		public interface ISecrets
 		{
@@ -13,7 +13,7 @@ namespace SSW.Rewards.Persistence
 
 		private readonly ISecrets _secrets;
 
-		public SSWConsultingDbContext(ISecrets secrets)
+		public SSWRewardsDbContext(ISecrets secrets)
         {
 			_secrets = secrets;
 		}
@@ -32,7 +32,7 @@ namespace SSW.Rewards.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(SSWConsultingDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(SSWRewardsDbContext).Assembly);
         }
 
     }

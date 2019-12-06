@@ -46,7 +46,7 @@ namespace SSW.Rewards
 
 		        try
 		        {
-			        var dbContext = services.GetRequiredService<SSWConsultingDbContext>();
+			        var dbContext = services.GetRequiredService<SSWRewardsDbContext>();
 			        dbContext.Database.Migrate();
 
 			        var mediator = services.GetRequiredService<IMediator>();

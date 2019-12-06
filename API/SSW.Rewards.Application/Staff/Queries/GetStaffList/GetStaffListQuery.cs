@@ -14,12 +14,12 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public sealed class Handler : IRequestHandler<GetStaffListQuery, StaffListViewModel>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _dbContext;
+            private readonly ISSWRewardsDbContext _dbContext;
             private readonly IProfileStorageProvider _storage;
 
             public Handler(
                 IMapper mapper,
-                ISSWConsultingDbContext dbContext,
+                ISSWRewardsDbContext dbContext,
                 IProfileStorageProvider storage)
             {
                 _mapper = mapper;

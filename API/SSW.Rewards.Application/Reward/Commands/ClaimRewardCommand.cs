@@ -18,12 +18,12 @@ namespace SSW.Rewards.Application.Reward.Commands
         public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
         {
             private readonly ICurrentUserService _currentUserService;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
 
             public ClaimRewardCommandHandler(
                 ICurrentUserService currentUserService,
-                ISSWConsultingDbContext context,
+                ISSWRewardsDbContext context,
                 IMapper mapper)
             {
                 _currentUserService = currentUserService;

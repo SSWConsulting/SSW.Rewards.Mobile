@@ -8,8 +8,8 @@ namespace SSW.Rewards.Persistence
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<ISSWConsultingDbContext, SSWConsultingDbContext>();
-            services.AddDbContext<SSWConsultingDbContext>();
+            services.AddScoped<ISSWRewardsDbContext, SSWRewardsDbContext>();
+            services.AddDbContext<SSWRewardsDbContext>();
 
             return services;
         }

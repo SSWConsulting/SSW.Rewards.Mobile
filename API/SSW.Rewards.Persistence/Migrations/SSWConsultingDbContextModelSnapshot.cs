@@ -8,7 +8,7 @@ using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
-    [DbContext(typeof(SSWConsultingDbContext))]
+    [DbContext(typeof(SSWRewardsDbContext))]
     partial class SSWConsultingDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

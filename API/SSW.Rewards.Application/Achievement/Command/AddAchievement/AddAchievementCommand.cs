@@ -19,12 +19,12 @@ namespace SSW.Rewards.Application.Achievement.Commands.AddAchievement
         public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AchievementViewModel>
         {
             private readonly ICurrentUserService _currentUserService;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
 
             public AddAchievementCommandHandler(
                 ICurrentUserService currentUserService,
-                ISSWConsultingDbContext context,
+                ISSWRewardsDbContext context,
                 IMapper mapper)
             {
                 _currentUserService = currentUserService;

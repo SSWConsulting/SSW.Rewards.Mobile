@@ -8,7 +8,7 @@ using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
-    [DbContext(typeof(SSWConsultingDbContext))]
+    [DbContext(typeof(SSWRewardsDbContext))]
     [Migration("20191004044458_initial")]
     partial class initial
     {

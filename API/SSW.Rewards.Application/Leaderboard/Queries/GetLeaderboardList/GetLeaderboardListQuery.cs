@@ -14,11 +14,11 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
         public sealed class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListViewModel>
         {
             private readonly IMapper _mapper;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
 
             public Handler(
                 IMapper mapper,
-                ISSWConsultingDbContext context)
+                ISSWRewardsDbContext context)
             {
                 _mapper = mapper;
                 _context = context;

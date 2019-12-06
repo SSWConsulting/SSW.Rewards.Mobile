@@ -19,12 +19,12 @@ namespace SSW.Rewards.Application.Achievement.Command.PostAchievement
         public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
         {
             private readonly ICurrentUserService _currentUserService;
-            private readonly ISSWConsultingDbContext _context;
+            private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
 
             public PostAchievementCommandHandler(
                 ICurrentUserService currentUserService,
-                ISSWConsultingDbContext context,
+                ISSWRewardsDbContext context,
                 IMapper mapper)
             {
                 _currentUserService = currentUserService;

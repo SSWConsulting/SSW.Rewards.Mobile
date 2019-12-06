@@ -94,7 +94,7 @@ namespace SSW.Rewards
 		{
 			// Add Secrets
 			// TODO: Perhaps add some registration via convention for anything that implements a nested ISecrets interface
-			services.AddSingleton<SSWConsultingDbContext.ISecrets, Secrets>();
+			services.AddSingleton<SSWRewardsDbContext.ISecrets, Secrets>();
 			services.AddSingleton<CloudBlobClientProvider.ISecrets, Secrets>();
 		}
 
