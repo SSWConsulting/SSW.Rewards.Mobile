@@ -26,15 +26,17 @@
 
         <StackLayout>
             <StackLayout>
-                <Label Text="Smile You're on Camera!"
+                <Label Text="Your profile picture"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
-            <Label Text="Let's take a selfie"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"/>
+                          <Button Text="Take a new photo" Clicked="Handle_takePhotoClicked"></Button>
+
             </StackLayout>
             <Grid>
-                
+                <Image
+  x:Name="image"
+  Grid.Row="1"
+  BackgroundColor="#F0F0F0"/>
             </Grid>
         </StackLayout>
     </Frame>
