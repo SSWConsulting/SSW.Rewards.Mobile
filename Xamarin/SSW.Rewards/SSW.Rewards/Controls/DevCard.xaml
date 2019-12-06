@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             mc:Ignorable="d"
+             BackgroundColor="Transparent"
+             x:Class="SSW.Rewards.Controls.DevCard">
+    <ContentView.Content>
+		<Grid Margin="25,70,25,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="DevName"
+                   IsVisible="False"
+                   Text="{Binding id}"/>
+
+            <CollectionView Grid.Column="3"
+                            Grid.Row="0"
+                            Grid.RowSpan="5"
+                            Grid.ColumnSpan="2"
+                            HorizontalOptions="End"
+                            VerticalOptions="Start"
+                            ItemsSource="{Binding Skills}"
+                            x:Name="BadgeCollection">
+                <d:CollectionView.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>skill_dancing</x:String>
+                        <x:String>skill_devops</x:String>
+                        <x:String>skill_powerbi</x:String>
+                    </x:Array>
+                </d:CollectionView.ItemsSource>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+						<Grid Padding="50,10,0,0"
+                              HeightRequest="75"
+                              WidthRequest="5">
+							<Frame BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
+                                   HasShadow="False"
+                                   HeightRequest="30"
+                                   WidthRequest="30"
+                                   BorderColor="Transparent"
+                                   CornerRadius="4"><!--
+								   effects:TooltipEffect.Position="Left"
+								   effects:TooltipEffect.BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
+								   effects:TooltipEffect.TextColor="White"
+								   effects:TooltipEffect.HasTooltip="True"
+								   effects:TooltipEffect.Text="{Binding .}">
+                                <StackLayout>
+                                    <Image d:Source="{Binding .}"
+                                           Scale="1.5"
+                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
+                                    <Label FontSize="Micro"
+                                           TextColor="White"
+                                           HorizontalTextAlignment="Center"
+                                           Text="{Binding .}"/>
+                                </StackLayout>-->
+                                <Image d:Source="{Binding .}"
+                                           Scale="1.5"
+                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
+							</Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ffimage:CachedImage Source="{Binding Picture}"
+                                 LoadingPlaceholder="dev_placeholder"
+                                 ErrorPlaceholder="dev_placeholder"
+                                 CacheType="Disk"
+                                 CacheDuration="90"
+                                 d:Source="uly_ndc"
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 Grid.RowSpan="7"
+                                 Grid.ColumnSpan="4"
+                                 Scale="1.15"
+                                 Aspect="AspectFit"
+                                 TranslationX="-10"/>
+
+            <Image Grid.Column="3"
+                   Grid.ColumnSpan="2"
+                   Grid.Row="0"
+                   Grid.RowSpan="2"
+                   Source="guest_badge"
+                   IsVisible="{Binding IsExternal}"/>
+        </Grid>
+    </ContentView.Content>
+</ContentView>

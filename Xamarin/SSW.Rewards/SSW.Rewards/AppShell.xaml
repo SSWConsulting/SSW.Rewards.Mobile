@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       mc:Ignorable="d"
+       xmlns:local="clr-namespace:SSW.Rewards.Views"
+       xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+       Title="SSW.Rewards"
+       FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
+       x:Class="SSW.Rewards.AppShell">
+
+    <!-- 
+        Styles and Resources 
+    -->
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="NavigationPrimary">Black</Color>
+            <Style x:Key="BaseStyle" TargetType="ShellItem">
+                <Setter Property="Shell.BackgroundColor" Value="Black" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="Black" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
+            </Style>
+            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader/>
+    </Shell.FlyoutHeader>
+
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <StackLayout>
+                <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
+                    <Grid.Padding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="5" />
+                            <On Platform="iOS" Value="0" />
+                        </OnPlatform>
+                    </Grid.Padding>
+                    <Grid.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="20,5" />
+                            <On Platform="iOS" Value="10,5,10,0" />
+                        </OnPlatform>
+                    </Grid.Margin>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           Source="{Binding Icon}">
+                        <Image.HeightRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">80</On>
+                                <On Platform="Android">30</On>
+                            </OnPlatform>
+                        </Image.HeightRequest>
+                        <Image.WidthRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">80</On>
+                                <On Platform="Android">30</On>
+                            </OnPlatform>
+                        </Image.WidthRequest>
+                        <Image.Scale>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">1</On>
+                                <On Platform="Android">0.8</On>
+                            </OnPlatform>
+                        </Image.Scale>
+                    </Image>
+
+                    <Label Grid.Column="1"
+                            Style="{StaticResource Leaderboard}"
+                            VerticalOptions="Center"
+                            FontSize="18"
+                            Text="{Binding Text}">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">18</On>
+                                <On Platform="Android">18</On>
+                            </OnPlatform>
+                        </Label.FontSize>
+                    </Label>
+                </Grid>
+            </StackLayout>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
+    <FlyoutItem Style="{StaticResource BaseStyle}">
+        <Shell.ItemTemplate>
+            <DataTemplate>
+                <StackLayout HeightRequest="1"
+                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
+            </DataTemplate>
+        </Shell.ItemTemplate>
+        <Tab Title="Leaderboard"
+             Route="main"
+                 Icon="icon_star">
+            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
+        </Tab>
+        <Tab Title="Earn Points"
+             Route="points"
+                 Icon="icon_qrcode">
+            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
+        </Tab>
+        <Tab Title="SSW Devs"
+                 Icon="icon_sswdevs">
+            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
+        </Tab>
+    </FlyoutItem>
+
+    <MenuItem Text="Earn Rewards"
+              IconImageSource="icon_badge"
+              Clicked="Handle_HowToPlayClicked"/>
+
+    <MenuItem Text="Tech Quiz"
+              IconImageSource="icon_code"
+              Clicked="Handle_QuizClicked"/>
+
+    <MenuItem Text="Events"
+              IconImageSource="icon_calendar"
+              Clicked="Handle_EventsClicked"/>
+
+    <MenuItem Text="Join us @SSW"
+              IconImageSource="icon_join"
+              Clicked="Handle_JoinClicked"/>
+
+    <MenuItem Text="About SSW"
+              IconImageSource="icon_ssw"
+              Clicked="Handle_AboutClicked"/>
+
+    <MenuItem Text="Log Out"
+              Clicked="Handle_LogOutClicked"/>
+
+</Shell>

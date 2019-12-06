@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             x:Class="SSW.Rewards.PopupPages.QRScannerPage">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+
+    <Frame WidthRequest="300"
+           HeightRequest="350"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           HasShadow="True"
+           BackgroundColor="Black"
+           CornerRadius="1">
+
+        <StackLayout>
+            <StackLayout>
+                <Label Text="Scan a QR Code"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"/>
+            <Label Text="from an SSW Employee or Presentation"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"/>
+            </StackLayout>
+            <Grid>
+                <zxing:ZXingScannerView x:Name="scannerView"
+                                        OnScanResult="Handle_OnScanResult"
+                                        IsScanning="true"
+                                        WidthRequest="300"
+                                        HeightRequest="300"/>
+
+                <Image Source="qr_filter"
+                       Opacity="0.5"/>
+                <Image Source="qr_reticle"/>
+            </Grid>
+        </StackLayout>
+    </Frame>
+</pages:PopupPage>

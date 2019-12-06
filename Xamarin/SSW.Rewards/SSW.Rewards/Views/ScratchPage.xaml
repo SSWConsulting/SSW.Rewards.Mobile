@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             x:Class="SSW.Rewards.Views.ScratchPage"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
+             mc:Ignorable="d"
+             Title="{Binding Title}"
+             d:Title="Ulyses Maclaren">
+    <ContentPage.Content>
+        <RelativeLayout Padding="0"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+            <Image Aspect="AspectFill"
+                   Source="polygon"
+                   RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                   RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"/>
+            <AbsoluteLayout RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0,Constant=0}"
+                            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
+                            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"
+                            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}">
+                <cards:CarouselView ItemsSource="{Binding Profiles}"
+                                    SelectedIndex="{Binding PositionSelected}"
+                                    VerticalOptions="FillAndExpand"
+                                    HorizontalOptions="FillAndExpand"
+                                    AbsoluteLayout.LayoutBounds="1,1,1,1"
+                                    AbsoluteLayout.LayoutFlags="All"
+                                    TranslationY="10">
+
+                    <cards:CarouselView.Behaviors>
+                        <behaviors:EventToCommandBehavior EventName="ItemDisappearing"
+                                                          Command="{Binding OnCardSwiped}"/>
+                    </cards:CarouselView.Behaviors>
+
+                    <x:Arguments>
+                        <proc:BaseCarouselFrontViewProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
+                        <proc:BaseCarouselBackViewProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
+                    </x:Arguments>
+
+                    <cards:CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <controls:DevCard/>
+                        </DataTemplate>
+                    </cards:CarouselView.ItemTemplate>
+                </cards:CarouselView>
+            </AbsoluteLayout>
+
+            <Frame x:Name="bottomSheet"
+                   HasShadow="true"
+                   CornerRadius="8"
+                   Padding="1,4,1,0"
+                   BackgroundColor="Transparent"
+                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.85,Constant=0}"
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
+                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+
+                <RelativeLayout HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+
+                    <RelativeLayout.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Command="{Binding HandleProfileTapped}"/>
+                    </RelativeLayout.GestureRecognizers>
+
+                    <BoxView HorizontalOptions="FillAndExpand"
+                             VerticalOptions="FillAndExpand"
+                             Color="Black"
+                             Opacity="0.5"
+                             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0,Constant=0}"
+                             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
+                             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
+                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"/>
+
+                    <Image Source="scroll"
+                           x:Name="imgScroll"
+                           TranslationY="-30"
+                           InputTransparent="True"
+                           Rotation="180"
+                           Scale="1.3"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.75,Constant=0}">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="{Binding HandleScrollTapped}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label Text="{Binding DevFirstName}"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           d:Text="Ulysses"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.01,Constant=0}"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"/>
+
+                    <Label Text="{Binding DevTitle}"
+                           FontSize="Header"
+                           TextColor="White"
+                           d:Text="General Manager Sydney"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.06,Constant=0}"/>
+
+                    <Label TextColor="White"
+                           Text="{Binding DevBio}"
+                           d:Text="Lorem Ipsum blah blah blah and so on and so forth blah blah blah blah jdflkfdkjls dslkjdlsjkf kljslkj ljklj sdf"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.1,Constant=0}"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0.2,Constant=0}"
+                           RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.8,Constant=0}"/>
+                </RelativeLayout>
+            </Frame>
+        </RelativeLayout>
+    </ContentPage.Content>
+</ContentPage>
