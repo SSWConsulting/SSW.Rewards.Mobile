@@ -1533,7 +1533,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\SSW.Consulting\SSW.Rewards.csproj">
+    <ProjectReference Include="..\SSW.Rewards\SSW.Rewards.csproj">
       <Project>{B98A315F-FDC2-489E-A8E5-94757CF3DD9F}</Project>
       <Name>SSW.Rewards</Name>
     </ProjectReference>
