@@ -29,14 +29,14 @@
                 <Label Text="Your profile picture"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
-                          <Button Text="Take a new photo" Clicked="Handle_takePhotoClicked"></Button>
-
+                          <Button Text="Take a new photo" Command="{Binding OnTakePhotoTapped}"></Button>
             </StackLayout>
             <Grid>
                 <Image
-  x:Name="image"
-  Grid.Row="1"
-  BackgroundColor="#F0F0F0"/>
+                    Source="{Binding ProfilePicture}"
+                    x:Name="image"
+                    Grid.Row="1"
+                    BackgroundColor="#F0F0F0"/>
             </Grid>
         </StackLayout>
     </Frame>
