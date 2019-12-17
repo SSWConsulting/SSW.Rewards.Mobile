@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Domain.Entities;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards.Persistence
 {
@@ -33,6 +36,19 @@ namespace SSW.Rewards.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SSWRewardsDbContext).Assembly);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            foreach(var entry in ChangeTracker.Entries<Entity>())
+            {
+                if(entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedUtc = DateTime.Now;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
 
     }
