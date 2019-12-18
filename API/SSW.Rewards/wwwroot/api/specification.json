@@ -123,6 +123,48 @@
         }
       }
     },
+    "/api/AdminTest/Admin": {
+      "get": {
+        "tags": [
+          "AdminTest"
+        ],
+        "operationId": "AdminTest_Admin",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AdminTest/NotAdmin": {
+      "get": {
+        "tags": [
+          "AdminTest"
+        ],
+        "operationId": "AdminTest_NotAdmin",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Leaderboard/Get": {
       "get": {
         "tags": [
