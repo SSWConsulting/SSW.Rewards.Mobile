@@ -110,7 +110,7 @@ const AppLayout = (props: PropsWithChildren<RouteComponentProps>) => {
                     </IconButton>
                     <Typography variant="h6" noWrap>
                         Welcome {user && user.given_name},
-          </Typography>
+                    </Typography>
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="app-drawer">

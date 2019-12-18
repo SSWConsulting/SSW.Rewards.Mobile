@@ -1,6 +1,6 @@
 import React, { useEffect, useState, PropsWithChildren } from 'react'
 import b2cauth from 'react-azure-adb2c';
-import Loader from 'components/Loader/Loader';
+import Unauthorized from 'components/Unauthorized/Unauthorized';
 import decodeJWT from 'jwt-decode';
 
 export interface DecodedJWT {
@@ -15,6 +15,7 @@ export interface DecodedJWT {
     emails: string[];
     tfp: string;
     nonce: string;
+    role: string;
     scp: string;
     azp: string;
     ver: string;
@@ -40,14 +41,18 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
                 instance: 'https://sswconsultingapp.b2clogin.com/',
                 validateAuthority: false,
                 tenant: 'sswconsultingapp.onmicrosoft.com',
-                signInPolicy: 'B2C_1_SignUpAndSignIn',
+                signInPolicy: 'B2C_1A_SignUp_SignIn',
                 applicationId: 'bb80971c-3a85-4d6d-aef4-cf0baf0f374b',
                 cacheLocation: 'localStorage',
                 scopes: ['https://sswconsultingapp.onmicrosoft.com/api/user_impersonation'],
                 postLogoutRedirectUri: window.location.origin,
             });
             b2cauth.run(() => {
-                setIsAuthenticated(true);
+                const decoded = decodeJWT(b2cauth.getAccessToken()) as any;
+                console.log('Role: ' + decoded.role);
+                if(decoded.role === 'admin') {
+                    setIsAuthenticated(true);
+                }
             });
         }
     }, [])
@@ -58,7 +63,7 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
         }
     }, [isAuthenticated])
 
-    const render = isAuthenticated ? props.children : <Loader />;
+    const render = isAuthenticated ? props.children : <Unauthorized />;
     return (
         <AuthContext.Provider value={currentUser}>
             {render}
