@@ -108,6 +108,7 @@ namespace SSW.Rewards.Persistence
             SetupReward(existingRewards, "Free Ticket - Angular Superpowers", 2000);
             SetupReward(existingRewards, "Free Ticket - Azure Superpowers", 2000);
             SetupReward(existingRewards, "Free Ticket - .NET Core Superpowers", 2000);
+            SetupReward(existingRewards, "Free Ticket - Clean Architecture Superpowers", 2000);
 
             // prizes
             SetupAchievement(existingAchievements, "SSW Smart Keepcup", 0);
@@ -115,6 +116,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Free Ticket - Angular Superpowers", 0);
             SetupAchievement(existingAchievements, "Free Ticket - Azure Superpowers", 0);
             SetupAchievement(existingAchievements, "Free Ticket - .NET Core Superpowers", 0);
+            SetupAchievement(existingAchievements, "Free Ticket - Clean Architecture Superpowers", 0);
 
             // talks
             SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
