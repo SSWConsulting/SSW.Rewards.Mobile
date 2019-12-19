@@ -30,6 +30,8 @@
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
                           <Button Text="Take a new photo" Command="{Binding OnTakePhotoTapped}"></Button>
+                          <Button Text="Choose a new photo" Command="{Binding OnChoosePhotoTapped}"></Button>
+
             </StackLayout>
             <Grid>
                 <Image
