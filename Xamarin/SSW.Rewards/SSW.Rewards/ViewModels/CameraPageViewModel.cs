@@ -72,7 +72,7 @@ namespace SSW.Rewards.ViewModels
         {
             if (!CrossMedia.Current.IsPickPhotoSupported)
             {
-                await page.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
+                await page.DisplayAlert("No Photos", "We cannot seem to access your photos", "OK");
                 return;
             }
 
