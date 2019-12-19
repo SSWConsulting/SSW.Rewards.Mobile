@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Media;
@@ -17,7 +18,7 @@ namespace SSW.Rewards.ViewModels
 
         public CameraPageViewModel()
         {
-      
+
             OnTakePhotoTapped = new Command(Handle_takePhotoTapped);
             OnChoosePhotoTapped = new Command(Handle_choosePhotoTapped);
 
@@ -48,44 +49,43 @@ namespace SSW.Rewards.ViewModels
             RaisePropertyChanged("ProfilePicture");
         }
 
-      
-         private async void CapturePhoto()
-         {
-            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+
+        private async void CapturePhoto()
+        {
+            try
+            {
+                var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+                {
+                    Directory = "Temp",
+                    Name = "profile.jpg",
+                    PhotoSize = PhotoSize.Small,
+                    DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front
+                });
+
+                SetPhoto(file);
+            }
+            catch (MediaPermissionException)
             {
                 await page.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
-                return;
             }
-
-            var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
-            {
-                Directory = "Temp",
-                Name = "profile.jpg",
-                PhotoSize = PhotoSize.Small,
-                DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front
-            });
-
-            SetPhoto(file);
-         }
+        }
 
         private async void ChoosePhoto()
         {
-            if (!CrossMedia.Current.IsPickPhotoSupported)
+            try
             {
-                await page.DisplayAlert("No Photos", "We cannot seem to access your photos", "OK");
-                return;
+                var file = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions
+                {
+                    PhotoSize = PhotoSize.Small,
+                    SaveMetaData = false
+                });
+
+                SetPhoto(file);
             }
-
-            var file = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions
+            catch (MediaPermissionException)
             {
-                PhotoSize = PhotoSize.Small,
-                SaveMetaData = false
-            }) ;
-
-            if (file == null)
-                return;
-
-            SetPhoto(file);
+                await page.DisplayAlert("No Camera", "We cannot seem to access your Photos", "OK");
+            }
         }
     }
 }
