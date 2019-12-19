@@ -35,8 +35,8 @@ namespace SSW.Rewards.ViewModels
             {
                 Directory = "Temp",
                 Name = "profile.jpg",
-                PhotoSize = PhotoSize.Small
-                
+                PhotoSize = PhotoSize.Small,
+                DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front
             });
 
             if (file == null)
