@@ -15,6 +15,7 @@ namespace SSW.Rewards.Application.Common.Interfaces
         public DbSet<Domain.Entities.Achievement> Achievements { get; set; }
         public DbSet<UserReward> UserRewards { get; set; }
         public DbSet<Domain.Entities.Reward> Rewards { get; set; }
+        public string GetBlobStorageConnectionString();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

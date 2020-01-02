@@ -13,8 +13,10 @@ namespace SSW.Rewards.WebAPI.Settings
 		{
 			_secrets = secrets;
 		}
+        public string AzureStorageConnectionString => _secrets.GetSecret(nameof(AzureStorageConnectionString));
 
-		public string SqlConnectionString => _secrets.GetSecret(nameof(SqlConnectionString));
+
+        public string SqlConnectionString => _secrets.GetSecret(nameof(SqlConnectionString));
 
 		public string ContentStorageConnectionString => _secrets.GetSecret(nameof(ContentStorageConnectionString));
 	}

@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 
 namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 {
@@ -34,18 +36,20 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 
             public async Task<string> Handle(UploadPictureQuery request, CancellationToken cancellationToken)
             {
-                var storageConnectionString = "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;";
+                // TODO: Get connection strign from config
+                var connectionString = _context.GetBlobStorageConnectionString();
 
-                if (CloudStorageAccount.TryParse(storageConnectionString, out CloudStorageAccount storage))
+
+                if (CloudStorageAccount.TryParse(connectionString, out CloudStorageAccount storage))
                 {
                     CloudBlobClient blobClient = storage.CreateCloudBlobClient();
                     CloudBlobContainer container = blobClient.GetContainerReference("profile");
                     await container.CreateIfNotExistsAsync();
-
-                    var picBlob = container.GetBlockBlobReference(request.File.FileName);
+                    Guid id = Guid.NewGuid();
+                    var picBlob = container.GetBlockBlobReference(id.ToString());
                     await picBlob.UploadFromStreamAsync(request.File.OpenReadStream());
 
-                    return picBlob.ToString();
+                    return id.ToString();
 
                 }
 
