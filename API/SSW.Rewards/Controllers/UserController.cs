@@ -7,6 +7,9 @@ using SSW.Rewards.Application.User.Queries.GetUserAchievements;
 using SSW.Rewards.Application.User.Queries.GetUserRewards;
 using System.Security.Claims;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
@@ -42,5 +45,27 @@ namespace SSW.Rewards.WebAPI.Controllers
             var email = HttpContext.User.Claims.First(c => c.ToString().Contains(claim)).ToString().Replace(claim, string.Empty).ToLower();
             return Ok(await Mediator.Send(new UpdateProfilePictureQuery { Email = email , Url = url}));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPicture(IFormFile file)
+        {
+            var storageConnectionString = "";
+
+            if(CloudStorageAccount.TryParse(storageConnectionString, out CloudStorageAccount storage))
+            {
+                CloudBlobClient blobClient = storage.CreateCloudBlobClient();
+                CloudBlobContainer container = blobClient.GetContainerReference("profiles");
+                await container.CreateIfNotExistsAsync();
+
+                var picBlob = container.GetBlockBlobReference(file.FileName);
+                await picBlob.UploadFromStreamAsync(file.OpenReadStream());
+
+                return Ok(picBlob.Metadata);
+
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
     }
 }
