@@ -47,24 +47,9 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadPicture(IFormFile file)
+        public async Task<ActionResult<string>> UploadPicture(IFormFile file)
         {
-            var storageConnectionString = "";
-
-            if(CloudStorageAccount.TryParse(storageConnectionString, out CloudStorageAccount storage))
-            {
-                CloudBlobClient blobClient = storage.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference("profiles");
-                await container.CreateIfNotExistsAsync();
-
-                var picBlob = container.GetBlockBlobReference(file.FileName);
-                await picBlob.UploadFromStreamAsync(file.OpenReadStream());
-
-                return Ok(picBlob.Metadata);
-
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(await Mediator.Send(new UploadPictureQuery { File = file }));
         }
 
     }
