@@ -25,35 +25,22 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
         {
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
+            private readonly IAvatarStorageProvider _storage;
 
             public UpdateProfilePictureQueryHandler(
                 IMapper mapper,
-                ISSWRewardsDbContext context)
+                ISSWRewardsDbContext context,
+                IAvatarStorageProvider storage)
             {
                 _mapper = mapper;
                 _context = context;
+                _storage = storage;
             }
 
             public async Task<string> Handle(UploadPictureQuery request, CancellationToken cancellationToken)
             {
-                // TODO: Get connection strign from config
-                var connectionString = _context.GetBlobStorageConnectionString();
-
-
-                if (CloudStorageAccount.TryParse(connectionString, out CloudStorageAccount storage))
-                {
-                    CloudBlobClient blobClient = storage.CreateCloudBlobClient();
-                    CloudBlobContainer container = blobClient.GetContainerReference("profile");
-                    await container.CreateIfNotExistsAsync();
-                    Guid id = Guid.NewGuid();
-                    var picBlob = container.GetBlockBlobReference(id.ToString());
-                    await picBlob.UploadFromStreamAsync(request.File.OpenReadStream());
-
-                    return id.ToString();
-
-                }
-
-                return "Something Went Wrong";
+                var id = await _storage.UploadAvatar(request.File);
+                return id;
             }
         
         }
