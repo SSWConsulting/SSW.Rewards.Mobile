@@ -26,7 +26,6 @@ namespace SSW.Rewards.Persistence
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<UserReward> UserRewards { get; set; }
         public DbSet<Reward> Rewards { get; set; }
-       
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(_secrets.SqlConnectionString);
