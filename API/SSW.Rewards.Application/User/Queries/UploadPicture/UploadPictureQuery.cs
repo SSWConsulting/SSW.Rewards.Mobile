@@ -26,21 +26,30 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
             private readonly IAvatarStorageProvider _storage;
+            public ICurrentUserService _currentUserService { get; }
+
 
             public UpdateProfilePictureQueryHandler(
                 IMapper mapper,
                 ISSWRewardsDbContext context,
-                IAvatarStorageProvider storage)
+                IAvatarStorageProvider storage,
+                ICurrentUserService currentUserService)
             {
                 _mapper = mapper;
                 _context = context;
                 _storage = storage;
+                _currentUserService = currentUserService;
             }
+
 
             public async Task<string> Handle(UploadPictureQuery request, CancellationToken cancellationToken)
             {
-                var id = await _storage.UploadAvatar(request.File);
-                return id;
+                var url = await _storage.UploadAvatar(request.File);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == _currentUserService.GetUserEmail());
+                user.Avatar = url + ".png";
+                _ = await _context.SaveChangesAsync(cancellationToken);
+
+                return url;
             }
         
         }

@@ -10,7 +10,7 @@ namespace SSW.Rewards.Infrastructure
     {
         private readonly IStorageProvider _storageProvider;
 
-        private const string CONTAINER_NAME = "profile";
+        private const string CONTAINER_NAME = "avatars";
 
         public AvatarStorageProvider(IStorageProvider storageProvider)
         {
@@ -21,11 +21,12 @@ namespace SSW.Rewards.Infrastructure
         {
             var ms = new MemoryStream();
             file.CopyTo(ms);
-            
-            Guid id = Guid.NewGuid();
-            await _storageProvider.UploadBlob("avatars", id.ToString(), ms.ToArray());
 
-            return id.ToString();
+            string id = Guid.NewGuid().ToString();
+            await _storageProvider.UploadBlob(CONTAINER_NAME, id, ms.ToArray());
+            var uri = await _storageProvider.GetUri(CONTAINER_NAME, id);
+
+            return uri.AbsoluteUri;
         }
     }
 }
