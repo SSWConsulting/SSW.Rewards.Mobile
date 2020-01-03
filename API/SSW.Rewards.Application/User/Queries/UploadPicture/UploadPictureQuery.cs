@@ -53,7 +53,7 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 
                 }
 
-                return "You Cooked the Book bruh";
+                return "Something Went Wrong";
             }
         
         }
