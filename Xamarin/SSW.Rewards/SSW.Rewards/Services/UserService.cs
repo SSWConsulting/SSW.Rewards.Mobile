@@ -312,5 +312,10 @@ namespace SSW.Rewards.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<ImageSource> GetAvatarAsync(string url)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
