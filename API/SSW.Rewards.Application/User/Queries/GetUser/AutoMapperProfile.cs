@@ -12,7 +12,6 @@ namespace HW.KNOWnoise.Application.Admin.Users.Queries.GetUser
         {
             CreateMap<User, UserViewModel>()
                 .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)));
-
         }
     }
 }
