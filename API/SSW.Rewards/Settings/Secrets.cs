@@ -14,7 +14,7 @@ namespace SSW.Rewards.WebAPI.Settings
 			_secrets = secrets;
 		}
 
-		public string SqlConnectionString => _secrets.GetSecret(nameof(SqlConnectionString));
+        public string SqlConnectionString => _secrets.GetSecret(nameof(SqlConnectionString));
 
 		public string ContentStorageConnectionString => _secrets.GetSecret(nameof(ContentStorageConnectionString));
 	}
