@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using SSW.Rewards.Models;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SSW.Rewards.Services
 {
@@ -54,6 +55,38 @@ namespace SSW.Rewards.Services
         public async Task<bool> IsLoggedInAsync()
         {
             return await Task.FromResult(Preferences.Get("LoggedIn", false));
+        }
+
+        public async Task<string> UploadImageAsync(Stream image)
+        {
+            string Url = "";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var content = new MultipartFormDataContent();
+                    content.Headers.ContentType.MediaType = "multipart/form-data";
+                    content.Add(new StreamContent(image));
+                    HttpResponseMessage response = null;
+                    try
+                    {
+                        response = await client.PostAsync(Url, content);
+                    }
+                    catch(Exception e)
+                    {
+                       Console.WriteLine(e);
+                    }
+
+                    return response.ToString();
+                 
+                }
+
+            }catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return "";
         }
 
         public async Task<ApiStatus> SignInAsync()
@@ -106,7 +139,7 @@ namespace SSW.Rewards.Services
                         var user = await _userClient.GetAsync();
 
                         Preferences.Set("MyUserId", user.Id);
-                        Preferences.Set("MyProfilePic", user.Picture);
+                        Preferences.Set("MyProfilePic", user.Avatar);
 
                         if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
                         {
@@ -182,9 +215,9 @@ namespace SSW.Rewards.Services
                 Preferences.Set("MyUserId", user.Id);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Picture))
+            if(!string.IsNullOrWhiteSpace(user.Avatar))
             {
-                Preferences.Set("MyProfilePic", user.Picture);
+                Preferences.Set("MyProfilePic", user.Avatar);
             }
 
             if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
@@ -273,6 +306,11 @@ namespace SSW.Rewards.Services
             }
 
             return rewards;
+        }
+
+        public Task<ImageSource> GetAvatarAsync(string url)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace SSW.Rewards.Services
                         id = Leader.UserId,
                         Name = Leader.Name,
                         Rank = Leader.Rank,
-                        ProfilePic = string.IsNullOrWhiteSpace(Leader.ProfilePic?.ToString()) ? "icon_avatar" : Leader.ProfilePic.ToString()
+                        ProfilePic = string.IsNullOrWhiteSpace(Leader.Avatar?.ToString()) ? "icon_avatar" : Leader.Avatar.ToString()
                     };
 
                     summaries.Add(leaderSummary);

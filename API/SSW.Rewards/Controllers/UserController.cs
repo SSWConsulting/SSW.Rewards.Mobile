@@ -16,8 +16,6 @@ namespace SSW.Rewards.WebAPI.Controllers
 {
     public class UserController : BaseController
     {
-       
-
         [HttpGet]
         public async Task<ActionResult<CurrentUserViewModel>> Get()
         {
@@ -42,10 +40,9 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> UploadPicture(IFormFile file)
+        public async Task<ActionResult<string>> UploadAvatar(IFormFile file)
         {
-            return Ok(await Mediator.Send(new UploadPictureQuery { File = file }));
+            return Ok(await Mediator.Send(new UploadAvatarQuery { File = file }));
         }
-
     }
 }
