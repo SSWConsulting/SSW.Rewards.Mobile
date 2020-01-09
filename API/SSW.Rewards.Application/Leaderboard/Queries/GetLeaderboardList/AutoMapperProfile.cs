@@ -12,7 +12,7 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
                 .ForMember(dst => dst.UserId, opt => opt.Ignore())
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
-                .ForMember(dst => dst.Avatar, opt => opt.MapFrom(src => src.Avatar == null ? null : new Uri(src.Avatar)))
+                .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar == null ? null : new Uri(src.Avatar)))
                 .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)));
         }
     }

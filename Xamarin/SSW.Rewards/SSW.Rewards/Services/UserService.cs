@@ -139,7 +139,7 @@ namespace SSW.Rewards.Services
                         var user = await _userClient.GetAsync();
 
                         Preferences.Set("MyUserId", user.Id);
-                        Preferences.Set("MyProfilePic", user.Avatar);
+                        Preferences.Set("MyProfilePic", user.ProfilePic);
 
                         if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
                         {
@@ -215,9 +215,9 @@ namespace SSW.Rewards.Services
                 Preferences.Set("MyUserId", user.Id);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Avatar))
+            if(!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
-                Preferences.Set("MyProfilePic", user.Avatar);
+                Preferences.Set("MyProfilePic", user.ProfilePic);
             }
 
             if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
@@ -308,7 +308,7 @@ namespace SSW.Rewards.Services
             return rewards;
         }
 
-        public Task<ImageSource> GetAvatarAsync(string url)
+        public Task<ImageSource> GetProfilePicAsync(string url)
         {
             throw new NotImplementedException();
         }

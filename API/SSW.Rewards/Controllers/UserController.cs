@@ -40,9 +40,9 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> UploadAvatar(IFormFile file)
+        public async Task<ActionResult<string>> UploadProfilePic(IFormFile file)
         {
-            return Ok(await Mediator.Send(new UploadAvatarQuery { File = file }));
+            return Ok(await Mediator.Send(new UploadProfilePicQuery { File = file }));
         }
     }
 }

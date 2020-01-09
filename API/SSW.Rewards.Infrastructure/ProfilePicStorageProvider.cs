@@ -6,18 +6,18 @@ using System.IO;
 
 namespace SSW.Rewards.Infrastructure
 {
-    public class AvatarStorageProvider : IAvatarStorageProvider
+    public class ProfilePicStorageProvider : IProfilePicStorageProvider
     {
         private readonly IStorageProvider _storageProvider;
 
-        private const string CONTAINER_NAME = "avatars";
+        private const string CONTAINER_NAME = "ProfilePics";
 
-        public AvatarStorageProvider(IStorageProvider storageProvider)
+        public ProfilePicStorageProvider(IStorageProvider storageProvider)
         {
             _storageProvider = storageProvider;
         }
 
-        public async Task<string> UploadAvatar(IFormFile file)
+        public async Task<string> UploadProfilePic(IFormFile file)
         {
             var ms = new MemoryStream();
             file.CopyTo(ms);

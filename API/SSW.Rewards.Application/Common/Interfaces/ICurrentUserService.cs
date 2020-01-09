@@ -9,7 +9,7 @@ namespace SSW.Rewards.Application.Common.Interfaces
         string GetUserId();
         string GetUserEmail();
         string GetUserFullName();
-        string GetUserAvatar();
+        string GetUserProfilePic();
 
         Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken);
     }

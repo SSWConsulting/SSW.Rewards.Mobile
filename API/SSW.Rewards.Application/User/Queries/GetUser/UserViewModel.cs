@@ -9,7 +9,7 @@ namespace SSW.Rewards.Application.User.Queries.GetUser
 
         public string FullName { get; set; }
 
-        public string Avatar { get; set; }
+        public string ProfilePic { get; set; }
 
         public int Points { get; set; }
     }

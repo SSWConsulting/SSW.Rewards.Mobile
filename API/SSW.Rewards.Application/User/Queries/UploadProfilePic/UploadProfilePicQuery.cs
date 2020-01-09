@@ -17,22 +17,22 @@ using Microsoft.Extensions.Configuration;
 
 namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 {
-    public class UploadAvatarQuery : IRequest<Domain.Entities.User>
+    public class UploadProfilePicQuery : IRequest<Domain.Entities.User>
     {
         public IFormFile File { get; set; }
 
-        public class UpdateAvatarQueryHandler : IRequestHandler<UploadAvatarQuery, Domain.Entities.User>
+        public class UpdateProfilePicQueryHandler : IRequestHandler<UploadProfilePicQuery, Domain.Entities.User>
         {
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
-            private readonly IAvatarStorageProvider _storage;
+            private readonly IProfilePicStorageProvider _storage;
             public ICurrentUserService _currentUserService { get; }
 
 
-            public UpdateAvatarQueryHandler(
+            public UpdateProfilePicQueryHandler(
                 IMapper mapper,
                 ISSWRewardsDbContext context,
-                IAvatarStorageProvider storage,
+                IProfilePicStorageProvider storage,
                 ICurrentUserService currentUserService)
             {
                 _mapper = mapper;
@@ -42,9 +42,9 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
             }
 
 
-            public async Task<Domain.Entities.User> Handle(UploadAvatarQuery request, CancellationToken cancellationToken)
+            public async Task<Domain.Entities.User> Handle(UploadProfilePicQuery request, CancellationToken cancellationToken)
             {
-                var url = await _storage.UploadAvatar(request.File);
+                var url = await _storage.UploadProfilePic(request.File);
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == _currentUserService.GetUserEmail());
                 user.Avatar = url + ".png";
                 _ = await _context.SaveChangesAsync(cancellationToken);
