@@ -17,22 +17,22 @@ using Microsoft.Extensions.Configuration;
 
 namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 {
-    public class UploadPictureQuery : IRequest<string>
+    public class UploadProfilePicQuery : IRequest<Domain.Entities.User>
     {
         public IFormFile File { get; set; }
 
-        public class UpdateProfilePictureQueryHandler : IRequestHandler<UploadPictureQuery, string>
+        public class UpdateProfilePicQueryHandler : IRequestHandler<UploadProfilePicQuery, Domain.Entities.User>
         {
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
-            private readonly IAvatarStorageProvider _storage;
+            private readonly IProfilePicStorageProvider _storage;
             public ICurrentUserService _currentUserService { get; }
 
 
-            public UpdateProfilePictureQueryHandler(
+            public UpdateProfilePicQueryHandler(
                 IMapper mapper,
                 ISSWRewardsDbContext context,
-                IAvatarStorageProvider storage,
+                IProfilePicStorageProvider storage,
                 ICurrentUserService currentUserService)
             {
                 _mapper = mapper;
@@ -42,14 +42,14 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
             }
 
 
-            public async Task<string> Handle(UploadPictureQuery request, CancellationToken cancellationToken)
+            public async Task<Domain.Entities.User> Handle(UploadProfilePicQuery request, CancellationToken cancellationToken)
             {
-                var url = await _storage.UploadAvatar(request.File);
+                var url = await _storage.UploadProfilePic(request.File);
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == _currentUserService.GetUserEmail());
                 user.Avatar = url + ".png";
                 _ = await _context.SaveChangesAsync(cancellationToken);
 
-                return url;
+                return user;
             }
         
         }

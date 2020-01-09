@@ -16,7 +16,7 @@ namespace SSW.Rewards.Application.User.Commands.UpsertUser
 
         public string FullName { get; set; }
 
-        public string Picture { get; set; }
+        public string ProfilePic { get; set; }
 
         public class UpsertUserCommandHandler : IRequestHandler<UpsertUserCommand, Unit>
         {

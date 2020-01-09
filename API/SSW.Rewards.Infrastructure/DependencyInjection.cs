@@ -28,7 +28,7 @@ namespace SSW.Rewards.Infrastructure
             services.AddSingleton<IStorageProvider, AzureStorageProvider>();
 
             services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
-            services.AddScoped<IAvatarStorageProvider, AvatarStorageProvider>();
+            services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
 
 
             return services;

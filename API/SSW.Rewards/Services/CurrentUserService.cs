@@ -36,8 +36,6 @@ namespace SSW.Rewards.WebAPI.Services
             return $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}";
         }
 
-        public string GetUserAvatar() => null;
-
         public async Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken)
         {
             if (_currentUser != null)
@@ -56,6 +54,11 @@ namespace SSW.Rewards.WebAPI.Services
             await _mediatr.Send(new UpsertCurrentUserCommand(), cancellationToken);
 
             return _currentUser = await _mediatr.Send(new GetCurrentUserQuery(), cancellationToken);
+        }
+
+        public string GetUserProfilePic()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

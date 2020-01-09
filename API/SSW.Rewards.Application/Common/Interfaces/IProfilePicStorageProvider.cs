@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.Application.Common.Interfaces
 {
-    public interface IAvatarStorageProvider
+    public interface IProfilePicStorageProvider
     {
-        Task<string> UploadAvatar(IFormFile file);
+        Task<string> UploadProfilePic(IFormFile file);
     }
 }
