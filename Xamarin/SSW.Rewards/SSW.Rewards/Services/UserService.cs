@@ -59,34 +59,23 @@ namespace SSW.Rewards.Services
 
         public async Task<string> UploadImageAsync(Stream image)
         {
-            string Url = "";
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    var content = new MultipartFormDataContent();
-                    content.Headers.ContentType.MediaType = "multipart/form-data";
-                    content.Add(new StreamContent(image));
-                    HttpResponseMessage response = null;
-                    try
-                    {
-                        response = await client.PostAsync(Url, content);
-                    }
-                    catch(Exception e)
-                    {
-                       Console.WriteLine(e);
-                    }
 
-                    return response.ToString();
-                 
+            if (_userClient == null)
+            {
+                if (_httpClient == null)
+                {
+                    string token = await SecureStorage.GetAsync("auth_token");
+                    _httpClient = new HttpClient();
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-            }catch(Exception e)
-            {
-                Console.WriteLine(e);
+                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
             }
 
-            return "";
+
+            FileParameter parameter = new FileParameter(image);
+
+            return await _userClient.UploadProfilePicAsync(parameter);
         }
 
         public async Task<ApiStatus> SignInAsync()
@@ -309,11 +298,6 @@ namespace SSW.Rewards.Services
         }
 
         public Task<ImageSource> GetProfilePicAsync(string url)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetProfilePicAsync(ImageSource source)
         {
             throw new NotImplementedException();
         }
