@@ -11,7 +11,7 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 
         public string FullName { get; set; }
 
-        public string Picture { get; set; }
+        public string ProfilePic { get; set; }
 
         public int Points { get; set; }
     }

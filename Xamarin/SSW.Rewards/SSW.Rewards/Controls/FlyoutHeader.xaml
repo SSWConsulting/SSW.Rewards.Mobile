@@ -36,6 +36,11 @@
                              WidthRequest="150"
                              VerticalOptions="Center"
                              Margin="10,0,5,0">
+             <ffimage:CachedImage.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="Handle_ProfilePictureClicked"
+                                NumberOfTapsRequired="1" />
+                        </ffimage:CachedImage.GestureRecognizers>
             <ffimage:CachedImage.Transformations>
                 <transforms:CircleTransformation BorderHexColor="#979797"
                                                  BorderSize="30"/>

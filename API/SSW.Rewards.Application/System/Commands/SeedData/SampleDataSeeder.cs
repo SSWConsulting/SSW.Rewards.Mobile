@@ -108,6 +108,7 @@ namespace SSW.Rewards.Persistence
             SetupReward(existingRewards, "Free Ticket - Angular Superpowers", 2000);
             SetupReward(existingRewards, "Free Ticket - Azure Superpowers", 2000);
             SetupReward(existingRewards, "Free Ticket - .NET Core Superpowers", 2000);
+            SetupReward(existingRewards, "Free Ticket - Clean Architecture Superpowers", 2000);
 
             // prizes
             SetupAchievement(existingAchievements, "SSW Smart Keepcup", 0);
@@ -115,6 +116,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Free Ticket - Angular Superpowers", 0);
             SetupAchievement(existingAchievements, "Free Ticket - Azure Superpowers", 0);
             SetupAchievement(existingAchievements, "Free Ticket - .NET Core Superpowers", 0);
+            SetupAchievement(existingAchievements, "Free Ticket - Clean Architecture Superpowers", 0);
 
             // talks
             SetupAchievement(existingAchievements, "Chinafy your apps + Lessons you can steal from China", 500);
@@ -125,9 +127,10 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG October 2019 - 7 Deadly Presentation Sins", 500);
             SetupAchievement(existingAchievements, "NETUG November 2019 - gRPC in .NET Core 3", 500);
 			SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
+            SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
 
-			// superpowers
-			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
+            // superpowers
+            SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
 

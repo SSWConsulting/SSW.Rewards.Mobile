@@ -12,7 +12,7 @@ namespace SSW.Rewards.Persistence
 		public interface ISecrets
 		{
             string SqlConnectionString { get; }
-		}
+        }
 
 		private readonly ISecrets _secrets;
 
