@@ -7,7 +7,8 @@
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:host="auth" android:scheme="msal60b96e0a-c6dd-4320-855f-ed58e44ffd00" />
+        <!--<data android:host="auth" android:scheme="msal60b96e0a-c6dd-4320-855f-ed58e44ffd00" />-->
+        <data android:host="auth" android:scheme="msalbfe53aa1-a7df-499d-900f-725a5222fc23" />
 			</intent-filter>
 		</activity>
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
