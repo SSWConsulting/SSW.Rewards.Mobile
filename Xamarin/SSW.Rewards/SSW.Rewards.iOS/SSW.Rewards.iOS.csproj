@@ -60,7 +60,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <CodesignProvision>SSW Rewards Jack Dev Profile</CodesignProvision>
+    <CodesignProvision>SSW Mobile App MG Dev Profile</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>

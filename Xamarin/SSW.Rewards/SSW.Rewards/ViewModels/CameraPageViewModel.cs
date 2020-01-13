@@ -59,7 +59,9 @@ namespace SSW.Rewards.ViewModels
                     Directory = "Temp",
                     Name = "profile.jpg",
                     PhotoSize = PhotoSize.Small,
-                    DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front
+                    DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front,
+                    AllowCropping = true,
+                    RotateImage = false
                 });
 
                 SetPhoto(file);
