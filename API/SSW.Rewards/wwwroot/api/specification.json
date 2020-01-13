@@ -340,6 +340,40 @@
           }
         }
       }
+    },
+    "/api/User/UploadProfilePic": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_UploadProfilePic",
+        "parameters": [
+          {
+            "type": "file",
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary",
+              "nullable": true
+            },
+            "nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -584,7 +618,7 @@
             "type": "string",
             "nullable": true
           },
-          "picture": {
+          "profilePic": {
             "type": "string",
             "nullable": true
           },
