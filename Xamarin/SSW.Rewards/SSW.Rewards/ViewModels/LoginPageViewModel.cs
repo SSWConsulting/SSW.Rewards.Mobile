@@ -5,6 +5,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using SSW.Rewards.Models;
 using Microsoft.AppCenter.Auth;
+using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -36,9 +37,10 @@ namespace SSW.Rewards.ViewModels
             {
                 status = await _userService.SignInAsync();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 status = ApiStatus.LoginFailure;
+                Crashes.TrackError(exception);
             }
 
             switch (status)

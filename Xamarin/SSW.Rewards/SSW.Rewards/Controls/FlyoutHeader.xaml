@@ -38,7 +38,7 @@
                              Margin="10,0,5,0">
              <ffimage:CachedImage.GestureRecognizers>
                             <TapGestureRecognizer
-                                Tapped="Handle_ProfilePictureClicked"
+                                Command="{Binding OnProfiePicTapped}"
                                 NumberOfTapsRequired="1" />
                         </ffimage:CachedImage.GestureRecognizers>
             <ffimage:CachedImage.Transformations>
