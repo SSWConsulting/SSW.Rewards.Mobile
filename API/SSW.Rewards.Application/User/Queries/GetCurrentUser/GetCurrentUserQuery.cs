@@ -4,6 +4,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
+using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,19 +34,30 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
             {
                 // need to use current user's email address to look up these details since b2c's id is not being stored
                 var currentUserEmail =  _currentUserService.GetUserEmail();
-                var user = await _context.Users
+
+                var testUser = _context.Users.Where(u => u.Email == currentUserEmail);
+                try
+                {
+                    var user = await _context.Users
                     .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
                     .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
                     .Where(u => u.Email == currentUserEmail)
                     .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);
 
-                if (user == null)
+                    if (user == null)
+                    {
+                        throw new NotFoundException(nameof(User), currentUserEmail);
+                    }
+
+                    return user;
+                }
+                catch(Exception e)
                 {
+                    Debug.Write(e);
                     throw new NotFoundException(nameof(User), currentUserEmail);
                 }
 
-                return user;
             }
         }
     }
