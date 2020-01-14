@@ -7,7 +7,7 @@ namespace SSW.Rewards
     class Constants
     {
 #if DEBUG
-        public const string ApiBaseUrl = "https://71f70b37.ngrok.io"; //"https://sswconsulting-dev.azurewebsites.net";
+        public const string ApiBaseUrl = "https://12839067.ngrok.io"; //"https://sswconsulting-dev.azurewebsites.net";
         public const string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
