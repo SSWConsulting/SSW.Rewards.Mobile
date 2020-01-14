@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
+using SSW.Rewards.Services;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -12,15 +13,27 @@ namespace SSW.Rewards.ViewModels
     {
         public ICommand OnTakePhotoTapped { get; set; }
         public ICommand OnChoosePhotoTapped { get; set; }
+        public ICommand UseButtonTapped { get; set; }
+
+        public bool UseButtonEnabled { get; set; }
 
         public ImageSource ProfilePicture { get; set; } = ImageSource.FromFile("");
+
+        private MediaFile fileStream { get; set; }
         public Page page;
+
+        private IUserService _userService { get; set; }
 
         public CameraPageViewModel()
         {
 
             OnTakePhotoTapped = new Command(Handle_takePhotoTapped);
             OnChoosePhotoTapped = new Command(Handle_choosePhotoTapped);
+            UseButtonEnabled = false;
+
+            UseButtonTapped = new Command(async () => await UploadProfilePic());
+
+            _userService = Resolver.Resolve<IUserService>();
 
         }
 
@@ -38,15 +51,18 @@ namespace SSW.Rewards.ViewModels
             if (file == null)
                 return;
 
+            fileStream = file;
+
             var image = ImageSource.FromStream(() =>
             {
                 var stream = file.GetStream();
-                file.Dispose();
+                //file.Dispose();
                 return stream;
             });
 
             ProfilePicture = image;
-            RaisePropertyChanged("ProfilePicture");
+            UseButtonEnabled = true;
+            RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
         }
 
 
@@ -59,7 +75,9 @@ namespace SSW.Rewards.ViewModels
                     Directory = "Temp",
                     Name = "profile.jpg",
                     PhotoSize = PhotoSize.Small,
-                    DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front
+                    DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front,
+                    AllowCropping = true,
+                    RotateImage = false
                 });
 
                 SetPhoto(file);
@@ -86,6 +104,11 @@ namespace SSW.Rewards.ViewModels
             {
                 await page.DisplayAlert("No Camera", "We cannot seem to access your Photos", "OK");
             }
+        }
+
+        public async Task UploadProfilePic()
+        {            
+            await _userService.UploadImageAsync(fileStream.GetStream());
         }
     }
 }

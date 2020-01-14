@@ -17,16 +17,16 @@ namespace SSW.Rewards.Infrastructure
             _storageProvider = storageProvider;
         }
 
-        public async Task<string> UploadProfilePic(IFormFile file)
+        public async Task<string> UploadProfilePic(byte[] imageArray, string fileName)
         {
-            var ms = new MemoryStream();
-            file.CopyTo(ms);
+            string id = Guid.NewGuid().ToString() + fileName;
+            await _storageProvider.UploadBlob(CONTAINER_NAME, id, imageArray);
 
-            string id = Guid.NewGuid().ToString();
-            await _storageProvider.UploadBlob(CONTAINER_NAME, id, ms.ToArray());
             var uri = await _storageProvider.GetUri(CONTAINER_NAME, id);
 
             return uri.AbsoluteUri;
         }
+
+        public async Task<Uri> GetProfilePicUri(string picId) => await _storageProvider.GetUri(CONTAINER_NAME, picId);
     }
 }
