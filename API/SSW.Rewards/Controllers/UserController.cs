@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using SSW.Rewards.Infrastructure;
+using SSW.Rewards.Application.User.Commands.UploadProfilePic;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
@@ -42,7 +43,7 @@ namespace SSW.Rewards.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> UploadProfilePic(IFormFile file)
         {
-            return Ok(await Mediator.Send(new UploadProfilePicQuery { File = file }));
+            return Ok(await Mediator.Send(new UploadProfilePicCommand { File = file }));
         }
     }
 }

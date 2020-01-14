@@ -2,6 +2,10 @@
 using SSW.Rewards.Services;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
+using Rg.Plugins.Popup.Services;
+using SSW.Rewards.PopupPages;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -13,6 +17,7 @@ namespace SSW.Rewards.ViewModels
         public string Name { get; set; }
         public string Email { get; set; }
         public string VersionInfo { get; set; }
+        public ICommand OnProfiePicTapped { get; set; }
 
         public FlyoutHeaderViewModel(IUserService userService)
         {
@@ -26,6 +31,12 @@ namespace SSW.Rewards.ViewModels
             Name = await _userService.GetMyNameAsync();
             Email = await _userService.GetMyEmailAsync();
             VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
+            OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
+        }
+
+        private async Task ShowCameraPageAsync()
+        {
+            await PopupNavigation.Instance.PushAsync(new CameraPage());
         }
     }
 }
