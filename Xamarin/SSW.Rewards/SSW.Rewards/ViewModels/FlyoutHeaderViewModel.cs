@@ -31,12 +31,19 @@ namespace SSW.Rewards.ViewModels
             Name = await _userService.GetMyNameAsync();
             Email = await _userService.GetMyEmailAsync();
             VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
+            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => {  Refresh(obj); });
             OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
         }
 
         private async Task ShowCameraPageAsync()
         {
             await PopupNavigation.Instance.PushAsync(new CameraPage());
+        }
+
+        private void Refresh(string newPicUri)
+        {
+            ProfilePic = newPicUri;
+            RaisePropertyChanged("ProfilePic");
         }
     }
 }

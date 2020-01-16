@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
+using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Services;
 using Xamarin.Forms;
 
@@ -23,6 +24,8 @@ namespace SSW.Rewards.ViewModels
         public Page page;
 
         private IUserService _userService { get; set; }
+
+        public bool IsUploading { get; set; } = false;
 
         public CameraPageViewModel()
         {
@@ -102,13 +105,17 @@ namespace SSW.Rewards.ViewModels
             }
             catch (MediaPermissionException)
             {
-                await page.DisplayAlert("No Camera", "We cannot seem to access your Photos", "OK");
+                await page.DisplayAlert("No Photos", "We cannot seem to access your Photos", "OK");
             }
         }
 
         public async Task UploadProfilePic()
-        {            
-            await _userService.UploadImageAsync(fileStream.GetStream());
+        {
+            IsUploading = true;
+            RaisePropertyChanged("IsUploading");
+            string picUri = await _userService.UploadImageAsync(fileStream.GetStream());
+            MessagingCenter.Send<string>(picUri, "ProfilePicChanged");
+            await PopupNavigation.Instance.PopAllAsync();
         }
     }
 }
