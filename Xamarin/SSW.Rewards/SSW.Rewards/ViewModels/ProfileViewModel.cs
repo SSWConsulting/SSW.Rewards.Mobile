@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SSW.Rewards.Models;
 using SSW.Rewards.Services;
+using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -49,8 +50,9 @@ namespace SSW.Rewards.ViewModels
         {
             IEnumerable<Reward> rewardList = new List<Reward>();
             IEnumerable<Achievement> achievementList = new List<Achievement>();
+            MessagingCenter.Subscribe<object>(this, "ProfilePicChanged", async (obj) => { await Refresh(); });
 
-            if(me)
+            if (me)
             {
                 //initialise me
                 ProfilePic = await _userService.GetMyProfilePicAsync();
@@ -103,6 +105,12 @@ namespace SSW.Rewards.ViewModels
             IsLoading = false;
 
             RaisePropertyChanged("IsLoading", "Rewards", "CompletedAchievements", "OutstandingAchievements");
+        }
+
+        private async Task Refresh()
+        {
+            ProfilePic = await _userService.GetMyProfilePicAsync();
+            RaisePropertyChanged("ProfilePic");
         }
     }
 }

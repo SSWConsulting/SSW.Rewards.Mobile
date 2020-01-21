@@ -33,7 +33,6 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-
             <StackLayout Grid.Row="0">
                 <Label Text="Your profile picture"
                        HorizontalTextAlignment="Center"
@@ -55,6 +54,29 @@
                     Text="Use this pciture"
                     IsEnabled="{Binding UseButtonEnabled}"
                     Command="{Binding UseButtonTapped}"/>
+            <StackLayout Grid.Row="0"
+                         Opacity="0.5"
+                         BackgroundColor="AliceBlue"
+                         IsVisible="{Binding IsUploading}"
+                         d:IsVisible="True"
+                         Grid.RowSpan="3">
+                <ActivityIndicator HorizontalOptions="CenterAndExpand"
+                               HeightRequest="80"
+                               WidthRequest="80"
+                               VerticalOptions="CenterAndExpand"
+                               IsEnabled="{Binding IsUploading}"
+                               d:IsEnabled="True"
+                               d:IsRunning="True"
+                               d:IsVisible="True"
+                               IsRunning="{Binding IsUploading}"
+                               IsVisible="{Binding IsUploading}"
+                               Color="{StaticResource SSWRed}"/>
+                <Label Text="Saving..."
+                       TextColor="{StaticResource SSWRed}"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="End"/>
+            </StackLayout>
         </Grid>
     </Frame>
 </pages:PopupPage>

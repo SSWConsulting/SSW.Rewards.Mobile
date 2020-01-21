@@ -9,6 +9,7 @@ using PanCardView.Droid;
 using Xamarin.Forms;
 using SSW.Rewards.Services;
 using Lottie.Forms.Droid;
+using Plugin.CurrentActivity;
 
 namespace SSW.Rewards.Droid
 {
@@ -22,6 +23,7 @@ namespace SSW.Rewards.Droid
 
             base.OnCreate(savedInstanceState);
 
+            CrossCurrentActivity.Current.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
 

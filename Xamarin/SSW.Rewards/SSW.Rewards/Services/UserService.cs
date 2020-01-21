@@ -74,8 +74,10 @@ namespace SSW.Rewards.Services
 
 
             FileParameter parameter = new FileParameter(image);
-
-            return await _userClient.UploadProfilePicAsync(parameter);
+            
+            string newPicUri = await _userClient.UploadProfilePicAsync(parameter);
+            Preferences.Set("MyProfilePic", newPicUri);
+            return newPicUri;
         }
 
         public async Task<ApiStatus> SignInAsync()
