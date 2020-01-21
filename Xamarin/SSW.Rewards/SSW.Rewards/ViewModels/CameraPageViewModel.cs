@@ -79,6 +79,7 @@ namespace SSW.Rewards.ViewModels
                     Name = "profile.jpg",
                     PhotoSize = PhotoSize.Small,
                     DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front,
+
                     AllowCropping = true
                 });
 
