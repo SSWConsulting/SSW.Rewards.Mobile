@@ -30,7 +30,7 @@ namespace SSW.Rewards.ViewModels
 
         public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
 
-        private List<LeaderSummaryViewModel> searchResults = new List<LeaderSummaryViewModel>();
+        private ObservableCollection<LeaderSummaryViewModel> searchResults = new ObservableCollection<LeaderSummaryViewModel>();
 
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
@@ -41,6 +41,7 @@ namespace SSW.Rewards.ViewModels
             _userService = userService;
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
             MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
+            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(); });
             _ = Initialise();
         }
 
@@ -49,15 +50,16 @@ namespace SSW.Rewards.ViewModels
         {
             if (query != null || query != String.Empty)
             {
-                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(query.ToLower())).ToList();
-                SearchResults = filtered;
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(query.ToLower()));
+                SearchResults = new ObservableCollection<LeaderSummaryViewModel>(filtered);
+
                 return;
             }
-            SearchResults = Leaders.ToList();
+            SearchResults = Leaders;
 
         });
 
-        public List<LeaderSummaryViewModel> SearchResults
+        public ObservableCollection<LeaderSummaryViewModel> SearchResults
         {
             get
             {
@@ -89,7 +91,7 @@ namespace SSW.Rewards.ViewModels
             IsRunning = false;
             RaisePropertyChanged("IsRunning");
 
-            SearchResults = Leaders.ToList();
+            SearchResults = Leaders;
             RaisePropertyChanged("SearchResults");
 
             var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
@@ -105,7 +107,7 @@ namespace SSW.Rewards.ViewModels
             int myId = await _userService.GetMyUserIdAsync();
 
             Leaders.Clear();
-
+            
             foreach (var summary in summaries)
             {
                 LeaderSummaryViewModel vm = new LeaderSummaryViewModel(summary);
@@ -113,7 +115,8 @@ namespace SSW.Rewards.ViewModels
 
                 Leaders.Add(vm);
             }
-
+            SearchResults = Leaders;
+            
             IsRefreshing = false;
             RaisePropertyChanged("IsRefreshing");
         }

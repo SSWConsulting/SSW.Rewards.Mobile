@@ -129,6 +129,7 @@ namespace SSW.Rewards.Persistence
 			SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
             SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
+            SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
