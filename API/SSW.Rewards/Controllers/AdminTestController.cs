@@ -16,14 +16,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         [Authorize(Roles ="admin")]
         public async Task<ActionResult> Admin()
         {
-            return Ok("admin only");
+            return await Task.FromResult(Ok("admin only"));
         }
 
         [HttpGet("NotAdmin")]
         public async Task<ActionResult> NotAdmin()
         {
-            //var user = HttpContext.User.Claims;
-            return Ok("non-admin permitted");
+            return await Task.FromResult(Ok("non-admin permitted"));
         }
     }
 }
