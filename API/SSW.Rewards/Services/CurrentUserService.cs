@@ -4,14 +4,13 @@ using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.User.Commands.UpsertCurrentUser;
 using SSW.Rewards.Application.User.Queries.GetCurrentUser;
-using SSW.Rewards.Application.User.Queries.GetUser;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Services
 {
-    public class CurrentUserService : ICurrentUserService
+	public class CurrentUserService : ICurrentUserService
     {
         private readonly IMediator _mediatr;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -32,7 +31,7 @@ namespace SSW.Rewards.WebAPI.Services
 
         public string GetUserFullName()
         {
-            var user = _httpContextAccessor.HttpContext?.User;
+            ClaimsPrincipal user = _httpContextAccessor.HttpContext?.User;
             return $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}";
         }
 
@@ -58,7 +57,8 @@ namespace SSW.Rewards.WebAPI.Services
 
         public string GetUserProfilePic()
         {
-            throw new System.NotImplementedException();
+			// TODO: Get the user profile pic from claims
+			return "";
         }
     }
 }

@@ -36,21 +36,21 @@ namespace SSW.Rewards.Application.User.Commands.UploadProfilePic
 
             public async Task<string> Handle(UploadProfilePicCommand request, CancellationToken cancellationToken)
             {
-                var ms = new MemoryStream();
-                var file = request.File;
-                await file.CopyToAsync(ms);
+	            await using var ms = new MemoryStream();
+				IFormFile file = request.File;
+				await file.CopyToAsync(ms, cancellationToken);
 
-                var bytes = ms.ToArray();
+				byte[] bytes = ms.ToArray();
 
-                string filename = file.FileName;
+				string filename = file.FileName;
 
-                var url = await _storage.UploadProfilePic(bytes, filename);
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == _currentUserService.GetUserEmail());
-                user.Avatar = url;
-                await _context.SaveChangesAsync(cancellationToken);
+				string url = await _storage.UploadProfilePic(bytes, filename);
+				Domain.Entities.User user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == _currentUserService.GetUserEmail(), cancellationToken);
+				user.Avatar = url;
+				await _context.SaveChangesAsync(cancellationToken);
 
-                return url;
-            }
+				return url;
+			}
         }
     }
 }

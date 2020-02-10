@@ -4,6 +4,7 @@ using SSW.Rewards.Domain.Entities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SSW.Rewards.Application;
 
 namespace SSW.Rewards.Persistence
 {
@@ -15,10 +16,12 @@ namespace SSW.Rewards.Persistence
         }
 
 		private readonly ISecrets _secrets;
+		private readonly IDateTimeProvider _dateTimeProvider;
 
-		public SSWRewardsDbContext(ISecrets secrets)
-        {
+		public SSWRewardsDbContext(ISecrets secrets, IDateTimeProvider dateTimeProvider)
+		{
 			_secrets = secrets;
+			_dateTimeProvider = dateTimeProvider;
 		}
 
         public DbSet<StaffMember> StaffMembers { get; set; }
@@ -44,7 +47,7 @@ namespace SSW.Rewards.Persistence
             {
                 if(entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedUtc = DateTime.Now;
+                    entry.Entity.CreatedUtc = _dateTimeProvider.Now;
                 }
             }
 
