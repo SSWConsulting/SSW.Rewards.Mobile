@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,7 +71,23 @@ namespace SSW.Rewards
                 {
 	                webBuilder
 		                .UseStartup<Startup>()
-		                .UseSerilog();
+						.UseSerilog((hostingContext, loggerConfiguration) => {
+			                loggerConfiguration
+				                .ReadFrom.Configuration(hostingContext.Configuration)
+				                .Enrich.FromLogContext()
+				                .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
+				                .Enrich.WithProperty("Environment", hostingContext.HostingEnvironment)
+				                // TODO: Wait for a solution to have full AppInsights support:
+				                // https://github.com/serilog/serilog-sinks-applicationinsights/issues/121
+				                .WriteTo.Async(x => x.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces));
+
+
+#if DEBUG
+							// Used to filter out potentially bad data due debugging.
+							// Very useful when doing Seq dashboards and want to remove logs under debugging session.
+							loggerConfiguration.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached);
+#endif
+						});
                 });
     }
 }
