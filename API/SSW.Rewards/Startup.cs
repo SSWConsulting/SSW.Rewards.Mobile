@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.AspNetCore.Builder;
@@ -6,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using SSW.Rewards.Application;
 using SSW.Rewards.Application.Common.Interfaces;
@@ -14,11 +12,10 @@ using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Persistence;
 using SSW.Rewards.WebAPI.Services;
 using SSW.Rewards.WebAPI.Settings;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace SSW.Rewards
 {
-    public class Startup
+	public class Startup
 	{
 		public Startup(IWebHostEnvironment environment, IConfiguration configuration)
 		{
@@ -37,7 +34,6 @@ namespace SSW.Rewards
             // Configure all the stuffs
             ConfigureSettings(services);
 			ConfigureSecrets(services);
-			ConfigureLogging(services);
 
 			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
 				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
@@ -51,15 +47,15 @@ namespace SSW.Rewards
             services.AddApplicationInsightsTelemetry();
             services.AddDistributedMemoryCache();
 
-            services.AddOpenApiDocument(d =>
-            {
-                d.DocumentName = "SSW.Rewards API";
-                d.Version = "1.0";
-                d.Description = "API Specification for the SSW Rewards mobile app.";
-                d.Title = "SSW.Rewards API";
-            });
-
-            services
+			services.AddOpenApiDocument(d =>
+			{
+				d.DocumentName = "SSW.Rewards API";
+				d.Version = "1.0";
+				d.Description = "API Specification for the SSW Rewards mobile app.";
+				d.Title = "SSW.Rewards API";
+			});
+			
+			services
                 .AddControllers()
                 .AddNewtonsoftJson();
 
@@ -75,21 +71,7 @@ namespace SSW.Rewards
                     });
             });
         }
-
-		public virtual void ConfigureLogging(IServiceCollection services)
-		{
-			Log.Logger = new LoggerConfiguration()
-				.ReadFrom.Configuration(Configuration)
-				.Enrich.FromLogContext()
-				.Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
-#if DEBUG
-				// Used to filter out potentially bad data due debugging.
-				// Very useful when doing Seq dashboards and want to remove logs under debugging session.
-				.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached)
-#endif
-				.CreateLogger();
-		}
-
+		
 		protected virtual void ConfigureSecrets(IServiceCollection services)
 		{
 			// Add Secrets
@@ -113,6 +95,9 @@ namespace SSW.Rewards
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			// This will make the HTTP requests log as rich logs instead of plain text.
+			app.UseSerilogRequestLogging();
 
 			app.UseHttpsRedirection();
 

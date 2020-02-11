@@ -58,12 +58,12 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
                 catch (NotFoundException nfex)
                 {
 					// nothing to do here - just rethrow the exception from above
-					_logger.LogError(nfex, $"Unable to find current user with email {currentUserEmail}", currentUserEmail);
+					_logger.LogError(nfex, "Unable to find current user with email {currentUserEmail}", currentUserEmail);
 	                throw;
                 }
                 catch(Exception ex)
                 {
-                    _logger.LogError(ex, "An error occurred while tying to find current user with email {currentUserEmail}", currentUserEmail);
+                    _logger.LogError(ex, "An error occurred while trying to find current user with email {currentUserEmail}", currentUserEmail);
                     throw new NotFoundException(nameof(User), currentUserEmail);
                 }
             }
