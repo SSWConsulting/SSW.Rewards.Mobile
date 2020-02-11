@@ -20,15 +20,18 @@ namespace SSW.Rewards.Application.Reward.Commands
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
+            private readonly IDateTimeProvider _dateTimeProvider;
 
             public ClaimRewardCommandHandler(
                 ICurrentUserService currentUserService,
                 ISSWRewardsDbContext context,
-                IMapper mapper)
+                IMapper mapper,
+                IDateTimeProvider dateTimeProvider)
             {
                 _currentUserService = currentUserService;
                 _context = context;
                 _mapper = mapper;
+                _dateTimeProvider = dateTimeProvider;
             }
 
             public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
@@ -62,7 +65,7 @@ namespace SSW.Rewards.Application.Reward.Commands
                     .Where(ur => ur.RewardId == reward.Id)
                     .FirstOrDefaultAsync(cancellationToken);
 
-                if(userHasReward != null && userHasReward.AwardedAt >= DateTime.Now.AddMinutes(-5))
+                if(userHasReward != null && userHasReward.AwardedAt >= _dateTimeProvider.Now.AddMinutes(-5))
                 {
                     return new ClaimRewardResult
                     {

@@ -12,13 +12,13 @@ namespace SSW.Rewards.WebAPI.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            if (context.Exception is ValidationException)
+            if (context.Exception is ValidationException validationException)
             {
                 context.HttpContext.Response.ContentType = "application/json";
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 context.Result = new JsonResult(new
                 {
-                    ValidationErrors = ((ValidationException)context.Exception).Errors
+                    ValidationErrors = validationException.Errors
                 });
 
                 return;

@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 {
@@ -16,16 +17,19 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
     {
         public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
         {
-            private readonly IMapper _mapper;
+	        private readonly ILogger<GetCurrentUserQueryHandler> _logger;
+	        private readonly IMapper _mapper;
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWRewardsDbContext _context;
 
             public GetCurrentUserQueryHandler(
+				ILogger<GetCurrentUserQueryHandler> logger,
                 IMapper mapper,
                 ICurrentUserService currentUserService,
                 ISSWRewardsDbContext context)
             {
-                _mapper = mapper;
+	            _logger = logger;
+	            _mapper = mapper;
                 _currentUserService = currentUserService;
                 _context = context;
             }
@@ -33,31 +37,35 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
             public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
             {
                 // need to use current user's email address to look up these details since b2c's id is not being stored
-                var currentUserEmail =  _currentUserService.GetUserEmail();
+                string currentUserEmail =  _currentUserService.GetUserEmail();
 
-                var testUser = _context.Users.Where(u => u.Email == currentUserEmail);
                 try
                 {
-                    var user = await _context.Users
-                    .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
-                    .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
-                    .Where(u => u.Email == currentUserEmail)
-                    .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
-                    .SingleOrDefaultAsync(cancellationToken);
+	                CurrentUserViewModel user = await _context.Users
+		                .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+		                .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
+		                .Where(u => u.Email == currentUserEmail)
+		                .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
+		                .SingleOrDefaultAsync(cancellationToken);
 
-                    if (user == null)
-                    {
-                        throw new NotFoundException(nameof(User), currentUserEmail);
-                    }
+	                if (user == null)
+	                {
+		                throw new NotFoundException(nameof(User), currentUserEmail);
+	                }
 
-                    return user;
+	                return user;
                 }
-                catch(Exception e)
+                catch (NotFoundException nfex)
                 {
-                    Debug.Write(e);
+					// nothing to do here - just rethrow the exception from above
+					_logger.LogError(nfex, $"Unable to find current user with email {currentUserEmail}", currentUserEmail);
+	                throw;
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while tying to find current user with email {currentUserEmail}", currentUserEmail);
                     throw new NotFoundException(nameof(User), currentUserEmail);
                 }
-
             }
         }
     }

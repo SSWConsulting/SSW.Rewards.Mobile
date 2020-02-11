@@ -29,7 +29,7 @@ namespace SSW.Rewards
 		public IWebHostEnvironment Environment { get; }
 		public IConfiguration Configuration { get; }
 
-        readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+        readonly string _allowSpecificOrigins = "_AllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -65,10 +65,10 @@ namespace SSW.Rewards
 
             services.AddCors(options => 
             {
-                options.AddPolicy(AllowSpecificOrigins,
+                options.AddPolicy(_allowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("https://sswconsultingdevh2krk.z8.web.core.windows.net")
+                        builder.WithOrigins(Configuration["AllowedOrigin"])
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -121,7 +121,7 @@ namespace SSW.Rewards
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
-            app.UseCors(AllowSpecificOrigins);
+            app.UseCors(_allowSpecificOrigins);
 
             app.UseAuthentication();
 			app.UseAuthorization();

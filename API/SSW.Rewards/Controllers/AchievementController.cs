@@ -1,15 +1,14 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.Achievement.Queries.GetAchievementList;
-using SSW.Rewards.Application.Achievement.Commands.AddAchievement;
 using SSW.Rewards.Application.Achievement.Command.PostAchievement;
+using SSW.Rewards.Application.Achievement.Commands.AddAchievement;
+using SSW.Rewards.Application.Achievement.Queries.GetAchievementList;
 using SSW.Rewards.WebAPI.Settings;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    public class AchievementController : BaseController
+	public class AchievementController : BaseController
     {
         private readonly IWWWRedirectSettings _redirectSettings;
 

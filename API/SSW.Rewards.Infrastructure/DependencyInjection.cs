@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Interfaces;
 using System;
+using SSW.Rewards.Application;
 
 namespace SSW.Rewards.Infrastructure
 {
@@ -30,6 +31,7 @@ namespace SSW.Rewards.Infrastructure
             services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
             services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
 
+            services.AddSingleton<IDateTimeProvider, DefaultDateTimeProvider>();
 
             return services;
         }

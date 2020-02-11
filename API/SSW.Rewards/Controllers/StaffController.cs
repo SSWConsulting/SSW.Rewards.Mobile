@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
-using SSW.Rewards.WebAPI.Security;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    public class StaffController : BaseController
+	public class StaffController : BaseController
     {
         [HttpGet]
         public async Task<ActionResult<StaffListViewModel>> Get()

@@ -62,7 +62,7 @@ namespace SSW.Rewards.Application.Achievement.Commands.AddAchievement
                     {
                         UserId = user.Id,
                         AchievementId = achievement.Id
-                    });
+                    }, cancellationToken);
 
                 try
                 {
