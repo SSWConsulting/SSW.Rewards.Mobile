@@ -58,7 +58,7 @@ namespace SSW.Rewards.WebAPI.Services
         public string GetUserProfilePic()
         {
 			// TODO: Get the user profile pic from claims
-			return "";
+			return null;
         }
     }
 }
