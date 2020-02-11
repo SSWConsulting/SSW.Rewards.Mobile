@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "009ef42c-41d7-4761-8291-e326e17f5e92",
+		"name": "SSW.Rewards",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Current User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9a577f37-0838-4690-9a5f-3a0495251096",
+						"exec": [
+							"pm.test(\"Save UserId\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"userId\", jsonData.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/User/Get",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"User",
+						"Get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Current User Achievements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/User/Achievements?UserId={{userId}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"User",
+						"Achievements"
+					],
+					"query": [
+						{
+							"key": "UserId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Current User Rewards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/User/Rewards?userId={{userId}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"User",
+						"Rewards"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Staff",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Staff/Get",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Staff",
+						"Get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Rewards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Reward/List",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Reward",
+						"List"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Rewards",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Reward/Add?rewardCode=WGlhb21pIE1pIEJhbmQgNA==",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Reward",
+						"Add"
+					],
+					"query": [
+						{
+							"key": "rewardCode",
+							"value": "WGlhb21pIE1pIEJhbmQgNA=="
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Leaderboard",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Leaderboard/Get",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Leaderboard",
+						"Get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Achievements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Achievement/List",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Achievement",
+						"List"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Achievement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Achievement/Add?achievementCode=QWRhbSBDb2dhbg==",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Achievement",
+						"Add"
+					],
+					"query": [
+						{
+							"key": "achievementCode",
+							"value": "QWRhbSBDb2dhbg=="
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Achievement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Achievement/Post?achievementCode=QWRhbSBDb2dhbg==",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Achievement",
+						"Post"
+					],
+					"query": [
+						{
+							"key": "achievementCode",
+							"value": "QWRhbSBDb2dhbg=="
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TechQuiz",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Achievement/TechQuiz",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Achievement",
+						"TechQuiz"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "<DONT SAVE THE TOKENS>",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "69d4f6a0-0391-4cab-bc7f-6c8c3ae394b7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2da7cc71-4e19-4974-a8e1-0c2d12c8e64b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
