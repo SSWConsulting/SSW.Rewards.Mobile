@@ -126,16 +126,17 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Azure SpendOps – The Art of Effectively Managing Azure Costs", 500);
             SetupAchievement(existingAchievements, "NETUG October 2019 - 7 Deadly Presentation Sins", 500);
             SetupAchievement(existingAchievements, "NETUG November 2019 - gRPC in .NET Core 3", 500);
-	    SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
+	        SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
             SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
-	    SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
+	        SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
+            SetupAchievement(existingAchievements, "Clean Architecture Superpowers", 500);
 
             // workshops
             SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
