@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Reward.Commands;
 using SSW.Rewards.Application.Reward.Queries.GetRewardAdminList;
 using SSW.Rewards.Application.Reward.Queries.GetRewardList;
@@ -14,6 +15,8 @@ namespace SSW.Rewards.WebAPI.Controllers
             return Ok(await Mediator.Send(new GetRewardListQuery()));
         }
 
+        [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<RewardAdminListViewModel>> AdminList()
         {
             return Ok(await Mediator.Send(new GetRewardAdminListQuery()));

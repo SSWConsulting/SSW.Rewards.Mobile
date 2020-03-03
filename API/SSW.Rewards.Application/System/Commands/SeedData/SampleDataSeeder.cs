@@ -201,8 +201,8 @@ namespace SSW.Rewards.Persistence
                             .ToArray(),
                         Profile = reader.GetString(6)?.Trim(),
                         Value = (int)reader.GetDouble(7),
-                        TwitterUsername = reader.GetString(8)?.Trim(),
-                        IsExternal = reader.GetBoolean(9)
+                        TwitterUsername = reader.GetString(8)?.Trim()
+                        //IsExternal = reader.GetBoolean(9)
                     };
                 }
             }

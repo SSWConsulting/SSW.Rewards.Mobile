@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievement.Command.PostAchievement;
 using SSW.Rewards.Application.Achievement.Commands.AddAchievement;
+using SSW.Rewards.Application.Achievement.Queries.GetAchievementAdminList;
 using SSW.Rewards.Application.Achievement.Queries.GetAchievementList;
 using SSW.Rewards.WebAPI.Settings;
 using System.Threading.Tasks;
@@ -21,6 +22,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<AchievementListViewModel>> List()
         {
             return Ok(await Mediator.Send(new GetAchievementListQuery()));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AchievementAdminListViewModel>> AdminList()
+        {
+            return Ok(await Mediator.Send(new GetAchievementAdminListQuery()));
         }
 
         [HttpPost]
