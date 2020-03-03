@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "009ef42c-41d7-4761-8291-e326e17f5e92",
+		"_postman_id": "b2f61967-291e-47b3-81a1-7f295df4fb07",
 		"name": "SSW.Rewards",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -250,6 +250,42 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "List Admin Achievements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Achievement/AdminList",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Achievement",
+						"AdminList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Admin Rewards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/Reward/AdminList",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"Reward",
+						"AdminList"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -257,7 +293,7 @@
 		"oauth2": [
 			{
 				"key": "accessToken",
-				"value": "<DONT SAVE THE TOKENS>",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ilg1ZVhrNHh5b2pORnVtMWtsMll0djhkbE5QNC1jNTdkTzZRR1RWQndhTmsifQ.eyJpc3MiOiJodHRwczovL3Nzd2NvbnN1bHRpbmdhcHAuYjJjbG9naW4uY29tL2NlNjlhMmM4LTNhY2UtNDk0Zi04ZTliLTg0MzdmM2JiZWFiNy92Mi4wLyIsImV4cCI6MTU4MzIwMjkwMiwibmJmIjoxNTgzMTk5MzAyLCJhdWQiOiJiYjgwOTcxYy0zYTg1LTRkNmQtYWVmNC1jZjBiYWYwZjM3NGIiLCJpZHAiOiJsaXZlLmNvbSIsInN1YiI6IjgxYjk2M2JkLTczY2UtNDVmMS04MzE5LWI0OTViNzAxZDA3ZiIsImdpdmVuX25hbWUiOiJBbmRyZWFzIiwiZmFtaWx5X25hbWUiOiJMZW5na2VlayIsImpvYlRpdGxlIjoiRGV2IiwiZW1haWxzIjpbImFuZHJlYXMubGVuZ2tlZWtAZ21haWwuY29tIl0sInRmcCI6IkIyQ18xX1NpZ25VcEFuZFNpZ25JbiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsImF6cCI6ImJiODA5NzFjLTNhODUtNGQ2ZC1hZWY0LWNmMGJhZjBmMzc0YiIsInZlciI6IjEuMCIsImlhdCI6MTU4MzE5OTMwMn0.bitu3Ur3g2yCNxpdasfDu4YwvCYvt_QiqZrO4Se268fifwYtZgpPyLyYrmLj8nvhW0505Q6MtzIbOxTWM-3iwusStLu-SjL5-i486OLzen-Zp3ni6o7PNn-WMmbFW7-9nlyRvd45ONlzN96IlaCKvtc9ZYZZFeVuhegIIPgfQdQmtzcfhY6fxYdavTn0LnAVbhMTfzIXoxgvEDCmcdP-gb_ewdydHmhfMwwX37TjY8Np7BV8BkwYSuX_KjTwVpFcZdDGE3nreooCTN0upTAzWeIeKkwV1YN2-kzJrxQa7onXuLOknzVDRPf1vDP-ZWsmK0aq4tvxB7cwBsVaNkgSDw",
 				"type": "string"
 			},
 			{
@@ -292,6 +328,14 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "af8ed591-e91d-4c31-8a39-8726029a2f30",
+			"key": "api_url",
+			"value": "https://sswconsulting-dev.azurewebsites.net/api",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
