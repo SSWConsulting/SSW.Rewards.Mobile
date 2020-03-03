@@ -205,6 +205,26 @@
         }
       }
     },
+    "/api/Reward/AdminList": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_AdminList",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardAdminListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Reward/Add": {
       "post": {
         "tags": [
@@ -510,6 +530,41 @@
           "cost": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "RewardAdminListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RewardAdminViewModel"
+            }
+          }
+        }
+      },
+      "RewardAdminViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
