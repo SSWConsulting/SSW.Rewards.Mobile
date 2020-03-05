@@ -3,7 +3,7 @@ import authentication from 'react-azure-adb2c';
 import { Typography, Container } from '@material-ui/core';
 
 
-const Unauthorized = () => {
+export const Unauthorized = () => {
 
     const signOut = () => {
         console.log('auth: ', authentication.getAccessToken());
@@ -12,22 +12,20 @@ const Unauthorized = () => {
 
     return (
         <Container fixed>
-            <p>
+           <br/>
                 <Typography align="center" variant="h3" color="primary"> SSW Rewards - Admin </Typography>
                 <Typography align="center"><i className="fas fa-exclamation-triangle"/> You are not authorized to view this admin portal.</Typography>
-            </p>
-            <p>
+            <br/>
+           <br/>
                 <Typography align="center">
-                    <p>
+                   <br/>
                         Click here to try again:
-                    </p>
-                    <p>
+                    <br/>
+                   <br/>
                     <button onClick={signOut}>Sign Out / Sign In</button>
-                    </p>
+                    <br/>
                 </Typography>
-            </p>        
+            <br/>        
         </Container>
     )
 }
-
-export default Unauthorized

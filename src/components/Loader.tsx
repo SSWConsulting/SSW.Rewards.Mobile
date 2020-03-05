@@ -2,7 +2,7 @@ import React from 'react'
 import { Typography, Container } from '@material-ui/core';
 
 
-const Loader = () => {
+export const Loader = () => {
     return (
         <Container fixed>
             <Typography align="center" variant="h3" color="primary"> SSW Rewards - Admin </Typography>
@@ -10,5 +10,3 @@ const Loader = () => {
         </Container>
     )
 }
-
-export default Loader
