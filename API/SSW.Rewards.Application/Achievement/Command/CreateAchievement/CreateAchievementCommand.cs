@@ -40,8 +40,8 @@ namespace SSW.Rewards.Application.Achievement.Command.PostAchievement
                 var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
 
                 var achievement = existingAchievements
-                .FirstOrDefault(a => a.Name.Equals(request.Name, StringComparison.InvariantCulture))
-                ?? new Domain.Entities.Achievement();
+                    .FirstOrDefault(a => a.Name.Equals(request.Name, StringComparison.InvariantCulture))
+                    ?? new Domain.Entities.Achievement();
 
                 achievement.Name = request.Name;
                 var codeData = Encoding.ASCII.GetBytes(request.Name);
