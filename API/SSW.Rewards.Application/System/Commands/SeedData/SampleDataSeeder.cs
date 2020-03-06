@@ -32,7 +32,7 @@ namespace SSW.Rewards.Persistence
 
             await SeedSkillsAsync(profiles.SelectMany(p => p.Skills), cancellationToken);
             await SeedStaffMembers(profiles, cancellationToken);
-            await SeedAchievementsAsync(cancellationToken);
+            // await SeedAchievementsAsync(cancellationToken);
         }
 
         private async Task SeedSkillsAsync(IEnumerable<string> newSkills, CancellationToken cancellationToken)
