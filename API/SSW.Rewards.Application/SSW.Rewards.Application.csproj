@@ -21,5 +21,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SSW.Rewards.Domain\SSW.Rewards.Domain.csproj" />
   </ItemGroup>
-
 </Project>
