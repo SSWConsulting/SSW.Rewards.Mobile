@@ -22,4 +22,7 @@
     <ProjectReference Include="..\SSW.Rewards.Domain\SSW.Rewards.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Achievement\Command\CreateAchievement\" />
+  </ItemGroup>
 </Project>

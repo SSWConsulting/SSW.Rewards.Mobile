@@ -32,6 +32,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<AchievementAdminViewModel>> Create([FromBody] CreateAchievementCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost]
         public async Task<ActionResult<AchievementViewModel>> Add([FromQuery] string achievementCode)
         {
             return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
