@@ -156,7 +156,7 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
         </nav>
         <main className={classes.content}>
           {/* <div className={classes.toolbar} /> */}
-          <Paper>{props.children}</Paper>
+          {props.children}
         </main>
       </div>
     );

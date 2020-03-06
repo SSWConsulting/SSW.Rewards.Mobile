@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { LeaderboardTable } from "./components";
+import { LeaderboardTableRow, SkeletonRow } from "./components";
+import { Table } from 'components';
 import { useGlobalState } from "lightweight-globalstate";
 import { State } from "store";
-import { LeaderboardListViewModel} from "services";
-import { fetchData } from "utils";
+import { LeaderboardListViewModel, LeaderboardUserDto} from "services";
+import { fetchData, renderComponentXTimes } from "utils";
 import { useAuthenticatedClient } from "hooks";
 
 const Leaderboard = (): JSX.Element => {
@@ -17,7 +18,17 @@ const Leaderboard = (): JSX.Element => {
 
   useEffect(() => {client && getLeaderboard()}, [client]);
 
-  return <LeaderboardTable users={state.users}></LeaderboardTable>;
+  return (
+    <Table items={["Rank", "Picture", "Name", "Points"]}>
+      {state.users &&
+        state.users.map((user: LeaderboardUserDto) => (
+          <LeaderboardTableRow
+            key={user.userId}
+            user={user}></LeaderboardTableRow>
+        ))}
+      {!state.users && renderComponentXTimes(SkeletonRow,20)}
+    </Table>
+  );
 };
 
 export default Leaderboard;

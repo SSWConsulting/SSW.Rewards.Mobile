@@ -12,6 +12,7 @@ interface DialogProps{
   title: string;
   open: boolean;
   handleClose: () => void;
+  actions?: JSX.Element;
 }
 
 export const ResponsiveDialog = (props: PropsWithChildren<DialogProps>) => {
@@ -35,9 +36,9 @@ export const ResponsiveDialog = (props: PropsWithChildren<DialogProps>) => {
                  {props.children}
                </DialogContent>
                <DialogActions>
-                 <Button onClick={props.handleClose} color="primary" autoFocus>
+                 { props.actions ? props.actions : <Button onClick={props.handleClose} color="primary" autoFocus>
                    Ok
-                 </Button>
+                 </Button>}
                </DialogActions>
              </Dialog>
            </div>

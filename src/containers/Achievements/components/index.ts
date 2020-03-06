@@ -1,2 +1,2 @@
-export * from './AchievementTable';
 export * from './AchievementTableRow';
+export * from "./AddAchievement";

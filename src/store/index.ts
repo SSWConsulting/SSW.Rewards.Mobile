@@ -26,8 +26,9 @@ export interface State {
 
 const LOCAL_DEV = "http://localhost:5000";
 const DEV = "https://sswconsulting-dev.azurewebsites.net";
+const PROD = 'https://sswconsulting-prod.azurewebsites.net'
 
-export const createInitialState = (baseUrl: string = DEV) => {
+export const createInitialState = (baseUrl: string = PROD) => {
   return {
     leaderboardClient: new LeaderboardClient(baseUrl),
     rewardClient: new RewardClient(baseUrl),
