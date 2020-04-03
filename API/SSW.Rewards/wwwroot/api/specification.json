@@ -46,6 +46,38 @@
         }
       }
     },
+    "/api/Achievement/Create": {
+      "post": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAchievementCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementAdminViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Achievement/Add": {
       "post": {
         "tags": [
@@ -238,6 +270,38 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RewardAdminListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Reward/GetRecent": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_GetRecent",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRecentRewardsQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecentRewardListViewModel"
                 }
               }
             }
@@ -484,6 +548,20 @@
           }
         }
       },
+      "CreateAchievementCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "PostAchievementResult": {
         "type": "object",
         "additionalProperties": false,
@@ -619,6 +697,52 @@
           },
           "code": {
             "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RecentRewardListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RecentRewardViewModel"
+            }
+          }
+        }
+      },
+      "RecentRewardViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewardName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rewardCost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "awardedTo": {
+            "type": "string",
+            "nullable": true
+          },
+          "awardedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetRecentRewardsQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "since": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         }
