@@ -32,6 +32,7 @@ namespace SSW.Rewards.Persistence
 
             await SeedSkillsAsync(profiles.SelectMany(p => p.Skills), cancellationToken);
             await SeedStaffMembers(profiles, cancellationToken);
+            await SeedAchievementsAsync(cancellationToken);
         }
 
         private async Task SeedSkillsAsync(IEnumerable<string> newSkills, CancellationToken cancellationToken)
@@ -129,13 +130,14 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
-	        SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
+	        SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);            
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers", 500);
+            SetupAchievement(existingAchievements, "Azure Superpowers Online April 2020", 500);
 
             // workshops
             SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
