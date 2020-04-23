@@ -131,7 +131,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
 	    SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);    
-	    SetupAchievement(existingAchievements, "NETUG March 2020 - From Paper to Power using Azure Form Recognition", 500);          
+	    SetupAchievement(existingAchievements, "NETUG April 2020 - From Paper to Power using Azure Form Recognition", 500);          
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
