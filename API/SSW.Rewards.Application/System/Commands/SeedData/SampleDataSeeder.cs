@@ -140,7 +140,9 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers Online April 2020", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers Online April 2020", 500);
-
+            SetupAchievement(existingAchievements, "Clean Architecture Superpowers Online May 2020", 500);
+            SetupAchievement(existingAchievements, "Angular Superpowers Online May 2020", 500);
+            
 			// workshops
 			SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
 
