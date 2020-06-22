@@ -128,12 +128,15 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG November 2019 - gRPC in .NET Core 3", 500);
             SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
             SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
-            SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
             SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
             SetupAchievement(existingAchievements, "NETUG April 2020 - From Paper to Power using Azure Form Recognition", 500);
-            SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
             SetupAchievement(existingAchievements, "NETUG June 2020 - Build your first deep learning solution using Azure Automated ML", 500);
+
+			// Hack days
+			SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
+			SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
+			SetupAchievement(existingAchievements, "Angular Hack Day Online - June 2020", 500);
 
 			// superpowers
 			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
