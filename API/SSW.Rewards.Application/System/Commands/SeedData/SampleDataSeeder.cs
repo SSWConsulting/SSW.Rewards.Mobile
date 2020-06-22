@@ -136,6 +136,7 @@ namespace SSW.Rewards.Persistence
 			// Hack days
 			SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
 			SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
+			SetupAchievement(existingAchievements, "Angular Hack Day Online - June 2020", 500);
 
 			// superpowers
 			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
