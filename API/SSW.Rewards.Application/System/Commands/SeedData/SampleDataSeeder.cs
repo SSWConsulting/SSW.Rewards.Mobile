@@ -150,6 +150,7 @@ namespace SSW.Rewards.Persistence
             
 			// workshops
 			SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
+                SetupAchievement(existingAchievements, "Clean Architecture 2-day Workshop July 2020", 500);
 
             // social media
             SetupAchievement(existingAchievements, "SSW TV", 100);
