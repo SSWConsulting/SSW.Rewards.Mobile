@@ -133,13 +133,14 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG April 2020 - From Paper to Power using Azure Form Recognition", 500);
             SetupAchievement(existingAchievements, "NETUG June 2020 - Build your first deep learning solution using Azure Automated ML", 500);
 
-			// Hack days
-			SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
-			SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
-			SetupAchievement(existingAchievements, "Angular Hack Day Online - June 2020", 500);
+            // Hack days
+            SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
+            SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
+            SetupAchievement(existingAchievements, "Angular Hack Day Online - June 2020", 500);
+            SetupAchievement(existingAchievements, "Xamarin Hack Day Online - July 2020", 500);
 
-			// superpowers
-			SetupAchievement(existingAchievements, "Angular Superpowers", 500);
+            // superpowers
+            SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers", 500);
@@ -148,9 +149,9 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers Online May 2020", 500);
             SetupAchievement(existingAchievements, "Angular Superpowers Online May 2020", 500);
             
-			// workshops
-			SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
-                SetupAchievement(existingAchievements, "Clean Architecture 2-day Workshop July 2020", 500);
+            // workshops
+            SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
+            SetupAchievement(existingAchievements, "Clean Architecture 2-day Workshop July 2020", 500);
 
             // social media
             SetupAchievement(existingAchievements, "SSW TV", 100);
