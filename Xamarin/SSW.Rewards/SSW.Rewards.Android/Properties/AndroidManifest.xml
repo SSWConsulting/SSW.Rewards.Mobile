@@ -13,14 +13,9 @@
 		</activity>
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
 		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification" />
-    <provider android:name="android.support.v4.content.FileProvider" 
-              android:authorities="${applicationId}.fileprovider" 
-              android:exported="false" 
-              android:grantUriPermissions="true">
-          
-	      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" 
-                         android:resource="@xml/file_paths"></meta-data>
-    </provider>
+		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
+		</provider>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
