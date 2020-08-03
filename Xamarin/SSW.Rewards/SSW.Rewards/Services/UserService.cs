@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using SSW.Rewards.Models;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Identity.Client;
 
 namespace SSW.Rewards.Services
 {
@@ -68,7 +69,7 @@ namespace SSW.Rewards.Services
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
             }
 
 
@@ -83,10 +84,14 @@ namespace SSW.Rewards.Services
         {
             try
             {
-                UserInformation userInfo = await Auth.SignInAsync();
+                var result = await App.AuthenticationClient
+                    .AcquireTokenInteractive(App.Constants.Scopes)
+                    .WithPrompt(Prompt.SelectAccount)
+                    .ExecuteAsync();
+
                 // Sign-in succeeded.
-                string accountId = userInfo.AccountId;
-                string token = userInfo.AccessToken;
+                string accountId = result.Account.HomeAccountId.Identifier;
+                string token = result.AccessToken;
                 if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
                 {
                     await SecureStorage.SetAsync("auth_token", token);
@@ -95,7 +100,7 @@ namespace SSW.Rewards.Services
 
                     try
                     {
-                        var jwToken = tokenHandler.ReadJwtToken(userInfo.IdToken);
+                        var jwToken = tokenHandler.ReadJwtToken(result.IdToken);
 
                         var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
                         var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
@@ -122,7 +127,7 @@ namespace SSW.Rewards.Services
                         _httpClient = new HttpClient();
                         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                        string baseUrl = Constants.ApiBaseUrl;
+                        string baseUrl = App.Constants.ApiBaseUrl;
 
                         _userClient = new UserClient(baseUrl, _httpClient);
 
@@ -185,7 +190,7 @@ namespace SSW.Rewards.Services
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
             }
 
             var user = await _userClient.GetAsync();
@@ -239,7 +244,7 @@ namespace SSW.Rewards.Services
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
             }
 
             var achievementsList = await _userClient.AchievementsAsync(userId);
@@ -280,7 +285,7 @@ namespace SSW.Rewards.Services
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                _userClient = new UserClient(Constants.ApiBaseUrl, _httpClient);
+                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
             }
 
             var rewardsList = await _userClient.RewardsAsync(userId);

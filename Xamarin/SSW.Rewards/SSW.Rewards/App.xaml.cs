@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
 using SSW.Rewards.Helpers;
 using Microsoft.Identity.Client;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSW.Rewards
 {
     public partial class App : Application
     {
         public static IPublicClientApplication AuthenticationClient { get; private set; }
+
+        public static Constants Constants;
 
         public App()
         {
@@ -23,6 +27,12 @@ namespace SSW.Rewards
                 typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
+
+            AuthenticationClient = PublicClientApplicationBuilder.Create(Constants.AADB2CClientId)
+                        .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
+                        .WithB2CAuthority(Constants.AADB2CPolicySignin)
+                        .WithRedirectUri("msauth.com.ssw.rewards://auth")
+                        .Build();
 
             if (Preferences.Get("FirstRun", true))
             {
@@ -59,9 +69,14 @@ namespace SSW.Rewards
             {
                 try
                 {
-                    //AuthenticationClient = PublicClientApplicationBuilder.Create
-                    //string token = userInfo.AccessToken;
-                    //await SecureStorage.SetAsync("auth_token", token);
+                    IEnumerable<IAccount> accounts = await AuthenticationClient.GetAccountsAsync();
+
+                    AuthenticationResult result = await AuthenticationClient
+                        .AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
+                        .ExecuteAsync();
+
+                    string token = result.AccessToken;
+                    await SecureStorage.SetAsync("auth_token", token);
 
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();
                     await Shell.Current.GoToAsync("//main");

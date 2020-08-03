@@ -5,6 +5,10 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using SSW.Rewards.Models;
 using Microsoft.AppCenter.Crashes;
+using System.Collections.Generic;
+using Microsoft.Identity.Client;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -73,14 +77,57 @@ namespace SSW.Rewards.ViewModels
                 ButtonText = "Logging you in...";
                 RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
 
-                UserInformation userInfo = await Auth.SignInAsync();
-                string token = userInfo.AccessToken;
-                await SecureStorage.SetAsync("auth_token", token);
+                AuthenticationResult result;
 
-                await _userService.UpdateMyDetailsAsync();
+                try
+                {
+                    IEnumerable<IAccount> accounts = await App.AuthenticationClient.GetAccountsAsync();
+                    
+                    result = await App.AuthenticationClient
+                        .AcquireTokenSilent(App.Constants.Scopes, accounts.FirstOrDefault())
+                        .ExecuteAsync();
 
-                Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                await Shell.Current.GoToAsync("//main");
+                    string token = result.AccessToken;
+
+                    await SecureStorage.SetAsync("auth_token", token);
+
+                    await _userService.UpdateMyDetailsAsync();
+
+                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                    await Shell.Current.GoToAsync("//main");
+                }
+                catch (MsalException ex)
+                {
+                    if(ex.Message != null && ex.Message.Contains("AADB2C90118"))
+                    {
+                        result = await OnForgotPassword();
+                        if(!string.IsNullOrWhiteSpace(result.AccessToken))
+                        {
+                            string token = result.AccessToken;
+
+                            await SecureStorage.SetAsync("auth_token", token);
+
+                            Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                            await Shell.Current.GoToAsync("//main");
+                        }
+                    }
+                }
+            }
+        }
+
+        async Task<AuthenticationResult> OnForgotPassword()
+        {
+            try
+            {
+                return await App.AuthenticationClient
+                    .AcquireTokenInteractive(App.Constants.Scopes)
+                    .WithPrompt(Prompt.SelectAccount)
+                    .WithB2CAuthority(App.Constants.AADB2CPolicyReset)
+                    .ExecuteAsync();
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

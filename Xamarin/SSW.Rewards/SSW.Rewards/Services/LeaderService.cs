@@ -27,7 +27,7 @@ namespace SSW.Rewards.Services
             string token = await _userService.GetTokenAsync();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string baseUrl = Constants.ApiBaseUrl;
+            string baseUrl = App.Constants.ApiBaseUrl;
 
             _leaderBoardClient = new LeaderboardClient(baseUrl, _httpClient);
         }
