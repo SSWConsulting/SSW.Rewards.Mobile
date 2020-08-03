@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AppCenter.Auth;
 using Rg.Plugins.Popup.Services;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;

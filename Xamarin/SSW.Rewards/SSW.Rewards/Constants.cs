@@ -17,5 +17,12 @@ namespace SSW.Rewards
         public const string AppCenterAndroidId = "60b96e0a-c6dd-4320-855f-ed58e44ffd00";
 #endif
         public const string MaxApiSupportedVersion = "1.0";
+        public const string AADB2CClientId = "";
+        public const string IOSKeychainSecurityGroups = "";
+        public const string AADB2CPolicySignin = "";
+        public const string AADB2CTenantId = "";
+        public const string ADDB2CTenantName = "";
+        public const string AADB2CPolicyReser = "";
+
     }
 }

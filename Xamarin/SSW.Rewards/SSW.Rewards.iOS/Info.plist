@@ -34,14 +34,24 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>com.SSW.SSW.Consulting</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>msale33283b1-7326-447d-baae-e783ece0789b</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.SSW.rewards</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msauth.com.ssw.rewards</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>

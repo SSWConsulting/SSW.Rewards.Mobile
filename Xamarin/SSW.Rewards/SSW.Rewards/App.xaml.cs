@@ -1,27 +1,26 @@
 ﻿using System;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using SSW.Rewards.Services;
 using SSW.Rewards.Views;
 using Xamarin.Essentials;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
-using System.Diagnostics;
 using SSW.Rewards.Helpers;
+using Microsoft.Identity.Client;
 
 namespace SSW.Rewards
 {
     public partial class App : Application
     {
+        public static IPublicClientApplication AuthenticationClient { get; private set; }
+
         public App()
         {
             AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
                 "ios=e33283b1-7326-447d-baae-e783ece0789b",
-                  typeof(Auth), typeof(Analytics), typeof(Crashes), typeof(Push));
+                typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
 
@@ -60,7 +59,7 @@ namespace SSW.Rewards
             {
                 try
                 {
-                    UserInformation userInfo = await Auth.SignInAsync();
+                 AuthenticationClient = PublicClientApplicationBuilder.Create   
                     string token = userInfo.AccessToken;
                     await SecureStorage.SetAsync("auth_token", token);
 
