@@ -19,12 +19,12 @@ namespace SSW.Rewards
 #endif
         public const string MaxApiSupportedVersion = "1.0";
 
-        public const string AADB2CClientId = "";
-        public const string IOSKeychainSecurityGroups = "";
-        public const string AADB2CPolicySignin = "";
-        public const string AADB2CTenantId = "";
-        public const string ADDB2CTenantName = "";
-        public const string AADB2CPolicyReset = "";
+        public const string AADB2CClientId = Secrets.b2cClientId;
+        public const string IOSKeychainSecurityGroups = "com.ssw.rewards";
+        public const string AADB2CPolicySignin = Secrets.b2cSigninPolicy;
+        public const string AADB2CTenantId = Secrets.b2cDomain;
+        public const string ADDB2CTenantName = Secrets.b2cTenantName;
+        public const string AADB2CPolicyReset = Secrets.b2cResetPolicy;
         
     }
 }
