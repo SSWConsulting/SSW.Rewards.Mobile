@@ -59,9 +59,9 @@ namespace SSW.Rewards
             {
                 try
                 {
-                 AuthenticationClient = PublicClientApplicationBuilder.Create   
-                    string token = userInfo.AccessToken;
-                    await SecureStorage.SetAsync("auth_token", token);
+                    //AuthenticationClient = PublicClientApplicationBuilder.Create
+                    //string token = userInfo.AccessToken;
+                    //await SecureStorage.SetAsync("auth_token", token);
 
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();
                     await Shell.Current.GoToAsync("//main");

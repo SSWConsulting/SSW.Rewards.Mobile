@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using SSW.Rewards.Models;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
-using Microsoft.AppCenter.Auth;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Services

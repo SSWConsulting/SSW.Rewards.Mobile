@@ -4,7 +4,6 @@ using SSW.Rewards.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using SSW.Rewards.Models;
-using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.ViewModels
@@ -74,9 +73,9 @@ namespace SSW.Rewards.ViewModels
                 ButtonText = "Logging you in...";
                 RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
 
-                UserInformation userInfo = await Auth.SignInAsync();
-                string token = userInfo.AccessToken;
-                await SecureStorage.SetAsync("auth_token", token);
+                //UserInformation userInfo = await Auth.SignInAsync();
+                //string token = userInfo.AccessToken;
+                //await SecureStorage.SetAsync("auth_token", token);
 
                 await _userService.UpdateMyDetailsAsync();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AppCenter.Auth;
 using Xamarin.Essentials;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
@@ -82,95 +81,96 @@ namespace SSW.Rewards.Services
 
         public async Task<ApiStatus> SignInAsync()
         {
-            try
-            {
-                UserInformation userInfo = await Auth.SignInAsync();
-                // Sign-in succeeded.
-                string accountId = userInfo.AccountId;
-                string token = userInfo.AccessToken;
-                if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
-                {
-                    await SecureStorage.SetAsync("auth_token", token);
+            //try
+            //{
+            //    UserInformation userInfo = await Auth.SignInAsync();
+            //    // Sign-in succeeded.
+            //    string accountId = userInfo.AccountId;
+            //    string token = userInfo.AccessToken;
+            //    if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
+            //    {
+            //        await SecureStorage.SetAsync("auth_token", token);
 
-                    var tokenHandler = new JwtSecurityTokenHandler();
+            //        var tokenHandler = new JwtSecurityTokenHandler();
 
-                    try
-                    {
-                        var jwToken = tokenHandler.ReadJwtToken(userInfo.IdToken);
+            //        try
+            //        {
+            //            var jwToken = tokenHandler.ReadJwtToken(userInfo.IdToken);
 
-                        var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                        var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                        var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                        var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+            //            var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
+            //            var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
+            //            var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
+            //            var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
 
-                        string fullName = firstName + " " + familyName;
+            //            string fullName = firstName + " " + familyName;
 
-                        if (!string.IsNullOrWhiteSpace(fullName))
-                        {
-                            Preferences.Set("MyName", fullName);
-                        }
+            //            if (!string.IsNullOrWhiteSpace(fullName))
+            //            {
+            //                Preferences.Set("MyName", fullName);
+            //            }
 
-                        if (!string.IsNullOrWhiteSpace(jobTitle))
-                        {
-                            Preferences.Set("JobTitle", jobTitle);
-                        }
+            //            if (!string.IsNullOrWhiteSpace(jobTitle))
+            //            {
+            //                Preferences.Set("JobTitle", jobTitle);
+            //            }
 
-                        if (!string.IsNullOrWhiteSpace(email))
-                        {
-                            Preferences.Set("MyEmail", email);
-                        }
+            //            if (!string.IsNullOrWhiteSpace(email))
+            //            {
+            //                Preferences.Set("MyEmail", email);
+            //            }
 
-                        _httpClient = new HttpClient();
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            //            _httpClient = new HttpClient();
+            //            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                        string baseUrl = Constants.ApiBaseUrl;
+            //            string baseUrl = Constants.ApiBaseUrl;
 
-                        _userClient = new UserClient(baseUrl, _httpClient);
+            //            _userClient = new UserClient(baseUrl, _httpClient);
 
-                        var user = await _userClient.GetAsync();
+            //            var user = await _userClient.GetAsync();
 
-                        Preferences.Set("MyUserId", user.Id);
-                        Preferences.Set("MyProfilePic", user.ProfilePic);
+            //            Preferences.Set("MyUserId", user.Id);
+            //            Preferences.Set("MyProfilePic", user.ProfilePic);
 
-                        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
-                        {
-                            Preferences.Set("MyPoints", user.Points);
-                        }
+            //            if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
+            //            {
+            //                Preferences.Set("MyPoints", user.Points);
+            //            }
 
-                        Preferences.Set("LoggedIn", true);
-                        return ApiStatus.Success;
-                    }
-                    catch(ArgumentException)
-                    {
-                        //TODO: Handle error decoding JWT
-                        return ApiStatus.Error;
-                    }
-                }
-                else
-                {
-                    return ApiStatus.LoginFailure;
-                }
-            }
+            //            Preferences.Set("LoggedIn", true);
+            //            return ApiStatus.Success;
+            //        }
+            //        catch(ArgumentException)
+            //        {
+            //            //TODO: Handle error decoding JWT
+            //            return ApiStatus.Error;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ApiStatus.LoginFailure;
+            //    }
+            //}
 
-            catch (ApiException e)
-            {
-                if(e.StatusCode == 404)
-                {
-                    return ApiStatus.Unavailable;
-                }
-                else if(e.StatusCode == 401)
-                {
-                    return ApiStatus.LoginFailure;
-                }
+            //catch (ApiException e)
+            //{
+            //    if(e.StatusCode == 404)
+            //    {
+            //        return ApiStatus.Unavailable;
+            //    }
+            //    else if(e.StatusCode == 401)
+            //    {
+            //        return ApiStatus.LoginFailure;
+            //    }
 
-                return ApiStatus.Error;
-                
-            }
+            //    return ApiStatus.Error;
+
+            //}
+            return await Task.FromResult(ApiStatus.BadRequest);
         }
 
         public void SignOut()
         {
-            Auth.SignOut();
+            //Auth.SignOut();
             SecureStorage.RemoveAll();
             Preferences.Clear();
         }
