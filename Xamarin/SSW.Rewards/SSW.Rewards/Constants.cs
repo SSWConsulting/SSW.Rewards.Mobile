@@ -4,6 +4,8 @@ namespace SSW.Rewards
 {
     public class Constants
     {
+        private string authorityBase { get { return $"https://{AADDB2CTenantName}.b2clogin.com/tfp/{AADB2CTenantId}/"; } }
+
 #if DEBUG
         public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
@@ -28,7 +30,11 @@ namespace SSW.Rewards
 
         public string AADB2CPolicyReset = Secrets.b2cResetPolicy;
 
-        public string[] Scopes => new string[] { $"https://{AADDB2CTenantName}.onmicrosoft.com/" };
-        
+        public string[] Scopes => new string[] { $"https://{AADDB2CTenantName}.onmicrosoft.com/api/user_impersonation" };
+
+        public string AuthoritySignin => $"{authorityBase}{AADB2CPolicySignin}";
+
+        public string AuthorityReset => $"{authorityBase}{AADB2CPolicyReset}";
+
     }
 }

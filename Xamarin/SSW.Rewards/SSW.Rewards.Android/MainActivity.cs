@@ -1,15 +1,12 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using PanCardView.Droid;
-using Xamarin.Forms;
-using SSW.Rewards.Services;
 using Lottie.Forms.Droid;
 using Plugin.CurrentActivity;
+using Android.Content;
+using Microsoft.Identity.Client;
 
 namespace SSW.Rewards.Droid
 {
@@ -36,6 +33,7 @@ namespace SSW.Rewards.Droid
             Bootstrapper.Init();
 
             LoadApplication(new App());
+            App.UIParent = this;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -44,5 +42,11 @@ namespace SSW.Rewards.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-	}
+
+        protected override void OnActivityResult(int requestCode, Android.App.Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+        }
+    }
 }

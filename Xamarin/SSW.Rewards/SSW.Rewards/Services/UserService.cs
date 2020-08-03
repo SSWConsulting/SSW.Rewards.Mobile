@@ -10,6 +10,7 @@ using SSW.Rewards.Models;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Identity.Client;
+using System.Diagnostics;
 
 namespace SSW.Rewards.Services
 {
@@ -87,6 +88,7 @@ namespace SSW.Rewards.Services
                 var result = await App.AuthenticationClient
                     .AcquireTokenInteractive(App.Constants.Scopes)
                     .WithPrompt(Prompt.SelectAccount)
+                    .WithParentActivityOrWindow(App.UIParent)
                     .ExecuteAsync();
 
                 // Sign-in succeeded.
@@ -144,7 +146,7 @@ namespace SSW.Rewards.Services
                         Preferences.Set("LoggedIn", true);
                         return ApiStatus.Success;
                     }
-                    catch (ArgumentException)
+                    catch (ArgumentException ex)
                     {
                         //TODO: Handle error decoding JWT
                         return ApiStatus.Error;
@@ -169,6 +171,11 @@ namespace SSW.Rewards.Services
 
                 return ApiStatus.Error;
 
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return ApiStatus.Error;
             }
         }
 

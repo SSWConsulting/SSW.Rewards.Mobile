@@ -122,7 +122,8 @@ namespace SSW.Rewards.ViewModels
                 return await App.AuthenticationClient
                     .AcquireTokenInteractive(App.Constants.Scopes)
                     .WithPrompt(Prompt.SelectAccount)
-                    .WithB2CAuthority(App.Constants.AADB2CPolicyReset)
+                    .WithParentActivityOrWindow(App.UIParent)
+                    .WithB2CAuthority(App.Constants.AuthorityReset)
                     .ExecuteAsync();
             }
             catch (Exception)

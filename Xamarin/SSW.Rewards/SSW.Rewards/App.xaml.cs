@@ -18,7 +18,9 @@ namespace SSW.Rewards
     {
         public static IPublicClientApplication AuthenticationClient { get; private set; }
 
-        public static Constants Constants;
+        public static Constants Constants = new Constants();
+
+        public static object UIParent { get; set; }
 
         public App()
         {
@@ -28,11 +30,20 @@ namespace SSW.Rewards
 
             InitializeComponent();
 
-            AuthenticationClient = PublicClientApplicationBuilder.Create(Constants.AADB2CClientId)
-                        .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
-                        .WithB2CAuthority(Constants.AADB2CPolicySignin)
-                        .WithRedirectUri("msauth.com.ssw.rewards://auth")
-                        .Build();
+            try
+            {
+                AuthenticationClient = PublicClientApplicationBuilder.Create(Constants.AADB2CClientId)
+                    .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
+                    .WithB2CAuthority(Constants.AuthoritySignin)
+                    .WithTenantId(Constants.AADB2CTenantId)
+                    .WithRedirectUri("msauth.com.ssw.rewards://auth")
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
 
             if (Preferences.Get("FirstRun", true))
             {

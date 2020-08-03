@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.7" package="com.ssw.rewards" android:installLocation="auto" android:versionCode="10">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
-		<activity android:name="com.microsoft.identity.client.BrowserTabActivity">
+		<activity android:name="microsoft.identity.client.BrowserTabActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
