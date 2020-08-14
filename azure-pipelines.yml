@@ -7,7 +7,7 @@ trigger:
     - DevOps/*
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'On-Premise'
 
 steps:
 - task: CopyFiles@2
