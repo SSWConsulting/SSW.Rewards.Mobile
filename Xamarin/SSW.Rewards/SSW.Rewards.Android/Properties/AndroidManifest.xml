@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.7" package="com.ssw.rewards" android:installLocation="auto" android:versionCode="10">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.75" package="com.ssw.rewards" android:installLocation="auto" android:versionCode="10">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
 		<activity android:name="microsoft.identity.client.BrowserTabActivity">
@@ -13,14 +13,9 @@
 		</activity>
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
 		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification" />
-    <provider android:name="android.support.v4.content.FileProvider" 
-              android:authorities="${applicationId}.fileprovider" 
-              android:exported="false" 
-              android:grantUriPermissions="true">
-          
-	      <meta-data android:name="android.support.FILE_PROVIDER_PATHS" 
-                         android:resource="@xml/file_paths"></meta-data>
-    </provider>
+		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
+		</provider>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
