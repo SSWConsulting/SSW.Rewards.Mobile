@@ -7,7 +7,7 @@ trigger:
     - DevOps/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
 - task: CopyFiles@2
