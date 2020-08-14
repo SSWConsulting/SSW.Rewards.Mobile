@@ -32,6 +32,7 @@ namespace SSW.Rewards.Persistence
 
             await SeedSkillsAsync(profiles.SelectMany(p => p.Skills), cancellationToken);
             await SeedStaffMembers(profiles, cancellationToken);
+            await SeedAchievementsAsync(cancellationToken);
         }
 
         private async Task SeedSkillsAsync(IEnumerable<string> newSkills, CancellationToken cancellationToken)
@@ -125,20 +126,33 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "Azure SpendOps – The Art of Effectively Managing Azure Costs", 500);
             SetupAchievement(existingAchievements, "NETUG October 2019 - 7 Deadly Presentation Sins", 500);
             SetupAchievement(existingAchievements, "NETUG November 2019 - gRPC in .NET Core 3", 500);
-	        SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
+            SetupAchievement(existingAchievements, "NETUG November 2019 - CSS Grid: The end of Flex and Bootstrap?", 500);
             SetupAchievement(existingAchievements, "NETUG December 2019 - A Merry Geek-mas Party & Fishbowl Presentations!", 500);
-            SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "NETUG January 2020 - PWAs: You may not need to go native", 500);
-	        SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
+            SetupAchievement(existingAchievements, "NETUG February 2020 - Access Granted: Demystifying the identity options", 500);
+            SetupAchievement(existingAchievements, "NETUG April 2020 - From Paper to Power using Azure Form Recognition", 500);
+            SetupAchievement(existingAchievements, "NETUG June 2020 - Build your first deep learning solution using Azure Automated ML", 500);
+            SetupAchievement(existingAchievements, "NETUG July 2020 - Power Apps - The Tesla of Software Development", 500);
+            
+            // Hack days
+            SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
+            SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
+            SetupAchievement(existingAchievements, "Angular Hack Day Online - June 2020", 500);
+            SetupAchievement(existingAchievements, "Xamarin Hack Day Online - July 2020", 500);
 
             // superpowers
             SetupAchievement(existingAchievements, "Angular Superpowers", 500);
             SetupAchievement(existingAchievements, "Azure Superpowers", 500);
             SetupAchievement(existingAchievements, ".NET Core Superpowers", 500);
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers", 500);
-
+            SetupAchievement(existingAchievements, "Azure Superpowers Online April 2020", 500);
+            SetupAchievement(existingAchievements, ".NET Core Superpowers Online April 2020", 500);
+            SetupAchievement(existingAchievements, "Clean Architecture Superpowers Online May 2020", 500);
+            SetupAchievement(existingAchievements, "Angular Superpowers Online May 2020", 500);
+            
             // workshops
             SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
+            SetupAchievement(existingAchievements, "Clean Architecture 2-day Workshop July 2020", 500);
 
             // social media
             SetupAchievement(existingAchievements, "SSW TV", 100);
