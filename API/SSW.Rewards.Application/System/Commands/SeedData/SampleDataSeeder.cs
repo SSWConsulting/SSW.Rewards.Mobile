@@ -133,6 +133,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG April 2020 - From Paper to Power using Azure Form Recognition", 500);
             SetupAchievement(existingAchievements, "NETUG June 2020 - Build your first deep learning solution using Azure Automated ML", 500);
             SetupAchievement(existingAchievements, "NETUG July 2020 - Power Apps - The Tesla of Software Development", 500);
+            SetupAchievement(existingAchievements, "NETUG August 2020 - Blazor WebApps - Goodbye JavaScript! Im in love with C#", 500);
             
             // Hack days
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
