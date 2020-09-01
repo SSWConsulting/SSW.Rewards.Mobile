@@ -21,7 +21,7 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
               instance: "https://sswconsultingapp.b2clogin.com/",
               validateAuthority: false,
               tenant: "sswconsultingapp.onmicrosoft.com",
-              signInPolicy: "B2C_1A_signup_signin",
+              signInPolicy: "B2C_1A_Signup_Signin",
               applicationId: "bb80971c-3a85-4d6d-aef4-cf0baf0f374b",
               cacheLocation: "localStorage",
               scopes: [

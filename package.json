@@ -15,7 +15,7 @@
     "@types/react-dom": "16.9.4",
     "@types/react-router-dom": "^5.1.2",
     "jwt-decode": "^2.2.0",
-    "lightweight-globalstate": "^1.3.2",
+    "lightweight-globalstate": "^1.3.4",
     "qrcode.react": "^1.0.0",
     "react": "^16.13.0",
     "react-azure-adb2c": "git+https://github.com/jSunnari/react-azure-adb2c.git",
