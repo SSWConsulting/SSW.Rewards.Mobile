@@ -20,7 +20,7 @@ namespace SSW.Rewards
 
         public string AADB2CClientId = Secrets.b2cClientId;
 
-        public string IOSKeychainSecurityGroups = "com.ssw.rewards";
+        public string IOSKeychainSecurityGroups = "com.companyname.SSW.Consulting";
 
         public string AADB2CPolicySignin = Secrets.b2cSigninPolicy;
 
