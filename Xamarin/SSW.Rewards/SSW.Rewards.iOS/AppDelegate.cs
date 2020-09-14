@@ -5,7 +5,6 @@ using Foundation;
 using Lottie.Forms.iOS.Renderers;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
 using PanCardView.iOS;

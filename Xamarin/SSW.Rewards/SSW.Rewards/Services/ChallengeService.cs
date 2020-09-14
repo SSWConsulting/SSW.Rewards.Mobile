@@ -36,7 +36,7 @@ namespace SSW.Rewards.Services
             string token = await _userService.GetTokenAsync();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string baseUrl = Constants.ApiBaseUrl;
+            string baseUrl = App.Constants.ApiBaseUrl;
 
             _achievementClient = new AchievementClient(baseUrl, _httpClient);
             _rewardClient = new RewardClient(baseUrl, _httpClient);

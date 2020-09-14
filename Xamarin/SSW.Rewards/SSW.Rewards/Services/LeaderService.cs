@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using SSW.Rewards.Models;
 using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
-using Microsoft.AppCenter.Auth;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
@@ -28,7 +27,7 @@ namespace SSW.Rewards.Services
             string token = await _userService.GetTokenAsync();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string baseUrl = Constants.ApiBaseUrl;
+            string baseUrl = App.Constants.ApiBaseUrl;
 
             _leaderBoardClient = new LeaderboardClient(baseUrl, _httpClient);
         }

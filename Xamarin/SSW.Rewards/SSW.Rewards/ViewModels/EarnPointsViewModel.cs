@@ -37,7 +37,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task Initialise()
         {
-            string quizUri = Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + await _userService.GetMyEmailAsync();
+            string quizUri = App.Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + await _userService.GetMyEmailAsync();
 
             ExternalRewards = new ObservableCollection<ExternalReward>
             {

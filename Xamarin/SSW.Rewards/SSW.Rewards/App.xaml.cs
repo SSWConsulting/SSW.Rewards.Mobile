@@ -1,29 +1,49 @@
 ﻿using System;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using SSW.Rewards.Services;
 using SSW.Rewards.Views;
 using Xamarin.Essentials;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Auth;
 using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
-using System.Diagnostics;
 using SSW.Rewards.Helpers;
+using Microsoft.Identity.Client;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSW.Rewards
 {
     public partial class App : Application
     {
+        public static IPublicClientApplication AuthenticationClient { get; private set; }
+
+        public static Constants Constants = new Constants();
+
+        public static object UIParent { get; set; }
+
         public App()
         {
             AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
                 "ios=e33283b1-7326-447d-baae-e783ece0789b",
-                  typeof(Auth), typeof(Analytics), typeof(Crashes), typeof(Push));
+                typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
+
+            try
+            {
+                AuthenticationClient = PublicClientApplicationBuilder.Create(Constants.AADB2CClientId)
+                    .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
+                    .WithB2CAuthority(Constants.AuthoritySignin)
+                    .WithTenantId(Constants.AADB2CTenantId)
+                    .WithRedirectUri("msauth.com.ssw.rewards://auth")
+                    .Build();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
 
             if (Preferences.Get("FirstRun", true))
             {
@@ -60,8 +80,13 @@ namespace SSW.Rewards
             {
                 try
                 {
-                    UserInformation userInfo = await Auth.SignInAsync();
-                    string token = userInfo.AccessToken;
+                    IEnumerable<IAccount> accounts = await AuthenticationClient.GetAccountsAsync();
+
+                    AuthenticationResult result = await AuthenticationClient
+                        .AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
+                        .ExecuteAsync();
+
+                    string token = result.AccessToken;
                     await SecureStorage.SetAsync("auth_token", token);
 
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();

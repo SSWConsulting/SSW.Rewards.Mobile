@@ -13,6 +13,19 @@
     Title="{Binding Title}"
     BackgroundColor="{StaticResource LeaderboardBackground}"
     mc:Ignorable="d">
+    <!--<Shell.TitleView>
+        <Grid HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="6*"/>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="logo_ssw_colour"
+                   Grid.Column="0"/>
+            <Label Text="{Binding Title}"
+                   Grid.Column="1"/>
+        </Grid>
+    </Shell.TitleView>-->
     <ContentPage.Content>
         <RelativeLayout>
 

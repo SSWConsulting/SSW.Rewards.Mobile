@@ -36,7 +36,7 @@ namespace SSW.Rewards.Helpers
 
         public async Task<bool> IsApiCompatibleAsync()
         {
-            string appVer = Constants.MaxApiSupportedVersion;
+            string appVer = App.Constants.MaxApiSupportedVersion;
 
             string apiVer = await GetApiVersionAsync();
 

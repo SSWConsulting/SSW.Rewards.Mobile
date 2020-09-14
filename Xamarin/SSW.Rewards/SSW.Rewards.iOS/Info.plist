@@ -34,19 +34,37 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>com.SSW.SSW.Consulting</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>msale33283b1-7326-447d-baae-e783ece0789b</string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.SSW.rewards</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msauth.com.ssw.rewards</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>1.7</string>
+	<string>1.75</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This permission will enable you to save SSW User Groups and other events</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to your photo library will enable you to upload a custom avatar</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We use your location to alert you of upcoming events of interest in your area</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We use your location to alert you of upcoming events of interest in your area</string>
 </dict>
 </plist>
