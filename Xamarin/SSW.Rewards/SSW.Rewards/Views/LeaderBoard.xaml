@@ -13,7 +13,7 @@
     Title="{Binding Title}"
     BackgroundColor="{StaticResource LeaderboardBackground}"
     mc:Ignorable="d">
-    <Shell.TitleView>
+    <!--<Shell.TitleView>
         <Grid HorizontalOptions="CenterAndExpand">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
@@ -25,7 +25,7 @@
             <Label Text="{Binding Title}"
                    Grid.Column="1"/>
         </Grid>
-    </Shell.TitleView>
+    </Shell.TitleView>-->
     <ContentPage.Content>
         <RelativeLayout>
 
