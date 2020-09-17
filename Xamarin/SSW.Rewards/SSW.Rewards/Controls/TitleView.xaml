@@ -9,7 +9,7 @@
       <StackLayout Orientation="Horizontal">
             <Image Source="SSWWhite_preview" VerticalOptions="CenterAndExpand" />
             <Label x:Name="title"
-                   Text="ssssdasdw"
+                   Text=""
                    TextColor="White"
                    VerticalTextAlignment="Center"
                    Padding="10,0"
