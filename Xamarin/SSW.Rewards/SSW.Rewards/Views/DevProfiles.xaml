@@ -11,6 +11,9 @@
              mc:Ignorable="d"
              Title="{Binding Title}"
              d:Title="Ulysses Maclaren">
+    <Shell.TitleView>
+        <controls:TitleView Title="{Binding Title}" />
+    </Shell.TitleView>
     <ContentPage.Content>
         <RelativeLayout Padding="0"
                         HorizontalOptions="FillAndExpand"

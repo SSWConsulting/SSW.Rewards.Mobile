@@ -6,6 +6,11 @@
              mc:Ignorable="d"
              x:Class="SSW.Rewards.App">
     <Application.Resources>
+        <OnPlatform x:TypeArguments="x:String" x:Key="HelveticaBold">
+            <On Platform="iOS" Value="Helvetica-Bold"/>
+            <On Platform="Android" Value="Helvetica-Bold-Font.ttf#Bold"/>
+            <On Platform="UWP" Value="/Assets/Fonts/Helvetica-Bold-Font.ttf#"/>
+        </OnPlatform>
 
         <Color x:Key="LeaderSummary">#e7e7e7</Color>
         <Color x:Key="LeaderSummarySelected">White</Color>

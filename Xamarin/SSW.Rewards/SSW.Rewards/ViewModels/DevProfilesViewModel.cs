@@ -58,7 +58,7 @@ namespace SSW.Rewards.ViewModels
 
             OverlayLayoutBounds = new Rectangle(1, 1, 1, 0.2);
             _profileExpanded = false;
-            OnSwipedUpdatePropertyList = new string[] { "Title", "DevFirstName", "DevTitle", "DevBio", "TwitterEnabled" };
+            OnSwipedUpdatePropertyList = new string[] { "Title", "TitleText", "DevFirstName", "DevTitle", "DevBio", "TwitterEnabled" };
             _ = Initialise();
         }
 
