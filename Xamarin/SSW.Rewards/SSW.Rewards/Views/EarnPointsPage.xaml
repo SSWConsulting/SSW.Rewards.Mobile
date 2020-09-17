@@ -3,10 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              mc:Ignorable="d"
              Title="{Binding Title}"
 			 x:Name="EarnPointsView"
              x:Class="SSW.Rewards.Views.EarnPointsPage">
+    <Shell.TitleView>
+        <controls:TitleView Title="{Binding Title}" />
+    </Shell.TitleView>
     <ContentPage.Content>
         <Grid Padding="0">
             <Image Aspect="AspectFill"

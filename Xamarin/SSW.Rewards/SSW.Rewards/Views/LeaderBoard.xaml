@@ -9,23 +9,14 @@
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:controls="clr-namespace:SSW.Rewards.Controls"
     x:Name="LeaderboardPage"
     Title="{Binding Title}"
     BackgroundColor="{StaticResource LeaderboardBackground}"
     mc:Ignorable="d">
-    <!--<Shell.TitleView>
-        <Grid HorizontalOptions="CenterAndExpand">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="6*"/>
-            </Grid.ColumnDefinitions>
-
-            <Image Source="logo_ssw_colour"
-                   Grid.Column="0"/>
-            <Label Text="{Binding Title}"
-                   Grid.Column="1"/>
-        </Grid>
-    </Shell.TitleView>-->
+    <Shell.TitleView>
+        <controls:TitleView Title="{Binding Title}" />
+    </Shell.TitleView>
     <ContentPage.Content>
         <RelativeLayout>
 

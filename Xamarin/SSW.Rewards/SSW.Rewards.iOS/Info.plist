@@ -66,5 +66,10 @@
 	<string>We use your location to alert you of upcoming events of interest in your area</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to alert you of upcoming events of interest in your area</string>
+
+  <key>UIAppFonts</key>
+  <array>
+    <string>Helvetica-Bold-Font.ttf</string>
+  </array>
 </dict>
 </plist>

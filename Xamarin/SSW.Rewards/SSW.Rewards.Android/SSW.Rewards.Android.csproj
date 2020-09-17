@@ -139,6 +139,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Helvetica-Bold-Font.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -4106,6 +4107,14 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\file_paths.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\SSWWhite_preview.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\SSWWhite_preview.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\SSWWhite_preview.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\SSWWhite_preview.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\SSWWhite_preview.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\SSWWhite_preview.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

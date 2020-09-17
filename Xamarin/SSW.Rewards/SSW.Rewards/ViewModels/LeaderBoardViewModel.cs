@@ -35,7 +35,7 @@ namespace SSW.Rewards.ViewModels
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
-            Title = "SSW Leaderboard";
+            Title = "Leaderboard";
             OnRefreshCommand = new Command(Refresh);
             _leaderService = leaderService;
             _userService = userService;
