@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.75" package="com.ssw.rewards" android:installLocation="auto" android:versionCode="10">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.75" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="11">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
 		<activity android:name="microsoft.identity.client.BrowserTabActivity">
@@ -8,7 +8,7 @@
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
 				<!--<data android:host="auth" android:scheme="msal60b96e0a-c6dd-4320-855f-ed58e44ffd00" />-->
-				<data android:host="auth" android:scheme="msauth.com.ssw.rewards" />
+				<data android:host="auth" android:scheme="msauth.com.ssw.consulting" />
 			</intent-filter>
 		</activity>
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
