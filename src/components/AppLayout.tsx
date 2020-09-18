@@ -7,6 +7,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { SSWRed } from 'config/theme';
 import { useGlobalState } from 'lightweight-globalstate';
 import Paper from "@material-ui/core/Paper";
+import authentication from 'react-azure-adb2c';
 
 
 const drawerWidth = 240;
@@ -65,7 +66,11 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
     const [state]:any = useGlobalState();
 
     const currentRoute = routes.find(r =>  props.location.pathname === r.path);
-
+    
+    const signOut = () => {
+      console.log('auth: ', authentication.getAccessToken());
+      authentication.signOut();
+  }
 
     const drawer = (
         <div>
@@ -73,6 +78,7 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
               <Typography variant="body1" noWrap>
                   Welcome {state.currentUser && state.currentUser.given_name},
                 </Typography>
+                <button onClick={signOut}>Sign Out</button>
             <Divider />
             <List>
                 {routes.map((r) => {
