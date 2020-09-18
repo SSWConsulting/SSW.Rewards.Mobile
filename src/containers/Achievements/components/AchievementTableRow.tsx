@@ -32,7 +32,9 @@ export const AchievementTableRow = (props: AchievementTableRowProps) => {
           />
         )}
       </ResponsiveDialog>
-      <TableRow onClick={() => setShowdal(true)}>
+      <TableRow 
+        style={{'cursor': 'pointer'}}
+        onClick={() => setShowdal(true)}>
         <TableCell align="left">
           {code && (
             <Box>
