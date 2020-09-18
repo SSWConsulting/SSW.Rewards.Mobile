@@ -36,7 +36,7 @@ namespace SSW.Rewards
                     .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
                     .WithB2CAuthority(Constants.AuthoritySignin)
                     .WithTenantId(Constants.AADB2CTenantId)
-                    .WithRedirectUri("msauth.com.ssw.rewards://auth")
+                    .WithRedirectUri("msauth.com.ssw.consulting://auth")
                     .Build();
             }
             catch (Exception ex)
