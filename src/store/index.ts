@@ -27,13 +27,11 @@ export interface State {
 }
 
 const LOCAL_DEV = process.env.REACT_APP_API_URL as string;
-// const LOCAL_DEV = "https://localhost:5001";
 const DEV = "https://sswconsulting-dev.azurewebsites.net";
 const PROD = 'https://sswconsulting-prod.azurewebsites.net'
 
 
 export const createInitialState = (baseUrl: string = LOCAL_DEV) => {
-  console.log(baseUrl);
   return {
     leaderboardClient: new LeaderboardClient(baseUrl),
     rewardClient: new RewardClient(baseUrl),
