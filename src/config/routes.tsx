@@ -1,9 +1,11 @@
 import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from "@material-ui/icons/People";
 import StarsIcon from "@material-ui/icons/Stars";
+import RedeemIcon from "@material-ui/icons/Redeem";
 import Home from 'containers/Home';
 import Leaderboard from "containers/Leaderboard";
 import Achievements from "containers/Achievements";
+import Rewards from "containers/Rewards";
 
 interface Route  {
     path: string;
@@ -30,6 +32,12 @@ export const routes = [
            title: "Achievements",
            component: Achievements,
            icon: StarsIcon
+         },
+         {
+           path: "/rewards",
+           title: "Rewards",
+           component: Rewards,
+           icon: RedeemIcon
          }
        ] as Route[];
 
