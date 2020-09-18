@@ -61,12 +61,10 @@ namespace SSW.Rewards
 
             services.AddCors(options => 
             {
-				var section = Configuration.GetSection("AllowedOrigin");
-				var origins = section.Get<string[]>();
                 options.AddPolicy(_allowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(origins)
+                        builder.WithOrigins(Configuration["AllowedOrigin"])
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
