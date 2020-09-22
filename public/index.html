@@ -12,6 +12,12 @@
     />
     <link rel="apple-touch-icon" href="logo192.png" />
 
+    <script src="%PUBLIC_URL%/config.js"></script>
+    <script>
+        console.log('setting config')
+        window.config = { apiUrl, env };
+    </script>
+
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>React App</title>
   </head>
