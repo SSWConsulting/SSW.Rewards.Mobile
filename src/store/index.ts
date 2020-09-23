@@ -26,12 +26,11 @@ export interface State {
   achievementClient: AchievementClient;
 }
 
-const LOCAL_DEV = process.env.REACT_APP_API_URL as string;
-const DEV = "https://sswconsulting-dev.azurewebsites.net";
-const PROD = 'https://sswconsulting-prod.azurewebsites.net'
+// @ts-ignore
+const API_URL = window.config.apiUrl as string;
 
 
-export const createInitialState = (baseUrl: string = LOCAL_DEV) => {
+export const createInitialState = (baseUrl: string = API_URL) => {
   return {
     leaderboardClient: new LeaderboardClient(baseUrl),
     rewardClient: new RewardClient(baseUrl),
