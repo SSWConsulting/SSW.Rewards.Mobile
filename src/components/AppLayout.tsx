@@ -76,7 +76,6 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
     }
     
     const signOut = () => {
-      console.log('auth: ', authentication.getAccessToken());
       authentication.signOut();
   }
 

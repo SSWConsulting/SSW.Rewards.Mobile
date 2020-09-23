@@ -33,10 +33,8 @@ const B2CAuth = (props: PropsWithChildren<{}>): any => {
                 setAuthenticating(false);
                 const t = b2cauth.getAccessToken();
                 const decoded = decodeJWT(t) as any;
-                console.log('Role: ' + decoded.role);
                 updateState({ authenticated: true });
                 if(decoded.role === 'admin') {
-                    console.log('authed');
                     if (t) {
                       updateState({ token: t, authorised:true});
                     }

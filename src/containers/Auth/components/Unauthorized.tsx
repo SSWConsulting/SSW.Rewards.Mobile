@@ -6,7 +6,6 @@ import { Typography, Container } from '@material-ui/core';
 export const Unauthorized = () => {
 
     const signOut = () => {
-        console.log('auth: ', authentication.getAccessToken());
         authentication.signOut();
     }
 
