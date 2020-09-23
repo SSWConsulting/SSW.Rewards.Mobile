@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
       marginLeft: drawerWidth
     }
   },
+  envLabel: {
+    backgroundColor: "#000"
+  },
   menuButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
@@ -66,6 +69,11 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
     const [state]:any = useGlobalState();
 
     const currentRoute = routes.find(r =>  props.location.pathname === r.path);
+
+    const getEnvironmentLabel = () => {
+      // @ts-ignore
+      return window.config.env;
+    }
     
     const signOut = () => {
       console.log('auth: ', authentication.getAccessToken());
@@ -127,7 +135,8 @@ const AppLayoutComponent = (props: PropsWithChildren<RouteComponentProps>) => {
               </Box>
               <Box marginRight={'40%'}>
                 <Typography variant="h6" align="center">
-                  {currentRoute && currentRoute.title}{" "}
+                  {currentRoute && currentRoute.title}{" "} 
+                  <span className={classes.envLabel}>{getEnvironmentLabel()}</span>
                 </Typography>
               </Box>
             </Box>
