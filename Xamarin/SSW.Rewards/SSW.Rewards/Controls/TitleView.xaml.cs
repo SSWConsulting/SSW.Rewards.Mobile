@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,10 +15,24 @@ namespace SSW.Rewards.Controls
                                                           defaultBindingMode: BindingMode.TwoWay,
                                                           propertyChanged: TitlePropertyChanged);
 
+        public static readonly BindableProperty TapTitleCommandProperty = BindableProperty.Create("TapTitleCommand", typeof(ICommand), typeof(TitleView), null);
+
         public string Title
         {
             get { return base.GetValue(TitleProperty).ToString(); }
             set { base.SetValue(TitleProperty, value); }
+        }
+
+        public ICommand TapTitleCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(TapTitleCommandProperty);
+            }
+            set
+            {
+                SetValue(TapTitleCommandProperty, value);
+            }
         }
 
         private static void TitlePropertyChanged(BindableObject bindable, object oldValue, object newValue)

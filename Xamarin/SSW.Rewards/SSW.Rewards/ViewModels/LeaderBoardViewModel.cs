@@ -26,6 +26,11 @@ namespace SSW.Rewards.ViewModels
         }
         public ICommand OnRefreshCommand { get; set; }
 
+        public ICommand ScrollToTopCommand => new Command(() =>
+        {
+            MessagingCenter.Send<object>(this, "ScrollToTop");
+        });
+
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
 
         public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }

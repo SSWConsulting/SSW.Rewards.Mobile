@@ -7,14 +7,20 @@
              x:Class="SSW.Rewards.Controls.TitleView">
   <ContentView.Content>
       <StackLayout Orientation="Horizontal">
-            <Image Source="SSWWhite_preview" VerticalOptions="CenterAndExpand" />
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding TapTitleCommand}" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+            <Image Source="SSWWhite_preview"
+                   VerticalOptions="CenterAndExpand"
+                   InputTransparent="True"/>
             <Label x:Name="title"
                    Text=""
                    TextColor="White"
                    VerticalTextAlignment="Center"
                    Padding="10,0"
                    FontSize="22"
-                   FontFamily="{StaticResource HelveticaBold}"/>
+                   FontFamily="{StaticResource HelveticaBold}"
+                   InputTransparent="True"/>
       </StackLayout>
   </ContentView.Content>
 </ContentView>
