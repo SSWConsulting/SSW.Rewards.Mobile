@@ -28,12 +28,14 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand ScrollToTopCommand => new Command(() =>
         {
-            MessagingCenter.Send<object>(this, "ScrollToTop");
+            MessagingCenter.Send<string>("ScrollToTop", "ScrollToTop");
         });
 
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
 
         public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
+
+        public Action<LeaderSummaryViewModel> ScrollToTop { get; set; }
 
         private ObservableCollection<LeaderSummaryViewModel> searchResults = new ObservableCollection<LeaderSummaryViewModel>();
 
@@ -101,6 +103,8 @@ namespace SSW.Rewards.ViewModels
 
             var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
             ScrollToMe?.Invoke(mysummary);
+            var firstLeader = Leaders.FirstOrDefault();
+            ScrollToTop?.Invoke(firstLeader);
         }
 
 

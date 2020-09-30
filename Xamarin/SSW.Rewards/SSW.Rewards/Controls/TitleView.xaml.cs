@@ -45,5 +45,11 @@ namespace SSW.Rewards.Controls
         {
             InitializeComponent();
         }
+
+        private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
+        {
+            //App.Current.MainPage.DisplayAlert("Title bar tapped", "I'd tap that", "OK");
+            MessagingCenter.Send<string>("ScrollToTop", "ScrollToTop");
+        }
     }
 }
