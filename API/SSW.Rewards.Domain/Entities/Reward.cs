@@ -9,6 +9,7 @@ namespace SSW.Rewards.Domain.Entities
         public string Code { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
+        public string ImageUri { get; set; }
 
         public ICollection<UserReward> UserRewards { get; set; } = new HashSet<UserReward>();
     }
