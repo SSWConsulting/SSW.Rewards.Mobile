@@ -51,7 +51,16 @@ namespace SSW.Rewards.Application.Reward.Commands
 
                 var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
 
-                if(user.Points < reward.Cost)
+                var userRewards = await _context
+                    .UserRewards
+                    .Where(ur => ur.UserId == user.Id)
+                    .ToListAsync(cancellationToken);
+
+                int pointsUsed = userRewards.Sum(ur => ur.Reward.Cost);
+
+                int balance = user.Points - pointsUsed;
+
+                if(balance < reward.Cost)
                 {
                     return new ClaimRewardResult
                     {
@@ -59,11 +68,13 @@ namespace SSW.Rewards.Application.Reward.Commands
                     };
                 }
 
-                var userHasReward = await _context
-                    .UserRewards
-                    .Where(ur => ur.UserId == user.Id)
+                // TODO: the following logic is intended to 'debounce' reward
+                // claiming, to prevent users claiming the same reward twice
+                // within a 5 minute window. With the move from 'milestone' to
+                // 'currency' model, this may not be required anymore.
+                var userHasReward = userRewards
                     .Where(ur => ur.RewardId == reward.Id)
-                    .FirstOrDefaultAsync(cancellationToken);
+                    .FirstOrDefault();
 
                 if(userHasReward != null && userHasReward.AwardedAt >= _dateTimeProvider.Now.AddMinutes(-5))
                 {
