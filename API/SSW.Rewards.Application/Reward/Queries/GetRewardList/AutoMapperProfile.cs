@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace SSW.Rewards.Application.Reward.Queries.GetRewardList
+namespace SSW.Rewards.Application.Reward.Queries.Common
 {
     public class AutoMapperProfile : Profile
     {

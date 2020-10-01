@@ -3,7 +3,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Reward.Queries.GetRewardList;
+using SSW.Rewards.Application.Reward.Queries.Common;
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,23 +15,28 @@ namespace SSW.Rewards.Application.Reward.Commands
     {
         public string Code { get; set; }
 
+        public bool ClaimInPerson { get; set; } = true;
+
         public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
         {
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
             private readonly IDateTimeProvider _dateTimeProvider;
+            private readonly IRewardSender _rewardSender;
 
             public ClaimRewardCommandHandler(
                 ICurrentUserService currentUserService,
                 ISSWRewardsDbContext context,
                 IMapper mapper,
-                IDateTimeProvider dateTimeProvider)
+                IDateTimeProvider dateTimeProvider,
+                IRewardSender rewardSender)
             {
                 _currentUserService = currentUserService;
                 _context = context;
                 _mapper = mapper;
                 _dateTimeProvider = dateTimeProvider;
+                _rewardSender = rewardSender;
             }
 
             public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)

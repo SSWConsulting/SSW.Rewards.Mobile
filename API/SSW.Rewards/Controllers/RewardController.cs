@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Reward.Commands;
 using SSW.Rewards.Application.Reward.Queries.GetRecentRewards;
 using SSW.Rewards.Application.Reward.Queries.GetRewardAdminList;
-using SSW.Rewards.Application.Reward.Queries.GetRewardList;
+using SSW.Rewards.Application.Reward.Queries.Common;
 using System.Threading.Tasks;
+using SSW.Rewards.Application.Reward.Commands.AddReward;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
@@ -31,7 +32,15 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClaimRewardResult>> Add([FromQuery] string rewardCode)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<int>> Add(AddRewardCommand addRewardCommand)
+        {
+            return Ok(await Mediator.Send(addRewardCommand));
+        }
+
+        [HttpPost]
+        [Route("claim")]
+        public async Task<ActionResult<ClaimRewardResult>> Claim([FromQuery] string rewardCode)
         {
             return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));
         }
