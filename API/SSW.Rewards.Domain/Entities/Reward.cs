@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SSW.Rewards.Domain.Entities
 {
@@ -10,6 +8,7 @@ namespace SSW.Rewards.Domain.Entities
         public string Name { get; set; }
         public int Cost { get; set; }
         public string ImageUri { get; set; }
+        public RewardType RewardType { get; set; }
 
         public ICollection<UserReward> UserRewards { get; set; } = new HashSet<UserReward>();
     }
