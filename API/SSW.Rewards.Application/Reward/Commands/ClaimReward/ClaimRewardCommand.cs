@@ -99,6 +99,12 @@ namespace SSW.Rewards.Application.Reward.Commands
 
                 await _context.SaveChangesAsync(cancellationToken);
 
+                var dbUser = await _context.Users
+                    .Where(u => u.Id == user.Id)
+                    .FirstAsync(cancellationToken);
+
+                await _rewardSender.SendRewardAsync(dbUser, reward, cancellationToken);
+
                 var rewardModel = _mapper.Map<RewardViewModel>(reward);
 
                 return new ClaimRewardResult
