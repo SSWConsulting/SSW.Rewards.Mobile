@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="SSW.Rewards.Views.RewardsPage">
+    <Shell.TitleView>
+        <controls:TitleView x:Name="pageTitle" Title="{Binding Title}"/>
+    </Shell.TitleView>
+    <Grid Padding="0">
+        <Image Aspect="AspectFill"
+                   Source="polygon"
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height}"/>
+
+        <AbsoluteLayout>
+            <CollectionView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            AbsoluteLayout.LayoutFlags="All"
+                            Margin="10"
+                            ItemsSource="{Binding Rewards}">
+                <d:CollectionView.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>SSW Smart Keepcup</x:String>
+                        <x:String>Xaiomi Mi Band</x:String>
+                        <x:String>Azure Superpowers Ticket</x:String>
+                    </x:Array>
+                </d:CollectionView.ItemsSource>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentView>
+                            <Frame CornerRadius="0"
+                                   BackgroundColor="Transparent"
+                                   Margin="0,10">
+                                <Grid ColumnDefinitions="5*, 5*"
+                                      RowDefinitions="5*, 5*">
+                                    <ffimage:CachedImage Grid.Column="0"
+                                                         Grid.RowSpan="2"
+                                                         Source="{Binding ImageUri}"
+                                                         LoadingPlaceholder="dev_loading_placeholder"/>
+
+                                </Grid>
+                            </Frame>
+                        </ContentView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </AbsoluteLayout>
+    </Grid>
+</ContentPage>

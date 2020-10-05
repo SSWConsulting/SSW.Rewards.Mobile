@@ -315,6 +315,39 @@
           "Reward"
         ],
         "operationId": "Reward_Add",
+        "requestBody": {
+          "x-name": "addRewardCommand",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRewardCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Reward/Claim/claim": {
+      "post": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_Claim",
         "parameters": [
           {
             "name": "rewardCode",
@@ -663,8 +696,27 @@
           "cost": {
             "type": "integer",
             "format": "int32"
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "rewardType": {
+            "$ref": "#/components/schemas/RewardType"
           }
         }
+      },
+      "RewardType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Physical",
+          "Digital"
+        ],
+        "enum": [
+          0,
+          1
+        ]
       },
       "RewardAdminListViewModel": {
         "type": "object",
@@ -743,6 +795,29 @@
           "since": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "AddRewardCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reward": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RewardViewModel"
+              }
+            ]
+          },
+          "imageBytes": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "imageFileName": {
+            "type": "string",
             "nullable": true
           }
         }

@@ -413,7 +413,8 @@ export interface IRewardClient {
     list(): Promise<RewardListViewModel>;
     adminList(): Promise<RewardAdminListViewModel>;
     getRecent(query: GetRecentRewardsQuery): Promise<RecentRewardListViewModel>;
-    add(rewardCode: string | null): Promise<ClaimRewardResult>;
+    add(addRewardCommand: AddRewardCommand): Promise<number>;
+    claim(rewardCode: string | null): Promise<ClaimRewardResult>;
 }
 
 export class RewardClient extends BaseClient implements IRewardClient {
@@ -539,8 +540,48 @@ export class RewardClient extends BaseClient implements IRewardClient {
         return Promise.resolve<RecentRewardListViewModel>(<any>null);
     }
 
-    add(rewardCode: string | null): Promise<ClaimRewardResult> {
-        let url_ = this.baseUrl + "/api/Reward/Add?";
+    add(addRewardCommand: AddRewardCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Reward/Add";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(addRewardCommand);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processAdd(_response);
+        });
+    }
+
+    protected processAdd(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    claim(rewardCode: string | null): Promise<ClaimRewardResult> {
+        let url_ = this.baseUrl + "/api/Reward/Claim/claim?";
         if (rewardCode === undefined)
             throw new Error("The parameter 'rewardCode' must be defined.");
         else
@@ -557,11 +598,11 @@ export class RewardClient extends BaseClient implements IRewardClient {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processAdd(_response);
+            return this.processClaim(_response);
         });
     }
 
-    protected processAdd(response: Response): Promise<ClaimRewardResult> {
+    protected processClaim(response: Response): Promise<ClaimRewardResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1219,6 +1260,8 @@ export class RewardViewModel implements IRewardViewModel {
     id?: number;
     name?: string | undefined;
     cost?: number;
+    imageUri?: string | undefined;
+    rewardType?: RewardType;
 
     constructor(data?: IRewardViewModel) {
         if (data) {
@@ -1234,6 +1277,8 @@ export class RewardViewModel implements IRewardViewModel {
             this.id = data["id"];
             this.name = data["name"];
             this.cost = data["cost"];
+            this.imageUri = data["imageUri"];
+            this.rewardType = data["rewardType"];
         }
     }
 
@@ -1249,6 +1294,8 @@ export class RewardViewModel implements IRewardViewModel {
         data["id"] = this.id;
         data["name"] = this.name;
         data["cost"] = this.cost;
+        data["imageUri"] = this.imageUri;
+        data["rewardType"] = this.rewardType;
         return data; 
     }
 }
@@ -1257,6 +1304,13 @@ export interface IRewardViewModel {
     id?: number;
     name?: string | undefined;
     cost?: number;
+    imageUri?: string | undefined;
+    rewardType?: RewardType;
+}
+
+export enum RewardType {
+    Physical = 0,
+    Digital = 1,
 }
 
 export class RewardAdminListViewModel implements IRewardAdminListViewModel {
@@ -1477,6 +1531,50 @@ export class GetRecentRewardsQuery implements IGetRecentRewardsQuery {
 
 export interface IGetRecentRewardsQuery {
     since?: Date | undefined;
+}
+
+export class AddRewardCommand implements IAddRewardCommand {
+    reward?: RewardViewModel | undefined;
+    imageBytes?: string | undefined;
+    imageFileName?: string | undefined;
+
+    constructor(data?: IAddRewardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.reward = data["reward"] ? RewardViewModel.fromJS(data["reward"]) : <any>undefined;
+            this.imageBytes = data["imageBytes"];
+            this.imageFileName = data["imageFileName"];
+        }
+    }
+
+    static fromJS(data: any): AddRewardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddRewardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["reward"] = this.reward ? this.reward.toJSON() : <any>undefined;
+        data["imageBytes"] = this.imageBytes;
+        data["imageFileName"] = this.imageFileName;
+        return data; 
+    }
+}
+
+export interface IAddRewardCommand {
+    reward?: RewardViewModel | undefined;
+    imageBytes?: string | undefined;
+    imageFileName?: string | undefined;
 }
 
 export class ClaimRewardResult implements IClaimRewardResult {
