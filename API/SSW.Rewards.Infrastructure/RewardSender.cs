@@ -32,7 +32,10 @@ namespace SSW.Rewards.Infrastructure
             }
             else
             {
-
+                // TODO: Replace this with logic that:
+                // 1. Determines if it is a free ticket
+                // 2. If yes, generate with the appropriate API (currently eventbrite) and send to user
+                // 3. If no, send notification to Marketing for appropriate action
             }
         }
     }
