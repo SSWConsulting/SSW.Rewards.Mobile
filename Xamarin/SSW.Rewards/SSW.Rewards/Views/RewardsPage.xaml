@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Name="RewardPage"
              x:Class="SSW.Rewards.Views.RewardsPage">
     <Shell.TitleView>
         <controls:TitleView x:Name="pageTitle" Title="{Binding Title}"/>
@@ -35,46 +36,66 @@
                                    BackgroundColor="Transparent"
                                    HeightRequest="100"
                                    HasShadow="True"
-                                   Padding="0"
-                                   Margin="0,10">
+                                   Padding="10"
+                                   Margin="0,5"
+                                   x:Name="Item">
+                                <Frame.Background>
+                                    <LinearGradientBrush EndPoint="1,0"
+                                                         StartPoint="0,1">
+                                        <GradientStop Color="Red"
+                                                      Offset="0.1"/>
+                                        <GradientStop Color="Transparent"
+                                                      Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding RewardCardTappedCommand}"
+                                                          BindingContext="{Binding Source={x:Reference RewardPage}, Path=BindingContext}"
+                                                          CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
+                                                          NumberOfTapsRequired="1"/>
+                                </Frame.GestureRecognizers>
                                 <Grid ColumnDefinitions="5*, 5*"
                                       HorizontalOptions="FillAndExpand"
                                       VerticalOptions="FillAndExpand"
                                       Padding="0"
-                                      RowDefinitions="5*, 5*">
-                                    <!--<ffimage:CachedImage Grid.Column="0"
+                                      RowDefinitions="5*, 5*"
+                                      InputTransparent="True">
+                                    <!-- The below ffimage is the actual image used in the app -->
+                                    <!-- This should be uncommebted before deploying -->
+                                    
+                                    <ffimage:CachedImage Grid.Column="0"
                                                          Grid.RowSpan="2"
                                                          Source="{Binding ImageUri}"
-                                                         LoadingPlaceholder="dev_loading_placeholder"/>-->
-                                    <BoxView Grid.Column="0"
-                                             Grid.Row="0"
-                                             Grid.ColumnSpan="2"
-                                             Grid.RowSpan="2"
-                                             Margin="0"
-                                             Color="Red"
-                                             HorizontalOptions="FillAndExpand"
-                                             VerticalOptions="FillAndExpand"
-                                             Opacity=".2"/>
-                                    <Image Grid.Column="0"
+                                                         LoadingPlaceholder="dev_loading_placeholder"
+                                                         InputTransparent="True"/>
+                                    
+                                    <!-- The below image placeholder is for use in the XAML previewer -->
+                                    <!-- This should be commented out or removed before deploying -->
+                                    <!--<Image Grid.Column="0"
                                            Grid.RowSpan="2"
                                            Source="prize_keepcup"
-                                           />
+                                           />-->
+                                    
                                     <Label Grid.Column="1"
                                            Grid.RowSpan="2"
                                            Text="{Binding Name}"
-                                           TextColor="Black"
+                                           TextColor="White"
                                            FontAttributes="Bold"
                                            FontSize="22"
-                                           d:Text="SSW smart keepcup"/>
+                                           d:Text="SSW smart keepcup"
+                                           InputTransparent="True"/>
 
-                                    <Button BackgroundColor="Red"
-                                            TextColor="White"
+                                    <Button BackgroundColor="Black"
+                                            TextColor="Red"
                                             HorizontalOptions="EndAndExpand"
                                             VerticalOptions="EndAndExpand"
                                             HeightRequest="40"
                                             WidthRequest="70"
                                             Margin="0"
                                             Text="More"
+                                            Command="{Binding MoreTapped}"
+                                            BindingContext="{Binding Source={x:Reference RewardPage}, Path=BindingContext}"
+                                            CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
                                             Grid.Row="1"
                                             Grid.Column="1"/>
 
