@@ -9,7 +9,7 @@
       }
     },
     "project": {
-      "type": "string"
+      "type": "string", "defaultValue":"fredorhwatever"
     },
     "environment": {
       "type": "string",
@@ -100,7 +100,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName": "SSW.Rewards - SQL Server"
       },
       "name": "[variables('sqlServerName')]",
       "properties": {
@@ -119,7 +120,8 @@
           "tags": {
             "project": "[parameters('project')]",
             "environment": "[variables('environment')]",
-            "modifiedDate": "[variables('modifiedDate')]"
+            "modifiedDate": "[variables('modifiedDate')]",
+            "displayName":"SSW.Rewards-db"
           },
           "name": "[variables('sqlDatabaseName')]",
           "properties": {
@@ -153,7 +155,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-ProfileStorage"
       },
       "kind": "StorageV2",
       "sku": {
@@ -180,7 +183,8 @@
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('appName'))]": "Resource",
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-AppInsights"
       },
       "properties": {
         "ApplicationId": "[variables('appName')]",
@@ -199,7 +203,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName": "SSW.Rewards-API"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components/', variables('appInsightsName'))]"
@@ -209,6 +214,9 @@
         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
         "hostingEnvironment": "[parameters('hostingEnvironment')]",
         "clientAffinityEnabled": true,
+        "tags":{
+          "displayName":"SSW.Rewardddsss"
+        },
         "siteConfig": {
           "metadata": [
             {
@@ -299,7 +307,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-KeyVault"
       },
       "dependsOn": [
       ],
@@ -472,7 +481,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"ContentStorageConnectionString"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -484,7 +496,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlAdminUsername"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -496,7 +511,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlAdminPassword"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -508,7 +526,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlConnectionString"
+      }
     }
   ],
   "outputs": {
