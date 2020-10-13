@@ -7,15 +7,6 @@ assignees: ''
 
 ---
 
----
-name: 'SSW.Rewards: Sprint Forecast'
-about: This is the SSW.Rewards Sprint Forecast Template
-title: 'SSW.Rewards: Sprint ✏️X Forecast'
-labels: ''
-assignees: ''
-
----
-
 [//]: # (------------ How to use this template -----------)
 [//]: # ( 1. Check the To and Cc list recipients          )
 [//]: # ( 2. Fill out the fields marked with a pencil     )
