@@ -9,7 +9,7 @@
       }
     },
     "project": {
-      "type": "string", "defaultValue":"fredorhwatever"
+      "type": "string"
     },
     "environment": {
       "type": "string",
@@ -215,7 +215,7 @@
         "hostingEnvironment": "[parameters('hostingEnvironment')]",
         "clientAffinityEnabled": true,
         "tags":{
-          "displayName":"SSW.Rewardddsss"
+          "displayName":"SSW.Rewards"
         },
         "siteConfig": {
           "metadata": [
