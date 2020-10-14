@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Interfaces;
 using System;
-using SSW.Rewards.Application;
 
 namespace SSW.Rewards.Infrastructure
 {
@@ -32,6 +31,16 @@ namespace SSW.Rewards.Infrastructure
             services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
 
             services.AddSingleton<IDateTimeProvider, DefaultDateTimeProvider>();
+
+            services.AddSingleton<IEmailService, EmailService>();
+
+            SMTPSettings smtpSettings = new SMTPSettings();
+
+            configuration.Bind("SMTPSettings", smtpSettings);
+
+            services.AddFluentEmail(smtpSettings.DefaultSender)
+                .AddRazorRenderer()
+                .AddSmtpSender(smtpSettings.Host, smtpSettings.Port);
 
             return services;
         }
