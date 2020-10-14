@@ -33,7 +33,7 @@ namespace SSW.Rewards.Infrastructure
             // replaced with the user's details once we implement
             // physical address functionality and automatic sending
             // of rewards
-            string recipientEmail = "mattgoldman@ssw.com.au";
+            string recipientEmail = "marketing@ssw.com.au";
             string recipientName = "SSW Marketing";
 
             bool rewardSentSuccessully;
