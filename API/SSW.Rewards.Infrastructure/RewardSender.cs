@@ -10,13 +10,11 @@ namespace SSW.Rewards.Infrastructure
 {
     public class RewardSender : IRewardSender
     {
-        private readonly ISSWRewardsDbContext _context;
         private readonly IEmailService _emailService;
         private readonly ILogger<RewardSender> _logger;
 
         public RewardSender(ISSWRewardsDbContext context, IEmailService emailService, ILogger<RewardSender> logger)
         {
-            _context = context;
             _emailService = emailService;
             _logger = logger;
         }
@@ -28,14 +26,6 @@ namespace SSW.Rewards.Infrastructure
 
         public async Task SendRewardAsync(User user, Reward reward, CancellationToken cancellationToken)
         {
-            var entity = new UserReward
-            {
-                AwardedAt = DateTime.Now,
-                Reward = reward,
-                User = user
-            };
-
-            _context.UserRewards.Add(entity);
 
             string emailSubject = "SSW Rewards - Reward Notification";
             
@@ -43,7 +33,7 @@ namespace SSW.Rewards.Infrastructure
             // replaced with the user's details once we implement
             // physical address functionality and automatic sending
             // of rewards
-            string recipientEmail = "marketing@ssw.com.au";
+            string recipientEmail = "mattgoldman@ssw.com.au";
             string recipientName = "SSW Marketing";
 
             bool rewardSentSuccessully;
@@ -80,8 +70,6 @@ namespace SSW.Rewards.Infrastructure
 
                 rewardSentSuccessully = await _emailService.SendDigitalRewardEmail(recipientEmail, recipientName, emailSubject, emailProps, cancellationToken);
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
 
             if(!rewardSentSuccessully)
             {

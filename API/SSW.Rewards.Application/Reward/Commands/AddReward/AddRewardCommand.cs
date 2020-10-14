@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.Application.Reward.Commands.AddReward
 {
-    public class AddRewardCommand : IRequest<int>
+    public class AddRewardCommand : RewardViewModel, IRequest<int>
     {
-        public RewardViewModel reward { get; set; }
-        public byte[] ImageBytes { get; set; }
+        public string ImageBytesInBase64 { get; set; }
         public string ImageFileName { get; set; }
     }
 
@@ -28,16 +27,17 @@ namespace SSW.Rewards.Application.Reward.Commands.AddReward
 
         public async Task<int> Handle(AddRewardCommand request, CancellationToken cancellationToken)
         {
-            var imageUri = await _picStorageProvider.UploadRewardPic(request.ImageBytes, request.ImageFileName);
+            var imageBytes = Convert.FromBase64String(request.ImageBytesInBase64);
+            var imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFileName);
 
-            var codeData = Encoding.ASCII.GetBytes(request.reward.Name);
+            var codeData = Encoding.ASCII.GetBytes(request.Name);
             string code = Convert.ToBase64String(codeData);
 
             var entity = new SSW.Rewards.Domain.Entities.Reward
             {
-                Name = request.reward.Name,
-                Cost = request.reward.Cost,
-                RewardType = request.reward.RewardType,
+                Name = request.Name,
+                Cost = request.Cost,
+                RewardType = request.RewardType,
                 ImageUri = imageUri.AbsoluteUri,
                 Code = code
             };

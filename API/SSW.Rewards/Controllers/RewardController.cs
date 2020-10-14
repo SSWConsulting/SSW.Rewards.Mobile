@@ -39,7 +39,6 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("claim")]
         public async Task<ActionResult<ClaimRewardResult>> Claim([FromQuery] string rewardCode)
         {
             return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));

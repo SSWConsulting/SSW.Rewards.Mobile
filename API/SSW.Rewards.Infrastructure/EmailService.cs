@@ -20,43 +20,59 @@ namespace SSW.Rewards.Infrastructure
 
         public async Task<bool> SendDigitalRewardEmail(string to, string toName, string subject, DigitalRewardEmail emailProps, CancellationToken cancellationToken)
         {
-            var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please generate a voucher code and send it to @Model.RecipientEmail.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
-
-            var result = await _fluentEmail
-                .To(to)
-                .Subject(subject)
-                .UsingTemplate(template, emailProps)
-                .SendAsync(cancellationToken);
-
-            if(result.Successful)
+            try
             {
-                return true;
+                var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please generate a voucher code and send it to @Model.RecipientEmail.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+
+                var result = await _fluentEmail
+                    .To(to)
+                    .Subject(subject)
+                    .UsingTemplate(template, emailProps)
+                    .SendAsync(cancellationToken);
+
+                if (result.Successful)
+                {
+                    return true;
+                }
+                else
+                {
+                    _logger.LogError("Error sending email", _fluentEmail);
+                    return false;
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                _logger.LogError("Error sending email", _fluentEmail);
-                return false;
+
+                throw ex;
             }
         }
 
         public async Task<bool> SendPhysicalRewardEmail(string to, string toName, string subject, PhysicalRewardEmail emailProps, CancellationToken cancellationToken)
         {
-            var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please organise to send it to @Model.RecipientAddress.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
-
-            var result = await _fluentEmail
-                .To(to)
-                .Subject(subject)
-                .UsingTemplate(template, emailProps)
-                .SendAsync(cancellationToken);
-
-            if (result.Successful)
+            try
             {
-                return true;
+                var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please organise to send it to @Model.RecipientAddress.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+
+                var result = await _fluentEmail
+                    .To(to)
+                    .Subject(subject)
+                    .UsingTemplate(template, emailProps)
+                    .SendAsync(cancellationToken);
+
+                if (result.Successful)
+                {
+                    return true;
+                }
+                else
+                {
+                    _logger.LogError("Error sending email", _fluentEmail);
+                    return false;
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                _logger.LogError("Error sending email", _fluentEmail);
-                return false;
+
+                throw ex;
             }
         }
     }

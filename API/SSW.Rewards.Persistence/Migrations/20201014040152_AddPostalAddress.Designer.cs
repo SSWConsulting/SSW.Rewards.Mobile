@@ -10,7 +10,7 @@ using SSW.Rewards.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    [Migration("20201001025706_AddPostalAddress")]
+    [Migration("20201014040152_AddPostalAddress")]
     partial class AddPostalAddress
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,7 +72,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PostalAddress");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Reward", b =>
@@ -191,9 +191,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
@@ -207,8 +204,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email");
 
@@ -288,15 +283,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasOne("SSW.Rewards.Domain.Entities.StaffMember", "StaffMember")
                         .WithMany("StaffMemberSkills")
                         .HasForeignKey("StaffMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SSW.Rewards.Domain.Entities.User", b =>
-                {
-                    b.HasOne("SSW.Rewards.Domain.Entities.PostalAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

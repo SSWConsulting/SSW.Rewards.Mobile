@@ -29,10 +29,14 @@ namespace SSW.Rewards.Infrastructure
 
             services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
             services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
+            services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
 
             services.AddSingleton<IDateTimeProvider, DefaultDateTimeProvider>();
 
-            services.AddSingleton<IEmailService, EmailService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddScoped<IRewardSender, RewardSender>();
+
 
             SMTPSettings smtpSettings = new SMTPSettings();
 

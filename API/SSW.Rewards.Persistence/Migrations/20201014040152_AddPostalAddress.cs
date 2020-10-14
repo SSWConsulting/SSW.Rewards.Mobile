@@ -7,19 +7,13 @@ namespace SSW.Rewards.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "AddressId",
-                table: "Users",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
                 name: "RewardType",
                 table: "Rewards",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "PostalAddress",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -33,39 +27,14 @@ namespace SSW.Rewards.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostalAddress", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_AddressId",
-                table: "Users",
-                column: "AddressId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Users_PostalAddress_AddressId",
-                table: "Users",
-                column: "AddressId",
-                principalTable: "PostalAddress",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Users_PostalAddress_AddressId",
-                table: "Users");
-
             migrationBuilder.DropTable(
-                name: "PostalAddress");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Users_AddressId",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "AddressId",
-                table: "Users");
+                name: "Addresses");
 
             migrationBuilder.DropColumn(
                 name: "RewardType",

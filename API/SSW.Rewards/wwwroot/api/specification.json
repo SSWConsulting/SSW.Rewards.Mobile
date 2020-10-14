@@ -1,5 +1,5 @@
-﻿{
-  "x-generator": "NSwag v13.1.2.0 (NJsonSchema v10.0.24.0 (Newtonsoft.Json v12.0.0.0))",
+{
+  "x-generator": "NSwag v13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "SSW Rewards API",
@@ -342,7 +342,7 @@
         }
       }
     },
-    "/api/Reward/Claim/claim": {
+    "/api/Reward/Claim": {
       "post": {
         "tags": [
           "Reward"
@@ -484,20 +484,22 @@
           "User"
         ],
         "operationId": "User_UploadProfilePic",
-        "parameters": [
-          {
-            "type": "file",
-            "name": "file",
-            "in": "formData",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "binary",
-              "nullable": true
-            },
-            "nullable": true
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "",
@@ -800,27 +802,25 @@
         }
       },
       "AddRewardCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "reward": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/RewardViewModel"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RewardViewModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "imageBytesInBase64": {
+                "type": "string",
+                "nullable": true
+              },
+              "imageFileName": {
+                "type": "string",
+                "nullable": true
               }
-            ]
-          },
-          "imageBytes": {
-            "type": "string",
-            "format": "byte",
-            "nullable": true
-          },
-          "imageFileName": {
-            "type": "string",
-            "nullable": true
+            }
           }
-        }
+        ]
       },
       "ClaimRewardResult": {
         "type": "object",
