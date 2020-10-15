@@ -3,7 +3,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Reward.Queries.GetRewardList;
+using SSW.Rewards.Application.Reward.Queries.Common;
 using System;
 using System.Linq;
 using System.Threading;
@@ -15,23 +15,28 @@ namespace SSW.Rewards.Application.Reward.Commands
     {
         public string Code { get; set; }
 
+        public bool ClaimInPerson { get; set; } = true;
+
         public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
         {
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
             private readonly IDateTimeProvider _dateTimeProvider;
+            private readonly IRewardSender _rewardSender;
 
             public ClaimRewardCommandHandler(
                 ICurrentUserService currentUserService,
                 ISSWRewardsDbContext context,
                 IMapper mapper,
-                IDateTimeProvider dateTimeProvider)
+                IDateTimeProvider dateTimeProvider,
+                IRewardSender rewardSender)
             {
                 _currentUserService = currentUserService;
                 _context = context;
                 _mapper = mapper;
                 _dateTimeProvider = dateTimeProvider;
+                _rewardSender = rewardSender;
             }
 
             public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
@@ -51,7 +56,16 @@ namespace SSW.Rewards.Application.Reward.Commands
 
                 var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
 
-                if(user.Points < reward.Cost)
+                var userRewards = await _context
+                    .UserRewards
+                    .Where(ur => ur.UserId == user.Id)
+                    .ToListAsync(cancellationToken);
+
+                int pointsUsed = userRewards.Sum(ur => ur.Reward.Cost);
+
+                int balance = user.Points - pointsUsed;
+
+                if(balance < reward.Cost)
                 {
                     return new ClaimRewardResult
                     {
@@ -59,11 +73,13 @@ namespace SSW.Rewards.Application.Reward.Commands
                     };
                 }
 
-                var userHasReward = await _context
-                    .UserRewards
-                    .Where(ur => ur.UserId == user.Id)
+                // TODO: the following logic is intended to 'debounce' reward
+                // claiming, to prevent users claiming the same reward twice
+                // within a 5 minute window. With the move from 'milestone' to
+                // 'currency' model, this may not be required anymore.
+                var userHasReward = userRewards
                     .Where(ur => ur.RewardId == reward.Id)
-                    .FirstOrDefaultAsync(cancellationToken);
+                    .FirstOrDefault();
 
                 if(userHasReward != null && userHasReward.AwardedAt >= _dateTimeProvider.Now.AddMinutes(-5))
                 {
@@ -82,6 +98,12 @@ namespace SSW.Rewards.Application.Reward.Commands
                     }, cancellationToken);
 
                 await _context.SaveChangesAsync(cancellationToken);
+
+                var dbUser = await _context.Users
+                    .Where(u => u.Id == user.Id)
+                    .FirstAsync(cancellationToken);
+
+                await _rewardSender.SendRewardAsync(dbUser, reward, cancellationToken);
 
                 var rewardModel = _mapper.Map<RewardViewModel>(reward);
 

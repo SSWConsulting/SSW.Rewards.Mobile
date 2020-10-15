@@ -100,7 +100,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName": "SSW.Rewards - SQL Server"
       },
       "name": "[variables('sqlServerName')]",
       "properties": {
@@ -119,7 +120,8 @@
           "tags": {
             "project": "[parameters('project')]",
             "environment": "[variables('environment')]",
-            "modifiedDate": "[variables('modifiedDate')]"
+            "modifiedDate": "[variables('modifiedDate')]",
+            "displayName":"SSW.Rewards-db"
           },
           "name": "[variables('sqlDatabaseName')]",
           "properties": {
@@ -153,7 +155,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-ProfileStorage"
       },
       "kind": "StorageV2",
       "sku": {
@@ -180,7 +183,8 @@
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('appName'))]": "Resource",
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-AppInsights"
       },
       "properties": {
         "ApplicationId": "[variables('appName')]",
@@ -199,7 +203,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName": "SSW.Rewards-API"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components/', variables('appInsightsName'))]"
@@ -209,6 +214,9 @@
         "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
         "hostingEnvironment": "[parameters('hostingEnvironment')]",
         "clientAffinityEnabled": true,
+        "tags":{
+          "displayName":"SSW.Rewards"
+        },
         "siteConfig": {
           "metadata": [
             {
@@ -299,7 +307,8 @@
       "tags": {
         "project": "[parameters('project')]",
         "environment": "[variables('environment')]",
-        "modifiedDate": "[variables('modifiedDate')]"
+        "modifiedDate": "[variables('modifiedDate')]",
+        "displayName":"SSW.Rewards-KeyVault"
       },
       "dependsOn": [
       ],
@@ -317,8 +326,8 @@
         },
         "accessPolicies": [
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "99a78837-69d6-4fe1-8f3b-00ea0d3bb923",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "eb40509d-24fa-4bd6-a35f-ba576468a92e",
             "permissions": {
               "keys": [
                 "List",
@@ -333,8 +342,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "ba21b0de-b44f-4119-b357-4d3e3e0b07a0",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "2beeb814-a354-4f92-b25b-b49973149e80",
             "permissions": {
               "keys": [
                 "List",
@@ -349,8 +358,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "24ffe149-ae17-4505-acab-95dd0fd092c2",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "169536f0-6230-4760-b5f8-c1224b46da51",
             "permissions": {
               "keys": [
                 "List",
@@ -365,8 +374,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "1315b5b8-9f17-4526-bfb2-9f43ab7cdae7",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "770f294b-ecb4-4e9a-9a36-2560b20119e7",
             "permissions": {
               "keys": [
                 "List",
@@ -381,8 +390,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "04e907fc-f681-48f1-87ab-75e0790b4ce6",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "fc316a10-f6d1-4a8a-b281-104d437b05eb",
             "permissions": {
               "keys": [
                 "List",
@@ -397,8 +406,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "7ddccbbb-6d7a-491e-992b-436e071f1caf",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "2033459d-f13a-42bf-a875-28e1a5fa2aa0",
             "permissions": {
               "keys": [
                 "List",
@@ -413,8 +422,8 @@
             }
           },
           {
-            "tenantId": "ac2f7c34-b935-48e9-abdc-11e5d4fcb2b0",
-            "objectId": "bc9f532b-d5ff-4699-a4f8-11107f5fe6b2",
+            "tenantId": "3096cd9e-2cb0-450f-8766-7739a7f26617",
+            "objectId": "ba5f915d-69bd-4c61-beaf-db3469aa282a2",
             "permissions": {
               "keys": [
                 "List",
@@ -472,7 +481,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('contentStorageAccountName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"ContentStorageConnectionString"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -484,7 +496,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlAdminUsername"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -496,7 +511,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlAdminPassword"
+      }
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
@@ -508,7 +526,10 @@
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
         "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
-      ]
+      ],
+      "tags": {
+        "displayName":"SqlConnectionString"
+      }
     }
   ],
   "outputs": {

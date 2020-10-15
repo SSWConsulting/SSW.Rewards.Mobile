@@ -1,7 +1,4 @@
-﻿using SSW.Rewards.Application.Reward.Queries.GetRewardList;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SSW.Rewards.Application.Reward.Queries.Common;
 
 namespace SSW.Rewards.Application.Reward.Commands
 {

@@ -15,7 +15,9 @@
     BackgroundColor="{StaticResource LeaderboardBackground}"
     mc:Ignorable="d">
     <Shell.TitleView>
-        <controls:TitleView Title="{Binding Title}" />
+        <controls:TitleView x:Name="pageTitle"
+                            Title="{Binding Title}"
+                            TapTitleCommand="{Binding ScrollToTopCommand}"/>
     </Shell.TitleView>
     <ContentPage.Content>
         <RelativeLayout>

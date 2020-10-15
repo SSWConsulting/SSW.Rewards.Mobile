@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    partial class SSWConsultingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200930064233_AddUriToRewards")]
+    partial class AddUriToRewards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,36 +45,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.ToTable("Achievements");
                 });
 
-            modelBuilder.Entity("SSW.Rewards.Domain.Entities.PostalAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BuildingNameOrNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Municipality")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Addresses");
-                });
-
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Reward", b =>
                 {
                     b.Property<int>("Id")
@@ -94,9 +66,6 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RewardType")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -189,9 +158,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
@@ -205,8 +171,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email");
 
@@ -288,13 +252,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasForeignKey("StaffMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SSW.Rewards.Domain.Entities.User", b =>
-                {
-                    b.HasOne("SSW.Rewards.Domain.Entities.PostalAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserAchievement", b =>
