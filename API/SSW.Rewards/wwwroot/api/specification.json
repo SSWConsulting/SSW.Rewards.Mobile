@@ -342,6 +342,38 @@
         }
       }
     },
+    "/api/Reward/ClaimForUser": {
+      "post": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_ClaimForUser",
+        "requestBody": {
+          "x-name": "claimRewardForUserCommand",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRewardForUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimRewardResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Reward/Claim": {
       "post": {
         "tags": [
@@ -889,6 +921,20 @@
           4
         ]
       },
+      "ClaimRewardForUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "StaffListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -986,6 +1032,10 @@
             "nullable": true
           },
           "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "balance": {
             "type": "integer",
             "format": "int32"
           }

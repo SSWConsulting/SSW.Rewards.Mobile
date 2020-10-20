@@ -30,8 +30,8 @@ namespace SSW.Rewards.Application.User.Queries.GetUser
             public async Task<UserViewModel> Handle(GetUserQuery request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users
-                    .Include(u => u.UserAchievements)
-                    .ThenInclude(ua => ua.Achievement)
+                    .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+                    .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
                     .Where(u => u.Id == request.Id)
                     .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);

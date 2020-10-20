@@ -414,6 +414,7 @@ export interface IRewardClient {
     adminList(): Promise<RewardAdminListViewModel>;
     getRecent(query: GetRecentRewardsQuery): Promise<RecentRewardListViewModel>;
     add(addRewardCommand: AddRewardCommand): Promise<number>;
+    claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult>;
     claim(rewardCode: string | null): Promise<ClaimRewardResult>;
 }
 
@@ -580,6 +581,46 @@ export class RewardClient extends BaseClient implements IRewardClient {
         return Promise.resolve<number>(<any>null);
     }
 
+    claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult> {
+        let url_ = this.baseUrl + "/api/Reward/ClaimForUser";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(claimRewardForUserCommand);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processClaimForUser(_response);
+        });
+    }
+
+    protected processClaimForUser(response: Response): Promise<ClaimRewardResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClaimRewardResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClaimRewardResult>(<any>null);
+    }
+
     claim(rewardCode: string | null): Promise<ClaimRewardResult> {
         let url_ = this.baseUrl + "/api/Reward/Claim?";
         if (rewardCode === undefined)
@@ -732,7 +773,7 @@ export class UserClient extends BaseClient implements IUserClient {
         let url_ = this.baseUrl + "/api/User/GetUser/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -1658,6 +1699,46 @@ export enum RewardStatus {
     Error = 4,
 }
 
+export class ClaimRewardForUserCommand implements IClaimRewardForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+
+    constructor(data?: IClaimRewardForUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.code = _data["code"];
+        }
+    }
+
+    static fromJS(data: any): ClaimRewardForUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimRewardForUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["code"] = this.code;
+        return data; 
+    }
+}
+
+export interface IClaimRewardForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+}
+
 export class StaffListViewModel implements IStaffListViewModel {
     staff?: StaffDto[] | undefined;
 
@@ -1831,6 +1912,7 @@ export class UserViewModel implements IUserViewModel {
     fullName?: string | undefined;
     profilePic?: string | undefined;
     points?: number;
+    balance?: number;
 
     constructor(data?: IUserViewModel) {
         if (data) {
@@ -1841,12 +1923,13 @@ export class UserViewModel implements IUserViewModel {
         }
     }
 
-    init(data?: any) {
-        if (data) {
-            this.id = data["id"];
-            this.fullName = data["fullName"];
-            this.profilePic = data["profilePic"];
-            this.points = data["points"];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.profilePic = _data["profilePic"];
+            this.points = _data["points"];
+            this.balance = _data["balance"];
         }
     }
 
@@ -1863,6 +1946,7 @@ export class UserViewModel implements IUserViewModel {
         data["fullName"] = this.fullName;
         data["profilePic"] = this.profilePic;
         data["points"] = this.points;
+        data["balance"] = this.balance;
         return data; 
     }
 }
@@ -1872,6 +1956,7 @@ export interface IUserViewModel {
     fullName?: string | undefined;
     profilePic?: string | undefined;
     points?: number;
+    balance?: number;
 }
 
 export class UserAchievementsViewModel implements IUserAchievementsViewModel {
