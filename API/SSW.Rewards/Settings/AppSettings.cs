@@ -33,7 +33,7 @@ namespace SSW.Rewards.WebAPI.Settings
 
 		public string KeyVaultUrl => _config[nameof(KeyVaultUrl)];
 
-        public string TechQuizUrl => _config[nameof(TechQuizUrl)];
+		public string TechQuizUrl => _config[nameof(TechQuizUrl)];
 
 		public int SecretCacheTimeoutMinutes => GetValue(nameof(SecretCacheTimeoutMinutes), 60);
 

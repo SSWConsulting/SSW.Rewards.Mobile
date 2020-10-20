@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System;
 using SSW.Rewards.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 
 namespace SSW.Rewards.Infrastructure
 {

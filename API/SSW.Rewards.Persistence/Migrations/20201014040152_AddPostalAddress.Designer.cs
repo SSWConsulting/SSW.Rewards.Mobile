@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    partial class SSWConsultingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201014040152_AddPostalAddress")]
+    partial class AddPostalAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,9 +191,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
@@ -205,8 +204,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email");
 
@@ -288,13 +285,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasForeignKey("StaffMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SSW.Rewards.Domain.Entities.User", b =>
-                {
-                    b.HasOne("SSW.Rewards.Domain.Entities.PostalAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserAchievement", b =>

@@ -1,5 +1,5 @@
-﻿{
-  "x-generator": "NSwag v13.1.2.0 (NJsonSchema v10.0.24.0 (Newtonsoft.Json v12.0.0.0))",
+{
+  "x-generator": "NSwag v13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "SSW Rewards API",
@@ -315,6 +315,39 @@
           "Reward"
         ],
         "operationId": "Reward_Add",
+        "requestBody": {
+          "x-name": "addRewardCommand",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRewardCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Reward/Claim": {
+      "post": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_Claim",
         "parameters": [
           {
             "name": "rewardCode",
@@ -483,20 +516,22 @@
           "User"
         ],
         "operationId": "User_UploadProfilePic",
-        "parameters": [
-          {
-            "type": "file",
-            "name": "file",
-            "in": "formData",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "binary",
-              "nullable": true
-            },
-            "nullable": true
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "",
@@ -695,8 +730,27 @@
           "cost": {
             "type": "integer",
             "format": "int32"
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
+          },
+          "rewardType": {
+            "$ref": "#/components/schemas/RewardType"
           }
         }
+      },
+      "RewardType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Physical",
+          "Digital"
+        ],
+        "enum": [
+          0,
+          1
+        ]
       },
       "RewardAdminListViewModel": {
         "type": "object",
@@ -778,6 +832,27 @@
             "nullable": true
           }
         }
+      },
+      "AddRewardCommand": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RewardViewModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "imageBytesInBase64": {
+                "type": "string",
+                "nullable": true
+              },
+              "imageFileName": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
       },
       "ClaimRewardResult": {
         "type": "object",

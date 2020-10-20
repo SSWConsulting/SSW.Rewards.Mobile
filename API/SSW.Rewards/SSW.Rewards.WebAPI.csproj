@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>aspnet-SSW.Consulting-116EE6F2-C844-46F8-A58B-6C88A6F3588C</UserSecretsId>
+    <PreserveCompilationReferences>true</PreserveCompilationReferences>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,9 +23,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.1.2" />
-    <PackageReference Include="NSwag.Core" Version="13.1.2" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.1.2">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.8.2" />
+    <PackageReference Include="NSwag.Core" Version="13.8.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

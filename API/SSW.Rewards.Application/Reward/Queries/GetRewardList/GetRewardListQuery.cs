@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Reward.Queries.GetRewardList
+namespace SSW.Rewards.Application.Reward.Queries.Common
 {
     public class GetRewardListQuery : IRequest<RewardListViewModel>
     {

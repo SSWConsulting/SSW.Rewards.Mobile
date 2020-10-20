@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -31,8 +27,18 @@ namespace SSW.Rewards.Views
             var vm = Resolver.Resolve<LeaderBoardViewModel>();
             vm.Navigation = Navigation;
             BindingContext = vm;
+            pageTitle.BindingContext = vm;
             show = DateTime.Now.AddMilliseconds(200);
             ((LeaderBoardViewModel)this.BindingContext).ScrollToMe = ((obj) =>
+            {
+                leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
+            });
+            MessagingCenter.Subscribe<string>(this, "ScrollToTop", (obj) => ScrollToTop());
+        }
+
+        private void ScrollToTop()
+        {
+            ((LeaderBoardViewModel)this.BindingContext).ScrollToTop = ((obj) =>
             {
                 leaderList.ScrollTo(obj, ScrollToPosition.MakeVisible, true);
             });
