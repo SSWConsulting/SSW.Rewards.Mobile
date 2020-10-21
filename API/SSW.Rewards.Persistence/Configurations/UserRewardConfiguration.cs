@@ -17,10 +17,6 @@ namespace SSW.Rewards.Persistence.Configurations
                 .WithMany(u => u.UserRewards);
 
             builder
-                .HasIndex(ur => new { ur.UserId, ur.RewardId })
-                .IsUnique();
-
-            builder
                 .Property(ur => ur.AwardedAt)
                 .HasDefaultValueSql("getdate()")
                 .ValueGeneratedOnAdd();
