@@ -78,6 +78,38 @@
         }
       }
     },
+    "/api/Achievement/ClaimForUser": {
+      "post": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_ClaimForUser",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimAchievementForUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimAchievementResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Achievement/Add": {
       "post": {
         "tags": [
@@ -661,6 +693,47 @@
           }
         }
       },
+      "ClaimAchievementResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/AchievementStatus"
+          }
+        }
+      },
+      "AchievementStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Claimed",
+          "NotFound",
+          "Duplicate",
+          "NotEnoughPoints",
+          "Error"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "ClaimAchievementForUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "PostAchievementResult": {
         "type": "object",
         "additionalProperties": false,
@@ -674,11 +747,11 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/AchievementStatus"
+            "$ref": "#/components/schemas/AchievementStatus2"
           }
         }
       },
-      "AchievementStatus": {
+      "AchievementStatus2": {
         "type": "integer",
         "description": "",
         "x-enumNames": [
@@ -1038,27 +1111,42 @@
           "balance": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "UserAchievementsViewModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userId": {
-            "type": "integer",
-            "format": "int32"
           },
-          "points": {
-            "type": "integer",
-            "format": "int32"
+          "rewards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserRewardViewModel"
+            }
           },
-          "userAchievements": {
+          "achievements": {
             "type": "array",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/UserAchievementViewModel"
             }
+          }
+        }
+      },
+      "UserRewardViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewardName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rewardCost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "awarded": {
+            "type": "boolean"
+          },
+          "awardedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         }
       },
@@ -1084,6 +1172,27 @@
           }
         }
       },
+      "UserAchievementsViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userAchievements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserAchievementViewModel"
+            }
+          }
+        }
+      },
       "UserRewardsViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -1098,28 +1207,6 @@
             "items": {
               "$ref": "#/components/schemas/UserRewardViewModel"
             }
-          }
-        }
-      },
-      "UserRewardViewModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "rewardName": {
-            "type": "string",
-            "nullable": true
-          },
-          "rewardCost": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "awarded": {
-            "type": "boolean"
-          },
-          "awardedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
           }
         }
       }

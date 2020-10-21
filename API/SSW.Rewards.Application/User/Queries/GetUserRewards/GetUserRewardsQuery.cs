@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using SSW.Rewards.Application.Common.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,20 +29,33 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
 
             public async Task<UserRewardsViewModel> Handle(GetUserRewardsQuery request, CancellationToken cancellationToken)
             {
-                var userRewards = await _context.Rewards
-                    .Include(r => r.UserRewards)
-                    .Select(r => new JoinedUserReward
-                    {
-                        Reward = r,
-                        UserReward = r.UserRewards.FirstOrDefault(ur => ur.UserId == request.UserId)
-                    })
-                    .ProjectTo<UserRewardViewModel>(_mapper.ConfigurationProvider)
+                var rewards = await _context.Rewards.ToListAsync(cancellationToken);
+                var userRewards = await _context.UserRewards
+                    .Where(ur => ur.UserId == request.UserId)
                     .ToListAsync(cancellationToken);
+
+                var vm = new List<UserRewardViewModel>();
+                foreach (var reward in rewards)
+                {
+                    var userReward = userRewards.Where(ur => ur.RewardId == reward.Id).FirstOrDefault();
+                    if (userReward != null)
+                    {
+                        vm.Add(_mapper.Map<UserRewardViewModel>(userReward));
+                    }
+                    else
+                    {
+                        vm.Add(new UserRewardViewModel
+                        {
+                            RewardName = reward.Name,
+                            RewardCost = reward.Cost
+                        });
+                    }
+                }
 
                 return new UserRewardsViewModel
                 {
                     UserId = request.UserId,
-                    UserRewards = userRewards
+                    UserRewards = vm
                 };
             }
         }

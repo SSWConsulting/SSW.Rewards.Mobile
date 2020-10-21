@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser;
 using SSW.Rewards.Application.Achievement.Command.PostAchievement;
 using SSW.Rewards.Application.Achievement.Commands.AddAchievement;
 using SSW.Rewards.Application.Achievement.Queries.GetAchievementAdminList;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-	public class AchievementController : BaseController
+    public class AchievementController : BaseController
     {
         private readonly IWWWRedirectSettings _redirectSettings;
 
@@ -39,6 +40,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<ClaimAchievementResult>> ClaimForUser([FromBody] ClaimAchievementForUserCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost]
         public async Task<ActionResult<AchievementViewModel>> Add([FromQuery] string achievementCode)
         {
             return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
@@ -52,7 +60,7 @@ namespace SSW.Rewards.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult TechQuiz([FromQuery]string user)
+        public ActionResult TechQuiz([FromQuery] string user)
         {
             string url = string.Concat(_redirectSettings.TechQuizUrl, user);
             return Redirect(url);
