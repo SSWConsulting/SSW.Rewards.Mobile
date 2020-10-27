@@ -34,6 +34,7 @@ namespace SSW.Rewards.Application.User.Queries.GetUserRewards
                     .Where(ur => ur.UserId == request.UserId)
                     .ToListAsync(cancellationToken);
 
+                // Currently using in-memory join because the expected returned records are very low (max 10 or so)
                 var vm = new List<UserRewardViewModel>();
                 foreach (var reward in rewards)
                 {

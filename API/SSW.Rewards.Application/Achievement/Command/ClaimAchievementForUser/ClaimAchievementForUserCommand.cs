@@ -41,6 +41,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
 
             if (achievement == null)
             {
+                _logger.LogError("Achievement was not found for code: {0}", request.Code);
                 return new ClaimAchievementResult
                 {
                     status = AchievementStatus.NotFound
@@ -54,6 +55,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
 
             if (user == null)
             {
+                _logger.LogError("User was not found for id: {0}", request.UserId);
                 return new ClaimAchievementResult
                 {
                     status = AchievementStatus.Error
@@ -67,6 +69,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
 
             if (achievementCheck != null)
             {
+                _logger.LogError("User already has achievement: {0}", request.Code);
                 return new ClaimAchievementResult
                 {
                     status = AchievementStatus.Duplicate

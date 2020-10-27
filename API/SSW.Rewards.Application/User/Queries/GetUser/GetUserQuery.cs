@@ -38,12 +38,11 @@ namespace SSW.Rewards.Application.User.Queries.GetUser
             {
                 try
                 {
-                    var user = await _context.Users
+                    var vm = await _context.Users
                         .Where(u => u.Id == request.Id)
                         .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
                         .FirstOrDefaultAsync(cancellationToken);
 
-                    var vm = user;
                     if (vm == null)
                     {
                         throw new NotFoundException(nameof(User), request.Id);

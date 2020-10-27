@@ -41,6 +41,7 @@ namespace SSW.Rewards.Application.Reward.Commands
 
             if (reward == null)
             {
+                _logger.LogError("Reward not found with code: {0}", request.Code);
                 return new ClaimRewardResult
                 {
                     status = RewardStatus.NotFound
@@ -64,6 +65,7 @@ namespace SSW.Rewards.Application.Reward.Commands
 
             if (balance < reward.Cost)
             {
+                _logger.LogInformation("User does not have enough points to claim reward");
                 return new ClaimRewardResult
                 {
                     status = RewardStatus.NotEnoughPoints
