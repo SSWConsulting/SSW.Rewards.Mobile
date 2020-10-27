@@ -39,6 +39,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<ClaimRewardResult>> ClaimForUser(ClaimRewardForUserCommand claimRewardForUserCommand)
+        {
+            return Ok(await Mediator.Send(claimRewardForUserCommand));
+        }
+
+        [HttpPost]
         public async Task<ActionResult<ClaimRewardResult>> Claim([FromQuery] string rewardCode)
         {
             return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));

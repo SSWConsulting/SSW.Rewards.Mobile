@@ -25,6 +25,7 @@ export interface IAchievementClient {
     list(): Promise<AchievementListViewModel>;
     adminList(): Promise<AchievementAdminListViewModel>;
     create(command: CreateAchievementCommand): Promise<AchievementAdminViewModel>;
+    claimForUser(command: ClaimAchievementForUserCommand): Promise<ClaimAchievementResult>;
     add(achievementCode: string | null): Promise<AchievementViewModel>;
     post(achievementCode: string | null): Promise<PostAchievementResult>;
     techQuiz(user: string | null): Promise<FileResponse>;
@@ -151,6 +152,46 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
             });
         }
         return Promise.resolve<AchievementAdminViewModel>(<any>null);
+    }
+
+    claimForUser(command: ClaimAchievementForUserCommand): Promise<ClaimAchievementResult> {
+        let url_ = this.baseUrl + "/api/Achievement/ClaimForUser";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processClaimForUser(_response);
+        });
+    }
+
+    protected processClaimForUser(response: Response): Promise<ClaimAchievementResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClaimAchievementResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClaimAchievementResult>(<any>null);
     }
 
     add(achievementCode: string | null): Promise<AchievementViewModel> {
@@ -414,6 +455,7 @@ export interface IRewardClient {
     adminList(): Promise<RewardAdminListViewModel>;
     getRecent(query: GetRecentRewardsQuery): Promise<RecentRewardListViewModel>;
     add(addRewardCommand: AddRewardCommand): Promise<number>;
+    claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult>;
     claim(rewardCode: string | null): Promise<ClaimRewardResult>;
 }
 
@@ -580,6 +622,46 @@ export class RewardClient extends BaseClient implements IRewardClient {
         return Promise.resolve<number>(<any>null);
     }
 
+    claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult> {
+        let url_ = this.baseUrl + "/api/Reward/ClaimForUser";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(claimRewardForUserCommand);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processClaimForUser(_response);
+        });
+    }
+
+    protected processClaimForUser(response: Response): Promise<ClaimRewardResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClaimRewardResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClaimRewardResult>(<any>null);
+    }
+
     claim(rewardCode: string | null): Promise<ClaimRewardResult> {
         let url_ = this.baseUrl + "/api/Reward/Claim?";
         if (rewardCode === undefined)
@@ -675,6 +757,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
 
 export interface IUserClient {
     get(): Promise<CurrentUserViewModel>;
+    getUser(id: number): Promise<UserViewModel>;
     achievements(userId: number): Promise<UserAchievementsViewModel>;
     rewards(userId: number): Promise<UserRewardsViewModel>;
     uploadProfilePic(file: FileParameter | null | undefined): Promise<string>;
@@ -725,6 +808,45 @@ export class UserClient extends BaseClient implements IUserClient {
             });
         }
         return Promise.resolve<CurrentUserViewModel>(<any>null);
+    }
+
+    getUser(id: number): Promise<UserViewModel> {
+        let url_ = this.baseUrl + "/api/User/GetUser/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUser(_response);
+        });
+    }
+
+    protected processGetUser(response: Response): Promise<UserViewModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserViewModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserViewModel>(<any>null);
     }
 
     achievements(userId: number): Promise<UserAchievementsViewModel> {
@@ -1069,9 +1191,93 @@ export interface ICreateAchievementCommand {
     value?: number;
 }
 
+export class ClaimAchievementResult implements IClaimAchievementResult {
+    status?: AchievementStatus;
+
+    constructor(data?: IClaimAchievementResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+        }
+    }
+
+    static fromJS(data: any): ClaimAchievementResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimAchievementResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        return data; 
+    }
+}
+
+export interface IClaimAchievementResult {
+    status?: AchievementStatus;
+}
+
+export enum AchievementStatus {
+    Claimed = 0,
+    NotFound = 1,
+    Duplicate = 2,
+    NotEnoughPoints = 3,
+    Error = 4,
+}
+
+export class ClaimAchievementForUserCommand implements IClaimAchievementForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+
+    constructor(data?: IClaimAchievementForUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.code = _data["code"];
+        }
+    }
+
+    static fromJS(data: any): ClaimAchievementForUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimAchievementForUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["code"] = this.code;
+        return data; 
+    }
+}
+
+export interface IClaimAchievementForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+}
+
 export class PostAchievementResult implements IPostAchievementResult {
     viewModel?: AchievementViewModel | undefined;
-    status?: AchievementStatus;
+    status?: AchievementStatus2;
 
     constructor(data?: IPostAchievementResult) {
         if (data) {
@@ -1106,10 +1312,10 @@ export class PostAchievementResult implements IPostAchievementResult {
 
 export interface IPostAchievementResult {
     viewModel?: AchievementViewModel | undefined;
-    status?: AchievementStatus;
+    status?: AchievementStatus2;
 }
 
-export enum AchievementStatus {
+export enum AchievementStatus2 {
     Added = 0,
     NotFound = 1,
     Duplicate = 2,
@@ -1618,6 +1824,46 @@ export enum RewardStatus {
     Error = 4,
 }
 
+export class ClaimRewardForUserCommand implements IClaimRewardForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+
+    constructor(data?: IClaimRewardForUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.code = _data["code"];
+        }
+    }
+
+    static fromJS(data: any): ClaimRewardForUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimRewardForUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["code"] = this.code;
+        return data; 
+    }
+}
+
+export interface IClaimRewardForUserCommand {
+    userId?: number;
+    code?: string | undefined;
+}
+
 export class StaffListViewModel implements IStaffListViewModel {
     staff?: StaffDto[] | undefined;
 
@@ -1786,6 +2032,178 @@ export interface ICurrentUserViewModel {
     points?: number;
 }
 
+export class UserViewModel implements IUserViewModel {
+    id?: number;
+    fullName?: string | undefined;
+    profilePic?: string | undefined;
+    points?: number;
+    balance?: number;
+    rewards?: UserRewardViewModel[] | undefined;
+    achievements?: UserAchievementViewModel[] | undefined;
+
+    constructor(data?: IUserViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.profilePic = _data["profilePic"];
+            this.points = _data["points"];
+            this.balance = _data["balance"];
+            if (Array.isArray(_data["rewards"])) {
+                this.rewards = [] as any;
+                for (let item of _data["rewards"])
+                    this.rewards!.push(UserRewardViewModel.fromJS(item));
+            }
+            if (Array.isArray(_data["achievements"])) {
+                this.achievements = [] as any;
+                for (let item of _data["achievements"])
+                    this.achievements!.push(UserAchievementViewModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UserViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["profilePic"] = this.profilePic;
+        data["points"] = this.points;
+        data["balance"] = this.balance;
+        if (Array.isArray(this.rewards)) {
+            data["rewards"] = [];
+            for (let item of this.rewards)
+                data["rewards"].push(item.toJSON());
+        }
+        if (Array.isArray(this.achievements)) {
+            data["achievements"] = [];
+            for (let item of this.achievements)
+                data["achievements"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUserViewModel {
+    id?: number;
+    fullName?: string | undefined;
+    profilePic?: string | undefined;
+    points?: number;
+    balance?: number;
+    rewards?: UserRewardViewModel[] | undefined;
+    achievements?: UserAchievementViewModel[] | undefined;
+}
+
+export class UserRewardViewModel implements IUserRewardViewModel {
+    rewardName?: string | undefined;
+    rewardCost?: number;
+    awarded?: boolean;
+    awardedAt?: Date | undefined;
+
+    constructor(data?: IUserRewardViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rewardName = _data["rewardName"];
+            this.rewardCost = _data["rewardCost"];
+            this.awarded = _data["awarded"];
+            this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UserRewardViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRewardViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rewardName"] = this.rewardName;
+        data["rewardCost"] = this.rewardCost;
+        data["awarded"] = this.awarded;
+        data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUserRewardViewModel {
+    rewardName?: string | undefined;
+    rewardCost?: number;
+    awarded?: boolean;
+    awardedAt?: Date | undefined;
+}
+
+export class UserAchievementViewModel implements IUserAchievementViewModel {
+    achievementName?: string | undefined;
+    achievementValue?: number;
+    complete?: boolean;
+    awardedAt?: Date | undefined;
+
+    constructor(data?: IUserAchievementViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.achievementName = _data["achievementName"];
+            this.achievementValue = _data["achievementValue"];
+            this.complete = _data["complete"];
+            this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UserAchievementViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserAchievementViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["achievementName"] = this.achievementName;
+        data["achievementValue"] = this.achievementValue;
+        data["complete"] = this.complete;
+        data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUserAchievementViewModel {
+    achievementName?: string | undefined;
+    achievementValue?: number;
+    complete?: boolean;
+    awardedAt?: Date | undefined;
+}
+
 export class UserAchievementsViewModel implements IUserAchievementsViewModel {
     userId?: number;
     points?: number;
@@ -1838,54 +2256,6 @@ export interface IUserAchievementsViewModel {
     userAchievements?: UserAchievementViewModel[] | undefined;
 }
 
-export class UserAchievementViewModel implements IUserAchievementViewModel {
-    achievementName?: string | undefined;
-    achievementValue?: number;
-    complete?: boolean;
-    awardedAt?: Date | undefined;
-
-    constructor(data?: IUserAchievementViewModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.achievementName = _data["achievementName"];
-            this.achievementValue = _data["achievementValue"];
-            this.complete = _data["complete"];
-            this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): UserAchievementViewModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserAchievementViewModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["achievementName"] = this.achievementName;
-        data["achievementValue"] = this.achievementValue;
-        data["complete"] = this.complete;
-        data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IUserAchievementViewModel {
-    achievementName?: string | undefined;
-    achievementValue?: number;
-    complete?: boolean;
-    awardedAt?: Date | undefined;
-}
-
 export class UserRewardsViewModel implements IUserRewardsViewModel {
     userId?: number;
     userRewards?: UserRewardViewModel[] | undefined;
@@ -1932,54 +2302,6 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
 export interface IUserRewardsViewModel {
     userId?: number;
     userRewards?: UserRewardViewModel[] | undefined;
-}
-
-export class UserRewardViewModel implements IUserRewardViewModel {
-    rewardName?: string | undefined;
-    rewardCost?: number;
-    awarded?: boolean;
-    awardedAt?: Date | undefined;
-
-    constructor(data?: IUserRewardViewModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.rewardName = _data["rewardName"];
-            this.rewardCost = _data["rewardCost"];
-            this.awarded = _data["awarded"];
-            this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): UserRewardViewModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserRewardViewModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["rewardName"] = this.rewardName;
-        data["rewardCost"] = this.rewardCost;
-        data["awarded"] = this.awarded;
-        data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IUserRewardViewModel {
-    rewardName?: string | undefined;
-    rewardCost?: number;
-    awarded?: boolean;
-    awardedAt?: Date | undefined;
 }
 
 export interface FileParameter {

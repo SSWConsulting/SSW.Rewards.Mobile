@@ -1,6 +1,6 @@
 using AutoMapper;
+using SSW.Rewards.Domain.Entities;
 using System;
-using System.Linq;
 
 namespace SSW.Rewards.Application.User.Queries.GetUserAchievements
 {
@@ -11,6 +11,9 @@ namespace SSW.Rewards.Application.User.Queries.GetUserAchievements
             CreateMap<JoinedUserAchievement, UserAchievementViewModel>()
                 .ForMember(dst => dst.AwardedAt, opt => opt.MapFrom(src => src.UserAchievement != null ? src.UserAchievement.AwardedAt : (DateTime?)null))
                 .ForMember(dst => dst.Complete, opt => opt.MapFrom(src => src.UserAchievement != null));
+            CreateMap<UserAchievement, UserAchievementViewModel>()
+                .ForMember(dst => dst.AwardedAt, opt => opt.MapFrom(src => src != null ? src.AwardedAt : (DateTime?)null))
+                .ForMember(dst => dst.Complete, opt => opt.MapFrom(src => src != null));
         }
     }
 }
