@@ -12,7 +12,7 @@ interface RewardTableRowProps {
 
 export const RewardTableRow = (props: RewardTableRowProps) => {
   const {
-    reward: { name, code },
+    reward: { name, code, cost },
   } = props;
 
   return (
@@ -30,6 +30,7 @@ export const RewardTableRow = (props: RewardTableRowProps) => {
           )}
         </TableCell>
         <TableCell>{name}</TableCell>
+        <TableCell>{cost}</TableCell>
       </TableRow>
     </>
   );
@@ -40,6 +41,9 @@ export const SkeletonRow = () => {
     <TableRow>
       <TableCell align="left">
         <Skeleton animation="wave" variant="rect" width={80} height={80} />
+      </TableCell>
+      <TableCell align="left">
+        <Skeleton animation="wave" variant="text" width={200} />
       </TableCell>
       <TableCell align="left">
         <Skeleton animation="wave" variant="text" width={200} />

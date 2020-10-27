@@ -1,17 +1,18 @@
-import React, { PropsWithChildren } from "react";
-import { Table as MuiTable, TableBody, Paper } from "@material-ui/core";
-import { TableCell, TableHead, TableRow } from "@material-ui/core";
-
+import React, { PropsWithChildren } from 'react';
+import { Table as MuiTable, TableBody, Paper } from '@material-ui/core';
+import { TableCell, TableHead, TableRow } from '@material-ui/core';
 
 interface TableProps {
   items: string[];
 }
 
- const TableHeader = (props: { items: string[] }) => {
+const TableHeader = (props: { items: string[] }) => {
   return (
     <TableHead>
       <TableRow>
-        {props.items.map(i => (<TableCell key={i}>{i}</TableCell>))}
+        {props.items.map((i) => (
+          <TableCell key={i}>{i}</TableCell>
+        ))}
       </TableRow>
     </TableHead>
   );
@@ -19,6 +20,7 @@ interface TableProps {
 
 export const Table = (props: PropsWithChildren<TableProps>) => {
   const { items } = props;
+
   return (
     <Paper>
       <MuiTable stickyHeader>

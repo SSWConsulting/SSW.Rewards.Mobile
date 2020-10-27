@@ -6,13 +6,9 @@ export const Authenticating = () => {
     <Container fixed>
       <br />
       <Typography align="center" variant="h3" color="primary">
-        {" "}
-        SSW Rewards - Admin{" "}
+        SSW Rewards - Admin
       </Typography>
-      <Typography align="center">
-        Authenticating
-      </Typography>
-
+      <Typography align="center">Authenticating...</Typography>
     </Container>
   );
-}
+};

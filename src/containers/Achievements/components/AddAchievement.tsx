@@ -9,7 +9,7 @@ import { TextField } from '@material-ui/core';
 interface AddAchievementProps {
   addAchievement : (values: ICreateAchievementCommand ) => void
 }
-export const AddAchievement = (props: AddAchievementProps) => {;
+export const AddAchievement = (props: AddAchievementProps) => {
 
   const [showModal,setShowModal] = useState(false);
   const [newAchievement,setNewAchievement] = useState({} as ICreateAchievementCommand );

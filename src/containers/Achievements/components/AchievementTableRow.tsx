@@ -21,7 +21,7 @@ export const AchievementTableRow = (props: AchievementTableRowProps) => {
   return (
     <>
       <ResponsiveDialog
-        title={`${name} - ${value}`}
+        title={`${name} - ${value} - ${code}`}
         open={showdal}
         handleClose={() => setShowdal(false)}>
         {code && (

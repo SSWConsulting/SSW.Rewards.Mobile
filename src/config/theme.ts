@@ -17,7 +17,6 @@ export const theme = createMuiTheme({
          overrides: {
            MuiTableRow: {
              root: {
-
                "&:hover": {
                  boxShadow: `inset 0px 0px 0px 2px ${SSWRed}`,
                }

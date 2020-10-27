@@ -6,12 +6,14 @@ import Home from 'containers/Home';
 import Leaderboard from "containers/Leaderboard";
 import Achievements from "containers/Achievements";
 import Rewards from "containers/Rewards";
+import { UserDetail } from 'containers/UserDetail';
 
 interface Route  {
     path: string;
     title: string;
     component: React.ComponentType<any>;
     icon: any,
+    hidden?: boolean
 }
 
 export const routes = [
@@ -26,6 +28,12 @@ export const routes = [
            title: "Leaderboard",
            component: Leaderboard,
            icon: PeopleIcon
+         },
+         {
+           path: "/user/:userId",
+           title: "User",
+           component: UserDetail,
+           hidden: true
          },
          {
            path: "/achievements",

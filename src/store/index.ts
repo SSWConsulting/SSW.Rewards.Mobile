@@ -6,15 +6,22 @@ import {
   RewardClient,
   StaffClient,
   BaseClient,
-  AchievementViewModel
+  AchievementViewModel,
+  UserViewModel,
+  UserAchievementsViewModel,
+  UserRewardsViewModel
 } from "../services";
 import { DecodedJWT } from "../models";
 import { RewardAdminViewModel } from '../services/SSW-Rewards-client';
 
 export interface State {
-  users?: LeaderboardUserDto[];
+  usersDefault?: LeaderboardUserDto[];
+  users: LeaderboardUserDto[];
   achievements: AchievementViewModel[];
   rewards: RewardAdminViewModel[];
+  userDetail: UserViewModel;
+  userAchievements: UserAchievementsViewModel;
+  userRewards: UserRewardsViewModel;
   authenticated: boolean;
   authorised: boolean;
   currentUser?: DecodedJWT;
