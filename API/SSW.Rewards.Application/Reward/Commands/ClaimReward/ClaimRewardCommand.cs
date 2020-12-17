@@ -73,10 +73,12 @@ namespace SSW.Rewards.Application.Reward.Commands
                     };
                 }
 
-                // TODO: the following logic is intended to 'debounce' reward
+                // TECH DEBT: the following logic is intended to 'debounce' reward
                 // claiming, to prevent users claiming the same reward twice
-                // within a 5 minute window. With the move from 'milestone' to
-                // 'currency' model, this may not be required anymore.
+                // within a 5 minute window. This workaround is only required on 
+                // the current 'milestone' model for points. Once we move to the
+                // 'currency' model, this will not be required anymore.
+                // see: https://github.com/SSWConsulting/SSW.Rewards/issues/100
                 var userHasReward = userRewards
                     .Where(ur => ur.RewardId == reward.Id)
                     .FirstOrDefault();
