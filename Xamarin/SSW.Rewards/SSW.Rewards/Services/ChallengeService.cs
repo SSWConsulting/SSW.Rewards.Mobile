@@ -1,13 +1,10 @@
-﻿using System;
+﻿using SSW.Rewards.Models;
+using SSW.Rewards.ViewModels;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using SSW.Rewards.Models;
-using SSW.Rewards.Helpers;
+using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Collections.ObjectModel;
-using System.Linq;
-using SSW.Rewards.ViewModels;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
@@ -74,35 +71,37 @@ namespace SSW.Rewards.Services
 
                 if (response != null)
                 {
-                    switch(response.Status)
+                    switch (response.Status)
                     {
                         case AchievementStatus.Added:
                             vm.result = ChallengeResult.Added;
                             vm.Title = response.ViewModel.Name;
                             vm.Points = response.ViewModel.Value;
                             break;
+
                         case AchievementStatus.Duplicate:
                             vm.result = ChallengeResult.Duplicate;
                             vm.Title = "Duplicate";
                             vm.Points = 0;
                             break;
+
                         case AchievementStatus.Error:
                             vm.result = ChallengeResult.Error;
                             vm.Title = "Error";
                             vm.Points = 0;
                             break;
+
                         case AchievementStatus.NotFound:
                             vm.result = ChallengeResult.NotFound;
                             vm.Title = "Unrecognised";
                             vm.Points = 0;
                             break;
                     }
-                    
                 }
                 else
                     vm.result = ChallengeResult.Error;
             }
-            catch(ApiException e)
+            catch (ApiException e)
             {
                 if (e.StatusCode == 401)
                 {
@@ -128,41 +127,44 @@ namespace SSW.Rewards.Services
 
             try
             {
-                ClaimRewardResult response = await _rewardClient.AddAsync(rewardString);
+                ClaimRewardResult response = await _rewardClient.ClaimAsync(rewardString);
 
-                if(response != null)
+                if (response != null)
                 {
-                    switch(response.Status)
+                    switch (response.Status)
                     {
                         case RewardStatus.Claimed:
                             vm.result = ChallengeResult.Added;
                             vm.Title = response.ViewModel.Name;
                             break;
+
                         case RewardStatus.Duplicate:
                             vm.result = ChallengeResult.Duplicate;
                             vm.Title = "Duplicate";
                             break;
+
                         case RewardStatus.Error:
                             vm.result = ChallengeResult.Error;
                             vm.Title = "Error";
                             break;
+
                         case RewardStatus.NotFound:
                             vm.result = ChallengeResult.NotFound;
                             vm.Title = "Unrecognised";
                             break;
+
                         default:
                             vm.result = ChallengeResult.Error;
                             vm.Title = "Error";
                             break;
                     }
-
                 }
                 else
                 {
                     vm.result = ChallengeResult.Error;
                 }
             }
-            catch(ApiException e)
+            catch (ApiException e)
             {
                 if (e.StatusCode == 401)
                 {
@@ -186,7 +188,7 @@ namespace SSW.Rewards.Services
         {
             var result = await PostRewardAsync(qrCodeData);
 
-            if(result.result == ChallengeResult.Added || result.result == ChallengeResult.Duplicate)
+            if (result.result == ChallengeResult.Added || result.result == ChallengeResult.Duplicate)
             {
                 result.ChallengeType = ChallengeType.Reward;
                 return result;

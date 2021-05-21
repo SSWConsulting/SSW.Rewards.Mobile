@@ -44,7 +44,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
                 _logger.LogError("Achievement was not found for code: {0}", request.Code);
                 return new ClaimAchievementResult
                 {
-                    status = AchievementStatus.NotFound
+                    status = ClaimAchievementStatus.NotFound
                 };
             }
 
@@ -58,7 +58,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
                 _logger.LogError("User was not found for id: {0}", request.UserId);
                 return new ClaimAchievementResult
                 {
-                    status = AchievementStatus.Error
+                    status = ClaimAchievementStatus.Error
                 };
             }
 
@@ -72,7 +72,7 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
                 _logger.LogError("User already has achievement: {0}", request.Code);
                 return new ClaimAchievementResult
                 {
-                    status = AchievementStatus.Duplicate
+                    status = ClaimAchievementStatus.Duplicate
                 };
             }
 
@@ -93,13 +93,13 @@ namespace SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser
                 _logger.LogError(e.Message, e);
                 return new ClaimAchievementResult
                 {
-                    status = AchievementStatus.Error
+                    status = ClaimAchievementStatus.Error
                 };
             }
 
             return new ClaimAchievementResult
             {
-                status = AchievementStatus.Claimed
+                status = ClaimAchievementStatus.Claimed
             };
         }
     }
