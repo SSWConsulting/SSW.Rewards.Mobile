@@ -2498,13 +2498,13 @@ namespace SSW.Rewards
     public partial class ClaimAchievementResult 
     {
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public AchievementStatus Status { get; set; }
+        public ClaimAchievementStatus Status { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public enum AchievementStatus
+    public enum ClaimAchievementStatus
     {
         Claimed = 0,
     
@@ -2537,13 +2537,13 @@ namespace SSW.Rewards
         public AchievementViewModel ViewModel { get; set; }
     
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public AchievementStatus2 Status { get; set; }
+        public AchievementStatus Status { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public enum AchievementStatus2
+    public enum AchievementStatus
     {
         Added = 0,
     

@@ -1192,7 +1192,7 @@ export interface ICreateAchievementCommand {
 }
 
 export class ClaimAchievementResult implements IClaimAchievementResult {
-    status?: AchievementStatus;
+    status?: ClaimAchievementStatus;
 
     constructor(data?: IClaimAchievementResult) {
         if (data) {
@@ -1224,10 +1224,10 @@ export class ClaimAchievementResult implements IClaimAchievementResult {
 }
 
 export interface IClaimAchievementResult {
-    status?: AchievementStatus;
+    status?: ClaimAchievementStatus;
 }
 
-export enum AchievementStatus {
+export enum ClaimAchievementStatus {
     Claimed = 0,
     NotFound = 1,
     Duplicate = 2,
@@ -1277,7 +1277,7 @@ export interface IClaimAchievementForUserCommand {
 
 export class PostAchievementResult implements IPostAchievementResult {
     viewModel?: AchievementViewModel | undefined;
-    status?: AchievementStatus2;
+    status?: AchievementStatus;
 
     constructor(data?: IPostAchievementResult) {
         if (data) {
@@ -1312,10 +1312,10 @@ export class PostAchievementResult implements IPostAchievementResult {
 
 export interface IPostAchievementResult {
     viewModel?: AchievementViewModel | undefined;
-    status?: AchievementStatus2;
+    status?: AchievementStatus;
 }
 
-export enum AchievementStatus2 {
+export enum AchievementStatus {
     Added = 0,
     NotFound = 1,
     Duplicate = 2,

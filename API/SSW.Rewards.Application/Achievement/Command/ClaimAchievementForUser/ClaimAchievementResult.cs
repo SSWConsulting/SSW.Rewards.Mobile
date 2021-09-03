@@ -2,10 +2,10 @@
 {
     public class ClaimAchievementResult
     {
-        public AchievementStatus status { get; set; }
+        public ClaimAchievementStatus status { get; set; }
     }
 
-    public enum AchievementStatus
+    public enum ClaimAchievementStatus
     {
         Claimed,
         NotFound,

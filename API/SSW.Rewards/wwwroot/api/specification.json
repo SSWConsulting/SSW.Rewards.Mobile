@@ -698,11 +698,11 @@
         "additionalProperties": false,
         "properties": {
           "status": {
-            "$ref": "#/components/schemas/AchievementStatus"
+            "$ref": "#/components/schemas/ClaimAchievementStatus"
           }
         }
       },
-      "AchievementStatus": {
+      "ClaimAchievementStatus": {
         "type": "integer",
         "description": "",
         "x-enumNames": [
@@ -747,11 +747,11 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/AchievementStatus2"
+            "$ref": "#/components/schemas/AchievementStatus"
           }
         }
       },
-      "AchievementStatus2": {
+      "AchievementStatus": {
         "type": "integer",
         "description": "",
         "x-enumNames": [
