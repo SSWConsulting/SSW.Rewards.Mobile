@@ -90,8 +90,8 @@ jobs:
         path: Xamarin/SSW.Rewards/SSW.Rewards.iOS/**/SSW.Consulting.iOS.ipa
 
   Deploy:
-    needs: [Android]
-    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [Android, iOS]
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
 
 
