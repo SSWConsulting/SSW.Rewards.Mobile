@@ -116,5 +116,5 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           command: |
-            appcenter distribute stores publish -s "App Store Connect Users" -f bin/iPhone/Release/SSW.Consulting.iOS.ipa -a SSW.MobileApps/SSW.Xamarin.iOS --release-notes "New version of SSW Rewards!"
+            appcenter distribute stores publish -s 'App Store Connect Users' -f bin/iPhone/Release/SSW.Consulting.iOS.ipa -a SSW.MobileApps/SSW.Xamarin.iOS --release-notes 'New version of SSW Rewards!'
           token: ${{secrets.APP_CENTER_KEY}}
