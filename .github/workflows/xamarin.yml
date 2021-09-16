@@ -116,6 +116,6 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           command: |
-            export store='App Store Connect Users'
+            export store="App Store Connect Users"
             appcenter distribute stores publish -s "${store}" -f bin/iPhone/Release/SSW.Consulting.iOS.ipa -a SSW.MobileApps/SSW.Xamarin.iOS --release-notes release.txt
           token: ${{secrets.APP_CENTER_KEY}}
