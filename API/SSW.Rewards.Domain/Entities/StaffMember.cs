@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SSW.Rewards.Domain.Entities
 {
@@ -8,6 +9,7 @@ namespace SSW.Rewards.Domain.Entities
         public string Title { get; set; }
         public string Email { get; set; }
         public string Profile { get; set; }
+        public Uri ProfilePhoto { get; set; }
         public string TwitterUsername { get; set; }
         public bool IsExternal { get; set; }
         public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
