@@ -706,6 +706,7 @@ export class RewardClient extends BaseClient implements IRewardClient {
 export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
     getStaffMemberProfile(name: string | null): Promise<StaffDto>;
+    addStaffMemberProfile(staffMember: AddStaffMemberProfileCommand): Promise<StaffMember>;
     upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
     deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
@@ -795,6 +796,46 @@ export class StaffClient extends BaseClient implements IStaffClient {
             });
         }
         return Promise.resolve<StaffDto>(<any>null);
+    }
+
+    addStaffMemberProfile(staffMember: AddStaffMemberProfileCommand): Promise<StaffMember> {
+        let url_ = this.baseUrl + "/api/Staff/AddStaffMemberProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(staffMember);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processAddStaffMemberProfile(_response);
+        });
+    }
+
+    protected processAddStaffMemberProfile(response: Response): Promise<StaffMember> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StaffMember.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StaffMember>(<any>null);
     }
 
     upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string> {
@@ -2101,6 +2142,243 @@ export interface IStaffDto {
     twitterUsername?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
+}
+
+export abstract class Entity implements IEntity {
+    id?: number;
+    createdUtc?: Date;
+
+    constructor(data?: IEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdUtc = _data["createdUtc"] ? new Date(_data["createdUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Entity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'Entity' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdUtc"] = this.createdUtc ? this.createdUtc.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IEntity {
+    id?: number;
+    createdUtc?: Date;
+}
+
+export class StaffMember extends Entity implements IStaffMember {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    isExternal?: boolean;
+    staffMemberSkills?: StaffMemberSkill[] | undefined;
+
+    constructor(data?: IStaffMember) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.name = _data["name"];
+            this.title = _data["title"];
+            this.email = _data["email"];
+            this.profile = _data["profile"];
+            this.twitterUsername = _data["twitterUsername"];
+            this.isExternal = _data["isExternal"];
+            if (Array.isArray(_data["staffMemberSkills"])) {
+                this.staffMemberSkills = [] as any;
+                for (let item of _data["staffMemberSkills"])
+                    this.staffMemberSkills!.push(StaffMemberSkill.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StaffMember {
+        data = typeof data === 'object' ? data : {};
+        let result = new StaffMember();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["title"] = this.title;
+        data["email"] = this.email;
+        data["profile"] = this.profile;
+        data["twitterUsername"] = this.twitterUsername;
+        data["isExternal"] = this.isExternal;
+        if (Array.isArray(this.staffMemberSkills)) {
+            data["staffMemberSkills"] = [];
+            for (let item of this.staffMemberSkills)
+                data["staffMemberSkills"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IStaffMember extends IEntity {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    isExternal?: boolean;
+    staffMemberSkills?: StaffMemberSkill[] | undefined;
+}
+
+export class StaffMemberSkill extends Entity implements IStaffMemberSkill {
+    skillId?: number;
+    skill?: Skill | undefined;
+    staffMemberId?: number;
+    staffMember?: StaffMember | undefined;
+
+    constructor(data?: IStaffMemberSkill) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.skillId = _data["skillId"];
+            this.skill = _data["skill"] ? Skill.fromJS(_data["skill"]) : <any>undefined;
+            this.staffMemberId = _data["staffMemberId"];
+            this.staffMember = _data["staffMember"] ? StaffMember.fromJS(_data["staffMember"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): StaffMemberSkill {
+        data = typeof data === 'object' ? data : {};
+        let result = new StaffMemberSkill();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["skillId"] = this.skillId;
+        data["skill"] = this.skill ? this.skill.toJSON() : <any>undefined;
+        data["staffMemberId"] = this.staffMemberId;
+        data["staffMember"] = this.staffMember ? this.staffMember.toJSON() : <any>undefined;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IStaffMemberSkill extends IEntity {
+    skillId?: number;
+    skill?: Skill | undefined;
+    staffMemberId?: number;
+    staffMember?: StaffMember | undefined;
+}
+
+export class Skill extends Entity implements ISkill {
+    name?: string | undefined;
+
+    constructor(data?: ISkill) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): Skill {
+        data = typeof data === 'object' ? data : {};
+        let result = new Skill();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface ISkill extends IEntity {
+    name?: string | undefined;
+}
+
+export class AddStaffMemberProfileCommand implements IAddStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    isExternal?: boolean;
+
+    constructor(data?: IAddStaffMemberProfileCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.title = _data["title"];
+            this.email = _data["email"];
+            this.profile = _data["profile"];
+            this.twitterUsername = _data["twitterUsername"];
+            this.isExternal = _data["isExternal"];
+        }
+    }
+
+    static fromJS(data: any): AddStaffMemberProfileCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddStaffMemberProfileCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["title"] = this.title;
+        data["email"] = this.email;
+        data["profile"] = this.profile;
+        data["twitterUsername"] = this.twitterUsername;
+        data["isExternal"] = this.isExternal;
+        return data; 
+    }
+}
+
+export interface IAddStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    isExternal?: boolean;
 }
 
 export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfileCommand {

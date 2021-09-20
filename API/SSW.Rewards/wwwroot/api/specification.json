@@ -490,6 +490,38 @@
         }
       }
     },
+    "/api/Staff/AddStaffMemberProfile": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_AddStaffMemberProfile",
+        "requestBody": {
+          "x-name": "staffMember",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddStaffMemberProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffMember"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Staff/UpsertStaffMemberProfile": {
       "post": {
         "tags": [
@@ -1155,6 +1187,147 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "StaffMember": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Entity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "nullable": true
+              },
+              "email": {
+                "type": "string",
+                "nullable": true
+              },
+              "profile": {
+                "type": "string",
+                "nullable": true
+              },
+              "twitterUsername": {
+                "type": "string",
+                "nullable": true
+              },
+              "isExternal": {
+                "type": "boolean"
+              },
+              "staffMemberSkills": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/StaffMemberSkill"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "StaffMemberSkill": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Entity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "skillId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "skill": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Skill"
+                  }
+                ]
+              },
+              "staffMemberId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "staffMember": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/StaffMember"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Skill": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Entity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "Entity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AddStaffMemberProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "profile": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "isExternal": {
+            "type": "boolean"
           }
         }
       },
