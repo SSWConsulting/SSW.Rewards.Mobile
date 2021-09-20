@@ -18,7 +18,7 @@ const Profiles = (props: PropsWithChildren<RouteComponentProps>): JSX.Element =>
 
     const getProfiles = async () => {
         const response = await fetchData<StaffListViewModel>(() => client.get());
-        response && response.staff && updateState({ staffProfiles: response.staff });
+        response && response.staff && updateState({ staffProfiles: response.staff.sort((a, b) => ((a.name as string) > (b.name as string)) ? 1 : -1) });
     };
 
     const goToUser = (name: string) => {
@@ -31,11 +31,11 @@ const Profiles = (props: PropsWithChildren<RouteComponentProps>): JSX.Element =>
 
     return (
         <>
-        <h1>Profiles</h1>
-        <Typography>All staff profiles available for editing</Typography>
-        <Table items={['Name', 'Title']}>
-            {state.staffProfiles && state.staffProfiles.map((r, i) => <ProfileTableRow key={i} profile={r} onClick={goToUser} />)}
-        </Table>
+            <h1>Profiles</h1>
+            <Typography>All staff profiles available for editing</Typography>
+            <Table items={['Name', 'Title']}>
+                {state.staffProfiles && state.staffProfiles.map((r, i) => <ProfileTableRow key={i} profile={r} onClick={goToUser} />)}
+            </Table>
         </>
     );
 };

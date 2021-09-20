@@ -11,7 +11,7 @@ interface ProfileTableRowProps {
 
 export const ProfileTableRow = (props: ProfileTableRowProps) => {
   const {
-    profile: { name, title, email, profile, profilePhoto, twitterUsername, isExternal, skills },
+    profile: { name, title },
     onClick
   } = props;
 
