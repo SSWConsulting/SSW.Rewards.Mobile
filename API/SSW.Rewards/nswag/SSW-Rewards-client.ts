@@ -705,6 +705,7 @@ export class RewardClient extends BaseClient implements IRewardClient {
 
 export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
+    getStaffMemberProfile(name: string | null): Promise<StaffDto>;
 }
 
 export class StaffClient extends BaseClient implements IStaffClient {
@@ -752,6 +753,46 @@ export class StaffClient extends BaseClient implements IStaffClient {
             });
         }
         return Promise.resolve<StaffListViewModel>(<any>null);
+    }
+
+    getStaffMemberProfile(name: string | null): Promise<StaffDto> {
+        let url_ = this.baseUrl + "/api/Staff/GetStaffMemberProfile?";
+        if (name === undefined)
+            throw new Error("The parameter 'name' must be defined.");
+        else if(name !== null)
+            url_ += "name=" + encodeURIComponent("" + name) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetStaffMemberProfile(_response);
+        });
+    }
+
+    protected processGetStaffMemberProfile(response: Response): Promise<StaffDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StaffDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StaffDto>(<any>null);
     }
 }
 

@@ -458,6 +458,38 @@
         }
       }
     },
+    "/api/Staff/GetStaffMemberProfile": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_GetStaffMemberProfile",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/User/Get": {
       "get": {
         "tags": [
