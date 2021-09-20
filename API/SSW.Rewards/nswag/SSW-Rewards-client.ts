@@ -707,6 +707,7 @@ export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
     getStaffMemberProfile(name: string | null): Promise<StaffDto>;
     upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
+    deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
 
 export class StaffClient extends BaseClient implements IStaffClient {
@@ -819,6 +820,46 @@ export class StaffClient extends BaseClient implements IStaffClient {
     }
 
     protected processUpsertStaffMemberProfile(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
+    }
+
+    deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/DeleteStaffMemberProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(staffMember);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteStaffMemberProfile(_response);
+        });
+    }
+
+    protected processDeleteStaffMemberProfile(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2107,6 +2148,58 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 }
 
 export interface IUpsertStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+}
+
+export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+
+    constructor(data?: IDeleteStaffMemberProfileCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.title = _data["title"];
+            this.email = _data["email"];
+            this.profile = _data["profile"];
+            this.twitterUsername = _data["twitterUsername"];
+        }
+    }
+
+    static fromJS(data: any): DeleteStaffMemberProfileCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteStaffMemberProfileCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["title"] = this.title;
+        data["email"] = this.email;
+        data["profile"] = this.profile;
+        data["twitterUsername"] = this.twitterUsername;
+        return data; 
+    }
+}
+
+export interface IDeleteStaffMemberProfileCommand {
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;

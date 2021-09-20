@@ -522,6 +522,38 @@
         }
       }
     },
+    "/api/Staff/DeleteStaffMemberProfile": {
+      "delete": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_DeleteStaffMemberProfile",
+        "requestBody": {
+          "x-name": "staffMember",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteStaffMemberProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/User/Get": {
       "get": {
         "tags": [
@@ -1127,6 +1159,32 @@
         }
       },
       "UpsertStaffMemberProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "profile": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterUsername": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteStaffMemberProfileCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
