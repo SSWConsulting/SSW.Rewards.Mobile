@@ -6,7 +6,9 @@ import Home from 'containers/Home';
 import Leaderboard from "containers/Leaderboard";
 import Achievements from "containers/Achievements";
 import Rewards from "containers/Rewards";
+import Profiles from "containers/Profiles";
 import { UserDetail } from 'containers/UserDetail';
+import { ProfileDetail } from 'containers/ProfileDetail';
 
 interface Route  {
     path: string;
@@ -46,6 +48,18 @@ export const routes = [
            title: "Rewards",
            component: Rewards,
            icon: RedeemIcon
+         },
+         {
+           path: "/profiles",
+           title: "Profiles",
+           component: Profiles,
+           icon: RedeemIcon
+         },
+         {
+           path: "/profiles/:name",
+           title: "Profile",
+           component: ProfileDetail,
+           hidden: true
          }
        ] as Route[];
 

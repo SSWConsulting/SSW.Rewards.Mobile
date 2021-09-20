@@ -9,7 +9,8 @@ import {
   AchievementViewModel,
   UserViewModel,
   UserAchievementsViewModel,
-  UserRewardsViewModel
+  UserRewardsViewModel,
+  StaffDto
 } from "../services";
 import { DecodedJWT } from "../models";
 import { RewardAdminViewModel } from '../services/SSW-Rewards-client';
@@ -19,6 +20,7 @@ export interface State {
   users: LeaderboardUserDto[];
   achievements: AchievementViewModel[];
   rewards: RewardAdminViewModel[];
+  staffProfiles: StaffDto[];
   userDetail: UserViewModel;
   userAchievements: UserAchievementsViewModel;
   userRewards: UserRewardsViewModel;

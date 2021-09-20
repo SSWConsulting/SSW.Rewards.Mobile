@@ -23,7 +23,7 @@
     "react-azure-adb2c": "git+https://github.com/jSunnari/react-azure-adb2c.git",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.1",
     "typescript": "^3.7.2"
   },
   "scripts": {
