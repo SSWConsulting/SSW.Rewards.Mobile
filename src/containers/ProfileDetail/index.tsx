@@ -31,7 +31,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
             setLoading(false);
             updateState({ profileDetail: response });
         })();
-    }, [client]);
+    }, [client, name, updateState]);
 
     const handleValueChange = (label: string, newValue: string) => {
         var profile = state.profileDetail;
@@ -55,7 +55,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
     const handleSkillsDelete = async (skill: string) => {
         var profile = state.profileDetail;
         if(profile.skills && profile.skills.length > 0) {
-            profile.skills.filter(x => x != skill);
+            profile.skills = profile.skills.filter(x => x !== skill);
             updateState({ profileDetail: profile });
             setChangesMade(true);
         }
@@ -75,7 +75,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
     return <div>
         {!loading && state.profileDetail ? (
             <div style={{ display: 'flex' }}>
-                <img src={state.profileDetail.profilePhoto} style={{width: 247.5, height: 495}}/>
+                <img src={state.profileDetail.profilePhoto} style={{width: 247.5, height: 495}} alt="profile" />
                 <div style={{ paddingLeft: '10px', width: '100%' }}>
                     <ResponsiveDialog title={`Add Skill`} open={showAddSkillModal} handleClose={() => setShowAddSkillModal(false)}
                         actions={<>
@@ -93,11 +93,11 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                         <EditableField name="title" label="Title" value={state.profileDetail.title} style={{ width: '100%' }} onChange={handleValueChange} />
                     </div>
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <EditableField name="email" label="Email" value={state.profileDetail.email} style={{ width: '100%' }} onChange={handleValueChange} />
-                        <EditableField name="twitterUsername" label="Twitter handle" value={state.profileDetail.twitterUsername} style={{ width: '100%' }} onChange={handleValueChange} />
+                        <EditableField name="email" label="Email" value={state.profileDetail.email || ''} style={{ width: '100%' }} onChange={handleValueChange} />
+                        <EditableField name="twitterUsername" label="Twitter handle" value={state.profileDetail.twitterUsername || ''} style={{ width: '100%' }} onChange={handleValueChange} />
                     </div>
-                    <EditableField name="profilePhoto" label="Profile Photo" value={state.profileDetail.profilePhoto} style={{ width: '100%' }} onChange={handleValueChange} />
-                    <EditableField name="profile" label="Profile" value={state.profileDetail.profile} style={{ width: '100%' }} type="multiline" onChange={handleValueChange} />
+                    <EditableField name="profilePhoto" label="Profile Photo" value={state.profileDetail.profilePhoto || ''} style={{ width: '100%' }} onChange={handleValueChange} />
+                    <EditableField name="profile" label="Profile" value={state.profileDetail.profile || ''} style={{ width: '100%' }} type="multiline" onChange={handleValueChange} />
                     <div style={{ width: '100%', padding: '10px' }}>
                         <Typography variant="body1" style={{margin: '10px 0 3px 5px'}}>Skills</Typography>
                         <div>

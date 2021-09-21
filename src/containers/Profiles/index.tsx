@@ -2,13 +2,12 @@ import React, { useEffect, PropsWithChildren } from 'react';
 import { Table } from 'components';
 import { useGlobalState } from 'lightweight-globalstate';
 import { State } from 'store';
-import { TableCell, TableRow, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { fetchData } from 'utils';
 import { StaffListViewModel, StaffClient, StaffDto, UpsertStaffMemberProfileCommand } from 'services';
 import { useAuthenticatedClient } from 'hooks';
-import { getTrailingCommentRanges } from 'typescript';
 import { ProfileTableRow } from './components/ProfileTableRow';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import AddProfile from './components/AddProfile';
 
 const Profiles = (props: PropsWithChildren<RouteComponentProps>): JSX.Element => {

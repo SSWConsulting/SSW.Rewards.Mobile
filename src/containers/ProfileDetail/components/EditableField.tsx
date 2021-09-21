@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, TextField } from '@material-ui/core'
 
 interface EditableFieldProps {
@@ -11,15 +11,12 @@ interface EditableFieldProps {
 }
 
 const EditableField = (props: EditableFieldProps) => {
-    const [value, setValue] = useState(props.value);
-    const [type, setType] = useState(props.type);
-
     return <div style={{ width: '100%', padding: '10px' }}>
         <Typography variant="body1" style={{margin: '10px 0 3px 5px'}}>{props.label}</Typography>
-        {type == 'multiline' ? (
-            <TextField value={value} variant="outlined" onChange={(e) => props.onChange(props.name, e.target.value)} style={props.style} multiline />
+        {props.type === 'multiline' ? (
+            <TextField value={props.value} variant="outlined" onChange={(e) => props.onChange(props.name, e.target.value)} style={props.style} multiline />
         ) : (
-            <TextField value={value} variant="outlined" onChange={(e) => props.onChange(props.name, e.target.value)} style={props.style} />
+            <TextField value={props.value} variant="outlined" onChange={(e) => props.onChange(props.name, e.target.value)} style={props.style} />
         )}
     </div>
 
