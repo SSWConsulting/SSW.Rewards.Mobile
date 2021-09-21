@@ -102,9 +102,9 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                         <Typography variant="body1" style={{margin: '10px 0 3px 5px'}}>Skills</Typography>
                         <div>
                             {state.profileDetail.skills && state.profileDetail.skills.length > 0 && (
-                                state.profileDetail.skills.map((skill, i) => <Chip key={i} variant='outlined' label={skill} style={{ margin: '0 3px'}} onDelete={() => handleSkillsDelete(skill)} />)
+                                state.profileDetail.skills.map((skill, i) => <Chip key={i} variant='outlined' label={skill} style={{ margin: '0 3px 3px'}} onDelete={() => handleSkillsDelete(skill)} />)
                             )}
-                            <Chip icon={<Add />} label="Add Skill" onClick={() => setShowAddSkillModal(true)} />
+                            <Chip icon={<Add />} label="Add Skill" style={{ margin: '0 3px 3px'}} onClick={() => setShowAddSkillModal(true)} />
                         </div>
                     </div>
                     <Button variant="contained" color={changesMade ? 'primary' : 'default'} style={{ margin: '10px' }} onClick={() => saveChanges()}>Save Changes</Button>
