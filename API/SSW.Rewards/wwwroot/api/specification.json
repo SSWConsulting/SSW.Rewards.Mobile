@@ -1186,6 +1186,13 @@
             "type": "string",
             "format": "uri",
             "nullable": true
+          },
+          "skills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

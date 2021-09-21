@@ -2110,6 +2110,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     profile?: string | undefined;
     twitterUsername?: string | undefined;
     profilePhoto?: string | undefined;
+    skills?: string[] | undefined;
 
     constructor(data?: IUpsertStaffMemberProfileCommand) {
         if (data) {
@@ -2128,6 +2129,11 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             this.profile = _data["profile"];
             this.twitterUsername = _data["twitterUsername"];
             this.profilePhoto = _data["profilePhoto"];
+            if (Array.isArray(_data["skills"])) {
+                this.skills = [] as any;
+                for (let item of _data["skills"])
+                    this.skills!.push(item);
+            }
         }
     }
 
@@ -2146,6 +2152,11 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         data["profile"] = this.profile;
         data["twitterUsername"] = this.twitterUsername;
         data["profilePhoto"] = this.profilePhoto;
+        if (Array.isArray(this.skills)) {
+            data["skills"] = [];
+            for (let item of this.skills)
+                data["skills"].push(item);
+        }
         return data; 
     }
 }
@@ -2157,6 +2168,7 @@ export interface IUpsertStaffMemberProfileCommand {
     profile?: string | undefined;
     twitterUsername?: string | undefined;
     profilePhoto?: string | undefined;
+    skills?: string[] | undefined;
 }
 
 export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {

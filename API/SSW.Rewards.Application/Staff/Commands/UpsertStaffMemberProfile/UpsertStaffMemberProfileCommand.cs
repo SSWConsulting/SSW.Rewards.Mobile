@@ -5,6 +5,8 @@ using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
 using SSW.Rewards.Domain.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,6 +20,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
         public string Profile { get; set; }
         public string TwitterUsername { get; set; }
         public Uri ProfilePhoto { get; set; }
+        public List<string> Skills { get; set; }
 
         public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaffMemberProfileCommand, StaffDto>
         {
@@ -36,7 +39,9 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             {
                 var staffMember = _mapper.Map<StaffMember>(request);
                 var staffMemberEntity = await _context.StaffMembers
-                        .FirstOrDefaultAsync(u => u.Name == request.Name, cancellationToken);
+                    .Include(s => s.StaffMemberSkills)
+                    .ThenInclude(sms => sms.Skill)
+                    .FirstOrDefaultAsync(u => u.Name == request.Name, cancellationToken);
 
                 // Add if doesn't exist
                 if (staffMemberEntity == null)
@@ -50,11 +55,44 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                     staffMemberEntity.Profile = request.Profile;
                     staffMemberEntity.TwitterUsername = request.TwitterUsername;
                     staffMemberEntity.Title = request.Title;
+
+                    // check for new skills
+                    var newSkills = request.Skills.Where(x => !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
+
+                    if (newSkills.Count() > 0)
+                    {
+                        // add the new skills to the context
+                        await AddSkills(newSkills, cancellationToken);
+                    }
+
+                    // assign the new skills to a member
+                    foreach (var skill in newSkills)
+                    {
+                        var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
+                        staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill { Skill = skillEntity });
+                    }
                 }
 
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return _mapper.Map<StaffDto>(request);
+            }
+
+            private async Task AddSkills(List<string> skills, CancellationToken cancellationToken)
+            {
+                foreach (var skill in skills)
+                {
+                    // check if the skill already exists
+                    var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
+
+                    // if the skill doesnt exist then add it
+                    if (skillEntity == null)
+                    {
+                        await _context.Skills.AddAsync(new Skill { Name = skill });
+                    }
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
             }
         }
     }
