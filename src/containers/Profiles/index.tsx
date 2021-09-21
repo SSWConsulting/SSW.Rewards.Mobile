@@ -4,7 +4,7 @@ import { useGlobalState } from 'lightweight-globalstate';
 import { State } from 'store';
 import { TableCell, TableRow, Typography } from '@material-ui/core';
 import { fetchData } from 'utils';
-import { StaffListViewModel, StaffClient, AddStaffMemberProfileCommand, StaffDto } from 'services';
+import { StaffListViewModel, StaffClient, StaffDto, UpsertStaffMemberProfileCommand } from 'services';
 import { useAuthenticatedClient } from 'hooks';
 import { getTrailingCommentRanges } from 'typescript';
 import { ProfileTableRow } from './components/ProfileTableRow';
@@ -30,9 +30,9 @@ const Profiles = (props: PropsWithChildren<RouteComponentProps>): JSX.Element =>
         client && getProfiles();
     }, [client]);
 
-    const addProfile = async (staffMember: AddStaffMemberProfileCommand) => {
-        const response = await fetchData<StaffDto>(() => client.addStaffMemberProfile(staffMember));
-        response && updateState({ staffProfiles: [...state.staffProfiles, response] });
+    const addProfile = async (staffMember: UpsertStaffMemberProfileCommand) => {
+        const response = await fetchData<StaffDto>(() => client.upsertStaffMemberProfile(staffMember));
+        response && getProfiles();
     };
 
     return (

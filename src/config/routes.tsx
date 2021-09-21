@@ -2,6 +2,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from "@material-ui/icons/People";
 import StarsIcon from "@material-ui/icons/Stars";
 import RedeemIcon from "@material-ui/icons/Redeem";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Home from 'containers/Home';
 import Leaderboard from "containers/Leaderboard";
 import Achievements from "containers/Achievements";
@@ -53,7 +54,7 @@ export const routes = [
            path: "/profiles",
            title: "Profiles",
            component: Profiles,
-           icon: RedeemIcon
+           icon: AccountBoxIcon
          },
          {
            path: "/profiles/:name",

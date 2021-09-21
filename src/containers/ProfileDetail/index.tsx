@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, PropsWithChildren } from 'react';
 import { useGlobalState } from 'lightweight-globalstate';
 import { State } from 'store';
 import { StaffClient, StaffDto } from 'services';
 import { useAuthenticatedClient } from 'hooks';
-import { useParams, withRouter } from 'react-router-dom';
+import { useParams, withRouter, RouteComponentProps } from 'react-router-dom';
 import { fetchData } from 'utils';
 import { Button, CircularProgress } from '@material-ui/core';
 import EditableField from './components/EditableField';
+import PropTypes from 'prop-types';
 
 export interface RouteParams {
     name: string;
 }
 
-const ProfileDetailComponent = () => {
+const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) => {
     const [state, updateState] = useGlobalState<State>();
     const client: StaffClient = useAuthenticatedClient<StaffClient>(state.staffClient, state.token);
     const { name } = useParams<RouteParams>();
+    const { history } = props;
 
     const [loading, setLoading] = useState(true);
+    const [changesMade, setChangesMade] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -28,17 +31,22 @@ const ProfileDetailComponent = () => {
     }, [client]);
 
     const handleValueChange = (label: string, newValue: string) => {
+        setChangesMade(true);
         var profile = state.profileDetail;
         (profile as any)[label] = newValue;
         updateState({ profileDetail: profile });
     }
 
     const saveChanges = async () => {
-        await client.upsertStaffMemberProfile(state.profileDetail);
+        if(changesMade) {
+            await client.upsertStaffMemberProfile(state.profileDetail);
+            setChangesMade(false);
+        }
     }
 
     const remove = async () => {
-        var response = await client.deleteStaffMemberProfile(state.profileDetail);
+        await client.deleteStaffMemberProfile(state.profileDetail);
+        history.push(`/profiles`);
     }
 
     return <div>
@@ -54,9 +62,10 @@ const ProfileDetailComponent = () => {
                         <EditableField name="email" label="Email" value={state.profileDetail.email} style={{ width: '100%' }} onChange={handleValueChange} />
                         <EditableField name="twitterUsername" label="Twitter handle" value={state.profileDetail.twitterUsername} style={{ width: '100%' }} onChange={handleValueChange} />
                     </div>
+                    <EditableField name="profilePhoto" label="Profile Photo" value={state.profileDetail.profilePhoto} style={{ width: '100%' }} onChange={handleValueChange} />
                     <EditableField name="profile" label="Profile" value={state.profileDetail.profile} style={{ width: '100%' }} type="multiline" onChange={handleValueChange} />
-                    <Button variant="contained" style={{ margin: '10px' }} onClick={() => saveChanges()}>Save Changes</Button>
-                    <Button variant="contained" style={{ margin: '10px' }} onClick={() => remove()}>Remove</Button>
+                    <Button variant="contained" color={changesMade ? 'primary' : 'default'} style={{ margin: '10px' }} onClick={() => saveChanges()}>Save Changes</Button>
+                    <Button variant="contained" color='primary' style={{ margin: '10px' }} onClick={() => remove()}>Remove</Button>
                 </div>
             </div>
         ) : (

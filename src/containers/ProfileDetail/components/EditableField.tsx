@@ -21,7 +21,6 @@ const EditableField = (props: EditableFieldProps) => {
         ) : (
             <TextField value={value} variant="outlined" onChange={(e) => props.onChange(props.name, e.target.value)} style={props.style} />
         )}
-        
     </div>
 
 }
