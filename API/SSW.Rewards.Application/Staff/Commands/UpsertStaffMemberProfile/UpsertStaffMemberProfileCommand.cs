@@ -56,20 +56,36 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                     staffMemberEntity.TwitterUsername = request.TwitterUsername;
                     staffMemberEntity.Title = request.Title;
 
-                    // check for new skills
-                    var newSkills = request.Skills.Where(x => !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
+                    // check for skills
+                    var skills = request.Skills;
 
-                    if (newSkills.Count() > 0)
+                    // changes have been made to skills
+                    if(staffMemberEntity.StaffMemberSkills.Count() != skills.Count())
                     {
-                        // add the new skills to the context
-                        await AddSkills(newSkills, cancellationToken);
-                    }
+                        var newSkills = request.Skills.Where(x => !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
+                        if (newSkills.Count() > 0)
+                        {
+                            // add the new skills to the context
+                            await AddSkills(newSkills, cancellationToken);
+                        }
 
-                    // assign the new skills to a member
-                    foreach (var skill in newSkills)
-                    {
-                        var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
-                        staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill { Skill = skillEntity });
+                        if(staffMemberEntity.StaffMemberSkills.Count() < request.Skills.Count())
+                        {
+                            // assign the new skills to a member
+                            foreach (var skill in newSkills)
+                            {
+                                var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
+                                staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill { Skill = skillEntity });
+                            }
+                        }
+                        else
+                        {
+                            var deletedSkills = staffMemberEntity.StaffMemberSkills.Where(x => !request.Skills.Contains(x.Skill.Name)).ToList();
+                            foreach(var deletedSkill in deletedSkills)
+                            {
+                                staffMemberEntity.StaffMemberSkills.Remove(deletedSkill);
+                            }
+                        }
                     }
                 }
 
