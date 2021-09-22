@@ -59,15 +59,10 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                     // check for skills
                     var skills = request.Skills;
 
-                    // changes have been made to skills
+                    // changes have been made to members' skills
                     if(staffMemberEntity.StaffMemberSkills.Count() != skills.Count())
                     {
                         var newSkills = request.Skills.Where(x => !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
-                        if (newSkills.Count() > 0)
-                        {
-                            // add the new skills to the context
-                            await AddSkills(newSkills, cancellationToken);
-                        }
 
                         if(staffMemberEntity.StaffMemberSkills.Count() < request.Skills.Count())
                         {
@@ -92,23 +87,6 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return _mapper.Map<StaffDto>(request);
-            }
-
-            private async Task AddSkills(List<string> skills, CancellationToken cancellationToken)
-            {
-                foreach (var skill in skills)
-                {
-                    // check if the skill already exists
-                    var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
-
-                    // if the skill doesnt exist then add it
-                    if (skillEntity == null)
-                    {
-                        await _context.Skills.AddAsync(new Skill { Name = skill });
-                    }
-                }
-
-                await _context.SaveChangesAsync(cancellationToken);
             }
         }
     }
