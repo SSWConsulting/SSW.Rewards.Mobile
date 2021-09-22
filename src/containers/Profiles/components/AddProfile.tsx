@@ -26,8 +26,12 @@ const AddProfile = (props: AddProfileProps) => {
                     </Button>
                 </>}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <TextField id="name" variant="outlined" label="Name" onChange={e => setNewProfile({ ...newProfile, name: e.target.value })} style={{ margin: '10px 0' }} />
-                    <TextField id="title" variant="outlined" label="Title" onChange={e => setNewProfile({ ...newProfile, title: e.target.value })} style={{ margin: '10px 0' }} />
+                    <TextField id="name" variant="outlined" label="Name" 
+                        onChange={e => setNewProfile({ ...newProfile, name: e.target.value })} 
+                        style={{ width: '600px', maxWidth: '100%', margin: '10px 0' }} />
+                    <TextField id="title" variant="outlined" label="Title" 
+                        onChange={e => setNewProfile({ ...newProfile, title: e.target.value })} 
+                        style={{ width: '600px', maxWidth: '100%', margin: '10px 0' }} />
                 </div>
             </ResponsiveDialog>
             <Fab onClick={() => setShowModal(true)}
