@@ -7,5 +7,6 @@ namespace SSW.Rewards.Application.Common.Interfaces
     {
         Task<byte[]> GetProfileData();
         Task<Uri> GetProfileUri(string staffMemberName);
+        Task<string> UploadProfilePicture(byte[] imageArray, string fileName);
     }
 }

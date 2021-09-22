@@ -438,6 +438,26 @@
         }
       }
     },
+    "/api/Skill/Get": {
+      "get": {
+        "tags": [
+          "Skill"
+        ],
+        "operationId": "Skill_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Staff/Get": {
       "get": {
         "tags": [
@@ -507,6 +527,42 @@
           },
           "required": true,
           "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/UploadStaffMemberProfilePicture": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_UploadStaffMemberProfilePicture",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "200": {
@@ -1101,6 +1157,19 @@
           "code": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "SkillListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

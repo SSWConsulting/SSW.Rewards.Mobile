@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile;
+using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 using SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
 using SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile;
@@ -26,6 +28,13 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<string>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = "admin")]
+        public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(IFormFile file)
+        {
+            return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { File = file }));
         }
 
         [HttpDelete]
