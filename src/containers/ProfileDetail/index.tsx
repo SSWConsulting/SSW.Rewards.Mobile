@@ -1,11 +1,11 @@
 import React, { useState, useEffect, PropsWithChildren } from 'react';
 import { useGlobalState } from 'lightweight-globalstate';
 import { State } from 'store';
-import { StaffClient, StaffDto } from 'services';
+import { FileParameter, SkillClient, SkillListViewModel, StaffClient, StaffDto } from 'services';
 import { useAuthenticatedClient } from 'hooks';
 import { useParams, withRouter, RouteComponentProps } from 'react-router-dom';
 import { fetchData } from 'utils';
-import { Button, Chip, CircularProgress, Typography, TextField } from '@material-ui/core';
+import { Button, Chip, CircularProgress, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import EditableField from './components/EditableField';
 import { ResponsiveDialog } from '../../components';
@@ -17,13 +17,18 @@ export interface RouteParams {
 const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) => {
     const [state, updateState] = useGlobalState<State>();
     const client: StaffClient = useAuthenticatedClient<StaffClient>(state.staffClient, state.token);
+    const skillClient: SkillClient = useAuthenticatedClient<SkillClient>(state.skillClient, state.token);
     const { name } = useParams<RouteParams>();
     const { history } = props;
+
+    const [skills, setSkills] = useState(['']);
+    const [selectedSkill, setSelectedSkill] = useState('');
+    const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+    const [profilePhotoFileName, setProfilePhotoFileName] = useState('')
 
     const [loading, setLoading] = useState(true);
     const [changesMade, setChangesMade] = useState(false);
     const [showAddSkillModal, setShowAddSkillModal] = useState(false);
-    const [newSkill, setNewSkill] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -31,7 +36,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
             setLoading(false);
             updateState({ profileDetail: response });
         })();
-    }, [client, name, updateState]);
+    }, [client, skillClient, name, updateState]);
 
     const handleValueChange = (label: string, newValue: string) => {
         var profile = state.profileDetail;
@@ -64,29 +69,73 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
     const handleSkillAdd = () => {
         var profile = state.profileDetail;
         if(profile.skills) {
-            profile.skills.push(newSkill);
+            profile.skills.push(selectedSkill);
             updateState({ profileDetail: profile });
             setChangesMade(true);
         }
-        setNewSkill('');
         setShowAddSkillModal(false);
+    }
+
+    const handleAddSkillButtonClick = async () => {
+        setShowAddSkillModal(true);
+        var skills = await fetchData<SkillListViewModel>(() => skillClient.get());
+        if(skills && skills.skills) {
+            setSkills(skills.skills.sort((a, b) => (a > b) ? 1 : -1));
+        }
+    }
+
+    const handleChooseProfilePhoto = (file: any) => {
+        setProfilePhotoFile(file);
+        setProfilePhotoFileName(file.name);
+    }
+
+    const handleUploadProfilePhoto = async () => {
+        let fileParameter: FileParameter = { data: profilePhotoFile, fileName: profilePhotoFileName };
+        await client.uploadStaffMemberProfilePicture(fileParameter);
+        const response = await fetchData<StaffDto>(() => client.getStaffMemberProfile(name));
+        updateState({ profileDetail: response });
+        setProfilePhotoFileName('');
+        setProfilePhotoFile(null);
     }
 
     return <div>
         {!loading && state.profileDetail ? (
             <div style={{ display: 'flex' }}>
-                <img src={state.profileDetail.profilePhoto} style={{width: 247.5, height: 495}} alt="profile" />
+                <div>
+                    <img src={state.profileDetail.profilePhoto} style={{width: 247.5, height: 495}} alt="profile" />
+                    <label htmlFor="contained-button-file" style={{display: 'flex'}}>
+                        <Input id="contained-button-file" type="file" onChange={(e: any) => handleChooseProfilePhoto(e.target.files[0])} />
+                        {profilePhotoFile && (
+                            <Button variant="contained" onClick={() => handleUploadProfilePhoto()}>
+                                Upload
+                            </Button>
+                        )}
+                    </label>
+                </div>
                 <div style={{ paddingLeft: '10px', width: '100%' }}>
                     <ResponsiveDialog title={`Add Skill`} open={showAddSkillModal} handleClose={() => setShowAddSkillModal(false)}
                         actions={<>
                             <Button onClick={() => setShowAddSkillModal(false)} color="primary" autoFocus>
                                 Cancel
                             </Button>
-                            <Button onClick={() => handleSkillAdd()} color="primary" autoFocus >
+                            <Button onClick={() => handleSkillAdd()} color="primary" autoFocus>
                                 Add
                             </Button>
                         </>}>
-                        <TextField id="skill" variant="outlined" label="Skill" onChange={e => setNewSkill(e.target.value )} style={{ margin: '10px 0' }} />
+                        <FormControl fullWidth>
+                            <InputLabel id="skill-select-label">Skill</InputLabel>
+                            <Select style={{ width: '600px', maxWidth: '100%' }}
+                                labelId="skill-select-label"
+                                id="skill-select"
+                                value={selectedSkill}
+                                label="Skill"
+                                onChange={(e: any) => setSelectedSkill(e.target.value)}
+                            >
+                                {skills.length > 0 && (
+                                    skills.map((skill: string) => <MenuItem key={skill} value={skill}>{skill}</MenuItem>)
+                                )}
+                            </Select>
+                        </FormControl>
                     </ResponsiveDialog>
                     <div style={{ display: 'flex' }}>
                         <EditableField name="name" label="Name" value={state.profileDetail.name} style={{ width: '100%' }} onChange={handleValueChange} />
@@ -96,7 +145,6 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                         <EditableField name="email" label="Email" value={state.profileDetail.email || ''} style={{ width: '100%' }} onChange={handleValueChange} />
                         <EditableField name="twitterUsername" label="Twitter handle" value={state.profileDetail.twitterUsername || ''} style={{ width: '100%' }} onChange={handleValueChange} />
                     </div>
-                    <EditableField name="profilePhoto" label="Profile Photo" value={state.profileDetail.profilePhoto || ''} style={{ width: '100%' }} onChange={handleValueChange} />
                     <EditableField name="profile" label="Profile" value={state.profileDetail.profile || ''} style={{ width: '100%' }} type="multiline" onChange={handleValueChange} />
                     <div style={{ width: '100%', padding: '10px' }}>
                         <Typography variant="body1" style={{margin: '10px 0 3px 5px'}}>Skills</Typography>
@@ -104,7 +152,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                             {state.profileDetail.skills && state.profileDetail.skills.length > 0 && (
                                 state.profileDetail.skills.map((skill, i) => <Chip key={i} variant='outlined' label={skill} style={{ margin: '0 3px 3px'}} onDelete={() => handleSkillsDelete(skill)} />)
                             )}
-                            <Chip icon={<Add />} label="Add Skill" style={{ margin: '0 3px 3px'}} onClick={() => setShowAddSkillModal(true)} />
+                            <Chip icon={<Add />} label="Add Skill" style={{ margin: '0 3px 3px'}} onClick={() => handleAddSkillButtonClick()} />
                         </div>
                     </div>
                     <Button variant="contained" color={changesMade ? 'primary' : 'default'} style={{ margin: '10px' }} onClick={() => saveChanges()}>Save Changes</Button>

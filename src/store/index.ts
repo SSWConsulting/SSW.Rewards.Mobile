@@ -10,7 +10,8 @@ import {
   UserViewModel,
   UserAchievementsViewModel,
   UserRewardsViewModel,
-  StaffDto
+  StaffDto,
+  SkillClient
 } from "../services";
 import { DecodedJWT } from "../models";
 import { RewardAdminViewModel } from '../services/SSW-Rewards-client';
@@ -34,6 +35,7 @@ export interface State {
   staffClient: StaffClient;
   userClient: UserClient;
   achievementClient: AchievementClient;
+  skillClient: SkillClient;
 }
 
 // @ts-ignore
@@ -47,6 +49,7 @@ export const createInitialState = (baseUrl: string = API_URL) => {
     staffClient: new StaffClient(baseUrl),
     userClient: new UserClient(baseUrl),
     achievementClient: new AchievementClient(baseUrl),
+    skillClient: new SkillClient(baseUrl),
     authenticated: false,
     authorised: false
   } as State;
