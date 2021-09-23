@@ -24,7 +24,9 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
     const [skills, setSkills] = useState(['']);
     const [selectedSkill, setSelectedSkill] = useState('');
     const [profilePhotoFile, setProfilePhotoFile] = useState(null);
-    const [profilePhotoFileName, setProfilePhotoFileName] = useState('')
+    const [profilePhotoFileName, setProfilePhotoFileName] = useState('');
+
+    const [showRemoveProfilePrompt, setShowRemoveProfilePrompt] = useState(false);
 
     const [loading, setLoading] = useState(true);
     const [changesMade, setChangesMade] = useState(false);
@@ -137,6 +139,16 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                             </Select>
                         </FormControl>
                     </ResponsiveDialog>
+                    <ResponsiveDialog title={`Remove profile`} open={showRemoveProfilePrompt} handleClose={() => setShowRemoveProfilePrompt(false)}
+                        actions={<>
+                            <Button onClick={() => setShowRemoveProfilePrompt(false)} color="primary" autoFocus>
+                                Cancel
+                            </Button>
+                            <Button onClick={() => remove()} variant="contained" color="primary" autoFocus>
+                                Remove
+                            </Button>
+                        </>}>
+                    </ResponsiveDialog>
                     <div style={{ display: 'flex' }}>
                         <EditableField name="name" label="Name" value={state.profileDetail.name} style={{ width: '100%' }} onChange={handleValueChange} />
                         <EditableField name="title" label="Title" value={state.profileDetail.title} style={{ width: '100%' }} onChange={handleValueChange} />
@@ -156,7 +168,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
                         </div>
                     </div>
                     <Button variant="contained" color={changesMade ? 'primary' : 'default'} style={{ margin: '10px' }} onClick={() => saveChanges()}>Save Changes</Button>
-                    <Button variant="contained" color='primary' style={{ margin: '10px' }} onClick={() => remove()}>Remove</Button>
+                    <Button variant="contained" color='primary' style={{ margin: '10px' }} onClick={() => setShowRemoveProfilePrompt(true)}>Remove profile</Button>
                 </div>
             </div>
         ) : (
