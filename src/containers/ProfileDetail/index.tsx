@@ -102,7 +102,7 @@ const ProfileDetailComponent = (props: PropsWithChildren<RouteComponentProps>) =
         {!loading && state.profileDetail ? (
             <div style={{ display: 'flex' }}>
                 <div>
-                    <img src={state.profileDetail.profilePhoto} alt="profile" />
+                    <img src={state.profileDetail.profilePhoto} style={{ maxWidth: 247.5 }} alt="profile" />
                     <label htmlFor="contained-button-file" style={{ display: 'flex', flexDirection: 'column' }}>
                         <Input id="contained-button-file" type="file" style={{padding: '10px'}} onChange={(e: any) => handleChooseProfilePhoto(e.target.files[0])} />
                         {profilePhotoFile && (

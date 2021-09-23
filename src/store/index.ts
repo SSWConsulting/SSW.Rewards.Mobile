@@ -21,6 +21,7 @@ export interface State {
   users: LeaderboardUserDto[];
   achievements: AchievementViewModel[];
   rewards: RewardAdminViewModel[];
+  staffProfilesDefault: StaffDto[];
   staffProfiles: StaffDto[];
   profileDetail: StaffDto;
   userDetail: UserViewModel;
