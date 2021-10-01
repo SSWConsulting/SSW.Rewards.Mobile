@@ -50,10 +50,6 @@ namespace SSW.Rewards
 		        {
 			        var dbContext = services.GetRequiredService<SSWRewardsDbContext>();
 			        dbContext.Database.Migrate();
-
-			        var mediator = services.GetRequiredService<IMediator>();
-			        await mediator.Send(new SeedSampleDataCommand(), CancellationToken.None);
-
 			        return true;
 				}
 		        catch (Exception ex)
