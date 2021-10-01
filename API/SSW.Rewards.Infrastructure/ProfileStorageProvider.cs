@@ -19,5 +19,13 @@ namespace SSW.Rewards.Infrastructure
 
         public async Task<Uri> GetProfileUri(string staffMemberName) => await _storageProvider.GetUri(CONTAINER_NAME, $"{staffMemberName.ToLower()}.png");
 
+        public async Task<string> UploadProfilePicture(byte[] imageArray, string fileName)
+        {
+            await _storageProvider.UploadBlob(CONTAINER_NAME, fileName, imageArray);
+
+            var uri = await _storageProvider.GetUri(CONTAINER_NAME, fileName);
+
+            return uri.AbsoluteUri;
+        }
     }
 }

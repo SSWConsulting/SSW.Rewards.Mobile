@@ -438,6 +438,26 @@
         }
       }
     },
+    "/api/Skill/Get": {
+      "get": {
+        "tags": [
+          "Skill"
+        ],
+        "operationId": "Skill_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Staff/Get": {
       "get": {
         "tags": [
@@ -451,6 +471,138 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/StaffListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/GetStaffMemberProfile": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_GetStaffMemberProfile",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/UpsertStaffMemberProfile": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_UpsertStaffMemberProfile",
+        "requestBody": {
+          "x-name": "staffMember",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertStaffMemberProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/UploadStaffMemberProfilePicture": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_UploadStaffMemberProfilePicture",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/DeleteStaffMemberProfile": {
+      "delete": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_DeleteStaffMemberProfile",
+        "requestBody": {
+          "x-name": "staffMember",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteStaffMemberProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -1008,6 +1160,19 @@
           }
         }
       },
+      "SkillListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "StaffListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -1059,6 +1224,70 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "UpsertStaffMemberProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "profile": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "skills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DeleteStaffMemberProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "profile": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterUsername": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

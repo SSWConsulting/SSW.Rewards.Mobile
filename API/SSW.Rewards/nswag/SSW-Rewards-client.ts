@@ -703,8 +703,64 @@ export class RewardClient extends BaseClient implements IRewardClient {
     }
 }
 
+export interface ISkillClient {
+    get(): Promise<SkillListViewModel>;
+}
+
+export class SkillClient extends BaseClient implements ISkillClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(): Promise<SkillListViewModel> {
+        let url_ = this.baseUrl + "/api/Skill/Get";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<SkillListViewModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SkillListViewModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SkillListViewModel>(<any>null);
+    }
+}
+
 export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
+    getStaffMemberProfile(name: string | null): Promise<StaffDto>;
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
+    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string>;
+    deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
 
 export class StaffClient extends BaseClient implements IStaffClient {
@@ -752,6 +808,167 @@ export class StaffClient extends BaseClient implements IStaffClient {
             });
         }
         return Promise.resolve<StaffListViewModel>(<any>null);
+    }
+
+    getStaffMemberProfile(name: string | null): Promise<StaffDto> {
+        let url_ = this.baseUrl + "/api/Staff/GetStaffMemberProfile?";
+        if (name === undefined)
+            throw new Error("The parameter 'name' must be defined.");
+        else if(name !== null)
+            url_ += "name=" + encodeURIComponent("" + name) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetStaffMemberProfile(_response);
+        });
+    }
+
+    protected processGetStaffMemberProfile(response: Response): Promise<StaffDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StaffDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StaffDto>(<any>null);
+    }
+
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/UpsertStaffMemberProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(staffMember);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpsertStaffMemberProfile(_response);
+        });
+    }
+
+    protected processUpsertStaffMemberProfile(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
+    }
+
+    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/UploadStaffMemberProfilePicture";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUploadStaffMemberProfilePicture(_response);
+        });
+    }
+
+    protected processUploadStaffMemberProfilePicture(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
+    }
+
+    deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/DeleteStaffMemberProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(staffMember);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteStaffMemberProfile(_response);
+        });
+    }
+
+    protected processDeleteStaffMemberProfile(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(<any>null);
     }
 }
 
@@ -1864,6 +2081,50 @@ export interface IClaimRewardForUserCommand {
     code?: string | undefined;
 }
 
+export class SkillListViewModel implements ISkillListViewModel {
+    skills?: string[] | undefined;
+
+    constructor(data?: ISkillListViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["skills"])) {
+                this.skills = [] as any;
+                for (let item of _data["skills"])
+                    this.skills!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): SkillListViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SkillListViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.skills)) {
+            data["skills"] = [];
+            for (let item of this.skills)
+                data["skills"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface ISkillListViewModel {
+    skills?: string[] | undefined;
+}
+
 export class StaffListViewModel implements IStaffListViewModel {
     staff?: StaffDto[] | undefined;
 
@@ -1978,6 +2239,126 @@ export interface IStaffDto {
     twitterUsername?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
+}
+
+export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    profilePhoto?: string | undefined;
+    skills?: string[] | undefined;
+
+    constructor(data?: IUpsertStaffMemberProfileCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.title = _data["title"];
+            this.email = _data["email"];
+            this.profile = _data["profile"];
+            this.twitterUsername = _data["twitterUsername"];
+            this.profilePhoto = _data["profilePhoto"];
+            if (Array.isArray(_data["skills"])) {
+                this.skills = [] as any;
+                for (let item of _data["skills"])
+                    this.skills!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UpsertStaffMemberProfileCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpsertStaffMemberProfileCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["title"] = this.title;
+        data["email"] = this.email;
+        data["profile"] = this.profile;
+        data["twitterUsername"] = this.twitterUsername;
+        data["profilePhoto"] = this.profilePhoto;
+        if (Array.isArray(this.skills)) {
+            data["skills"] = [];
+            for (let item of this.skills)
+                data["skills"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface IUpsertStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+    profilePhoto?: string | undefined;
+    skills?: string[] | undefined;
+}
+
+export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
+
+    constructor(data?: IDeleteStaffMemberProfileCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.title = _data["title"];
+            this.email = _data["email"];
+            this.profile = _data["profile"];
+            this.twitterUsername = _data["twitterUsername"];
+        }
+    }
+
+    static fromJS(data: any): DeleteStaffMemberProfileCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteStaffMemberProfileCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["title"] = this.title;
+        data["email"] = this.email;
+        data["profile"] = this.profile;
+        data["twitterUsername"] = this.twitterUsername;
+        return data; 
+    }
+}
+
+export interface IDeleteStaffMemberProfileCommand {
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    twitterUsername?: string | undefined;
 }
 
 export class CurrentUserViewModel implements ICurrentUserViewModel {
