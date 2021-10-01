@@ -93,8 +93,8 @@ jobs:
         name: iOS
         path: Xamarin/SSW.Rewards/SSW.Rewards.iOS/**/SSW.Consulting.iOS.ipa
 
-  Deploy:
-    needs: [Android, iOS]
+  DeployAndroid:
+    needs: [Android]
     if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
 
@@ -105,25 +105,8 @@ jobs:
         with:
           name: Android
 
-      - name: Download iOS app
-        uses: actions/download-artifact@v2
-        with:
-          name: iOS
-
       - name: Install appcenter
         run: npm install -g appcenter-cli
-
-      # - name: upload Android .aab to App Center
-      #   uses: avocaddo/AppCenter-Github-Action@v1.0.2
-      #   with:
-      #     command: appcenter distribute stores publish -s Beta -f com.ssw.consulting-Signed.aab -a SSW.MobileApps/SSW.Xamarin.Android
-      #     token: ${{secrets.APP_CENTER_KEY}}
-
-      # - name: upload iOS .ipa to App Center
-      #   uses: avocaddo/AppCenter-Github-Action@v1.0.2
-      #   with:
-      #     token: ${{secrets.APP_CENTER_KEY}}
-      #     command: appcenter distribute stores publish --store "App Store Connect Users" -f bin/iPhone/Release/SSW.Consulting.iOS.ipa -a SSW.MobileApps/SSW.Xamarin.iOS --release-notes release.txt
 
       - name: upload Android
         run: |
@@ -132,6 +115,21 @@ jobs:
             -f com.ssw.consulting-Signed.aab \
             -a SSW.MobileApps/SSW.Xamarin.Android \
             --token ${{secrets.APP_CENTER_KEY}}
+
+  DeployiOS:
+    needs: [iOS]
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Download iOS app
+        uses: actions/download-artifact@v2
+        with:
+          name: iOS
+
+      - name: Install appcenter
+        run: npm install -g appcenter-cli
 
       - name: upload iOS
         run: |
