@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - 'Xamarin/**'
+    paths:
+      - 'Xamarin/**'
   pull_request:
     branches:
       - master
-    # paths:
-    #   - 'Xamarin/**'
+    paths:
+      - 'Xamarin/**'
 
 jobs:
   Android:
