@@ -51,7 +51,7 @@
                    BackgroundColor="Black"/>
 
             <Button Grid.Row="2"
-                    Text="Use this pciture"
+                    Text="Use this picture"
                     IsEnabled="{Binding UseButtonEnabled}"
                     Command="{Binding UseButtonTapped}"/>
             <StackLayout Grid.Row="0"
