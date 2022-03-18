@@ -40,8 +40,6 @@ To contribute to this project follow the steps below. Please ensure you are foll
 1. Inside the Explorer - **Local & Attached** | **Storage Accounts** | **Emulator** | **Blob Containers**
 1. Create a **new container** called `profile`
 1. Copy over all files in `SeedData/profiles` (images + .xlsx) into the newly created `profile` container
-1. **(Optional)** - Remember to change/update your `SqlConnectionString` (Remove Trusted_Connection if you want to use a User/Password) 
-    `"Server=localhost;Database=SSWRewards;Trusted_Connection=True;"` 
 1. Press f5
 1. Test that you can access the swagger docs @ `https://localhost:5001/swagger/` 
 1. **(Optional)** - If you need to run the api and mobile app locally. Set up an [ngrok](https://ngrok.com/) account (This is free and signing up allows 24hour access instead of the 2hours without an account) 
