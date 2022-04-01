@@ -82,7 +82,7 @@ namespace SSW.Rewards.ViewModels
                 try
                 {
                     IEnumerable<IAccount> accounts = await App.AuthenticationClient.GetAccountsAsync();
-                    
+
                     result = await App.AuthenticationClient
                         .AcquireTokenSilent(App.Constants.Scopes, accounts.FirstOrDefault())
                         .ExecuteAsync();
@@ -96,21 +96,52 @@ namespace SSW.Rewards.ViewModels
                     Application.Current.MainPage = Resolver.Resolve<AppShell>();
                     await Shell.Current.GoToAsync("//main");
                 }
+                catch (MsalUiRequiredException)
+                {
+                    // Interactive signin required again
+                    // Refresh token probably expired
+                    await _userService.SignInAsync();
+                }
                 catch (MsalException ex)
                 {
-                    if(ex.Message != null && ex.Message.Contains("AADB2C90118"))
+                    // Forgot password
+                    if (ex.Message != null && ex.Message.Contains("AADB2C90118"))
                     {
-                        result = await OnForgotPassword();
-                        if(!string.IsNullOrWhiteSpace(result.AccessToken))
+                        try
                         {
-                            string token = result.AccessToken;
+                            result = await OnForgotPassword();
+                            if (!string.IsNullOrWhiteSpace(result.AccessToken))
+                            {
+                                string token = result.AccessToken;
 
-                            await SecureStorage.SetAsync("auth_token", token);
+                                await SecureStorage.SetAsync("auth_token", token);
 
-                            Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                            await Shell.Current.GoToAsync("//main");
+                                Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                                await Shell.Current.GoToAsync("//main");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            // Exception while resetting password
+                            Crashes.TrackError(e);
+                            await Application.Current.MainPage.DisplayAlert("Login Failure",
+                                "There seems to have been a problem logging you in. Please try again. " + e.Message,
+                                "OK");
                         }
                     }
+                    else
+                    {
+                        // Fatal MSAL exception
+                        Crashes.TrackError(ex);
+                        await Application.Current.MainPage.DisplayAlert("Login Failure",
+                            "There seems to have been a problem logging you in. Please try again. " + ex.Message, "OK");
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Everything else is fatal
+                    Crashes.TrackError(e);
+                    await Application.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
                 }
             }
         }

@@ -12,6 +12,7 @@ namespace SSW.Rewards.Domain.Entities
         public string TwitterUsername { get; set; }
         public bool IsExternal { get; set; }
         public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
+        public string ProfilePhoto { get; set; }
     }
 }
 

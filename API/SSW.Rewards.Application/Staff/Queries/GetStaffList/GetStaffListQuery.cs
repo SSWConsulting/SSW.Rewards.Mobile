@@ -3,6 +3,8 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,25 +31,26 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
 
             public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
             {
-                var staffDtos = await _dbContext
-                    .StaffMembers
-                    .Include(s => s.StaffMemberSkills)
-                        .ThenInclude(sms => sms.Skill)
-                    .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken);
-
-                var staffDtosWithProfilePhotos = await Task.WhenAll(staffDtos.Select(staffMember => GetProfilePhoto(staffMember)));
-
-                return new StaffListViewModel
+                try
                 {
-                    Staff = staffDtosWithProfilePhotos
-				};
-            }
+                    var staffDtos = await _dbContext.StaffMembers
+                        .Include(s => s.StaffMemberSkills)
+                        .ThenInclude(sms => sms.Skill)
+                        .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
+                        .ToListAsync(cancellationToken);
 
-            private async Task<StaffDto> GetProfilePhoto(StaffDto staffMember)
-            {
-                staffMember.ProfilePhoto = await _storage.GetProfileUri(staffMember.Name);
-                return staffMember;
+                    return new StaffListViewModel
+                    {
+                        Staff = staffDtos
+                    };
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                return new StaffListViewModel();
+
             }
         }
     }

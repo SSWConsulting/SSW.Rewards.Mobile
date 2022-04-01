@@ -32,9 +32,9 @@ namespace SSW.Rewards.WebAPI.Controllers
 
         [HttpPost]
         //[Authorize(Roles = "admin")]
-        public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(IFormFile file)
+        public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(int id, IFormFile file)
         {
-            return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { File = file }));
+            return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { Id = id, File = file }));
         }
 
         [HttpDelete]

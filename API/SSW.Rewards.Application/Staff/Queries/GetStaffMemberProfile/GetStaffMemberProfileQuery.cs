@@ -34,15 +34,12 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
 
             public async Task<StaffDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
             {
-                var staffMember = await _dbContext
-                    .StaffMembers
+                var staffMember = await _dbContext.StaffMembers
                     .Include(s => s.StaffMemberSkills)
-                        .ThenInclude(sms => sms.Skill)
+                    .ThenInclude(sms => sms.Skill)
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
                     .Where(member => member.Name == request.Name)
                     .FirstOrDefaultAsync();
-
-                staffMember.ProfilePhoto = await _storage.GetProfileUri(staffMember.Name);
 
                 return staffMember;
             }

@@ -48,7 +48,10 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 		                .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
 		                .SingleOrDefaultAsync(cancellationToken);
 
-	                if (user == null)
+                    // SingleOrDefaultAsync -> Throws an "Enumerator failed to MoveNextAsync" when there are more than 1 record.
+                    // For some reason the currentUserService.GetEmail brings back 2 emails address 
+
+                    if (user == null)
 	                {
 		                throw new NotFoundException(nameof(User), currentUserEmail);
 	                }

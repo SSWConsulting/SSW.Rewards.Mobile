@@ -759,7 +759,7 @@ export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
     getStaffMemberProfile(name: string | null): Promise<StaffDto>;
     upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
-    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string>;
+    uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string>;
     deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
 
@@ -890,8 +890,12 @@ export class StaffClient extends BaseClient implements IStaffClient {
         return Promise.resolve<string>(<any>null);
     }
 
-    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string> {
-        let url_ = this.baseUrl + "/api/Staff/UploadStaffMemberProfilePicture";
+    uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/UploadStaffMemberProfilePicture?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -2170,6 +2174,7 @@ export interface IStaffListViewModel {
 }
 
 export class StaffDto implements IStaffDto {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2190,6 +2195,7 @@ export class StaffDto implements IStaffDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.title = _data["title"];
             this.email = _data["email"];
@@ -2214,6 +2220,7 @@ export class StaffDto implements IStaffDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["title"] = this.title;
         data["email"] = this.email;
@@ -2231,6 +2238,7 @@ export class StaffDto implements IStaffDto {
 }
 
 export interface IStaffDto {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2242,6 +2250,7 @@ export interface IStaffDto {
 }
 
 export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2261,6 +2270,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.title = _data["title"];
             this.email = _data["email"];
@@ -2284,6 +2294,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["title"] = this.title;
         data["email"] = this.email;
@@ -2300,6 +2311,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 }
 
 export interface IUpsertStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;

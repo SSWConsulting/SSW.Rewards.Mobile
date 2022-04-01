@@ -14,6 +14,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture
 {
     public class UploadStaffMemberProfilePictureCommand : IRequest<string>
     {
+        public int Id { get; set; }
         public IFormFile File { get; set; }
 
         public class UploadProfilePicHandler : IRequestHandler<UploadStaffMemberProfilePictureCommand, string>
@@ -44,7 +45,20 @@ namespace SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture
 
                 string filename = file.FileName;
 
-                return await _storage.UploadProfilePicture(bytes, filename);
+                var imgUrl = await _storage.UploadProfilePicture(bytes, filename);
+
+                var staffMember = await _context.StaffMembers.FirstOrDefaultAsync(x => x.Id == request.Id);
+                staffMember.ProfilePhoto = imgUrl;
+                try
+                {
+                    await _context.SaveChangesAsync(cancellationToken);
+
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+                return imgUrl;
             }
         }
     }

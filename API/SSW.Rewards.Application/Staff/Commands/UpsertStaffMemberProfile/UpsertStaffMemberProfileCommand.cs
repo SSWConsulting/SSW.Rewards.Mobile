@@ -14,6 +14,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
 {
     public class UpsertStaffMemberProfileCommand : IRequest<StaffDto>
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Email { get; set; }
@@ -41,7 +42,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 var staffMemberEntity = await _context.StaffMembers
                     .Include(s => s.StaffMemberSkills)
                     .ThenInclude(sms => sms.Skill)
-                    .FirstOrDefaultAsync(u => u.Name == request.Name, cancellationToken);
+                    .FirstOrDefaultAsync(u => u.Id == staffMember.Id, cancellationToken);
 
                 // Add if doesn't exist
                 if (staffMemberEntity == null)
