@@ -18,9 +18,9 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<StaffDto>> GetStaffMemberProfile(string name)
+        public async Task<ActionResult<StaffDto>> GetStaffMemberProfile(int id)
         {
-            return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { Name = name }));
+            return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { Id = id }));
         }
 
         [HttpPost]

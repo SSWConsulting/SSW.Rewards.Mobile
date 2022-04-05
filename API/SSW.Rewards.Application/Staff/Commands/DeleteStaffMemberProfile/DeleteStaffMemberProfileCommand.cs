@@ -14,6 +14,7 @@ namespace SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile
 {
     public class DeleteStaffMemberProfileCommand : IRequest<Unit>
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Email { get; set; }
@@ -36,14 +37,15 @@ namespace SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile
             public async Task<Unit> Handle(DeleteStaffMemberProfileCommand request, CancellationToken cancellationToken)
             {
                 var staffMember = await _context.StaffMembers
-                    .FirstOrDefaultAsync(u => u.Name == request.Name, cancellationToken);
+                    .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
 
                 if (staffMember == null)
                 {
                     throw new NotFoundException(nameof(StaffMember), request.Name);
                 }
 
-                _context.StaffMembers.Remove(staffMember);
+                staffMember.IsDeleted = !staffMember.IsDeleted;
+                //_context.StaffMembers.Remove(staffMember);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Unit.Value;

@@ -2024,18 +2024,21 @@ namespace SSW.Rewards
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<StaffDto> GetStaffMemberProfileAsync(string name)
+        public System.Threading.Tasks.Task<StaffDto> GetStaffMemberProfileAsync(int id)
         {
-            return GetStaffMemberProfileAsync(name, System.Threading.CancellationToken.None);
+            return GetStaffMemberProfileAsync(id, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<StaffDto> GetStaffMemberProfileAsync(string name, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<StaffDto> GetStaffMemberProfileAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
+            if (id == null)
+                throw new System.ArgumentNullException("id");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Staff/GetStaffMemberProfile?");
-            urlBuilder_.Append(System.Uri.EscapeDataString("name") + "=").Append(System.Uri.EscapeDataString(name != null ? ConvertToString(name, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("id") + "=").Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
             var client_ = _httpClient;
@@ -3294,6 +3297,9 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("profilePhoto", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProfilePhoto { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("isDeleted", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsDeleted { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("twitterUsername", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TwitterUsername { get; set; }
     
@@ -3339,6 +3345,9 @@ namespace SSW.Rewards
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class DeleteStaffMemberProfileCommand 
     {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Id { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
     

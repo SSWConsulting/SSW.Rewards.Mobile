@@ -14,7 +14,7 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
 {
     public class GetStaffMemberProfileQuery: IRequest<StaffDto>
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
 
         public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffDto>
         {
@@ -31,14 +31,14 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
                 _dbContext = dbContext;
                 _storage = storage;
             }
-
+            
             public async Task<StaffDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
             {
                 var staffMember = await _dbContext.StaffMembers
                     .Include(s => s.StaffMemberSkills)
                     .ThenInclude(sms => sms.Skill)
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
-                    .Where(member => member.Name == request.Name)
+                    .Where(member => member.Id == request.Id)
                     .FirstOrDefaultAsync();
 
                 return staffMember;
