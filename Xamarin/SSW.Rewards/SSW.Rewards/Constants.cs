@@ -8,7 +8,7 @@ namespace SSW.Rewards
 
 #if DEBUG
         // https://sswconsulting-dev.azurewebsites.net
-        public string ApiBaseUrl = "https://3848-106-70-99-63.ngrok.io";
+        public string ApiBaseUrl = "https://987e-106-70-99-63.ngrok.io";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA

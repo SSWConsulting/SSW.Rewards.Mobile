@@ -11,7 +11,8 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public string Title { get; set; }
         public string Email { get; set; }
         public string Profile { get; set; }
-        public string ProfilePhoto { get; set; }
+        public Uri ProfilePhoto { get; set; }
+        public bool IsDeleted { get; set; }
         public string TwitterUsername { get; set; }
         public bool IsExternal { get; set; }
         public IEnumerable<string> Skills { get; set; } = Enumerable.Empty<string>();
