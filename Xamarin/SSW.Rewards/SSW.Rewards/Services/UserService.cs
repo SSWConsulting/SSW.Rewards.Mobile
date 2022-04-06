@@ -19,6 +19,8 @@ namespace SSW.Rewards.Services
         private UserClient _userClient { get; set; }
         private HttpClient _httpClient { get; set; }
 
+        public event EventHandler<UserLoggedInEventArgs> UserLoggedIn;
+
         public async Task<string> GetMyEmailAsync()
         {
             return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
@@ -100,6 +102,8 @@ namespace SSW.Rewards.Services
 
                     var tokenHandler = new JwtSecurityTokenHandler();
 
+                    bool isStaff = false;
+
                     try
                     {
                         var jwToken = tokenHandler.ReadJwtToken(result.IdToken);
@@ -143,7 +147,16 @@ namespace SSW.Rewards.Services
                             Preferences.Set("MyPoints", user.Points);
                         }
 
+                        if (!string.IsNullOrWhiteSpace(user.QrCode))
+                        {
+                            Preferences.Set("MyQRCode", user.QrCode);
+                            isStaff = true;
+                        }
+
                         Preferences.Set("LoggedIn", true);
+
+                        OnUserLoggedIn(isStaff);
+
                         return ApiStatus.Success;
                     }
                     catch (ArgumentException ex)
@@ -318,6 +331,23 @@ namespace SSW.Rewards.Services
         public Task<ImageSource> GetAvatarAsync(string url)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<string> GetMyQrCode()
+        {
+            return Task.FromResult(Preferences.Get("MyQRCode", string.Empty));
+        }
+
+        private void OnUserLoggedIn(bool isStaff)
+        {
+            EventHandler handler = UserLoggedIn;
+
+            var args = new UserLoggedInEventArgs
+            {
+                IsStaff = isStaff
+            };
+
+            handler.Invoke(this, args);
         }
     }
 }

@@ -4,8 +4,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
-using SSW.Rewards.Domain.Entities;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +13,10 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
     public class GetStaffMemberProfileQuery: IRequest<StaffDto>
     {
         public string Name { get; set; }
+
+        public string email { get; set; }
+
+        public bool GetByEmail { get; set; } = false;
 
         public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffDto>
         {
@@ -34,13 +36,22 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
 
             public async Task<StaffDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
             {
-                var staffMember = await _dbContext
+                var query = _dbContext
                     .StaffMembers
                     .Include(s => s.StaffMemberSkills)
                         .ThenInclude(sms => sms.Skill)
-                    .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
-                    .Where(member => member.Name == request.Name)
-                    .FirstOrDefaultAsync();
+                    .ProjectTo<StaffDto>(_mapper.ConfigurationProvider);
+
+                if (request.GetByEmail)
+                {
+                    query = query.Where(s => s.Email == request.email);
+                }
+                else
+                {
+                    query = query.Where(s => s.Name == request.Name);
+                }
+
+                var staffMember = await query.FirstOrDefaultAsync();
 
                 staffMember.ProfilePhoto = await _storage.GetProfileUri(staffMember.Name);
 

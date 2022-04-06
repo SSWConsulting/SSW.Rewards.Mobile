@@ -25,5 +25,13 @@ namespace SSW.Rewards.Services
         Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ImageSource> GetAvatarAsync(string url);
         Task<string> UploadImageAsync(Stream image);
+        Task<string> GetMyQrCode();
+
+        event EventHandler<UserLoggedInEventArgs> UserLoggedIn;
+    }
+
+    public class UserLoggedInEventArgs : EventArgs
+    {
+        public bool IsStaff { get; set; }
     }
 }

@@ -43,7 +43,14 @@ namespace SSW.Rewards
             Navigation.PushModalAsync(new OnBoarding());
         }
 
-		protected override bool OnBackButtonPressed()
+        private async void Handle_QRClicked(object sender, EventArgs e)
+        {
+            var qrCode = await _userService.GetMyQrCode();
+
+            await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
+        }
+
+        protected override bool OnBackButtonPressed()
 		{
 			if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
 			{
@@ -60,6 +67,19 @@ namespace SSW.Rewards
         {
             InitializeComponent();
             _userService = userService;
+            _userService.UserLoggedIn += OnUserLoggedIn;
+        }
+
+        private void OnUserLoggedIn(object sender, UserLoggedInEventArgs e)
+        {
+            if (e.IsStaff)
+            {
+                QRMenuItem.IsEnabled = true;
+            }
+            else
+            {
+                QRMenuItem.IsEnabled = false;
+            }
         }
     }
 }

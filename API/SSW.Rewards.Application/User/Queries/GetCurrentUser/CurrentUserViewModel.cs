@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 {
     public class CurrentUserViewModel
@@ -14,5 +11,7 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
         public string ProfilePic { get; set; }
 
         public int Points { get; set; }
+
+        public string QRCode { get; set; }
     }
 }

@@ -141,6 +141,11 @@
               IconImageSource="icon_ssw"
               Clicked="Handle_AboutClicked"/>
 
+    <MenuItem Text="MyQRCode"
+              IconImageSource="icon_qrcode"
+              Clicked="Handle_QRClicked"
+              x:Name="QRMenuItem"/>
+
     <MenuItem Text="Log Out"
               Clicked="Handle_LogOutClicked"/>
 
