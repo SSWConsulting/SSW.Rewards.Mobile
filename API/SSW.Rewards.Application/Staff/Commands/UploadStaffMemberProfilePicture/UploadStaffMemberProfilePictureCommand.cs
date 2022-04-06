@@ -48,16 +48,10 @@ namespace SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture
                 var imgUrl = await _storage.UploadProfilePicture(bytes, filename);
 
                 var staffMember = await _context.StaffMembers.FirstOrDefaultAsync(x => x.Id == request.Id);
+                
                 staffMember.ProfilePhoto = imgUrl;
-                try
-                {
-                    await _context.SaveChangesAsync(cancellationToken);
-
-                }
-                catch (Exception ex)
-                {
-                    
-                }
+                await _context.SaveChangesAsync(cancellationToken);
+                
                 return imgUrl;
             }
         }

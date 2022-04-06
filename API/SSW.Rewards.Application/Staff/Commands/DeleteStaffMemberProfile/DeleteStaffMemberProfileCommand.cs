@@ -45,7 +45,6 @@ namespace SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile
                 }
 
                 staffMember.IsDeleted = !staffMember.IsDeleted;
-                //_context.StaffMembers.Remove(staffMember);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return Unit.Value;

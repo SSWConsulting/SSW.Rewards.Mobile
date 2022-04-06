@@ -31,26 +31,16 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
 
             public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
             {
-                try
+                var staffDtos = await _dbContext.StaffMembers
+                    .Include(s => s.StaffMemberSkills)
+                    .ThenInclude(sms => sms.Skill)
+                    .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                return new StaffListViewModel
                 {
-                    var staffDtos = await _dbContext.StaffMembers
-                        .Include(s => s.StaffMemberSkills)
-                        .ThenInclude(sms => sms.Skill)
-                        .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
-                        .ToListAsync(cancellationToken);
-
-                    return new StaffListViewModel
-                    {
-                        Staff = staffDtos
-                    };
-                }
-                catch (Exception ex)
-                {
-
-                }
-
-                return new StaffListViewModel();
-
+                    Staff = staffDtos
+                };
             }
         }
     }
