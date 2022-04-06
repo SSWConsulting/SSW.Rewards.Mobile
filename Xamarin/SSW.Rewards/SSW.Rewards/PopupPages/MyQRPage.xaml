@@ -4,6 +4,7 @@
                  xmlns:popup="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
                  xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
                  xmlns:zx="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+                 xmlns:zxcommon="clr-namespace:ZXing.Common;assembly=zxing.portable"
                  x:Class="SSW.Rewards.PopupPages.MyQRPage">
     <popup:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
@@ -26,7 +27,12 @@
             <zx:ZXingBarcodeImageView x:Name="codeView"
                                       BarcodeFormat="QR_CODE"
                                       WidthRequest="300"
-                                      HeightRequest="300"/>
+                                      HeightRequest="300">
+                <zx:ZXingBarcodeImageView.BarcodeOptions>
+                    <zxcommon:EncodingOptions Height="300"
+                                              Width="300"/>
+                </zx:ZXingBarcodeImageView.BarcodeOptions>
+            </zx:ZXingBarcodeImageView>
 
             <Button Text="OK"
                     HorizontalOptions="Center"

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using Rg.Plugins.Popup.Services;
+﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
 using SSW.Rewards.Views;
+using System;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace SSW.Rewards
@@ -11,6 +11,18 @@ namespace SSW.Rewards
     public partial class AppShell : Xamarin.Forms.Shell
     {
         private IUserService _userService { get; set; }
+
+        bool _showQRMenu;
+
+        public bool ShowQRCodeMenuItem
+        {
+            get => _showQRMenu;
+            set
+            {
+                _showQRMenu = value;
+                OnPropertyChanged();
+            }
+        }
 
         public async void Handle_LogOutClicked(object sender, EventArgs e)
         {
@@ -47,7 +59,8 @@ namespace SSW.Rewards
         {
             var qrCode = await _userService.GetMyQrCode();
 
-            await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
+            if (!string.IsNullOrWhiteSpace(qrCode))
+                await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
         }
 
         protected override bool OnBackButtonPressed()
@@ -63,23 +76,12 @@ namespace SSW.Rewards
 			}
 		}
 
-		public AppShell(IUserService userService)
+		public AppShell(IUserService userService, bool isStaff)
         {
             InitializeComponent();
             _userService = userService;
-            _userService.UserLoggedIn += OnUserLoggedIn;
-        }
-
-        private void OnUserLoggedIn(object sender, UserLoggedInEventArgs e)
-        {
-            if (e.IsStaff)
-            {
-                QRMenuItem.IsEnabled = true;
-            }
-            else
-            {
-                QRMenuItem.IsEnabled = false;
-            }
+            ShowQRCodeMenuItem = isStaff;
+            BindingContext = this;
         }
     }
 }

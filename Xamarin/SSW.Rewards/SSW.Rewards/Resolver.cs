@@ -15,5 +15,10 @@ namespace SSW.Rewards
         {
             return container.Resolve<T>();
         }
+
+        public static AppShell ResolveShell(bool isStaff)
+        {
+            return container.Resolve<AppShell>(new NamedParameter("isStaff", isStaff));
+        }
     }
 }

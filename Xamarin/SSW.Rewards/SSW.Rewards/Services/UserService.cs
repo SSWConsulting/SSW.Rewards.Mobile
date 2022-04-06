@@ -19,8 +19,6 @@ namespace SSW.Rewards.Services
         private UserClient _userClient { get; set; }
         private HttpClient _httpClient { get; set; }
 
-        public event EventHandler<UserLoggedInEventArgs> UserLoggedIn;
-
         public async Task<string> GetMyEmailAsync()
         {
             return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
@@ -154,8 +152,6 @@ namespace SSW.Rewards.Services
                         }
 
                         Preferences.Set("LoggedIn", true);
-
-                        OnUserLoggedIn(isStaff);
 
                         return ApiStatus.Success;
                     }
@@ -336,18 +332,6 @@ namespace SSW.Rewards.Services
         public Task<string> GetMyQrCode()
         {
             return Task.FromResult(Preferences.Get("MyQRCode", string.Empty));
-        }
-
-        private void OnUserLoggedIn(bool isStaff)
-        {
-            EventHandler handler = UserLoggedIn;
-
-            var args = new UserLoggedInEventArgs
-            {
-                IsStaff = isStaff
-            };
-
-            handler.Invoke(this, args);
         }
     }
 }

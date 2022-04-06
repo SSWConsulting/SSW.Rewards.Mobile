@@ -8,7 +8,8 @@
        xmlns:controls="clr-namespace:SSW.Rewards.Controls"
        Title="SSW.Rewards"
        FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
-       x:Class="SSW.Rewards.AppShell">
+       x:Class="SSW.Rewards.AppShell"
+       x:Name="RewardsShell">
 
     <!-- 
         Styles and Resources 
@@ -39,6 +40,13 @@
         <DataTemplate>
             <StackLayout>
                 <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                     Binding="{Binding Text}"
+                                     Value="My QRCode">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
+                        </DataTrigger>
+                    </Grid.Triggers>
                     <Grid.Padding>
                         <OnPlatform x:TypeArguments="Thickness">
                             <On Platform="Android" Value="5" />
@@ -141,7 +149,7 @@
               IconImageSource="icon_ssw"
               Clicked="Handle_AboutClicked"/>
 
-    <MenuItem Text="MyQRCode"
+    <MenuItem Text="My QRCode"
               IconImageSource="icon_qrcode"
               Clicked="Handle_QRClicked"
               x:Name="QRMenuItem"/>
