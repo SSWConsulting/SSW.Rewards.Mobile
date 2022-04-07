@@ -100,6 +100,8 @@ namespace SSW.Rewards.Services
 
                     var tokenHandler = new JwtSecurityTokenHandler();
 
+                    bool isStaff = false;
+
                     try
                     {
                         var jwToken = tokenHandler.ReadJwtToken(result.IdToken);
@@ -143,7 +145,14 @@ namespace SSW.Rewards.Services
                             Preferences.Set("MyPoints", user.Points);
                         }
 
+                        if (!string.IsNullOrWhiteSpace(user.QrCode))
+                        {
+                            Preferences.Set("MyQRCode", user.QrCode);
+                            isStaff = true;
+                        }
+
                         Preferences.Set("LoggedIn", true);
+
                         return ApiStatus.Success;
                     }
                     catch (ArgumentException ex)
@@ -318,6 +327,11 @@ namespace SSW.Rewards.Services
         public Task<ImageSource> GetAvatarAsync(string url)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<string> GetMyQrCode()
+        {
+            return Task.FromResult(Preferences.Get("MyQRCode", string.Empty));
         }
     }
 }

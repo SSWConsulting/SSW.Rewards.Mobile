@@ -4,8 +4,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
-using SSW.Rewards.Domain.Entities;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +13,10 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile
     public class GetStaffMemberProfileQuery: IRequest<StaffDto>
     {
         public int Id { get; set; }
+
+        public string email { get; set; }
+
+        public bool GetByEmail { get; set; } = false;
 
         public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffDto>
         {

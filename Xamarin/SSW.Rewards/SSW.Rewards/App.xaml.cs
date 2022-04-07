@@ -87,9 +87,16 @@ namespace SSW.Rewards
                         .ExecuteAsync();
 
                     string token = result.AccessToken;
-                    await SecureStorage.SetAsync("auth_token", token);
+                    await SecureStorage.SetAsync("auth_token", token);                    
 
-                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
+                    bool isStaff = false;
+
+                    var qrCode = Preferences.Get("MyQRCode", string.Empty);
+
+                    if (!string.IsNullOrWhiteSpace(qrCode))
+                        isStaff = true;
+
+                    Application.Current.MainPage = Resolver.ResolveShell(isStaff);
                     await Shell.Current.GoToAsync("//main");
                 }
                 catch(Exception e)

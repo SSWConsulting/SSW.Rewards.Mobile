@@ -438,6 +438,27 @@
         }
       }
     },
+    "/api/Seed/SeedData": {
+      "get": {
+        "tags": [
+          "Seed"
+        ],
+        "operationId": "Seed_SeedData",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Skill/Get": {
       "get": {
         "tags": [
@@ -492,6 +513,38 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Staff/GetStaffMemberByEmail": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "operationId": "Staff_GetStaffMemberByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
@@ -1278,6 +1331,10 @@
             "format": "uri",
             "nullable": true
           },
+          "rate": {
+            "type": "integer",
+            "format": "int32"
+          },
           "skills": {
             "type": "array",
             "nullable": true,
@@ -1340,6 +1397,10 @@
           "points": {
             "type": "integer",
             "format": "int32"
+          },
+          "qrCode": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

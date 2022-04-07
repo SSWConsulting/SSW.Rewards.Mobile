@@ -1,5 +1,4 @@
 ﻿using SSW.Rewards.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,5 +24,6 @@ namespace SSW.Rewards.Services
         Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ImageSource> GetAvatarAsync(string url);
         Task<string> UploadImageAsync(Stream image);
+        Task<string> GetMyQrCode();
     }
 }

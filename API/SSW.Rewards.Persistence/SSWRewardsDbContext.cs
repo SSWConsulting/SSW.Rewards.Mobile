@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Domain.Entities;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SSW.Rewards.Application;
 
 namespace SSW.Rewards.Persistence
 {
