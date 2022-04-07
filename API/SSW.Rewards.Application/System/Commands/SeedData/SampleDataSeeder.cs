@@ -82,13 +82,14 @@ namespace SSW.Rewards.Persistence
                 staffMember.Profile = p.Profile;
                 staffMember.TwitterUsername = p.TwitterUsername;
                 staffMember.IsExternal = p.IsExternal;
+                staffMember.StaffAchievement = new Achievement { Name = p.Name, Value = p.Value, Code = GenerateCode(p.Name) };
 
                 if (staffMember.Id == 0)
                 {
                     _context.StaffMembers.Add(staffMember);
                 }
 
-                SetupAchievement(existingAchievements, p.Name, p.Value);
+                //SetupAchievement(existingAchievements, p.Name, p.Value);
             });
 
             await _context.SaveChangesAsync(cancellationToken);
@@ -169,14 +170,19 @@ namespace SSW.Rewards.Persistence
                 ?? new Achievement();
 
             achievement.Name = name;
-            var codeData = Encoding.ASCII.GetBytes(name);
-            achievement.Code = Convert.ToBase64String(codeData);
+            achievement.Code = GenerateCode(name);
             achievement.Value = value;
 
             if (achievement.Id == 0)
             {
                 _context.Achievements.Add(achievement);
             }
+        }
+
+        private string GenerateCode(string inputValue)
+        {
+            var codeData = Encoding.ASCII.GetBytes(inputValue);
+            return Convert.ToBase64String(codeData);
         }
 
         private void SetupReward(IEnumerable<Reward> existingRewards, string name, int cost)

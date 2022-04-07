@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using Rg.Plugins.Popup.Services;
+﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
 using SSW.Rewards.Views;
+using System;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace SSW.Rewards
@@ -11,6 +11,18 @@ namespace SSW.Rewards
     public partial class AppShell : Xamarin.Forms.Shell
     {
         private IUserService _userService { get; set; }
+
+        bool _showQRMenu;
+
+        public bool ShowQRCodeMenuItem
+        {
+            get => _showQRMenu;
+            set
+            {
+                _showQRMenu = value;
+                OnPropertyChanged();
+            }
+        }
 
         public async void Handle_LogOutClicked(object sender, EventArgs e)
         {
@@ -43,7 +55,15 @@ namespace SSW.Rewards
             Navigation.PushModalAsync(new OnBoarding());
         }
 
-		protected override bool OnBackButtonPressed()
+        private async void Handle_QRClicked(object sender, EventArgs e)
+        {
+            var qrCode = await _userService.GetMyQrCode();
+
+            if (!string.IsNullOrWhiteSpace(qrCode))
+                await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
+        }
+
+        protected override bool OnBackButtonPressed()
 		{
 			if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
 			{
@@ -56,10 +76,12 @@ namespace SSW.Rewards
 			}
 		}
 
-		public AppShell(IUserService userService)
+		public AppShell(IUserService userService, bool isStaff)
         {
             InitializeComponent();
             _userService = userService;
+            ShowQRCodeMenuItem = isStaff;
+            BindingContext = this;
         }
     }
 }

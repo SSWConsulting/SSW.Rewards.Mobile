@@ -1,8 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SSW.Rewards.Application.System.Commands.SeedData;
 using SSW.Rewards.Persistence;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards
 {

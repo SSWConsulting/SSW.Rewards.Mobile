@@ -19,6 +19,8 @@ namespace SSW.Rewards.ViewModels
         public bool isRunning { get; set; }
         public bool LoginButtonEnabled { get { return !isRunning; } }
 
+        bool _isStaff = false;
+
         public string ButtonText { get; set; }
 
         public LoginPageViewModel(IUserService userService)
@@ -49,8 +51,7 @@ namespace SSW.Rewards.ViewModels
             switch (status)
             {
                 case ApiStatus.Success:
-                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                    await Shell.Current.GoToAsync("//main");
+                    await OnAfterLogin();
                     break;
                 case ApiStatus.Unavailable:
                     await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
@@ -93,8 +94,7 @@ namespace SSW.Rewards.ViewModels
 
                     await _userService.UpdateMyDetailsAsync();
 
-                    Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                    await Shell.Current.GoToAsync("//main");
+                    await OnAfterLogin();
                 }
                 catch (MsalUiRequiredException)
                 {
@@ -116,8 +116,8 @@ namespace SSW.Rewards.ViewModels
 
                                 await SecureStorage.SetAsync("auth_token", token);
 
-                                Application.Current.MainPage = Resolver.Resolve<AppShell>();
-                                await Shell.Current.GoToAsync("//main");
+
+                                await OnAfterLogin();
                             }
                         }
                         catch (Exception e)
@@ -144,6 +144,22 @@ namespace SSW.Rewards.ViewModels
                     await Application.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
                 }
             }
+        }
+
+        private async Task OnAfterLogin()
+        {
+            var qr = await _userService.GetMyQrCode();
+            if (!string.IsNullOrWhiteSpace(qr))
+            {
+                _isStaff = true;
+            }
+            else
+            {
+                _isStaff = false;
+            }
+
+            Application.Current.MainPage = Resolver.ResolveShell(_isStaff);
+            await Shell.Current.GoToAsync("//main");
         }
 
         async Task<AuthenticationResult> OnForgotPassword()

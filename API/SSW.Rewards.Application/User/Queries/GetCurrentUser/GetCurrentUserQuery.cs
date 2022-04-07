@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 {
@@ -52,6 +53,18 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 	                {
 		                throw new NotFoundException(nameof(User), currentUserEmail);
 	                }
+
+                    if (user.IsStaff())
+                    {
+                        var achievement = await _context.StaffMembers
+                            .Include(s => s.StaffAchievement)
+                            .Where(s => s.Email == user.Email)
+                            .Select(s => s.StaffAchievement)
+                            .AsNoTracking()
+                            .SingleOrDefaultAsync(cancellationToken);
+
+                        user.QRCode = achievement.Code;
+                    }
 
 	                return user;
                 }

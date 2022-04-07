@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class StaffController : BaseController
     {
         [HttpGet]
@@ -21,6 +23,12 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<StaffDto>> GetStaffMemberProfile(string name)
         {
             return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { Name = name }));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<StaffDto>> GetStaffMemberByEmail(string email)
+        {
+            return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { email = email, GetByEmail = true }));
         }
 
         [HttpPost]

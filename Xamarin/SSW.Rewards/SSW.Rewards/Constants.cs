@@ -7,7 +7,7 @@ namespace SSW.Rewards
         private string authorityBase { get { return $"https://{AADDB2CTenantName}.b2clogin.com/tfp/{AADB2CTenantId}/"; } }
 
 #if DEBUG
-        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
+        public string ApiBaseUrl = "https://147c-159-196-124-207.ngrok.io";//"https://sswconsulting-dev.azurewebsites.net";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
