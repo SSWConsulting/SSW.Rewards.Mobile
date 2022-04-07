@@ -42,7 +42,7 @@ namespace SSW.Rewards.Services
             {
                 StaffListViewModel profileList = await _staffClient.GetAsync();
 
-                foreach (StaffDto profile in profileList.Staff)
+                foreach (StaffDto profile in profileList.Staff.Where(s => !s.IsDeleted))
                 {
                     DevProfile dev = new DevProfile
                     {
