@@ -55,7 +55,7 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>1.77</string>
+	<string>1.78</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>NSCalendarsUsageDescription</key>
@@ -66,10 +66,9 @@
 	<string>We use your location to alert you of upcoming events of interest in your area</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to alert you of upcoming events of interest in your area</string>
-
-  <key>UIAppFonts</key>
-  <array>
-    <string>Helvetica-Bold-Font.ttf</string>
-  </array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Helvetica-Bold-Font.ttf</string>
+	</array>
 </dict>
 </plist>
