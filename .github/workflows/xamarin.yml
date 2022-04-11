@@ -137,5 +137,4 @@ jobs:
             --store "App Store Connect Users" \
             -f bin/iPhone/Release/SSW.Consulting.iOS.ipa \
             -a SSW.MobileApps/SSW.Xamarin.iOS \
-            --release-notes release.txt \
             --token ${{secrets.APP_CENTER_KEY}}
