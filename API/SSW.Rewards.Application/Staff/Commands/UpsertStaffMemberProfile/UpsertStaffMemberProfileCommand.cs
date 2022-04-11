@@ -14,6 +14,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
 {
     public class UpsertStaffMemberProfileCommand : IRequest<StaffDto>
     {
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public string Title { get; set; }
@@ -59,11 +60,24 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             }
             else // Update existing entity
             {
-                staffMemberEntity.Email = request.Email;
-                staffMemberEntity.Name = request.Name;
-                staffMemberEntity.Profile = request.Profile;
-                staffMemberEntity.TwitterUsername = request.TwitterUsername;
-                staffMemberEntity.Title = request.Title;
+                var staffMember = _mapper.Map<StaffMember>(request);
+                var staffMemberEntity = await _context.StaffMembers
+                    .Include(s => s.StaffMemberSkills)
+                    .ThenInclude(sms => sms.Skill)
+                    .FirstOrDefaultAsync(u => u.Id == staffMember.Id, cancellationToken);
+
+                // Add if doesn't exist
+                if (staffMemberEntity == null)
+                {
+                    _context.StaffMembers.Add(staffMember);
+                }
+                else // Update existing entity
+                {
+                    staffMemberEntity.Email = request.Email;
+                    staffMemberEntity.Name = request.Name;
+                    staffMemberEntity.Profile = request.Profile;
+                    staffMemberEntity.TwitterUsername = request.TwitterUsername;
+                    staffMemberEntity.Title = request.Title;
 
                 // check for skills
                 var skills = request.Skills;

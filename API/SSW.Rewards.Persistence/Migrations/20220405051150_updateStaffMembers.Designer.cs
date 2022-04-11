@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Rewards.Persistence;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    partial class SSWConsultingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220405051150_updateStaffMembers")]
+    partial class updateStaffMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,9 +136,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsExternal")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -150,9 +149,6 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.Property<string>("ProfilePhoto")
                         .HasColumnType("nvarchar(max)");
-                        
-                    b.Property<int?>("StaffAchievementId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -161,8 +157,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StaffAchievementId");
 
                     b.ToTable("StaffMembers");
                 });
@@ -283,13 +277,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRewards");
-                });
-
-            modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMember", b =>
-                {
-                    b.HasOne("SSW.Rewards.Domain.Entities.Achievement", "StaffAchievement")
-                        .WithMany()
-                        .HasForeignKey("StaffAchievementId");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMemberSkill", b =>

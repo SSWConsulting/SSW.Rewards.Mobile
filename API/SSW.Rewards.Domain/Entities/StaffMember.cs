@@ -19,6 +19,8 @@ namespace SSW.Rewards.Domain.Entities
         public Achievement StaffAchievement { get; set; }
 
         public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
+        public string ProfilePhoto { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
 

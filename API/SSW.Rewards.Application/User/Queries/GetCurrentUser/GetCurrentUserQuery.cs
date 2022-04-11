@@ -49,7 +49,7 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
 		                .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
 		                .SingleOrDefaultAsync(cancellationToken);
 
-	                if (user == null)
+                    if (user == null)
 	                {
 		                throw new NotFoundException(nameof(User), currentUserEmail);
 	                }

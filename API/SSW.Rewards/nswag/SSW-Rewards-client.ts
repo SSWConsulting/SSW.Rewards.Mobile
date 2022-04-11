@@ -807,10 +807,10 @@ export class SkillClient extends BaseClient implements ISkillClient {
 
 export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
-    getStaffMemberProfile(name: string | null): Promise<StaffDto>;
+    getStaffMemberProfile(id: number): Promise<StaffDto>;
     getStaffMemberByEmail(email: string | null): Promise<StaffDto>;
     upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
-    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string>;
+    uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string>;
     deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
 
@@ -861,12 +861,12 @@ export class StaffClient extends BaseClient implements IStaffClient {
         return Promise.resolve<StaffListViewModel>(<any>null);
     }
 
-    getStaffMemberProfile(name: string | null): Promise<StaffDto> {
+    getStaffMemberProfile(id: number): Promise<StaffDto> {
         let url_ = this.baseUrl + "/api/Staff/GetStaffMemberProfile?";
-        if (name === undefined)
-            throw new Error("The parameter 'name' must be defined.");
-        else if(name !== null)
-            url_ += "name=" + encodeURIComponent("" + name) + "&";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -981,8 +981,12 @@ export class StaffClient extends BaseClient implements IStaffClient {
         return Promise.resolve<string>(<any>null);
     }
 
-    uploadStaffMemberProfilePicture(file: FileParameter | null | undefined): Promise<string> {
-        let url_ = this.baseUrl + "/api/Staff/UploadStaffMemberProfilePicture";
+    uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/Staff/UploadStaffMemberProfilePicture?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -2261,11 +2265,13 @@ export interface IStaffListViewModel {
 }
 
 export class StaffDto implements IStaffDto {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
     profile?: string | undefined;
     profilePhoto?: string | undefined;
+    isDeleted?: boolean;
     twitterUsername?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
@@ -2281,11 +2287,13 @@ export class StaffDto implements IStaffDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.title = _data["title"];
             this.email = _data["email"];
             this.profile = _data["profile"];
             this.profilePhoto = _data["profilePhoto"];
+            this.isDeleted = _data["isDeleted"];
             this.twitterUsername = _data["twitterUsername"];
             this.isExternal = _data["isExternal"];
             if (Array.isArray(_data["skills"])) {
@@ -2305,11 +2313,13 @@ export class StaffDto implements IStaffDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["title"] = this.title;
         data["email"] = this.email;
         data["profile"] = this.profile;
         data["profilePhoto"] = this.profilePhoto;
+        data["isDeleted"] = this.isDeleted;
         data["twitterUsername"] = this.twitterUsername;
         data["isExternal"] = this.isExternal;
         if (Array.isArray(this.skills)) {
@@ -2322,17 +2332,20 @@ export class StaffDto implements IStaffDto {
 }
 
 export interface IStaffDto {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
     profile?: string | undefined;
     profilePhoto?: string | undefined;
+    isDeleted?: boolean;
     twitterUsername?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 }
 
 export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2353,6 +2366,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.title = _data["title"];
             this.email = _data["email"];
@@ -2377,6 +2391,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["title"] = this.title;
         data["email"] = this.email;
@@ -2394,6 +2409,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
 }
 
 export interface IUpsertStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2405,6 +2421,7 @@ export interface IUpsertStaffMemberProfileCommand {
 }
 
 export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;
@@ -2422,6 +2439,7 @@ export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfil
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.name = _data["name"];
             this.title = _data["title"];
             this.email = _data["email"];
@@ -2439,6 +2457,7 @@ export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfil
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
         data["title"] = this.title;
         data["email"] = this.email;
@@ -2449,6 +2468,7 @@ export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfil
 }
 
 export interface IDeleteStaffMemberProfileCommand {
+    id?: number;
     name?: string | undefined;
     title?: string | undefined;
     email?: string | undefined;

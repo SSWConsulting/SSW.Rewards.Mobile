@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Configurations>Debug;QA;Release</Configurations>
+    <Configurations>Debug;Release;QA</Configurations>
+    <UserSecretsId>71ad90e6-7122-463d-821e-af9f9d316d9b</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
