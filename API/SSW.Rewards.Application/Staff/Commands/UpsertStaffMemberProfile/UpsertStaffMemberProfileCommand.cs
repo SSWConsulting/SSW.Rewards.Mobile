@@ -57,7 +57,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             // Add if doesn't exist
             if (staffMemberEntity == null)
             {
-                _context.StaffMembers.Add(staffMember);
+                await _context.StaffMembers.AddAsync(staffMember, cancellationToken);
             }
             else // Update existing entity
             {
@@ -67,15 +67,6 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 staffMemberEntity.TwitterUsername = request.TwitterUsername;
                 staffMemberEntity.Title = request.Title;
 
-                if (staffMemberEntity.StaffAchievement == null)
-                {
-                    staffMemberEntity.StaffAchievement = new Domain.Entities.Achievement
-                    {
-                        Name = staffMemberEntity.Name,
-                        Value = 200,
-                        Code = GenerateCode(staffMemberEntity.Name)
-                    };
-                }
 
                 // check for skills
                 var skills = request.Skills;
@@ -107,6 +98,14 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 }
                 await _context.SaveChangesAsync(cancellationToken);
             }
+            
+            // Add staff achievement if it doesn't exist
+            staffMember.StaffAchievement ??= new Domain.Entities.Achievement
+            {
+                Name = staffMember.Name,
+                Value = 200,
+                Code = GenerateCode(staffMember.Name)
+            };
 
             return _mapper.Map<StaffDto>(request);
         }
