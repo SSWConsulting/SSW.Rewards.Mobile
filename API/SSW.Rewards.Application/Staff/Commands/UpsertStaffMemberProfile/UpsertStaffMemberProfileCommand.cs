@@ -7,6 +7,7 @@ using SSW.Rewards.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
 
         public int Rate { get; set; }
 
-        public List<string> Skills { get; set; }        
+        public List<string> Skills { get; set; }
     }
 
     public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaffMemberProfileCommand, StaffDto>
@@ -60,32 +61,30 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             }
             else // Update existing entity
             {
-                var staffMember = _mapper.Map<StaffMember>(request);
-                var staffMemberEntity = await _context.StaffMembers
-                    .Include(s => s.StaffMemberSkills)
-                    .ThenInclude(sms => sms.Skill)
-                    .FirstOrDefaultAsync(u => u.Id == staffMember.Id, cancellationToken);
+                staffMemberEntity.Email = request.Email;
+                staffMemberEntity.Name = request.Name;
+                staffMemberEntity.Profile = request.Profile;
+                staffMemberEntity.TwitterUsername = request.TwitterUsername;
+                staffMemberEntity.Title = request.Title;
 
-                // Add if doesn't exist
-                if (staffMemberEntity == null)
+                if (staffMemberEntity.StaffAchievement == null)
                 {
-                    _context.StaffMembers.Add(staffMember);
+                    staffMemberEntity.StaffAchievement = new Domain.Entities.Achievement
+                    {
+                        Name = staffMemberEntity.Name,
+                        Value = 200,
+                        Code = GenerateCode(staffMemberEntity.Name)
+                    };
                 }
-                else // Update existing entity
-                {
-                    staffMemberEntity.Email = request.Email;
-                    staffMemberEntity.Name = request.Name;
-                    staffMemberEntity.Profile = request.Profile;
-                    staffMemberEntity.TwitterUsername = request.TwitterUsername;
-                    staffMemberEntity.Title = request.Title;
 
                 // check for skills
                 var skills = request.Skills;
-
+                
                 // changes have been made to members' skills
                 if (staffMemberEntity.StaffMemberSkills.Count() != skills.Count())
                 {
-                    var newSkills = request.Skills.Where(x => !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
+                    var newSkills = request.Skills.Where(x =>
+                        !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
 
                     if (staffMemberEntity.StaffMemberSkills.Count() < request.Skills.Count())
                     {
@@ -93,23 +92,29 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                         foreach (var skill in newSkills)
                         {
                             var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
-                            staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill { Skill = skillEntity });
+                            staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill {Skill = skillEntity});
                         }
                     }
                     else
                     {
-                        var deletedSkills = staffMemberEntity.StaffMemberSkills.Where(x => !request.Skills.Contains(x.Skill.Name)).ToList();
+                        var deletedSkills = staffMemberEntity.StaffMemberSkills
+                            .Where(x => !request.Skills.Contains(x.Skill.Name)).ToList();
                         foreach (var deletedSkill in deletedSkills)
                         {
                             staffMemberEntity.StaffMemberSkills.Remove(deletedSkill);
                         }
                     }
                 }
+                await _context.SaveChangesAsync(cancellationToken);
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
-
             return _mapper.Map<StaffDto>(request);
+        }
+
+        private string GenerateCode(string inputValue)
+        {
+            var codeData = Encoding.ASCII.GetBytes(inputValue);
+            return Convert.ToBase64String(codeData);
         }
     }
 }
