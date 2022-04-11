@@ -102,12 +102,6 @@ namespace SSW.Rewards.ViewModels
                     // Refresh token probably expired
                     await _userService.SignInAsync();
                 }
-                catch (MsalUiRequiredException)
-                {
-                    // Interactive signin required again
-                    // Refresh token probably expired
-                    await _userService.SignInAsync();
-                }
                 catch (MsalException ex)
                 {
                     // Forgot password
