@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.78" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="17">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.79" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="18">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
 		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:exported="true">
