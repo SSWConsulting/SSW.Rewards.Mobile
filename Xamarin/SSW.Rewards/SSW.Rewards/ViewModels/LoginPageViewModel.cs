@@ -45,7 +45,7 @@ namespace SSW.Rewards.ViewModels
             catch (Exception exception)
             {
                 status = ApiStatus.LoginFailure;
-                Crashes.TrackError(exception);
+                //Crashes.TrackError(exception);
             }
 
             switch (status)
@@ -123,7 +123,7 @@ namespace SSW.Rewards.ViewModels
                         catch (Exception e)
                         {
                             // Exception while resetting password
-                            Crashes.TrackError(e);
+                            //Crashes.TrackError(e);
                             await Application.Current.MainPage.DisplayAlert("Login Failure",
                                 "There seems to have been a problem logging you in. Please try again. " + e.Message,
                                 "OK");
@@ -132,7 +132,7 @@ namespace SSW.Rewards.ViewModels
                     else
                     {
                         // Fatal MSAL exception
-                        Crashes.TrackError(ex);
+                        //Crashes.TrackError(ex);
                         await Application.Current.MainPage.DisplayAlert("Login Failure",
                             "There seems to have been a problem logging you in. Please try again. " + ex.Message, "OK");
                     }
@@ -140,7 +140,7 @@ namespace SSW.Rewards.ViewModels
                 catch (Exception e)
                 {
                     // Everything else is fatal
-                    Crashes.TrackError(e);
+                    //Crashes.TrackError(e);
                     await Application.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
                 }
             }
