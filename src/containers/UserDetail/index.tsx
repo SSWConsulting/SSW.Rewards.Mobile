@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { fetchData } from 'utils';
 import {
-  UserViewModel,
+  AchievementClient,
+  ClaimAchievementResult,
+  ClaimAchievementStatus,
   ClaimRewardResult,
   RewardClient,
-  UserClient,
-  AchievementClient,
   RewardStatus,
-  AchievementStatus,
-  ClaimAchievementResult,
+  UserClient,
+  UserViewModel,
 } from 'services';
-import { useAuthenticatedClient } from 'hooks';
-import { useGlobalState } from 'lightweight-globalstate';
-import { State } from 'store';
+import { ColDef, ColParams, DataGrid, SortDirection } from '@material-ui/data-grid';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import React, { useEffect, useState } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
-import { Tabs } from 'components';
+
 import { ActionFab } from './components';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Snackbar from '@material-ui/core/Snackbar';
 import Grid from '@material-ui/core/Grid';
+import Snackbar from '@material-ui/core/Snackbar';
+import { State } from 'store';
+import { Tabs } from 'components';
+import { fetchData } from 'utils';
 import { makeStyles } from '@material-ui/core/styles';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { DataGrid, ColDef, SortDirection, ColParams } from '@material-ui/data-grid';
+import { useAuthenticatedClient } from 'hooks';
+import { useGlobalState } from 'lightweight-globalstate';
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -122,7 +123,7 @@ const UserDetailComponent = () => {
 
   const getUserDetails = async () => {
     setLoading(true);
-    const response = await fetchData<UserViewModel>(() => client.getUser(userId));
+    const response = await fetchData<UserViewModel>(() => client && client?.getUser(userId));
     setLoading(false);
     if (response) {
       updateState({ userDetail: response });
@@ -156,21 +157,21 @@ const UserDetailComponent = () => {
 
   const claimAchievement = async (selectedAchievement: string) => {
     const response = await fetchData<ClaimAchievementResult>(() =>
-      achievementClient.claimForUser({
+      achievementClient?.claimForUser({
         code: selectedAchievement,
         userId,
       })
     );
     if (response) {
       switch (response.status) {
-        case AchievementStatus.NotEnoughPoints:
+        case ClaimAchievementStatus.NotEnoughPoints:
           openSnackbar('Not enough points to claim', 'error');
           break;
-        case AchievementStatus.Claimed:
+        case ClaimAchievementStatus.Claimed:
           openSnackbar('Achievement claimed!', 'success');
           loadData();
           break;
-        case AchievementStatus.Duplicate:
+        case ClaimAchievementStatus.Duplicate:
           openSnackbar('Already claimed!', 'error');
           break;
         default:

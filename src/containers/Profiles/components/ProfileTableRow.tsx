@@ -1,27 +1,28 @@
 import React from "react";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import { StaffDto } from "services";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { StaffDto } from "services";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 interface ProfileTableRowProps {
-    profile: StaffDto;
-    onClick: Function;
+  profile: StaffDto;
+  onClick: Function;
 }
 
 export const ProfileTableRow = (props: ProfileTableRowProps) => {
   const {
     profile: { name, title },
-    onClick
+    onClick,
   } = props;
 
   return (
-    <>
-      <TableRow style={{ cursor: 'pointer' }} onClick={() => onClick(name)} >
-        <TableCell>{name}</TableCell>
-        <TableCell>{title}</TableCell>
-      </TableRow>
-    </>
+    <TableRow
+      style={{ cursor: "pointer", textAlign: "center" }}
+      onClick={() => onClick(name)}
+    >
+      <TableCell>{name}</TableCell>
+      <TableCell>{title}</TableCell>
+    </TableRow>
   );
 };
 

@@ -1,15 +1,15 @@
-import HomeIcon from '@material-ui/icons/Home';
-import PeopleIcon from "@material-ui/icons/People";
-import StarsIcon from "@material-ui/icons/Stars";
-import RedeemIcon from "@material-ui/icons/Redeem";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import Home from 'containers/Home';
-import Leaderboard from "containers/Leaderboard";
 import Achievements from "containers/Achievements";
-import Rewards from "containers/Rewards";
-import Profiles from "containers/Profiles";
-import { UserDetail } from 'containers/UserDetail';
+import Home from 'containers/Home';
+import HomeIcon from '@material-ui/icons/Home';
+import Leaderboard from "containers/Leaderboard";
+import PeopleIcon from "@material-ui/icons/People";
 import { ProfileDetail } from 'containers/ProfileDetail';
+import Profiles from "containers/Profiles";
+import RedeemIcon from "@material-ui/icons/Redeem";
+import Rewards from "containers/Rewards";
+import StarsIcon from "@material-ui/icons/Stars";
+import { UserDetail } from 'containers/UserDetail';
 
 interface Route  {
     path: string;
@@ -57,7 +57,7 @@ export const routes = [
            icon: AccountBoxIcon
          },
          {
-           path: "/profiles/:name",
+           path: "/profiles/:id",
            title: "Profile",
            component: ProfileDetail,
            hidden: true
