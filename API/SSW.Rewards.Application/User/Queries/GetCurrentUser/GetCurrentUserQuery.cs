@@ -63,7 +63,10 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
                             .AsNoTracking()
                             .SingleOrDefaultAsync(cancellationToken);
 
-                        user.QRCode = achievement.Code;
+                        if (achievement != null && achievement.Code != null)
+                        {
+                            user.QRCode = achievement.Code;
+                        }
                     }
 
 	                return user;
