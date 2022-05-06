@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using SSW.Rewards.Application;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Persistence;
 using SSW.Rewards.WebAPI.Services;
@@ -70,7 +71,13 @@ namespace SSW.Rewards
                         .AllowCredentials();
                     });
             });
-        }
+
+			services.AddSingleton<INotificationService, NotificationHubService>();
+
+			services.AddOptions<NotificationHubOptions>()
+				.Configure(Configuration.GetSection("NotificationHub").Bind)
+				.ValidateDataAnnotations();
+		}
 		
 		protected virtual void ConfigureSecrets(IServiceCollection services)
 		{

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>aspnet-SSW.Consulting-116EE6F2-C844-46F8-A58B-6C88A6F3588C</UserSecretsId>
+<!--    <RuntimeFrameworkVersion>2.2.8</RuntimeFrameworkVersion>-->
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
     <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
@@ -16,13 +17,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureADB2C.UI" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.1.0" />
+<!--    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />-->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.8.2" />
     <PackageReference Include="NSwag.Core" Version="13.8.2" />
@@ -54,4 +57,10 @@
     <RemoveDir Directories="$(OutDir)References" />
   </Target>
 
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
 </Project>
