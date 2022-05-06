@@ -18,19 +18,19 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
     {
         public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
         {
-	        private readonly ILogger<GetCurrentUserQueryHandler> _logger;
-	        private readonly IMapper _mapper;
+            private readonly ILogger<GetCurrentUserQueryHandler> _logger;
+            private readonly IMapper _mapper;
             private readonly ICurrentUserService _currentUserService;
             private readonly ISSWRewardsDbContext _context;
 
             public GetCurrentUserQueryHandler(
-				ILogger<GetCurrentUserQueryHandler> logger,
+                ILogger<GetCurrentUserQueryHandler> logger,
                 IMapper mapper,
                 ICurrentUserService currentUserService,
                 ISSWRewardsDbContext context)
             {
-	            _logger = logger;
-	            _mapper = mapper;
+                _logger = logger;
+                _mapper = mapper;
                 _currentUserService = currentUserService;
                 _context = context;
             }
@@ -38,21 +38,21 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
             public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
             {
                 // need to use current user's email address to look up these details since b2c's id is not being stored
-                string currentUserEmail =  _currentUserService.GetUserEmail();
+                string currentUserEmail = _currentUserService.GetUserEmail();
 
                 try
                 {
-	                CurrentUserViewModel user = await _context.Users
-		                .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
-		                .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
-		                .Where(u => u.Email == currentUserEmail)
-		                .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
-		                .SingleOrDefaultAsync(cancellationToken);
+                    CurrentUserViewModel user = await _context.Users
+                        .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+                        .Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
+                        .Where(u => u.Email == currentUserEmail)
+                        .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
+                        .SingleOrDefaultAsync(cancellationToken);
 
                     if (user == null)
-	                {
-		                throw new NotFoundException(nameof(User), currentUserEmail);
-	                }
+                    {
+                        throw new NotFoundException(nameof(User), currentUserEmail);
+                    }
 
                     if (user.IsStaff())
                     {
@@ -63,18 +63,21 @@ namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
                             .AsNoTracking()
                             .SingleOrDefaultAsync(cancellationToken);
 
-                        user.QRCode = achievement.Code;
+                        if (achievement?.Code != null)
+                        {
+                            user.QRCode = achievement.Code;
+                        }
                     }
 
-	                return user;
+                    return user;
                 }
                 catch (NotFoundException nfex)
                 {
-					// nothing to do here - just rethrow the exception from above
-					_logger.LogError(nfex, "Unable to find current user with email {currentUserEmail}", currentUserEmail);
-	                throw;
+                    // nothing to do here - just rethrow the exception from above
+                    _logger.LogError(nfex, "Unable to find current user with email {currentUserEmail}", currentUserEmail);
+                    throw;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logger.LogError(ex, "An error occurred while trying to find current user with email {currentUserEmail}", currentUserEmail);
                     throw new NotFoundException(nameof(User), currentUserEmail);
