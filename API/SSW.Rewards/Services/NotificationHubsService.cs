@@ -47,38 +47,41 @@ namespace SSW.Rewards.WebAPI.Services
                 Tags = deviceInstallation.Tags
             };
 
-            if (_installationPlatform.TryGetValue(deviceInstallation.Platform, out var platform))
-                installation.Platform = platform;
-            else
-                return false;
-
             try
             {
+                if (!_installationPlatform.TryGetValue(deviceInstallation.Platform, out var platform))
+                {
+                    return false;
+                }
+                installation.Platform = platform;
+
                 await _hub.CreateOrUpdateInstallationAsync(installation, token);
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
             }
 
-            return true;
+            return false;
         }
 
         public async Task<bool> DeleteInstallationByIdAsync(string installationId, CancellationToken token)
         {
-            if (string.IsNullOrWhiteSpace(installationId))
-                return false;
-
             try
             {
-                await _hub.DeleteInstallationAsync(installationId, token);
+                if (!string.IsNullOrWhiteSpace(installationId))
+                {
+                    await _hub.DeleteInstallationAsync(installationId, token);
+                    return true;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
             }
 
-            return true;
+            return false;
         }
 
         public async Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token)

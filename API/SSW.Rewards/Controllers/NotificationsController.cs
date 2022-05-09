@@ -11,7 +11,6 @@ using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    [AllowAnonymous]
     public class NotificationsController : BaseController
     {
         readonly INotificationService _notificationService;
