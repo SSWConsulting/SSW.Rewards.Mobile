@@ -50,9 +50,10 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
         {
             var staffMember = _mapper.Map<StaffMember>(request);
             var staffMemberEntity = await _context.StaffMembers
+                .Where(u => u.Email == request.Email)
                 .Include(s => s.StaffMemberSkills)
                 .ThenInclude(sms => sms.Skill)
-                .FirstOrDefaultAsync(u => u.Name == request.Name, cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
 
             // Add if doesn't exist
             if (staffMemberEntity == null)
@@ -96,7 +97,6 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                         }
                     }
                 }
-                await _context.SaveChangesAsync(cancellationToken);
             }
             
             // Add staff achievement if it doesn't exist
@@ -106,7 +106,8 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 Value = 200,
                 Code = GenerateCode(staffMember.Name)
             };
-
+            
+            await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<StaffDto>(request);
         }
 
