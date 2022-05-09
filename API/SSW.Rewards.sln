@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29311.281
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSW.Rewards.WebAPI", "SSW.Rewards\SSW.Rewards.WebAPI.csproj", "{83107237-DA21-4947-8A03-0DBC48BA0A95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSW.Rewards.WebAPI", "SSW.Rewards\SSW.Rewards.WebAPI.csproj", "{83107237-DA21-4947-8A03-0DBC48BA0A95}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{A67736B3-A5B6-471C-8EC3-93521B40EACE}"
 EndProject

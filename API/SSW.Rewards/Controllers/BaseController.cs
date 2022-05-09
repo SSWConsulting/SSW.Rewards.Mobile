@@ -7,7 +7,7 @@ using SSW.Rewards.WebAPI.Security;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    [Authorize,Restricted]
+    [Authorize, Restricted]
     [CustomExceptionFilter]
     [ApiController]
     [Route("api/[controller]/[action]")]
