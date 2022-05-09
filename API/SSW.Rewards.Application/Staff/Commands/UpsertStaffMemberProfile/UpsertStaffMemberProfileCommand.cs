@@ -50,7 +50,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
         {
             var staffMember = _mapper.Map<StaffMember>(request);
             var staffMemberEntity = await _context.StaffMembers
-                .Where(u => u.Email == request.Email)
+                .Where(u => u.Id == request.Id)
                 .Include(s => s.StaffMemberSkills)
                 .ThenInclude(sms => sms.Skill)
                 .FirstOrDefaultAsync(cancellationToken);
