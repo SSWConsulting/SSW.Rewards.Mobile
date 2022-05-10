@@ -468,7 +468,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
     }
 
     updateInstallation(deviceInstallation: DeviceInstall): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/installations";
+        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(deviceInstallation);
@@ -518,7 +518,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
     }
 
     deleteInstallation(installationId: string | null): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/installations/{installationId}";
+        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
         if (installationId === undefined || installationId === null)
             throw new Error("The parameter 'installationId' must be defined.");
         url_ = url_.replace("{installationId}", encodeURIComponent("" + installationId));
@@ -567,7 +567,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
     }
 
     requestPush(notificationRequest: NotificationRequest): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/requests";
+        let url_ = this.baseUrl + "/api/Notifications/RequestPush";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(notificationRequest);
