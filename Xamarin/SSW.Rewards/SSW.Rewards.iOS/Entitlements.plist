@@ -8,6 +8,6 @@
 		<string>$(AppIdentifierPrefix)com.microsoft.adalcache</string>
 	</array>
 	<key>aps-environment</key>
-	<string>production</string>
+	<string>development</string>
 </dict>
 </plist>
