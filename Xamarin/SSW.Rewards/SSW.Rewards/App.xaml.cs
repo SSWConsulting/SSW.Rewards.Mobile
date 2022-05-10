@@ -11,6 +11,8 @@ using SSW.Rewards.Helpers;
 using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Linq;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 
 namespace SSW.Rewards
 {
@@ -29,6 +31,9 @@ namespace SSW.Rewards
                 typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
+
+            ServiceContainer.Resolve<IPushNotificationActionService>()
+                .ActionTriggered += NotificationActionTriggered;
 
             try
             {
@@ -55,6 +60,13 @@ namespace SSW.Rewards
                 MainPage = new LoginPage();
             }
         }
+
+        void NotificationActionTriggered(object sender, PushNotificationAction e) => ShowActionAlert(e);
+
+        void ShowActionAlert(PushNotificationAction action) => MainThread.BeginInvokeOnMainThread(()
+            => App.Current.MainPage?.DisplayAlert("App Test Push", $"{action} action received", "OK")
+                .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; })
+        );
 
         protected override void OnStart()
         {
