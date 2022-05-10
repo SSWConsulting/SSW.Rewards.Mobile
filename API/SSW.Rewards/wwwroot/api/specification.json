@@ -269,7 +269,7 @@
         }
       }
     },
-    "/api/Notifications/installations": {
+    "/api/Notifications/UpdateInstallation": {
       "put": {
         "tags": [
           "Notifications"
@@ -314,7 +314,7 @@
         }
       }
     },
-    "/api/Notifications/installations/{installationId}": {
+    "/api/Notifications/DeleteInstallation/{installationId}": {
       "delete": {
         "tags": [
           "Notifications"
@@ -359,7 +359,7 @@
         }
       }
     },
-    "/api/Notifications/requests": {
+    "/api/Notifications/RequestPush": {
       "post": {
         "tags": [
           "Notifications"
