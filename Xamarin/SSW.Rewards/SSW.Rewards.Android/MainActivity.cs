@@ -7,6 +7,7 @@ using Lottie.Forms.Droid;
 using Plugin.CurrentActivity;
 using Android.Content;
 using Microsoft.Identity.Client;
+using System;
 
 namespace SSW.Rewards.Droid
 {
@@ -30,10 +31,19 @@ namespace SSW.Rewards.Droid
             CardsViewRenderer.Preserve();
             AnimationViewRenderer.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
-            Bootstrapper.Init();
 
-            LoadApplication(new App());
-            App.UIParent = this;
+            try
+            {
+                LoadApplication(new App());
+                App.UIParent = this;
+                Console.WriteLine("Set APp UI parent");
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw;
+            }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

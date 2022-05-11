@@ -24,26 +24,8 @@
                         VerticalOptions="EndAndExpand"
                         Margin="50,0,50,150"
                         IsEnabled="{Binding LoginButtonEnabled}"
-                        BackgroundColor="Black"
-                        BorderColor="{Binding ButtonBorder}"/>
-
-                <!--<Frame BorderColor="{StaticResource ButtonBorder}"
-                       VerticalOptions="EndAndExpand"
-                       Margin="50,0,50,150"
-                       HasShadow="False"
-                       BackgroundColor="Black"
-                       CornerRadius="5">
-
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1"
-                                              Command="{Binding LoginTappedCommand}"/>
-                    </Frame.GestureRecognizers>
-
-                    <Label TextColor="White"
-                           HorizontalTextAlignment="Center"
-                           InputTransparent="True"
-                           Text="{Binding ButtonText}"/>
-                </Frame>-->
+                        BackgroundColor="Black"/>
+                <!--BorderColor="{Binding ButtonBorder}"/>-->
             </StackLayout>
 
             <ActivityIndicator HorizontalOptions="Center"

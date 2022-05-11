@@ -29,6 +29,7 @@ namespace SSW.Rewards
                 typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
+            Resolver.Initialize();
 
             try
             {

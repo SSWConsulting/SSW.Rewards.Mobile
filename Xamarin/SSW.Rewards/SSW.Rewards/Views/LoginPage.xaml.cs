@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SSW.Rewards.ViewModels;
+﻿using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Views
