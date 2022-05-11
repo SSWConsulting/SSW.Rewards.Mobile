@@ -13,30 +13,29 @@ assignees: ''
 [//]: # ( 3. Submit the Issue to send the Sprint Forecast )
 [//]: # (-------------------------------------------------)
 
-To: @adamcogan 
-Cc: @MattGoldmanSSW, @AndreasLengkeek
+To: @matt-goldman 
+Cc: @adamcogan, @JackDevAU
 
 (Checked by Matt)
 ### Hi Adam, 
 
 Current Sprint: | ✏️X
 -- | --
-Sprint Goal: | ✏️Content Migration
+Sprint Goal: | ✏️
 Sprint Duration: | ✏️1 week
 Project: | SSW.Rewards
 Project Portal: | https://ssw.visualstudio.com/SSW.Rewards
 Product Owner: | Adam Cogan
 Sprint Review Meeting: | ✏️XX/XX/2020 2:00 pm (Sydney/Melbourne Time)
 
-Attendees: ✏️Andreas, Adam, Matt
+Attendees: ✏️Adam, Matt, Luke C, Jack P
  
 As per our Sprint Planning Meeting, and as the Product Owner, you have agreed to the following Product Backlog Items (PBIs) being included in the current sprint backlog.
  
 The Team will do its best to deliver this set of features (Scope), to a defined quality standard (Definition of Done) by the end of the sprint. Ideally the team will deliver what they forecast, or even a bit more, but this can't be guaranteed.
 
 
-ID | Title | State | Assigned To | Remaining Work | Effort
-✏️-- | -- | -- | -- | -- | --
-**https://ssw.visualstudio.com/SSW.Rewards/_sprints/backlog/SSW.Rewards%20Team/SSW.Rewards/Sprint%20✏️X**
+
+**https://github.com/orgs/SSWConsulting/projects/7/views/2✏️X**
 
 <This is as per rule: http://rules.ssw.com.au/Do-you-create-a-Sprint-Forecast-email.aspx />
