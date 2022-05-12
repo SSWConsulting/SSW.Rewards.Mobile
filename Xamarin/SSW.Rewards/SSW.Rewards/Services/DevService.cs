@@ -1,36 +1,18 @@
-﻿using System;
+﻿using SSW.Rewards.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using SSW.Rewards.Models;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
 {
-    public class DevService : IDevService
+    public class DevService : BaseService, IDevService
     {
         private StaffClient _staffClient;
-        private HttpClient _httpClient;
-        private IUserService _userService;
 
-        public DevService(IUserService userService)
+        public DevService()
         {
-            _userService = userService;
-            _httpClient = new HttpClient();
-            _ = Initialise();
-        }
-
-        private async Task Initialise()
-        {
-            string token = App.Constants.AccessToken;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            string baseUrl = App.Constants.ApiBaseUrl;
-
-            _staffClient = new StaffClient(baseUrl, _httpClient);
+            _staffClient = new StaffClient(BaseUrl, AuthenticatedClient);
         }
 
         public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
