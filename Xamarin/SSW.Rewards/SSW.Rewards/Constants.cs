@@ -14,15 +14,15 @@
 #endif
         public string MaxApiSupportedVersion = "1.0";
 
-        public string AuthRedirectUrl { get; } = "auth.com.ssw.rewards://callback";
+        public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
         public string AccessToken { get; set; }
 
-        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net/";
+        public string AuthorityUri { get; } = "https://78e6-159-196-124-207.ngrok.io";
 
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
-        public string Scope { get; } = "openid profile offline_access ssw-rewards-api";
+        public string Scope { get; } = "openid profile ssw-rewards-api";
 
     }
 }
