@@ -35,7 +35,8 @@ namespace SSW.Rewards.Services
                 ClientId = App.Constants.ClientId,
                 Scope = App.Constants.Scope,
                 RedirectUri = App.Constants.AuthRedirectUrl,
-                Browser = browser
+                Browser = browser,
+                
             };
         }
 
@@ -53,6 +54,10 @@ namespace SSW.Rewards.Services
 
                 if (result.IsError)
                 {
+                    Console.WriteLine("OIDC Client returned a login error");
+
+                    Console.WriteLine(result.Error);
+                    Console.WriteLine(result.ErrorDescription);
                     return ApiStatus.Error;
                 }
 

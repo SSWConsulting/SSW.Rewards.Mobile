@@ -1,10 +1,8 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Lottie.Forms.Droid;
-using Microsoft.Identity.Client;
 using PanCardView.Droid;
 using Plugin.CurrentActivity;
 
@@ -42,10 +40,10 @@ namespace SSW.Rewards.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        protected override void OnActivityResult(int requestCode, Android.App.Result resultCode, Intent data)
+        protected override void OnResume()
         {
-            base.OnActivityResult(requestCode, resultCode, data);
-            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+            base.OnResume();
+            Xamarin.Essentials.Platform.OnResume();
         }
     }
 }
