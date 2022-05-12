@@ -1,4 +1,6 @@
-﻿using SSW.Rewards.Services;
+﻿using IdentityModel.OidcClient.Browser;
+using SSW.Rewards.Helpers;
+using SSW.Rewards.Services;
 using SSW.Rewards.ViewModels;
 using System;
 using System.Linq;
@@ -50,7 +52,7 @@ namespace SSW.Rewards
                     e.IsSubclassOf(typeof(Page)) ||
                     e.IsSubclassOf(typeof(BaseViewModel))))
                 {
-                    Console.WriteLine($"Registerig {type.Name}");
+                    Console.WriteLine($"Registering {type.Name}");
                     Container.Register(type.AsType());
                 }
 
@@ -58,9 +60,13 @@ namespace SSW.Rewards
                 Container.Register<IUserService, UserService>();
                 Container.Register<IDevService, DevService>();
                 Container.Register<IChallengeService, ChallengeService>();
+                Container.Register<IBrowser, AuthBrowser>();
+
+                Console.WriteLine("Resolver initialisation completed successfully.");
             }
             catch (System.Exception ex)
             {
+                Console.WriteLine("ERROR: Resolver initialisation failed.");
                 Console.WriteLine(ex.Message);
             }
         }
