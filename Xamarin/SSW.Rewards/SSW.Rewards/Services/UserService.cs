@@ -15,11 +15,9 @@ using IdentityModel.OidcClient.Browser;
 
 namespace SSW.Rewards.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
         private UserClient _userClient { get; set; }
-
-        private HttpClient _httpClient { get; set; }
 
         private readonly OidcClientOptions _options;
 
@@ -38,6 +36,8 @@ namespace SSW.Rewards.Services
                 Browser = browser,
                 
             };
+
+            _userClient = new UserClient(BaseUrl, AuthenticatedClient);
         }
 
         public bool IsLoggedIn { get => _loggedIn; }
@@ -195,20 +195,6 @@ namespace SSW.Rewards.Services
 
         public async Task<string> UploadImageAsync(Stream image)
         {
-
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
-
-
             FileParameter parameter = new FileParameter(image);
 
             string newPicUri = await _userClient.UploadProfilePicAsync(parameter);
@@ -218,18 +204,6 @@ namespace SSW.Rewards.Services
 
         public async Task UpdateMyDetailsAsync()
         {
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = App.Constants.AccessToken;
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
-
             var user = await _userClient.GetAsync();
 
             if (!string.IsNullOrWhiteSpace(user.FullName))
@@ -277,18 +251,6 @@ namespace SSW.Rewards.Services
         {
             List<Achievement> achievements = new List<Achievement>();
 
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
-
             var achievementsList = await _userClient.AchievementsAsync(userId);
 
             foreach (UserAchievementViewModel achievement in achievementsList.UserAchievements)
@@ -317,18 +279,6 @@ namespace SSW.Rewards.Services
         private async Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId)
         {
             List<Reward> rewards = new List<Reward>();
-
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
 
             var rewardsList = await _userClient.RewardsAsync(userId);
 

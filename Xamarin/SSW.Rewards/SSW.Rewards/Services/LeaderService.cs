@@ -1,35 +1,17 @@
-﻿using System;
+﻿using SSW.Rewards.Models;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
-using SSW.Rewards.Models;
-using System.Net.Http.Headers;
-using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
 {
-    public class LeaderService : ILeaderService
+    public class LeaderService : BaseService, ILeaderService
     {
         private LeaderboardClient _leaderBoardClient;
-        private HttpClient _httpClient;
-        private IUserService _userService;
 
         public LeaderService(IUserService userService)
         {
-            _userService = userService;
-            _httpClient = new HttpClient();
-            _ = Initialise();
-        }
-
-        private async Task Initialise()
-        {
-            string token = App.Constants.AccessToken;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            string baseUrl = App.Constants.ApiBaseUrl;
-
-            _leaderBoardClient = new LeaderboardClient(baseUrl, _httpClient);
+            _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
         }
 
         public async Task<IEnumerable<LeaderSummary>> GetLeadersAsync(bool forceRefresh)
