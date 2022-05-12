@@ -75,7 +75,7 @@ namespace SSW.Rewards.Services
 
 
             FileParameter parameter = new FileParameter(image);
-            
+
             string newPicUri = await _userClient.UploadProfilePicAsync(parameter);
             Preferences.Set("MyProfilePic", newPicUri);
             return newPicUri;
@@ -157,6 +157,8 @@ namespace SSW.Rewards.Services
                     }
                     catch (ArgumentException ex)
                     {
+                        Console.WriteLine("ERROR:");
+                        Console.WriteLine(ex.Message);
                         //TODO: Handle error decoding JWT
                         return ApiStatus.Error;
                     }
@@ -169,6 +171,8 @@ namespace SSW.Rewards.Services
 
             catch (ApiException e)
             {
+                Console.WriteLine("ERROR:");
+                Console.WriteLine(e.Message);
                 if (e.StatusCode == 404)
                 {
                     return ApiStatus.Unavailable;
@@ -181,8 +185,10 @@ namespace SSW.Rewards.Services
                 return ApiStatus.Error;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                Console.WriteLine("ERROR:");
+                Console.WriteLine(ex.Message);
                 Debug.WriteLine(ex.Message);
                 return ApiStatus.Error;
             }
@@ -197,9 +203,9 @@ namespace SSW.Rewards.Services
 
         public async Task UpdateMyDetailsAsync()
         {
-            if(_userClient == null)
+            if (_userClient == null)
             {
-                if(_httpClient == null)
+                if (_httpClient == null)
                 {
                     string token = await SecureStorage.GetAsync("auth_token");
                     _httpClient = new HttpClient();
@@ -215,23 +221,23 @@ namespace SSW.Rewards.Services
             {
                 Preferences.Set("MyName", user.FullName);
             }
-            
+
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
                 Preferences.Set("MyEmail", user.Email);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Id.ToString()))
+            if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
             {
                 Preferences.Set("MyUserId", user.Id);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.ProfilePic))
+            if (!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
                 Preferences.Set("MyProfilePic", user.ProfilePic);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
+            if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set("MyPoints", user.Points);
             }
@@ -265,7 +271,7 @@ namespace SSW.Rewards.Services
 
             var achievementsList = await _userClient.AchievementsAsync(userId);
 
-            foreach(UserAchievementViewModel achievement in achievementsList.UserAchievements)
+            foreach (UserAchievementViewModel achievement in achievementsList.UserAchievements)
             {
                 achievements.Add(new Achievement
                 {

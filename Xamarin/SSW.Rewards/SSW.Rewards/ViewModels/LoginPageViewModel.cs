@@ -2,12 +2,8 @@
 using System.Windows.Input;
 using SSW.Rewards.Services;
 using Xamarin.Forms;
-using Xamarin.Essentials;
 using SSW.Rewards.Models;
 using Microsoft.AppCenter.Crashes;
-using System.Collections.Generic;
-using Microsoft.Identity.Client;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.ViewModels
@@ -29,7 +25,6 @@ namespace SSW.Rewards.ViewModels
             LoginTappedCommand = new Command(SignIn);
             ButtonText = "Sign up / Log in";
             OnPropertyChanged("ButtonText");
-            Refresh();
         }
 
         private async void SignIn()
@@ -46,7 +41,13 @@ namespace SSW.Rewards.ViewModels
             {
                 status = ApiStatus.LoginFailure;
                 //Crashes.TrackError(exception);
+                Console.WriteLine("ERROR logging in");
+                Console.WriteLine(exception.Message);
+                await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
             }
+
+            Console.WriteLine("Login status:");
+            Console.WriteLine(status);
 
             switch (status)
             {
@@ -68,9 +69,9 @@ namespace SSW.Rewards.ViewModels
             RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
         }
 
-        private async void Refresh()
+        public async Task Refresh()
         {
-            bool loggedIn = await _userService.IsLoggedInAsync();
+            bool loggedIn = _userService.IsLoggedIn;
 
             if (loggedIn)
             {
@@ -78,64 +79,13 @@ namespace SSW.Rewards.ViewModels
                 ButtonText = "Logging you in...";
                 RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
 
-                AuthenticationResult result;
-
                 try
                 {
-                    IEnumerable<IAccount> accounts = await App.AuthenticationClient.GetAccountsAsync();
-
-                    result = await App.AuthenticationClient
-                        .AcquireTokenSilent(App.Constants.Scopes, accounts.FirstOrDefault())
-                        .ExecuteAsync();
-
-                    string token = result.AccessToken;
-
-                    await SecureStorage.SetAsync("auth_token", token);
+                    await _userService.RefreshLoginAsync();
 
                     await _userService.UpdateMyDetailsAsync();
 
                     await OnAfterLogin();
-                }
-                catch (MsalUiRequiredException)
-                {
-                    // Interactive signin required again
-                    // Refresh token probably expired
-                    await _userService.SignInAsync();
-                }
-                catch (MsalException ex)
-                {
-                    // Forgot password
-                    if (ex.Message != null && ex.Message.Contains("AADB2C90118"))
-                    {
-                        try
-                        {
-                            result = await OnForgotPassword();
-                            if (!string.IsNullOrWhiteSpace(result.AccessToken))
-                            {
-                                string token = result.AccessToken;
-
-                                await SecureStorage.SetAsync("auth_token", token);
-
-
-                                await OnAfterLogin();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            // Exception while resetting password
-                            //Crashes.TrackError(e);
-                            await Application.Current.MainPage.DisplayAlert("Login Failure",
-                                "There seems to have been a problem logging you in. Please try again. " + e.Message,
-                                "OK");
-                        }
-                    }
-                    else
-                    {
-                        // Fatal MSAL exception
-                        //Crashes.TrackError(ex);
-                        await Application.Current.MainPage.DisplayAlert("Login Failure",
-                            "There seems to have been a problem logging you in. Please try again. " + ex.Message, "OK");
-                    }
                 }
                 catch (Exception e)
                 {
@@ -169,21 +119,9 @@ namespace SSW.Rewards.ViewModels
             await Shell.Current.GoToAsync("//main");
         }
 
-        async Task<AuthenticationResult> OnForgotPassword()
+        async Task OnForgotPassword()
         {
-            try
-            {
-                return await App.AuthenticationClient
-                    .AcquireTokenInteractive(App.Constants.Scopes)
-                    .WithPrompt(Prompt.SelectAccount)
-                    .WithParentActivityOrWindow(App.UIParent)
-                    .WithB2CAuthority(App.Constants.AuthorityReset)
-                    .ExecuteAsync();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            await _userService.ResetPassword();
         }
     }
 }

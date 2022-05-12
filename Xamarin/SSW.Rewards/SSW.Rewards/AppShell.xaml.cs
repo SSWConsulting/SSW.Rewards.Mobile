@@ -14,6 +14,14 @@ namespace SSW.Rewards
 
         bool _showQRMenu;
 
+        public AppShell(IUserService userService, bool isStaff)
+        {
+            InitializeComponent();
+            _userService = userService;
+            ShowQRCodeMenuItem = isStaff;
+            BindingContext = this;
+        }
+
         public bool ShowQRCodeMenuItem
         {
             get => _showQRMenu;
@@ -75,13 +83,5 @@ namespace SSW.Rewards
 				return true;
 			}
 		}
-
-		public AppShell(IUserService userService, bool isStaff)
-        {
-            InitializeComponent();
-            _userService = userService;
-            ShowQRCodeMenuItem = isStaff;
-            BindingContext = this;
-        }
     }
 }
