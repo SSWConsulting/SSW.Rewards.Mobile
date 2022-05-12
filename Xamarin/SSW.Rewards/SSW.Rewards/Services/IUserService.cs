@@ -8,27 +8,28 @@ namespace SSW.Rewards.Services
 {
     public interface IUserService
     {
-        Task<int> GetMyUserIdAsync();
-        Task<string> GetMyNameAsync();
-        Task<string> GetMyEmailAsync();
-        Task<string> GetMyProfilePicAsync();
-        Task<int> GetMyPointsAsync();
-        Task<string> GetTokenAsync();
-        Task<ApiStatus> SignInAsync();
-
-        Task ResetPassword();
-
-        Task RefreshLoginAsync();
-
-        void SignOut();
+        // values
+        int MyUserId { get; }
+        string MyName { get; }
+        string MyEmail { get; }
+        string MyProfilePic { get; }
+        int MyPoints { get; }
+        string MyQrCode { get; }
         bool IsLoggedIn { get; }
+
+        // auth methods
+        Task<ApiStatus> SignInAsync();
+        Task ResetPassword();
+        Task RefreshLoginAsync();
+        void SignOut();
+
+        // user details
         Task UpdateMyDetailsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
         Task<IEnumerable<Reward>> GetRewardsAsync();
         Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ImageSource> GetAvatarAsync(string url);
-        Task<string> UploadImageAsync(Stream image);
-        Task<string> GetMyQrCode();
+        Task<string> UploadImageAsync(Stream image);        
     }
 }

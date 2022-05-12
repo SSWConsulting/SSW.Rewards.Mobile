@@ -1,11 +1,7 @@
-﻿using SSW.Rewards.Helpers;
-
-namespace SSW.Rewards
+﻿namespace SSW.Rewards
 {
     public class Constants
     {
-        private string authorityBase { get { return $"https://{AADDB2CTenantName}.b2clogin.com/tfp/{AADB2CTenantId}/"; } }
-
 #if DEBUG
         public string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";//"https://147c-159-196-124-207.ngrok.io";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
@@ -18,23 +14,15 @@ namespace SSW.Rewards
 #endif
         public string MaxApiSupportedVersion = "1.0";
 
-        public string AADB2CClientId = "bb80971c-3a85-4d6d-aef4-cf0baf0f374b";
+        public string AuthRedirectUrl { get; } = "auth.com.ssw.rewards://callback";
 
-        public string IOSKeychainSecurityGroups = "com.companyname.SSW.Consulting";
+        public string AccessToken { get; set; }
 
-        public string AADB2CPolicySignin = "B2C_1A_Signup_Signin";
+        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net/";
 
-        public string AADB2CTenantId = "sswconsultingapp.onmicrosoft.com";
+        public string ClientId { get; } = "ssw-rewards-mobile-app";
 
-        public string AADDB2CTenantName = "sswconsultingapp";
-
-        public string AADB2CPolicyReset = "B2C_1_PasswordReset";
-
-        public string[] Scopes => new string[] { $"https://{AADDB2CTenantName}.onmicrosoft.com/api/user_impersonation" };
-
-        public string AuthoritySignin => $"{authorityBase}{AADB2CPolicySignin}";
-
-        public string AuthorityReset => $"{authorityBase}{AADB2CPolicyReset}";
+        public string Scope { get; } = "openid profile offline_access ssw-rewards-api";
 
     }
 }

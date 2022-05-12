@@ -3,7 +3,6 @@ using System.Windows.Input;
 using SSW.Rewards.Services;
 using Xamarin.Forms;
 using SSW.Rewards.Models;
-using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.ViewModels
@@ -105,7 +104,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task OnAfterLogin()
         {
-            var qr = await _userService.GetMyQrCode();
+            var qr = _userService.MyQrCode;
             if (!string.IsNullOrWhiteSpace(qr))
             {
                 _isStaff = true;

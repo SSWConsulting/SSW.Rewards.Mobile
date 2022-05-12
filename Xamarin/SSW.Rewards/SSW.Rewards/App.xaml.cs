@@ -21,27 +21,37 @@ namespace SSW.Rewards
 
         public App()
         {
+            Console.WriteLine("Calling app constructor");
             InitializeComponent();
+
+            Console.WriteLine("App InitializeComponent completed successfully.");
+            Resolver.Initialize();
             InitialiseApp();
         }
 
         private void InitialiseApp()
         {
-            Resolver.Initialize();
+            Console.WriteLine("Beginning proprietary app initialisation.");
 
             AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
                 "ios=e33283b1-7326-447d-baae-e783ece0789b",
-                typeof(Analytics), typeof(Crashes), typeof(Push));
+                typeof(Analytics), typeof(Crashes));
 
+            Console.WriteLine("Checking first run status.");
 
             if (Preferences.Get("FirstRun", true))
             {
+                Console.WriteLine("Never run. Launching first run experience.");
+
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
+                Console.WriteLine("Onboarding set as main page successfully.");
             }
             else
             {
+                Console.WriteLine("Has run. Launching login page.");
                 MainPage = new LoginPage();
+                Console.WriteLine("Login page set as main page successfully.");
             }
         }
 
@@ -92,13 +102,25 @@ namespace SSW.Rewards
 
         private async Task CheckApiCompatibilityAsync()
         {
-            ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
-
-            bool compatible = await info.IsApiCompatibleAsync();
-
-            if (!compatible)
+            Console.WriteLine("Checking API compatibility...");
+            try
             {
-                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
+
+                bool compatible = await info.IsApiCompatibleAsync();
+
+                if (!compatible)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                }
+
+                Console.WriteLine($"API compatibility check: {compatible}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR checking API compat");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }

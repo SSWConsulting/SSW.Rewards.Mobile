@@ -24,7 +24,7 @@ namespace SSW.Rewards.Services
 
         private async Task Initialise()
         {
-            string token = await _userService.GetTokenAsync();
+            string token = App.Constants.AccessToken;
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             string baseUrl = App.Constants.ApiBaseUrl;

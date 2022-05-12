@@ -30,6 +30,7 @@ namespace SSW.Rewards.Views
                 Console.WriteLine("Login viewmodel resolved");
                 _viewModel.Navigation = Navigation;
                 BindingContext = _viewModel;
+                Console.WriteLine("LoginPage constructed");
             }
             catch (Exception ex)
             {

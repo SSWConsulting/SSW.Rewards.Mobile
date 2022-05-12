@@ -9,53 +9,183 @@ using System.Net.Http.Headers;
 using SSW.Rewards.Models;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Identity.Client;
 using System.Diagnostics;
+using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
 
 namespace SSW.Rewards.Services
 {
     public class UserService : IUserService
     {
         private UserClient _userClient { get; set; }
+
         private HttpClient _httpClient { get; set; }
 
-        public async Task<string> GetMyEmailAsync()
+        private readonly OidcClientOptions _options;
+
+        private bool _loggedIn = false;
+
+        private string RefreshToken;
+
+        public UserService(IBrowser browser)
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
+            _options = new OidcClientOptions
+            {
+                Authority = App.Constants.AuthorityUri,
+                ClientId = App.Constants.ClientId,
+                Scope = App.Constants.Scope,
+                RedirectUri = App.Constants.AuthRedirectUrl,
+                Browser = browser
+            };
         }
 
-        public async Task<string> GetMyNameAsync()
+        public bool IsLoggedIn { get => _loggedIn; }
+
+        #region AUTHENTICATION
+
+        public async Task<ApiStatus> SignInAsync()
         {
-            return await Task.FromResult(Preferences.Get("MyName", string.Empty));
+            try
+            {
+                var oidcClient = new OidcClient(_options);
+
+                var result = await oidcClient.LoginAsync(new LoginRequest());
+
+                if (result.IsError)
+                {
+                    return ApiStatus.Error;
+                }
+
+                string token = result.AccessToken;
+                string idToken = result.IdentityToken;
+
+                if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
+                {
+                    await SetLoggedInState(token, idToken);
+                    return ApiStatus.Success;
+                }
+                else
+                {
+                    return ApiStatus.LoginFailure;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR:");
+                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
+                return ApiStatus.Error;
+            }
         }
 
-        public async Task<int> GetMyPointsAsync()
+        public void SignOut()
         {
-            return await Task.FromResult(Preferences.Get("MyPoints", 0));
+            App.Constants.AccessToken = string.Empty;
+            SecureStorage.RemoveAll();
+            Preferences.Clear();
         }
 
-        public async Task<string> GetMyProfilePicAsync()
+        private async Task SetLoggedInState(string accessToken, string idToken)
         {
-            string profilePic = await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
-            if (!string.IsNullOrWhiteSpace(profilePic))
-                return profilePic;
+            App.Constants.AccessToken = accessToken;
 
-            return "icon_avatar";
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            bool isStaff = false;
+
+            try
+            {
+                var jwToken = tokenHandler.ReadJwtToken(idToken);
+
+                var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
+                var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
+                var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
+                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+
+                string fullName = firstName + " " + familyName;
+
+                if (!string.IsNullOrWhiteSpace(fullName))
+                {
+                    Preferences.Set("MyName", fullName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(jobTitle))
+                {
+                    Preferences.Set("JobTitle", jobTitle);
+                }
+
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    Preferences.Set("MyEmail", email);
+                }
+
+                await UpdateMyDetailsAsync();
+
+                _loggedIn = true;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("ERROR:");
+                Console.WriteLine(ex.Message);
+                //TODO: Handle error decoding JWT
+            }
         }
 
-        public async Task<int> GetMyUserIdAsync()
+        private async Task SettRefreshToken(string token)
         {
-            return await Task.FromResult(Preferences.Get("MyUserId", 0));
+            RefreshToken = token;
+
+            await SecureStorage.SetAsync(nameof(RefreshToken), token);
         }
 
-        public async Task<string> GetTokenAsync()
+        public Task ResetPassword()
         {
-            return await SecureStorage.GetAsync("auth_token");
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> IsLoggedInAsync()
+        public async Task RefreshLoginAsync()
         {
-            return await Task.FromResult(Preferences.Get("LoggedIn", false));
+            RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
+
+            if (!string.IsNullOrWhiteSpace(RefreshToken))
+            {
+                var oidcClient = new OidcClient(_options);
+
+                var result = await oidcClient.RefreshTokenAsync(RefreshToken);
+
+                if (!result.IsError)
+                {
+                    await SettRefreshToken(result.RefreshToken);
+                    await SetLoggedInState(result.AccessToken, result.IdentityToken);
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region USERDETAILS
+
+        public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
+
+        public string MyEmail { get => Preferences.Get(nameof(MyEmail), string.Empty); }
+
+        public string MyName { get => Preferences.Get(nameof(MyName), string.Empty); }
+
+        public int MyPoints { get => Preferences.Get(nameof(MyPoints), 0); }
+
+        public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
+
+        public string MyProfilePic 
+        { 
+            get
+            {
+                var pic = Preferences.Get(nameof(MyProfilePic), string.Empty);
+                if (!string.IsNullOrWhiteSpace(pic))
+                    return pic;
+
+                return "icon_avatar";
+            }
         }
 
         public async Task<string> UploadImageAsync(Stream image)
@@ -81,133 +211,13 @@ namespace SSW.Rewards.Services
             return newPicUri;
         }
 
-        public async Task<ApiStatus> SignInAsync()
-        {
-            try
-            {
-                var result = await App.AuthenticationClient
-                    .AcquireTokenInteractive(App.Constants.Scopes)
-                    .WithPrompt(Prompt.SelectAccount)
-                    .WithParentActivityOrWindow(App.UIParent)
-                    .ExecuteAsync();
-
-                // Sign-in succeeded.
-                string accountId = result.Account.HomeAccountId.Identifier;
-                string token = result.AccessToken;
-                if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
-                {
-                    await SecureStorage.SetAsync("auth_token", token);
-
-                    var tokenHandler = new JwtSecurityTokenHandler();
-
-                    bool isStaff = false;
-
-                    try
-                    {
-                        var jwToken = tokenHandler.ReadJwtToken(result.IdToken);
-
-                        var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                        var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                        var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                        var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
-
-                        string fullName = firstName + " " + familyName;
-
-                        if (!string.IsNullOrWhiteSpace(fullName))
-                        {
-                            Preferences.Set("MyName", fullName);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(jobTitle))
-                        {
-                            Preferences.Set("JobTitle", jobTitle);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(email))
-                        {
-                            Preferences.Set("MyEmail", email);
-                        }
-
-                        _httpClient = new HttpClient();
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                        string baseUrl = App.Constants.ApiBaseUrl;
-
-                        _userClient = new UserClient(baseUrl, _httpClient);
-
-                        var user = await _userClient.GetAsync();
-
-                        Preferences.Set("MyUserId", user.Id);
-                        Preferences.Set("MyProfilePic", user.ProfilePic);
-
-                        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
-                        {
-                            Preferences.Set("MyPoints", user.Points);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(user.QrCode))
-                        {
-                            Preferences.Set("MyQRCode", user.QrCode);
-                            isStaff = true;
-                        }
-
-                        Preferences.Set("LoggedIn", true);
-
-                        return ApiStatus.Success;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine("ERROR:");
-                        Console.WriteLine(ex.Message);
-                        //TODO: Handle error decoding JWT
-                        return ApiStatus.Error;
-                    }
-                }
-                else
-                {
-                    return ApiStatus.LoginFailure;
-                }
-            }
-
-            catch (ApiException e)
-            {
-                Console.WriteLine("ERROR:");
-                Console.WriteLine(e.Message);
-                if (e.StatusCode == 404)
-                {
-                    return ApiStatus.Unavailable;
-                }
-                else if (e.StatusCode == 401)
-                {
-                    return ApiStatus.LoginFailure;
-                }
-
-                return ApiStatus.Error;
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR:");
-                Console.WriteLine(ex.Message);
-                Debug.WriteLine(ex.Message);
-                return ApiStatus.Error;
-            }
-        }
-
-        public void SignOut()
-        {
-            //Auth.SignOut();
-            SecureStorage.RemoveAll();
-            Preferences.Clear();
-        }
-
         public async Task UpdateMyDetailsAsync()
         {
             if (_userClient == null)
             {
                 if (_httpClient == null)
                 {
-                    string token = await SecureStorage.GetAsync("auth_token");
+                    string token = App.Constants.AccessToken;
                     _httpClient = new HttpClient();
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
@@ -219,33 +229,38 @@ namespace SSW.Rewards.Services
 
             if (!string.IsNullOrWhiteSpace(user.FullName))
             {
-                Preferences.Set("MyName", user.FullName);
+                Preferences.Set(nameof(MyName), user.FullName);
             }
 
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
-                Preferences.Set("MyEmail", user.Email);
+                Preferences.Set(nameof(MyEmail), user.Email);
             }
 
             if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
             {
-                Preferences.Set("MyUserId", user.Id);
+                Preferences.Set(nameof(MyUserId), user.Id);
             }
 
             if (!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
-                Preferences.Set("MyProfilePic", user.ProfilePic);
+                Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
             }
 
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
-                Preferences.Set("MyPoints", user.Points);
+                Preferences.Set(nameof(MyPoints), user.Points);
+            }
+
+            if (!string.IsNullOrWhiteSpace(user.QrCode.ToString()))
+            {
+                Preferences.Set(nameof(MyQrCode), user.QrCode);
             }
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
         {
-            return await GetAchievementsForUserAsync(await GetMyUserIdAsync());
+            return await GetAchievementsForUserAsync(MyUserId);
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
@@ -286,7 +301,7 @@ namespace SSW.Rewards.Services
 
         public async Task<IEnumerable<Reward>> GetRewardsAsync()
         {
-            return await GetRewardsForUserAsync(await GetMyUserIdAsync());
+            return await GetRewardsForUserAsync(MyUserId);
         }
 
         public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)
@@ -335,9 +350,6 @@ namespace SSW.Rewards.Services
             throw new NotImplementedException();
         }
 
-        public Task<string> GetMyQrCode()
-        {
-            return Task.FromResult(Preferences.Get("MyQRCode", string.Empty));
-        }
+        #endregion
     }
 }

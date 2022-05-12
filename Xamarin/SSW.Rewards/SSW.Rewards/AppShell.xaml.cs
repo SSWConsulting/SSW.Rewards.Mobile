@@ -65,7 +65,7 @@ namespace SSW.Rewards
 
         private async void Handle_QRClicked(object sender, EventArgs e)
         {
-            var qrCode = await _userService.GetMyQrCode();
+            var qrCode = _userService.MyQrCode;
 
             if (!string.IsNullOrWhiteSpace(qrCode))
                 await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
