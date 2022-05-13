@@ -3,7 +3,7 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://aa98-159-196-124-207.ngrok.io";//"https://sswconsulting-prod.azurewebsites.net";
+        public string ApiBaseUrl = "https://a50c-159-196-124-207.ngrok.io";//"https://sswconsulting-prod.azurewebsites.net";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
@@ -22,7 +22,7 @@
 
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
-        public string Scope { get; } = "openid profile ssw-rewards-api";
+        public string Scope { get; } = "openid profile ssw-rewards-api email";
 
     }
 }

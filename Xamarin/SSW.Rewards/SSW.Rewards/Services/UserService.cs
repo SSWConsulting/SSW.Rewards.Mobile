@@ -66,6 +66,9 @@ namespace SSW.Rewards.Services
 
                 if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
                 {
+                    Console.WriteLine("[UserService]: Got ID token and Access tokens");
+                    Console.WriteLine($"Access Token: {token}");
+                    Console.WriteLine($"ID Token: {idToken}");
                     await SetLoggedInState(token, idToken);
                     return ApiStatus.Success;
                 }
@@ -76,7 +79,7 @@ namespace SSW.Rewards.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR:");
+                Console.WriteLine("ERROR [UserService - SigninAsync]:");
                 Console.WriteLine(ex.Message);
                 Debug.WriteLine(ex.Message);
                 return ApiStatus.Error;
@@ -130,7 +133,7 @@ namespace SSW.Rewards.Services
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine("ERROR:");
+                Console.WriteLine("ERROR [UserService - SetLoggedInState]:");
                 Console.WriteLine(ex.Message);
                 //TODO: Handle error decoding JWT
             }
@@ -204,6 +207,7 @@ namespace SSW.Rewards.Services
 
         public async Task UpdateMyDetailsAsync()
         {
+            Console.WriteLine("[UserService]: Attempting to get user details...");
             var user = await _userClient.GetAsync();
 
             if (!string.IsNullOrWhiteSpace(user.FullName))
