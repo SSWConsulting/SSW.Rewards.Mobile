@@ -70,9 +70,7 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Refresh()
         {
-            bool loggedIn = _userService.IsLoggedIn;
-
-            if (loggedIn)
+            if (_userService.HasCachedAccount)
             {
                 isRunning = true;
                 ButtonText = "Logging you in...";

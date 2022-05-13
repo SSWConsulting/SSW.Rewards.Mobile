@@ -1,17 +1,17 @@
-﻿using System;
+﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
+using Newtonsoft.Json;
+using SSW.Rewards.Helpers;
+using SSW.Rewards.Models;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using SSW.Rewards.Models;
-using System.Collections.Generic;
-using System.IO;
-using System.Diagnostics;
-using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Browser;
 
 namespace SSW.Rewards.Services
 {
@@ -24,6 +24,8 @@ namespace SSW.Rewards.Services
         private bool _loggedIn = false;
 
         private string RefreshToken;
+
+        public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
         public UserService(IBrowser browser)
         {
@@ -81,21 +83,23 @@ namespace SSW.Rewards.Services
             {
                 Console.WriteLine("ERROR [UserService - SigninAsync]:");
                 Console.WriteLine(ex.Message);
-                Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ApiStatus.Error;
             }
         }
 
         public void SignOut()
         {
-            App.Constants.AccessToken = string.Empty;
+            // TODO: remove from auth client
             SecureStorage.RemoveAll();
             Preferences.Clear();
         }
 
         private async Task SetLoggedInState(string accessToken, string idToken)
         {
-            App.Constants.AccessToken = accessToken;
+            AuthenticatedClientFactory.SetAccessToken(accessToken);
+
+            Preferences.Set(nameof(HasCachedAccount), true);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -210,35 +214,65 @@ namespace SSW.Rewards.Services
             Console.WriteLine("[UserService]: Attempting to get user details...");
             var user = await _userClient.GetAsync();
 
+            if (user is null)
+            {
+                Console.WriteLine("User is null");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("User is not null");
+                Console.WriteLine(JsonConvert.SerializeObject(user));
+            }
+
             if (!string.IsNullOrWhiteSpace(user.FullName))
             {
+                Console.WriteLine("Trying to write fullname to preferences for some reason");
                 Preferences.Set(nameof(MyName), user.FullName);
+                Console.WriteLine("Wrote full name to prefs");
             }
+
+            Console.WriteLine("Didn't bug out writing fullname to prefs");
 
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
                 Preferences.Set(nameof(MyEmail), user.Email);
             }
 
+            Console.WriteLine("Didn't bug out writing Email to prefs");
+
             if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
             {
                 Preferences.Set(nameof(MyUserId), user.Id);
             }
+
+            Console.WriteLine("Didn't bug out writing ID to prefs");
 
             if (!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
                 Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
             }
 
+            Console.WriteLine("Didn't bug out writing ProfilePic to prefs");
+
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set(nameof(MyPoints), user.Points);
             }
 
-            if (!string.IsNullOrWhiteSpace(user.QrCode.ToString()))
+            Console.WriteLine("Didn't bug out writing Points to prefs");
+
+            if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
             {
+                Console.WriteLine("Trying to write QR code to prefs");
+
+                Console.WriteLine($"QR Code: {user.QrCode}");
                 Preferences.Set(nameof(MyQrCode), user.QrCode);
             }
+
+            Console.WriteLine("Didn't bug out writing QRCode to prefs");
+
+            Console.WriteLine("Finished get user details");
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
