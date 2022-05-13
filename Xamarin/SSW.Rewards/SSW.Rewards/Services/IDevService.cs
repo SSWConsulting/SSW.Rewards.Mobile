@@ -1,7 +1,6 @@
-﻿using System;
+﻿using SSW.Rewards.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SSW.Rewards.Models;
 
 namespace SSW.Rewards.Services
 {

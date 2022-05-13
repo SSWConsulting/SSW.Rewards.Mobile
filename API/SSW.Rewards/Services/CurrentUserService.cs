@@ -4,6 +4,8 @@ using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.User.Commands.UpsertCurrentUser;
 using SSW.Rewards.Application.User.Queries.GetCurrentUser;
+using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +29,7 @@ namespace SSW.Rewards.WebAPI.Services
 
         public string GetUserId() => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public string GetUserEmail() => _httpContextAccessor.HttpContext?.User?.FindFirstValue("emails");
+        public string GetUserEmail() => _httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
 
         public string GetUserFullName()
         {

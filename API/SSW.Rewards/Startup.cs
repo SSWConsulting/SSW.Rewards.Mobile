@@ -42,7 +42,7 @@ namespace SSW.Rewards
             {
                 options.Authority = SigningAuthority;
 
-                options.Audience = "ssw-rewards-api";
+                options.Audience = "rewards";
 
                 options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
             });

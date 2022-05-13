@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SSW.Rewards.Helpers
@@ -14,6 +15,9 @@ namespace SSW.Rewards.Helpers
 
             string token = App.Constants.AccessToken;
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            Console.WriteLine("[AuthenticatedClientFactory]: Setting access token:");
+            Console.WriteLine(token);
 
             return _httpClient;
         }
