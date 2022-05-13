@@ -269,18 +269,38 @@
         }
       }
     },
-    "/api/Notifications/installations": {
-      "put": {
+    "/api/Notifications/List": {
+      "get": {
         "tags": [
           "Notifications"
         ],
-        "operationId": "Notifications_UpdateInstallation",
+        "operationId": "Notifications_List",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationHistoryListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Notifications/RequestPush": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "operationId": "Notifications_RequestPush",
         "requestBody": {
-          "x-name": "deviceInstallation",
+          "x-name": "notificationRequest",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeviceInstall"
+                "$ref": "#/components/schemas/RequestNotificationCommand"
               }
             }
           },
@@ -289,7 +309,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -314,7 +341,59 @@
         }
       }
     },
-    "/api/Notifications/installations/{installationId}": {
+    "/api/Notifications/UpdateInstallation": {
+      "put": {
+        "tags": [
+          "Notifications"
+        ],
+        "operationId": "Notifications_UpdateInstallation",
+        "requestBody": {
+          "x-name": "deviceInstallation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInstallationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Notifications/DeleteInstallation/{installationId}": {
       "delete": {
         "tags": [
           "Notifications"
@@ -322,7 +401,7 @@
         "operationId": "Notifications_DeleteInstallation",
         "parameters": [
           {
-            "name": "installationId",
+            "name": "InstallationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -334,52 +413,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
-          },
-          "400": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/Unit"
                 }
               }
             }
-          },
-          "422": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Notifications/requests": {
-      "post": {
-        "tags": [
-          "Notifications"
-        ],
-        "operationId": "Notifications_RequestPush",
-        "requestBody": {
-          "x-name": "notificationRequest",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationRequest"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": ""
           },
           "400": {
             "description": "",
@@ -1159,6 +1200,41 @@
           }
         }
       },
+      "NotificationHistoryListViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "list": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/NotificationHistoryDto"
+            }
+          }
+        }
+      },
+      "NotificationHistoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "additionalProperties": false
+      },
       "ProblemDetails": {
         "type": "object",
         "additionalProperties": false,
@@ -1191,7 +1267,31 @@
           }
         }
       },
-      "DeviceInstall": {
+      "RequestNotificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "silent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateInstallationCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1213,30 +1313,6 @@
             "items": {
               "type": "string"
             }
-          }
-        }
-      },
-      "NotificationRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "text": {
-            "type": "string",
-            "nullable": true
-          },
-          "action": {
-            "type": "string",
-            "nullable": true
-          },
-          "tags": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "silent": {
-            "type": "boolean"
           }
         }
       },
