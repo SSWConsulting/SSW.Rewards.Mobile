@@ -16,6 +16,7 @@ namespace SSW.Rewards.Services
         int MyPoints { get; }
         string MyQrCode { get; }
         bool IsLoggedIn { get; }
+        bool HasCachedAccount { get; }
 
         // auth methods
         Task<ApiStatus> SignInAsync();

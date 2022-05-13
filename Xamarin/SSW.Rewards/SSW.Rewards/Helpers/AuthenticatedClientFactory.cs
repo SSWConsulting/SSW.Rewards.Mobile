@@ -13,13 +13,12 @@ namespace SSW.Rewards.Helpers
             if (_httpClient == null)
                 _httpClient = new HttpClient();
 
-            string token = App.Constants.AccessToken;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            Console.WriteLine("[AuthenticatedClientFactory]: Setting access token:");
-            Console.WriteLine(token);
-
             return _httpClient;
+        }
+
+        public static void SetAccessToken(string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }
