@@ -41,11 +41,11 @@ namespace SSW.Rewards.Views
             }
         }
 
-        //protected override async void OnAppearing()
-        //{
-        //    base.OnAppearing();
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
 
-        //    await _viewModel.Refresh();
-        //}
+            await _viewModel.Refresh();
+        }
     }
 }

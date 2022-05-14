@@ -44,16 +44,6 @@ namespace SSW.Rewards.WebAPI.Services
                 return _currentUser;
             }
 
-            try
-            {
-                return await _mediatr.Send(new GetCurrentUserQuery(), cancellationToken);
-            }
-            catch (NotFoundException)
-            {
-            }
-
-            await _mediatr.Send(new UpsertCurrentUserCommand(), cancellationToken);
-
             return _currentUser = await _mediatr.Send(new GetCurrentUserQuery(), cancellationToken);
         }
 

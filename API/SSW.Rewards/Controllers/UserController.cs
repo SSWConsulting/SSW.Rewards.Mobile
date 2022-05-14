@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-	public class UserController : BaseController
+    public class UserController : BaseController
     {
         [HttpGet]
         public async Task<ActionResult<CurrentUserViewModel>> Get()

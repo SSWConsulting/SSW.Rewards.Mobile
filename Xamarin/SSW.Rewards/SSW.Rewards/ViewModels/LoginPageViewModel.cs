@@ -74,7 +74,7 @@ namespace SSW.Rewards.ViewModels
             {
                 isRunning = true;
                 ButtonText = "Logging you in...";
-                RaisePropertyChanged("isRunning", "ButtonText", "LoginButtonEnabled");
+                RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
 
                 try
                 {
@@ -96,6 +96,12 @@ namespace SSW.Rewards.ViewModels
                     isRunning = false;
                     ButtonText = "Sign up / Log in";
                     RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
+                }
+                finally
+                {
+                    isRunning = false;
+                    ButtonText = "Log in";
+                    RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
                 }
             }
         }
