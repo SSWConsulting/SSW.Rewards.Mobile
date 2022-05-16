@@ -10,6 +10,7 @@ using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
+    [AllowAnonymous]
     public class NotificationsController : BaseController
     {
         [HttpGet]

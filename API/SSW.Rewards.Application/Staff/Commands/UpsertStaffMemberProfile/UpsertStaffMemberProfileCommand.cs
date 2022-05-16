@@ -25,6 +25,8 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
         public string Profile { get; set; }
 
         public string TwitterUsername { get; set; }
+        public string GitHubUsername { get; set; }
+        public string LinkedInUrl { get; set; }
 
         public Uri ProfilePhoto { get; set; }
 
@@ -66,6 +68,8 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 staffMemberEntity.Name = request.Name;
                 staffMemberEntity.Profile = request.Profile;
                 staffMemberEntity.TwitterUsername = request.TwitterUsername;
+                staffMemberEntity.GitHubUsername = request.GitHubUsername;
+                staffMemberEntity.LinkedInUrl = request.LinkedInUrl;
                 staffMemberEntity.Title = request.Title;
 
 

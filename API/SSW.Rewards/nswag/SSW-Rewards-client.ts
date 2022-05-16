@@ -2787,6 +2787,8 @@ export class StaffDto implements IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 
@@ -2809,6 +2811,8 @@ export class StaffDto implements IStaffDto {
             this.profilePhoto = _data["profilePhoto"];
             this.isDeleted = _data["isDeleted"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.isExternal = _data["isExternal"];
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
@@ -2835,6 +2839,8 @@ export class StaffDto implements IStaffDto {
         data["profilePhoto"] = this.profilePhoto;
         data["isDeleted"] = this.isDeleted;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["isExternal"] = this.isExternal;
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
@@ -2854,6 +2860,8 @@ export interface IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 }
@@ -2865,6 +2873,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;
@@ -2886,6 +2896,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             this.email = _data["email"];
             this.profile = _data["profile"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.profilePhoto = _data["profilePhoto"];
             this.rate = _data["rate"];
             if (Array.isArray(_data["skills"])) {
@@ -2911,6 +2923,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         data["email"] = this.email;
         data["profile"] = this.profile;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["profilePhoto"] = this.profilePhoto;
         data["rate"] = this.rate;
         if (Array.isArray(this.skills)) {
@@ -2929,6 +2943,8 @@ export interface IUpsertStaffMemberProfileCommand {
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;
