@@ -141,7 +141,14 @@ namespace SSW.Rewards.ViewModels
                 {
                     // Everything else is fatal
                     //Crashes.TrackError(e);
-                    await Application.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
+                    await Application.Current.MainPage.DisplayAlert("Login Failure",
+                        "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
+                }
+                finally
+                {
+                    isRunning = false;
+                    ButtonText = "Sign up / Log in";
+                    RaisePropertyChanged(nameof(ButtonText));
                 }
             }
         }
