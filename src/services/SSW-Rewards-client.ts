@@ -450,6 +450,173 @@ export class LeaderboardClient extends BaseClient implements ILeaderboardClient 
     }
 }
 
+export interface INotificationsClient {
+    updateInstallation(deviceInstallation: DeviceInstall): Promise<void>;
+    deleteInstallation(installationId: string | null): Promise<void>;
+    requestPush(notificationRequest: NotificationRequest): Promise<void>;
+}
+
+export class NotificationsClient extends BaseClient implements INotificationsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    updateInstallation(deviceInstallation: DeviceInstall): Promise<void> {
+        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deviceInstallation);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateInstallation(_response);
+        });
+    }
+
+    protected processUpdateInstallation(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 422) {
+            return response.text().then((_responseText) => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = ProblemDetails.fromJS(resultData422);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    deleteInstallation(installationId: string | null): Promise<void> {
+        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
+        if (installationId === undefined || installationId === null)
+            throw new Error("The parameter 'installationId' must be defined.");
+        url_ = url_.replace("{installationId}", encodeURIComponent("" + installationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteInstallation(_response);
+        });
+    }
+
+    protected processDeleteInstallation(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 422) {
+            return response.text().then((_responseText) => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = ProblemDetails.fromJS(resultData422);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    requestPush(notificationRequest: NotificationRequest): Promise<void> {
+        let url_ = this.baseUrl + "/api/Notifications/RequestPush";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(notificationRequest);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRequestPush(_response);
+        });
+    }
+
+    protected processRequestPush(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 422) {
+            return response.text().then((_responseText) => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = ProblemDetails.fromJS(resultData422);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
 export interface IRewardClient {
     list(): Promise<RewardListViewModel>;
     adminList(): Promise<RewardAdminListViewModel>;
@@ -1730,6 +1897,186 @@ export interface ILeaderboardUserDto {
     points?: number;
 }
 
+export class ProblemDetails implements IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    extensions?: { [key: string]: any; } | undefined;
+
+    constructor(data?: IProblemDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.type = _data["type"];
+            this.title = _data["title"];
+            this.status = _data["status"];
+            this.detail = _data["detail"];
+            this.instance = _data["instance"];
+            if (_data["extensions"]) {
+                this.extensions = {} as any;
+                for (let key in _data["extensions"]) {
+                    if (_data["extensions"].hasOwnProperty(key))
+                        this.extensions![key] = _data["extensions"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): ProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["status"] = this.status;
+        data["detail"] = this.detail;
+        data["instance"] = this.instance;
+        if (this.extensions) {
+            data["extensions"] = {};
+            for (let key in this.extensions) {
+                if (this.extensions.hasOwnProperty(key))
+                    data["extensions"][key] = this.extensions[key];
+            }
+        }
+        return data; 
+    }
+}
+
+export interface IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    extensions?: { [key: string]: any; } | undefined;
+}
+
+export class DeviceInstall implements IDeviceInstall {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
+
+    constructor(data?: IDeviceInstall) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.installationId = _data["installationId"];
+            this.platform = _data["platform"];
+            this.pushChannel = _data["pushChannel"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DeviceInstall {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeviceInstall();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["installationId"] = this.installationId;
+        data["platform"] = this.platform;
+        data["pushChannel"] = this.pushChannel;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface IDeviceInstall {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
+}
+
+export class NotificationRequest implements INotificationRequest {
+    text?: string | undefined;
+    action?: string | undefined;
+    tags?: string[] | undefined;
+    silent?: boolean;
+
+    constructor(data?: INotificationRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            this.action = _data["action"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(item);
+            }
+            this.silent = _data["silent"];
+        }
+    }
+
+    static fromJS(data: any): NotificationRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["action"] = this.action;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item);
+        }
+        data["silent"] = this.silent;
+        return data; 
+    }
+}
+
+export interface INotificationRequest {
+    text?: string | undefined;
+    action?: string | undefined;
+    tags?: string[] | undefined;
+    silent?: boolean;
+}
+
 export class RewardListViewModel implements IRewardListViewModel {
     rewards?: RewardViewModel[] | undefined;
 
@@ -2273,6 +2620,8 @@ export class StaffDto implements IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 
@@ -2295,6 +2644,8 @@ export class StaffDto implements IStaffDto {
             this.profilePhoto = _data["profilePhoto"];
             this.isDeleted = _data["isDeleted"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.isExternal = _data["isExternal"];
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
@@ -2321,6 +2672,8 @@ export class StaffDto implements IStaffDto {
         data["profilePhoto"] = this.profilePhoto;
         data["isDeleted"] = this.isDeleted;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["isExternal"] = this.isExternal;
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
@@ -2340,6 +2693,8 @@ export interface IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 }
@@ -2351,6 +2706,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;
@@ -2372,6 +2729,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             this.email = _data["email"];
             this.profile = _data["profile"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.profilePhoto = _data["profilePhoto"];
             this.rate = _data["rate"];
             if (Array.isArray(_data["skills"])) {
@@ -2397,6 +2756,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         data["email"] = this.email;
         data["profile"] = this.profile;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["profilePhoto"] = this.profilePhoto;
         data["rate"] = this.rate;
         if (Array.isArray(this.skills)) {
@@ -2415,6 +2776,8 @@ export interface IUpsertStaffMemberProfileCommand {
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;

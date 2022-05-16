@@ -277,6 +277,22 @@ const ProfileDetailComponent = (
                 onChange={handleValueChange}
               />
             </div>
+            <div style={{ display: "flex" }}>
+              <EditableField
+                name="gitHubUsername"
+                label="GitHub Username"
+                value={state.profileDetail.gitHubUsername || ""}
+                style={{ width: "100%" }}
+                onChange={handleValueChange}
+              />
+              <EditableField
+                name="linkedInUrl"
+                label="LinkedIn Url"
+                value={state.profileDetail.linkedInUrl || ""}
+                style={{ width: "100%" }}
+                onChange={handleValueChange}
+              />
+            </div>
             <EditableField
               name="profile"
               label="Profile"
