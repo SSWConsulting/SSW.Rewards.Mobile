@@ -1502,6 +1502,14 @@
             "type": "string",
             "nullable": true
           },
+          "gitHubUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkedInUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "isExternal": {
             "type": "boolean"
           },
@@ -1539,6 +1547,14 @@
             "nullable": true
           },
           "twitterUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "gitHubUsername": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkedInUrl": {
             "type": "string",
             "nullable": true
           },

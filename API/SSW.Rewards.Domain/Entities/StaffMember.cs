@@ -13,6 +13,9 @@ namespace SSW.Rewards.Domain.Entities
         public string Profile { get; set; }
 
         public string TwitterUsername { get; set; }
+        public string GitHubUsername { get; set; }
+        public string LinkedInUrl { get; set; }
+
 
         public bool IsExternal { get; set; }
 
