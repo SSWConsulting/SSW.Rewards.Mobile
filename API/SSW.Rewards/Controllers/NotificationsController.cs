@@ -1,78 +1,45 @@
 ﻿using System.Threading.Tasks;
 using System.Net;
-using System.Threading;
 using System.ComponentModel.DataAnnotations;
-
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-
-using SSW.Rewards.Application.Common.Models;
-using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
+using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
+using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
+using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    [AllowAnonymous]
     public class NotificationsController : BaseController
     {
-        readonly INotificationService _notificationService;
-
-        public NotificationsController(INotificationService notificationService)
+        [HttpGet]
+        public async Task<ActionResult<NotificationHistoryListViewModel>> List()
         {
-            _notificationService = notificationService;
+            return Ok(await Mediator.Send(new GetNotificationHistoryListQuery()));
+        }
+        
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<Unit>> RequestPush([Required]RequestNotificationCommand notificationRequest)
+        {
+            return Ok(await Mediator.Send(notificationRequest));
         }
 
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
-        public async Task<IActionResult> UpdateInstallation(
-            [Required]DeviceInstall deviceInstallation)
+        public async Task<ActionResult<Unit>> UpdateInstallation([Required] UpdateInstallationCommand deviceInstallation)
         {
-            var success = await _notificationService
-                .CreateOrUpdateInstallationAsync(deviceInstallation, HttpContext.RequestAborted);
-
-            if (!success)
-                return new UnprocessableEntityResult();
-
-            return new OkResult();
+            return Ok(await Mediator.Send(deviceInstallation));
         }
-
+        
         [HttpDelete("{installationId}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
-        public async Task<ActionResult> DeleteInstallation(
-            [Required][FromRoute]string installationId)
+        public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute]DeleteInstallationCommand installationId)
         {
-            var success = await _notificationService
-                .DeleteInstallationByIdAsync(installationId, CancellationToken.None);
-
-            if (!success)
-                return new UnprocessableEntityResult();
-
-            return new OkResult();
-        }
-
-        [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
-        public async Task<IActionResult> RequestPush(
-            [Required]NotificationRequest notificationRequest)
-        {
-            if ((notificationRequest.Silent &&
-                string.IsNullOrWhiteSpace(notificationRequest?.Action)) ||
-                (!notificationRequest.Silent &&
-                string.IsNullOrWhiteSpace(notificationRequest?.Text)))
-                return new BadRequestResult();
-
-            var success = await _notificationService
-                .RequestNotificationAsync(notificationRequest, HttpContext.RequestAborted);
-
-            if (!success)
-                return new UnprocessableEntityResult();
-
-            return new OkResult();
+            return Ok(await Mediator.Send(installationId));
         }
     }
 }

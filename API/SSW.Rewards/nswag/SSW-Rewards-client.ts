@@ -451,9 +451,10 @@ export class LeaderboardClient extends BaseClient implements ILeaderboardClient 
 }
 
 export interface INotificationsClient {
-    updateInstallation(deviceInstallation: DeviceInstall): Promise<void>;
-    deleteInstallation(installationId: string | null): Promise<void>;
-    requestPush(notificationRequest: NotificationRequest): Promise<void>;
+    list(): Promise<NotificationHistoryListViewModel>;
+    requestPush(notificationRequest: RequestNotificationCommand): Promise<Unit>;
+    updateInstallation(deviceInstallation: UpdateInstallationCommand): Promise<Unit>;
+    deleteInstallation(installationId: string | null): Promise<Unit>;
 }
 
 export class NotificationsClient extends BaseClient implements INotificationsClient {
@@ -467,106 +468,43 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    updateInstallation(deviceInstallation: DeviceInstall): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
+    list(): Promise<NotificationHistoryListViewModel> {
+        let url_ = this.baseUrl + "/api/Notifications/List";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(deviceInstallation);
-
         let options_ = <RequestInit>{
-            body: content_,
-            method: "PUT",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processUpdateInstallation(_response);
+            return this.processList(_response);
         });
     }
 
-    protected processUpdateInstallation(response: Response): Promise<void> {
+    protected processList(response: Response): Promise<NotificationHistoryListViewModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NotificationHistoryListViewModel.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<NotificationHistoryListViewModel>(<any>null);
     }
 
-    deleteInstallation(installationId: string | null): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
-        if (installationId === undefined || installationId === null)
-            throw new Error("The parameter 'installationId' must be defined.");
-        url_ = url_.replace("{installationId}", encodeURIComponent("" + installationId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteInstallation(_response);
-        });
-    }
-
-    protected processDeleteInstallation(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    requestPush(notificationRequest: NotificationRequest): Promise<void> {
+    requestPush(notificationRequest: RequestNotificationCommand): Promise<Unit> {
         let url_ = this.baseUrl + "/api/Notifications/RequestPush";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -577,6 +515,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -587,12 +526,15 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
         });
     }
 
-    protected processRequestPush(response: Response): Promise<void> {
+    protected processRequestPush(response: Response): Promise<Unit> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Unit.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -601,19 +543,105 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
             result400 = ProblemDetails.fromJS(resultData400);
             return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
-        } else if (status === 422) {
+        } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Unit>(<any>null);
+    }
+
+    updateInstallation(deviceInstallation: UpdateInstallationCommand): Promise<Unit> {
+        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deviceInstallation);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateInstallation(_response);
+        });
+    }
+
+    protected processUpdateInstallation(response: Response): Promise<Unit> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Unit.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<Unit>(<any>null);
+    }
+
+    deleteInstallation(installationId: string | null): Promise<Unit> {
+        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
+        if (installationId === undefined || installationId === null)
+            throw new Error("The parameter 'installationId' must be defined.");
+        url_ = url_.replace("{InstallationId}", encodeURIComponent("" + installationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteInstallation(_response);
+        });
+    }
+
+    protected processDeleteInstallation(response: Response): Promise<Unit> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Unit.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Unit>(<any>null);
     }
 }
 
@@ -1897,6 +1925,124 @@ export interface ILeaderboardUserDto {
     points?: number;
 }
 
+export class NotificationHistoryListViewModel implements INotificationHistoryListViewModel {
+    list?: NotificationHistoryDto[] | undefined;
+
+    constructor(data?: INotificationHistoryListViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["list"])) {
+                this.list = [] as any;
+                for (let item of _data["list"])
+                    this.list!.push(NotificationHistoryDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): NotificationHistoryListViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationHistoryListViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.list)) {
+            data["list"] = [];
+            for (let item of this.list)
+                data["list"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface INotificationHistoryListViewModel {
+    list?: NotificationHistoryDto[] | undefined;
+}
+
+export class NotificationHistoryDto implements INotificationHistoryDto {
+    message?: string | undefined;
+    createdDate?: Date;
+    emailAddress?: string | undefined;
+
+    constructor(data?: INotificationHistoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.message = _data["message"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.emailAddress = _data["emailAddress"];
+        }
+    }
+
+    static fromJS(data: any): NotificationHistoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationHistoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["emailAddress"] = this.emailAddress;
+        return data; 
+    }
+}
+
+export interface INotificationHistoryDto {
+    message?: string | undefined;
+    createdDate?: Date;
+    emailAddress?: string | undefined;
+}
+
+export class Unit implements IUnit {
+
+    constructor(data?: IUnit) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): Unit {
+        data = typeof data === 'object' ? data : {};
+        let result = new Unit();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+}
+
+export interface IUnit {
+}
+
 export class ProblemDetails implements IProblemDetails {
     type?: string | undefined;
     title?: string | undefined;
@@ -1965,69 +2111,13 @@ export interface IProblemDetails {
     extensions?: { [key: string]: any; } | undefined;
 }
 
-export class DeviceInstall implements IDeviceInstall {
-    installationId?: string | undefined;
-    platform?: string | undefined;
-    pushChannel?: string | undefined;
-    tags?: string[] | undefined;
-
-    constructor(data?: IDeviceInstall) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.installationId = _data["installationId"];
-            this.platform = _data["platform"];
-            this.pushChannel = _data["pushChannel"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DeviceInstall {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeviceInstall();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["installationId"] = this.installationId;
-        data["platform"] = this.platform;
-        data["pushChannel"] = this.pushChannel;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item);
-        }
-        return data; 
-    }
-}
-
-export interface IDeviceInstall {
-    installationId?: string | undefined;
-    platform?: string | undefined;
-    pushChannel?: string | undefined;
-    tags?: string[] | undefined;
-}
-
-export class NotificationRequest implements INotificationRequest {
+export class RequestNotificationCommand implements IRequestNotificationCommand {
     text?: string | undefined;
     action?: string | undefined;
     tags?: string[] | undefined;
     silent?: boolean;
 
-    constructor(data?: INotificationRequest) {
+    constructor(data?: IRequestNotificationCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2049,9 +2139,9 @@ export class NotificationRequest implements INotificationRequest {
         }
     }
 
-    static fromJS(data: any): NotificationRequest {
+    static fromJS(data: any): RequestNotificationCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new NotificationRequest();
+        let result = new RequestNotificationCommand();
         result.init(data);
         return result;
     }
@@ -2070,11 +2160,67 @@ export class NotificationRequest implements INotificationRequest {
     }
 }
 
-export interface INotificationRequest {
+export interface IRequestNotificationCommand {
     text?: string | undefined;
     action?: string | undefined;
     tags?: string[] | undefined;
     silent?: boolean;
+}
+
+export class UpdateInstallationCommand implements IUpdateInstallationCommand {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
+
+    constructor(data?: IUpdateInstallationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.installationId = _data["installationId"];
+            this.platform = _data["platform"];
+            this.pushChannel = _data["pushChannel"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateInstallationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateInstallationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["installationId"] = this.installationId;
+        data["platform"] = this.platform;
+        data["pushChannel"] = this.pushChannel;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface IUpdateInstallationCommand {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
 }
 
 export class RewardListViewModel implements IRewardListViewModel {
