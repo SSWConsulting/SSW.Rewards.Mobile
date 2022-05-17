@@ -17,6 +17,8 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
+      with:
+        fetch-depth: 0
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
@@ -27,6 +29,17 @@ jobs:
       run: |
         keystore=$RUNNER_TEMP/key.keystore
         echo -n "$ANDROID_SIGNING_KEY_BASE64" | base64 --decode --output $keystore
+
+    - name: Extract version from tag
+      uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+    - name: Update AndroidManifest.xml
+      uses: damienaicheh/update-android-version-manifest-action@v1.0.0
+      with:
+        android-manifest-path: 'Xamarin/SSW.Rewards/SSW.Rewards.Android/Properties/AndroidManifest.xml'
+        version-code: ${{ env.NUMBER_OF_COMMITS }}
+        version-name: '${{ env.MAJOR }}.${{ env.MINOR }}'
+        print-file: true
 
     - name: Build
       env:
@@ -47,6 +60,8 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
+      with:
+        fetch-depth: 0
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
@@ -80,6 +95,16 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
+    - name: Extract version from tag
+      uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+    - name: Update Info.plist
+      uses: damienaicheh/update-ios-version-info-plist-action@v1.0.0
+      with:
+        info-plist-path: 'Xamarin/SSW.Rewards/SSW.Rewards.iOS/Info.plist'
+        bundle-short-version-string: '${{ env.MAJOR }}.${{ env.MINOR }}'
+        bundle-version: '1.${{ env.NUMBER_OF_COMMITS }}'
+        print-file: true
 
     - name: Build
       run: |
