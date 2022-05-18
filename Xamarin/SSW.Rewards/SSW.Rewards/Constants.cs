@@ -3,7 +3,7 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";//"https://147c-159-196-124-207.ngrok.io";
+        public string ApiBaseUrl = "https://aa98-159-196-124-207.ngrok.io";//"https://sswconsulting-prod.azurewebsites.net";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
@@ -18,7 +18,7 @@
 
         public string AccessToken { get; set; }
 
-        public string AuthorityUri { get; } = "https://78e6-159-196-124-207.ngrok.io";
+        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
 
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
