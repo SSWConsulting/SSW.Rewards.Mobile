@@ -8,71 +8,57 @@ using Microsoft.AppCenter.Crashes;
 using System.Threading.Tasks;
 using Microsoft.AppCenter.Push;
 using SSW.Rewards.Helpers;
-using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Linq;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
 
 namespace SSW.Rewards
 {
     public partial class App : Application
     {
-        public static IPublicClientApplication AuthenticationClient { get; private set; }
-
         public static Constants Constants = new Constants();
 
         public static object UIParent { get; set; }
 
         public App()
         {
+            Console.WriteLine("Calling app constructor");
+            InitializeComponent();
+
+            Console.WriteLine("App InitializeComponent completed successfully.");
+            Resolver.Initialize();
+            InitialiseApp();
+        }
+
+        private void InitialiseApp()
+        {
+            Console.WriteLine("Beginning proprietary app initialisation.");
+
             AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
                 "ios=e33283b1-7326-447d-baae-e783ece0789b",
-                typeof(Analytics), typeof(Crashes), typeof(Push));
+                typeof(Analytics), typeof(Crashes));
 
-            InitializeComponent();
-            Resolver.Initialize();
-
-            ServiceContainer.Resolve<IPushNotificationActionService>()
-                .ActionTriggered += NotificationActionTriggered;
-
-            try
-            {
-                AuthenticationClient = PublicClientApplicationBuilder.Create(Constants.AADB2CClientId)
-                    .WithIosKeychainSecurityGroup(Constants.IOSKeychainSecurityGroups)
-                    .WithB2CAuthority(Constants.AuthoritySignin)
-                    .WithTenantId(Constants.AADB2CTenantId)
-                    .WithRedirectUri("msauth.com.ssw.consulting://auth")
-                    .Build();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+            Console.WriteLine("Checking first run status.");
 
             if (Preferences.Get("FirstRun", true))
             {
+                Console.WriteLine("Never run. Launching first run experience.");
+
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
+                Console.WriteLine("Onboarding set as main page successfully.");
             }
             else
             {
+                Console.WriteLine("Has run. Launching login page.");
                 MainPage = new LoginPage();
+                Console.WriteLine("Login page set as main page successfully.");
             }
         }
 
-        void NotificationActionTriggered(object sender, PushNotificationAction e) => ShowActionAlert(e);
-
-        void ShowActionAlert(PushNotificationAction action) => MainThread.BeginInvokeOnMainThread(()
-            => App.Current.MainPage?.DisplayAlert("App Test Push", $"{action} action received", "OK")
-                .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; })
-        );
-
-        protected override void OnStart()
+        protected override async void OnStart()
         {
-            _ = UpdateAccessTokenAsync();
-            _ = CheckApiCompatibilityAsync();
+            //await UpdateAccessTokenAsync();
+            await CheckApiCompatibilityAsync();
         }
 
         protected override void OnSleep()
@@ -93,14 +79,7 @@ namespace SSW.Rewards
             {
                 try
                 {
-                    IEnumerable<IAccount> accounts = await AuthenticationClient.GetAccountsAsync();
-
-                    AuthenticationResult result = await AuthenticationClient
-                        .AcquireTokenSilent(Constants.Scopes, accounts.FirstOrDefault())
-                        .ExecuteAsync();
-
-                    string token = result.AccessToken;
-                    await SecureStorage.SetAsync("auth_token", token);                    
+                    // TODO: move this to UserService
 
                     bool isStaff = false;
 
@@ -112,7 +91,7 @@ namespace SSW.Rewards
                     Application.Current.MainPage = Resolver.ResolveShell(isStaff);
                     await Shell.Current.GoToAsync("//main");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine("Service Unavailable");
                     Console.WriteLine(e);
@@ -123,13 +102,25 @@ namespace SSW.Rewards
 
         private async Task CheckApiCompatibilityAsync()
         {
-            ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
-
-            bool compatible = await info.IsApiCompatibleAsync();
-
-            if (!compatible)
+            Console.WriteLine("Checking API compatibility...");
+            try
             {
-                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
+
+                bool compatible = await info.IsApiCompatibleAsync();
+
+                if (!compatible)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                }
+
+                Console.WriteLine($"API compatibility check: {compatible}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR checking API compat");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }

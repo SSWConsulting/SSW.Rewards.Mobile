@@ -1,13 +1,12 @@
 ﻿using Android.App;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.OS;
-using PanCardView.Droid;
-using Lottie.Forms.Droid;
-using Plugin.CurrentActivity;
 using Android.Content;
+using Android.Content.PM;
+using Android.OS;
+using Android.Runtime;
+using Lottie.Forms.Droid;
 using Microsoft.Identity.Client;
-using System;
+using PanCardView.Droid;
+using Plugin.CurrentActivity;
 
 namespace SSW.Rewards.Droid
 {
@@ -32,18 +31,8 @@ namespace SSW.Rewards.Droid
             AnimationViewRenderer.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
-            try
-            {
-                LoadApplication(new App());
-                App.UIParent = this;
-                Console.WriteLine("Set APp UI parent");
-            }
-            catch (System.Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                throw;
-            }
+            LoadApplication(new App());
+            App.UIParent = this;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

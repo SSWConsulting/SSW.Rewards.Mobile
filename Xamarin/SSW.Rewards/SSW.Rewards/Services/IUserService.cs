@@ -15,8 +15,13 @@ namespace SSW.Rewards.Services
         Task<int> GetMyPointsAsync();
         Task<string> GetTokenAsync();
         Task<ApiStatus> SignInAsync();
+
+        Task ResetPassword();
+
+        Task RefreshLoginAsync();
+
         void SignOut();
-        Task<bool> IsLoggedInAsync();
+        bool IsLoggedIn { get; }
         Task UpdateMyDetailsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
