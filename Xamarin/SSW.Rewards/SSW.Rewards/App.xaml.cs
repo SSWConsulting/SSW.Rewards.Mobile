@@ -31,6 +31,7 @@ namespace SSW.Rewards
                 typeof(Analytics), typeof(Crashes), typeof(Push));
 
             InitializeComponent();
+            Resolver.Initialize();
 
             ServiceContainer.Resolve<IPushNotificationActionService>()
                 .ActionTriggered += NotificationActionTriggered;

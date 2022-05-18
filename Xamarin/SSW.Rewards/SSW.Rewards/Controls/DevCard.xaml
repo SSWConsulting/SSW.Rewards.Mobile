@@ -56,21 +56,7 @@
                                    HeightRequest="30"
                                    WidthRequest="30"
                                    BorderColor="Transparent"
-                                   CornerRadius="4"><!--
-								   effects:TooltipEffect.Position="Left"
-								   effects:TooltipEffect.BackgroundColor="{StaticResource SkillsBadgeBackgroundColour}"
-								   effects:TooltipEffect.TextColor="White"
-								   effects:TooltipEffect.HasTooltip="True"
-								   effects:TooltipEffect.Text="{Binding .}">
-                                <StackLayout>
-                                    <Image d:Source="{Binding .}"
-                                           Scale="1.5"
-                                       Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>
-                                    <Label FontSize="Micro"
-                                           TextColor="White"
-                                           HorizontalTextAlignment="Center"
-                                           Text="{Binding .}"/>
-                                </StackLayout>-->
+                                   CornerRadius="4">
                                 <Image d:Source="{Binding .}"
                                            Scale="1.5"
                                        Source="{Binding ., Converter={converters:SkillToBadgeConverter}}"/>

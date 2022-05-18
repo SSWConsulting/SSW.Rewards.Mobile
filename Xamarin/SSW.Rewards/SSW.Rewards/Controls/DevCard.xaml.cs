@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SSW.Rewards.Effects;
-using SSW.Rewards.Models;
+﻿using SSW.Rewards.Models;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Controls
@@ -30,7 +27,6 @@ namespace SSW.Rewards.Controls
 
         private void SlideIn()
         {
-			//DismissToolTips();
             int devId = int.Parse(DevName.Text);
 			if (devId == _selectedDevId)
 			{
@@ -40,7 +36,6 @@ namespace SSW.Rewards.Controls
 
         private void SlideOut()
         {
-			//DismissToolTips();
             int devId = int.Parse(DevName.Text);
 			if (devId == _selectedDevId)
 			{
@@ -50,23 +45,7 @@ namespace SSW.Rewards.Controls
 
         private void DevChanged(int id)
         {
-			//DismissToolTips();
             _selectedDevId = id;
 		}
-
-		/*private void DismissToolTips()
-		{
-            var elements = GetChildElements(BadgeCollection);
-
-			foreach (var c in BadgeCollection.GetChildElements)
-			{
-                bool hasToolTip = TooltipEffect.GetHasTooltip(c);
-				if (hasToolTip)
-				{
-					TooltipEffect.SetHasTooltip(c, false);
-					TooltipEffect.SetHasTooltip(c, true);
-				}
-			}
-		}*/
 	}
 }
