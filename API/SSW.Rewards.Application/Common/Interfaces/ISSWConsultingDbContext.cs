@@ -17,6 +17,8 @@ namespace SSW.Rewards.Application.Common.Interfaces
         public DbSet<Domain.Entities.Reward> Rewards { get; set; }
         public DbSet<PostalAddress> Addresses { get; set; }
         public DbSet<Domain.Entities.Notifications> Notifications { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
