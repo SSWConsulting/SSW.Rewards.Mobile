@@ -49,6 +49,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>msauth.com.ssw.rewards</string>
+				<string>msauth.com.ssw.consulting</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>

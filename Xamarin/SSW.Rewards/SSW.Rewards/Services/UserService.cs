@@ -1,245 +1,283 @@
-﻿using System;
+﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
+using Newtonsoft.Json;
+using SSW.Rewards.Helpers;
+using SSW.Rewards.Models;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
 using Xamarin.Forms;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using SSW.Rewards.Models;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Identity.Client;
-using System.Diagnostics;
 
 namespace SSW.Rewards.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
         private UserClient _userClient { get; set; }
-        private HttpClient _httpClient { get; set; }
 
-        public async Task<string> GetMyEmailAsync()
+        private readonly OidcClientOptions _options;
+
+        private bool _loggedIn = false;
+
+        private string RefreshToken;
+
+        public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
+
+        public UserService(IBrowser browser)
         {
-            return await Task.FromResult(Preferences.Get("MyEmail", string.Empty));
-        }
-
-        public async Task<string> GetMyNameAsync()
-        {
-            return await Task.FromResult(Preferences.Get("MyName", string.Empty));
-        }
-
-        public async Task<int> GetMyPointsAsync()
-        {
-            return await Task.FromResult(Preferences.Get("MyPoints", 0));
-        }
-
-        public async Task<string> GetMyProfilePicAsync()
-        {
-            string profilePic = await Task.FromResult(Preferences.Get("MyProfilePic", string.Empty));
-            if (!string.IsNullOrWhiteSpace(profilePic))
-                return profilePic;
-
-            return "icon_avatar";
-        }
-
-        public async Task<int> GetMyUserIdAsync()
-        {
-            return await Task.FromResult(Preferences.Get("MyUserId", 0));
-        }
-
-        public async Task<string> GetTokenAsync()
-        {
-            return await SecureStorage.GetAsync("auth_token");
-        }
-
-        public async Task<bool> IsLoggedInAsync()
-        {
-            return await Task.FromResult(Preferences.Get("LoggedIn", false));
-        }
-
-        public async Task<string> UploadImageAsync(Stream image)
-        {
-
-            if (_userClient == null)
+            _options = new OidcClientOptions
             {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
+                Authority = App.Constants.AuthorityUri,
+                ClientId = App.Constants.ClientId,
+                Scope = App.Constants.Scope,
+                RedirectUri = App.Constants.AuthRedirectUrl,
+                Browser = browser,
+                
+            };
 
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
-
-
-            FileParameter parameter = new FileParameter(image);
-            
-            string newPicUri = await _userClient.UploadProfilePicAsync(parameter);
-            Preferences.Set("MyProfilePic", newPicUri);
-            return newPicUri;
+            _userClient = new UserClient(BaseUrl, AuthenticatedClient);
         }
+
+        public bool IsLoggedIn { get => _loggedIn; }
+
+        #region AUTHENTICATION
 
         public async Task<ApiStatus> SignInAsync()
         {
             try
             {
-                var result = await App.AuthenticationClient
-                    .AcquireTokenInteractive(App.Constants.Scopes)
-                    .WithPrompt(Prompt.SelectAccount)
-                    .WithParentActivityOrWindow(App.UIParent)
-                    .ExecuteAsync();
+                var oidcClient = new OidcClient(_options);
 
-                // Sign-in succeeded.
-                string accountId = result.Account.HomeAccountId.Identifier;
-                string token = result.AccessToken;
-                if (!string.IsNullOrWhiteSpace(accountId) && !string.IsNullOrWhiteSpace(token))
+                var result = await oidcClient.LoginAsync(new LoginRequest());
+
+                if (result.IsError)
                 {
-                    await SecureStorage.SetAsync("auth_token", token);
+                    Console.WriteLine("OIDC Client returned a login error");
 
-                    var tokenHandler = new JwtSecurityTokenHandler();
+                    Console.WriteLine(result.Error);
+                    Console.WriteLine(result.ErrorDescription);
+                    return ApiStatus.Error;
+                }
 
-                    bool isStaff = false;
+                string token = result.AccessToken;
+                string idToken = result.IdentityToken;
 
-                    try
-                    {
-                        var jwToken = tokenHandler.ReadJwtToken(result.IdToken);
-
-                        var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                        var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                        var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                        var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
-
-                        string fullName = firstName + " " + familyName;
-
-                        if (!string.IsNullOrWhiteSpace(fullName))
-                        {
-                            Preferences.Set("MyName", fullName);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(jobTitle))
-                        {
-                            Preferences.Set("JobTitle", jobTitle);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(email))
-                        {
-                            Preferences.Set("MyEmail", email);
-                        }
-
-                        _httpClient = new HttpClient();
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                        string baseUrl = App.Constants.ApiBaseUrl;
-
-                        _userClient = new UserClient(baseUrl, _httpClient);
-
-                        var user = await _userClient.GetAsync();
-
-                        Preferences.Set("MyUserId", user.Id);
-                        Preferences.Set("MyProfilePic", user.ProfilePic);
-
-                        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
-                        {
-                            Preferences.Set("MyPoints", user.Points);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(user.QrCode))
-                        {
-                            Preferences.Set("MyQRCode", user.QrCode);
-                            isStaff = true;
-                        }
-
-                        Preferences.Set("LoggedIn", true);
-
-                        return ApiStatus.Success;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        //TODO: Handle error decoding JWT
-                        return ApiStatus.Error;
-                    }
+                if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
+                {
+                    Console.WriteLine("[UserService]: Got ID token and Access tokens");
+                    Console.WriteLine($"Access Token: {token}");
+                    Console.WriteLine($"ID Token: {idToken}");
+                    await SetLoggedInState(token, idToken);
+                    return ApiStatus.Success;
                 }
                 else
                 {
                     return ApiStatus.LoginFailure;
                 }
             }
-
-            catch (ApiException e)
+            catch (Exception ex)
             {
-                if (e.StatusCode == 404)
-                {
-                    return ApiStatus.Unavailable;
-                }
-                else if (e.StatusCode == 401)
-                {
-                    return ApiStatus.LoginFailure;
-                }
-
-                return ApiStatus.Error;
-
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
+                Console.WriteLine("ERROR [UserService - SigninAsync]:");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return ApiStatus.Error;
             }
         }
 
         public void SignOut()
         {
-            //Auth.SignOut();
+            // TODO: remove from auth client
             SecureStorage.RemoveAll();
             Preferences.Clear();
         }
 
-        public async Task UpdateMyDetailsAsync()
+        private async Task SetLoggedInState(string accessToken, string idToken)
         {
-            if(_userClient == null)
+            AuthenticatedClientFactory.SetAccessToken(accessToken);
+
+            Preferences.Set(nameof(HasCachedAccount), true);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            bool isStaff = false;
+
+            try
             {
-                if(_httpClient == null)
+                var jwToken = tokenHandler.ReadJwtToken(idToken);
+
+                var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
+                var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
+                var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
+                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+
+                string fullName = firstName + " " + familyName;
+
+                if (!string.IsNullOrWhiteSpace(fullName))
                 {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    Preferences.Set("MyName", fullName);
                 }
 
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
+                if (!string.IsNullOrWhiteSpace(jobTitle))
+                {
+                    Preferences.Set("JobTitle", jobTitle);
+                }
 
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    Preferences.Set("MyEmail", email);
+                }
+
+                await UpdateMyDetailsAsync();
+
+                _loggedIn = true;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("ERROR [UserService - SetLoggedInState]:");
+                Console.WriteLine(ex.Message);
+                //TODO: Handle error decoding JWT
+            }
+        }
+
+        private async Task SettRefreshToken(string token)
+        {
+            RefreshToken = token;
+
+            await SecureStorage.SetAsync(nameof(RefreshToken), token);
+        }
+
+        public Task ResetPassword()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task RefreshLoginAsync()
+        {
+            RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
+
+            if (!string.IsNullOrWhiteSpace(RefreshToken))
+            {
+                var oidcClient = new OidcClient(_options);
+
+                var result = await oidcClient.RefreshTokenAsync(RefreshToken);
+
+                if (!result.IsError)
+                {
+                    await SettRefreshToken(result.RefreshToken);
+                    await SetLoggedInState(result.AccessToken, result.IdentityToken);
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region USERDETAILS
+
+        public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
+
+        public string MyEmail { get => Preferences.Get(nameof(MyEmail), string.Empty); }
+
+        public string MyName { get => Preferences.Get(nameof(MyName), string.Empty); }
+
+        public int MyPoints { get => Preferences.Get(nameof(MyPoints), 0); }
+
+        public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
+
+        public string MyProfilePic 
+        { 
+            get
+            {
+                var pic = Preferences.Get(nameof(MyProfilePic), string.Empty);
+                if (!string.IsNullOrWhiteSpace(pic))
+                    return pic;
+
+                return "icon_avatar";
+            }
+        }
+
+        public async Task<string> UploadImageAsync(Stream image)
+        {
+            FileParameter parameter = new FileParameter(image);
+
+            string newPicUri = await _userClient.UploadProfilePicAsync(parameter);
+            Preferences.Set("MyProfilePic", newPicUri);
+            return newPicUri;
+        }
+
+        public async Task UpdateMyDetailsAsync()
+        {
+            Console.WriteLine("[UserService]: Attempting to get user details...");
             var user = await _userClient.GetAsync();
+
+            if (user is null)
+            {
+                Console.WriteLine("User is null");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("User is not null");
+                Console.WriteLine(JsonConvert.SerializeObject(user));
+            }
 
             if (!string.IsNullOrWhiteSpace(user.FullName))
             {
-                Preferences.Set("MyName", user.FullName);
+                Console.WriteLine("Trying to write fullname to preferences for some reason");
+                Preferences.Set(nameof(MyName), user.FullName);
+                Console.WriteLine("Wrote full name to prefs");
             }
-            
+
+            Console.WriteLine("Didn't bug out writing fullname to prefs");
+
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
-                Preferences.Set("MyEmail", user.Email);
+                Preferences.Set(nameof(MyEmail), user.Email);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Id.ToString()))
+            Console.WriteLine("Didn't bug out writing Email to prefs");
+
+            if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
             {
-                Preferences.Set("MyUserId", user.Id);
+                Preferences.Set(nameof(MyUserId), user.Id);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.ProfilePic))
+            Console.WriteLine("Didn't bug out writing ID to prefs");
+
+            if (!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
-                Preferences.Set("MyProfilePic", user.ProfilePic);
+                Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
             }
 
-            if(!string.IsNullOrWhiteSpace(user.Points.ToString()))
+            Console.WriteLine("Didn't bug out writing ProfilePic to prefs");
+
+            if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
-                Preferences.Set("MyPoints", user.Points);
+                Preferences.Set(nameof(MyPoints), user.Points);
             }
+
+            Console.WriteLine("Didn't bug out writing Points to prefs");
+
+            if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
+            {
+                Console.WriteLine("Trying to write QR code to prefs");
+
+                Console.WriteLine($"QR Code: {user.QrCode}");
+                Preferences.Set(nameof(MyQrCode), user.QrCode);
+            }
+
+            Console.WriteLine("Didn't bug out writing QRCode to prefs");
+
+            Console.WriteLine("Finished get user details");
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
         {
-            return await GetAchievementsForUserAsync(await GetMyUserIdAsync());
+            return await GetAchievementsForUserAsync(MyUserId);
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
@@ -251,21 +289,9 @@ namespace SSW.Rewards.Services
         {
             List<Achievement> achievements = new List<Achievement>();
 
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
-
             var achievementsList = await _userClient.AchievementsAsync(userId);
 
-            foreach(UserAchievementViewModel achievement in achievementsList.UserAchievements)
+            foreach (UserAchievementViewModel achievement in achievementsList.UserAchievements)
             {
                 achievements.Add(new Achievement
                 {
@@ -280,7 +306,7 @@ namespace SSW.Rewards.Services
 
         public async Task<IEnumerable<Reward>> GetRewardsAsync()
         {
-            return await GetRewardsForUserAsync(await GetMyUserIdAsync());
+            return await GetRewardsForUserAsync(MyUserId);
         }
 
         public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)
@@ -291,18 +317,6 @@ namespace SSW.Rewards.Services
         private async Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId)
         {
             List<Reward> rewards = new List<Reward>();
-
-            if (_userClient == null)
-            {
-                if (_httpClient == null)
-                {
-                    string token = await SecureStorage.GetAsync("auth_token");
-                    _httpClient = new HttpClient();
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                _userClient = new UserClient(App.Constants.ApiBaseUrl, _httpClient);
-            }
 
             var rewardsList = await _userClient.RewardsAsync(userId);
 
@@ -329,9 +343,6 @@ namespace SSW.Rewards.Services
             throw new NotImplementedException();
         }
 
-        public Task<string> GetMyQrCode()
-        {
-            return Task.FromResult(Preferences.Get("MyQRCode", string.Empty));
-        }
+        #endregion
     }
 }

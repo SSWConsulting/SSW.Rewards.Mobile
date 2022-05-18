@@ -14,6 +14,14 @@ namespace SSW.Rewards
 
         bool _showQRMenu;
 
+        public AppShell(IUserService userService, bool isStaff)
+        {
+            InitializeComponent();
+            _userService = userService;
+            ShowQRCodeMenuItem = isStaff;
+            BindingContext = this;
+        }
+
         public bool ShowQRCodeMenuItem
         {
             get => _showQRMenu;
@@ -57,7 +65,7 @@ namespace SSW.Rewards
 
         private async void Handle_QRClicked(object sender, EventArgs e)
         {
-            var qrCode = await _userService.GetMyQrCode();
+            var qrCode = _userService.MyQrCode;
 
             if (!string.IsNullOrWhiteSpace(qrCode))
                 await PopupNavigation.Instance.PushAsync(new MyQRPage(qrCode));
@@ -75,13 +83,5 @@ namespace SSW.Rewards
 				return true;
 			}
 		}
-
-		public AppShell(IUserService userService, bool isStaff)
-        {
-            InitializeComponent();
-            _userService = userService;
-            ShowQRCodeMenuItem = isStaff;
-            BindingContext = this;
-        }
     }
 }

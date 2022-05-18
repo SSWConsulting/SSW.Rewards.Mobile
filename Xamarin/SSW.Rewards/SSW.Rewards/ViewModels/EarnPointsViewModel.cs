@@ -32,12 +32,12 @@ namespace SSW.Rewards.ViewModels
             ExternalRewards = new ObservableCollection<ExternalReward>();
             OnScanTapped = new Command(OpenQRScanner);
 			OnEventTapped = new Command<string>((x) => OpenURL(x));
-            _ = Initialise();
+            Initialise();
         }
 
-        private async Task Initialise()
+        private void Initialise()
         {
-            string quizUri = App.Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + await _userService.GetMyEmailAsync();
+            string quizUri = App.Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + _userService.MyEmail;
 
             ExternalRewards = new ObservableCollection<ExternalReward>
             {

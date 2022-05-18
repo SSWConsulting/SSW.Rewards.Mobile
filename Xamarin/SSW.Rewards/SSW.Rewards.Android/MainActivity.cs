@@ -1,12 +1,10 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
 using Android.OS;
-using PanCardView.Droid;
+using Android.Runtime;
 using Lottie.Forms.Droid;
+using PanCardView.Droid;
 using Plugin.CurrentActivity;
-using Android.Content;
-using Microsoft.Identity.Client;
 
 namespace SSW.Rewards.Droid
 {
@@ -30,7 +28,6 @@ namespace SSW.Rewards.Droid
             CardsViewRenderer.Preserve();
             AnimationViewRenderer.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
-            Bootstrapper.Init();
 
             LoadApplication(new App());
             App.UIParent = this;
@@ -43,10 +40,10 @@ namespace SSW.Rewards.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        protected override void OnActivityResult(int requestCode, Android.App.Result resultCode, Intent data)
+        protected override void OnResume()
         {
-            base.OnActivityResult(requestCode, resultCode, data);
-            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+            base.OnResume();
+            Xamarin.Essentials.Platform.OnResume();
         }
     }
 }

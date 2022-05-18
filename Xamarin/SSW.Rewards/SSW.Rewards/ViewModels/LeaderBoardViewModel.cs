@@ -85,7 +85,7 @@ namespace SSW.Rewards.ViewModels
             IsRunning = true;
             RaisePropertyChanged("IsRunning");
             IEnumerable<Models.LeaderSummary> summaries = await _leaderService.GetLeadersAsync(false);
-            int myId = await _userService.GetMyUserIdAsync();
+            int myId = _userService.MyUserId;
 
             foreach (Models.LeaderSummary summary in summaries)
             {
@@ -113,7 +113,7 @@ namespace SSW.Rewards.ViewModels
             // = true;
             //RaisePropertyChanged("IsRunning");
             var summaries = await _leaderService.GetLeadersAsync(false);
-            int myId = await _userService.GetMyUserIdAsync();
+            int myId = _userService.MyUserId;
 
             Leaders.Clear();
             

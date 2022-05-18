@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Foundation;
+﻿using Foundation;
 using Lottie.Forms.iOS.Renderers;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Push;
 using PanCardView.iOS;
-using SSW.Rewards.Services;
 using UIKit;
-using Xamarin.Forms;
 
 namespace SSW.Rewards.iOS
 {
@@ -38,7 +32,11 @@ namespace SSW.Rewards.iOS
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             CardsViewRenderer.Preserve();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-            Bootstrapper.Init();
+
+            ObjCRuntime.Class.ThrowOnInitFailure = false;
+
+            AppCenter.Start("e33283b1-7326-447d-baae-e783ece0789b",
+                   typeof(Analytics), typeof(Crashes));
 
             LoadApplication(new App());
 

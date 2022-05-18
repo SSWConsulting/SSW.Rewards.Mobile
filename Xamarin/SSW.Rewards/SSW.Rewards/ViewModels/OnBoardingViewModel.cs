@@ -107,7 +107,7 @@ namespace SSW.Rewards.ViewModels
 
         private async void GetStarted()
         {
-            if(await _userService.IsLoggedInAsync())
+            if(_userService.IsLoggedIn)
             {
                 await Navigation.PopModalAsync();
 

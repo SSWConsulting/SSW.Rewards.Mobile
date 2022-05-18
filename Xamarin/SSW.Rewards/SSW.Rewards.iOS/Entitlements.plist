@@ -6,6 +6,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.companyname.SSW.Consulting</string>
 		<string>$(AppIdentifierPrefix)com.microsoft.adalcache</string>
+		<string>$(AppIdentifierPrefix)B5652JTA7Q.com.companyname.SSW.Consulting</string>
 	</array>
 	<key>aps-environment</key>
 	<string>production</string>

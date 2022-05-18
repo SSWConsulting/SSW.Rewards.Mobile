@@ -55,10 +55,10 @@ namespace SSW.Rewards.ViewModels
             if (me)
             {
                 //initialise me
-                ProfilePic = await _userService.GetMyProfilePicAsync();
-                Name = await _userService.GetMyNameAsync();
-                Email = await _userService.GetMyEmailAsync();
-                Points = String.Format("{0:n0}",await _userService.GetMyPointsAsync());
+                ProfilePic = _userService.MyProfilePic;
+                Name =  _userService.MyName;
+                Email = _userService.MyEmail;
+                Points = String.Format("{0:n0}", _userService.MyPoints);
                 rewardList = await _userService.GetRewardsAsync();
                 achievementList = await _userService.GetAchievementsAsync();
             }
@@ -109,8 +109,8 @@ namespace SSW.Rewards.ViewModels
 
         private async Task Refresh()
         {
-            ProfilePic = await _userService.GetMyProfilePicAsync();
-            RaisePropertyChanged("ProfilePic");
+            ProfilePic = _userService.MyProfilePic;
+            RaisePropertyChanged(nameof(ProfilePic));
         }
     }
 }

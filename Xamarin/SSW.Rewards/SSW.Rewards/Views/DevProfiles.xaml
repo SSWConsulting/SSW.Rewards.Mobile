@@ -34,15 +34,14 @@
                                     AbsoluteLayout.LayoutFlags="All"
                                     TranslationY="10">
 
+                    <x:Arguments>
+                        <proc:CarouselProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
+                    </x:Arguments>
+                    
                     <cards:CarouselView.Behaviors>
                         <behaviors:EventToCommandBehavior EventName="ItemAppeared"
                                                           Command="{Binding OnCardSwiped}"/>
                     </cards:CarouselView.Behaviors>
-
-                    <x:Arguments>
-                        <proc:BaseCarouselFrontViewProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
-                        <proc:BaseCarouselBackViewProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
-                    </x:Arguments>
 
                     <cards:CarouselView.ItemTemplate>
                         <DataTemplate>

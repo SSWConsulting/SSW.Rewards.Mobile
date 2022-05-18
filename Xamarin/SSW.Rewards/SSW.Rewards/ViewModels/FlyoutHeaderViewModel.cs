@@ -22,17 +22,25 @@ namespace SSW.Rewards.ViewModels
         public FlyoutHeaderViewModel(IUserService userService)
         {
             _userService = userService;
-            _ = Initialise();
+            Initialise();
         }
 
-        private async Task Initialise()
+        private void Initialise()
         {
-            ProfilePic = await _userService.GetMyProfilePicAsync();
-            Name = await _userService.GetMyNameAsync();
-            Email = await _userService.GetMyEmailAsync();
-            VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
-            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => {  Refresh(obj); });
-            OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
+            try
+            {
+                ProfilePic = _userService.MyProfilePic;
+                Name = _userService.MyName;
+                Email = _userService.MyEmail;
+                VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
+                MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(obj); });
+                OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR in flyout header");
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private async Task ShowCameraPageAsync()

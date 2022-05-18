@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
@@ -7,19 +6,46 @@ namespace SSW.Rewards.Views
 {
     public partial class LoginPage : ContentPage
     {
+        private readonly LoginPageViewModel _viewModel;
+
         public LoginPage(LoginPageViewModel viewModel)
         {
             InitializeComponent();
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
+            _viewModel = viewModel;
+            _viewModel.Navigation = Navigation;
+            BindingContext = _viewModel;
         }
 
         public LoginPage()
         {
-            InitializeComponent();
-            var viewModel = Resolver.Resolve<LoginPageViewModel>();
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
+            try
+            {
+                Console.WriteLine("Initialising Login Page");
+
+                InitializeComponent();
+
+                Console.WriteLine("Trying to resolve login view model...");
+                _viewModel = Resolver.Resolve<LoginPageViewModel>();
+
+                Console.WriteLine("Login viewmodel resolved");
+                _viewModel.Navigation = Navigation;
+                BindingContext = _viewModel;
+                Console.WriteLine("LoginPage constructed");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("I made a booboo mommy");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw;
+            }
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            await _viewModel.Refresh();
         }
     }
 }

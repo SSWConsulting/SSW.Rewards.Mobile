@@ -9,12 +9,10 @@ using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
 {
-    public class ChallengeService : IChallengeService
+    public class ChallengeService : BaseService, IChallengeService
     {
         private AchievementClient _achievementClient { get; set; }
         private RewardClient _rewardClient { get; set; }
-        private UserClient _userClient { get; set; }
-        private HttpClient _httpClient { get; set; }
         private IUserService _userService;
         private ObservableCollection<Challenge> _challenges { get; set; }
         private ObservableCollection<MyChallenge> _myChallenges { get; set; }
@@ -22,21 +20,10 @@ namespace SSW.Rewards.Services
         public ChallengeService(IUserService userService)
         {
             _userService = userService;
-            _httpClient = new HttpClient();
             _challenges = new ObservableCollection<Challenge>();
             _myChallenges = new ObservableCollection<MyChallenge>();
-            _ = Initialise();
-        }
-
-        private async Task Initialise()
-        {
-            string token = await _userService.GetTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            string baseUrl = App.Constants.ApiBaseUrl;
-
-            _achievementClient = new AchievementClient(baseUrl, _httpClient);
-            _rewardClient = new RewardClient(baseUrl, _httpClient);
+            _achievementClient = new AchievementClient(BaseUrl, AuthenticatedClient);
+            _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
         }
 
         public async Task<IEnumerable<Challenge>> GetChallengesAsync()

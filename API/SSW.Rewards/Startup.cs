@@ -1,5 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -36,8 +35,17 @@ namespace SSW.Rewards
             ConfigureSettings(services);
 			ConfigureSecrets(services);
 
-			services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
-				.AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
+			string SigningAuthority = Configuration.GetValue<string>(nameof(SigningAuthority));
+
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = SigningAuthority;
+
+                options.Audience = "rewards";
+
+                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+            });
 
             services.AddInfrastructure(Configuration);
             services.AddPersistence(Configuration);
