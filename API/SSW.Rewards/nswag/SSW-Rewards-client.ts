@@ -65,14 +65,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AchievementListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = AchievementListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AchievementListViewModel>(<any>null);
@@ -101,14 +101,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AchievementAdminListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = AchievementAdminListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AchievementAdminListViewModel>(<any>null);
@@ -141,14 +141,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AchievementAdminViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = AchievementAdminViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AchievementAdminViewModel>(<any>null);
@@ -181,14 +181,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClaimAchievementResult.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = ClaimAchievementResult.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ClaimAchievementResult>(<any>null);
@@ -198,7 +198,7 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let url_ = this.baseUrl + "/api/Achievement/Add?";
         if (achievementCode === undefined)
             throw new Error("The parameter 'achievementCode' must be defined.");
-        else if(achievementCode !== null)
+        else if (achievementCode !== null)
             url_ += "achievementCode=" + encodeURIComponent("" + achievementCode) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -221,14 +221,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AchievementViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = AchievementViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AchievementViewModel>(<any>null);
@@ -238,7 +238,7 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let url_ = this.baseUrl + "/api/Achievement/Post?";
         if (achievementCode === undefined)
             throw new Error("The parameter 'achievementCode' must be defined.");
-        else if(achievementCode !== null)
+        else if (achievementCode !== null)
             url_ += "achievementCode=" + encodeURIComponent("" + achievementCode) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -261,14 +261,14 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PostAchievementResult.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = PostAchievementResult.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PostAchievementResult>(<any>null);
@@ -278,7 +278,7 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
         let url_ = this.baseUrl + "/api/Achievement/TechQuiz?";
         if (user === undefined)
             throw new Error("The parameter 'user' must be defined.");
-        else if(user !== null)
+        else if (user !== null)
             url_ += "user=" + encodeURIComponent("" + user) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -306,7 +306,7 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
             return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
@@ -357,7 +357,7 @@ export class AdminTestClient extends BaseClient implements IAdminTestClient {
             return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
@@ -391,7 +391,7 @@ export class AdminTestClient extends BaseClient implements IAdminTestClient {
             return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
@@ -436,14 +436,14 @@ export class LeaderboardClient extends BaseClient implements ILeaderboardClient 
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LeaderboardListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = LeaderboardListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LeaderboardListViewModel>(<any>null);
@@ -451,9 +451,10 @@ export class LeaderboardClient extends BaseClient implements ILeaderboardClient 
 }
 
 export interface INotificationsClient {
-    updateInstallation(deviceInstallation: DeviceInstall): Promise<void>;
-    deleteInstallation(installationId: string | null): Promise<void>;
-    requestPush(notificationRequest: NotificationRequest): Promise<void>;
+    list(): Promise<NotificationHistoryListViewModel>;
+    requestPush(notificationRequest: RequestNotificationCommand): Promise<Unit>;
+    updateInstallation(deviceInstallation: UpdateInstallationCommand): Promise<Unit>;
+    deleteInstallation(installationId: string | null): Promise<Unit>;
 }
 
 export class NotificationsClient extends BaseClient implements INotificationsClient {
@@ -467,106 +468,43 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    updateInstallation(deviceInstallation: DeviceInstall): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
+    list(): Promise<NotificationHistoryListViewModel> {
+        let url_ = this.baseUrl + "/api/Notifications/List";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(deviceInstallation);
-
         let options_ = <RequestInit>{
-            body: content_,
-            method: "PUT",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processUpdateInstallation(_response);
+            return this.processList(_response);
         });
     }
 
-    protected processUpdateInstallation(response: Response): Promise<void> {
+    protected processList(response: Response): Promise<NotificationHistoryListViewModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = NotificationHistoryListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<NotificationHistoryListViewModel>(<any>null);
     }
 
-    deleteInstallation(installationId: string | null): Promise<void> {
-        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
-        if (installationId === undefined || installationId === null)
-            throw new Error("The parameter 'installationId' must be defined.");
-        url_ = url_.replace("{installationId}", encodeURIComponent("" + installationId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteInstallation(_response);
-        });
-    }
-
-    protected processDeleteInstallation(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    requestPush(notificationRequest: NotificationRequest): Promise<void> {
+    requestPush(notificationRequest: RequestNotificationCommand): Promise<Unit> {
         let url_ = this.baseUrl + "/api/Notifications/RequestPush";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -577,6 +515,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -587,33 +526,122 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
         });
     }
 
-    protected processRequestPush(response: Response): Promise<void> {
+    protected processRequestPush(response: Response): Promise<Unit> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = Unit.fromJS(resultData200);
+                return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = ProblemDetails.fromJS(resultData422);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+                let result400: any = null;
+                let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = ProblemDetails.fromJS(resultData400);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<Unit>(<any>null);
+    }
+
+    updateInstallation(deviceInstallation: UpdateInstallationCommand): Promise<Unit> {
+        let url_ = this.baseUrl + "/api/Notifications/UpdateInstallation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deviceInstallation);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateInstallation(_response);
+        });
+    }
+
+    protected processUpdateInstallation(response: Response): Promise<Unit> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = Unit.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+                let result400: any = null;
+                let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = ProblemDetails.fromJS(resultData400);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Unit>(<any>null);
+    }
+
+    deleteInstallation(installationId: string | null): Promise<Unit> {
+        let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
+        if (installationId === undefined || installationId === null)
+            throw new Error("The parameter 'installationId' must be defined.");
+        url_ = url_.replace("{InstallationId}", encodeURIComponent("" + installationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteInstallation(_response);
+        });
+    }
+
+    protected processDeleteInstallation(response: Response): Promise<Unit> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = Unit.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+                let result400: any = null;
+                let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = ProblemDetails.fromJS(resultData400);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Unit>(<any>null);
     }
 }
 
@@ -660,14 +688,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RewardListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RewardListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RewardListViewModel>(<any>null);
@@ -696,14 +724,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RewardAdminListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RewardAdminListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RewardAdminListViewModel>(<any>null);
@@ -736,14 +764,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RecentRewardListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RecentRewardListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RecentRewardListViewModel>(<any>null);
@@ -776,14 +804,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<number>(<any>null);
@@ -816,14 +844,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClaimRewardResult.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = ClaimRewardResult.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ClaimRewardResult>(<any>null);
@@ -833,7 +861,7 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let url_ = this.baseUrl + "/api/Reward/Claim?";
         if (rewardCode === undefined)
             throw new Error("The parameter 'rewardCode' must be defined.");
-        else if(rewardCode !== null)
+        else if (rewardCode !== null)
             url_ += "rewardCode=" + encodeURIComponent("" + rewardCode) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -856,14 +884,14 @@ export class RewardClient extends BaseClient implements IRewardClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClaimRewardResult.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = ClaimRewardResult.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ClaimRewardResult>(<any>null);
@@ -913,7 +941,7 @@ export class SeedClient extends BaseClient implements ISeedClient {
             return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<FileResponse>(<any>null);
@@ -958,14 +986,14 @@ export class SkillClient extends BaseClient implements ISkillClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SkillListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = SkillListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SkillListViewModel>(<any>null);
@@ -1015,14 +1043,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = StaffListViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = StaffListViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StaffListViewModel>(<any>null);
@@ -1055,14 +1083,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = StaffDto.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = StaffDto.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StaffDto>(<any>null);
@@ -1072,7 +1100,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let url_ = this.baseUrl + "/api/Staff/GetStaffMemberByEmail?";
         if (email === undefined)
             throw new Error("The parameter 'email' must be defined.");
-        else if(email !== null)
+        else if (email !== null)
             url_ += "email=" + encodeURIComponent("" + email) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1095,14 +1123,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = StaffDto.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = StaffDto.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StaffDto>(<any>null);
@@ -1135,14 +1163,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<string>(<any>null);
@@ -1180,14 +1208,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<string>(<any>null);
@@ -1220,14 +1248,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<string>(<any>null);
@@ -1276,14 +1304,14 @@ export class UserClient extends BaseClient implements IUserClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CurrentUserViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = CurrentUserViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CurrentUserViewModel>(<any>null);
@@ -1315,14 +1343,14 @@ export class UserClient extends BaseClient implements IUserClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = UserViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserViewModel>(<any>null);
@@ -1355,14 +1383,14 @@ export class UserClient extends BaseClient implements IUserClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserAchievementsViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = UserAchievementsViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserAchievementsViewModel>(<any>null);
@@ -1395,14 +1423,14 @@ export class UserClient extends BaseClient implements IUserClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserRewardsViewModel.fromJS(resultData200);
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = UserRewardsViewModel.fromJS(resultData200);
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserRewardsViewModel>(<any>null);
@@ -1436,14 +1464,14 @@ export class UserClient extends BaseClient implements IUserClient {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+                return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<string>(<any>null);
@@ -1486,7 +1514,7 @@ export class AchievementListViewModel implements IAchievementListViewModel {
             for (let item of this.achievements)
                 data["achievements"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1528,7 +1556,7 @@ export class AchievementViewModel implements IAchievementViewModel {
         data["id"] = this.id;
         data["name"] = this.name;
         data["value"] = this.value;
-        return data; 
+        return data;
     }
 }
 
@@ -1574,7 +1602,7 @@ export class AchievementAdminListViewModel implements IAchievementAdminListViewM
             for (let item of this.achievements)
                 data["achievements"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1619,7 +1647,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
         data["name"] = this.name;
         data["value"] = this.value;
         data["code"] = this.code;
-        return data; 
+        return data;
     }
 }
 
@@ -1661,7 +1689,7 @@ export class CreateAchievementCommand implements ICreateAchievementCommand {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["value"] = this.value;
-        return data; 
+        return data;
     }
 }
 
@@ -1698,7 +1726,7 @@ export class ClaimAchievementResult implements IClaimAchievementResult {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["status"] = this.status;
-        return data; 
+        return data;
     }
 }
 
@@ -1745,7 +1773,7 @@ export class ClaimAchievementForUserCommand implements IClaimAchievementForUserC
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["code"] = this.code;
-        return data; 
+        return data;
     }
 }
 
@@ -1785,7 +1813,7 @@ export class PostAchievementResult implements IPostAchievementResult {
         data = typeof data === 'object' ? data : {};
         data["viewModel"] = this.viewModel ? this.viewModel.toJSON() : <any>undefined;
         data["status"] = this.status;
-        return data; 
+        return data;
     }
 }
 
@@ -1837,7 +1865,7 @@ export class LeaderboardListViewModel implements ILeaderboardListViewModel {
             for (let item of this.users)
                 data["users"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1885,7 +1913,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["name"] = this.name;
         data["profilePic"] = this.profilePic;
         data["points"] = this.points;
-        return data; 
+        return data;
     }
 }
 
@@ -1895,6 +1923,124 @@ export interface ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     points?: number;
+}
+
+export class NotificationHistoryListViewModel implements INotificationHistoryListViewModel {
+    list?: NotificationHistoryDto[] | undefined;
+
+    constructor(data?: INotificationHistoryListViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["list"])) {
+                this.list = [] as any;
+                for (let item of _data["list"])
+                    this.list!.push(NotificationHistoryDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): NotificationHistoryListViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationHistoryListViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.list)) {
+            data["list"] = [];
+            for (let item of this.list)
+                data["list"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface INotificationHistoryListViewModel {
+    list?: NotificationHistoryDto[] | undefined;
+}
+
+export class NotificationHistoryDto implements INotificationHistoryDto {
+    message?: string | undefined;
+    createdDate?: Date;
+    emailAddress?: string | undefined;
+
+    constructor(data?: INotificationHistoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.message = _data["message"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.emailAddress = _data["emailAddress"];
+        }
+    }
+
+    static fromJS(data: any): NotificationHistoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationHistoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["emailAddress"] = this.emailAddress;
+        return data;
+    }
+}
+
+export interface INotificationHistoryDto {
+    message?: string | undefined;
+    createdDate?: Date;
+    emailAddress?: string | undefined;
+}
+
+export class Unit implements IUnit {
+
+    constructor(data?: IUnit) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): Unit {
+        data = typeof data === 'object' ? data : {};
+        let result = new Unit();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IUnit {
 }
 
 export class ProblemDetails implements IProblemDetails {
@@ -1952,7 +2098,7 @@ export class ProblemDetails implements IProblemDetails {
                     data["extensions"][key] = this.extensions[key];
             }
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1965,69 +2111,13 @@ export interface IProblemDetails {
     extensions?: { [key: string]: any; } | undefined;
 }
 
-export class DeviceInstall implements IDeviceInstall {
-    installationId?: string | undefined;
-    platform?: string | undefined;
-    pushChannel?: string | undefined;
-    tags?: string[] | undefined;
-
-    constructor(data?: IDeviceInstall) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.installationId = _data["installationId"];
-            this.platform = _data["platform"];
-            this.pushChannel = _data["pushChannel"];
-            if (Array.isArray(_data["tags"])) {
-                this.tags = [] as any;
-                for (let item of _data["tags"])
-                    this.tags!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): DeviceInstall {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeviceInstall();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["installationId"] = this.installationId;
-        data["platform"] = this.platform;
-        data["pushChannel"] = this.pushChannel;
-        if (Array.isArray(this.tags)) {
-            data["tags"] = [];
-            for (let item of this.tags)
-                data["tags"].push(item);
-        }
-        return data; 
-    }
-}
-
-export interface IDeviceInstall {
-    installationId?: string | undefined;
-    platform?: string | undefined;
-    pushChannel?: string | undefined;
-    tags?: string[] | undefined;
-}
-
-export class NotificationRequest implements INotificationRequest {
+export class RequestNotificationCommand implements IRequestNotificationCommand {
     text?: string | undefined;
     action?: string | undefined;
     tags?: string[] | undefined;
     silent?: boolean;
 
-    constructor(data?: INotificationRequest) {
+    constructor(data?: IRequestNotificationCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2049,9 +2139,9 @@ export class NotificationRequest implements INotificationRequest {
         }
     }
 
-    static fromJS(data: any): NotificationRequest {
+    static fromJS(data: any): RequestNotificationCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new NotificationRequest();
+        let result = new RequestNotificationCommand();
         result.init(data);
         return result;
     }
@@ -2066,15 +2156,71 @@ export class NotificationRequest implements INotificationRequest {
                 data["tags"].push(item);
         }
         data["silent"] = this.silent;
-        return data; 
+        return data;
     }
 }
 
-export interface INotificationRequest {
+export interface IRequestNotificationCommand {
     text?: string | undefined;
     action?: string | undefined;
     tags?: string[] | undefined;
     silent?: boolean;
+}
+
+export class UpdateInstallationCommand implements IUpdateInstallationCommand {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
+
+    constructor(data?: IUpdateInstallationCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.installationId = _data["installationId"];
+            this.platform = _data["platform"];
+            this.pushChannel = _data["pushChannel"];
+            if (Array.isArray(_data["tags"])) {
+                this.tags = [] as any;
+                for (let item of _data["tags"])
+                    this.tags!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateInstallationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateInstallationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["installationId"] = this.installationId;
+        data["platform"] = this.platform;
+        data["pushChannel"] = this.pushChannel;
+        if (Array.isArray(this.tags)) {
+            data["tags"] = [];
+            for (let item of this.tags)
+                data["tags"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IUpdateInstallationCommand {
+    installationId?: string | undefined;
+    platform?: string | undefined;
+    pushChannel?: string | undefined;
+    tags?: string[] | undefined;
 }
 
 export class RewardListViewModel implements IRewardListViewModel {
@@ -2113,7 +2259,7 @@ export class RewardListViewModel implements IRewardListViewModel {
             for (let item of this.rewards)
                 data["rewards"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2161,7 +2307,7 @@ export class RewardViewModel implements IRewardViewModel {
         data["cost"] = this.cost;
         data["imageUri"] = this.imageUri;
         data["rewardType"] = this.rewardType;
-        return data; 
+        return data;
     }
 }
 
@@ -2214,7 +2360,7 @@ export class RewardAdminListViewModel implements IRewardAdminListViewModel {
             for (let item of this.rewards)
                 data["rewards"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2259,7 +2405,7 @@ export class RewardAdminViewModel implements IRewardAdminViewModel {
         data["name"] = this.name;
         data["cost"] = this.cost;
         data["code"] = this.code;
-        return data; 
+        return data;
     }
 }
 
@@ -2306,7 +2452,7 @@ export class RecentRewardListViewModel implements IRecentRewardListViewModel {
             for (let item of this.rewards)
                 data["rewards"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2351,7 +2497,7 @@ export class RecentRewardViewModel implements IRecentRewardViewModel {
         data["rewardCost"] = this.rewardCost;
         data["awardedTo"] = this.awardedTo;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
-        return data; 
+        return data;
     }
 }
 
@@ -2390,7 +2536,7 @@ export class GetRecentRewardsQuery implements IGetRecentRewardsQuery {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["since"] = this.since ? this.since.toISOString() : <any>undefined;
-        return data; 
+        return data;
     }
 }
 
@@ -2426,7 +2572,7 @@ export class AddRewardCommand extends RewardViewModel implements IAddRewardComma
         data["imageBytesInBase64"] = this.imageBytesInBase64;
         data["imageFileName"] = this.imageFileName;
         super.toJSON(data);
-        return data; 
+        return data;
     }
 }
 
@@ -2466,7 +2612,7 @@ export class ClaimRewardResult implements IClaimRewardResult {
         data = typeof data === 'object' ? data : {};
         data["viewModel"] = this.viewModel ? this.viewModel.toJSON() : <any>undefined;
         data["status"] = this.status;
-        return data; 
+        return data;
     }
 }
 
@@ -2514,7 +2660,7 @@ export class ClaimRewardForUserCommand implements IClaimRewardForUserCommand {
         data = typeof data === 'object' ? data : {};
         data["userId"] = this.userId;
         data["code"] = this.code;
-        return data; 
+        return data;
     }
 }
 
@@ -2559,7 +2705,7 @@ export class SkillListViewModel implements ISkillListViewModel {
             for (let item of this.skills)
                 data["skills"].push(item);
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2603,7 +2749,7 @@ export class StaffListViewModel implements IStaffListViewModel {
             for (let item of this.staff)
                 data["staff"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2620,6 +2766,8 @@ export class StaffDto implements IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 
@@ -2642,6 +2790,8 @@ export class StaffDto implements IStaffDto {
             this.profilePhoto = _data["profilePhoto"];
             this.isDeleted = _data["isDeleted"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.isExternal = _data["isExternal"];
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
@@ -2668,13 +2818,15 @@ export class StaffDto implements IStaffDto {
         data["profilePhoto"] = this.profilePhoto;
         data["isDeleted"] = this.isDeleted;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["isExternal"] = this.isExternal;
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
                 data["skills"].push(item);
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2687,6 +2839,8 @@ export interface IStaffDto {
     profilePhoto?: string | undefined;
     isDeleted?: boolean;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
     skills?: string[] | undefined;
 }
@@ -2698,6 +2852,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;
@@ -2719,6 +2875,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             this.email = _data["email"];
             this.profile = _data["profile"];
             this.twitterUsername = _data["twitterUsername"];
+            this.gitHubUsername = _data["gitHubUsername"];
+            this.linkedInUrl = _data["linkedInUrl"];
             this.profilePhoto = _data["profilePhoto"];
             this.rate = _data["rate"];
             if (Array.isArray(_data["skills"])) {
@@ -2744,6 +2902,8 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         data["email"] = this.email;
         data["profile"] = this.profile;
         data["twitterUsername"] = this.twitterUsername;
+        data["gitHubUsername"] = this.gitHubUsername;
+        data["linkedInUrl"] = this.linkedInUrl;
         data["profilePhoto"] = this.profilePhoto;
         data["rate"] = this.rate;
         if (Array.isArray(this.skills)) {
@@ -2751,7 +2911,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             for (let item of this.skills)
                 data["skills"].push(item);
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2762,6 +2922,8 @@ export interface IUpsertStaffMemberProfileCommand {
     email?: string | undefined;
     profile?: string | undefined;
     twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
     skills?: string[] | undefined;
@@ -2810,7 +2972,7 @@ export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfil
         data["email"] = this.email;
         data["profile"] = this.profile;
         data["twitterUsername"] = this.twitterUsername;
-        return data; 
+        return data;
     }
 }
 
@@ -2866,7 +3028,7 @@ export class CurrentUserViewModel implements ICurrentUserViewModel {
         data["profilePic"] = this.profilePic;
         data["points"] = this.points;
         data["qrCode"] = this.qrCode;
-        return data; 
+        return data;
     }
 }
 
@@ -2941,7 +3103,7 @@ export class UserViewModel implements IUserViewModel {
             for (let item of this.achievements)
                 data["achievements"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -2992,7 +3154,7 @@ export class UserRewardViewModel implements IUserRewardViewModel {
         data["rewardCost"] = this.rewardCost;
         data["awarded"] = this.awarded;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
-        return data; 
+        return data;
     }
 }
 
@@ -3040,7 +3202,7 @@ export class UserAchievementViewModel implements IUserAchievementViewModel {
         data["achievementValue"] = this.achievementValue;
         data["complete"] = this.complete;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
-        return data; 
+        return data;
     }
 }
 
@@ -3093,7 +3255,7 @@ export class UserAchievementsViewModel implements IUserAchievementsViewModel {
             for (let item of this.userAchievements)
                 data["userAchievements"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -3142,7 +3304,7 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
             for (let item of this.userRewards)
                 data["userRewards"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 

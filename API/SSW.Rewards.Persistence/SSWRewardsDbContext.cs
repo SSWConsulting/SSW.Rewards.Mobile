@@ -31,6 +31,7 @@ namespace SSW.Rewards.Persistence
         public DbSet<UserReward> UserRewards { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<PostalAddress> Addresses { get; set; }
+        public DbSet<Notifications> Notifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(_secrets.SqlConnectionString);
