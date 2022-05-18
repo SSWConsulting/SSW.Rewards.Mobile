@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.User.Queries.GetCurrentUser;
+﻿using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using System.Threading;
 using System.Threading.Tasks;
 

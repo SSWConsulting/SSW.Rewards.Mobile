@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Commands.UpsertCurrentUser
+namespace SSW.Rewards.Application.Users.Commands.UpsertCurrentUser
 {
     public class UpsertCurrentUserCommand : IRequest<Unit>
     {

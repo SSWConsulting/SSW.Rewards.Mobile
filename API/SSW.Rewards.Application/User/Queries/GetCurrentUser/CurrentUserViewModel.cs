@@ -1,4 +1,4 @@
-namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
+namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
 {
     public class CurrentUserViewModel
     {

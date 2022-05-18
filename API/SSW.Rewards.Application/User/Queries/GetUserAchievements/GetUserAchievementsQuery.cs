@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserAchievements
+namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
 {
     public class GetUserAchievementsQuery : IRequest<UserAchievementsViewModel>
     {

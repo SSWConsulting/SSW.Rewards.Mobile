@@ -1,7 +1,7 @@
 using AutoMapper;
 using SSW.Rewards.Application.Common.Interfaces;
 
-namespace SSW.Rewards.Application.User.Commands.UpsertCurrentUser
+namespace SSW.Rewards.Application.Users.Commands.UpsertCurrentUser
 {
     public class AutoMapperProfile : Profile
     {

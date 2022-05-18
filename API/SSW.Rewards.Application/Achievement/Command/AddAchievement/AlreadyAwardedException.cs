@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SSW.Rewards.Application.User.Commands.UpsertUser
+namespace SSW.Rewards.Application.Users.Commands.UpsertUser
 {
     public class AlreadyAwardedException : Exception
     {

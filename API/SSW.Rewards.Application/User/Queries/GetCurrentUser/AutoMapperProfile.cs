@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 
-namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
+namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
 {
     public class AutoMapperProfile : Profile
     {

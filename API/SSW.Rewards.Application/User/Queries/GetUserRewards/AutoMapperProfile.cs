@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using System;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserRewards
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
 {
     internal class AutoMapperProfile : Profile
     {

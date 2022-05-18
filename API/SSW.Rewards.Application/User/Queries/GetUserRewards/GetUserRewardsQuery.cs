@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserRewards
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
 {
     public class GetUserRewardsQuery : IRequest<UserRewardsViewModel>
     {

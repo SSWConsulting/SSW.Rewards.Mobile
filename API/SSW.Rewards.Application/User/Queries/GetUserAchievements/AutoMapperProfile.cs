@@ -2,7 +2,7 @@ using AutoMapper;
 using SSW.Rewards.Domain.Entities;
 using System;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserAchievements
+namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
 {
     public class AutoMapperProfile : Profile
     {

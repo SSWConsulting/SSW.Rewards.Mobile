@@ -1,8 +1,8 @@
-using SSW.Rewards.Application.User.Queries.GetUserAchievements;
-using SSW.Rewards.Application.User.Queries.GetUserRewards;
+using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
+using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using System.Collections.Generic;
 
-namespace SSW.Rewards.Application.User.Queries.GetUser
+namespace SSW.Rewards.Application.Users.Queries.GetUser
 {
     public class UserViewModel
     {

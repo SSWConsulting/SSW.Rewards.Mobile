@@ -1,5 +1,5 @@
 using AutoMapper;
-using SSW.Rewards.Application.User.Queries.GetUser;
+using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Domain.Entities;
 
 namespace HW.KNOWnoise.Application.Admin.Users.Queries.GetUser

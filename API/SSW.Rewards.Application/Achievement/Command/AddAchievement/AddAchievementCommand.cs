@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Achievement.Queries.GetAchievementList;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.User.Commands.UpsertUser;
+using SSW.Rewards.Application.Users.Commands.UpsertUser;
 using System;
 using System.Linq;
 using System.Threading;

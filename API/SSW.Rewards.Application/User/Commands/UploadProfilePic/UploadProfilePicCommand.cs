@@ -3,14 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Commands.UploadProfilePic
+namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic
 {
     public class UploadProfilePicCommand : IRequest<string>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserRewards
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
 {
     public class UserRewardsViewModel
     {

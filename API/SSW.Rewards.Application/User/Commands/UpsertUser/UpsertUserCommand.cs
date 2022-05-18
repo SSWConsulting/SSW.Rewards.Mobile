@@ -3,10 +3,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Commands.UpsertUser
+namespace SSW.Rewards.Application.Users.Commands.UpsertUser
 {
     public class UpsertUserCommand : IRequest<Unit>
     {

@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Domain.Entities;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserAchievements
+namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
 {
     internal class JoinedUserAchievement
     {

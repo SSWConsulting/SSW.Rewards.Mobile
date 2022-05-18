@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.User.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

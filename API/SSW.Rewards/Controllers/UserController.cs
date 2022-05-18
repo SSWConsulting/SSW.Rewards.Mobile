@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.User.Commands.UploadProfilePic;
-using SSW.Rewards.Application.User.Queries.GetCurrentUser;
-using SSW.Rewards.Application.User.Queries.GetUser;
-using SSW.Rewards.Application.User.Queries.GetUserAchievements;
-using SSW.Rewards.Application.User.Queries.GetUserRewards;
+using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Queries.GetUser;
+using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
+using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers

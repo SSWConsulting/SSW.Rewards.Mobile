@@ -1,5 +1,5 @@
 using AutoMapper;
-using SSW.Rewards.Application.User.Commands.UpsertUser;
+using SSW.Rewards.Application.Users.Commands.UpsertUser;
 
 namespace HW.KNOWnoise.Application.Admin.Users.Commands.UpsertUser
 {

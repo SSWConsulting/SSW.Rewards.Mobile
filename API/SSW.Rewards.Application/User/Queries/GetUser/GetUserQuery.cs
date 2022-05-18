@@ -5,14 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.User.Queries.GetUserAchievements;
-using SSW.Rewards.Application.User.Queries.GetUserRewards;
+using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
+using SSW.Rewards.Application.Users.Queries.GetUserRewards;
+using SSW.Rewards.Domain.Entities;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Queries.GetUser
+namespace SSW.Rewards.Application.Users.Queries.GetUser
 {
     public class GetUserQuery : IRequest<UserViewModel>
     {

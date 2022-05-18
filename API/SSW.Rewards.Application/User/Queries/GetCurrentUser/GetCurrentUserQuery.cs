@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.User.Queries.GetCurrentUser
+namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
 {
     public class GetCurrentUserQuery : IRequest<CurrentUserViewModel>
     {

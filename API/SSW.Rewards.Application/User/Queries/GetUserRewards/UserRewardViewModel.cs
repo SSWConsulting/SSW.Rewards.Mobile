@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSW.Rewards.Application.User.Queries.GetUserRewards
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
 {
     public class UserRewardViewModel
     {

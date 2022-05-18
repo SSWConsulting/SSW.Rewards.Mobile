@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.User.Commands.UpsertCurrentUser;
-using SSW.Rewards.Application.User.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Commands.UpsertCurrentUser;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using System;
 using System.Linq;
 using System.Security.Claims;
