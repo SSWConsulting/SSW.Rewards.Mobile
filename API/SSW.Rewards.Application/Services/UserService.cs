@@ -88,6 +88,31 @@ namespace SSW.Rewards.Application.Services
                     .SingleOrDefaultAsync(cancellationToken);
         }
 
+        public IEnumerable<Role> GetCurrentUserRoles()
+        {
+            return GetCurrentUserRoles(CancellationToken.None).Result;
+        }
+
+        public async Task<IEnumerable<Role>> GetCurrentUserRoles(CancellationToken cancellationToken)
+        {
+            var roles = new List<Role>();
+
+            var userRoles = await _dbContext.Users
+                .Include(u => u.Roles)
+                .ThenInclude(ur => ur.Role)
+                .Where(u => u.Email == _currentUserService.GetUserEmail())
+                .Select(u => u.Roles)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken);
+
+            foreach(var role in userRoles)
+            {
+                roles.Add(role.Role);
+            }
+
+            return roles;
+        }
+
         public string GetStaffQRCode(string emailAddress)
         {
             return GetStaffQRCode(emailAddress, CancellationToken.None).Result;

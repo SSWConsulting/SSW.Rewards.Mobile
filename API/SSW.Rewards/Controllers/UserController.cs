@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
@@ -39,6 +40,12 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<string>> UploadProfilePic(IFormFile file)
         {
             return Ok(await Mediator.Send(new UploadProfilePicCommand { File = file }));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<string[]>> MyRoles()
+        {
+            return Ok(await Mediator.Send(new GetCurrentUserRolesQuery()));
         }
     }
 }

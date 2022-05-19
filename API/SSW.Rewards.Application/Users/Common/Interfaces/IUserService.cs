@@ -15,6 +15,9 @@ namespace SSW.Rewards.Application.Users.Common.Interfaces
         IEnumerable<Role> GetUserRoles(int userId);
         Task<IEnumerable<Role>> GetUserRoles(int userId, CancellationToken cancellationToken);
 
+        IEnumerable<Role> GetCurrentUserRoles();
+        Task<IEnumerable<Role>> GetCurrentUserRoles(CancellationToken cancellationToken);
+
 
         // Add user roles
         void AddUserRole(User user, Role role);
