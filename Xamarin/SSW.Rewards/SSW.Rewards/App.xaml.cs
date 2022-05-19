@@ -10,6 +10,8 @@ using Microsoft.AppCenter.Push;
 using SSW.Rewards.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 
 namespace SSW.Rewards
 {
@@ -23,6 +25,9 @@ namespace SSW.Rewards
         {
             Console.WriteLine("Calling app constructor");
             InitializeComponent();
+
+            ServiceContainer.Resolve<IPushNotificationActionService>()
+                .ActionTriggered += NotificationActionTriggered;
 
             Console.WriteLine("App InitializeComponent completed successfully.");
             Resolver.Initialize();
@@ -45,15 +50,24 @@ namespace SSW.Rewards
 
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
+                //MainPage = new TestPushNotificationPage();
                 Console.WriteLine("Onboarding set as main page successfully.");
             }
             else
             {
                 Console.WriteLine("Has run. Launching login page.");
                 MainPage = new LoginPage();
+                //MainPage = new TestPushNotificationPage();
                 Console.WriteLine("Login page set as main page successfully.");
             }
         }
+
+        void NotificationActionTriggered(object sender, PushNotificationAction e) => ShowActionAlert(e);
+
+        void ShowActionAlert(PushNotificationAction action) => MainThread.BeginInvokeOnMainThread(()
+            => App.Current.MainPage?.DisplayAlert("App Test Push", $"{action} action received", "OK")
+                .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; })
+        );
 
         protected override async void OnStart()
         {
