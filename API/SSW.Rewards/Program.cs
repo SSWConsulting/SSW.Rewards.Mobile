@@ -8,6 +8,7 @@ using Serilog;
 using SSW.Rewards.Persistence;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards
@@ -20,7 +21,9 @@ namespace SSW.Rewards
 	        {
 		        IHost host = CreateHostBuilder(args).Build();
 
-		        if (!await ApplyDbMigrations(host))
+				bool seedUserRoles = args.Contains("/SeedUserRoles");
+
+		        if (!await ApplyDbMigrations(host, seedUserRoles))
 		        {
 			        return;
 		        }
@@ -37,7 +40,7 @@ namespace SSW.Rewards
 	        }
         }
 
-        private static async Task<bool> ApplyDbMigrations(IHost host)
+        private static async Task<bool> ApplyDbMigrations(IHost host, bool seedUserRoles)
         {
 	        using (IServiceScope scope = host.Services.CreateScope())
 	        {
@@ -45,8 +48,14 @@ namespace SSW.Rewards
 
 		        try
 		        {
-			        var dbContext = services.GetRequiredService<SSWRewardsDbContext>();
-			        dbContext.Database.Migrate();
+					var initialiser = services.GetRequiredService<DBInitialiser>();
+					initialiser.Run();
+
+					if (seedUserRoles)
+                    {
+						await initialiser.EnsureStaffAndAdminRolesSeeded();
+                    }
+
 			        return true;
 				}
 		        catch (Exception ex)

@@ -1710,7 +1710,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserRewardViewModel"
+              "$ref": "#/components/schemas/UserRewardDto"
             }
           },
           "achievements": {
@@ -1722,7 +1722,7 @@
           }
         }
       },
-      "UserRewardViewModel": {
+      "UserRewardDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1799,7 +1799,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserRewardViewModel"
+              "$ref": "#/components/schemas/UserRewardDto"
             }
           }
         }

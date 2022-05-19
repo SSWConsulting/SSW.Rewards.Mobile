@@ -3047,7 +3047,7 @@ export class UserViewModel implements IUserViewModel {
     profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    rewards?: UserRewardViewModel[] | undefined;
+    rewards?: UserRewardDto[] | undefined;
     achievements?: UserAchievementViewModel[] | undefined;
 
     constructor(data?: IUserViewModel) {
@@ -3069,7 +3069,7 @@ export class UserViewModel implements IUserViewModel {
             if (Array.isArray(_data["rewards"])) {
                 this.rewards = [] as any;
                 for (let item of _data["rewards"])
-                    this.rewards!.push(UserRewardViewModel.fromJS(item));
+                    this.rewards!.push(UserRewardDto.fromJS(item));
             }
             if (Array.isArray(_data["achievements"])) {
                 this.achievements = [] as any;
@@ -3113,17 +3113,17 @@ export interface IUserViewModel {
     profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    rewards?: UserRewardViewModel[] | undefined;
+    rewards?: UserRewardDto[] | undefined;
     achievements?: UserAchievementViewModel[] | undefined;
 }
 
-export class UserRewardViewModel implements IUserRewardViewModel {
+export class UserRewardDto implements IUserRewardDto {
     rewardName?: string | undefined;
     rewardCost?: number;
     awarded?: boolean;
     awardedAt?: Date | undefined;
 
-    constructor(data?: IUserRewardViewModel) {
+    constructor(data?: IUserRewardDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3141,9 +3141,9 @@ export class UserRewardViewModel implements IUserRewardViewModel {
         }
     }
 
-    static fromJS(data: any): UserRewardViewModel {
+    static fromJS(data: any): UserRewardDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserRewardViewModel();
+        let result = new UserRewardDto();
         result.init(data);
         return result;
     }
@@ -3158,7 +3158,7 @@ export class UserRewardViewModel implements IUserRewardViewModel {
     }
 }
 
-export interface IUserRewardViewModel {
+export interface IUserRewardDto {
     rewardName?: string | undefined;
     rewardCost?: number;
     awarded?: boolean;
@@ -3267,7 +3267,7 @@ export interface IUserAchievementsViewModel {
 
 export class UserRewardsViewModel implements IUserRewardsViewModel {
     userId?: number;
-    userRewards?: UserRewardViewModel[] | undefined;
+    userRewards?: UserRewardDto[] | undefined;
 
     constructor(data?: IUserRewardsViewModel) {
         if (data) {
@@ -3284,7 +3284,7 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
             if (Array.isArray(_data["userRewards"])) {
                 this.userRewards = [] as any;
                 for (let item of _data["userRewards"])
-                    this.userRewards!.push(UserRewardViewModel.fromJS(item));
+                    this.userRewards!.push(UserRewardDto.fromJS(item));
             }
         }
     }
@@ -3310,7 +3310,7 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
 
 export interface IUserRewardsViewModel {
     userId?: number;
-    userRewards?: UserRewardViewModel[] | undefined;
+    userRewards?: UserRewardDto[] | undefined;
 }
 
 export interface FileParameter {

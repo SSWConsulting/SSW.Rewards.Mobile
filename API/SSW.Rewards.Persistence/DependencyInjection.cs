@@ -9,6 +9,7 @@ namespace SSW.Rewards.Persistence
         {
             services.AddScoped<ISSWRewardsDbContext, SSWRewardsDbContext>();
             services.AddDbContext<SSWRewardsDbContext>();
+            services.AddTransient<DBInitialiser>();
 
             return services;
         }

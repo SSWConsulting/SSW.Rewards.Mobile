@@ -11,7 +11,7 @@ namespace SSW.Rewards.Application.Users.Queries.GetUser
         public string ProfilePic { get; set; }
         public int Points { get; set; }
         public int Balance { get; set; }
-        public IEnumerable<UserRewardViewModel> Rewards { get; set; }
+        public IEnumerable<UserRewardDto> Rewards { get; set; }
         public IEnumerable<UserAchievementViewModel> Achievements { get; set; }
     }
 }

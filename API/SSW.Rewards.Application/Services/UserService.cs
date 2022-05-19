@@ -131,7 +131,7 @@ namespace SSW.Rewards.Application.Services
             var userRewards = await _dbContext.UserRewards
                                         .Include(ur => ur.Reward)
                                         .Where(u => u.UserId == userId)
-                                        .ProjectTo<UserRewardViewModel>(_mapper.ConfigurationProvider)
+                                        .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
                                         .ToListAsync();
 
             vm.Achievements = userAchievements;
@@ -182,8 +182,8 @@ namespace SSW.Rewards.Application.Services
             // This throws NRE. Original code below for now, but this should work.
             // TODO: figure out why this doesn't work.
             //return await _dbContext.Users.Where(u => u.Id == userId)
-            //    .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
-            //    .FirstOrDefaultAsync(cancellationToken);
+            //            .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
+            //            .FirstOrDefaultAsync(cancellationToken);
 
             var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
             var userRewards = await _dbContext.UserRewards
@@ -191,18 +191,18 @@ namespace SSW.Rewards.Application.Services
                 .ToListAsync(cancellationToken);
 
             // Currently using in-memory join because the expected returned records are very low (max 10 or so)
-            var vm = new List<UserRewardViewModel>();
+            var vm = new List<UserRewardDto>();
 
             foreach (var reward in rewards)
             {
                 var userReward = userRewards.Where(ur => ur.RewardId == reward.Id).FirstOrDefault();
                 if (userReward != null)
                 {
-                    vm.Add(_mapper.Map<UserRewardViewModel>(userReward));
+                    vm.Add(_mapper.Map<UserRewardDto>(userReward));
                 }
                 else
                 {
-                    vm.Add(new UserRewardViewModel
+                    vm.Add(new UserRewardDto
                     {
                         RewardName = reward.Name,
                         RewardCost = reward.Cost

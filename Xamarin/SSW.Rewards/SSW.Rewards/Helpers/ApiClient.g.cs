@@ -4249,7 +4249,7 @@ namespace SSW.Rewards
         public int Balance { get; set; }
     
         [Newtonsoft.Json.JsonProperty("rewards", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<UserRewardViewModel> Rewards { get; set; }
+        public System.Collections.Generic.ICollection<UserRewardDto> Rewards { get; set; }
     
         [Newtonsoft.Json.JsonProperty("achievements", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<UserAchievementViewModel> Achievements { get; set; }
@@ -4258,7 +4258,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class UserRewardViewModel 
+    public partial class UserRewardDto 
     {
         [Newtonsoft.Json.JsonProperty("rewardName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string RewardName { get; set; }
@@ -4315,7 +4315,7 @@ namespace SSW.Rewards
         public int UserId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("userRewards", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<UserRewardViewModel> UserRewards { get; set; }
+        public System.Collections.Generic.ICollection<UserRewardDto> UserRewards { get; set; }
     
     
     }
