@@ -3,10 +3,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
+using SSW.Rewards.Application.Users.Common.Interfaces;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,16 +16,16 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
 
         public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
         {
-            private readonly ICurrentUserService _currentUserService;
+            private readonly IUserService _userService;
             private readonly ISSWRewardsDbContext _context;
             private readonly IMapper _mapper;
 
             public PostAchievementCommandHandler(
-                ICurrentUserService currentUserService,
+                IUserService UserService,
                 ISSWRewardsDbContext context,
                 IMapper mapper)
             {
-                _currentUserService = currentUserService;
+                _userService = UserService;
                 _context = context;
                 _mapper = mapper;
             }
@@ -47,7 +45,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                     };
                 }
 
-                var user = await _currentUserService.GetCurrentUserAsync(cancellationToken);
+                var user = await _userService.GetCurrentUser(cancellationToken);
                 var userHasAchievement = await _context
                     .UserAchievements
                     .Where(ua => ua.UserId == user.Id)

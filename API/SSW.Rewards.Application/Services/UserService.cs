@@ -46,7 +46,7 @@ namespace SSW.Rewards.Application.Services
 
         public void AddUserRole(User user, Role role)
         {
-            AddUserRole(user, role, CancellationToken.None);
+            AddUserRole(user, role, CancellationToken.None).RunSynchronously();
         }
 
         public async Task AddUserRole(User user, Role role, CancellationToken cancellationToken)
@@ -83,8 +83,6 @@ namespace SSW.Rewards.Application.Services
             string currentUserEmail = _currentUserService.GetUserEmail();
 
             return await _dbContext.Users
-                    //.Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
-                    //.Include(u => u.UserRewards).ThenInclude(ur => ur.Reward)
                     .Where(u => u.Email == currentUserEmail)
                     .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);
@@ -181,40 +179,42 @@ namespace SSW.Rewards.Application.Services
 
         public async Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken)
         {
-            return await _dbContext.Users.Where(u => u.Id == userId)
-                .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
+            // This throws NRE. Original code below for now, but this should work.
+            // TODO: figure out why this doesn't work.
+            //return await _dbContext.Users.Where(u => u.Id == userId)
+            //    .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
+            //    .FirstOrDefaultAsync(cancellationToken);
 
-            //var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
-            //var userRewards = await _dbContext.UserRewards
-            //    .Where(ur => ur.UserId == userId)
-            //    .ToListAsync(cancellationToken);
+            var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
+            var userRewards = await _dbContext.UserRewards
+                .Where(ur => ur.UserId == userId)
+                .ToListAsync(cancellationToken);
 
-            //// Currently using in-memory join because the expected returned records are very low (max 10 or so)
-            //var vm = new List<UserRewardViewModel>();
+            // Currently using in-memory join because the expected returned records are very low (max 10 or so)
+            var vm = new List<UserRewardViewModel>();
 
-            //foreach (var reward in rewards)
-            //{
-            //    var userReward = userRewards.Where(ur => ur.RewardId == reward.Id).FirstOrDefault();
-            //    if (userReward != null)
-            //    {
-            //        vm.Add(_mapper.Map<UserRewardViewModel>(userReward));
-            //    }
-            //    else
-            //    {
-            //        vm.Add(new UserRewardViewModel
-            //        {
-            //            RewardName = reward.Name,
-            //            RewardCost = reward.Cost
-            //        });
-            //    }
-            //}
+            foreach (var reward in rewards)
+            {
+                var userReward = userRewards.Where(ur => ur.RewardId == reward.Id).FirstOrDefault();
+                if (userReward != null)
+                {
+                    vm.Add(_mapper.Map<UserRewardViewModel>(userReward));
+                }
+                else
+                {
+                    vm.Add(new UserRewardViewModel
+                    {
+                        RewardName = reward.Name,
+                        RewardCost = reward.Cost
+                    });
+                }
+            }
 
-            //return new UserRewardsViewModel
-            //{
-            //    UserId = userId,
-            //    UserRewards = vm
-            //};
+            return new UserRewardsViewModel
+            {
+                UserId = userId,
+                UserRewards = vm
+            };
         }
 
         public IEnumerable<Role> GetUserRoles(int userId)

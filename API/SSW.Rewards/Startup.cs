@@ -48,7 +48,7 @@ namespace SSW.Rewards
             });
 
             services.AddInfrastructure(Configuration);
-            services.AddPersistence(Configuration);
+            services.AddPersistence();
             services.AddApplication();
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
