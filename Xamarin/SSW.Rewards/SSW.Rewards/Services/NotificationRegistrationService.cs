@@ -4,25 +4,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using SSW.Rewards.Models;
 using Xamarin.Essentials;
 
 namespace SSW.Rewards.Services
 {
-    public class NotificationRegistrationService : INotificationRegistrationService
+    public class NotificationRegistrationService : BaseService, INotificationRegistrationService
     {
         const string RequestUrl = "api/Notifications";
         const string CachedDeviceTokenKey = "cached_device_token";
         const string CachedTagsKey = "cached_tags";
 
-        HttpClient _httpClient;
         IDeviceInstallationService _deviceInstallationService;
-        //private NotificationsClient _notificationsClient;
 
         public NotificationRegistrationService()
         {
-            _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-            //_notificationsClient = new NotificationsClient(App.Constants.ApiBaseUrl, _httpClient);
+            AuthenticatedClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
         IDeviceInstallationService DeviceInstallationService
@@ -42,8 +39,16 @@ namespace SSW.Rewards.Services
             if (string.IsNullOrWhiteSpace(deviceId))
                 throw new Exception("Unable to resolve an ID for the device.");
 
-            await SendAsync(HttpMethod.Delete, $"{RequestUrl}/DeleteInstallation/{deviceId}")
+            try
+            {
+                await SendAsync(HttpMethod.Delete, $"{RequestUrl}/DeleteInstallation/{deviceId}")
                 .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
 
             SecureStorage.Remove(CachedDeviceTokenKey);
             SecureStorage.Remove(CachedTagsKey);
@@ -54,7 +59,6 @@ namespace SSW.Rewards.Services
             DeviceInstall deviceInstallation = DeviceInstallationService?.GetDeviceInstallation(tags);
 
             Console.WriteLine(deviceInstallation.InstallationId);
-            //await _notificationsClient.UpdateInstallationAsync(deviceInstallation);
             try
             {
                 await SendAsync<DeviceInstall>(HttpMethod.Put, $"{RequestUrl}/UpdateInstallation", deviceInstallation).ConfigureAwait(false);
@@ -62,6 +66,7 @@ namespace SSW.Rewards.Services
             catch (Exception ex)
             {
                 Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
+                throw new Exception(ex.Message);
             }
 
             await SecureStorage.SetAsync(CachedDeviceTokenKey, deviceInstallation.PushChannel)
@@ -106,7 +111,7 @@ namespace SSW.Rewards.Services
             if (jsonRequest != null)
                 request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await AuthenticatedClient.SendAsync(request).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Services
+﻿using SSW.Rewards.Models;
+
+namespace SSW.Rewards.Services
 {
     public interface IDeviceInstallationService
     {
