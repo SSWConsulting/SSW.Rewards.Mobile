@@ -1,8 +1,4 @@
-﻿using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SSW.Rewards.Application.Common.Interfaces
+﻿namespace SSW.Rewards.Application.Common.Interfaces
 {
     public interface ICurrentUserService
     {
@@ -10,7 +6,5 @@ namespace SSW.Rewards.Application.Common.Interfaces
         string GetUserEmail();
         string GetUserFullName();
         string GetUserProfilePic();
-
-        Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken);
     }
 }

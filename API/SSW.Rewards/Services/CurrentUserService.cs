@@ -1,29 +1,16 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using SSW.Rewards.Application.Common.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Users.Commands.UpsertCurrentUser;
-using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
-using System;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Services
 {
-	public class CurrentUserService : ICurrentUserService
+    public class CurrentUserService : ICurrentUserService
     {
-        private readonly IMediator _mediatr;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private CurrentUserViewModel _currentUser;
-
-        public CurrentUserService(
-            IMediator mediatr, 
-            IHttpContextAccessor httpContextAccessor)
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
         {
-            _mediatr = mediatr;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -35,16 +22,6 @@ namespace SSW.Rewards.WebAPI.Services
         {
             ClaimsPrincipal user = _httpContextAccessor.HttpContext?.User;
             return $"{user?.FindFirstValue(ClaimTypes.GivenName)} {user?.FindFirstValue(ClaimTypes.Surname)}";
-        }
-
-        public async Task<CurrentUserViewModel> GetCurrentUserAsync(CancellationToken cancellationToken)
-        {
-            if (_currentUser != null)
-            {
-                return _currentUser;
-            }
-
-            return _currentUser = await _mediatr.Send(new GetCurrentUserQuery(), cancellationToken);
         }
 
         public string GetUserProfilePic()
