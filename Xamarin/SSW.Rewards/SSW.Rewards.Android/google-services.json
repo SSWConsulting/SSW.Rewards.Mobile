@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "872073221188",
-    "firebase_url": "https://ssw-mobile-app.firebaseio.com",
-    "project_id": "ssw-mobile-app",
-    "storage_bucket": "ssw-mobile-app.appspot.com"
+    "project_number": "435518153965",
+    "project_id": "ssw-rewards-rebirth",
+    "storage_bucket": "ssw-rewards-rebirth.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:872073221188:android:8cac95fe7e1ddeb9239811",
+        "mobilesdk_app_id": "1:435518153965:android:25906bf576ce84c15458e4",
         "android_client_info": {
           "package_name": "com.ssw.consulting"
         }
       },
       "oauth_client": [
         {
-          "client_id": "872073221188-o4acn6fo0poluhh7m1d6tlgih02c74lu.apps.googleusercontent.com",
+          "client_id": "435518153965-68b091hb4hfd9kmh6b99ou34sq42lv8a.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBsgLO9KUToDCY3viKNEnhcY7wlX7EAGSo"
+          "current_key": "AIzaSyAbs7OHLHfrdaqR651U3UqA6H8mZz7eE3k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "872073221188-o4acn6fo0poluhh7m1d6tlgih02c74lu.apps.googleusercontent.com",
+              "client_id": "435518153965-68b091hb4hfd9kmh6b99ou34sq42lv8a.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

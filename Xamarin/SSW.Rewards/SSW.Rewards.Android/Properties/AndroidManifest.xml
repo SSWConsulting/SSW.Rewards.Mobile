@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.80" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="19">
-	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
+	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="30" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
 		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification" />
@@ -12,6 +12,10 @@
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
