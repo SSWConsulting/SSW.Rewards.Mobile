@@ -320,7 +320,7 @@ namespace SSW.Rewards.Services
 
             var rewardsList = await _userClient.RewardsAsync(userId);
 
-            foreach (UserRewardViewModel userReward in rewardsList.UserRewards)
+            foreach (var userReward in rewardsList.UserRewards)
             {
                 rewards.Add(new Reward
                 {

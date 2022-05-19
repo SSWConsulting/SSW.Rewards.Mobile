@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.Reward.Commands;
-using SSW.Rewards.Application.Reward.Queries.GetRecentRewards;
-using SSW.Rewards.Application.Reward.Queries.GetRewardAdminList;
-using SSW.Rewards.Application.Reward.Queries.Common;
+using SSW.Rewards.Application.Rewards.Commands;
+using SSW.Rewards.Application.Rewards.Queries.GetRecentRewards;
+using SSW.Rewards.Application.Rewards.Queries.GetRewardAdminList;
+using SSW.Rewards.Application.Rewards.Queries.Common;
 using System.Threading.Tasks;
-using SSW.Rewards.Application.Reward.Commands.AddReward;
+using SSW.Rewards.Application.Rewards.Commands.AddReward;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {

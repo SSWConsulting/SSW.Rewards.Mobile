@@ -972,6 +972,29 @@
           }
         }
       }
+    },
+    "/api/User/MyRoles": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_MyRoles",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1710,7 +1733,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserRewardViewModel"
+              "$ref": "#/components/schemas/UserRewardDto"
             }
           },
           "achievements": {
@@ -1722,7 +1745,7 @@
           }
         }
       },
-      "UserRewardViewModel": {
+      "UserRewardDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1799,7 +1822,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserRewardViewModel"
+              "$ref": "#/components/schemas/UserRewardDto"
             }
           }
         }

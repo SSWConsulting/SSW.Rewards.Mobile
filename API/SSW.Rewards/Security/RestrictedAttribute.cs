@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.User.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Common.Interfaces;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Security
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)] // TODO: this seems completely unnecessary. Check if required.
     public class RestrictedAttribute : ActionFilterAttribute
     {
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var cus = context.HttpContext.RequestServices.GetRequiredService<ICurrentUserService>();
+            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
 
-            CurrentUserViewModel u = await cus.GetCurrentUserAsync(CancellationToken.None);
+            CurrentUserViewModel u = await userService.GetCurrentUser(CancellationToken.None);
 
             if (u == null)
             {

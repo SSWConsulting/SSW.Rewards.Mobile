@@ -1268,6 +1268,7 @@ export interface IUserClient {
     achievements(userId: number): Promise<UserAchievementsViewModel>;
     rewards(userId: number): Promise<UserRewardsViewModel>;
     uploadProfilePic(file: FileParameter | null | undefined): Promise<string>;
+    myRoles(): Promise<string[]>;
 }
 
 export class UserClient extends BaseClient implements IUserClient {
@@ -1475,6 +1476,46 @@ export class UserClient extends BaseClient implements IUserClient {
             });
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    myRoles(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/User/MyRoles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processMyRoles(_response);
+        });
+    }
+
+    protected processMyRoles(response: Response): Promise<string[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string[]>(<any>null);
     }
 }
 
@@ -3047,7 +3088,7 @@ export class UserViewModel implements IUserViewModel {
     profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    rewards?: UserRewardViewModel[] | undefined;
+    rewards?: UserRewardDto[] | undefined;
     achievements?: UserAchievementViewModel[] | undefined;
 
     constructor(data?: IUserViewModel) {
@@ -3069,7 +3110,7 @@ export class UserViewModel implements IUserViewModel {
             if (Array.isArray(_data["rewards"])) {
                 this.rewards = [] as any;
                 for (let item of _data["rewards"])
-                    this.rewards!.push(UserRewardViewModel.fromJS(item));
+                    this.rewards!.push(UserRewardDto.fromJS(item));
             }
             if (Array.isArray(_data["achievements"])) {
                 this.achievements = [] as any;
@@ -3113,17 +3154,17 @@ export interface IUserViewModel {
     profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    rewards?: UserRewardViewModel[] | undefined;
+    rewards?: UserRewardDto[] | undefined;
     achievements?: UserAchievementViewModel[] | undefined;
 }
 
-export class UserRewardViewModel implements IUserRewardViewModel {
+export class UserRewardDto implements IUserRewardDto {
     rewardName?: string | undefined;
     rewardCost?: number;
     awarded?: boolean;
     awardedAt?: Date | undefined;
 
-    constructor(data?: IUserRewardViewModel) {
+    constructor(data?: IUserRewardDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3141,9 +3182,9 @@ export class UserRewardViewModel implements IUserRewardViewModel {
         }
     }
 
-    static fromJS(data: any): UserRewardViewModel {
+    static fromJS(data: any): UserRewardDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserRewardViewModel();
+        let result = new UserRewardDto();
         result.init(data);
         return result;
     }
@@ -3158,7 +3199,7 @@ export class UserRewardViewModel implements IUserRewardViewModel {
     }
 }
 
-export interface IUserRewardViewModel {
+export interface IUserRewardDto {
     rewardName?: string | undefined;
     rewardCost?: number;
     awarded?: boolean;
@@ -3267,7 +3308,7 @@ export interface IUserAchievementsViewModel {
 
 export class UserRewardsViewModel implements IUserRewardsViewModel {
     userId?: number;
-    userRewards?: UserRewardViewModel[] | undefined;
+    userRewards?: UserRewardDto[] | undefined;
 
     constructor(data?: IUserRewardsViewModel) {
         if (data) {
@@ -3284,7 +3325,7 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
             if (Array.isArray(_data["userRewards"])) {
                 this.userRewards = [] as any;
                 for (let item of _data["userRewards"])
-                    this.userRewards!.push(UserRewardViewModel.fromJS(item));
+                    this.userRewards!.push(UserRewardDto.fromJS(item));
             }
         }
     }
@@ -3310,7 +3351,7 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
 
 export interface IUserRewardsViewModel {
     userId?: number;
-    userRewards?: UserRewardViewModel[] | undefined;
+    userRewards?: UserRewardDto[] | undefined;
 }
 
 export interface FileParameter {

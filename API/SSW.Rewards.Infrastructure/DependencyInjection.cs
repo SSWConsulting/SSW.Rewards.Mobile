@@ -42,9 +42,11 @@ namespace SSW.Rewards.Infrastructure
 
             configuration.Bind("SMTPSettings", smtpSettings);
 
-            services.AddFluentEmail(smtpSettings.DefaultSender)
-                .AddRazorRenderer()
-                .AddSmtpSender(smtpSettings.Host, smtpSettings.Port);
+            string SendGridAPIKey = configuration.GetValue<string>(nameof(SendGridAPIKey));
+
+            services.AddFluentEmail(smtpSettings.DefaultSender, smtpSettings.DefaultSenderName)
+                        .AddRazorRenderer()
+                        .AddSendGridSender(SendGridAPIKey);
 
             return services;
         }

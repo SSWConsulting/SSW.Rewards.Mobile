@@ -3,6 +3,9 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Behaviours;
+using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Services;
+using SSW.Rewards.Application.Users.Common.Interfaces;
 
 namespace SSW.Rewards.Application
 {
@@ -14,6 +17,8 @@ namespace SSW.Rewards.Application
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRolesService, UserService>();
 
             return services;
         }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.Achievement.Command.ClaimAchievementForUser;
-using SSW.Rewards.Application.Achievement.Command.PostAchievement;
-using SSW.Rewards.Application.Achievement.Commands.AddAchievement;
-using SSW.Rewards.Application.Achievement.Queries.GetAchievementAdminList;
-using SSW.Rewards.Application.Achievement.Queries.GetAchievementList;
+using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
+using SSW.Rewards.Application.Achievements.Command.PostAchievement;
+using SSW.Rewards.Application.Achievements.Commands.AddAchievement;
+using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
+using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 using SSW.Rewards.WebAPI.Settings;
 using System.Threading.Tasks;
 
