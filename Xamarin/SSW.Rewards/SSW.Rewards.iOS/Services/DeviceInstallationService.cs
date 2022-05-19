@@ -32,12 +32,10 @@ namespace SSW.Rewards.iOS.Services
             {
                 InstallationId = GetDeviceId(),
                 Platform = "apns",
-                PushChannel = Token,
-                Tags = new Collection<string>()
+                PushChannel = Token
             };
-            foreach (var tag in tags){
-                installation.Tags.Add(tag.ToString());
-            }
+            installation.Tags.AddRange(tags);
+
             return installation;
         }
 
