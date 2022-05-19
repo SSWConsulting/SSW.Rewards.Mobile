@@ -138,6 +138,8 @@
     <BundleResource Include="Resources\Helvetica-Bold-Font.ttf" />
     <BundleResource Include="Resources\FluentSystemIcons-Regular.ttf" />
     <BundleResource Include="Resources\Font Awesome 6 Brands-Regular-400.otf" />
+    <Compile Include="Extensions\NSDataExtensions.cs" />
+    <Compile Include="Services\DeviceInstallationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -1730,6 +1732,11 @@
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Folder Include="Resources\" />
+=======
+    <Folder Include="Extensions\" />
+    <Folder Include="Services\" />
+>>>>>>> d225c6f4 (Configure iOS project to work with PN)
   </ItemGroup>
 </Project>
