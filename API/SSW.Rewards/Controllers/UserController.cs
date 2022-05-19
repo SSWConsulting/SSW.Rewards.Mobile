@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SSW.Rewards.Application.Users.Commands.RegisterUser;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
@@ -46,6 +47,12 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<string[]>> MyRoles()
         {
             return Ok(await Mediator.Send(new GetCurrentUserRolesQuery()));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Register()
+        {
+            return Ok(await Mediator.Send(new RegisterUserCommand()));
         }
     }
 }
