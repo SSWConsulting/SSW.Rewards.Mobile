@@ -32,17 +32,6 @@ namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
 
             if (user == null)
             {
-                //var newUser = new Domain.Entities.User
-                //{
-                //    Email = _currentUserService.GetUserEmail(),
-                //    FullName = _currentUserService.GetUserFullName(),
-                //    Avatar = _currentUserService.GetUserProfilePic() // Don't see how this could be here at this point? But I may have added it to the mapping profile for a reason. TODO: test removing
-                //};
-
-                //await _userService.CreateUser(newUser, cancellationToken);
-
-                //user = await _userService.GetCurrentUser(cancellationToken);
-
                 throw new NotFoundException(_currentUserService.GetUserEmail(), "User");
             }
 
