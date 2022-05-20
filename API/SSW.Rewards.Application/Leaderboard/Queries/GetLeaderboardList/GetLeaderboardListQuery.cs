@@ -26,8 +26,8 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
 
             public async Task<LeaderboardListViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
             {
-                var users = await _context
-                    .Users
+                var users = await _context.Users
+                    .Where(u => u.Activated)
                     .Include(u => u.UserAchievements)
                     .ThenInclude(ua => ua.Achievement)
                     .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)

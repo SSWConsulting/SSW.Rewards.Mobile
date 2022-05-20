@@ -1,11 +1,11 @@
-﻿using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Behaviours;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Services;
 using SSW.Rewards.Application.Users.Common.Interfaces;
+using System.Reflection;
 
 namespace SSW.Rewards.Application
 {
