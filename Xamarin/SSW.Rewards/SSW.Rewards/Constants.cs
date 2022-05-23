@@ -3,7 +3,7 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://8558-159-196-124-207.ngrok.io";//"https://sswconsulting-prod.azurewebsites.net";
+        public string ApiBaseUrl = "https://10.0.2.2:5001";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
@@ -16,8 +16,11 @@
 
         public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
+#if DEBUG
+        public string AuthorityUri { get; } = "https://10.0.2.2:5003";
+#else
         public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
-
+#endif
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
         public string Scope { get; } = "openid profile ssw-rewards-api email";

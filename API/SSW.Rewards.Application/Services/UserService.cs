@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common.Interfaces;
@@ -12,6 +13,7 @@ using SSW.Rewards.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,12 +24,16 @@ namespace SSW.Rewards.Application.Services
         private readonly ISSWRewardsDbContext _dbContext;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
+        private readonly string StaffSMTPDomain;
 
-        public UserService(ISSWRewardsDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
+        public UserService(ISSWRewardsDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper, IConfiguration configuration)
         {
             _dbContext = dbContext;
             _currentUserService = currentUserService;
             _mapper = mapper;
+
+            // TODO: @william update this to IOptionsPattern when upgrading to .NET 6
+            StaffSMTPDomain = configuration.GetValue<string>(nameof(StaffSMTPDomain));
         }
 
         public int AddRole(Role role)
@@ -66,10 +72,25 @@ namespace SSW.Rewards.Application.Services
 
         public async Task<int> CreateUser(User user, CancellationToken cancellationToken)
         {
+            var userRole = await _dbContext.Roles
+                .FirstOrDefaultAsync(r => r.Name == "User");
+
+            user.Roles.Add(new UserRole { Role = userRole });
+
+            var userEmail = new MailAddress(user.Email);
+
+            if (userEmail.Host == StaffSMTPDomain)
+            {
+                var staffRole = await _dbContext.Roles
+                    .FirstOrDefaultAsync(r => r.Name == "Staff");
+
+                user.Roles.Add(new UserRole { Role = staffRole });
+            }
+
             _dbContext.Users.Add(user);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
-            
+
             return user.Id;
         }
 
@@ -82,10 +103,17 @@ namespace SSW.Rewards.Application.Services
         {
             string currentUserEmail = _currentUserService.GetUserEmail();
 
-            return await _dbContext.Users
+            var user = await _dbContext.Users
                     .Where(u => u.Email == currentUserEmail)
-                    .ProjectTo<CurrentUserViewModel>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(cancellationToken);
+
+            if (!user.Activated)
+            {
+                user.Activated = true;
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+
+            return _mapper.Map<CurrentUserViewModel>(user);
         }
 
         public IEnumerable<Role> GetCurrentUserRoles()

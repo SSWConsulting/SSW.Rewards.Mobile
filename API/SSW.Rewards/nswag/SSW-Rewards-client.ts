@@ -1269,6 +1269,7 @@ export interface IUserClient {
     rewards(userId: number): Promise<UserRewardsViewModel>;
     uploadProfilePic(file: FileParameter | null | undefined): Promise<string>;
     myRoles(): Promise<string[]>;
+    register(): Promise<FileResponse>;
 }
 
 export class UserClient extends BaseClient implements IUserClient {
@@ -1516,6 +1517,40 @@ export class UserClient extends BaseClient implements IUserClient {
             });
         }
         return Promise.resolve<string[]>(<any>null);
+    }
+
+    register(): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/User/Register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRegister(_response);
+        });
+    }
+
+    protected processRegister(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 }
 
