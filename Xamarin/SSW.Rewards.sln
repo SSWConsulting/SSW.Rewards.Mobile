@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSW.Rewards.Android", "SSW.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSW.Rewards.iOS", "SSW.Rewards\SSW.Rewards.iOS\SSW.Rewards.iOS.csproj", "{3EFE7A23-45C2-40AF-BC97-7E67EDA5614A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSW.Rewards", "SSW.Rewards\SSW.Rewards\SSW.Rewards.csproj", "{B98A315F-FDC2-489E-A8E5-94757CF3DD9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSW.Rewards", "SSW.Rewards\SSW.Rewards\SSW.Rewards.csproj", "{B98A315F-FDC2-489E-A8E5-94757CF3DD9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
