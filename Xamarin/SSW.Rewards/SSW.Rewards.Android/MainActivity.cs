@@ -1,16 +1,17 @@
-﻿using Android.App;
+﻿using System;
+
+using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Lottie.Forms.Droid;
 using PanCardView.Droid;
 using Plugin.CurrentActivity;
+using Firebase.Messaging;
 
-using System;
-using Android.Content;
 using SSW.Rewards.Droid.Services;
 using SSW.Rewards.Services;
-using Firebase.Messaging;
 
 namespace SSW.Rewards.Droid
 {
@@ -23,12 +24,12 @@ namespace SSW.Rewards.Droid
         IPushNotificationActionService NotificationActionService
             => _notificationActionService ??
                 (_notificationActionService =
-                ServiceContainer.Resolve<IPushNotificationActionService>());
+                Resolver.Resolve<IPushNotificationActionService>());
 
         IDeviceInstallationService DeviceInstallationService
             => _deviceInstallationService ??
                 (_deviceInstallationService =
-                ServiceContainer.Resolve<IDeviceInstallationService>());
+                Resolver.Resolve<IDeviceInstallationService>());
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,13 +37,11 @@ namespace SSW.Rewards.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-            Bootstrap.Begin(() => new DeviceInstallationService());
+            Resolver.InitializeNativeInstallation(new DeviceInstallationService());
 
             if (DeviceInstallationService.NotificationsSupported)
             {
-                FirebaseMessaging.Instance
-                    .GetToken()
-                    .AddOnSuccessListener(this);
+                FirebaseMessaging.Instance.GetToken().AddOnSuccessListener(this);
             }
 
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
