@@ -62,15 +62,42 @@ namespace SSW.Rewards
                 Container.Register<IDevService, DevService>();
                 Container.Register<IChallengeService, ChallengeService>();
                 Container.Register<IBrowser, AuthBrowser>();
-                //Container.Register<IPushNotificationActionService, PushNotificationActionService>();
-                //Container.Register<INotificationRegistrationService, NotificationRegistrationService>();
-                //Container.Register<IDeviceInstallationService>();
+                Container.Register<IPushNotificationActionService, PushNotificationActionService>();
+                Container.Register<INotificationRegistrationService, NotificationRegistrationService>();
 
                 Console.WriteLine("Resolver initialisation completed successfully.");
             }
             catch (System.Exception ex)
             {
                 Console.WriteLine("ERROR: Resolver initialisation failed.");
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static void InitializeNativeInstallation(IDeviceInstallationService deviceInstallationService)
+        {
+            try
+            {
+                Console.WriteLine("Attempting to register native ViewModels and Pages");
+
+                var currentAssembly = Assembly.GetExecutingAssembly();
+
+                foreach (var type in currentAssembly.DefinedTypes
+                    .Where(e =>
+                    e.IsSubclassOf(typeof(Page)) ||
+                    e.IsSubclassOf(typeof(BaseViewModel))))
+                {
+                    Console.WriteLine($"Registering {type.Name}");
+                    Container.Register(type.AsType());
+                }
+
+                Container.Register(deviceInstallationService);
+
+                Console.WriteLine("Resolver native initialisation completed successfully.");
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine("ERROR: Resolver native initialisation failed.");
                 Console.WriteLine(ex.Message);
             }
         }

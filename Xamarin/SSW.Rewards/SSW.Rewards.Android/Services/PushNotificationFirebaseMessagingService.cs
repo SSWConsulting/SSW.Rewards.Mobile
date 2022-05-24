@@ -16,17 +16,17 @@ namespace SSW.Rewards.Droid.Services
         IPushNotificationActionService NotificationActionService
             => _notificationActionService ??
                 (_notificationActionService =
-                ServiceContainer.Resolve<IPushNotificationActionService>());
+                Resolver.Resolve<IPushNotificationActionService>());
 
         INotificationRegistrationService NotificationRegistrationService
             => _notificationRegistrationService ??
                 (_notificationRegistrationService =
-                ServiceContainer.Resolve<INotificationRegistrationService>());
+                Resolver.Resolve<INotificationRegistrationService>());
 
         IDeviceInstallationService DeviceInstallationService
             => _deviceInstallationService ??
                 (_deviceInstallationService =
-                ServiceContainer.Resolve<IDeviceInstallationService>());
+                Resolver.Resolve<IDeviceInstallationService>());
 
         public override void OnNewToken(string token)
         {

@@ -5,16 +5,16 @@ using SSW.Rewards.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
-namespace SSW.Rewards
+namespace SSW.Rewards.Views
 {
-    public partial class TestPushNotificationPage : ContentPage
+    public partial class TestPushPage : ContentPage
     {
         readonly INotificationRegistrationService _notificationRegistrationService;
 
-        public TestPushNotificationPage()
+        public TestPushPage()
         {
             InitializeComponent();
-            _notificationRegistrationService = ServiceContainer.Resolve<INotificationRegistrationService>();
+            _notificationRegistrationService = Resolver.Resolve<INotificationRegistrationService>();
         }
 
         void RegisterButtonClicked(object sender, EventArgs e) => _notificationRegistrationService

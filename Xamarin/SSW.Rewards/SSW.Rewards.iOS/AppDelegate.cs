@@ -35,17 +35,17 @@ namespace SSW.Rewards.iOS
         IPushNotificationActionService NotificationActionService
             => _notificationActionService ??
                 (_notificationActionService =
-                ServiceContainer.Resolve<IPushNotificationActionService>());
+                Resolver.Resolve<IPushNotificationActionService>());
 
         INotificationRegistrationService NotificationRegistrationService
             => _notificationRegistrationService ??
                 (_notificationRegistrationService =
-                ServiceContainer.Resolve<INotificationRegistrationService>());
+                Resolver.Resolve<INotificationRegistrationService>());
 
         IDeviceInstallationService DeviceInstallationService
             => _deviceInstallationService ??
                 (_deviceInstallationService =
-                ServiceContainer.Resolve<IDeviceInstallationService>());
+                Resolver.Resolve<IDeviceInstallationService>());
 
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
@@ -61,7 +61,7 @@ namespace SSW.Rewards.iOS
             Rg.Plugins.Popup.Popup.Init();
 
             global::Xamarin.Forms.Forms.Init();
-            Bootstrap.Begin(() => new DeviceInstallationService());
+            Resolver.InitializeNativeInstallation(new DeviceInstallationService());
 
             // Conditionally request authorization and register for remote notifications immediately after Bootstrap.Begin.
             if (DeviceInstallationService.NotificationsSupported)

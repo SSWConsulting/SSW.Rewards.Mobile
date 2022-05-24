@@ -24,7 +24,7 @@ namespace SSW.Rewards.Services
 
         IDeviceInstallationService DeviceInstallationService
             => _deviceInstallationService ??
-            (_deviceInstallationService = ServiceContainer.Resolve<IDeviceInstallationService>());
+            (_deviceInstallationService = Resolver.Resolve<IDeviceInstallationService>());
 
         public async Task DeregisterDeviceAsync()
         {
@@ -57,8 +57,8 @@ namespace SSW.Rewards.Services
         public async Task RegisterDeviceAsync(params string[] tags)
         {
             DeviceInstall deviceInstallation = DeviceInstallationService?.GetDeviceInstallation(tags);
-
-            Console.WriteLine(deviceInstallation.InstallationId);
+            Console.WriteLine($"Device installation id {deviceInstallation.InstallationId}");
+            Console.WriteLine("Registering device...");
             try
             {
                 await SendAsync<DeviceInstall>(HttpMethod.Put, $"{RequestUrl}/UpdateInstallation", deviceInstallation).ConfigureAwait(false);
@@ -110,7 +110,8 @@ namespace SSW.Rewards.Services
 
             if (jsonRequest != null)
                 request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-
+            Console.WriteLine("In SendAsync()");
+            Console.WriteLine($"API endpoint {request.RequestUri}");
             var response = await AuthenticatedClient.SendAsync(request).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }

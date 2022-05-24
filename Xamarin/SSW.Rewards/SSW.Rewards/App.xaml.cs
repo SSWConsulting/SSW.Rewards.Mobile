@@ -26,11 +26,10 @@ namespace SSW.Rewards
             Console.WriteLine("Calling app constructor");
             InitializeComponent();
 
-            ServiceContainer.Resolve<IPushNotificationActionService>()
-                .ActionTriggered += NotificationActionTriggered;
-
             Console.WriteLine("App InitializeComponent completed successfully.");
             Resolver.Initialize();
+            Resolver.Resolve<IPushNotificationActionService>()
+                .ActionTriggered += NotificationActionTriggered;
             InitialiseApp();
         }
 
@@ -50,14 +49,14 @@ namespace SSW.Rewards
 
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
-                //MainPage = new TestPushNotificationPage();
+                //MainPage = new TestPushPage();
                 Console.WriteLine("Onboarding set as main page successfully.");
             }
             else
             {
                 Console.WriteLine("Has run. Launching login page.");
                 MainPage = new LoginPage();
-                //MainPage = new TestPushNotificationPage();
+                //MainPage = new TestPushPage();
                 Console.WriteLine("Login page set as main page successfully.");
             }
         }
