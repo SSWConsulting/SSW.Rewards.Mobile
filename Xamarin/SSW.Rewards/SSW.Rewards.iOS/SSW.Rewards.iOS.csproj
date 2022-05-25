@@ -1476,51 +1476,99 @@
     <ImageAsset Include="Assets.xcassets\guest_badge.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo%403x.png" />
-    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo%402x.png" />
-    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo.png" />
+    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground%403x.png" />
-    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground%402x.png" />
-    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground.png" />
+    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\rewardsbackground.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\rewardsbackground.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band.png" />
+    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2band.imageset\v2band.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2band.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.png" />
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2consultation.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups.png" />
+    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2cups.imageset\v2cups.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2cups.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail.png" />
+    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2fail.imageset\v2fail.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2fail.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie.png" />
+    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2sophie.imageset\v2sophie.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2sophie.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win%403x.png" />
-    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win%402x.png" />
-    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win.png" />
+    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2win.imageset\v2win.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2win.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>

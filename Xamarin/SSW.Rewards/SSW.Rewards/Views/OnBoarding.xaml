@@ -9,6 +9,7 @@
              xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              NavigationPage.HasNavigationBar="False"
+             BackgroundImageSource="rewardsbackground.png"
              x:Class="SSW.Rewards.Views.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -25,26 +26,22 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid d:BackgroundColor="White"
-              BackgroundColor="{Binding BackgroundColour}">
+        <Grid RowDefinitions="5*, 20*, 4*, 7*, 4*, 5*">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="15*"/>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <Label d:TextColor="Black"
-                   TextColor="{Binding TextColour}"
-                   HorizontalTextAlignment="Center"
-                   VerticalOptions="FillAndExpand"
-                   VerticalTextAlignment="End"
-                   FontSize="Title"
-                   Text="{Binding MainHeading}"
-                   d:Text="Earning Points"
-                   Grid.Row="0"/>
+            <Label HorizontalOptions="FillAndExpand"
+                   Grid.Row="0"
+                   HorizontalTextAlignment="End"
+                   d:TextColor="White"
+                   TextColor="White"
+                   d:Text="Skip"
+                   FontSize="Small"
+                   Margin="30"
+                   Text="Skip">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Command="{Binding GetStartedTapped}"/>
+                </Label.GestureRecognizers>
+            </Label>
 
             <cards:CarouselView Grid.Row="1"
                                 ItemsSource="{Binding Items}"
@@ -68,59 +65,37 @@
                     </DataTemplate>
 
                 </cards:CarouselView.ItemTemplate>
-
-                <controls:IndicatorsControl SelectedIndicatorStyle="{StaticResource SelectedStyle}"
-                                            UnselectedIndicatorStyle="{StaticResource UnselectedStyle}"/>
             </cards:CarouselView>
 
-            <StackLayout Grid.Row="2">
-                <Label HorizontalOptions="FillAndExpand"
-                       HorizontalTextAlignment="Center"
-                       d:TextColor="Black"
-                       TextColor="{Binding TextColour}"
-                       FontSize="Large"
-                       Text="{Binding SubHeading}"
-                       d:Text="How to get them?"/>
-
-                <Label HorizontalOptions="FillAndExpand"
-                       HorizontalTextAlignment="Center"
-                       d:TextColor="Black"
-                       TextColor="{Binding TextColour}"
-                       FontSize="Small"
-                       Margin="20,10,20,10"
-                       Text="{Binding Content}"
-                       d:Text="Talk to SSW people, attend talks QR codes will be shown at the end of the presentations or complete the tech quiz in this app."/>
-
-            </StackLayout>
+            <Label HorizontalOptions="FillAndExpand"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="White"
+                   TextColor="White"
+                   FontSize="Large"
+                   Text="{Binding SubHeading}"
+                   d:Text="How to get them?"
+                   Grid.Row="2"/>
 
             <Label HorizontalOptions="FillAndExpand"
-                   Grid.Row="3"
-                   HorizontalTextAlignment="{Binding TextAlignment}"
-                   d:TextColor="Black"
-                   TextColor="{Binding TextColour}"
-                   d:Text="SKIP INTRO"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="White"
+                   TextColor="White"
                    FontSize="Small"
                    Margin="20,10,20,10"
-                   Text="{Binding LinkText}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Command="{Binding GetStartedTapped}"/>
-                </Label.GestureRecognizers>
-			</Label>
+                   Text="{Binding Content}"
+                   d:Text="Talk to SSW people, attend talks QR codes will be shown at the end of the presentations or complete the tech quiz in this app."
+                   Grid.Row="3"/>
 
-            <StackLayout Grid.Row="4"
-                         Grid.RowSpan="2"
-                         VerticalOptions="FillAndExpand">
-                <StackLayout.Padding>
-                    <OnPlatform x:TypeArguments="Thickness">
-                        <On Platform="Android">10</On>
-                        <On Platform="iOS">25,0,0,0</On>
-                    </OnPlatform>
-                </StackLayout.Padding>
-                <Image Source="logo_ssw_colour"
-                       HorizontalOptions="Start"
-                       VerticalOptions="Center"/>
-            </StackLayout>
-		</Grid>
+            <controls:IndicatorsControl SelectedIndicatorStyle="{StaticResource SelectedStyle}"
+                                        UnselectedIndicatorStyle="{StaticResource UnselectedStyle}"
+                                        Grid.Row="4"/>
+
+            <Button Grid.Row="5"
+                    Text="Get Started"
+                    TextColor="White"
+                    WidthRequest="100"
+                    HeightRequest="30"
+                    BackgroundColor="{StaticResource SSWRed}"/>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
