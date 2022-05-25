@@ -6,6 +6,16 @@
              mc:Ignorable="d"
              x:Class="SSW.Rewards.App">
     <Application.Resources>
+        <OnPlatform x:TypeArguments="x:String" x:Key="FluentIcons">
+            <On Platform="iOS" Value="FluentSystemIcons-Regular"/>
+            <On Platform="Android" Value="FluentSystemIcons-Regular.ttf#Regular"/>
+            <On Platform="UWP" Value="/Assets/Fonts/FluentSystemIcons-Regular.ttf#"/>
+        </OnPlatform>
+        <OnPlatform x:TypeArguments="x:String" x:Key="FA6Brands">
+            <On Platform="iOS" Value="FontAwesome6Brands-Regular"/>
+            <On Platform="Android" Value="Font Awesome 6 Brands-Regular-400.otf#Regular"/>
+            <On Platform="UWP" Value="/Assets/Fonts/Font Awesome 6 Brands-Regular-400.otf#Font Awesome 6 Brands"/>
+        </OnPlatform>
         <OnPlatform x:TypeArguments="x:String" x:Key="HelveticaBold">
             <On Platform="iOS" Value="Helvetica-Bold"/>
             <On Platform="Android" Value="Helvetica-Bold-Font.ttf#Bold"/>

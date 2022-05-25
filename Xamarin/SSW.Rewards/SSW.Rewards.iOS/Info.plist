@@ -71,6 +71,7 @@
 	<array>
 		<string>Helvetica-Bold-Font.ttf</string>
 	    <string>FluentSystemIcons-Regular.ttf</string>
+    <string>Font Awesome 6 Brands-Regular-400.otf</string>
 </array>
 </dict>
 </plist>

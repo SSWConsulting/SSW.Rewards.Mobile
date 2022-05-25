@@ -137,6 +137,7 @@
     <Compile Include="ScanResultViewModel.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <BundleResource Include="Resources\Helvetica-Bold-Font.ttf" />
     <BundleResource Include="Resources\FluentSystemIcons-Regular.ttf" />
+    <BundleResource Include="Resources\Font Awesome 6 Brands-Regular-400.otf" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">

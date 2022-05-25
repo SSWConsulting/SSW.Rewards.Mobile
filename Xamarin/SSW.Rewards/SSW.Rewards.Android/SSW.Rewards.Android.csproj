@@ -163,6 +163,7 @@
     <AndroidAsset Include="Assets\qr-code-scanner.json" />
     <AndroidAsset Include="Assets\rapid-scan.json" />
     <AndroidAsset Include="Assets\FluentSystemIcons-Regular.ttf" />
+    <AndroidAsset Include="Assets\Font Awesome 6 Brands-Regular-400.otf" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.xml" />
