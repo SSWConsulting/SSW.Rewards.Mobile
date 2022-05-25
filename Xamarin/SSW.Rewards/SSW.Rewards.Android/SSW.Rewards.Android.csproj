@@ -162,6 +162,7 @@
     </AndroidAsset>
     <AndroidAsset Include="Assets\qr-code-scanner.json" />
     <AndroidAsset Include="Assets\rapid-scan.json" />
+    <AndroidAsset Include="Assets\FluentSystemIcons-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.xml" />
@@ -4315,6 +4316,9 @@
     <AndroidResource Include="Resources\drawable-hdpi\SSWWhite_preview.png" />
     <AndroidResource Include="Resources\drawable-mdpi\SSWWhite_preview.png" />
     <AndroidResource Include="Resources\drawable-ldpi\SSWWhite_preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

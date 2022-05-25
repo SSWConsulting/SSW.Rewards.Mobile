@@ -136,6 +136,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScanResultViewModel.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
     <BundleResource Include="Resources\Helvetica-Bold-Font.ttf" />
+    <BundleResource Include="Resources\FluentSystemIcons-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -1606,5 +1607,8 @@
     <ImageAsset Include="Assets.xcassets\SSWWhite_preview.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 </Project>

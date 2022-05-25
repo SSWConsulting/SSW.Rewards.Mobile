@@ -70,6 +70,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Helvetica-Bold-Font.ttf</string>
-	</array>
+	    <string>FluentSystemIcons-Regular.ttf</string>
+</array>
 </dict>
 </plist>
