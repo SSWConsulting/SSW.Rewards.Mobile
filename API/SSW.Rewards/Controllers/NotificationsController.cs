@@ -7,9 +7,11 @@ using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
 using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
+    [AllowAnonymous]
     public class NotificationsController : BaseController
     {
         [HttpGet]
@@ -37,9 +39,9 @@ namespace SSW.Rewards.WebAPI.Controllers
         [HttpDelete("{installationId}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute]DeleteInstallationCommand installationId)
+        public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute]string installationId)
         {
-            return Ok(await Mediator.Send(installationId));
+            return Ok(await Mediator.Send(new DeleteInstallationCommand(installationId)));
         }
     }
 }

@@ -381,7 +381,7 @@
         "operationId": "Notifications_DeleteInstallation",
         "parameters": [
           {
-            "name": "InstallationId",
+            "name": "installationId",
             "in": "path",
             "required": true,
             "schema": {

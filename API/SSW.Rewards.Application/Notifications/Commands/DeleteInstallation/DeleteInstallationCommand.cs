@@ -9,6 +9,11 @@ namespace SSW.Rewards.Application.Notifications.Commands.DeleteInstallation
     public class DeleteInstallationCommand : IRequest<Unit>
     {
         public string InstallationId { get; set; }
+
+        public DeleteInstallationCommand(string installationId)
+        {
+            InstallationId = installationId;
+        }
         
         public sealed class DeleteInstallationCommandHandler : IRequestHandler<DeleteInstallationCommand, Unit>
         {
