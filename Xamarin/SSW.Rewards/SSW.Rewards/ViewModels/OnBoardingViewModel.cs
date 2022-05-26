@@ -1,11 +1,9 @@
-﻿using System;
+﻿using SSW.Rewards.Services;
+using SSW.Rewards.Views;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Essentials;
-using SSW.Rewards.Views;
-using SSW.Rewards.Services;
-using System.Threading.Tasks;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -14,7 +12,7 @@ namespace SSW.Rewards.ViewModels
         public ICommand GetStartedTapped { get; set; }
 		public ICommand Swiped { get; set; }
         public ObservableCollection<CarouselViewModel> Items { get; set; }
-        public int SelectedItem { get; set; }
+        public CarouselViewModel SelectedItem { get; set; }
         public string MainHeading { get; set; }
         public string SubHeading { get; set; }
         public string Content { get; set; }
@@ -102,6 +100,8 @@ namespace SSW.Rewards.ViewModels
                 }
             };
 
+            SelectedItem = Items[0];
+
             SetDetails();
         }
 
@@ -125,15 +125,21 @@ namespace SSW.Rewards.ViewModels
 
         private void SetDetails()
         {
-            int itemIndex = SelectedItem;
-            MainHeading = Items[itemIndex].MainHeading;
-            SubHeading = Items[itemIndex].SubHeading;
-            Content = Items[itemIndex].Content;
-            BackgroundColour = Items[itemIndex].backgroundColour;
-            LinkText = Items[itemIndex].LinkText;
-            TextColour = Items[itemIndex].TextColour;
-            TextAlignment = Items[itemIndex].textAlignment;
-            RaisePropertyChanged(Properties);
+            try
+            {
+                MainHeading = SelectedItem.MainHeading;
+                SubHeading = SelectedItem.SubHeading;
+                Content = SelectedItem.Content;
+                BackgroundColour = SelectedItem.backgroundColour;
+                LinkText = SelectedItem.LinkText;
+                TextColour = SelectedItem.TextColour;
+                TextAlignment = SelectedItem.textAlignment;
+                RaisePropertyChanged(Properties);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 

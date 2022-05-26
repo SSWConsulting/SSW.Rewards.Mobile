@@ -36,6 +36,7 @@
         <Color x:Key="DividerColour">#5d5d5d</Color>
         <Color x:Key="SSWRed">#cc4141</Color>
         <Color x:Key="ButtonBorder">#4d4d4d</Color>
+        <Color x:Key="IndicatorColor">#bcbcbc</Color>
 
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>

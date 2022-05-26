@@ -5,9 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
-             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
-             xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              NavigationPage.HasNavigationBar="False"
              BackgroundImageSource="rewardsbackground.png"
              x:Class="SSW.Rewards.Views.OnBoarding">
@@ -43,33 +41,27 @@
                 </Label.GestureRecognizers>
             </Label>
 
-            <cards:CarouselView Grid.Row="1"
-                                ItemsSource="{Binding Items}"
-                                SelectedIndex="{Binding SelectedItem}"
-                                IsCyclical="False">
+            <CarouselView Grid.Row="1"
+                          ItemsSource="{Binding Items}"
+                          CurrentItem="{Binding SelectedItem}"
+                          Loop="False"
+                          CurrentItemChangedCommand="{Binding Swiped}"
+                          IndicatorView="RewardsIndicator">
 
-                <x:Arguments>
-                    <proc:CarouselProcessor RotationFactor="0" ScaleFactor="0.7" OpacityFactor="0.25" />
-                </x:Arguments>
-                
-                <cards:CarouselView.Behaviors>
-                    <behaviors:EventToCommandBehavior EventName="ItemAppeared"
-                                                        Command="{Binding Swiped}"/>
-                </cards:CarouselView.Behaviors>
-
-                <cards:CarouselView.ItemTemplate>
+                <CarouselView.ItemTemplate>
                     <DataTemplate>
                         <Image Source="{Binding Image}"
                                Margin="60"
                                Scale="0.7"/>
                     </DataTemplate>
 
-                </cards:CarouselView.ItemTemplate>
-            </cards:CarouselView>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
 
             <Label HorizontalOptions="FillAndExpand"
                    HorizontalTextAlignment="Center"
                    d:TextColor="White"
+                   VerticalOptions="End"
                    TextColor="White"
                    FontSize="Large"
                    Text="{Binding SubHeading}"
@@ -78,23 +70,27 @@
 
             <Label HorizontalOptions="FillAndExpand"
                    HorizontalTextAlignment="Center"
+                   VerticalOptions="Start"
                    d:TextColor="White"
                    TextColor="White"
                    FontSize="Small"
-                   Margin="20,10,20,10"
+                   Margin="30,10,30,10"
                    Text="{Binding Content}"
                    d:Text="Talk to SSW people, attend talks QR codes will be shown at the end of the presentations or complete the tech quiz in this app."
                    Grid.Row="3"/>
 
-            <controls:IndicatorsControl SelectedIndicatorStyle="{StaticResource SelectedStyle}"
-                                        UnselectedIndicatorStyle="{StaticResource UnselectedStyle}"
-                                        Grid.Row="4"/>
+            <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                           IndicatorColor="{StaticResource IndicatorColor}"
+                           VerticalOptions="Start"
+                           Grid.Row="4"
+                           x:Name="RewardsIndicator"/>
 
             <Button Grid.Row="5"
                     Text="Get Started"
                     TextColor="White"
-                    WidthRequest="100"
-                    HeightRequest="30"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start"
+                    WidthRequest="250"
                     BackgroundColor="{StaticResource SSWRed}"/>
         </Grid>
     </ContentPage.Content>
