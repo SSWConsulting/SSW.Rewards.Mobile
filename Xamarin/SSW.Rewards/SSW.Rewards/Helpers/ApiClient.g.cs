@@ -1424,7 +1424,7 @@ namespace SSW.Rewards
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Notifications/DeleteInstallation/{installationId}");
-            urlBuilder_.Replace("{InstallationId}", System.Uri.EscapeDataString(ConvertToString(installationId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{installationId}", System.Uri.EscapeDataString(ConvertToString(installationId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
             var disposeClient_ = false;

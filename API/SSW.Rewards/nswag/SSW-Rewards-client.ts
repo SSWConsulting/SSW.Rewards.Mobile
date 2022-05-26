@@ -602,7 +602,7 @@ export class NotificationsClient extends BaseClient implements INotificationsCli
         let url_ = this.baseUrl + "/api/Notifications/DeleteInstallation/{installationId}";
         if (installationId === undefined || installationId === null)
             throw new Error("The parameter 'installationId' must be defined.");
-        url_ = url_.replace("{InstallationId}", encodeURIComponent("" + installationId));
+        url_ = url_.replace("{installationId}", encodeURIComponent("" + installationId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{

@@ -8,6 +8,7 @@ using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
 {
+    //TODO: Pending V2 admin portal
     public class RequestNotificationCommand : IRequest<Unit>
     {
         public string Text { get; set; }
@@ -52,15 +53,15 @@ namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
                 if (!success)
                     throw new Exception("Request Failed");
               
-                var notificationEntry = new Domain.Entities.Notifications
-                {
-                    Message = notification.Text,
-                    NotificationTag = string.Join(",", notification.Tags),
-                    NotificationAction = notification.Action,
-                    SentByStaffMember = _currentUserService.GetUserEmail() 
-                };                
-                await _context.Notifications.AddAsync(notificationEntry, cancellationToken);
-                await _context.SaveChangesAsync(cancellationToken);
+                //var notificationEntry = new Domain.Entities.Notifications
+                //{
+                //    Message = notification.Text,
+                //    NotificationTag = string.Join(",", notification.Tags),
+                //    NotificationAction = notification.Action
+                //    SentByStaffMember = _currentUserService.GetUserEmail()
+                //};                
+                //await _context.Notifications.AddAsync(notificationEntry, cancellationToken);
+                //await _context.SaveChangesAsync(cancellationToken);
                 
                 return Unit.Value;
             }
