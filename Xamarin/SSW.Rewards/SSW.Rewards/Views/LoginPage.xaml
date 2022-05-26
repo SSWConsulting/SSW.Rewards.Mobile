@@ -5,7 +5,7 @@
              x:Class="SSW.Rewards.Views.LoginPage">
     <ContentPage.Content>
         <Grid>
-            <Image Source="login_background"
+            <Image Source="rewardsbackground"
                    Aspect="AspectFill"
                    HorizontalOptions="FillAndExpand"
                    VerticalOptions="FillAndExpand"/>

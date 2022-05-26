@@ -46,7 +46,8 @@
                           CurrentItem="{Binding SelectedItem}"
                           Loop="False"
                           CurrentItemChangedCommand="{Binding Swiped}"
-                          IndicatorView="RewardsIndicator">
+                          IndicatorView="RewardsIndicator"
+                          x:Name="RewardsCarousel">
 
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
@@ -86,12 +87,13 @@
                            x:Name="RewardsIndicator"/>
 
             <Button Grid.Row="5"
-                    Text="Get Started"
+                    Text="{Binding ButtonText}"
                     TextColor="White"
                     HorizontalOptions="Center"
                     VerticalOptions="Start"
                     WidthRequest="250"
-                    BackgroundColor="{StaticResource SSWRed}"/>
+                    BackgroundColor="{StaticResource SSWRed}"
+                    Command="{Binding DoActionCommand}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

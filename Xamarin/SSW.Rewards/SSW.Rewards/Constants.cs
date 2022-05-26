@@ -23,7 +23,7 @@
 #endif
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
-        public string Scope { get; } = "openid profile ssw-rewards-api email";
+        public string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
 
     }
 }

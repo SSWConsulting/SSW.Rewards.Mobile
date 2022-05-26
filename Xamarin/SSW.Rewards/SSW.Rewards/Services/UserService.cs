@@ -5,7 +5,6 @@ using SSW.Rewards.Helpers;
 using SSW.Rewards.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
@@ -72,6 +71,9 @@ namespace SSW.Rewards.Services
                     Console.WriteLine($"Access Token: {token}");
                     Console.WriteLine($"ID Token: {idToken}");
                     await SetLoggedInState(token, idToken);
+
+                    await SettRefreshToken(result.RefreshToken);
+
                     return ApiStatus.Success;
                 }
                 else
