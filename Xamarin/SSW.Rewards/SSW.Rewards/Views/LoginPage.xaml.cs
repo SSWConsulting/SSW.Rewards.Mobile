@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
@@ -44,6 +45,13 @@ namespace SSW.Rewards.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            await Task.WhenAny<bool>
+                (
+                    LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
+                    LogoImage.ScaleTo(3, 1000, Easing.CubicIn)
+
+                );
 
             await _viewModel.Refresh();
         }

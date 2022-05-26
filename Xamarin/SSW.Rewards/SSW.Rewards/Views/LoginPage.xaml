@@ -13,18 +13,13 @@
             <StackLayout VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
 
-                <Image Source="logo_large"
-                       VerticalOptions="Start"
-                       HorizontalOptions="Center"
-                       Margin="0,60,0,0"/>
-
                 <Button Text="{Binding ButtonText}"
                         Command="{Binding LoginTappedCommand}"
                         TextColor="White"
                         VerticalOptions="EndAndExpand"
                         Margin="50,0,50,150"
                         IsEnabled="{Binding LoginButtonEnabled}"
-                        BackgroundColor="Black"/>
+                        BackgroundColor="{StaticResource SSWRed}"/>
                 <!--BorderColor="{Binding ButtonBorder}"/>-->
             </StackLayout>
 
@@ -33,6 +28,13 @@
                                VerticalOptions="Center"
                                IsVisible="{Binding isRunning}"
                                IsRunning="{Binding isRunning}"/>
+
+            <Image Source="rewardslogo"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   WidthRequest="400"
+                   Margin="0,60,0,0"
+                   x:Name="LogoImage"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

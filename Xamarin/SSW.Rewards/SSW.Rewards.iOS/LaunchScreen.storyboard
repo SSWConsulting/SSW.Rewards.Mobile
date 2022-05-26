@@ -37,6 +37,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo_splash" width="152" height="117.5"/>
+        <image name="rewardslogo" width="152" height="117.5"/>
     </resources>
 </document>
