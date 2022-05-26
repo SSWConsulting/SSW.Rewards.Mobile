@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
+    //TODO: Pending V2 admin portal
     [AllowAnonymous]
     public class NotificationsController : BaseController
     {

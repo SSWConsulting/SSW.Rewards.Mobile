@@ -8,6 +8,7 @@ using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
 {
+    //TODO: Pending V2 admin portal
     public class RequestNotificationCommand : IRequest<Unit>
     {
         public string Text { get; set; }
