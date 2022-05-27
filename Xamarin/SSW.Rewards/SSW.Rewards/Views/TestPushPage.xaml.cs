@@ -28,7 +28,7 @@ namespace SSW.Rewards.Views
             });
 
         void ShowAlert(string message) => MainThread.BeginInvokeOnMainThread(()
-            => DisplayAlert("Test Push", message, "OK")
+            => DisplayAlert("Device Status", message, "OK")
                 .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; })
         );
     }
