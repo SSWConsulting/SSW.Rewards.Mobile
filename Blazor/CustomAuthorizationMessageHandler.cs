@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 namespace SSW.Rewards.Admin;
 public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
 {
-    public CustomAuthorizationMessageHandler(IAccessTokenProvider provider,
+    private IConfiguration _configuration;
+    public CustomAuthorizationMessageHandler(IAccessTokenProvider provider, IConfiguration config,
         NavigationManager navigationManager)
         : base(provider, navigationManager)
     {
+        this._configuration = config;
         ConfigureHandler(
-            authorizedUrls: new[] { "https://localhost:49386/api/" },
+            authorizedUrls: new[] { _configuration.GetValue<string>("RewardsApiUrl") },
             scopes: new[] { "email", "profile", "ssw-rewards-api" });
     }
 }

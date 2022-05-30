@@ -8,7 +8,7 @@ public class LeaderboardService
     private HttpClient _httpClient;
     public LeaderboardService(IHttpClientFactory clientFactory)
     {
-        this._httpClient = clientFactory.CreateClient("WebAPI");
+        this._httpClient = clientFactory.CreateClient(Constants.RewardsApiClient);
     }
 
     public async Task<_LeaderboardListViewModel?> GetLeaderboard()

@@ -13,14 +13,12 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
 
 string? apiBaseUrl = builder.Configuration["RewardsApiUrl"];
-// TODO: Move this somewhere better.
-string httpClientName = "WebAPI";
 if (apiBaseUrl == null)
 {
     throw new NullReferenceException("No API base URL provided");
 }
 // Http Client
-builder.Services.AddHttpClient(httpClientName, client => client.BaseAddress = new Uri(apiBaseUrl))
+builder.Services.AddHttpClient(Constants.RewardsApiClient, client => client.BaseAddress = new Uri(apiBaseUrl))
     .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
 
 // Services

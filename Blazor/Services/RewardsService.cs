@@ -9,7 +9,7 @@ public class RewardsService
     private HttpClient _httpClient;
     public RewardsService(IHttpClientFactory clientFactory)
     {
-        this._httpClient = clientFactory.CreateClient("WebAPI");
+        this._httpClient = clientFactory.CreateClient(Constants.RewardsApiClient);
     }
 
     public async Task<_RewardAdminListViewModel?> GetRewards()
