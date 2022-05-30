@@ -159,6 +159,8 @@ namespace SSW.Rewards.Services
 
         public async Task RefreshLoginAsync()
         {
+            // TODO: this doesn't work
+
             RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
             if (!string.IsNullOrWhiteSpace(RefreshToken))

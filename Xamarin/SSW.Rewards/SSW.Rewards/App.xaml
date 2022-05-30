@@ -38,6 +38,12 @@
         <Color x:Key="ButtonBorder">#4d4d4d</Color>
         <Color x:Key="IndicatorColor">#bcbcbc</Color>
 
+        <!-- v2 -->
+        <Color x:Key="MainBackground">#FF121212</Color>
+        <Color x:Key="primary">#FFCC4141</Color> <!-- replaces SSWRes-->
+        <Color x:Key="TabBarBackground">#FF333333</Color>
+        <Color x:Key="LeaderCardBackground">#FF505050</Color>
+        
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>
         </OnPlatform>

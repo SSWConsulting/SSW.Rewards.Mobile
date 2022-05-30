@@ -10,6 +10,9 @@
        FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
        x:Class="SSW.Rewards.AppShell"
        x:Name="RewardsShell">
+    <Shell.FlyoutIcon>
+        <FontImageSource FontFamily="FluentIcone" Glyph="&#xe823;"/>
+    </Shell.FlyoutIcon>
 
     <!-- 
         Styles and Resources 
@@ -114,8 +117,11 @@
             </DataTemplate>
         </Shell.ItemTemplate>
         <Tab Title="Leaderboard"
-             Route="main"
-                 Icon="icon_star">
+             Route="main">
+            <!--Icon="{FontImage FontFamily=FluentIcons, Glyph=&#xf792;}">-->
+            <Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons" Glyph="&#xf792;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
         </Tab>
         <Tab Title="Earn Points"
