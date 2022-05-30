@@ -1,0 +1,53 @@
+﻿@page "/leaderboard"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Models.Leaderboard
+@using SSW.Rewards.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject LeaderboardService httpService
+@code {
+    _LeaderboardListViewModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await httpService.GetLeaderboard();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+}
+
+
+<h3>Leaderboard</h3>
+@if (model != null && model.Users != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in model.Users)
+            {
+                <tr>
+                    <td>@user.Rank</td>
+                    <td>@user.Name</td>
+                    <td>@user.Points</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,54 @@
+﻿@page "/rewards"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Models.Rewards
+@using SSW.Rewards.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject RewardsService httpService
+@code {
+    _RewardAdminListViewModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await httpService.GetRewards();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+}
+<h3>Rewards</h3>
+
+@if (model != null && model.Rewards != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Cost</th>
+                <th>Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reward in model.Rewards)
+            {
+                <tr>
+                    <td>@reward.Id</td>
+                    <td>@reward.Name</td>
+                    <td>@reward.Cost</td>
+                    <td>@reward.Code</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

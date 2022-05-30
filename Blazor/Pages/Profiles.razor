@@ -1,0 +1,79 @@
+﻿@page "/profiles"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Models.Staff
+@using SSW.Rewards.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject StaffService httpService
+@code {
+    _StaffListViewModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await httpService.GetStaff();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+}
+
+
+<h3>Achievements</h3>
+@if (model != null && model.Staff != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Email</th>
+                <th>Profile</th>
+                <th>Profile Photo</th>
+                <th>Is Deleted</th>
+                <th>Twitter Username</th>
+                <th>GitHub Username</th>
+                <th>LinkedIn URL</th>
+                <th>Is External</th>
+                <th>Skills</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var staff in model.Staff)
+            {
+                <tr>
+                    <td>@staff.Id</td>
+                    <td>@staff.Name</td>
+                    <td>@staff.Title</td>
+                    <td>@staff.Email</td>
+                    <td>@staff.Profile</td>
+                    <td>@staff.ProfilePhoto</td>
+                    <td>@staff.IsDeleted</td>
+                    <td>@staff.TwitterUsername</td>
+                    <td>@staff.GitHubUsername</td>
+                    <td>@staff.LinkedInUrl</td>
+                    <td>@staff.IsExternal</td>
+                    <td>
+                        @if(staff.Skills != null)
+                        {
+                            @foreach(var skill in staff.Skills)
+                            {
+                                <p>@skill</p>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

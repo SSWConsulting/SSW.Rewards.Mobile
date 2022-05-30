@@ -1,0 +1,60 @@
+﻿@page "/achievements"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Models.Achievements
+@using SSW.Rewards.Admin.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject AchievementsService httpService
+@code {
+    _AchievementAdminListViewModel? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            model = await httpService.GetAchievements();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+}
+
+
+<h3>Achievements</h3>
+if (model == null)
+{
+    <p>Loading...</p>
+}
+
+@if (model != null && model.Achievements != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var achievement in model.Achievements)
+            {
+                <tr>
+                    <td>@achievement.Id</td>
+                    <td>@achievement.Name</td>
+                    <td>@achievement.Value</td>
+                    <td>@achievement.Code</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
