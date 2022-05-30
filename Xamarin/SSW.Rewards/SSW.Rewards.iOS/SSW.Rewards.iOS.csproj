@@ -1572,6 +1572,42 @@
     <ImageAsset Include="Assets.xcassets\v2win.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_quiz.imageset\icon_quiz%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_quiz.imageset\icon_quiz%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_quiz.imageset\icon_quiz.png" />
+    <ImageAsset Include="Assets.xcassets\icon_quiz.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_home.imageset\icon_home%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_home.imageset\icon_home%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_home.imageset\icon_home.png" />
+    <ImageAsset Include="Assets.xcassets\icon_home.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu.png" />
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_people.imageset\icon_people%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_people.imageset\icon_people%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_people.imageset\icon_people.png" />
+    <ImageAsset Include="Assets.xcassets\icon_people.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_qr.imageset\icon_qr%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qr.imageset\icon_qr%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qr.imageset\icon_qr.png" />
+    <ImageAsset Include="Assets.xcassets\icon_qr.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_trophy.imageset\icon_trophy%403x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_trophy.imageset\icon_trophy%402x.png" />
+    <ImageAsset Include="Assets.xcassets\icon_trophy.imageset\icon_trophy.png" />
+    <ImageAsset Include="Assets.xcassets\icon_trophy.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
