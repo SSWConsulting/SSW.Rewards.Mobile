@@ -1,12 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource MainBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              x:Class="SSW.Rewards.Pages.ProfilePage">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <Grid RowDefinitions="*,*,10"
+          Padding="20,20,20,5">
+
+        <Grid x:Name="ProfileDisplay"
+              Grid.Row="0"
+              RowDefinitions="2*, 1*, 3*, 1*, 1*">
+            <controls:RewardsProgress Grid.RowSpan="5"
+                                      Progress="0.66"/>
+        </Grid>
+        
+    </Grid>
 </ContentPage>

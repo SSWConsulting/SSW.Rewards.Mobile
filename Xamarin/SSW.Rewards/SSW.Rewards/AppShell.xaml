@@ -5,14 +5,13 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d"
        xmlns:local="clr-namespace:SSW.Rewards.Views"
+       xmlns:pages="clr-namespace:SSW.Rewards.Pages"
        xmlns:controls="clr-namespace:SSW.Rewards.Controls"
        Title="SSW.Rewards"
        FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
+       FlyoutIcon="icon_menu"
        x:Class="SSW.Rewards.AppShell"
        x:Name="RewardsShell">
-    <Shell.FlyoutIcon>
-        <FontImageSource FontFamily="FluentIcone" Glyph="&#xe823;"/>
-    </Shell.FlyoutIcon>
 
     <!-- 
         Styles and Resources 
@@ -21,12 +20,12 @@
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">Black</Color>
             <Style x:Key="BaseStyle" TargetType="ShellItem">
-                <Setter Property="Shell.BackgroundColor" Value="Black" />
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource MainBackground}" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="Black" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource TabBarBackground}" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
@@ -116,22 +115,25 @@
                              BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Title="Leaderboard"
-             Route="main">
-            <!--Icon="{FontImage FontFamily=FluentIcons, Glyph=&#xf792;}">-->
-            <Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons" Glyph="&#xf792;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:LeaderBoard}" />
+        <Tab Route="main"
+             Icon="icon_home">
+            <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
         </Tab>
-        <Tab Title="Earn Points"
-             Route="points"
-                 Icon="icon_qrcode">
-            <ShellContent ContentTemplate="{DataTemplate local:EarnPointsPage}" />
+        <Tab Route="people"
+             Icon="icon_people">
+            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
-        <Tab Title="SSW Devs"
-                 Icon="icon_sswdevs">
-            <ShellContent ContentTemplate="{DataTemplate local:DevProfiles}" />
+        <Tab Route="scan"
+             Icon="icon_qr">
+            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+        </Tab>
+        <Tab Route="leader"
+             Icon="icon_trophy">
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+        </Tab>
+        <Tab Route="quiz"
+             Icon="icon_quiz">
+            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
         </Tab>
     </FlyoutItem>
 
