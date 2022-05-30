@@ -43,7 +43,7 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
                         {
                             u.Rank = i + 1;
                             return u;
-                        })
+                        }).ToList()
                 };
 
                 return model;
