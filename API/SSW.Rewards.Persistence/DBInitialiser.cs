@@ -77,5 +77,29 @@ namespace SSW.Rewards.Persistence
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task MapAchievementTypes()
+        {
+            var achievements = await _context.Achievements.ToListAsync();
+
+            var staffAchievements = await _context.StaffMembers
+                .Include(s => s.StaffAchievement)
+                .Select(s => s.StaffAchievement)
+                .ToListAsync();
+
+            foreach (var achievement in achievements)
+            {
+                if (staffAchievements.Contains(achievement))
+                {
+                    achievement.Type = AchievementType.Scanned;
+                }
+                else
+                {
+                    achievement.Type = AchievementType.Attended;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
