@@ -6,11 +6,12 @@ using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 using SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
 using SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile;
+using SSW.Rewards.WebAPI.Settings;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
     public class StaffController : BaseController
     {
         [HttpGet]
@@ -32,14 +33,14 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        //[Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<string>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));
         }
 
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        //[Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(int id, IFormFile file)
         {
             return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { Id = id, File = file }));
