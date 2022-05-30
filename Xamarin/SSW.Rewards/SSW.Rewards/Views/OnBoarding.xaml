@@ -69,16 +69,22 @@
                    d:Text="How to get them?"
                    Grid.Row="2"/>
 
-            <Label HorizontalOptions="FillAndExpand"
-                   HorizontalTextAlignment="Center"
-                   VerticalOptions="Start"
-                   d:TextColor="White"
-                   TextColor="White"
-                   FontSize="Small"
-                   Margin="30,10,30,10"
-                   Text="{Binding Content}"
-                   d:Text="Talk to SSW people, attend talks QR codes will be shown at the end of the presentations or complete the tech quiz in this app."
-                   Grid.Row="3"/>
+            <StackLayout Grid.Row="3">
+                <Label TextColor="{StaticResource SSWRed}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="30,10"
+                       IsVisible="{Binding HasPoints}"
+                       Text="{Binding Points, StringFormat='⭐ {0}'}"/>
+                
+                <Label HorizontalOptions="FillAndExpand"
+                       HorizontalTextAlignment="Center"
+                       VerticalOptions="Start"
+                       TextColor="White"
+                       FontSize="Small"
+                       Margin="30,10"
+                       Text="{Binding Content}"/>
+            </StackLayout>
 
             <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                            IndicatorColor="{StaticResource IndicatorColor}"

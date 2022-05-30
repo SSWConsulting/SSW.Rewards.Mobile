@@ -17,6 +17,8 @@ namespace SSW.Rewards.ViewModels
         public string Content { get; set; }
         public string ButtonText { get; set; }
         public Color BackgroundColour { get; set; }
+        public int Points { get; set; }
+        public bool HasPoints { get; set; }
         public string[] Properties { get; set; }
 
         public EventHandler<int> ScrollToRequested;
@@ -28,7 +30,7 @@ namespace SSW.Rewards.ViewModels
             _userService = userService;
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(SetDetails);
-            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText)};
+            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
             Items = new ObservableCollection<CarouselViewModel>
             {
                 new CarouselViewModel
@@ -57,6 +59,8 @@ namespace SSW.Rewards.ViewModels
                     Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
                     Image = "v2cups",
                     SubHeading = "SSW Smart Keepcup",
+                    HasPoints = true,
+                    Points = 2000,
                     ButtonText = "NEXT",
                 },
                 new CarouselViewModel
@@ -64,6 +68,8 @@ namespace SSW.Rewards.ViewModels
                     Content = "Get on the leaderboard and earn a MI Wrist band. Just like a FitBit, except more functionality and a month's battery life!",
                     Image = "v2band",
                     SubHeading = "MI Band 4",
+                    HasPoints = true,
+                    Points = 2000,
                     ButtonText = "NEXT",
                 },
                 new CarouselViewModel
@@ -71,6 +77,8 @@ namespace SSW.Rewards.ViewModels
                     Content = "SSW Architects will help you successfully implement your project.",
                     Image = "v2consultation",
                     SubHeading = "Half Price Specification Review",
+                    HasPoints = true,
+                    Points = 2000,
                     ButtonText = "DONE",
                 }
             };
@@ -126,6 +134,8 @@ namespace SSW.Rewards.ViewModels
             SubHeading = SelectedItem.SubHeading;
             Content = SelectedItem.Content;
             ButtonText = SelectedItem.ButtonText;
+            HasPoints = SelectedItem.HasPoints;
+            Points = SelectedItem.Points;
             RaisePropertyChanged(Properties);
         }
     }
@@ -136,5 +146,7 @@ namespace SSW.Rewards.ViewModels
         public string Content { get; set; }
         public string Image { get; set; }
         public string ButtonText { get; set; }
+        public bool HasPoints { get; set; } = false;
+        public int Points { get; set; }
     }
 }
