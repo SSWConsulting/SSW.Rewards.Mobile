@@ -3,16 +3,72 @@
 @using SSW.Rewards.Admin.Models.Staff
 @using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Models.Interfaces
+
 @attribute [Authorize]
+
 @inject StaffService httpService
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h2">Profiles</MudText>
+<MudText Typo="Typo.body1">All staff profiles available for editing</MudText>
+
+<AdminTable Items="@(_ProfileItemsViewModels?.Cast<ITableItems>().ToList())"
+            Headings="@_headings"
+            TableTitle="Rewards"
+            SearchPlaceholderText="Search for a Reward"
+            IsLoading="@Loading"
+            OnClick="@(OnRowClicked)"/>
+
+@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+
+@* TODO: Move this to the code behind *@
 @code {
-    _StaffListViewModel? model;
+    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+    protected bool Loading = true;
+    
+    private _StaffListViewModel? _model;
+    protected _StaffListViewModel? Model
+    {
+        get => _model;
+        set
+        {
+            _model = value;
+            _ProfileItemsViewModels = _model?.Staff
+                .Select(ProfileItemsViewModel.FromDto)
+                .ToList();
+            Loading = false;
+        }
+    }
+    
+    private List<ProfileItemsViewModel>? _ProfileItemsViewModels;
+    
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Name" },
+        new TableHeaders { Heading = "Title" }
+    };
+    
+    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
+    {
+        var item = _model?.Staff.FirstOrDefault(x => x.Id == obj.Item.Id);
+
+        Console.WriteLine(item?.Name);
+    }
+
+    private void OpenDialog(DialogOptions options)
+    {
+        DialogService.Show<AddAchievementsDialog>("Create a Staff Profile", options);
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            model = await httpService.GetStaff();
+            Model = await httpService.GetStaff();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -25,55 +81,23 @@
 
         await base.OnInitializedAsync();
     }
-}
 
-
-<h3>Achievements</h3>
-@if (model != null && model.Staff != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Email</th>
-                <th>Profile</th>
-                <th>Profile Photo</th>
-                <th>Is Deleted</th>
-                <th>Twitter Username</th>
-                <th>GitHub Username</th>
-                <th>LinkedIn URL</th>
-                <th>Is External</th>
-                <th>Skills</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var staff in model.Staff)
+    public class ProfileItemsViewModel : ITableItems
+    {
+        public string Title { get; set; }
+        
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public RenderFragment OverwriteRowRender(string rowName)
+        {
+            throw new NotImplementedException();
+        }
+        public static ProfileItemsViewModel FromDto(StaffDto dto)
+            => new()
             {
-                <tr>
-                    <td>@staff.Id</td>
-                    <td>@staff.Name</td>
-                    <td>@staff.Title</td>
-                    <td>@staff.Email</td>
-                    <td>@staff.Profile</td>
-                    <td>@staff.ProfilePhoto</td>
-                    <td>@staff.IsDeleted</td>
-                    <td>@staff.TwitterUsername</td>
-                    <td>@staff.GitHubUsername</td>
-                    <td>@staff.LinkedInUrl</td>
-                    <td>@staff.IsExternal</td>
-                    <td>
-                        @if(staff.Skills != null)
-                        {
-                            @foreach(var skill in staff.Skills)
-                            {
-                                <p>@skill</p>
-                            }
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                Id = dto.Id,
+                Name = dto.Name,
+                Title = dto.Title,
+            };
+    }
 }

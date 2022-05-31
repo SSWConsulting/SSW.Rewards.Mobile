@@ -1,0 +1,30 @@
+@page "/Notifications"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h2">Notifications</MudText>
+<MudText Typo="Typo.body1">Send and view notifications</MudText>
+
+@code {
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Model = await httpService.GetLeaderboard();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+            // Log
+        }
+
+        await base.OnInitializedAsync();
+    }
+    
+}

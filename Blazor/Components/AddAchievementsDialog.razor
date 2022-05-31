@@ -1,0 +1,20 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Achievement</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Class="d-inline" T="string" Label="Achievement Name"></MudTextField>
+        <MudTextField Class="d-inline" T="int" Label="Achievement Value"></MudTextField>
+    </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="Submit">Create</MudButton>
+        </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog?.Cancel();
+}

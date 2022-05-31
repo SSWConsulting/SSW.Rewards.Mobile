@@ -3,16 +3,72 @@
 @using SSW.Rewards.Admin.Models.Rewards
 @using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Models.Interfaces
+
 @attribute [Authorize]
+
 @inject RewardsService httpService
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h2">Rewards</MudText>
+<MudText Typo="Typo.body1">All rewards available to be claimed</MudText>
+
+<AdminTable Items="@(_rewardItemsViewModels?.Cast<ITableItems>().ToList())"
+            Headings="@_headings"
+            TableTitle="Rewards"
+            SearchPlaceholderText="Search for a Reward"
+            IsLoading="@Loading"
+            OnClick="@(OnRowClicked)"/>
+
+@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+
+
+@* TODO: Move this to the code behind? *@
 @code {
-    _RewardAdminListViewModel? model;
+    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+    protected bool Loading = true;
+    
+    private _RewardAdminListViewModel? _model;
+    protected _RewardAdminListViewModel? Model
+    {
+        get => _model;
+        set
+        {
+            _model = value;
+            _rewardItemsViewModels = _model?.Rewards
+                .Select(RewardItemsViewModel.FromDto)
+                .ToList();
+            Loading = false;
+        }
+    }
+    private List<RewardItemsViewModel>? _rewardItemsViewModels;
+    
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Code", Overwrite = true },
+        new TableHeaders { Heading = "Name" },
+        new TableHeaders { Heading = "Cost" },
+    };
+    
+    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
+    {
+        var item = _model?.Rewards.FirstOrDefault(x => x.Id == obj.Item.Id);
+
+        Console.WriteLine(item?.Name);
+    }
+
+    private void OpenDialog(DialogOptions options)
+    {
+        DialogService.Show<AddAchievementsDialog>("Create a Reward", options);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            model = await httpService.GetRewards();
+            Model = await httpService.GetRewards();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -25,30 +81,29 @@
 
         await base.OnInitializedAsync();
     }
-}
-<h3>Rewards</h3>
 
-@if (model != null && model.Rewards != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Cost</th>
-                <th>Code</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var reward in model.Rewards)
+    public class RewardItemsViewModel : ITableItems
+    {
+        public int Cost { get; set; }
+        public string Code { get; set; }
+        
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public RenderFragment OverwriteRowRender(string rowName)
+        {
+            if (rowName == "Code")
             {
-                <tr>
-                    <td>@reward.Id</td>
-                    <td>@reward.Name</td>
-                    <td>@reward.Cost</td>
-                    <td>@reward.Code</td>
-                </tr>
+                return @<AdminQRCode Height="100" QRCodeString="@Code"/>;
             }
-        </tbody>
-    </table>
+            return null;
+        }
+        public static RewardItemsViewModel FromDto(RewardAdminDto dto)
+            => new()
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Cost = dto.Cost,
+                Code = dto.Code,
+            };
+    }
 }

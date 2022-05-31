@@ -3,16 +3,79 @@
 @using SSW.Rewards.Admin.Models.Achievements
 @using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Models.Interfaces
 @attribute [Authorize]
-@inject AchievementsService httpService
-@code {
-    _AchievementAdminListViewModel? model;
 
-    protected override async Task OnInitializedAsync()
+@inject AchievementsService httpService
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h2">Achievements</MudText>
+<MudText Typo="Typo.body1">All achievevements available for scanning</MudText>
+
+<AdminTable Items="@(_AchievementItemsViewModels?.Cast<ITableItems>().ToList())"
+            Headings="@_headings"
+            TableTitle="Achievements"
+            SearchPlaceholderText="Search for an Achievement"
+            IsLoading="@Loading"
+            OnClick="@(OnRowClicked)"/>
+
+@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+
+@* TODO: Clean this code up - Move it into code behind *@
+@code {
+    private _AchievementAdminListViewModel? _model;
+    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+
+    private void OpenDialog(DialogOptions options)
+    {
+        DialogService.Show<AddAchievementsDialog>("Add Achievements", options);
+    }
+
+    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
+    {
+        var item = _model.Achievements.FirstOrDefault(x => x.Id == obj.Item.Id);
+
+        Console.WriteLine(item.Name);
+    }
+
+    private void OnFabClicked()
+    {
+    }
+
+    protected bool Loading = true;
+
+    protected _AchievementAdminListViewModel? Model
+    {
+        get => _model;
+        set
+        {
+            _model = value;
+
+            _AchievementItemsViewModels = _model.Achievements
+                .Select(AchievementItemsViewModel.FromDto)
+                .ToList();
+            Loading = false;
+        }
+    }
+
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Code", Overwrite = true },
+        new TableHeaders { Heading = "Name" },
+        new TableHeaders { Heading = "Value" },
+    };
+
+    private
+        List<AchievementItemsViewModel> _AchievementItemsViewModels;
+
+    protected override async
+        Task OnInitializedAsync()
     {
         try
         {
-            model = await httpService.GetAchievements();
+            Model = await httpService.GetAchievements();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -20,41 +83,37 @@
         }
         catch (Exception ex)
         {
-
+    // ignored
         }
 
         await base.OnInitializedAsync();
     }
-}
 
+    public class AchievementItemsViewModel : ITableItems
+    {
+        public int Value { get; set; }
+        public string Code { get; set; }
 
-<h3>Achievements</h3>
-if (model == null)
-{
-    <p>Loading...</p>
-}
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-@if (model != null && model.Achievements != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Value</th>
-                <th>Code</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var achievement in model.Achievements)
+        public static AchievementItemsViewModel FromDto(AchievementAdminDto dto)
+            => new()
             {
-                <tr>
-                    <td>@achievement.Id</td>
-                    <td>@achievement.Name</td>
-                    <td>@achievement.Value</td>
-                    <td>@achievement.Code</td>
-                </tr>
+                Id = dto.Id,
+                Name = dto.Name,
+                Value = dto.Value,
+                Code = dto.Code,
+            };
+
+        public RenderFragment OverwriteRowRender(string rowName)
+        {
+            if (rowName == "Code")
+            {
+                return @<AdminQRCode Height="100" QRCodeString="@Code"/>;
             }
-        </tbody>
-    </table>
+            return null;
+        }
+    }
+
 }
