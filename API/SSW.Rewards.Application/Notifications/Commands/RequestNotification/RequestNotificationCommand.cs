@@ -40,7 +40,8 @@ namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
                 {
                     Text = request.Text,
                     Action = request.Action,
-                    Silent = true
+                    Silent = request.Silent,
+                    Tags = request.Tags
                 };
                 
                 if ((notification.Silent && string.IsNullOrWhiteSpace(notification?.Action)) ||

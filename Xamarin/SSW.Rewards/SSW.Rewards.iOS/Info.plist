@@ -18,7 +18,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>13.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>SSW Rewards</string>
 	<key>CFBundleIdentifier</key>
@@ -71,7 +71,11 @@
 	<array>
 		<string>Helvetica-Bold-Font.ttf</string>
 	    <string>FluentSystemIcons-Regular.ttf</string>
-    <string>Font Awesome 6 Brands-Regular-400.otf</string>
-</array>
+    	<string>Font Awesome 6 Brands-Regular-400.otf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

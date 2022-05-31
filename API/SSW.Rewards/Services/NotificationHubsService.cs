@@ -86,18 +86,15 @@ namespace SSW.Rewards.WebAPI.Services
 
         public async Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token)
         {
-            if ((notificationRequest.Silent &&
-                string.IsNullOrWhiteSpace(notificationRequest?.Action)) ||
-                (!notificationRequest.Silent &&
-                (string.IsNullOrWhiteSpace(notificationRequest?.Text)) ||
+            if ((notificationRequest.Silent && string.IsNullOrWhiteSpace(notificationRequest?.Action)) ||
+                (!notificationRequest.Silent && (string.IsNullOrWhiteSpace(notificationRequest?.Text)) ||
                 string.IsNullOrWhiteSpace(notificationRequest?.Action)))
                 return false;
-
-            var androidPushTemplate = notificationRequest.Silent ?
+            var androidPushTemplate = Convert.ToBoolean(notificationRequest.Silent) ?
                 PushTemplates.Silent.Android :
                 PushTemplates.Generic.Android;
 
-            var iOSPushTemplate = notificationRequest.Silent ?
+            var iOSPushTemplate = Convert.ToBoolean(notificationRequest.Silent) ?
                 PushTemplates.Silent.iOS :
                 PushTemplates.Generic.iOS;
 

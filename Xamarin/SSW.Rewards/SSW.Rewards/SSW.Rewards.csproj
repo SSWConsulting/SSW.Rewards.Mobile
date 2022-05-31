@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Configurations>Debug;Release;QA</Configurations>
+    <Configurations>Debug;QA;Release</Configurations>
     <UserSecretsId>71ad90e6-7122-463d-821e-af9f9d316d9b</UserSecretsId>
   </PropertyGroup>
 
@@ -37,6 +37,7 @@
     <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie" Version="3.0.3" />
     <PackageReference Include="Microsoft.AppCenter.Push" Version="3.4.3" />
     <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,5 +94,8 @@
     <Compile Update="Views\RewardsPage.xaml.cs">
       <DependentUpon>Views\RewardsPage.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Microsoft.Extensions.Configuration.UserSecrets" />
   </ItemGroup>
 </Project>
