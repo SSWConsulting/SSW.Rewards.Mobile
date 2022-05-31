@@ -93,6 +93,7 @@
                          CornerRadius="15"
                          WidthRequest="30"
                          HeightRequest="30"
+                         Command="{Binding CameraCommand}"
                          Padding="3"
                          IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}">
                 <ImageButton.Source>

@@ -1,10 +1,58 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Controls.RecentActivity">
-  <ContentView.Content>
-      <StackLayout>
-          <Label Text="Hello Xamarin.Forms!" />
-      </StackLayout>
-  </ContentView.Content>
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:ActivityTypeToIconConverter x:Key="TypeToIcon"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <ContentView.Content>
+        <StackLayout Padding="20">
+            <Label Text="Recent Activity"
+                 TextColor="White"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 HorizontalTextAlignment="Center"
+                 VerticalOptions="Start"
+                 FontSize="Title"
+                 Margin="10"/>
+
+            <CollectionView ItemsSource="{Binding RecentActivity}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
+                              ColumnDefinitions="2*,10*,4*"
+                              Padding="5">
+                            <Label TextColor="White"
+                                   Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
+                                   FontFamily="{StaticResource FluentIcons}"
+                                   FontSize="Title"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding ActivityName}"
+                                   TextColor="White"
+                                   FontSize="12"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="2"
+                                   Text="{Binding OcurredAt, StringFormat='{0:dd/MM/yyyy}'}"
+                                   FontSize="11"
+                                   TextColor="White"
+                                   Margin="0,0,5,0"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentView.Content>
 </ContentView>
+
+<!--, StringFormat='{0:dd//MM//yyyy}'-->

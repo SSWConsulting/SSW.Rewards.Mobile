@@ -289,7 +289,8 @@ namespace SSW.Rewards.Services
                     Complete = achievement.Complete,
                     Name = achievement.AchievementName,
                     Value = achievement.AchievementValue,
-                    Type = achievement.AchievementType
+                    Type = achievement.AchievementType,
+                    AwardedAt = achievement.AwardedAt?.DateTime
                 });
             }
 
@@ -309,7 +310,8 @@ namespace SSW.Rewards.Services
                     Complete = achievement.Complete,
                     Name = achievement.AchievementName,
                     Value = achievement.AchievementValue,
-                    Type = achievement.AchievementType
+                    Type = achievement.AchievementType,
+                    AwardedAt = achievement.AwardedAt?.DateTime
                 });
             }
 
@@ -338,7 +340,8 @@ namespace SSW.Rewards.Services
                 {
                     Awarded = userReward.Awarded,
                     Name = userReward.RewardName,
-                    Cost = userReward.RewardCost
+                    Cost = userReward.RewardCost,
+                    AwardedAt = userReward.AwardedAt?.DateTime
                 });
             }
 

@@ -97,14 +97,15 @@ namespace SSW.Rewards.ViewModels
         private async Task LoadProfileSections()
         {
             var rewardList = await _userService.GetRewardsAsync();
-            var achievementList = await _userService.GetProfileAchievementsAsync();
+            var profileAchievements = await _userService.GetProfileAchievementsAsync();
+            var achievementList = await _userService.GetAchievementsAsync();
 
             //===== Achievements =====
 
             var achivementsSection = new ProfileCarouselViewModel();
             achivementsSection.Type = CarouselType.Achievements;
 
-            foreach (var achievement in achievementList)
+            foreach (var achievement in profileAchievements)
             {
                 achivementsSection.Achievements.Add(achievement);
             }
@@ -124,19 +125,21 @@ namespace SSW.Rewards.ViewModels
             {
                 activityList.Add(new Activity
                 {
-                    ActivityName = achievement.Name,
+                    ActivityName = $"{achievement.Type.ToActivityType()} {achievement.Name}",
                     OcurredAt = achievement.AwardedAt,
                     Type = achievement.Type.ToActivityType()
                 });
             }
 
-            var recentRewards = rewardList.OrderByDescending(r => r.AwardedAt).Take(10);
+            var recentRewards = rewardList
+                .Where(r => r.Awarded == true)
+                .OrderByDescending(r => r.AwardedAt).Take(10);
 
             foreach (var reward in rewardList)
             {
                 activityList.Add(new Activity
                 {
-                    ActivityName = reward.Name,
+                    ActivityName = $"Claimed {reward.Name}",
                     OcurredAt = reward.AwardedAt?.DateTime,
                     Type = ActivityType.Claimed
                 });
