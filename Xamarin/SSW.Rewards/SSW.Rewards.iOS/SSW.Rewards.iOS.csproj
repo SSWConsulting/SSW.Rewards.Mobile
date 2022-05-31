@@ -1732,11 +1732,8 @@
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Folder Include="Resources\" />
-=======
     <Folder Include="Extensions\" />
     <Folder Include="Services\" />
->>>>>>> d225c6f4 (Configure iOS project to work with PN)
   </ItemGroup>
 </Project>
