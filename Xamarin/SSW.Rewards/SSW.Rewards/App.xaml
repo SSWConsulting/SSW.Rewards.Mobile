@@ -43,6 +43,7 @@
         <Color x:Key="primary">#FFCC4141</Color> <!-- replaces SSWRes-->
         <Color x:Key="TabBarBackground">#FF333333</Color>
         <Color x:Key="LeaderCardBackground">#FF505050</Color>
+        <Color x:Key="HeadingColor">#bcbcbc</Color>
         
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>

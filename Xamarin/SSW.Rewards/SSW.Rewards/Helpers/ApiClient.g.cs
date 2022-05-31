@@ -3873,6 +3873,22 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Code { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public AchievementType Type { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum AchievementType
+    {
+        Scanned = 0,
+    
+        Attended = 1,
+    
+        Completed = 2,
+    
+        Linked = 3,
     
     }
     
@@ -4363,6 +4379,9 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("points", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Points { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("balance", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Balance { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("qrCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string QrCode { get; set; }
     
@@ -4391,7 +4410,7 @@ namespace SSW.Rewards
         public System.Collections.Generic.ICollection<UserRewardDto> Rewards { get; set; }
     
         [Newtonsoft.Json.JsonProperty("achievements", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<UserAchievementViewModel> Achievements { get; set; }
+        public System.Collections.Generic.ICollection<UserAchievementDto> Achievements { get; set; }
     
     
     }
@@ -4415,7 +4434,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class UserAchievementViewModel 
+    public partial class UserAchievementDto 
     {
         [Newtonsoft.Json.JsonProperty("achievementName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string AchievementName { get; set; }
@@ -4425,6 +4444,9 @@ namespace SSW.Rewards
     
         [Newtonsoft.Json.JsonProperty("complete", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Complete { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("achievementType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public AchievementType AchievementType { get; set; }
     
         [Newtonsoft.Json.JsonProperty("awardedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? AwardedAt { get; set; }
@@ -4442,7 +4464,7 @@ namespace SSW.Rewards
         public int Points { get; set; }
     
         [Newtonsoft.Json.JsonProperty("userAchievements", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<UserAchievementViewModel> UserAchievements { get; set; }
+        public System.Collections.Generic.ICollection<UserAchievementDto> UserAchievements { get; set; }
     
     
     }

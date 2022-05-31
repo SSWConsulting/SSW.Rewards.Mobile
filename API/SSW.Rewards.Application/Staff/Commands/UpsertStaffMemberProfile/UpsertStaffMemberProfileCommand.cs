@@ -108,7 +108,8 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             {
                 Name = staffMember.Name,
                 Value = 200,
-                Code = GenerateCode(staffMember.Name)
+                Code = GenerateCode(staffMember.Name),
+                Type = AchievementType.Scanned
             };
             
             await _context.SaveChangesAsync(cancellationToken);

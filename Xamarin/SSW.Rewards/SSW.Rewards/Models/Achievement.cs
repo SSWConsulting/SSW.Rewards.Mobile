@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SSW.Rewards.Models
 {
@@ -9,6 +7,7 @@ namespace SSW.Rewards.Models
         public string Name { get; set; }
         public int Value { get; set; }
         public bool Complete { get; set; }
+        public AchievementType Type { get; set; }
         public DateTime? AwardedAt { get; set; }
     }
 }

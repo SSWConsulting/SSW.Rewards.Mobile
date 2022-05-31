@@ -178,7 +178,7 @@ namespace SSW.Rewards.Application.Services
             var userAchievements = await _dbContext.UserAchievements
                                         .Include(ua => ua.Achievement)
                                         .Where(u => u.UserId == userId)
-                                        .ProjectTo<UserAchievementViewModel>(_mapper.ConfigurationProvider)
+                                        .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
                                         .ToListAsync();
 
             var userRewards = await _dbContext.UserRewards
@@ -212,7 +212,7 @@ namespace SSW.Rewards.Application.Services
                     Achievement = a,
                     UserAchievement = a.UserAchievements.FirstOrDefault(ua => ua.UserId == userId)
                 })
-                .ProjectTo<UserAchievementViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new UserAchievementsViewModel

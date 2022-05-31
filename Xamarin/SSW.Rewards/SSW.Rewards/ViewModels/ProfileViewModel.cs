@@ -1,10 +1,9 @@
-﻿using System;
+﻿using SSW.Rewards.Models;
+using SSW.Rewards.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -16,22 +15,22 @@ namespace SSW.Rewards.ViewModels
         public string ProfilePic { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Points { get; set; }
+        public int Points { get; set; }
+        public int Balance { get; set; }
+
+        public string CameraButtonText = "\uf256";
 
         private int userId { get; set; }
 
         public bool IsLoading { get; set; }
 
-        public ObservableCollection<Reward> Rewards { get; set; }
-        public ObservableCollection<Achievement> CompletedAchievements { get; set; }
-        public ObservableCollection<Achievement> OutstandingAchievements { get; set; }
+        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
         public ProfileViewModel(IUserService userService)
         {
             IsLoading = true;
             RaisePropertyChanged("IsLoading");
             _userService = userService;
-            _ = Initialise(true);
         }
 
         public ProfileViewModel(LeaderSummaryViewModel vm)
@@ -42,11 +41,12 @@ namespace SSW.Rewards.ViewModels
             Name = vm.Name;
             Email = vm.Title;
             userId = vm.Id;
-            Points = String.Format("{0:n0}", vm.BaseScore);
-            _ = Initialise(false);
+            Points = vm.BaseScore;
+            // TODO: add this to LeaderSummaryViewModel
+            // Balance = vm.Balance;
         }
 
-        private async Task Initialise(bool me)
+        public async Task Initialise(bool me)
         {
             IEnumerable<Reward> rewardList = new List<Reward>();
             IEnumerable<Achievement> achievementList = new List<Achievement>();
@@ -54,11 +54,19 @@ namespace SSW.Rewards.ViewModels
 
             if (me)
             {
+                var profilePic = _userService.MyProfilePic;
+
+                if (string.IsNullOrWhiteSpace(profilePic))
+                {
+                    profilePic = "v2sophie";
+                }
+
                 //initialise me
-                ProfilePic = _userService.MyProfilePic;
+                ProfilePic = profilePic;
                 Name =  _userService.MyName;
                 Email = _userService.MyEmail;
-                Points = String.Format("{0:n0}", _userService.MyPoints);
+                Points = _userService.MyPoints;
+                Balance = _userService.MyBalance;
                 rewardList = await _userService.GetRewardsAsync();
                 achievementList = await _userService.GetAchievementsAsync();
             }
@@ -70,41 +78,88 @@ namespace SSW.Rewards.ViewModels
                 achievementList = await _userService.GetAchievementsAsync(userId);
             }
 
-            Rewards = new ObservableCollection<Reward>();
-            CompletedAchievements = new ObservableCollection<Achievement>();
-            OutstandingAchievements = new ObservableCollection<Achievement>();
+            //===== Achievements =====
 
-            foreach(Reward reward in rewardList)
+            var achivementsSection = new ProfileCarouselViewModel();
+            achivementsSection.Type = CarouselType.Achievements;
+
+            foreach (var achievement in achievementList)
             {
-                var profileReward = new Reward();
-
-                if (reward.Awarded)
-                {
-                    profileReward.Name = "🏆 WON: " + reward.Name;
-                }
-                else
-                {
-                    profileReward.Name = reward.Name;
-                }
-
-                Rewards.Add(profileReward);
+                achivementsSection.Achievements.Add(achievement);
             }
 
-            foreach(Achievement achievement in achievementList)
+            ProfileSections.Add(achivementsSection);
+            
+            // ===== Recent activity =====
+
+            var activitySection = new ProfileCarouselViewModel();
+            activitySection.Type = CarouselType.RecentActivity;
+
+            var activityList = new List<Activity>();
+
+            var recentAchievements = achievementList.OrderByDescending(a => a.AwardedAt).Take(10);
+
+            foreach (var achievement in recentAchievements)
             {
-                if(achievement.Complete && achievement.Value > 0)
+                activityList.Add(new Activity
                 {
-                    CompletedAchievements.Add(achievement);
-                }
-                else if(achievement.Value > 0)
-                {
-                    OutstandingAchievements.Add(achievement);
-                }
+                    ActivityName = achievement.Name,
+                    OcurredAt = achievement.AwardedAt,
+                    Type = achievement.Type.ToActivityType()
+                });
             }
+
+            var recentRewards = rewardList.OrderByDescending(r => r.AwardedAt).Take(10);
+
+            foreach (var reward in rewardList)
+            {
+                activityList.Add(new Activity
+                {
+                    ActivityName = reward.Name,
+                    OcurredAt = reward.AwardedAt?.DateTime,
+                    Type = ActivityType.Claimed
+                });
+            }
+
+            activityList.OrderByDescending(a => a.OcurredAt).Take(10).ToList().ForEach(a => activitySection.RecentActivity.Add(a));
+
+            ProfileSections.Add(activitySection);
+
+            // ===== Notifications =====
+
+            if (me)
+            {
+                var notificationsSection = new ProfileCarouselViewModel();
+                notificationsSection.Type = CarouselType.Notifications;
+
+#if DEBUG
+                notificationsSection.Notifications.Add(new Notification
+                {
+                    Message = "New tech trivia available: Scrum",
+                    Type = NotificationType.Alert
+                });
+
+                notificationsSection.Notifications.Add(new Notification
+                {
+                    Message = "Upcoming event: SSW User Group June 2022 with Jason Taylor",
+                    Type = NotificationType.Event
+                });
+
+                notificationsSection.Notifications.Add(new Notification
+                {
+                    Message = "Upcoming event: How to design darkmode mobile UI with Jayden Alchin",
+                    Type = NotificationType.Event
+                });
+#endif
+
+                ProfileSections.Add(notificationsSection);
+            }
+
+            // ===== end profile sections =====
 
             IsLoading = false;
 
-            RaisePropertyChanged("IsLoading", "Rewards", "CompletedAchievements", "OutstandingAchievements");
+            RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance));
         }
 
         private async Task Refresh()

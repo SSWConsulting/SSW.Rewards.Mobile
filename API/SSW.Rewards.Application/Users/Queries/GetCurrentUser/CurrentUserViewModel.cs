@@ -12,6 +12,8 @@ namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
 
         public int Points { get; set; }
 
+        public int Balance { get; set; }
+
         public string QRCode { get; set; }
     }
 }

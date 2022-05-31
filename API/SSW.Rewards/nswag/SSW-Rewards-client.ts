@@ -1691,6 +1691,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
     name?: string | undefined;
     value?: number;
     code?: string | undefined;
+    type?: AchievementType;
 
     constructor(data?: IAchievementAdminViewModel) {
         if (data) {
@@ -1707,6 +1708,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
             this.name = _data["name"];
             this.value = _data["value"];
             this.code = _data["code"];
+            this.type = _data["type"];
         }
     }
 
@@ -1723,6 +1725,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
         data["name"] = this.name;
         data["value"] = this.value;
         data["code"] = this.code;
+        data["type"] = this.type;
         return data; 
     }
 }
@@ -1732,6 +1735,14 @@ export interface IAchievementAdminViewModel {
     name?: string | undefined;
     value?: number;
     code?: string | undefined;
+    type?: AchievementType;
+}
+
+export enum AchievementType {
+    Scanned = 0,
+    Attended = 1,
+    Completed = 2,
+    Linked = 3,
 }
 
 export class CreateAchievementCommand implements ICreateAchievementCommand {
@@ -3067,6 +3078,7 @@ export class CurrentUserViewModel implements ICurrentUserViewModel {
     fullName?: string | undefined;
     profilePic?: string | undefined;
     points?: number;
+    balance?: number;
     qrCode?: string | undefined;
 
     constructor(data?: ICurrentUserViewModel) {
@@ -3085,6 +3097,7 @@ export class CurrentUserViewModel implements ICurrentUserViewModel {
             this.fullName = _data["fullName"];
             this.profilePic = _data["profilePic"];
             this.points = _data["points"];
+            this.balance = _data["balance"];
             this.qrCode = _data["qrCode"];
         }
     }
@@ -3103,6 +3116,7 @@ export class CurrentUserViewModel implements ICurrentUserViewModel {
         data["fullName"] = this.fullName;
         data["profilePic"] = this.profilePic;
         data["points"] = this.points;
+        data["balance"] = this.balance;
         data["qrCode"] = this.qrCode;
         return data; 
     }
@@ -3114,6 +3128,7 @@ export interface ICurrentUserViewModel {
     fullName?: string | undefined;
     profilePic?: string | undefined;
     points?: number;
+    balance?: number;
     qrCode?: string | undefined;
 }
 
@@ -3124,7 +3139,7 @@ export class UserViewModel implements IUserViewModel {
     points?: number;
     balance?: number;
     rewards?: UserRewardDto[] | undefined;
-    achievements?: UserAchievementViewModel[] | undefined;
+    achievements?: UserAchievementDto[] | undefined;
 
     constructor(data?: IUserViewModel) {
         if (data) {
@@ -3150,7 +3165,7 @@ export class UserViewModel implements IUserViewModel {
             if (Array.isArray(_data["achievements"])) {
                 this.achievements = [] as any;
                 for (let item of _data["achievements"])
-                    this.achievements!.push(UserAchievementViewModel.fromJS(item));
+                    this.achievements!.push(UserAchievementDto.fromJS(item));
             }
         }
     }
@@ -3190,7 +3205,7 @@ export interface IUserViewModel {
     points?: number;
     balance?: number;
     rewards?: UserRewardDto[] | undefined;
-    achievements?: UserAchievementViewModel[] | undefined;
+    achievements?: UserAchievementDto[] | undefined;
 }
 
 export class UserRewardDto implements IUserRewardDto {
@@ -3241,13 +3256,14 @@ export interface IUserRewardDto {
     awardedAt?: Date | undefined;
 }
 
-export class UserAchievementViewModel implements IUserAchievementViewModel {
+export class UserAchievementDto implements IUserAchievementDto {
     achievementName?: string | undefined;
     achievementValue?: number;
     complete?: boolean;
+    achievementType?: AchievementType;
     awardedAt?: Date | undefined;
 
-    constructor(data?: IUserAchievementViewModel) {
+    constructor(data?: IUserAchievementDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3261,13 +3277,14 @@ export class UserAchievementViewModel implements IUserAchievementViewModel {
             this.achievementName = _data["achievementName"];
             this.achievementValue = _data["achievementValue"];
             this.complete = _data["complete"];
+            this.achievementType = _data["achievementType"];
             this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): UserAchievementViewModel {
+    static fromJS(data: any): UserAchievementDto {
         data = typeof data === 'object' ? data : {};
-        let result = new UserAchievementViewModel();
+        let result = new UserAchievementDto();
         result.init(data);
         return result;
     }
@@ -3277,22 +3294,24 @@ export class UserAchievementViewModel implements IUserAchievementViewModel {
         data["achievementName"] = this.achievementName;
         data["achievementValue"] = this.achievementValue;
         data["complete"] = this.complete;
+        data["achievementType"] = this.achievementType;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
         return data; 
     }
 }
 
-export interface IUserAchievementViewModel {
+export interface IUserAchievementDto {
     achievementName?: string | undefined;
     achievementValue?: number;
     complete?: boolean;
+    achievementType?: AchievementType;
     awardedAt?: Date | undefined;
 }
 
 export class UserAchievementsViewModel implements IUserAchievementsViewModel {
     userId?: number;
     points?: number;
-    userAchievements?: UserAchievementViewModel[] | undefined;
+    userAchievements?: UserAchievementDto[] | undefined;
 
     constructor(data?: IUserAchievementsViewModel) {
         if (data) {
@@ -3310,7 +3329,7 @@ export class UserAchievementsViewModel implements IUserAchievementsViewModel {
             if (Array.isArray(_data["userAchievements"])) {
                 this.userAchievements = [] as any;
                 for (let item of _data["userAchievements"])
-                    this.userAchievements!.push(UserAchievementViewModel.fromJS(item));
+                    this.userAchievements!.push(UserAchievementDto.fromJS(item));
             }
         }
     }
@@ -3338,7 +3357,7 @@ export class UserAchievementsViewModel implements IUserAchievementsViewModel {
 export interface IUserAchievementsViewModel {
     userId?: number;
     points?: number;
-    userAchievements?: UserAchievementViewModel[] | undefined;
+    userAchievements?: UserAchievementDto[] | undefined;
 }
 
 export class UserRewardsViewModel implements IUserRewardsViewModel {

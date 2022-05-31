@@ -190,6 +190,8 @@ namespace SSW.Rewards.Services
 
         public int MyPoints { get => Preferences.Get(nameof(MyPoints), 0); }
 
+        public int MyBalance { get => Preferences.Get(nameof(MyBalance), 0); }
+
         public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
 
         public string MyProfilePic 
@@ -215,7 +217,6 @@ namespace SSW.Rewards.Services
 
         public async Task UpdateMyDetailsAsync()
         {
-            Console.WriteLine("[UserService]: Attempting to get user details...");
             var user = await _userClient.GetAsync();
 
             if (user is null)
@@ -223,60 +224,41 @@ namespace SSW.Rewards.Services
                 Console.WriteLine("User is null");
                 return;
             }
-            else
-            {
-                Console.WriteLine("User is not null");
-                Console.WriteLine(JsonConvert.SerializeObject(user));
-            }
 
             if (!string.IsNullOrWhiteSpace(user.FullName))
             {
-                Console.WriteLine("Trying to write fullname to preferences for some reason");
                 Preferences.Set(nameof(MyName), user.FullName);
-                Console.WriteLine("Wrote full name to prefs");
             }
-
-            Console.WriteLine("Didn't bug out writing fullname to prefs");
 
             if (!string.IsNullOrWhiteSpace(user.Email))
             {
                 Preferences.Set(nameof(MyEmail), user.Email);
             }
 
-            Console.WriteLine("Didn't bug out writing Email to prefs");
-
             if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
             {
                 Preferences.Set(nameof(MyUserId), user.Id);
             }
-
-            Console.WriteLine("Didn't bug out writing ID to prefs");
 
             if (!string.IsNullOrWhiteSpace(user.ProfilePic))
             {
                 Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
             }
 
-            Console.WriteLine("Didn't bug out writing ProfilePic to prefs");
-
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set(nameof(MyPoints), user.Points);
             }
 
-            Console.WriteLine("Didn't bug out writing Points to prefs");
+            if (!string.IsNullOrWhiteSpace(user.Balance.ToString()))
+            {
+                Preferences.Set(nameof(MyBalance), user.Balance);
+            }
 
             if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
             {
-                Console.WriteLine("Trying to write QR code to prefs");
-
-                Console.WriteLine($"QR Code: {user.QrCode}");
                 Preferences.Set(nameof(MyQrCode), user.QrCode);
             }
-
-            Console.WriteLine("Didn't bug out writing QRCode to prefs");
-
-            Console.WriteLine("Finished get user details");
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
@@ -295,13 +277,14 @@ namespace SSW.Rewards.Services
 
             var achievementsList = await _userClient.AchievementsAsync(userId);
 
-            foreach (UserAchievementViewModel achievement in achievementsList.UserAchievements)
+            foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
             {
                 achievements.Add(new Achievement
                 {
                     Complete = achievement.Complete,
                     Name = achievement.AchievementName,
-                    Value = achievement.AchievementValue
+                    Value = achievement.AchievementValue,
+                    Type = achievement.AchievementType
                 });
             }
 

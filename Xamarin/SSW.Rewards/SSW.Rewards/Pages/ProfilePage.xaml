@@ -3,16 +3,138 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:helpers="clr-namespace:SSW.Rewards.Helpers"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.ProfilePage">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="AchievementsTemplate">
+            <controls:AchievementGrid />
+        </DataTemplate>
+
+        <DataTemplate x:Key="NotificationsTemplate">
+            <controls:Notifications />
+        </DataTemplate>
+
+        <DataTemplate x:Key="ActivityTemplate">
+            <controls:RecentActivity />
+        </DataTemplate>
+
+        <helpers:ProfileCarouselSelector x:Key="ProfileViewSelector"
+                                         Notifications="{StaticResource NotificationsTemplate}"
+                                         Achievements="{StaticResource AchievementsTemplate}"
+                                         RecentActivity="{StaticResource ActivityTemplate}" />
+
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+    </ContentPage.Resources>
+    
     <Grid RowDefinitions="*,*,10"
           Padding="20,20,20,5">
 
         <Grid x:Name="ProfileDisplay"
               Grid.Row="0"
-              RowDefinitions="2*, 1*, 3*, 1*, 1*">
-            <controls:RewardsProgress Grid.RowSpan="5"
+              RowDefinitions="3*, 1*, 2*, 6*, 2*, 1*, 3*">
+            
+            <controls:RewardsProgress Grid.RowSpan="7"
                                       Progress="0.66"/>
+
+            <StackLayout Grid.Row="1"
+                         Orientation="Horizontal"
+                         HorizontalOptions="Center">
+                <Label HorizontalOptions="End"
+                       Text="⭐"
+                       FontSize="Small"
+                       TextColor="{StaticResource primary}" />
+                <Label HorizontalOptions="End"
+                       Text="{Binding Balance, StringFormat='{0:n}'}"
+                       FontSize="Small"
+                       TextColor="{StaticResource primary}" />
+                <Label HorizontalOptions="End"
+                       Text="⭐"
+                       FontSize="Small"
+                       TextColor="{StaticResource primary}" />
+            </StackLayout>
+
+            <Label Grid.Row="2"
+                   TextColor="{StaticResource HeadingColor}"
+                   FontSize="Large"
+                   Text="{Binding Points}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+
+            <Label Grid.Row="4"
+                   Grid.RowSpan="2"
+                   VerticalOptions="Center"
+                   Text="{Binding Name}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"/>
+
+            <Image Grid.Row="0"
+                   Grid.RowSpan="7"
+                   Source="{Binding ProfilePic}"
+                   WidthRequest="100"
+                   HeightRequest="100"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Aspect="AspectFill">
+                <Image.Clip>
+                    <EllipseGeometry Center="50,50"
+                                     RadiusX="50"
+                                     RadiusY="50"/>
+                </Image.Clip>
+            </Image>
+
+            <Button Grid.Row="3"
+                    Text="{Binding CameraButtonText}"
+                    FontFamily="FluentIcons"
+                    TextColor="White"
+                    FontSize="6"
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    TranslationX="40"
+                    TranslationY="-35"
+                    CornerRadius="15"
+                    WidthRequest="30"
+                    HeightRequest="30"
+                    IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}"/>
+
+            <ImageButton Grid.Row="3"
+                         BackgroundColor="{StaticResource primary}"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center"
+                         TranslationX="-40"
+                         TranslationY="-35"
+                         CornerRadius="15"
+                         WidthRequest="30"
+                         HeightRequest="30"
+                         IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="FluentIcons"
+                                     Glyph="&#xf792;"
+                                     Color="White"/>
+                </ImageButton.Source>
+            </ImageButton>
+
         </Grid>
-        
+
+        <CarouselView Grid.Row="1"
+                      IndicatorView="ProfileIndicator"
+                      ItemsSource="{Binding ProfileSections}"
+                      ItemTemplate="{StaticResource ProfileViewSelector}"/>
+
+        <IndicatorView Grid.Row="2"
+                       SelectedIndicatorColor="{StaticResource primary}"
+                       IndicatorColor="{StaticResource IndicatorColor}"
+                       x:Name="ProfileIndicator"/>
+
+        <ActivityIndicator Grid.Row="0"
+                           Grid.RowSpan="3"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="True"
+                           Color="{StaticResource primary}"
+                           IsVisible="{Binding IsLoading}"/>
+
     </Grid>
 </ContentPage>

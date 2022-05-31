@@ -11,6 +11,7 @@ namespace SSW.Rewards.ViewModels
     {
         public ICommand DoActionCommand { get; set; }
 		public ICommand Swiped { get; set; }
+        public ICommand Skip { get; set; }
         public ObservableCollection<CarouselViewModel> Items { get; set; }
         public CarouselViewModel SelectedItem { get; set; }
         public string SubHeading { get; set; }
@@ -30,6 +31,7 @@ namespace SSW.Rewards.ViewModels
             _userService = userService;
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(SetDetails);
+            Skip = new Command(async () => await Navigation.PopModalAsync());
             Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
             Items = new ObservableCollection<CarouselViewModel>
             {

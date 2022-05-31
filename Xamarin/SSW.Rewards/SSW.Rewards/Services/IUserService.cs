@@ -14,6 +14,7 @@ namespace SSW.Rewards.Services
         string MyEmail { get; }
         string MyProfilePic { get; }
         int MyPoints { get; }
+        int MyBalance { get; }
         string MyQrCode { get; }
         bool IsLoggedIn { get; }
         bool HasCachedAccount { get; }

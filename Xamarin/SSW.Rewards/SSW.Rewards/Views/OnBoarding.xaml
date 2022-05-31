@@ -4,8 +4,6 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
-             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
              NavigationPage.HasNavigationBar="False"
              BackgroundImageSource="rewardsbackground.png"
              x:Class="SSW.Rewards.Views.OnBoarding">

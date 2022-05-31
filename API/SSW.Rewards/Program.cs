@@ -23,7 +23,11 @@ namespace SSW.Rewards
 
 				bool seedUserRoles = args.Contains("/SeedUserRoles");
 
-		        if (!await ApplyDbMigrations(host, seedUserRoles))
+				bool mapAchievementTypes = args.Contains("/MapAchievementTypes");
+
+				bool mapStaffAchievements = args.Contains("/MapStaffAchievements");
+
+		        if (!await ApplyDbMigrations(host, seedUserRoles, mapAchievementTypes, mapStaffAchievements))
 		        {
 			        return;
 		        }
@@ -40,7 +44,7 @@ namespace SSW.Rewards
 	        }
         }
 
-        private static async Task<bool> ApplyDbMigrations(IHost host, bool seedUserRoles)
+        private static async Task<bool> ApplyDbMigrations(IHost host, bool seedUserRoles, bool mapAchievmentTypes, bool mapStaffAchievements)
         {
 	        using (IServiceScope scope = host.Services.CreateScope())
 	        {
@@ -54,6 +58,16 @@ namespace SSW.Rewards
 					if (seedUserRoles)
                     {
 						await initialiser.EnsureStaffAndAdminRolesSeeded();
+                    }
+
+					if (mapAchievmentTypes)
+                    {
+						await initialiser.MapAchievementTypes();
+                    }
+
+					if (mapStaffAchievements)
+                    {
+						await initialiser.MapStaffToAchievements();
                     }
 
 			        return true;

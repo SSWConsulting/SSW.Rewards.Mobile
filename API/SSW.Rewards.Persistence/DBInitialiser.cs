@@ -101,5 +101,20 @@ namespace SSW.Rewards.Persistence
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task MapStaffToAchievements()
+        {
+            var users = await _context.StaffMembers
+                .ToListAsync();
+
+            foreach (var user in users)
+            {
+                var userAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == user.Name);
+
+                user.StaffAchievement = userAchievement;
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

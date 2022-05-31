@@ -3,7 +3,7 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
+        public string ApiBaseUrl = "https://e1eb-159-196-124-207.ngrok.io";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA

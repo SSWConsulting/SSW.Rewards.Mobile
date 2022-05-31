@@ -47,6 +47,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                 var codeData = Encoding.ASCII.GetBytes(request.Name);
                 achievement.Code = Convert.ToBase64String(codeData);
                 achievement.Value = request.Value;
+                achievement.Type = AchievementType.Attended;
 
                 if (achievement.Id == 0)
                 {
@@ -56,7 +57,8 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                     {
                         Code = achievement.Code,
                         Name = achievement.Name,
-                        Value = achievement.Value
+                        Value = achievement.Value,
+                        Type = achievement.Type,
                     };
 
                 }
