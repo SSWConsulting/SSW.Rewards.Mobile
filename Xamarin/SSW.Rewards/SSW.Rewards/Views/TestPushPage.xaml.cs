@@ -17,8 +17,11 @@ namespace SSW.Rewards.Views
             _notificationRegistrationService = Resolver.Resolve<INotificationRegistrationService>();
         }
 
+        //TODO: registrationGroupTag should be based on current user role (i.e. Admin, Staff, User, etc.)
+        //registrationGroupTag determines which push notifications the current user can receive.
+        string registrationGroupTag = "user";
         void RegisterButtonClicked(object sender, EventArgs e) => _notificationRegistrationService
-            .RegisterDeviceAsync().ContinueWith((task) => {
+            .RegisterDeviceAsync(registrationGroupTag).ContinueWith((task) => {
                 ShowAlert(task.IsFaulted ? task.Exception.Message : $"Device registered");
             });
 
