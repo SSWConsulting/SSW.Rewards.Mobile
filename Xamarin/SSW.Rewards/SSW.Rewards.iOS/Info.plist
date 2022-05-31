@@ -73,7 +73,6 @@
 	    <string>FluentSystemIcons-Regular.ttf</string>
     	<string>Font Awesome 6 Brands-Regular-400.otf</string>
 	</array>
-	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
