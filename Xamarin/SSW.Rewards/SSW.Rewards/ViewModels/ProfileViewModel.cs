@@ -1,9 +1,12 @@
-﻿using SSW.Rewards.Models;
+﻿using Rg.Plugins.Popup.Services;
+using SSW.Rewards.Models;
+using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -18,13 +21,15 @@ namespace SSW.Rewards.ViewModels
         public int Points { get; set; }
         public int Balance { get; set; }
 
-        public string CameraButtonText = "\uf256";
-
         private int userId { get; set; }
 
         public bool IsLoading { get; set; }
 
         public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
+
+        public ICommand CameraCommand => new Command(async () => await ShowCameraPageAsync());
+
+        private bool _isMe;
 
         public ProfileViewModel(IUserService userService)
         {
@@ -48,11 +53,11 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Initialise(bool me)
         {
-            IEnumerable<Reward> rewardList = new List<Reward>();
-            IEnumerable<Achievement> achievementList = new List<Achievement>();
             MessagingCenter.Subscribe<object>(this, "ProfilePicChanged", async (obj) => { await Refresh(); });
 
-            if (me)
+            _isMe = me;
+
+            if (_isMe)
             {
                 var profilePic = _userService.MyProfilePic;
 
@@ -63,20 +68,36 @@ namespace SSW.Rewards.ViewModels
 
                 //initialise me
                 ProfilePic = profilePic;
-                Name =  _userService.MyName;
+                Name = _userService.MyName;
                 Email = _userService.MyEmail;
                 Points = _userService.MyPoints;
                 Balance = _userService.MyBalance;
-                rewardList = await _userService.GetRewardsAsync();
-                achievementList = await _userService.GetAchievementsAsync();
             }
             else
             {
                 //initialise other
                 _userService = Resolver.Resolve<IUserService>();
-                rewardList = await _userService.GetRewardsAsync(userId);
-                achievementList = await _userService.GetAchievementsAsync(userId);
             }
+
+            if (!ProfileSections.Any())
+            {
+                await LoadProfileSections();
+            }
+
+            IsLoading = false;
+
+            RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance));
+        }
+
+        private async Task ShowCameraPageAsync()
+        {
+            await PopupNavigation.Instance.PushAsync(new CameraPage());
+        }
+
+        private async Task LoadProfileSections()
+        {
+            var rewardList = await _userService.GetRewardsAsync();
+            var achievementList = await _userService.GetProfileAchievementsAsync();
 
             //===== Achievements =====
 
@@ -127,7 +148,7 @@ namespace SSW.Rewards.ViewModels
 
             // ===== Notifications =====
 
-            if (me)
+            if (_isMe)
             {
                 var notificationsSection = new ProfileCarouselViewModel();
                 notificationsSection.Type = CarouselType.Notifications;
@@ -154,12 +175,6 @@ namespace SSW.Rewards.ViewModels
 
                 ProfileSections.Add(notificationsSection);
             }
-
-            // ===== end profile sections =====
-
-            IsLoading = false;
-
-            RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance));
         }
 
         private async Task Refresh()

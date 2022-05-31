@@ -29,6 +29,8 @@ namespace SSW.Rewards.Services
         Task UpdateMyDetailsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync();
         Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
+        Task<IEnumerable<Achievement>> GetProfileAchievementsAsync();
+        Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId);
         Task<IEnumerable<Reward>> GetRewardsAsync();
         Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ImageSource> GetAvatarAsync(string url);

@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Common.Interfaces;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetUser;
-using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using SSW.Rewards.Domain.Entities;
 using System;
@@ -205,13 +205,8 @@ namespace SSW.Rewards.Application.Services
 
         public async Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken)
         {
-            var userAchievements = await _dbContext.Achievements
-                .Include(a => a.UserAchievements)
-                .Select(a => new JoinedUserAchievement
-                {
-                    Achievement = a,
-                    UserAchievement = a.UserAchievements.FirstOrDefault(ua => ua.UserId == userId)
-                })
+            var userAchievements = await _dbContext.UserAchievements
+                .Where(u => u.UserId == userId)
                 .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

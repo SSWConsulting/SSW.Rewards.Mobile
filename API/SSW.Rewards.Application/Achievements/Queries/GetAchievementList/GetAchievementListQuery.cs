@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Common.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList
             {
                 var achievements = await _context
                     .Achievements
-                    .ProjectTo<AchievementViewModel>(_mapper.ConfigurationProvider)
+                    .ProjectTo<AchievementDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
                 return new AchievementListViewModel

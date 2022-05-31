@@ -271,6 +271,31 @@ namespace SSW.Rewards.Services
             return await GetAchievementsForUserAsync(userId);
         }
 
+        public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync()
+        {
+            return await GetProfileAchievementsAsync(MyUserId);
+        }
+
+        public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId)
+        {
+            List<Achievement> achievements = new List<Achievement>();
+
+            var achievementsList = await _userClient.ProfileAchievementsAsync(userId);
+
+            foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
+            {
+                achievements.Add(new Achievement
+                {
+                    Complete = achievement.Complete,
+                    Name = achievement.AchievementName,
+                    Value = achievement.AchievementValue,
+                    Type = achievement.AchievementType
+                });
+            }
+
+            return achievements;
+        }
+
         private async Task<IEnumerable<Achievement>> GetAchievementsForUserAsync(int userId)
         {
             List<Achievement> achievements = new List<Achievement>();

@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Commands.UpsertUser;
@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace SSW.Rewards.Application.Achievements.Commands.AddAchievement
 {
-    public class AddAchievementCommand : IRequest<AchievementViewModel>
+    public class AddAchievementCommand : IRequest<AchievementDto>
     {
         public string Code { get; set; }
     }
 
-    public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AchievementViewModel>
+    public class AddAchievementCommandHandler : IRequestHandler<AddAchievementCommand, AchievementDto>
     {
         private readonly IUserService _userService;
         private readonly ISSWRewardsDbContext _context;
@@ -34,7 +34,7 @@ namespace SSW.Rewards.Application.Achievements.Commands.AddAchievement
             _mapper = mapper;
         }
 
-        public async Task<AchievementViewModel> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
+        public async Task<AchievementDto> Handle(AddAchievementCommand request, CancellationToken cancellationToken)
         {
             var achievement = await _context
                 .Achievements
@@ -78,7 +78,7 @@ namespace SSW.Rewards.Application.Achievements.Commands.AddAchievement
                 throw new AlreadyAwardedException(user.Id, achievement.Name);
             }
 
-            return _mapper.Map<AchievementViewModel>(achievement);
+            return _mapper.Map<AchievementDto>(achievement);
         }
     }
 }

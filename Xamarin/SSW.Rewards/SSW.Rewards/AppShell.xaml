@@ -115,24 +115,39 @@
                              BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Route="main"
-             Icon="icon_home">
+        <Tab Route="main">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xe70e;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
         </Tab>
-        <Tab Route="people"
-             Icon="icon_people">
+        <Tab Route="people">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf5a8;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
-        <Tab Route="scan"
-             Icon="icon_qr">
+        <Tab Route="scan">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf636;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>
-        <Tab Route="leader"
-             Icon="icon_trophy">
+        <Tab Route="leader">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>
-        <Tab Route="quiz"
-             Icon="icon_quiz">
+        <Tab Route="quiz">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf28a;"/>
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
         </Tab>
     </FlyoutItem>

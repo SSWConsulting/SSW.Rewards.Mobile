@@ -84,34 +84,20 @@
                 </Image.Clip>
             </Image>
 
-            <Button Grid.Row="3"
-                    Text="{Binding CameraButtonText}"
-                    FontFamily="FluentIcons"
-                    TextColor="White"
-                    FontSize="6"
-                    BackgroundColor="{StaticResource primary}"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    TranslationX="40"
-                    TranslationY="-35"
-                    CornerRadius="15"
-                    WidthRequest="30"
-                    HeightRequest="30"
-                    IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}"/>
-
             <ImageButton Grid.Row="3"
                          BackgroundColor="{StaticResource primary}"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
-                         TranslationX="-40"
+                         TranslationX="40"
                          TranslationY="-35"
                          CornerRadius="15"
                          WidthRequest="30"
                          HeightRequest="30"
+                         Padding="3"
                          IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}">
                 <ImageButton.Source>
-                    <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf792;"
+                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xe299;"
                                      Color="White"/>
                 </ImageButton.Source>
             </ImageButton>

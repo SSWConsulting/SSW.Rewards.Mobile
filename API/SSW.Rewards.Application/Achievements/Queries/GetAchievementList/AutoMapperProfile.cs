@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList
 {
@@ -6,7 +7,7 @@ namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList
     {
         public AutoMapperProfile()
         {
-            CreateMap<Domain.Entities.Achievement, AchievementViewModel>();
+            CreateMap<Domain.Entities.Achievement, AchievementDto>();
         }
     }
 }

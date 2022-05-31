@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Users.Commands.RegisterUser;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
+using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
+using SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
@@ -35,6 +37,12 @@ namespace SSW.Rewards.WebAPI.Controllers
         public async Task<ActionResult<UserRewardsViewModel>> Rewards([FromQuery] int userId)
         {
             return Ok(await Mediator.Send(new GetUserRewardsQuery { UserId = userId }));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<UserAchievementsViewModel>> ProfileAchievements([FromQuery] int userId)
+        {
+            return Ok(await Mediator.Send(new GetProfileAchivementsQuery { UserId = userId }));
         }
 
         [HttpPost]

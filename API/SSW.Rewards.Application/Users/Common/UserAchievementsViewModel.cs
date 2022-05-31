@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
+namespace SSW.Rewards.Application.Users.Common
 {
     public class UserAchievementsViewModel
     {

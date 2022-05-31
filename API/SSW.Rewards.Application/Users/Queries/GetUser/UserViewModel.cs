@@ -1,4 +1,4 @@
-using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
+using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using System.Collections.Generic;
 

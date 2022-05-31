@@ -1,7 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Controls.AchievementGrid">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:AchievementCompletedColorConverter x:Key="CompletedToColor"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
     <CollectionView ItemsLayout="VerticalGrid, 3"
-                  ItemsSource="{Binding Achievements}"/>
+                    ItemsSource="{Binding Achievements}"
+                    Margin="30,10">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <StackLayout HeightRequest="100"
+                             WidthRequest="100">
+                    <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 WidthRequest="76"
+                                 HeightRequest="76"
+                                 CornerRadius="38"/>
+                </StackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentView>

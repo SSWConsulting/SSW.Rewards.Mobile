@@ -60,17 +60,17 @@ namespace SSW.Rewards
 						await initialiser.EnsureStaffAndAdminRolesSeeded();
                     }
 
-					if (mapAchievmentTypes)
-                    {
-						await initialiser.MapAchievementTypes();
-                    }
-
 					if (mapStaffAchievements)
                     {
 						await initialiser.MapStaffToAchievements();
                     }
 
-			        return true;
+                    if (mapAchievmentTypes)
+                    {
+                        await initialiser.MapAchievementTypes();
+                    }
+
+                    return true;
 				}
 		        catch (Exception ex)
 		        {
