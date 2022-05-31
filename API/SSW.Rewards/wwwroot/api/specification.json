@@ -134,7 +134,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AchievementViewModel"
+                  "$ref": "#/components/schemas/AchievementDto"
                 }
               }
             }
@@ -937,6 +937,38 @@
         }
       }
     },
+    "/api/User/ProfileAchievements": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_ProfileAchievements",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAchievementsViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/User/UploadProfilePic": {
       "post": {
         "tags": [
@@ -1028,12 +1060,12 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/AchievementViewModel"
+              "$ref": "#/components/schemas/AchievementDto"
             }
           }
         }
       },
-      "AchievementViewModel": {
+      "AchievementDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1048,8 +1080,27 @@
           "value": {
             "type": "integer",
             "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AchievementType"
           }
         }
+      },
+      "AchievementType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Scanned",
+          "Attended",
+          "Completed",
+          "Linked"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "AchievementAdminListViewModel": {
         "type": "object",
@@ -1083,6 +1134,9 @@
           "code": {
             "type": "string",
             "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/AchievementType"
           }
         }
       },
@@ -1149,7 +1203,7 @@
             "nullable": true,
             "oneOf": [
               {
-                "$ref": "#/components/schemas/AchievementViewModel"
+                "$ref": "#/components/schemas/AchievementDto"
               }
             ]
           },
@@ -1720,6 +1774,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "balance": {
+            "type": "integer",
+            "format": "int32"
+          },
           "qrCode": {
             "type": "string",
             "nullable": true
@@ -1761,7 +1819,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserAchievementViewModel"
+              "$ref": "#/components/schemas/UserAchievementDto"
             }
           }
         }
@@ -1788,7 +1846,7 @@
           }
         }
       },
-      "UserAchievementViewModel": {
+      "UserAchievementDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1802,6 +1860,9 @@
           },
           "complete": {
             "type": "boolean"
+          },
+          "achievementType": {
+            "$ref": "#/components/schemas/AchievementType"
           },
           "awardedAt": {
             "type": "string",
@@ -1826,7 +1887,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/UserAchievementViewModel"
+              "$ref": "#/components/schemas/UserAchievementDto"
             }
           }
         }

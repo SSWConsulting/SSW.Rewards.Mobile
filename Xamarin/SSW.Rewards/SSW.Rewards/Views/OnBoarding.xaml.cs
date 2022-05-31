@@ -1,25 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using SSW.Rewards.ViewModels;
+﻿using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Views
 {
     public partial class OnBoarding : ContentPage
     {
+        private readonly OnBoardingViewModel _viewModel;
+
         public OnBoarding(OnBoardingViewModel viewModel)
         {
             InitializeComponent();
             viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
+            _viewModel = viewModel;
+            BindingContext = _viewModel;            
         }
 
         public OnBoarding()
         {
             InitializeComponent();
-            var viewModel = Resolver.Resolve<OnBoardingViewModel>();
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
+            _viewModel = Resolver.Resolve<OnBoardingViewModel>();
+            _viewModel.Navigation = Navigation;
+            BindingContext = _viewModel;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _viewModel.ScrollToRequested += ScrollToIndex;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.ScrollToRequested -= ScrollToIndex;
+        }
+
+        private void ScrollToIndex(object sender, int index)
+        {
+            RewardsCarousel.ScrollTo(index);
         }
     }
 }

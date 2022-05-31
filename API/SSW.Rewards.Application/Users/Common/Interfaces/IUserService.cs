@@ -1,6 +1,5 @@
 ﻿using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetUser;
-using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using SSW.Rewards.Domain.Entities;
 using System.Collections.Generic;

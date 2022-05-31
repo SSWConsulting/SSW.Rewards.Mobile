@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common.Interfaces;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                var achievementModel = _mapper.Map<AchievementViewModel>(achievement);
+                var achievementModel = _mapper.Map<AchievementDto>(achievement);
 
                 return new PostAchievementResult
                 {

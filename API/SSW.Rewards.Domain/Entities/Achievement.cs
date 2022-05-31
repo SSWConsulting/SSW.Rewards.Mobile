@@ -10,6 +10,8 @@ namespace SSW.Rewards.Domain.Entities
         
         public int Value { get; set; }
 
+        public AchievementType Type { get; set; }
+
         public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
     }
 }

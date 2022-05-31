@@ -1,6 +1,5 @@
-using AutoMapper;
 using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Common.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +13,6 @@ namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
 
     public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievementsQuery, UserAchievementsViewModel>
     {
-        private readonly IMapper _mapper;
-        private readonly ISSWRewardsDbContext _context;
         private readonly IUserService _userService;
 
         public GetUserAchievementsQueryHandler(IUserService userService)

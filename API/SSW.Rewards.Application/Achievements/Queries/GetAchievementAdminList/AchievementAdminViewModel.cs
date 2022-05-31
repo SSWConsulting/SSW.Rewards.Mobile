@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public int Value { get; set; }
         public string Code { get; set; }
+        public AchievementType Type { get; set; }
     }
 }
