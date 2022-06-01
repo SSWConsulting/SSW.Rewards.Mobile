@@ -61,11 +61,6 @@ namespace SSW.Rewards.ViewModels
             {
                 var profilePic = _userService.MyProfilePic;
 
-                if (string.IsNullOrWhiteSpace(profilePic))
-                {
-                    profilePic = "v2sophie";
-                }
-
                 //initialise me
                 ProfilePic = profilePic;
                 Name = _userService.MyName;

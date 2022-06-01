@@ -35,7 +35,7 @@
                    Text="Skip">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Command="{Binding GetStartedTapped}"/>
+                                          Command="{Binding Skip}"/>
                 </Label.GestureRecognizers>
             </Label>
 

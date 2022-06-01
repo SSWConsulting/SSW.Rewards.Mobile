@@ -202,7 +202,7 @@ namespace SSW.Rewards.Services
                 if (!string.IsNullOrWhiteSpace(pic))
                     return pic;
 
-                return "icon_avatar";
+                return "v2sophie";
             }
         }
 

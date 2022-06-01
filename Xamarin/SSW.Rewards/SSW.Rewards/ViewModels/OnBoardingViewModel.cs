@@ -2,6 +2,7 @@
 using SSW.Rewards.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -31,7 +32,7 @@ namespace SSW.Rewards.ViewModels
             _userService = userService;
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(SetDetails);
-            Skip = new Command(async () => await Navigation.PopModalAsync());
+            Skip = new Command(async () => await SkipOnboarding());
             Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
             Items = new ObservableCollection<CarouselViewModel>
             {
@@ -103,20 +104,7 @@ namespace SSW.Rewards.ViewModels
 
                 if (isLastItem)
                 {
-                    if (_userService.IsLoggedIn)
-                    {
-                        await Navigation.PopModalAsync();
-
-                        /*AppShell shell = new AppShell();
-                        //Application.Current.MainPage = shell;
-                        Navigation.PushAsync(shell);*/
-
-                    }
-                    else
-                    {
-                        //Application.Current.MainPage = new LoginPage();
-                        await Navigation.PushAsync(new LoginPage());
-                    }
+                    await SkipOnboarding();
                 }
                 else
                 {
@@ -129,6 +117,24 @@ namespace SSW.Rewards.ViewModels
                 Console.WriteLine(ex.StackTrace);
             }
             
+        }
+
+        private async Task SkipOnboarding()
+        {
+            if (_userService.IsLoggedIn)
+            {
+                await Navigation.PopModalAsync();
+
+                /*AppShell shell = new AppShell();
+                //Application.Current.MainPage = shell;
+                Navigation.PushAsync(shell);*/
+
+            }
+            else
+            {
+                //Application.Current.MainPage = new LoginPage();
+                await Navigation.PushAsync(new LoginPage());
+            }
         }
 
         private void SetDetails()
