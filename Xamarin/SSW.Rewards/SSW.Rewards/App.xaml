@@ -44,7 +44,8 @@
         <Color x:Key="TabBarBackground">#FF333333</Color>
         <Color x:Key="LeaderCardBackground">#FF505050</Color>
         <Color x:Key="HeadingColor">#bcbcbc</Color>
-        
+        <Color x:Key="PeopleBackground">#363636</Color>
+
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>
         </OnPlatform>
