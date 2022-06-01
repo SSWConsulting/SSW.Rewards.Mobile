@@ -7,6 +7,7 @@ using SSW.Rewards.Views;
 using System.Linq;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using SSW.Rewards.Pages;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -133,9 +134,9 @@ namespace SSW.Rewards.ViewModels
         private void HandleLeaderTapped(LeaderSummaryViewModel leader)
         {
             if (leader.IsMe)
-                Shell.Current.Navigation.PushAsync(new Profile());
+                Shell.Current.Navigation.PushAsync(new ProfilePage());
             else
-                Shell.Current.Navigation.PushAsync(new Profile(leader));
+                Shell.Current.Navigation.PushAsync(new ProfilePage(leader));
         }
     }
 }

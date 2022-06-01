@@ -39,13 +39,13 @@
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
                          Spacing="1">
-                <Label Text="Jean Thirion"
+                <Label Text="{Binding DevName}"
                        FontSize="Title"
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"/>
-                <Label Text="SSW Solution Architect"
+                <Label Text="{Binding DevTitle}"
                        FontSize="Subtitle"
                        TextColor="White"
                        HorizontalOptions="Center"
@@ -88,21 +88,36 @@
                              WidthRequest="150"/>
                 </StackLayout>
 
-                <Image Grid.Row="0"
-                       Grid.Column="0"
-                       Grid.RowSpan="4"
-                       Margin="0"
-                       Aspect="AspectFit"
-                       TranslationY="10"
-                       WidthRequest="1000"
-                       HeightRequest="1000"
-                       HorizontalOptions="Start"
-                       VerticalOptions="End"
-                       Source="dev_placeholder"
-                       RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
-                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"
-                       x:Name="DevImage"/>
-
+                <CarouselView Grid.Row="0"
+                              Grid.Column="0"
+                              Grid.RowSpan="4"
+                              Grid.ColumnSpan="4"
+                              HorizontalOptions="FillAndExpand"
+                              VerticalOptions="FillAndExpand"
+                              Margin="0"
+                              TranslationY="10"
+                              x:Name="PicCarousel"
+                              ItemsSource="{Binding Profiles}"
+                              CurrentItemChangedCommand="{Binding OnCardSwiped}"
+                              CurrentItem="{Binding SelectedProfile}">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Margin="0"
+                                   Aspect="AspectFit"
+                                   TranslationY="10"
+                                   WidthRequest="1000"
+                                   HeightRequest="1000"
+                                   HorizontalOptions="StartAndExpand"
+                                   VerticalOptions="End"
+                                   Scale="1.2"
+                                   TranslationX="-80"
+                                   Source="{Binding Picture}"
+                                   x:Name="DevImage"
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
 
                 <StackLayout Grid.Row="1"
                              Grid.Column="3"
@@ -132,47 +147,50 @@
                            HorizontalTextAlignment="Center"/>
                 </StackLayout>
 
-                <Label Grid.Row="3"
-                       Grid.Column="1"
-                       FontFamily="{StaticResource FA6Brands}"
-                       TextColor="White"
-                       Text="&#xf099;"
-                       FontSize="36"
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"
-                       HeightRequest="100"
-                       WidthRequest="100"
-                       BackgroundColor="Transparent"/>
+                <StackLayout Grid.Column="1"
+                             Grid.ColumnSpan="3"
+                             Grid.Row="3"
+                             Spacing="20"
+                             Orientation="Horizontal"
+                             HorizontalOptions="End"
+                             Padding="0,0,10,0">
+                    
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="White"
+                           Text="&#xf099;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           BackgroundColor="Transparent"/>
 
-                <Label Grid.Row="3"
-                       Grid.Column="2"
-                       FontFamily="{StaticResource FA6Brands}"
-                       TextColor="White"
-                       Text="&#xf09b;"
-                       FontSize="36"
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"
-                       HeightRequest="100"
-                       WidthRequest="100"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"
-                       BackgroundColor="Transparent"/>
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="White"
+                           Text="&#xf09b;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           BackgroundColor="Transparent"/>
 
-                <Label Grid.Row="3"
-                       Grid.Column="3"
-                       FontFamily="{StaticResource FA6Brands}"
-                       TextColor="White"
-                       Text="&#xf08c;"
-                       FontSize="36"
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"
-                       HeightRequest="100"
-                       WidthRequest="100"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"
-                       BackgroundColor="Transparent"/>
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="White"
+                           Text="&#xf08c;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           BackgroundColor="Transparent"/>
+                </StackLayout>
 
             </Grid>
             
@@ -187,9 +205,15 @@
                    FontSize="11"
                    TextColor="White"
                    Padding="22,16"
-                   Text="Lorem superposés valise pourparlers rêver chiots rendez-vous naissance Eiffel myrtille. Grèves Arc de Triomphe encore pourquoi sentiments baguette pédiluve une projet sentiments saperlipopette vachement le. Brume éphémère baguette Bordeaux en fait sommet avoir minitel.
+                   Text="{Binding DevBio}"/>
 
-Nous avoir parole la nous moussant. Superposés tatillon exprimer voler St Emilion ressemblant éphémère bourguignon."/>
+            <ActivityIndicator Color="{StaticResource primary}"
+                               IsRunning="True"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Grid.ColumnSpan="3"
+                               Grid.RowSpan="3"
+                               IsVisible="{Binding IsRunning}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -13,33 +13,31 @@ namespace SSW.Rewards.ViewModels
     {
         private IDevService _devService;
 
-        public ICommand OnCardSwiped { get; set; }
-        public ICommand HandleProfileTapped { get; set; }
-        public ICommand HandleScrollTapped { get; set; }
-        public ICommand OnTwitterTapped { get; set; }
+        public ICommand OnCardSwiped => new Command(SetDevDetails);
 
-        private bool _profileExpanded { get; set; }
+        public ICommand OnTwitterTapped => new Command(async () => await OpenTwitter());
+        public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
+        public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
+
         public bool IsRunning { get; set; }
 
         public bool TwitterEnabled { get; set; }
+        public bool GitHubEnabled { get; set; }
+        public bool LinkedinEnabled { get; set; }
 
-        public ObservableCollection<DevProfile> Profiles { get; set; }
+        public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
 
-        public int PositionSelected { get; set; }
+        public DevProfile SelectedProfile { get; set; }
 
-        public string DevFirstName { get; set; }
+        public string DevName { get; set; }
         public string DevTitle { get; set; }
         public string DevBio { get; set; }
 
-        private string _twitterURI { get; set; }
-        private string _devEmail { get; set; }
-        private string _devPhone { get; set; }
+        private string _twitterURI;
+        private string _githubURI;
+        private string _linkedinUri;
 
-        //public LayoutBo MyProperty { get; set; }
-
-        public Rectangle OverlayLayoutBounds { get; set; }
-
-        private string _devBio { get; set; }
+        private bool _initialised = false;
 
         public string[] OnSwipedUpdatePropertyList { get; set; }
 
@@ -47,77 +45,75 @@ namespace SSW.Rewards.ViewModels
         {
             IsRunning = true;
             TwitterEnabled = true;
-            OnPropertyChanged("IsRunning");
             _devService = devService;
-            OnCardSwiped = new Command(SetDevDetails);
-            HandleProfileTapped = new Command(ExpandCollapseProfile);
-            HandleScrollTapped = new Command(ExpandCollapseProfile);
-            OnTwitterTapped = new Command(OpenTwitter);
 
-            Profiles = new ObservableCollection<DevProfile>();
-
-            OverlayLayoutBounds = new Rectangle(1, 1, 1, 0.2);
-            _profileExpanded = false;
-            OnSwipedUpdatePropertyList = new string[] { "Title", "TitleText", "DevFirstName", "DevTitle", "DevBio", "TwitterEnabled" };
-            _ = Initialise();
+            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled) };
         }
 
-        private async Task Initialise()
+        public async Task Initialise()
         {
             var profiles = await _devService.GetProfilesAsync();
+
             foreach(var profile in profiles)
             {
                 Profiles.Add(profile);
             }
-            OnPropertyChanged("Profiles");
-            SetDevDetails();
+
             IsRunning = false;
-            OnPropertyChanged("IsRunning");
+
+            _initialised = true;
+
+            SelectedProfile = Profiles[0];
+
+            SetDevDetails();
+
+            RaisePropertyChanged(nameof(IsRunning));
         }
 
         public void SetDevDetails()
         {
-            int profileIndex = PositionSelected;
-            Title = $"{Profiles[profileIndex].FirstName} {Profiles[profileIndex].LastName}";
-            DevFirstName = Profiles[profileIndex].FirstName;
-            DevTitle = Profiles[profileIndex].Title;
-            DevBio = Profiles[profileIndex].Bio;
-            string twitterID = Profiles[profileIndex].TwitterID;
-            _twitterURI = "https://twitter.com/" + twitterID;
-            if (string.IsNullOrWhiteSpace(twitterID))
-                TwitterEnabled = false;
-            else
-                TwitterEnabled = true;
-            _devEmail = Profiles[profileIndex].Email;
-            _devPhone = Profiles[profileIndex].Phone;
-            RaisePropertyChanged(OnSwipedUpdatePropertyList);
-            int devId = Profiles[profileIndex].id;
-            MessagingCenter.Send<object, int>(this, "DevChanged", devId);
+            if (_initialised)
+            {
+                try
+                {
+                    DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
 
-            //App.Current.MainPage.DisplayAlert("Twitter", "ID: " + _twitterURI + Environment.NewLine + "Index: " + profileIndex, "OK");
+                    DevTitle = SelectedProfile.Title;
+
+                    DevBio = SelectedProfile.Bio;
+
+                    _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
+                    _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
+                    _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
+
+                    TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
+                    GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
+                    LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
+
+                    RaisePropertyChanged(OnSwipedUpdatePropertyList);
+
+                    Console.WriteLine($"[Dev profile viewmodel] Selected picture: {SelectedProfile.Picture}");
+                }
+                catch (Exception)
+                {
+                    // silently fail
+                }
+            }
         }
 
-        private void ExpandCollapseProfile()
+        private async Task OpenTwitter()
         {
-            if(_profileExpanded)
-            {
-                //collapse the profile
-                DevBio = string.Empty;
-                MessagingCenter.Send<object>(this, "SlideDown");
-            }
-            else
-            {
-                //expand the profile
-                DevBio = _devBio;
-                MessagingCenter.Send<object>(this, "SlideUp");
-            }
-
-            _profileExpanded = !_profileExpanded;
+            await Launcher.OpenAsync(new Uri(_twitterURI));
         }
 
-        private void OpenTwitter()
+        private async Task OpenGithub()
         {
-            Task.Run(async () => { await Launcher.OpenAsync(new Uri(_twitterURI)); });
+            await Launcher.OpenAsync(new Uri(_githubURI));
+        }
+
+        private async Task OpenLinkedin()
+        {
+            await Launcher.OpenAsync(new Uri(_linkedinUri));
         }
     }
 }
