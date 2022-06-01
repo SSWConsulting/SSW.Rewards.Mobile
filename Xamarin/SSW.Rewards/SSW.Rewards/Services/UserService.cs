@@ -172,7 +172,8 @@ namespace SSW.Rewards.Services
                 if (!result.IsError)
                 {
                     await SettRefreshToken(result.RefreshToken);
-                    await SetLoggedInState(result.AccessToken, result.IdentityToken);
+                    //await SetLoggedInState(result.AccessToken, result.IdentityToken);
+                    AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
                 }
             }
         }

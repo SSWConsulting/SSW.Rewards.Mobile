@@ -2901,7 +2901,7 @@ export class StaffDto implements IStaffDto {
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     isExternal?: boolean;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
 
     constructor(data?: IStaffDto) {
         if (data) {
@@ -2928,7 +2928,7 @@ export class StaffDto implements IStaffDto {
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
                 for (let item of _data["skills"])
-                    this.skills!.push(item);
+                    this.skills!.push(StaffSkillDto.fromJS(item));
             }
         }
     }
@@ -2956,7 +2956,7 @@ export class StaffDto implements IStaffDto {
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
-                data["skills"].push(item);
+                data["skills"].push(item.toJSON());
         }
         return data; 
     }
@@ -2974,7 +2974,53 @@ export interface IStaffDto {
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     isExternal?: boolean;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
+}
+
+export class StaffSkillDto implements IStaffSkillDto {
+    name?: string | undefined;
+    level?: SkillLevel;
+
+    constructor(data?: IStaffSkillDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.level = _data["level"];
+        }
+    }
+
+    static fromJS(data: any): StaffSkillDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StaffSkillDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["level"] = this.level;
+        return data; 
+    }
+}
+
+export interface IStaffSkillDto {
+    name?: string | undefined;
+    level?: SkillLevel;
+}
+
+export enum SkillLevel {
+    Beginner = 0,
+    Intermediate = 1,
+    Advanced = 2,
 }
 
 export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfileCommand {

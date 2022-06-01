@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
@@ -17,6 +16,6 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public string GitHubUsername { get; set; }
         public string LinkedInUrl { get; set; }
         public bool IsExternal { get; set; }
-        public IEnumerable<string> Skills { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<StaffSkillDto> Skills { get; set; } = Enumerable.Empty<StaffSkillDto>();
     }
 }

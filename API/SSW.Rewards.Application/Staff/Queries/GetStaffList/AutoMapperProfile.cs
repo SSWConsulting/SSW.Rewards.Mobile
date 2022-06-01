@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SSW.Rewards.Domain.Entities;
-using System.Linq;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
 {
@@ -9,7 +8,11 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public AutoMapperProfile()
         {
             CreateMap<StaffMember, StaffDto>()
-                .ForMember(dst => dst.Skills, opt => opt.MapFrom(s => s.StaffMemberSkills.Select(sms => sms.Skill.Name)));
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.StaffMemberSkills));
+
+            CreateMap<StaffMemberSkill, StaffSkillDto>()
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Skill.Name))
+                .ForMember(dst => dst.Level, opt => opt.MapFrom(src => src.Level));
         }
     }
 }

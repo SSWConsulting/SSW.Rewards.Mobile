@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.Skill.Queries;
+using SSW.Rewards.Application.Skills.Queries;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers

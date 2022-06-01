@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using SSW.Rewards.Models;
@@ -19,6 +20,11 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
         public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
 
+        public ICommand ForwardCommand => new Command(NavigateForward);
+        public ICommand BackCommand => new Command(NavigateBack);
+
+        public EventHandler<int> ScrollToRequested;
+
         public bool IsRunning { get; set; }
 
         public bool TwitterEnabled { get; set; }
@@ -26,6 +32,8 @@ namespace SSW.Rewards.ViewModels
         public bool LinkedinEnabled { get; set; }
 
         public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
+
+        public ObservableCollection<StaffSkillDto> Skills { get; set; } = new ObservableCollection<StaffSkillDto>();
 
         public DevProfile SelectedProfile { get; set; }
 
@@ -37,6 +45,8 @@ namespace SSW.Rewards.ViewModels
         private string _githubURI;
         private string _linkedinUri;
 
+        private int _lastProfileIndex;
+
         private bool _initialised = false;
 
         public string[] OnSwipedUpdatePropertyList { get; set; }
@@ -47,7 +57,7 @@ namespace SSW.Rewards.ViewModels
             TwitterEnabled = true;
             _devService = devService;
 
-            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled) };
+            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled) };
         }
 
         public async Task Initialise()
@@ -63,14 +73,22 @@ namespace SSW.Rewards.ViewModels
 
             _initialised = true;
 
-            SelectedProfile = Profiles[0];
+            _lastProfileIndex = Profiles.Count - 1;
+
+            ScrollToRequested.Invoke(this, _lastProfileIndex);
+
+            for (int i = _lastProfileIndex; i > -1; i--)
+            {
+                ScrollToRequested.Invoke(this, i);
+                await Task.Delay(50);
+            }
 
             SetDevDetails();
 
             RaisePropertyChanged(nameof(IsRunning));
         }
 
-        public void SetDevDetails()
+        private void SetDevDetails()
         {
             if (_initialised)
             {
@@ -92,12 +110,47 @@ namespace SSW.Rewards.ViewModels
 
                     RaisePropertyChanged(OnSwipedUpdatePropertyList);
 
-                    Console.WriteLine($"[Dev profile viewmodel] Selected picture: {SelectedProfile.Picture}");
+                    Skills.Clear();
+
+
+
+                    foreach(var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level))
+                    {
+                        Skills.Add(skill);
+                    }    
                 }
                 catch (Exception)
                 {
                     // silently fail
                 }
+            }
+        }
+
+        private void NavigateForward()
+        {
+            var selectedIndex = Profiles.IndexOf(SelectedProfile);
+
+            if (selectedIndex < _lastProfileIndex)
+            {
+                ScrollToRequested.Invoke(this, ++selectedIndex);
+            }
+            else
+            {
+                ScrollToRequested.Invoke(this, 0);
+            }
+        }
+
+        private void NavigateBack()
+        {
+            var selectedIndex = Profiles.IndexOf(SelectedProfile);
+
+            if (selectedIndex > 0)
+            {
+                ScrollToRequested.Invoke(this, --selectedIndex);
+            }
+            else
+            {
+                ScrollToRequested.Invoke(this, _lastProfileIndex);
             }
         }
 

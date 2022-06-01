@@ -32,8 +32,6 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
             public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
             {
                 var staffDtos = await _dbContext.StaffMembers
-                    .Include(s => s.StaffMemberSkills)
-                    .ThenInclude(sms => sms.Skill)
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 

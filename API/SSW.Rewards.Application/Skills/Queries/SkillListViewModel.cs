@@ -1,8 +1,7 @@
-﻿using System;
+﻿using SSW.Rewards.Application.Staff.Queries.GetStaffList;
 using System.Collections.Generic;
-using System.Text;
 
-namespace SSW.Rewards.Application.Skill.Queries
+namespace SSW.Rewards.Application.Skills.Queries
 {
     public class SkillListViewModel
     {

@@ -1661,10 +1661,37 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/StaffSkillDto"
             }
           }
         }
+      },
+      "StaffSkillDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "level": {
+            "$ref": "#/components/schemas/SkillLevel"
+          }
+        }
+      },
+      "SkillLevel": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Beginner",
+          "Intermediate",
+          "Advanced"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
       },
       "UpsertStaffMemberProfileCommand": {
         "type": "object",

@@ -22,9 +22,21 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
 
+            _viewModel.ScrollToRequested += ScrollToIndex;
             await _viewModel.Initialise();
 
             Console.WriteLine("Finished initialising");
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.ScrollToRequested -= ScrollToIndex;
+        }
+
+        private void ScrollToIndex(object sender, int index)
+        {
+            PicCarousel.ScrollTo(index);
         }
     }
 }

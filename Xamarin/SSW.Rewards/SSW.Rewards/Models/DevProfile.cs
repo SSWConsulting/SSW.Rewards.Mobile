@@ -28,6 +28,6 @@ namespace SSW.Rewards.Models
 
         public bool IsExternal { get; set; }
 
-        public List<string> Skills { get; set; }
+        public List<StaffSkillDto> Skills { get; set; }
     }
 }

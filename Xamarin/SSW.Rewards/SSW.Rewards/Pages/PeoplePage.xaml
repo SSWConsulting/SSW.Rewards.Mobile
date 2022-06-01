@@ -2,7 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.PeoplePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <Grid RowDefinitions="10*, 45*, 15*"
               ColumnDefinitions="2*, 10*, 2*">
@@ -12,6 +19,7 @@
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
                          Margin="10"
+                         Command="{Binding BackCommand}"
                          BackgroundColor="Transparent">
                 <ImageButton.Source>
                     <FontImageSource FontFamily="{StaticResource FluentIcons}"
@@ -26,6 +34,7 @@
                          BackgroundColor="Transparent"
                          WidthRequest="100"
                          Margin="10"
+                         Command="{Binding ForwardCommand}"
                          VerticalOptions="Center">
                 <ImageButton.Source>
                     <FontImageSource FontFamily="{StaticResource FluentIcons}"
@@ -60,33 +69,87 @@
                   ColumnDefinitions="6*, 2*, 2*, 2*"
                   RowDefinitions="25*, 7*, 2*, 5*">
 
-                <StackLayout Grid.Row="0"
-                             Grid.Column="0"
-                             Grid.ColumnSpan="4"
-                             Spacing="12"
-                             HorizontalOptions="EndAndExpand"> <!-- TODO: change this to a grid-->
-                    
+                <FlexLayout Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="4"
+                            HorizontalOptions="StartAndExpand"
+                            Direction="Column"
+                            BindableLayout.ItemsSource="{Binding Skills}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <controls:SkillsBar Label="{Binding Name}"
+                                                Level="{Binding Level}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <!--<Grid Grid.Row="0"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="4"
+                      RowDefinitions="*,*,*,*,*"
+                      HorizontalOptions="EndAndExpand">
+
                     <BoxView HeightRequest="40"
                              BackgroundColor="{StaticResource primary}"
                              HorizontalOptions="EndAndExpand"
+                             Grid.Row="0"
+                             x:Name="Skill1Box"
                              WidthRequest="50"/>
 
+                    <Label Grid.Row="0"
+                           Text="{Binding Skill1}"
+                           TextColor="White"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+
                     <BoxView HeightRequest="40"
                              BackgroundColor="{StaticResource primary}"
+                             Grid.Row="1"
+                             x:Name="Skill2Box"
                              WidthRequest="100"/>
 
+                    <Label Grid.Row="1"
+                           Text="{Binding Skill2}"
+                           TextColor="White"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+
                     <BoxView HeightRequest="40"
                              BackgroundColor="{StaticResource primary}"
+                             Grid.Row="2"
+                             x:Name="Skill3Box"
                              WidthRequest="100"/>
 
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             WidthRequest="150"/>
+                    <Label Grid.Row="2"
+                           Text="{Binding Skill3}"
+                           TextColor="White"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
 
                     <BoxView HeightRequest="40"
                              BackgroundColor="{StaticResource primary}"
+                             Grid.Row="3"
+                             x:Name="Skill4Box"
                              WidthRequest="150"/>
-                </StackLayout>
+
+                    <Label Grid.Row="3"
+                           Text="{Binding Skill4}"
+                           TextColor="White"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+
+                    <BoxView HeightRequest="40"
+                             BackgroundColor="{StaticResource primary}"
+                             Grid.Row="4"
+                             x:Name="Skill5Box"
+                             WidthRequest="150"/>
+
+                    <Label Grid.Row="4"
+                           Text="{Binding Skill5}"
+                           TextColor="White"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+                </Grid>-->
 
                 <CarouselView Grid.Row="0"
                               Grid.Column="0"
@@ -156,7 +219,7 @@
                              Padding="0,0,10,0">
                     
                     <Label FontFamily="{StaticResource FA6Brands}"
-                           TextColor="White"
+                           TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf099;"
                            FontSize="36"
                            HorizontalOptions="End"
@@ -168,7 +231,7 @@
                            BackgroundColor="Transparent"/>
 
                     <Label FontFamily="{StaticResource FA6Brands}"
-                           TextColor="White"
+                           TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf09b;"
                            FontSize="36"
                            HorizontalOptions="End"
@@ -180,7 +243,7 @@
                            BackgroundColor="Transparent"/>
 
                     <Label FontFamily="{StaticResource FA6Brands}"
-                           TextColor="White"
+                           TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf08c;"
                            FontSize="36"
                            HorizontalOptions="End"
