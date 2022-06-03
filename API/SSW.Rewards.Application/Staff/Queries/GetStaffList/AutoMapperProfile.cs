@@ -8,7 +8,8 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public AutoMapperProfile()
         {
             CreateMap<StaffMember, StaffDto>()
-                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.StaffMemberSkills));
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.StaffMemberSkills))
+                .ForMember(dest => dest.Scanned, opt => opt.Ignore());
 
             CreateMap<StaffMemberSkill, StaffSkillDto>()
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Skill.Name))

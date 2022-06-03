@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SSW.Rewards.Application.Achievements.Queries.Common;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
@@ -16,6 +17,8 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         public string GitHubUsername { get; set; }
         public string LinkedInUrl { get; set; }
         public bool IsExternal { get; set; }
+        public AchievementDto StaffAchievement { get; set; }
+        public bool Scanned { get; set; } = false;
         public IEnumerable<StaffSkillDto> Skills { get; set; } = Enumerable.Empty<StaffSkillDto>();
     }
 }

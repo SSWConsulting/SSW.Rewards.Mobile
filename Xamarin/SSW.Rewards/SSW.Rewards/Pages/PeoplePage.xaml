@@ -8,6 +8,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
+            <converters:ScannedToColorConverter x:Key="ScannedToColor" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -52,6 +53,7 @@
                        FontSize="Title"
                        TextColor="White"
                        HorizontalOptions="Center"
+                       FontAttributes="Bold"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"/>
                 <Label Text="{Binding DevTitle}"
@@ -162,7 +164,8 @@
                               x:Name="PicCarousel"
                               ItemsSource="{Binding Profiles}"
                               CurrentItemChangedCommand="{Binding OnCardSwiped}"
-                              CurrentItem="{Binding SelectedProfile}">
+                              CurrentItem="{Binding SelectedProfile}"
+                              IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
                             <Image Margin="0"
@@ -191,7 +194,7 @@
                              Spacing="2">
                     
                     <Label FontFamily="{StaticResource FluentIcons}"
-                           TextColor="White"
+                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
                            Text="&#xf636;"
                            FontSize="56"
                            HorizontalOptions="End"
@@ -203,7 +206,7 @@
                            WidthRequest="100"/>
 
                     <Label Text="⭐ 300"
-                           TextColor="White"
+                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
                            HorizontalOptions="Center"
                            FontSize="12"
                            Margin="0,0,10,0"
@@ -217,7 +220,7 @@
                              Orientation="Horizontal"
                              HorizontalOptions="End"
                              Padding="0,0,10,0">
-                    
+
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf099;"
@@ -228,7 +231,11 @@
                            VerticalTextAlignment="Center"
                            HeightRequest="100"
                            WidthRequest="100"
-                           BackgroundColor="Transparent"/>
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
 
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
@@ -240,7 +247,11 @@
                            WidthRequest="100"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
-                           BackgroundColor="Transparent"/>
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnGithubTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
 
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
@@ -252,7 +263,11 @@
                            WidthRequest="100"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
-                           BackgroundColor="Transparent"/>
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnLinkedinTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </StackLayout>
 
             </Grid>

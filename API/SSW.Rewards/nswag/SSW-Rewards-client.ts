@@ -2901,6 +2901,8 @@ export class StaffDto implements IStaffDto {
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     isExternal?: boolean;
+    staffAchievement?: AchievementDto | undefined;
+    scanned?: boolean;
     skills?: StaffSkillDto[] | undefined;
 
     constructor(data?: IStaffDto) {
@@ -2925,6 +2927,8 @@ export class StaffDto implements IStaffDto {
             this.gitHubUsername = _data["gitHubUsername"];
             this.linkedInUrl = _data["linkedInUrl"];
             this.isExternal = _data["isExternal"];
+            this.staffAchievement = _data["staffAchievement"] ? AchievementDto.fromJS(_data["staffAchievement"]) : <any>undefined;
+            this.scanned = _data["scanned"];
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
                 for (let item of _data["skills"])
@@ -2953,6 +2957,8 @@ export class StaffDto implements IStaffDto {
         data["gitHubUsername"] = this.gitHubUsername;
         data["linkedInUrl"] = this.linkedInUrl;
         data["isExternal"] = this.isExternal;
+        data["staffAchievement"] = this.staffAchievement ? this.staffAchievement.toJSON() : <any>undefined;
+        data["scanned"] = this.scanned;
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
@@ -2974,6 +2980,8 @@ export interface IStaffDto {
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     isExternal?: boolean;
+    staffAchievement?: AchievementDto | undefined;
+    scanned?: boolean;
     skills?: StaffSkillDto[] | undefined;
 }
 
@@ -3348,6 +3356,7 @@ export interface IUserRewardDto {
 }
 
 export class UserAchievementDto implements IUserAchievementDto {
+    achievementId?: number;
     achievementName?: string | undefined;
     achievementValue?: number;
     complete?: boolean;
@@ -3365,6 +3374,7 @@ export class UserAchievementDto implements IUserAchievementDto {
 
     init(_data?: any) {
         if (_data) {
+            this.achievementId = _data["achievementId"];
             this.achievementName = _data["achievementName"];
             this.achievementValue = _data["achievementValue"];
             this.complete = _data["complete"];
@@ -3382,6 +3392,7 @@ export class UserAchievementDto implements IUserAchievementDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["achievementId"] = this.achievementId;
         data["achievementName"] = this.achievementName;
         data["achievementValue"] = this.achievementValue;
         data["complete"] = this.complete;
@@ -3392,6 +3403,7 @@ export class UserAchievementDto implements IUserAchievementDto {
 }
 
 export interface IUserAchievementDto {
+    achievementId?: number;
     achievementName?: string | undefined;
     achievementValue?: number;
     complete?: boolean;

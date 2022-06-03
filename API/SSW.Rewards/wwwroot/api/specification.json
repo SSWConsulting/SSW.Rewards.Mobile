@@ -1657,6 +1657,17 @@
           "isExternal": {
             "type": "boolean"
           },
+          "staffAchievement": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
+          },
+          "scanned": {
+            "type": "boolean"
+          },
           "skills": {
             "type": "array",
             "nullable": true,
@@ -1877,6 +1888,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "achievementId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "achievementName": {
             "type": "string",
             "nullable": true

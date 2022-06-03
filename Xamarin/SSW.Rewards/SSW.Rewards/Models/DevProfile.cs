@@ -28,6 +28,10 @@ namespace SSW.Rewards.Models
 
         public bool IsExternal { get; set; }
 
+        public int AchievementId { get; set; }
+
+        public bool Scanned { get; set; } = false;
+
         public List<StaffSkillDto> Skills { get; set; }
     }
 }

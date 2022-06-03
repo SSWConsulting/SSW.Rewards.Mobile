@@ -8,7 +8,7 @@ namespace SSW.Rewards.Controls
     {
         public static readonly BindableProperty LabelProperty = BindableProperty.Create(nameof(Label), typeof(string), typeof(SkillsBar), null, propertyChanged: LabelChanged);
 
-        public static readonly BindableProperty LevelProperty = BindableProperty.Create(nameof(Level), typeof(int), typeof(SkillsBar), 0, propertyChanged: LevelChanged);
+        public static readonly BindableProperty LevelProperty = BindableProperty.Create(nameof(Level), typeof(int), typeof(SkillsBar), 10, propertyChanged: LevelChanged);
 
         public string Label
         {
@@ -35,15 +35,14 @@ namespace SSW.Rewards.Controls
             switch (barControl.Level)
             {
                 case 0:
-                    barControl.Bar.TranslateTo(200, 0);
+                default:
+                    barControl.Bar.TranslateTo(250, 0, 300, Easing.SinOut);
                     break;
                 case 1:
-                    barControl.Bar.TranslateTo(150, 0);
+                    barControl.Bar.TranslateTo(170, 0, 300, Easing.SinOut);
                     break;
                 case 2:
-                    barControl.Bar.TranslateTo(250, 0);
-                    break;
-                default:
+                    barControl.Bar.TranslateTo(50, 0, 300, Easing.SinOut);
                     break;
             }
         }

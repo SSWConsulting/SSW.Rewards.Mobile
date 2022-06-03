@@ -7,12 +7,14 @@
               Margin="0,6">
             <BoxView HeightRequest="40"
                      HorizontalOptions="FillAndExpand"
+                     TranslationX="400"
                      x:Name="Bar"
                      BackgroundColor="{StaticResource primary}" />
 
             <Label HorizontalOptions="End"
                    HorizontalTextAlignment="End"
                    TextColor="White"
+                   FontAttributes="Bold"
                    VerticalOptions="Center"
                    Margin="0,0,10,0"
                    x:Name="SkillLabel"/>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace SSW.Rewards.ViewModels
     public class DevProfilesViewModel : BaseViewModel
     {
         private IDevService _devService;
+        private readonly IUserService _userService;
 
         public ICommand OnCardSwiped => new Command(SetDevDetails);
 
@@ -30,6 +32,8 @@ namespace SSW.Rewards.ViewModels
         public bool TwitterEnabled { get; set; }
         public bool GitHubEnabled { get; set; }
         public bool LinkedinEnabled { get; set; }
+
+        public bool ShowDevCards { get; set; } = false;
 
         public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
 
@@ -56,7 +60,6 @@ namespace SSW.Rewards.ViewModels
             IsRunning = true;
             TwitterEnabled = true;
             _devService = devService;
-
             OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled) };
         }
 
@@ -75,7 +78,13 @@ namespace SSW.Rewards.ViewModels
 
             _lastProfileIndex = Profiles.Count - 1;
 
-            ScrollToRequested.Invoke(this, _lastProfileIndex);
+            //ScrollToRequested.Invoke(this, _lastProfileIndex);
+
+            SelectedProfile = Profiles[_lastProfileIndex];
+            OnPropertyChanged(nameof(SelectedProfile));
+
+            ShowDevCards = true;
+            OnPropertyChanged(nameof(ShowDevCards));
 
             for (int i = _lastProfileIndex; i > -1; i--)
             {
@@ -112,9 +121,7 @@ namespace SSW.Rewards.ViewModels
 
                     Skills.Clear();
 
-
-
-                    foreach(var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level))
+                    foreach(var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
                     {
                         Skills.Add(skill);
                     }    

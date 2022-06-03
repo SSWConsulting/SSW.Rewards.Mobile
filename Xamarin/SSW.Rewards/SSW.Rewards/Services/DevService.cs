@@ -26,7 +26,7 @@ namespace SSW.Rewards.Services
 
                 foreach (StaffDto profile in profileList.Staff.Where(s => !s.IsDeleted))
                 {
-                    DevProfile dev = new DevProfile
+                    var dev = new DevProfile
                     {
                         id = id,
                         FirstName = profile.Name,
@@ -36,7 +36,9 @@ namespace SSW.Rewards.Services
 						Title = profile.Title,
                         TwitterID = profile.TwitterUsername,
 						Skills = profile.Skills?.ToList(),
-                        IsExternal = profile.IsExternal
+                        IsExternal = profile.IsExternal,
+                        AchievementId = profile.StaffAchievement.Id,
+                        Scanned = profile.Scanned
 					};
 
                     profiles.Add(dev);

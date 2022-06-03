@@ -3,8 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
+using SSW.Rewards.Application.Users.Common.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,16 +16,16 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
         {
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _dbContext;
-            private readonly IProfileStorageProvider _storage;
+            private readonly IUserService _userService;
 
             public Handler(
                 IMapper mapper,
                 ISSWRewardsDbContext dbContext,
-                IProfileStorageProvider storage)
+                IUserService userService)
             {
                 _mapper = mapper;
                 _dbContext = dbContext;
-                _storage = storage;
+                _userService = userService;
             }
 
             public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
@@ -34,6 +33,20 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
                 var staffDtos = await _dbContext.StaffMembers
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
+
+                var user = await _userService.GetCurrentUser(cancellationToken);
+
+                var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
+
+                var completedAchievements = achievements.UserAchievements.Where(a => a.Complete).Select(a => a.AchievementId);
+
+                foreach (var dto in staffDtos)
+                {
+                    if (completedAchievements.Contains(dto.StaffAchievement.Id))
+                    {
+                        dto.Scanned = true;
+                    }
+                }
 
                 return new StaffListViewModel
                 {
