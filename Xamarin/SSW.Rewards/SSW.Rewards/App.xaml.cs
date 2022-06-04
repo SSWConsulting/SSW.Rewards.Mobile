@@ -1,17 +1,14 @@
-﻿using System;
-using Xamarin.Forms;
-using SSW.Rewards.Views;
-using Xamarin.Essentials;
-using Microsoft.AppCenter;
+﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using System.Threading.Tasks;
-using Microsoft.AppCenter.Push;
 using SSW.Rewards.Helpers;
-using System.Collections.Generic;
-using System.Linq;
 using SSW.Rewards.Models;
 using SSW.Rewards.Services;
+using SSW.Rewards.Views;
+using System;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace SSW.Rewards
 {

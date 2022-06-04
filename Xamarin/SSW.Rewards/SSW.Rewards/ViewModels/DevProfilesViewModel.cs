@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SSW.Rewards.Models;
+using SSW.Rewards.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -14,9 +13,10 @@ namespace SSW.Rewards.ViewModels
     public class DevProfilesViewModel : BaseViewModel
     {
         private IDevService _devService;
-        private readonly IUserService _userService;
 
         public ICommand OnCardSwiped => new Command(SetDevDetails);
+
+        public ICommand StaffQRCommand => new Command(async () => await ShowScannedMessage());
 
         public ICommand OnTwitterTapped => new Command(async () => await OpenTwitter());
         public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
@@ -34,6 +34,10 @@ namespace SSW.Rewards.ViewModels
         public bool LinkedinEnabled { get; set; }
 
         public bool ShowDevCards { get; set; } = false;
+
+        public bool Scanned { get; set; } = false;
+
+        public int Points { get; set; }
 
         public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
 
@@ -53,6 +57,8 @@ namespace SSW.Rewards.ViewModels
 
         private bool _initialised = false;
 
+        private bool _firstRun = true;
+
         public string[] OnSwipedUpdatePropertyList { get; set; }
 
         public DevProfilesViewModel(IDevService devService)
@@ -60,41 +66,44 @@ namespace SSW.Rewards.ViewModels
             IsRunning = true;
             TwitterEnabled = true;
             _devService = devService;
-            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled) };
+            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
         }
 
         public async Task Initialise()
         {
-            var profiles = await _devService.GetProfilesAsync();
-
-            foreach(var profile in profiles)
+            if (_firstRun)
             {
-                Profiles.Add(profile);
+                var profiles = await _devService.GetProfilesAsync();
+
+                foreach (var profile in profiles)
+                {
+                    Profiles.Add(profile);
+                }
+
+                IsRunning = false;
+
+                _initialised = true;
+
+                _lastProfileIndex = Profiles.Count - 1;
+
+                SelectedProfile = Profiles[_lastProfileIndex];
+                OnPropertyChanged(nameof(SelectedProfile));
+
+                ShowDevCards = true;
+                OnPropertyChanged(nameof(ShowDevCards));
+
+                for (int i = _lastProfileIndex; i > -1; i--)
+                {
+                    ScrollToRequested.Invoke(this, i);
+                    await Task.Delay(50);
+                }
+
+                SetDevDetails();
+
+                RaisePropertyChanged(nameof(IsRunning));
+
+                _firstRun = false;
             }
-
-            IsRunning = false;
-
-            _initialised = true;
-
-            _lastProfileIndex = Profiles.Count - 1;
-
-            //ScrollToRequested.Invoke(this, _lastProfileIndex);
-
-            SelectedProfile = Profiles[_lastProfileIndex];
-            OnPropertyChanged(nameof(SelectedProfile));
-
-            ShowDevCards = true;
-            OnPropertyChanged(nameof(ShowDevCards));
-
-            for (int i = _lastProfileIndex; i > -1; i--)
-            {
-                ScrollToRequested.Invoke(this, i);
-                await Task.Delay(50);
-            }
-
-            SetDevDetails();
-
-            RaisePropertyChanged(nameof(IsRunning));
         }
 
         private void SetDevDetails()
@@ -116,6 +125,10 @@ namespace SSW.Rewards.ViewModels
                     TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
                     GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
                     LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
+
+                    Scanned = SelectedProfile.Scanned;
+
+                    Points = SelectedProfile.Points;
 
                     RaisePropertyChanged(OnSwipedUpdatePropertyList);
 
@@ -174,6 +187,11 @@ namespace SSW.Rewards.ViewModels
         private async Task OpenLinkedin()
         {
             await Launcher.OpenAsync(new Uri(_linkedinUri));
+        }
+
+        private async Task ShowScannedMessage()
+        {
+            
         }
     }
 }

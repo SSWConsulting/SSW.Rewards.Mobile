@@ -123,5 +123,15 @@
                            Color="{StaticResource primary}"
                            IsVisible="{Binding IsLoading}"/>
 
+        <controls:Snackbar Grid.Row="0"
+                           Grid.RowSpan="3"
+                           ActionCompleted="True"
+                           Glyph="&#xed17;"
+                           GlyphFont="{StaticResource FluentIcons}"
+                           GlyphIsBrand="False"
+                           Message="Yay this is a test you have scanned etd"
+                           VerticalOptions="End"
+                           />
+
     </Grid>
 </ContentPage>

@@ -38,7 +38,8 @@ namespace SSW.Rewards.Services
 						Skills = profile.Skills?.ToList(),
                         IsExternal = profile.IsExternal,
                         AchievementId = profile.StaffAchievement.Id,
-                        Scanned = profile.Scanned
+                        Scanned = profile.Scanned,
+                        Points = profile.StaffAchievement.Value
 					};
 
                     profiles.Add(dev);

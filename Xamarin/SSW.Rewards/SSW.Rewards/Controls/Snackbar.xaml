@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Rewards.Controls.Snackbar">
+  <ContentView.Content>
+        <Grid x:Name="MainLayout"
+              HorizontalOptions="CenterAndExpand"
+              HeightRequest="50"
+              WidthRequest="400"
+              Margin="30"
+            ColumnDefinitions="1*, 8*, 1*">
+            
+            <!-- Icon-->
+            <Label Grid.Column="0"
+                   x:Name="IconLabel"
+                   Text="{Binding Glyph}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+            
+            <!-- Main message or action-->
+            <Label Grid.Row="1" />
+            
+            <!-- End icon-->
+            <Label Grid.Row="2"
+                   IsVisible="{Binding ShowTick}"
+                   TextColor="White"
+                   Text="&#xf293;"
+                   FontFamily="{StaticResource FluentIcons}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+            
+            <!--End points coint-->
+            <Label Grid.Row="2"
+                   IsVisible="{Binding ShowPoints}"
+                   Text="{Binding Points}"/>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

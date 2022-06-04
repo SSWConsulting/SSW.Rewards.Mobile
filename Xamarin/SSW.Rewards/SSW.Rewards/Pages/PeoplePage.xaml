@@ -68,12 +68,12 @@
             <Grid Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
-                  ColumnDefinitions="6*, 2*, 2*, 2*"
+                  ColumnDefinitions="6*, 4*, 2*"
                   RowDefinitions="25*, 7*, 2*, 5*">
 
                 <FlexLayout Grid.Row="0"
                             Grid.Column="0"
-                            Grid.ColumnSpan="4"
+                            Grid.ColumnSpan="3"
                             HorizontalOptions="StartAndExpand"
                             Direction="Column"
                             BindableLayout.ItemsSource="{Binding Skills}">
@@ -85,78 +85,10 @@
                     </BindableLayout.ItemTemplate>
                 </FlexLayout>
 
-                <!--<Grid Grid.Row="0"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="4"
-                      RowDefinitions="*,*,*,*,*"
-                      HorizontalOptions="EndAndExpand">
-
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             HorizontalOptions="EndAndExpand"
-                             Grid.Row="0"
-                             x:Name="Skill1Box"
-                             WidthRequest="50"/>
-
-                    <Label Grid.Row="0"
-                           Text="{Binding Skill1}"
-                           TextColor="White"
-                           HorizontalOptions="End"
-                           HorizontalTextAlignment="End"/>
-
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             Grid.Row="1"
-                             x:Name="Skill2Box"
-                             WidthRequest="100"/>
-
-                    <Label Grid.Row="1"
-                           Text="{Binding Skill2}"
-                           TextColor="White"
-                           HorizontalOptions="End"
-                           HorizontalTextAlignment="End"/>
-
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             Grid.Row="2"
-                             x:Name="Skill3Box"
-                             WidthRequest="100"/>
-
-                    <Label Grid.Row="2"
-                           Text="{Binding Skill3}"
-                           TextColor="White"
-                           HorizontalOptions="End"
-                           HorizontalTextAlignment="End"/>
-
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             Grid.Row="3"
-                             x:Name="Skill4Box"
-                             WidthRequest="150"/>
-
-                    <Label Grid.Row="3"
-                           Text="{Binding Skill4}"
-                           TextColor="White"
-                           HorizontalOptions="End"
-                           HorizontalTextAlignment="End"/>
-
-                    <BoxView HeightRequest="40"
-                             BackgroundColor="{StaticResource primary}"
-                             Grid.Row="4"
-                             x:Name="Skill5Box"
-                             WidthRequest="150"/>
-
-                    <Label Grid.Row="4"
-                           Text="{Binding Skill5}"
-                           TextColor="White"
-                           HorizontalOptions="End"
-                           HorizontalTextAlignment="End"/>
-                </Grid>-->
-
                 <CarouselView Grid.Row="0"
                               Grid.Column="0"
                               Grid.RowSpan="4"
-                              Grid.ColumnSpan="4"
+                              Grid.ColumnSpan="3"
                               HorizontalOptions="FillAndExpand"
                               VerticalOptions="FillAndExpand"
                               Margin="0"
@@ -186,12 +118,15 @@
                 </CarouselView>
 
                 <StackLayout Grid.Row="1"
-                             Grid.Column="3"
+                             Grid.Column="2"
                              Grid.RowSpan="2"
                              HorizontalOptions="End"
                              VerticalOptions="Start"
                              TranslationY="-30"
                              Spacing="2">
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
+                    </StackLayout.GestureRecognizers>
                     
                     <Label FontFamily="{StaticResource FluentIcons}"
                            TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
@@ -199,13 +134,13 @@
                            FontSize="56"
                            HorizontalOptions="End"
                            Margin="0,0,10,0"
-                           HorizontalTextAlignment="Center"
+                           HorizontalTextAlignment="End"
                            VerticalTextAlignment="End"
                            VerticalOptions="Start"
                            HeightRequest="100"
                            WidthRequest="100"/>
 
-                    <Label Text="⭐ 300"
+                    <Label Text="{Binding Points, StringFormat='⭐ {0}'}"
                            TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
                            HorizontalOptions="Center"
                            FontSize="12"
@@ -214,7 +149,7 @@
                 </StackLayout>
 
                 <StackLayout Grid.Column="1"
-                             Grid.ColumnSpan="3"
+                             Grid.ColumnSpan="2"
                              Grid.Row="3"
                              Spacing="20"
                              Orientation="Horizontal"

@@ -32,6 +32,8 @@ namespace SSW.Rewards.Models
 
         public bool Scanned { get; set; } = false;
 
+        public int Points { get; set; }
+
         public List<StaffSkillDto> Skills { get; set; }
     }
 }

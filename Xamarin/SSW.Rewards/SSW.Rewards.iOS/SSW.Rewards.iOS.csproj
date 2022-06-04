@@ -1703,9 +1703,6 @@
     <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie">
       <Version>[3.0.3]</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Push">
-      <Version>3.4.3</Version>
-    </PackageReference>
     <PackageReference Include="Xam.Plugin.Media">
       <Version>5.0.1</Version>
     </PackageReference>
@@ -1731,9 +1728,5 @@
       <Visible>False</Visible>
     </ImageAsset>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
