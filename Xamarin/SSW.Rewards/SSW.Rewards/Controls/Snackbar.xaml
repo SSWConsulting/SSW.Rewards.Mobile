@@ -6,9 +6,16 @@
         <Grid x:Name="MainLayout"
               HorizontalOptions="CenterAndExpand"
               HeightRequest="50"
-              WidthRequest="400"
+              WidthRequest="450"
               Margin="30"
-            ColumnDefinitions="1*, 8*, 1*">
+              Padding="5"
+            ColumnDefinitions="1*, 6*, 1*">
+
+            <BoxView x:Name="GridBackground"
+                     Grid.ColumnSpan="3"
+                     VerticalOptions="FillAndExpand"
+                     HorizontalOptions="FillAndExpand"
+                     CornerRadius="3"/>
             
             <!-- Icon-->
             <Label Grid.Column="0"
@@ -19,10 +26,14 @@
                    HorizontalTextAlignment="Center"/>
             
             <!-- Main message or action-->
-            <Label Grid.Row="1" />
+            <Label Grid.Column="1" 
+                   Text="{Binding Message}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   TextColor="White"/>
             
             <!-- End icon-->
-            <Label Grid.Row="2"
+            <Label Grid.Column="2"
                    IsVisible="{Binding ShowTick}"
                    TextColor="White"
                    Text="&#xf293;"
@@ -32,7 +43,7 @@
                    HorizontalTextAlignment="Center"/>
             
             <!--End points coint-->
-            <Label Grid.Row="2"
+            <Label Grid.Column="2"
                    IsVisible="{Binding ShowPoints}"
                    Text="{Binding Points}"/>
         </Grid>

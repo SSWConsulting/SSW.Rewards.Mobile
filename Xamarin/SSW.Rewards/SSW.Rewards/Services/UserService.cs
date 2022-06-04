@@ -159,8 +159,6 @@ namespace SSW.Rewards.Services
 
         public async Task RefreshLoginAsync()
         {
-            // TODO: this doesn't work
-
             RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
             if (!string.IsNullOrWhiteSpace(RefreshToken))
@@ -172,7 +170,6 @@ namespace SSW.Rewards.Services
                 if (!result.IsError)
                 {
                     await SettRefreshToken(result.RefreshToken);
-                    //await SetLoggedInState(result.AccessToken, result.IdentityToken);
                     AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
                 }
             }
