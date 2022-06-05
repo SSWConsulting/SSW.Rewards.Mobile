@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Rewards.Controls.SkillsBar">
+  <ContentView.Content>
+        <Grid HorizontalOptions="FillAndExpand"
+              Margin="0,6">
+            <BoxView HeightRequest="40"
+                     HorizontalOptions="FillAndExpand"
+                     TranslationX="400"
+                     x:Name="Bar"
+                     BackgroundColor="{StaticResource primary}" />
+
+            <Label HorizontalOptions="End"
+                   HorizontalTextAlignment="End"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"
+                   Margin="0,0,10,0"
+                   x:Name="SkillLabel"/>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

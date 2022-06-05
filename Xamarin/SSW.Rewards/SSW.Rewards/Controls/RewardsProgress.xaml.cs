@@ -30,11 +30,24 @@ namespace SSW.Rewards.Controls
             Content = canvasView;
         }
 
-        private static void ProgressChanged(BindableObject prop, object oldVal, object newVal)
+        private static async void ProgressChanged(BindableObject prop, object oldVal, object newVal)
         {
+
+            // TODO: create an OnAppearing event and bind it to the onappearing event of the page
+            // move this logic to another method
+            // call the other method from both this and the event
             var progressControl = (RewardsProgress)prop;
-            progressControl.SetAngleFromProgress((double)newVal);
-            progressControl.DrawControl();
+
+            var framems = 34; // number of milliseconds per step
+            var targetVal = (double)newVal;
+
+            for (int i = 15; i > 0; i--)
+            {
+                var thisVal = targetVal / i;
+                progressControl.SetAngleFromProgress(thisVal);
+                progressControl.DrawControl();
+                await System.Threading.Tasks.Task.Delay(framems);
+            }
         }
 
         private void OnCanvasPaintSurface(object sender, SKPaintSurfaceEventArgs args)

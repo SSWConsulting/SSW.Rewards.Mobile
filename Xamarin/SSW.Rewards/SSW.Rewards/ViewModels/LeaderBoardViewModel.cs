@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using SSW.Rewards.Services;
-using SSW.Rewards.Views;
 using System.Linq;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using SSW.Rewards.Pages;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -15,21 +15,17 @@ namespace SSW.Rewards.ViewModels
         public bool IsRunning { get; set; }
         public bool IsRefreshing { get; set; }
 
+        public string ProfilePic { get; set; }
+
         private ILeaderService _leaderService;
+        
         private IUserService _userService;
-        public ICommand LeaderTapped
-        {
-            get
-            {
-                return new Command<LeaderSummaryViewModel>((x) => HandleLeaderTapped(x));
-            }
-        }
+        
+        public ICommand LeaderTapped => new Command<LeaderSummaryViewModel>(async (x) => await HandleLeaderTapped(x));
+
         public ICommand OnRefreshCommand { get; set; }
 
-        public ICommand ScrollToTopCommand => new Command(() =>
-        {
-            MessagingCenter.Send<string>("ScrollToTop", "ScrollToTop");
-        });
+        public ICommand ScrollToTopCommand => new Command(() => MessagingCenter.Send("ScrollToTop", "ScrollToTop"));
 
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
 
@@ -39,6 +35,13 @@ namespace SSW.Rewards.ViewModels
 
         private ObservableCollection<LeaderSummaryViewModel> searchResults = new ObservableCollection<LeaderSummaryViewModel>();
 
+        public int TotalLeaders { get; set; }
+
+        public int MyRank { get; set; }
+
+        public int MyPoints { get; set; }
+
+        public int MyBalance { get; set; }
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
@@ -46,10 +49,15 @@ namespace SSW.Rewards.ViewModels
             OnRefreshCommand = new Command(Refresh);
             _leaderService = leaderService;
             _userService = userService;
+            ProfilePic = _userService.MyProfilePic;
+
+            MyPoints = _userService.MyPoints;
+
+            MyBalance = _userService.MyBalance;
+
             Leaders = new ObservableCollection<LeaderSummaryViewModel>();
             MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
             MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(); });
-            _ = Initialise();
         }
 
 
@@ -80,7 +88,7 @@ namespace SSW.Rewards.ViewModels
             }
         }
 
-        private async Task Initialise()
+        public async Task Initialise()
         {
             IsRunning = true;
             RaisePropertyChanged("IsRunning");
@@ -96,12 +104,16 @@ namespace SSW.Rewards.ViewModels
             }
 
             IsRunning = false;
-            RaisePropertyChanged("IsRunning");
-
             SearchResults = Leaders;
-            RaisePropertyChanged("SearchResults");
 
             var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
+
+            TotalLeaders = summaries.Count();
+
+            MyRank = mysummary.Rank;
+
+            RaisePropertyChanged(nameof(IsRunning), nameof(searchResults), nameof(MyRank), nameof(TotalLeaders));
+
             ScrollToMe?.Invoke(mysummary);
             var firstLeader = Leaders.FirstOrDefault();
             ScrollToTop?.Invoke(firstLeader);
@@ -130,12 +142,12 @@ namespace SSW.Rewards.ViewModels
             RaisePropertyChanged("IsRefreshing");
         }
 
-        private void HandleLeaderTapped(LeaderSummaryViewModel leader)
+        private async Task HandleLeaderTapped(LeaderSummaryViewModel leader)
         {
             if (leader.IsMe)
-                Shell.Current.Navigation.PushAsync(new Profile());
+                await Shell.Current.GoToAsync("main");
             else
-                Shell.Current.Navigation.PushAsync(new Profile(leader));
+                await Shell.Current.Navigation.PushAsync(new ProfilePage(leader));
         }
     }
 }

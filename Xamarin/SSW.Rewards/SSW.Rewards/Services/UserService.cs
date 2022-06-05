@@ -1,6 +1,5 @@
 ﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
-using Newtonsoft.Json;
 using SSW.Rewards.Helpers;
 using SSW.Rewards.Models;
 using System;
@@ -55,10 +54,6 @@ namespace SSW.Rewards.Services
 
                 if (result.IsError)
                 {
-                    Console.WriteLine("OIDC Client returned a login error");
-
-                    Console.WriteLine(result.Error);
-                    Console.WriteLine(result.ErrorDescription);
                     return ApiStatus.Error;
                 }
 
@@ -67,10 +62,16 @@ namespace SSW.Rewards.Services
 
                 if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
                 {
-                    Console.WriteLine("[UserService]: Got ID token and Access tokens");
-                    Console.WriteLine($"Access Token: {token}");
-                    Console.WriteLine($"ID Token: {idToken}");
-                    await SetLoggedInState(token, idToken);
+
+                    try
+                    {
+                        await SetLoggedInState(token, idToken);
+                    }
+                    catch (Exception)
+                    {
+
+                        return ApiStatus.Unavailable;
+                    }
 
                     await SettRefreshToken(result.RefreshToken);
 
@@ -83,9 +84,6 @@ namespace SSW.Rewards.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR [UserService - SigninAsync]:");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
                 return ApiStatus.Error;
             }
         }
@@ -105,44 +103,33 @@ namespace SSW.Rewards.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            bool isStaff = false;
+            var jwToken = tokenHandler.ReadJwtToken(idToken);
 
-            try
+            var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
+            var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
+            var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
+            var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+
+            string fullName = firstName + " " + familyName;
+
+            if (!string.IsNullOrWhiteSpace(fullName))
             {
-                var jwToken = tokenHandler.ReadJwtToken(idToken);
-
-                var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
-
-                string fullName = firstName + " " + familyName;
-
-                if (!string.IsNullOrWhiteSpace(fullName))
-                {
-                    Preferences.Set("MyName", fullName);
-                }
-
-                if (!string.IsNullOrWhiteSpace(jobTitle))
-                {
-                    Preferences.Set("JobTitle", jobTitle);
-                }
-
-                if (!string.IsNullOrWhiteSpace(email))
-                {
-                    Preferences.Set("MyEmail", email);
-                }
-
-                await UpdateMyDetailsAsync();
-
-                _loggedIn = true;
+                Preferences.Set("MyName", fullName);
             }
-            catch (ArgumentException ex)
+
+            if (!string.IsNullOrWhiteSpace(jobTitle))
             {
-                Console.WriteLine("ERROR [UserService - SetLoggedInState]:");
-                Console.WriteLine(ex.Message);
-                //TODO: Handle error decoding JWT
+                Preferences.Set("JobTitle", jobTitle);
             }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                Preferences.Set("MyEmail", email);
+            }
+
+            await UpdateMyDetailsAsync();
+
+            _loggedIn = true;
         }
 
         private async Task SettRefreshToken(string token)
@@ -159,8 +146,6 @@ namespace SSW.Rewards.Services
 
         public async Task RefreshLoginAsync()
         {
-            // TODO: this doesn't work
-
             RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
             if (!string.IsNullOrWhiteSpace(RefreshToken))
@@ -172,7 +157,7 @@ namespace SSW.Rewards.Services
                 if (!result.IsError)
                 {
                     await SettRefreshToken(result.RefreshToken);
-                    await SetLoggedInState(result.AccessToken, result.IdentityToken);
+                    AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
                 }
             }
         }
@@ -202,7 +187,7 @@ namespace SSW.Rewards.Services
                 if (!string.IsNullOrWhiteSpace(pic))
                     return pic;
 
-                return "icon_avatar";
+                return "v2sophie";
             }
         }
 

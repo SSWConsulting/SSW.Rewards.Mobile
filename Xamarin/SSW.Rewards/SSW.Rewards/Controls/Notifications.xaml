@@ -24,6 +24,19 @@
                     <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="20" />
                 </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     WidthRequest="200">
+                            <Label Text="You have no outstanding notifications"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"

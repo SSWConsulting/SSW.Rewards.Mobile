@@ -1657,14 +1657,52 @@
           "isExternal": {
             "type": "boolean"
           },
+          "staffAchievement": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
+          },
+          "scanned": {
+            "type": "boolean"
+          },
           "skills": {
             "type": "array",
             "nullable": true,
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/StaffSkillDto"
             }
           }
         }
+      },
+      "StaffSkillDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "level": {
+            "$ref": "#/components/schemas/SkillLevel"
+          }
+        }
+      },
+      "SkillLevel": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Beginner",
+          "Intermediate",
+          "Advanced"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
       },
       "UpsertStaffMemberProfileCommand": {
         "type": "object",
@@ -1850,6 +1888,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "achievementId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "achievementName": {
             "type": "string",
             "nullable": true

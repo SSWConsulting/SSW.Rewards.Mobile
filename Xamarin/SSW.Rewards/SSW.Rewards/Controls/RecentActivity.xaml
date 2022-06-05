@@ -24,6 +24,25 @@
                     <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="20" />
                 </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     WidthRequest="200">
+                            <Label Text="You have no recent activity"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                            <Label Text="Scan an SSWer, attend an event or complete a quiz to see some activity here."
+                                   LineBreakMode="WordWrap"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"

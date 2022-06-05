@@ -36,6 +36,8 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
             await viewModel.Initialise(_isMe);
+            await System.Threading.Tasks.Task.Delay(1000);
+            TestSnackbar.ShowSnackbar();
         }
     }
 }

@@ -46,7 +46,7 @@ namespace SSW.Rewards.ViewModels
             Name = vm.Name;
             Email = vm.Title;
             userId = vm.Id;
-            Points = vm.BaseScore;
+            Points = vm.Score;
             // TODO: add this to LeaderSummaryViewModel
             // Balance = vm.Balance;
         }
@@ -60,11 +60,6 @@ namespace SSW.Rewards.ViewModels
             if (_isMe)
             {
                 var profilePic = _userService.MyProfilePic;
-
-                if (string.IsNullOrWhiteSpace(profilePic))
-                {
-                    profilePic = "v2sophie";
-                }
 
                 //initialise me
                 ProfilePic = profilePic;

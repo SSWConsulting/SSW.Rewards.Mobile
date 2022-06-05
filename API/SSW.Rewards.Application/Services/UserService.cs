@@ -236,27 +236,13 @@ namespace SSW.Rewards.Application.Services
             var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
             var userRewards = await _dbContext.UserRewards
                 .Where(ur => ur.UserId == userId)
+                .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             // Currently using in-memory join because the expected returned records are very low (max 10 or so)
             var vm = new List<UserRewardDto>();
 
-            foreach (var reward in rewards)
-            {
-                var userReward = userRewards.Where(ur => ur.RewardId == reward.Id).FirstOrDefault();
-                if (userReward != null)
-                {
-                    vm.Add(_mapper.Map<UserRewardDto>(userReward));
-                }
-                else
-                {
-                    vm.Add(new UserRewardDto
-                    {
-                        RewardName = reward.Name,
-                        RewardCost = reward.Cost
-                    });
-                }
-            }
+            vm.AddRange(userRewards);
 
             return new UserRewardsViewModel
             {

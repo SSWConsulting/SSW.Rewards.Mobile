@@ -1,12 +1,232 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.PeoplePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
+            <converters:ScannedToColorConverter x:Key="ScannedToColor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid RowDefinitions="10*, 45*, 15*"
+              ColumnDefinitions="2*, 10*, 2*">
+
+            <ImageButton Grid.Row="0"
+                         Grid.Column="0"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center"
+                         Margin="10"
+                         Command="{Binding BackCommand}"
+                         BackgroundColor="Transparent">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf2ad;"
+                                     Color="White"/>
+                </ImageButton.Source>
+            </ImageButton>
+
+            <ImageButton Grid.Row="0"
+                         Grid.Column="2"
+                         HorizontalOptions="Center"
+                         BackgroundColor="Transparent"
+                         WidthRequest="100"
+                         Margin="10"
+                         Command="{Binding ForwardCommand}"
+                         VerticalOptions="Center">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf2b3;"
+                                     Color="White"/>
+                </ImageButton.Source>
+            </ImageButton>
+
+            <StackLayout Grid.Row="0"
+                         Grid.Column="1"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center"
+                         Spacing="1">
+                <Label Text="{Binding DevName}"
+                       FontSize="Title"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding DevTitle}"
+                       FontSize="Subtitle"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+            </StackLayout>
+
+
+            <Grid Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="3"
+                  ColumnDefinitions="6*, 4*, 2*"
+                  RowDefinitions="25*, 7*, 2*, 5*">
+
+                <FlexLayout Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            HorizontalOptions="StartAndExpand"
+                            Direction="Column"
+                            BindableLayout.ItemsSource="{Binding Skills}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <controls:SkillsBar Label="{Binding Name}"
+                                                Level="{Binding Level}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <CarouselView Grid.Row="0"
+                              Grid.Column="0"
+                              Grid.RowSpan="4"
+                              Grid.ColumnSpan="3"
+                              HorizontalOptions="FillAndExpand"
+                              VerticalOptions="FillAndExpand"
+                              Margin="0"
+                              TranslationY="10"
+                              x:Name="PicCarousel"
+                              ItemsSource="{Binding Profiles}"
+                              CurrentItemChangedCommand="{Binding OnCardSwiped}"
+                              CurrentItem="{Binding SelectedProfile}"
+                              IsVisible="{Binding ShowDevCards}">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Margin="0"
+                                   Aspect="AspectFit"
+                                   TranslationY="10"
+                                   WidthRequest="1000"
+                                   HeightRequest="1000"
+                                   HorizontalOptions="StartAndExpand"
+                                   VerticalOptions="End"
+                                   Scale="1.2"
+                                   TranslationX="-80"
+                                   Source="{Binding Picture}"
+                                   x:Name="DevImage"
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+
+                <StackLayout Grid.Row="1"
+                             Grid.Column="2"
+                             Grid.RowSpan="2"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             TranslationY="-30"
+                             Spacing="2">
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
+                    </StackLayout.GestureRecognizers>
+                    
+                    <Label FontFamily="{StaticResource FluentIcons}"
+                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
+                           Text="&#xf636;"
+                           FontSize="56"
+                           HorizontalOptions="End"
+                           Margin="0,0,10,0"
+                           HorizontalTextAlignment="End"
+                           VerticalTextAlignment="End"
+                           VerticalOptions="Start"
+                           HeightRequest="100"
+                           WidthRequest="100"/>
+
+                    <Label Text="{Binding Points, StringFormat='⭐ {0}'}"
+                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
+                           HorizontalOptions="Center"
+                           FontSize="12"
+                           Margin="0,0,10,0"
+                           HorizontalTextAlignment="Center"/>
+                </StackLayout>
+
+                <StackLayout Grid.Column="1"
+                             Grid.ColumnSpan="2"
+                             Grid.Row="3"
+                             Spacing="20"
+                             Orientation="Horizontal"
+                             HorizontalOptions="End"
+                             Padding="0,0,10,0">
+
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
+                           Text="&#xf099;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
+                           Text="&#xf09b;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnGithubTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label FontFamily="{StaticResource FA6Brands}"
+                           TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
+                           Text="&#xf08c;"
+                           FontSize="36"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           BackgroundColor="Transparent">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnLinkedinTapped}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+
+            </Grid>
+            
+
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="FillAndExpand"
+                   HorizontalTextAlignment="Center"
+                   BackgroundColor="{StaticResource MainBackground}"
+                   FontSize="11"
+                   TextColor="White"
+                   Padding="22,16"
+                   Text="{Binding DevBio}"/>
+
+            <ActivityIndicator Color="{StaticResource primary}"
+                               IsRunning="True"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Grid.ColumnSpan="3"
+                               Grid.RowSpan="3"
+                               IsVisible="{Binding IsRunning}"/>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
