@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -107,6 +107,12 @@ namespace SSW.Rewards.Controls
             {
                 snack.IconLabel.FontFamily = snack.GlyphFont;
             }
+        }
+
+        public void ShowSnackbar()
+        {
+            MainLayout.FadeTo(1, 750);
+            MainLayout.TranslateTo(0, 0, 750);
         }
     }
 }

@@ -45,6 +45,8 @@
         <Color x:Key="LeaderCardBackground">#FF505050</Color>
         <Color x:Key="HeadingColor">#bcbcbc</Color>
         <Color x:Key="PeopleBackground">#363636</Color>
+        <Color x:Key="MutedText">#a3a3a3</Color>
+        <Color x:Key="HighlightedText">#dbdbdb</Color>
 
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>
@@ -55,6 +57,6 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="TextColor" Value="#999999"/>
         </Style>
-
     </Application.Resources>
+
 </Application>

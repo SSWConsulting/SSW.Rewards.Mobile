@@ -1,12 +1,213 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Pages.LeaderboardPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="TabbedRadioTemplate">
+                <StackLayout>
+                    <ContentPresenter />
+                    <BoxView BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="FillAndExpand"
+                             HeightRequest="2"
+                             x:Name="SelectedUnderline"/>
+
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroupList>
+                            <VisualStateGroup x:Name="CheckedStates">
+                                <VisualState x:Name="Checked">
+                                    <VisualState.Setters>
+                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <VisualState.Setters>
+                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="0" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateGroupList>
+                    </VisualStateManager.VisualStateGroups>
+                </StackLayout>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid Padding="30,5"
+              RowDefinitions="80, 60, 40, 25, *">
+
+            <Grid Grid.Row="0"
+                  RowDefinitions="3*, 2*"
+                  ColumnDefinitions="80, *, 50">
+
+                <Image Grid.Row="0"
+                       Grid.RowSpan="2"
+                       Source="{Binding ProfilePic}"
+                       WidthRequest="74"
+                       HeightRequest="74"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Aspect="AspectFill">
+                    <Image.Clip>
+                        <EllipseGeometry Center="37,37"
+                                     RadiusX="37"
+                                     RadiusY="37"/>
+                    </Image.Clip>
+                </Image>
+
+                <StackLayout Grid.Column="1"
+                             Orientation="Horizontal"
+                             Padding="10,5,0,0"
+                             VerticalOptions="End">
+
+                    <Label Text="{Binding MyRank, StringFormat='&#35;{0}'}"
+                           FontSize="Title"
+                           TextColor="White"/>
+
+                    <Label Text="{Binding TotalLeaders, StringFormat='of {0}'}"
+                           FontSize="Title"
+                           TextColor="{StaticResource MutedText}"/>
+
+                </StackLayout>
+
+                <StackLayout Grid.Column="1"
+                             Grid.Row="1"
+                             Orientation="Horizontal"
+                             Padding="10,0,5,0"
+                             VerticalOptions="Start"
+                             Spacing="10">
+
+                    <Label Text="{Binding MyBalance, StringFormat='⭐ {0}'}"
+                           TextColor="{StaticResource primary}"/>
+
+                    <Label Text="{Binding TotalLeaders, StringFormat='⭐ {0}'}"
+                           TextColor="{StaticResource HighlightedText}"/>
+
+                </StackLayout>
+
+                <ImageButton Grid.Row="0"
+                             Grid.RowSpan="2"
+                             Grid.Column="2"
+                             BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             CornerRadius="20"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             Padding="5">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf151;"
+                                     Color="White"/>
+                    </ImageButton.Source>
+                </ImageButton>
+                
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*, 50"
+                  VerticalOptions="Center"
+                  HeightRequest="45"
+                  Padding="0,10">
+                <BoxView Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         BackgroundColor="{StaticResource TabBarBackground}"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="CenterAndExpand"
+                         CornerRadius="10"/>
+
+                <Entry Grid.Column="0"
+                       Margin="10,0,0,0"/>
+
+                <Label Grid.Column="1"
+                       FontFamily="{StaticResource FluentIcons}"
+                       Text="&#xea7c;"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       TextColor="White"/>
+            </Grid>
+
+            <Label Grid.Row="2"
+                   Text="Leaderboard"
+                   TextColor="White"
+                   FontSize="Title"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+
+            <FlexLayout Grid.Row="3"
+                        JustifyContent="SpaceBetween">
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="This Month"
+                             IsChecked="True"/>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="This Year"/>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="All Time"/>
+            </FlexLayout>
+
+            <CollectionView Grid.Row="4"
+                            ItemsSource="{Binding SearchResults}"
+                            Margin="0,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
+                              HeightRequest="50"
+                              ColumnDefinitions="50, 20, *, 80"
+                              Padding="10,0">
+
+                            <Image Grid.Column="0"
+                                   Source="{Binding ProfilePic}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   WidthRequest="30"
+                                   HeightRequest="30">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="15,15"
+                                                     RadiusX="15"
+                                                     RadiusY="15" />
+                                </Image.Clip>
+                            </Image>
+
+                            <Label Text="👑"
+                                   FontSize="6"
+                                   Grid.Column="0"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsLeader}"
+                                   TranslationX="-12"/>
+
+                            <Label Grid.Column="1"
+                                   Text="{Binding Rank, StringFormat='&#35;{0}'}"
+                                   TextColor="White"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center" />
+
+                            <Label Grid.Column="2"
+                                   Text="{Binding Name}"
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"/>
+
+                            <Label Grid.Column="3"
+                                   Text="{Binding Score, StringFormat='{0:N0} ⭐'}"
+                                   TextColor="White"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"/>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

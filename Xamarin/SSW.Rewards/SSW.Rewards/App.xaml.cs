@@ -81,35 +81,6 @@ namespace SSW.Rewards
             // Handle when your app resumes
         }
 
-        private async Task UpdateAccessTokenAsync()
-        {
-            bool loggedIn = Preferences.Get("LoggedIn", false);
-
-            if (loggedIn)
-            {
-                try
-                {
-                    // TODO: move this to UserService
-
-                    bool isStaff = false;
-
-                    var qrCode = Preferences.Get("MyQRCode", string.Empty);
-
-                    if (!string.IsNullOrWhiteSpace(qrCode))
-                        isStaff = true;
-
-                    Application.Current.MainPage = Resolver.ResolveShell(isStaff);
-                    await Shell.Current.GoToAsync("//main");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Service Unavailable");
-                    Console.WriteLine(e);
-                    //await Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
-                }
-            }
-        }
-
         private async Task CheckApiCompatibilityAsync()
         {
             Console.WriteLine("Checking API compatibility...");

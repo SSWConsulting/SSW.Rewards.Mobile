@@ -9,7 +9,9 @@
               WidthRequest="450"
               Margin="30"
               Padding="5"
-            ColumnDefinitions="1*, 6*, 1*">
+              ColumnDefinitions="1*, 6*, 1*"
+              Opacity="0"
+              TranslationY="50">
 
             <BoxView x:Name="GridBackground"
                      Grid.ColumnSpan="3"

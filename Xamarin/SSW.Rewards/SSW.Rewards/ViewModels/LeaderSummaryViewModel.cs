@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
+﻿using SSW.Rewards.Models;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -12,8 +8,7 @@ namespace SSW.Rewards.ViewModels
         public int Rank{ get { return _summary.Rank; } }
         public string ProfilePic { get { return _summary.ProfilePic; } }
         public string Name { get { return _summary.Name; } }
-        public int BaseScore { get { return _summary.BaseScore; } }
-        public int BonusScore { get { return _summary.BonusScore; } }
+        public int Score { get { return _summary.BaseScore; } }
         public int Id { get { return _summary.id; } }
         public bool IsMe
         {
@@ -24,6 +19,14 @@ namespace SSW.Rewards.ViewModels
             set
             {
                 _isMe = value;
+            }
+        }
+
+        public bool IsLeader
+        {
+            get
+            {
+                return Rank == 1;
             }
         }
 

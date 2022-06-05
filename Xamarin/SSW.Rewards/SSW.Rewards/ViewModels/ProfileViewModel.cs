@@ -46,7 +46,7 @@ namespace SSW.Rewards.ViewModels
             Name = vm.Name;
             Email = vm.Title;
             userId = vm.Id;
-            Points = vm.BaseScore;
+            Points = vm.Score;
             // TODO: add this to LeaderSummaryViewModel
             // Balance = vm.Balance;
         }

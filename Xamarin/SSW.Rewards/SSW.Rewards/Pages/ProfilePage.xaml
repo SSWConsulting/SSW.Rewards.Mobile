@@ -131,8 +131,8 @@
                            BrandFont="{StaticResource FluentIcons}"
                            GlyphIsBrand="False"
                            Message="Yay this is a test you have scanned etd"
-                           VerticalOptions="End"
-                           />
+                           VerticalOptions="End" 
+                           x:Name="TestSnackbar"/>
 
     </Grid>
 </ContentPage>
