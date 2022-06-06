@@ -13,11 +13,12 @@ Please ensure you are following the [Developer Guidelines](https://github.com/SS
 2. [Getting Started on a PBI](_docs/Definition-of-Ready.md)
 3. [Getting Ready to Complete a PBI](_docs/Definition-of-Done.md)
 4. [Deployment Steps](_docs/Instructions-Deployment.md)
+5. [Overview](_docs/Business.md)
+6. [Technologies & Architecture](_docs/Technologies-and-Architecture.md)
 
-### More Information about the Project
+### Related projects
+[Admin portal](https://dev.azure.com/ssw/SSW.Rewards)
 
-- [Overview](_docs/Business.md)
-- [Technologies & Architecture](_docs/Technologies-and-Architecture.md)
 
 ### Trends and Analytics
 
