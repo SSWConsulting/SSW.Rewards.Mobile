@@ -64,3 +64,5 @@
   Apple Developer Program Team)
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
+
+Be sure to read the [Definition of done](Definition-of-Done.md) and the [Definition of ready](Definition-of-Ready.md)
