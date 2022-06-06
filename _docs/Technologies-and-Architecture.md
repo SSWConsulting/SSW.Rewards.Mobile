@@ -1,6 +1,6 @@
 ## Technologies & Architecture
 
-![image.png](imgs/ssw-rewards-architecture-diagram.png)
+![image.png](imgs/ssw-rewards-architecture-diagram.drawio.png)
 **Figure: Architecture diagram of SSW.Rewards project**
 
 
