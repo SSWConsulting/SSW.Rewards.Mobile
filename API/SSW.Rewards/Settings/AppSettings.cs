@@ -37,15 +37,6 @@ namespace SSW.Rewards.WebAPI.Settings
 
 		public int SecretCacheTimeoutMinutes => GetValue(nameof(SecretCacheTimeoutMinutes), 60);
 
-		public AzureAdB2CSettings AzureAdB2C
-		{
-			get
-			{
-				var b2cSettings = new AzureAdB2CSettings();
-				_config.Bind("AzureAdB2C", b2cSettings);
-				return b2cSettings;
-			}
-		}
 
 		/// <summary>
 		/// Returns the <see cref="string"/> value of the appsetting.
