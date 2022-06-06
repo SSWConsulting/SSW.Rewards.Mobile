@@ -207,6 +207,39 @@
         }
       }
     },
+    "/api/Achievement/Delete": {
+      "delete": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Delete",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAchievementCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/AdminTest/Admin": {
       "get": {
         "tags": [
@@ -577,6 +610,39 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ClaimRewardResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Reward/Delete": {
+      "delete": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_Delete",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRewardCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -1228,6 +1294,16 @@
           3
         ]
       },
+      "DeleteAchievementCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "LeaderboardListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -1582,6 +1658,16 @@
           "code": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "DeleteRewardCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

@@ -34,19 +34,26 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
                     .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                var user = await _userService.GetCurrentUser(cancellationToken);
+                //var user = await _userService.GetCurrentUser(cancellationToken);
 
-                var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
+                //var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
 
-                var completedAchievements = achievements.UserAchievements.Where(a => a.Complete).Select(a => a.AchievementId);
+                //var completedAchievements = achievements.UserAchievements
+                //    .Where(a => a.Complete)
+                //    .Select(a => a.AchievementId)
+                //    .ToList();
 
-                foreach (var dto in staffDtos)
-                {
-                    if (completedAchievements.Contains(dto.StaffAchievement.Id))
-                    {
-                        dto.Scanned = true;
-                    }
-                }
+                //foreach (var dto in staffDtos)
+                //{
+                //    if (dto?.StaffAchievement?.Id != null)
+                //    {
+                //        if ((bool)(completedAchievements?.Contains(dto.StaffAchievement.Id)))
+                //        {
+                //            dto.Scanned = true;
+                //        }
+                //    }
+
+                //}
 
                 return new StaffListViewModel
                 {

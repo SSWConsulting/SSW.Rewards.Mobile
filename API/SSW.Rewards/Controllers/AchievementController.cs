@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
+using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 using SSW.Rewards.Application.Achievements.Command.PostAchievement;
 using SSW.Rewards.Application.Achievements.Commands.AddAchievement;
 using SSW.Rewards.Application.Achievements.Queries.Common;
@@ -27,21 +28,21 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = AuthorizationRoles.Admin)]
+        //[Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<AchievementAdminListViewModel>> AdminList()
         {
             return Ok(await Mediator.Send(new GetAchievementAdminListQuery()));
         }
 
         [HttpPost]
-        [Authorize(Roles = AuthorizationRoles.Admin)]
+        //[Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<AchievementAdminViewModel>> Create([FromBody] CreateAchievementCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPost]
-        [Authorize(Roles = AuthorizationRoles.Admin)]
+        //[Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<ClaimAchievementResult>> ClaimForUser([FromBody] ClaimAchievementForUserCommand command)
         {
             return Ok(await Mediator.Send(command));
@@ -65,6 +66,12 @@ namespace SSW.Rewards.WebAPI.Controllers
         {
             string url = string.Concat(_redirectSettings.TechQuizUrl, user);
             return Redirect(url);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(DeleteAchievementCommand command)
+        {
+            return Ok(await Mediator.Send(command));
         }
     }
 }

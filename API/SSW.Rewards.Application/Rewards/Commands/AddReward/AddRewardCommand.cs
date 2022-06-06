@@ -27,8 +27,14 @@ namespace SSW.Rewards.Application.Rewards.Commands.AddReward
 
         public async Task<int> Handle(AddRewardCommand request, CancellationToken cancellationToken)
         {
-            var imageBytes = Convert.FromBase64String(request.ImageBytesInBase64);
-            var imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFileName);
+            Uri imageUri = null;
+            if (!string.IsNullOrWhiteSpace(request.ImageBytesInBase64))
+            {
+                var imageBytes = Convert.FromBase64String(request.ImageBytesInBase64);
+                imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFileName);
+            }
+
+
 
             var codeData = Encoding.ASCII.GetBytes(request.Name);
             string code = Convert.ToBase64String(codeData);
@@ -38,7 +44,7 @@ namespace SSW.Rewards.Application.Rewards.Commands.AddReward
                 Name = request.Name,
                 Cost = request.Cost,
                 RewardType = request.RewardType,
-                ImageUri = imageUri.AbsoluteUri,
+                ImageUri = imageUri?.AbsoluteUri,
                 Code = code
             };
 

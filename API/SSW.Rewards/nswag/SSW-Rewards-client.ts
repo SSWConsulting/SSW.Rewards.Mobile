@@ -29,6 +29,7 @@ export interface IAchievementClient {
     add(achievementCode: string | null): Promise<AchievementDto>;
     post(achievementCode: string | null): Promise<PostAchievementResult>;
     techQuiz(user: string | null): Promise<FileResponse>;
+    delete(command: DeleteAchievementCommand): Promise<FileResponse>;
 }
 
 export class AchievementClient extends BaseClient implements IAchievementClient {
@@ -297,6 +298,44 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
     }
 
     protected processTechQuiz(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    delete(command: DeleteAchievementCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Achievement/Delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<FileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
@@ -652,6 +691,7 @@ export interface IRewardClient {
     add(addRewardCommand: AddRewardCommand): Promise<number>;
     claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult>;
     claim(rewardCode: string | null): Promise<ClaimRewardResult>;
+    delete(command: DeleteRewardCommand): Promise<FileResponse>;
 }
 
 export class RewardClient extends BaseClient implements IRewardClient {
@@ -895,6 +935,44 @@ export class RewardClient extends BaseClient implements IRewardClient {
             });
         }
         return Promise.resolve<ClaimRewardResult>(<any>null);
+    }
+
+    delete(command: DeleteRewardCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Reward/Delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 }
 
@@ -1961,6 +2039,42 @@ export enum AchievementStatus {
     Error = 3,
 }
 
+export class DeleteAchievementCommand implements IDeleteAchievementCommand {
+    id?: number;
+
+    constructor(data?: IDeleteAchievementCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteAchievementCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteAchievementCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteAchievementCommand {
+    id?: number;
+}
+
 export class LeaderboardListViewModel implements ILeaderboardListViewModel {
     users?: LeaderboardUserDto[] | undefined;
 
@@ -2799,6 +2913,42 @@ export class ClaimRewardForUserCommand implements IClaimRewardForUserCommand {
 export interface IClaimRewardForUserCommand {
     userId?: number;
     code?: string | undefined;
+}
+
+export class DeleteRewardCommand implements IDeleteRewardCommand {
+    id?: number;
+
+    constructor(data?: IDeleteRewardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteRewardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteRewardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteRewardCommand {
+    id?: number;
 }
 
 export class SkillListViewModel implements ISkillListViewModel {
