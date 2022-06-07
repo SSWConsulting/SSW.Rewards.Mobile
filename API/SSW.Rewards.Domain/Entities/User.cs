@@ -16,6 +16,7 @@ namespace SSW.Rewards.Domain.Entities
         public ICollection<UserReward> UserRewards { get; set; } = new HashSet<UserReward>();
 
         public ICollection<UserRole> Roles { get; set; } = new HashSet<UserRole>();
+        public ICollection<Notifications> SentNotifications { get; set; } = new HashSet<Notifications>();
     }
 }
 

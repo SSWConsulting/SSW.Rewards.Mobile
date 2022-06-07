@@ -65,10 +65,12 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<string>("NotificationTag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SentByStaffMember")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SentByStaffMemberId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SentByStaffMemberId");
 
                     b.ToTable("Notifications");
                 });
@@ -368,6 +370,15 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.Notifications", b =>
+                {
+                    b.HasOne("SSW.Rewards.Domain.Entities.User", "SentByStaffMember")
+                        .WithMany("SentNotifications")
+                        .HasForeignKey("SentByStaffMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMember", b =>

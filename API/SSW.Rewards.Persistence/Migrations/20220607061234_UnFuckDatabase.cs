@@ -3,10 +3,51 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
-    public partial class AddRoles : Migration
+    public partial class UnFuckDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+                name: "Activated",
+                table: "Users",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<int>(
+                name: "Level",
+                table: "StaffMemberSkills",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "Type",
+                table: "Achievements",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedUtc = table.Column<DateTime>(nullable: false),
+                    SentByStaffMemberId = table.Column<int>(nullable: false),
+                    Message = table.Column<string>(nullable: true),
+                    NotificationTag = table.Column<string>(nullable: true),
+                    NotificationAction = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_SentByStaffMemberId",
+                        column: x => x.SentByStaffMemberId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -49,6 +90,11 @@ namespace SSW.Rewards.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SentByStaffMemberId",
+                table: "Notifications",
+                column: "SentByStaffMemberId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
@@ -62,10 +108,25 @@ namespace SSW.Rewards.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropColumn(
+                name: "Activated",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Level",
+                table: "StaffMemberSkills");
+
+            migrationBuilder.DropColumn(
+                name: "Type",
+                table: "Achievements");
         }
     }
 }
