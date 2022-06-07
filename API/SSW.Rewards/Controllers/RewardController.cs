@@ -20,28 +20,28 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<RewardAdminListViewModel>> AdminList()
         {
             return Ok(await Mediator.Send(new GetRewardAdminListQuery()));
         }
 
         [HttpGet]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<RecentRewardListViewModel>> GetRecent(GetRecentRewardsQuery query)
         {
             return Ok(await Mediator.Send(query));
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<int>> Add(AddRewardCommand addRewardCommand)
         {
             return Ok(await Mediator.Send(addRewardCommand));
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<ClaimRewardResult>> ClaimForUser(ClaimRewardForUserCommand claimRewardForUserCommand)
         {
             return Ok(await Mediator.Send(claimRewardForUserCommand));

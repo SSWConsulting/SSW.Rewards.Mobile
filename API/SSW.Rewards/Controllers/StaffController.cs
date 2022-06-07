@@ -32,21 +32,21 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<string>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(int id, IFormFile file)
         {
             return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { Id = id, File = file }));
         }
 
         [HttpDelete]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<string>> DeleteStaffMemberProfile(DeleteStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));

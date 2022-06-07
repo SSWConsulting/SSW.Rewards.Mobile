@@ -28,21 +28,21 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<AchievementAdminListViewModel>> AdminList()
         {
             return Ok(await Mediator.Send(new GetAchievementAdminListQuery()));
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<AchievementAdminViewModel>> Create([FromBody] CreateAchievementCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPost]
-        //[Authorize(Roles = AuthorizationRoles.Admin)]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult<ClaimAchievementResult>> ClaimForUser([FromBody] ClaimAchievementForUserCommand command)
         {
             return Ok(await Mediator.Send(command));
