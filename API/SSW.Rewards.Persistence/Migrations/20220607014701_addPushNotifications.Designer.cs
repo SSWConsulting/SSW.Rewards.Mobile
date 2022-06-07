@@ -10,7 +10,7 @@ using SSW.Rewards.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    [Migration("20220607010539_addPushNotifications")]
+    [Migration("20220607014701_addPushNotifications")]
     partial class addPushNotifications
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
