@@ -1082,7 +1082,7 @@ export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
     getStaffMemberProfile(id: number): Promise<StaffDto>;
     getStaffMemberByEmail(email: string | null): Promise<StaffDto>;
-    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<StaffDto>;
     uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string>;
     deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
@@ -1214,7 +1214,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
         return Promise.resolve<StaffDto>(<any>null);
     }
 
-    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string> {
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<StaffDto> {
         let url_ = this.baseUrl + "/api/Staff/UpsertStaffMemberProfile";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1236,14 +1236,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         });
     }
 
-    protected processUpsertStaffMemberProfile(response: Response): Promise<string> {
+    protected processUpsertStaffMemberProfile(response: Response): Promise<StaffDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = StaffDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1251,7 +1251,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(<any>null);
+        return Promise.resolve<StaffDto>(<any>null);
     }
 
     uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string> {
@@ -3192,7 +3192,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
 
     constructor(data?: IUpsertStaffMemberProfileCommand) {
         if (data) {
@@ -3218,7 +3218,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
                 for (let item of _data["skills"])
-                    this.skills!.push(item);
+                    this.skills!.push(StaffSkillDto.fromJS(item));
             }
         }
     }
@@ -3245,7 +3245,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
-                data["skills"].push(item);
+                data["skills"].push(item.toJSON());
         }
         return data; 
     }
@@ -3262,7 +3262,7 @@ export interface IUpsertStaffMemberProfileCommand {
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
 }
 
 export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {

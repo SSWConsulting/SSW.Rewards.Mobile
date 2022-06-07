@@ -32,7 +32,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
 
         public int Rate { get; set; }
 
-        public List<string> Skills { get; set; }
+        public ICollection<StaffSkillDto> Skills { get; set; }
     }
 
     public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaffMemberProfileCommand, StaffDto>
@@ -64,45 +64,62 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             }
             else // Update existing entity
             {
-                staffMemberEntity.Email = request.Email;
-                staffMemberEntity.Name = request.Name;
-                staffMemberEntity.Profile = request.Profile;
-                staffMemberEntity.TwitterUsername = request.TwitterUsername;
-                staffMemberEntity.GitHubUsername = request.GitHubUsername;
-                staffMemberEntity.LinkedInUrl = request.LinkedInUrl;
-                staffMemberEntity.Title = request.Title;
+                staffMemberEntity.Email = request.Email ??= String.Empty;
+                staffMemberEntity.Name = request.Name ??= String.Empty;
+                staffMemberEntity.Profile = request.Profile ??= String.Empty;
+                staffMemberEntity.TwitterUsername = request.TwitterUsername ??= String.Empty;
+                staffMemberEntity.GitHubUsername = request.GitHubUsername ??= String.Empty;
+                staffMemberEntity.LinkedInUrl = request.LinkedInUrl ??= String.Empty;
+                staffMemberEntity.Title = request.Title ??= String.Empty;
 
 
-                // check for skills
-                var skills = request.Skills;
-                
-                // changes have been made to members' skills
-                if (staffMemberEntity.StaffMemberSkills.Count() != skills.Count())
+                // Update staff skills
+                if (request.Skills.Any())
                 {
-                    var newSkills = request.Skills.Where(x =>
-                        !staffMemberEntity.StaffMemberSkills.Select(x => x.Skill.Name).Contains(x)).ToList();
+                    var staffSkills = await _context.StaffMemberSkills
+                        .Where(sms => sms.StaffMemberId == staffMemberEntity.Id)
+                        .ToListAsync(cancellationToken);
 
-                    if (staffMemberEntity.StaffMemberSkills.Count() < request.Skills.Count())
+                    var skillsToRemove = staffSkills
+                        .Where(sms => !request.Skills.Any(rs => rs.Name == sms.Skill.Name))
+                        .ToList();
+
+                    var skillsToAdd = request.Skills
+                        .Where(sk => !staffSkills.Any(sms => sms.Skill.Name == sk.Name))
+                        .ToList();
+
+                    var skillsToUpdate = staffSkills
+                        .Where(sms => !skillsToAdd.Any(sk => sk.Name == sms.Skill.Name))
+                        .Where(sms => !skillsToRemove.Contains(sms))
+                        .Where(sms => sms.Level != request.Skills.First(sk => sk.Name == sms.Skill.Name).Level)
+                        .ToList();
+
+                    foreach (var skillToRemove in skillsToRemove)
                     {
-                        // assign the new skills to a member
-                        foreach (var skill in newSkills)
-                        {
-                            var skillEntity = await _context.Skills.FirstOrDefaultAsync(x => x.Name == skill);
-                            staffMemberEntity.StaffMemberSkills.Add(new StaffMemberSkill {Skill = skillEntity});
-                        }
+                        _context.StaffMemberSkills.Remove(skillToRemove);
                     }
-                    else
+
+                    foreach (var skillToAdd in skillsToAdd)
                     {
-                        var deletedSkills = staffMemberEntity.StaffMemberSkills
-                            .Where(x => !request.Skills.Contains(x.Skill.Name)).ToList();
-                        foreach (var deletedSkill in deletedSkills)
+                        var skill = await _context.Skills
+                            .FirstOrDefaultAsync(s => s.Name == skillToAdd.Name, cancellationToken);
+
+                        _context.StaffMemberSkills.Add(new StaffMemberSkill
                         {
-                            staffMemberEntity.StaffMemberSkills.Remove(deletedSkill);
-                        }
+                            StaffMemberId = staffMemberEntity.Id,
+                            SkillId = skill.Id,
+                            Level = skillToAdd.Level
+                        });
+                    }
+                    foreach (var updateSkill in skillsToUpdate)
+                    {
+                        var staffSkill = request.Skills.FirstOrDefault(sms => sms.Name == updateSkill.Skill.Name);
+
+                        updateSkill.Level = staffSkill.Level;
                     }
                 }
             }
-            
+
             // Add staff achievement if it doesn't exist
             staffMember.StaffAchievement ??= new Domain.Entities.Achievement
             {
@@ -111,7 +128,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 Code = GenerateCode(staffMember.Name),
                 Type = AchievementType.Scanned
             };
-            
+
             await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<StaffDto>(request);
         }

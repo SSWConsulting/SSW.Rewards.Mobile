@@ -799,7 +799,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/StaffDto"
                 }
               }
             }
@@ -1839,7 +1839,7 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/StaffSkillDto"
             }
           }
         }

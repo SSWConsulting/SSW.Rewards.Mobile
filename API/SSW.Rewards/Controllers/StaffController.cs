@@ -33,7 +33,7 @@ namespace SSW.Rewards.WebAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = AuthorizationRoles.Admin)]
-        public async Task<ActionResult<string>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
+        public async Task<ActionResult<StaffDto>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));
         }

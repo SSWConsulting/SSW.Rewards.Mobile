@@ -2982,14 +2982,14 @@ namespace SSW.Rewards
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<string> UpsertStaffMemberProfileAsync(UpsertStaffMemberProfileCommand staffMember)
+        public System.Threading.Tasks.Task<StaffDto> UpsertStaffMemberProfileAsync(UpsertStaffMemberProfileCommand staffMember)
         {
             return UpsertStaffMemberProfileAsync(staffMember, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<string> UpsertStaffMemberProfileAsync(UpsertStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<StaffDto> UpsertStaffMemberProfileAsync(UpsertStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken)
         {
             if (staffMember == null)
                 throw new System.ArgumentNullException("staffMember");
@@ -3030,7 +3030,7 @@ namespace SSW.Rewards
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<StaffDto>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -4605,7 +4605,7 @@ namespace SSW.Rewards
         public int Rate { get; set; }
     
         [Newtonsoft.Json.JsonProperty("skills", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Skills { get; set; }
+        public System.Collections.Generic.ICollection<StaffSkillDto> Skills { get; set; }
     
     
     }
