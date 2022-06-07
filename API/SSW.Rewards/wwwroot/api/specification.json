@@ -691,6 +691,72 @@
         }
       }
     },
+    "/api/Skill/UpsertSkill": {
+      "put": {
+        "tags": [
+          "Skill"
+        ],
+        "operationId": "Skill_UpsertSkill",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertSkillCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Skill/DeleteSkill": {
+      "delete": {
+        "tags": [
+          "Skill"
+        ],
+        "operationId": "Skill_DeleteSkill",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSkillCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Staff/Get": {
       "get": {
         "tags": [
@@ -1681,6 +1747,26 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "UpsertSkillCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skill": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteSkillCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "skill": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

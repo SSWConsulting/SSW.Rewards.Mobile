@@ -1028,6 +1028,8 @@ export class SeedClient extends BaseClient implements ISeedClient {
 
 export interface ISkillClient {
     get(): Promise<SkillListViewModel>;
+    upsertSkill(command: UpsertSkillCommand): Promise<FileResponse>;
+    deleteSkill(command: DeleteSkillCommand): Promise<FileResponse>;
 }
 
 export class SkillClient extends BaseClient implements ISkillClient {
@@ -1075,6 +1077,82 @@ export class SkillClient extends BaseClient implements ISkillClient {
             });
         }
         return Promise.resolve<SkillListViewModel>(<any>null);
+    }
+
+    upsertSkill(command: UpsertSkillCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Skill/UpsertSkill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpsertSkill(_response);
+        });
+    }
+
+    protected processUpsertSkill(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    deleteSkill(command: DeleteSkillCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Skill/DeleteSkill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteSkill(_response);
+        });
+    }
+
+    protected processDeleteSkill(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 }
 
@@ -2993,6 +3071,78 @@ export class SkillListViewModel implements ISkillListViewModel {
 
 export interface ISkillListViewModel {
     skills?: string[] | undefined;
+}
+
+export class UpsertSkillCommand implements IUpsertSkillCommand {
+    skill?: string | undefined;
+
+    constructor(data?: IUpsertSkillCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.skill = _data["skill"];
+        }
+    }
+
+    static fromJS(data: any): UpsertSkillCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpsertSkillCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["skill"] = this.skill;
+        return data; 
+    }
+}
+
+export interface IUpsertSkillCommand {
+    skill?: string | undefined;
+}
+
+export class DeleteSkillCommand implements IDeleteSkillCommand {
+    skill?: string | undefined;
+
+    constructor(data?: IDeleteSkillCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.skill = _data["skill"];
+        }
+    }
+
+    static fromJS(data: any): DeleteSkillCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteSkillCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["skill"] = this.skill;
+        return data; 
+    }
+}
+
+export interface IDeleteSkillCommand {
+    skill?: string | undefined;
 }
 
 export class StaffListViewModel implements IStaffListViewModel {
