@@ -22,6 +22,7 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
 
+            _viewModel.PageInView = true;
             _viewModel.ScrollToRequested += ScrollToIndex;
             await _viewModel.Initialise();
 
@@ -31,12 +32,22 @@ namespace SSW.Rewards.Pages
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
+            _viewModel.PageInView = false;
             _viewModel.ScrollToRequested -= ScrollToIndex;
         }
 
         private void ScrollToIndex(object sender, int index)
         {
-            PicCarousel.ScrollTo(index);
+            try
+            {
+                PicCarousel.ScrollTo(index);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[PeoplePage] Failed to scroll as requested");
+                Console.WriteLine($"[PeoplePage] {ex.Message}");
+                Console.WriteLine($"[PeoplePage] {ex.StackTrace}");
+            }
         }
     }
 }

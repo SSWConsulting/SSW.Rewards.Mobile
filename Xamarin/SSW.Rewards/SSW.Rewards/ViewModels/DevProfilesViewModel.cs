@@ -49,6 +49,8 @@ namespace SSW.Rewards.ViewModels
         public string DevTitle { get; set; }
         public string DevBio { get; set; }
 
+        public bool PageInView { get; set; } = false;
+
         private string _twitterURI;
         private string _githubURI;
         private string _linkedinUri;
@@ -82,8 +84,6 @@ namespace SSW.Rewards.ViewModels
 
                 IsRunning = false;
 
-                _initialised = true;
-
                 _lastProfileIndex = Profiles.Count - 1;
 
                 SelectedProfile = Profiles[_lastProfileIndex];
@@ -94,9 +94,14 @@ namespace SSW.Rewards.ViewModels
 
                 for (int i = _lastProfileIndex; i > -1; i--)
                 {
-                    ScrollToRequested.Invoke(this, i);
-                    await Task.Delay(50);
+                    if (PageInView)
+                    {
+                        ScrollToRequested.Invoke(this, i);
+                        await Task.Delay(50);
+                    }
                 }
+
+                _initialised = true;
 
                 SetDevDetails();
 
@@ -108,6 +113,8 @@ namespace SSW.Rewards.ViewModels
 
         private void SetDevDetails()
         {
+            Console.WriteLine("[DevViewModel] Setting dev details;");
+
             if (_initialised)
             {
                 try
@@ -134,14 +141,17 @@ namespace SSW.Rewards.ViewModels
 
                     Skills.Clear();
 
-                    foreach(var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
+                    foreach (var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
                     {
                         Skills.Add(skill);
-                    }    
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // silently fail
+                    Console.WriteLine("[DevViewModel] Failed to set dev details");
+                    Console.WriteLine($"[DevViewModel] {ex.Message}");
+                    Console.WriteLine($"[DevViewModel] {ex.StackTrace}");
                 }
             }
         }

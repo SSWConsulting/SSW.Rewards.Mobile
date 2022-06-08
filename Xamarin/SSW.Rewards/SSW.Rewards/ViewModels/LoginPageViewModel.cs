@@ -78,11 +78,17 @@ namespace SSW.Rewards.ViewModels
 
                 try
                 {
-                    await _userService.RefreshLoginAsync();
+                    if(await _userService.RefreshLoginAsync())
+                    {
+                        Console.WriteLine("[LoginPageViewModel] Completed refresh");
 
-                    await _userService.UpdateMyDetailsAsync();
+                        // TODO: Do we need this in a refresh?
+                        await _userService.UpdateMyDetailsAsync();
+                        Console.WriteLine("[LoginPageViewModel] Completed updatemydetails");
 
-                    await OnAfterLogin();
+                        await OnAfterLogin();
+                        Console.WriteLine("[LoginPageViewModel] Completed OnAfterLogin");
+                    }
                 }
                 catch (Exception e)
                 {

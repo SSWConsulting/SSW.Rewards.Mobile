@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="10*, 45*, 15*"
+        <Grid RowDefinitions="2*, 9*, 3*"
               ColumnDefinitions="2*, 10*, 2*">
 
             <ImageButton Grid.Row="0"

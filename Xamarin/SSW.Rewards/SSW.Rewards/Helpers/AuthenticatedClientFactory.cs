@@ -19,6 +19,7 @@ namespace SSW.Rewards.Helpers
         public static void SetAccessToken(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            Console.WriteLine($"[AuthenticatedClientFactory] Wrote access token to default Bearer header {token}");
         }
     }
 }
