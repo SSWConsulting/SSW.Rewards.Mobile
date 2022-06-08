@@ -125,14 +125,10 @@
 
         <controls:Snackbar Grid.Row="0"
                            Grid.RowSpan="3"
-                           ActionCompleted="True"
-                           Glyph="&#xe014;"
-                           GlyphFont="{StaticResource FluentIcons}"
-                           BrandFont="{StaticResource FluentIcons}"
-                           GlyphIsBrand="False"
-                           Message="Yay this is a test you have scanned etd"
+                           Options="{Binding SnackOptions}"
+                           InputTransparent="True"
                            VerticalOptions="End" 
-                           x:Name="TestSnackbar"/>
+                           x:Name="ProfilePageSnackbar"/>
 
     </Grid>
 </ContentPage>

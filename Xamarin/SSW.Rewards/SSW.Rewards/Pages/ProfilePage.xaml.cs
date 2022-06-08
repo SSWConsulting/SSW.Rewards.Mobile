@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Services;
+﻿using SSW.Rewards.Controls;
+using SSW.Rewards.Services;
 using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -36,8 +37,13 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
             await viewModel.Initialise(_isMe);
-            await System.Threading.Tasks.Task.Delay(1000);
-            TestSnackbar.ShowSnackbar();
+            viewModel.ShowSnackbar += ShowSnackbar;
+        }
+
+        private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
+        {
+            ProfilePageSnackbar.Options = e.Options;
+            await ProfilePageSnackbar.ShowSnackbar();
         }
     }
 }

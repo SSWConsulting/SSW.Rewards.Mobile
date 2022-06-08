@@ -5,11 +5,11 @@
   <ContentView.Content>
         <Grid x:Name="MainLayout"
               HorizontalOptions="CenterAndExpand"
-              HeightRequest="50"
+              HeightRequest="60"
               WidthRequest="450"
               Margin="30"
               Padding="5"
-              ColumnDefinitions="1*, 6*, 1*"
+              ColumnDefinitions="50, *, 40"
               Opacity="0"
               TranslationY="50">
 
@@ -19,35 +19,72 @@
                      HorizontalOptions="FillAndExpand"
                      CornerRadius="3"/>
             
-            <!-- Icon-->
+            <!-- Glyph Icon-->
             <Label Grid.Column="0"
-                   x:Name="IconLabel"
-                   Text="{Binding Glyph}"
-                   HorizontalOptions="Center"
+                   Grid.ColumnSpan="2"
+                   x:Name="GlyphIconLabel"
+                   FontSize="36"
+                   FontFamily="{StaticResource FluentIcons}"
+                   HeightRequest="40"
+                   WidthRequest="40"
+                   Margin="10,0"
+                   HorizontalOptions="Start"
                    VerticalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
-            
+                   HorizontalTextAlignment="Center">
+                <Label.Clip>
+                    <EllipseGeometry Center="20,20"
+                                     RadiusX="20"
+                                     RadiusY="20"/>
+                </Label.Clip>
+            </Label>
+
+            <!-- Brand Icon-->
+            <Label Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   x:Name="BrandIconLabel"
+                   FontSize="36"
+                   FontFamily="{StaticResource FA6Brands}"
+                   HeightRequest="40"
+                   WidthRequest="40"
+                   Margin="10,0"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center">
+                <Label.Clip>
+                    <EllipseGeometry Center="20,20"
+                                     RadiusX="20"
+                                     RadiusY="20"/>
+                </Label.Clip>
+            </Label>
+
             <!-- Main message or action-->
             <Label Grid.Column="1" 
-                   Text="{Binding Message}"
+                   Margin="10,0"
+                   FontSize="Small"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   TextColor="White"/>
+                   TextColor="White"
+                   x:Name="MessageLabel"/>
             
             <!-- End icon-->
             <Label Grid.Column="2"
-                   IsVisible="{Binding ShowTick}"
                    TextColor="White"
                    Text="&#xf293;"
                    FontFamily="{StaticResource FluentIcons}"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   HorizontalTextAlignment="Center"/>
+                   HorizontalTextAlignment="Center"
+                   x:Name="TickLabel"/>
             
             <!--End points coint-->
-            <Label Grid.Column="2"
-                   IsVisible="{Binding ShowPoints}"
-                   Text="{Binding Points}"/>
+            <Label Grid.Column="1"
+                   Grid.ColumnSpan="2"
+                   x:Name="PointsLabel"
+                   FontSize="11"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   Margin="0,0,10,0"
+                   TextColor="White"/>
         </Grid>
   </ContentView.Content>
 </ContentView>

@@ -122,6 +122,13 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
         </Tab>
+        <Tab Route="leader">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+        </Tab>
         <Tab Route="people">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
@@ -136,20 +143,14 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>
-        <Tab Route="leader">
-            <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xedba;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-        </Tab>
-        <Tab Route="quiz">
+        <!-- TODO: enable after NDC -->
+        <!--<Tab Route="quiz">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
                                  Glyph="&#xf28a;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
-        </Tab>
+        </Tab>-->
     </FlyoutItem>
 
     <MenuItem Text="Earn Rewards"

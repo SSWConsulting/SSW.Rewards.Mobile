@@ -4,21 +4,15 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using PanCardView.iOS;
-using UIKit;
-
-using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
-using Xamarin.Essentials;
-using UserNotifications;
-using Microsoft.AppCenter.Push;
-
-using SSW.Rewards.Services;
 using SSW.Rewards.iOS.Extensions;
 using SSW.Rewards.iOS.Services;
+using SSW.Rewards.Services;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using UIKit;
+using UserNotifications;
+using Xamarin.Essentials;
 
 namespace SSW.Rewards.iOS
 {
