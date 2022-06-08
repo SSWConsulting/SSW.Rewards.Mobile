@@ -60,10 +60,6 @@ namespace SSW.Rewards.Services
                 string token = result.AccessToken;
                 string idToken = result.IdentityToken;
 
-                Console.WriteLine("[UserService] Tokens:");
-                Console.WriteLine($"Access token: {token}");
-                Console.WriteLine($"ID token: {idToken}");
-
                 if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
                 {
 
@@ -154,29 +150,16 @@ namespace SSW.Rewards.Services
 
             if (!string.IsNullOrWhiteSpace(RefreshToken))
             {
-                Console.WriteLine($"[UserService] Got refresh token: {RefreshToken}");
-
                 var oidcClient = new OidcClient(_options);
 
                 var result = await oidcClient.RefreshTokenAsync(RefreshToken);
 
                 if (!result.IsError)
                 {
-                    Console.WriteLine("[UserService] Refreshed token successfully");
-                    Console.WriteLine($"Access token: {result.AccessToken}");
                     await SettRefreshToken(result.RefreshToken);
                     AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
                     return true;
                 }
-                else
-                {
-                    Console.WriteLine("[UserService] Failed to refresh access token");
-                    Console.WriteLine($"[UserService] {result.ErrorDescription}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("[UserService] Refresh token was null");
             }
 
             return false;
@@ -226,7 +209,6 @@ namespace SSW.Rewards.Services
 
             if (user is null)
             {
-                Console.WriteLine("User is null");
                 return;
             }
 

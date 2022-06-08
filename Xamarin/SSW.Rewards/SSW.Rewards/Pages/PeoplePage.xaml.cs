@@ -1,5 +1,4 @@
 ﻿using SSW.Rewards.ViewModels;
-using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -25,8 +24,6 @@ namespace SSW.Rewards.Pages
             _viewModel.PageInView = true;
             _viewModel.ScrollToRequested += ScrollToIndex;
             await _viewModel.Initialise();
-
-            Console.WriteLine("Finished initialising");
         }
 
         protected override void OnDisappearing()
@@ -38,16 +35,7 @@ namespace SSW.Rewards.Pages
 
         private void ScrollToIndex(object sender, int index)
         {
-            try
-            {
-                PicCarousel.ScrollTo(index);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[PeoplePage] Failed to scroll as requested");
-                Console.WriteLine($"[PeoplePage] {ex.Message}");
-                Console.WriteLine($"[PeoplePage] {ex.StackTrace}");
-            }
+            PicCarousel.ScrollTo(index);
         }
     }
 }

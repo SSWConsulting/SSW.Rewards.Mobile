@@ -40,13 +40,8 @@ namespace SSW.Rewards.ViewModels
             {
                 status = ApiStatus.LoginFailure;
                 //Crashes.TrackError(exception);
-                Console.WriteLine("ERROR logging in");
-                Console.WriteLine(exception.Message);
                 await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
             }
-
-            Console.WriteLine("Login status:");
-            Console.WriteLine(status);
 
             switch (status)
             {
@@ -80,14 +75,10 @@ namespace SSW.Rewards.ViewModels
                 {
                     if(await _userService.RefreshLoginAsync())
                     {
-                        Console.WriteLine("[LoginPageViewModel] Completed refresh");
-
                         // TODO: Do we need this in a refresh?
                         await _userService.UpdateMyDetailsAsync();
-                        Console.WriteLine("[LoginPageViewModel] Completed updatemydetails");
 
                         await OnAfterLogin();
-                        Console.WriteLine("[LoginPageViewModel] Completed OnAfterLogin");
                     }
                 }
                 catch (Exception e)

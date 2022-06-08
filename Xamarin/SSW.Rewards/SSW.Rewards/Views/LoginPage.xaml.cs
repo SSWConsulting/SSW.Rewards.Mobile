@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SSW.Rewards.ViewModels;
 using System.Threading.Tasks;
-using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Views
@@ -19,27 +18,12 @@ namespace SSW.Rewards.Views
 
         public LoginPage()
         {
-            try
-            {
-                Console.WriteLine("Initialising Login Page");
+            InitializeComponent();
 
-                InitializeComponent();
+            _viewModel = Resolver.Resolve<LoginPageViewModel>();
 
-                Console.WriteLine("Trying to resolve login view model...");
-                _viewModel = Resolver.Resolve<LoginPageViewModel>();
-
-                Console.WriteLine("Login viewmodel resolved");
-                _viewModel.Navigation = Navigation;
-                BindingContext = _viewModel;
-                Console.WriteLine("LoginPage constructed");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("I made a booboo mommy");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                throw;
-            }
+            _viewModel.Navigation = Navigation;
+            BindingContext = _viewModel;
         }
 
         protected override async void OnAppearing()

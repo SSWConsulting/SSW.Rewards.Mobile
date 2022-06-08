@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SSW.Rewards.Helpers
@@ -19,7 +18,6 @@ namespace SSW.Rewards.Helpers
         public static void SetAccessToken(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            Console.WriteLine($"[AuthenticatedClientFactory] Wrote access token to default Bearer header {token}");
         }
     }
 }

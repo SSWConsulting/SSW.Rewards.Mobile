@@ -99,7 +99,6 @@ namespace SSW.Rewards.iOS
         /// <summary>Register user notification settings and for remote notifications with APNS.</summary>
         void RegisterForRemoteNotifications()
         {
-            Console.WriteLine("Registering for Remote Notification...");
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
@@ -108,13 +107,9 @@ namespace SSW.Rewards.iOS
                     UIUserNotificationType.Sound,
                     new NSSet());
 
-                Console.WriteLine("Registering User Notification Settings...");
                 UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
-                Console.WriteLine("Registered User Notification Settings.");
-                Console.WriteLine("Registering Remote Notifications...");
                 UIApplication.SharedApplication.RegisterForRemoteNotifications();
             });
-            Console.WriteLine("Registered for Remote Notification.");
         }
 
         /// <summary>Set the <see cref="IDeviceInstallationService.Token"/> property value and refresh the registration.</summary>
@@ -130,7 +125,6 @@ namespace SSW.Rewards.iOS
         /// <summary>Processing the <see cref="NSDictionary"/> notification data and conditionally calls <see cref="PushNotificationActionService.TriggerAction"/>.</summary>
         void ProcessNotificationActions(NSDictionary userInfo)
         {
-            Console.WriteLine("Registering Notification Actions...");
             if (userInfo == null)
                 return;
 
@@ -145,7 +139,6 @@ namespace SSW.Rewards.iOS
             {
                 Debug.WriteLine(ex.Message);
             }
-            Console.WriteLine("Registered Notification Actions.");
         }
         /// <summary>Passing the <paramref name="deviceToken"/> argument to the <see cref="CompleteRegistrationAsync"/> method.</summary>
         public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)

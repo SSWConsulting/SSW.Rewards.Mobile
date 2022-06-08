@@ -113,45 +113,33 @@ namespace SSW.Rewards.ViewModels
 
         private void SetDevDetails()
         {
-            Console.WriteLine("[DevViewModel] Setting dev details;");
-
             if (_initialised)
             {
-                try
+                DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
+
+                DevTitle = SelectedProfile.Title;
+
+                DevBio = SelectedProfile.Bio;
+
+                _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
+                _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
+                _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
+
+                TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
+                GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
+                LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
+
+                Scanned = SelectedProfile.Scanned;
+
+                Points = SelectedProfile.Points;
+
+                RaisePropertyChanged(OnSwipedUpdatePropertyList);
+
+                Skills.Clear();
+
+                foreach (var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
                 {
-                    DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
-
-                    DevTitle = SelectedProfile.Title;
-
-                    DevBio = SelectedProfile.Bio;
-
-                    _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
-                    _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
-                    _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
-
-                    TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
-                    GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
-                    LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
-
-                    Scanned = SelectedProfile.Scanned;
-
-                    Points = SelectedProfile.Points;
-
-                    RaisePropertyChanged(OnSwipedUpdatePropertyList);
-
-                    Skills.Clear();
-
-                    foreach (var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
-                    {
-                        Skills.Add(skill);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // silently fail
-                    Console.WriteLine("[DevViewModel] Failed to set dev details");
-                    Console.WriteLine($"[DevViewModel] {ex.Message}");
-                    Console.WriteLine($"[DevViewModel] {ex.StackTrace}");
+                    Skills.Add(skill);
                 }
             }
         }

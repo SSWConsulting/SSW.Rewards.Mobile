@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Rg.Plugins.Popup.Services;
-using SSW.Rewards.PopupPages;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -27,20 +26,12 @@ namespace SSW.Rewards.ViewModels
 
         private void Initialise()
         {
-            try
-            {
-                ProfilePic = _userService.MyProfilePic;
-                Name = _userService.MyName;
-                Email = _userService.MyEmail;
-                VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
-                MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(obj); });
-                OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR in flyout header");
-                Console.WriteLine(ex.Message);
-            }
+            ProfilePic = _userService.MyProfilePic;
+            Name = _userService.MyName;
+            Email = _userService.MyEmail;
+            VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
+            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(obj); });
+            OnProfiePicTapped = new Command(async () => await ShowCameraPageAsync());
         }
 
         private async Task ShowCameraPageAsync()
