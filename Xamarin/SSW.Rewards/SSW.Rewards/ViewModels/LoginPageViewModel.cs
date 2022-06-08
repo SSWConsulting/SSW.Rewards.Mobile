@@ -33,6 +33,7 @@ namespace SSW.Rewards.ViewModels
         {
             isRunning = true;
             LoginButtonEnabled = false;
+            bool enablebuttonAfterLogin = true;
             RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
 
             ApiStatus status;
@@ -51,23 +52,22 @@ namespace SSW.Rewards.ViewModels
             {
                 case ApiStatus.Success:
                     await OnAfterLogin();
+                    enablebuttonAfterLogin = false;
                     break;
                 case ApiStatus.Unavailable:
                     await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
-                    LoginButtonEnabled = true;
                     break;
                 case ApiStatus.LoginFailure:
                     await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
-                    LoginButtonEnabled = true;
                     break;
                 default:
                     await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
-                    LoginButtonEnabled = true;
                     break;
             }
 
+            LoginButtonEnabled = enablebuttonAfterLogin;
             isRunning = false;
-            RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
+            RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
         }
 
         public async Task Refresh()
@@ -86,6 +86,10 @@ namespace SSW.Rewards.ViewModels
                         await _userService.UpdateMyDetailsAsync();
 
                         await OnAfterLogin();
+                    }
+                    else
+                    {
+                        LoginButtonEnabled = true;
                     }
                 }
                 catch (Exception e)
