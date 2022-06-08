@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Models;
+﻿using SSW.Rewards.Controls;
+using SSW.Rewards.Models;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand OnCardSwiped => new Command(SetDevDetails);
 
-        public ICommand StaffQRCommand => new Command(async () => await ShowScannedMessage());
+        public ICommand StaffQRCommand => new Command(ShowScannedMessage);
 
         public ICommand OnTwitterTapped => new Command(async () => await OpenTwitter());
         public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
@@ -26,6 +27,8 @@ namespace SSW.Rewards.ViewModels
         public ICommand BackCommand => new Command(NavigateBack);
 
         public EventHandler<int> ScrollToRequested;
+
+        public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
         public bool IsRunning { get; set; }
 
@@ -51,6 +54,8 @@ namespace SSW.Rewards.ViewModels
 
         public bool PageInView { get; set; } = false;
 
+        public SnackbarOptions SnackOptions { get; set; }
+
         private string _twitterURI;
         private string _githubURI;
         private string _linkedinUri;
@@ -68,6 +73,15 @@ namespace SSW.Rewards.ViewModels
             IsRunning = true;
             TwitterEnabled = true;
             _devService = devService;
+            SnackOptions = new SnackbarOptions
+            {
+                Glyph = "\uf636",
+                ActionCompleted = true,
+                GlyphIsBrand = false,
+                Message = "",
+                Points = 500,
+                ShowPoints = false
+            };
             OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
         }
 
@@ -187,9 +201,20 @@ namespace SSW.Rewards.ViewModels
             await Launcher.OpenAsync(new Uri(_linkedinUri));
         }
 
-        private async Task ShowScannedMessage()
+        private void ShowScannedMessage()
         {
-            
+            var options = new SnackbarOptions
+            {
+                ActionCompleted = Scanned,
+                Points = Points,
+                Message = Scanned ? $"You've scanned {DevName}" : $"You haven't scanned {DevName} yet",
+                ShowPoints = false,
+                Glyph = "\uf636"
+            };
+
+            var args = new ShowSnackbarEventArgs { Options = options };
+
+            ShowSnackbar.Invoke(this, args);
         }
     }
 }

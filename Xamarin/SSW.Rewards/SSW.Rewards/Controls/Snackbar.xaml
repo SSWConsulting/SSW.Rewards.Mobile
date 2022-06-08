@@ -23,13 +23,14 @@
             <Label Grid.Column="0"
                    Grid.ColumnSpan="2"
                    x:Name="GlyphIconLabel"
-                   FontSize="36"
+                   FontSize="30"
                    FontFamily="{StaticResource FluentIcons}"
                    HeightRequest="40"
                    WidthRequest="40"
                    Margin="10,0"
                    HorizontalOptions="Start"
                    VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
                    HorizontalTextAlignment="Center">
                 <Label.Clip>
                     <EllipseGeometry Center="20,20"

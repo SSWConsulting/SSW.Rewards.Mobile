@@ -19,7 +19,7 @@ namespace SSW.Rewards.Controls
         {
             ActionCompleted = true,
             Glyph = "\uf3ca",
-            GlyphIsBand = true,
+            GlyphIsBrand = true,
             Message = "",
             Points = 0,
             ShowPoints = false
@@ -53,7 +53,7 @@ namespace SSW.Rewards.Controls
                 snack.GlyphIconLabel.BackgroundColor = Color.FromHex("414141");
             }
 
-            if (opt.GlyphIsBand)
+            if (opt.GlyphIsBrand)
             {
                 snack.BrandIconLabel.Text = opt.Glyph;
                 snack.BrandIconLabel.IsVisible = true;
@@ -100,7 +100,7 @@ namespace SSW.Rewards.Controls
 
         public string Message { get; set; }
 
-        public bool GlyphIsBand { get; set; }
+        public bool GlyphIsBrand { get; set; }
 
         public int Points { get; set; }
 

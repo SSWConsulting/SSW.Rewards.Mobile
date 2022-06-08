@@ -46,7 +46,7 @@ namespace SSW.Rewards.ViewModels
             SnackOptions = new SnackbarOptions
             {
                 ActionCompleted = true,
-                GlyphIsBand = true,
+                GlyphIsBrand = true,
                 Glyph = "\uf420",
                 Message = "You have completed the Angular quiz",
                 Points = 1000,
@@ -201,16 +201,28 @@ namespace SSW.Rewards.ViewModels
         private void ShowAchievementSnackbar(ProfileAchievement achievement)
         {
             // TODO: set Glyph when given values
-            var optsions = new SnackbarOptions
+            var options = new SnackbarOptions
             {
                 ActionCompleted = achievement.Complete,
                 Points = achievement.Value,
-                Message = $"{achievement.Type} {achievement.Name}"
+                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}"
             };
 
-            var args = new ShowSnackbarEventArgs { Options = optsions };
+            var args = new ShowSnackbarEventArgs { Options = options };
 
             ShowSnackbar.Invoke(this, args);
+        }
+
+        public string GetPrefix(bool completed)
+        {
+            string prefix = _isMe ? "You have " : $"{Name} has ";
+
+            if (!completed)
+            {
+                prefix += "not ";
+            }
+
+            return prefix;
         }
     }
 }

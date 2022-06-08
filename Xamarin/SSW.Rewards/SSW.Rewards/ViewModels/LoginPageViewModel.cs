@@ -10,9 +10,12 @@ namespace SSW.Rewards.ViewModels
     public class LoginPageViewModel : BaseViewModel
     {
         public ICommand LoginTappedCommand { get; set; }
+        
         private IUserService _userService { get; set; }
+        
         public bool isRunning { get; set; }
-        public bool LoginButtonEnabled { get { return !isRunning; } }
+
+        public bool LoginButtonEnabled { get; set; }
 
         bool _isStaff = false;
 
@@ -29,6 +32,7 @@ namespace SSW.Rewards.ViewModels
         private async void SignIn()
         {
             isRunning = true;
+            LoginButtonEnabled = false;
             RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
 
             ApiStatus status;
@@ -50,12 +54,15 @@ namespace SSW.Rewards.ViewModels
                     break;
                 case ApiStatus.Unavailable:
                     await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
+                    LoginButtonEnabled = true;
                     break;
                 case ApiStatus.LoginFailure:
                     await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                    LoginButtonEnabled = true;
                     break;
                 default:
                     await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
+                    LoginButtonEnabled = true;
                     break;
             }
 

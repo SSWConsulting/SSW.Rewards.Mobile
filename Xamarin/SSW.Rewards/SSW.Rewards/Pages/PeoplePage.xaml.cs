@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.ViewModels;
+﻿using SSW.Rewards.Controls;
+using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -23,6 +24,7 @@ namespace SSW.Rewards.Pages
 
             _viewModel.PageInView = true;
             _viewModel.ScrollToRequested += ScrollToIndex;
+            _viewModel.ShowSnackbar += ShowSnackbar;
             await _viewModel.Initialise();
         }
 
@@ -31,11 +33,18 @@ namespace SSW.Rewards.Pages
             base.OnDisappearing();
             _viewModel.PageInView = false;
             _viewModel.ScrollToRequested -= ScrollToIndex;
+            _viewModel.ShowSnackbar -= ShowSnackbar;
         }
 
         private void ScrollToIndex(object sender, int index)
         {
             PicCarousel.ScrollTo(index);
+        }
+
+        private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
+        {
+            PeoplePageSnackbar.Options = e.Options;
+            await PeoplePageSnackbar.ShowSnackbar();
         }
     }
 }
