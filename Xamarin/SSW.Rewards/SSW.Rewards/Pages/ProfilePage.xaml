@@ -45,7 +45,7 @@
                        FontSize="Small"
                        TextColor="{StaticResource primary}" />
                 <Label HorizontalOptions="End"
-                       Text="{Binding Balance, StringFormat='{0:n}'}"
+                       Text="{Binding Balance, StringFormat='{0:n0}'}"
                        FontSize="Small"
                        TextColor="{StaticResource primary}" />
                 <Label HorizontalOptions="End"
@@ -57,7 +57,7 @@
             <Label Grid.Row="2"
                    TextColor="{StaticResource HeadingColor}"
                    FontSize="Large"
-                   Text="{Binding Points}"
+                   Text="{Binding Points, StringFormat='{0:n0}'}"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"/>
 

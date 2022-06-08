@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.LeaderboardPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -31,6 +32,7 @@
                     </VisualStateManager.VisualStateGroups>
                 </StackLayout>
             </ControlTemplate>
+            <converters:IsMeToColorConverter x:Key="MeToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -78,10 +80,10 @@
                              VerticalOptions="Start"
                              Spacing="10">
 
-                    <Label Text="{Binding MyBalance, StringFormat='⭐ {0}'}"
+                    <Label Text="{Binding MyBalance, StringFormat='⭐ {0:n0}'}"
                            TextColor="{StaticResource primary}"/>
 
-                    <Label Text="{Binding TotalLeaders, StringFormat='⭐ {0}'}"
+                    <Label Text="{Binding MyPoints, StringFormat='⭐ {0:n0}'}"
                            TextColor="{StaticResource HighlightedText}"/>
 
                 </StackLayout>
@@ -151,63 +153,67 @@
                              Content="All Time"/>
             </FlexLayout>
 
-            <CollectionView Grid.Row="4"
-                            ItemsSource="{Binding SearchResults}"
-                            Margin="0,10">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical"
-                                       ItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
-                              HeightRequest="50"
-                              ColumnDefinitions="50, 20, *, 80"
-                              Padding="10,0">
+            <RefreshView Grid.Row="4"
+                         Command="{Binding RefreshCommand}"
+                         IsRefreshing="{Binding IsRefreshing}">
 
-                            <Image Grid.Column="0"
-                                   Source="{Binding ProfilePic}"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   WidthRequest="30"
-                                   HeightRequest="30">
-                                <Image.Clip>
-                                    <EllipseGeometry Center="15,15"
+                <CollectionView ItemsSource="{Binding SearchResults}"
+                                Margin="0,10">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"
+                                           ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                  HeightRequest="50"
+                                  ColumnDefinitions="50, 20, *, 80"
+                                  Padding="10,0">
+
+                                <Image Grid.Column="0"
+                                       Source="{Binding ProfilePic}"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       WidthRequest="30"
+                                       HeightRequest="30">
+                                    <Image.Clip>
+                                        <EllipseGeometry Center="15,15"
                                                      RadiusX="15"
                                                      RadiusY="15" />
-                                </Image.Clip>
-                            </Image>
+                                    </Image.Clip>
+                                </Image>
 
-                            <Label Text="👑"
-                                   FontSize="6"
-                                   Grid.Column="0"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   IsVisible="{Binding IsLeader}"
-                                   TranslationX="-12"/>
+                                <Label Text="👑"
+                                       FontSize="Small"
+                                       Grid.Column="0"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsLeader}"
+                                       TranslationY="-20"/>
 
-                            <Label Grid.Column="1"
-                                   Text="{Binding Rank, StringFormat='&#35;{0}'}"
-                                   TextColor="White"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding Rank, StringFormat='&#35;{0}'}"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center" />
 
-                            <Label Grid.Column="2"
-                                   Text="{Binding Name}"
-                                   TextColor="White"
-                                   FontAttributes="Bold"
-                                   VerticalOptions="Center"/>
+                                <Label Grid.Column="2"
+                                       Text="{Binding Name}"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center"/>
 
-                            <Label Grid.Column="3"
-                                   Text="{Binding Score, StringFormat='{0:N0} ⭐'}"
-                                   TextColor="White"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End"/>
+                                <Label Grid.Column="3"
+                                       Text="{Binding Score, StringFormat='{0:N0} ⭐'}"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End"/>
 
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

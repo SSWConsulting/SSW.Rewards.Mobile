@@ -23,6 +23,8 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
         public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
 
+        public ICommand PeopleCommand => new Command(async () => await OpenPeople());
+
         public ICommand ForwardCommand => new Command(NavigateForward);
         public ICommand BackCommand => new Command(NavigateBack);
 
@@ -59,6 +61,7 @@ namespace SSW.Rewards.ViewModels
         private string _twitterURI;
         private string _githubURI;
         private string _linkedinUri;
+        private string _peopleUri;
 
         private int _lastProfileIndex;
 
@@ -138,6 +141,7 @@ namespace SSW.Rewards.ViewModels
                 _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
                 _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
                 _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
+                _peopleUri = GetPeopleUri(DevName);
 
                 TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
                 GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
@@ -186,6 +190,15 @@ namespace SSW.Rewards.ViewModels
             }
         }
 
+        private string GetPeopleUri(string devname)
+        {
+            var profile = devname.Replace(' ', '-');
+
+            profile = profile.TrimEnd('-').ToLower();
+
+            return $"https://www.ssw.com.au/people/{profile}";
+        }
+
         private async Task OpenTwitter()
         {
             await Launcher.OpenAsync(new Uri(_twitterURI));
@@ -199,6 +212,11 @@ namespace SSW.Rewards.ViewModels
         private async Task OpenLinkedin()
         {
             await Launcher.OpenAsync(new Uri(_linkedinUri));
+        }
+
+        private async Task OpenPeople()
+        {
+            await Launcher.OpenAsync(new Uri(_peopleUri));
         }
 
         private void ShowScannedMessage()

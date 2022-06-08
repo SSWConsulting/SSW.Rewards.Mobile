@@ -5,6 +5,27 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.PeoplePage">
+    <Shell.TitleView>
+        <StackLayout VerticalOptions="CenterAndExpand"
+                     HorizontalOptions="CenterAndExpand"
+                     Padding="0,10,60,0">
+            <Label HorizontalOptions="Center"
+               HorizontalTextAlignment="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="SSW People"
+                              TextDecorations="Underline"
+                              TextColor="White"
+                              FontSize="Large"/>
+                    </FormattedString>
+                </Label.FormattedText>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                      Command="{Binding PeopleCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </StackLayout>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>

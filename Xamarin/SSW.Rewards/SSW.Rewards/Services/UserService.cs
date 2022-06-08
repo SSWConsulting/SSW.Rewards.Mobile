@@ -235,11 +235,13 @@ namespace SSW.Rewards.Services
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set(nameof(MyPoints), user.Points);
+                Console.WriteLine($"[UserService] Got points: {user.Points}");
             }
 
             if (!string.IsNullOrWhiteSpace(user.Balance.ToString()))
             {
                 Preferences.Set(nameof(MyBalance), user.Balance);
+                Console.WriteLine($"[UserService] Got balance: {user.Balance}");
             }
 
             if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))

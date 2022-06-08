@@ -9,7 +9,7 @@ namespace SSW.Rewards.Services
     {
         private LeaderboardClient _leaderBoardClient;
 
-        public LeaderService(IUserService userService)
+        public LeaderService()
         {
             _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
         }
@@ -38,7 +38,6 @@ namespace SSW.Rewards.Services
             }
             catch(ApiException e)
             {
-                //Console.Write(e);
                 if(e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
