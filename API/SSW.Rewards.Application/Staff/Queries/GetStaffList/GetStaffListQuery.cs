@@ -38,14 +38,21 @@ namespace SSW.Rewards.Application.Staff.Queries.GetStaffList
 
                 var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
 
-                var completedAchievements = achievements.UserAchievements.Where(a => a.Complete).Select(a => a.AchievementId);
+                var completedAchievements = achievements.UserAchievements
+                    .Where(a => a.Complete)
+                    .Select(a => a.AchievementId)
+                    .ToList();
 
                 foreach (var dto in staffDtos)
                 {
-                    if (completedAchievements.Contains(dto.StaffAchievement.Id))
+                    if (dto?.StaffAchievement?.Id != null)
                     {
-                        dto.Scanned = true;
+                        if ((bool)(completedAchievements?.Contains(dto.StaffAchievement.Id)))
+                        {
+                            dto.Scanned = true;
+                        }
                     }
+
                 }
 
                 return new StaffListViewModel

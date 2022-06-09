@@ -10,8 +10,8 @@ using SSW.Rewards.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    [Migration("20220520050832_AddActivationToUser")]
-    partial class AddActivationToUser
+    [Migration("20220609035938_MigrateAcheivementsToRewards")]
+    partial class MigrateAcheivementsToRewards
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,9 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<int>("Value")
                         .HasColumnType("int");
@@ -64,10 +67,12 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<string>("NotificationTag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SentByStaffMember")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SentByStaffMemberId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SentByStaffMemberId");
 
                     b.ToTable("Notifications");
                 });
@@ -230,6 +235,9 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
                     b.Property<int>("SkillId")
                         .HasColumnType("int");
 
@@ -364,6 +372,15 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.Notifications", b =>
+                {
+                    b.HasOne("SSW.Rewards.Domain.Entities.User", "SentByStaffMember")
+                        .WithMany("SentNotifications")
+                        .HasForeignKey("SentByStaffMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMember", b =>

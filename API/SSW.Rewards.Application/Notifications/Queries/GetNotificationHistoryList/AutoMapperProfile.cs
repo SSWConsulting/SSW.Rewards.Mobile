@@ -8,7 +8,7 @@ namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryLi
         {
             CreateMap<NotificationHistoryListViewModel, NotificationHistoryDto>();
             CreateMap<Domain.Entities.Notifications, NotificationHistoryDto>()
-                .ForMember(dst => dst.EmailAddress, opt => opt.MapFrom(s => s.SentByStaffMember ))
+                .ForMember(dst => dst.EmailAddress, opt => opt.MapFrom(s => s.SentByStaffMember.Email ))
                 .ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(s => s.CreatedUtc));
         }
     }

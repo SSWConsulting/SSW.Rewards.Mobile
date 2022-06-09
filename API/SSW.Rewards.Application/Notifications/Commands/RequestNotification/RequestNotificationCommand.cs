@@ -5,6 +5,7 @@ using AutoMapper;
 using MediatR;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
+using SSW.Rewards.Application.Users.Common.Interfaces;
 
 namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
 {
@@ -18,19 +19,17 @@ namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
         
         public class RequestNotificationCommandHandler : IRequestHandler<RequestNotificationCommand, Unit>
         {
-            private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
-            private readonly ICurrentUserService _currentUserService;
+            private readonly IUserService _userService;
             private readonly INotificationService _notificationService;
             
-            public RequestNotificationCommandHandler(IMapper mapper, 
+            public RequestNotificationCommandHandler(
                 ISSWRewardsDbContext context, 
-                ICurrentUserService currentUserService, 
+                IUserService userService,
                 INotificationService notificationService)
             {
-                _mapper = mapper;
                 _context = context;
-                _currentUserService = currentUserService;
+                _userService = userService;
                 _notificationService = notificationService;
             }
             
@@ -53,17 +52,19 @@ namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification
             
                 if (!success)
                     throw new Exception("Request Failed");
-              
-                //var notificationEntry = new Domain.Entities.Notifications
-                //{
-                //    Message = notification.Text,
-                //    NotificationTag = string.Join(",", notification.Tags),
-                //    NotificationAction = notification.Action
-                //    SentByStaffMember = _currentUserService.GetUserEmail()
-                //};                
-                //await _context.Notifications.AddAsync(notificationEntry, cancellationToken);
-                //await _context.SaveChangesAsync(cancellationToken);
-                
+
+                var user = await this._userService.GetCurrentUser(cancellationToken);
+
+                var notificationEntry = new Domain.Entities.Notifications
+                {
+                    Message             = notification.Text,
+                    NotificationTag     = string.Join(",", notification.Tags),
+                    NotificationAction  = notification.Action,
+                    SentByStaffMemberId = user.Id
+                };
+                await _context.Notifications.AddAsync(notificationEntry, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+
                 return Unit.Value;
             }
         }

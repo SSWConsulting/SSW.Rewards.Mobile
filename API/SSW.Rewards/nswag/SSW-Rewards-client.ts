@@ -29,6 +29,7 @@ export interface IAchievementClient {
     add(achievementCode: string | null): Promise<AchievementDto>;
     post(achievementCode: string | null): Promise<PostAchievementResult>;
     techQuiz(user: string | null): Promise<FileResponse>;
+    delete(command: DeleteAchievementCommand): Promise<FileResponse>;
 }
 
 export class AchievementClient extends BaseClient implements IAchievementClient {
@@ -297,6 +298,44 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
     }
 
     protected processTechQuiz(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    delete(command: DeleteAchievementCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Achievement/Delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<FileResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
@@ -652,6 +691,7 @@ export interface IRewardClient {
     add(addRewardCommand: AddRewardCommand): Promise<number>;
     claimForUser(claimRewardForUserCommand: ClaimRewardForUserCommand): Promise<ClaimRewardResult>;
     claim(rewardCode: string | null): Promise<ClaimRewardResult>;
+    delete(command: DeleteRewardCommand): Promise<FileResponse>;
 }
 
 export class RewardClient extends BaseClient implements IRewardClient {
@@ -896,6 +936,44 @@ export class RewardClient extends BaseClient implements IRewardClient {
         }
         return Promise.resolve<ClaimRewardResult>(<any>null);
     }
+
+    delete(command: DeleteRewardCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Reward/Delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
 }
 
 export interface ISeedClient {
@@ -950,6 +1028,8 @@ export class SeedClient extends BaseClient implements ISeedClient {
 
 export interface ISkillClient {
     get(): Promise<SkillListViewModel>;
+    upsertSkill(command: UpsertSkillCommand): Promise<FileResponse>;
+    deleteSkill(command: DeleteSkillCommand): Promise<FileResponse>;
 }
 
 export class SkillClient extends BaseClient implements ISkillClient {
@@ -998,13 +1078,89 @@ export class SkillClient extends BaseClient implements ISkillClient {
         }
         return Promise.resolve<SkillListViewModel>(<any>null);
     }
+
+    upsertSkill(command: UpsertSkillCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Skill/UpsertSkill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpsertSkill(_response);
+        });
+    }
+
+    protected processUpsertSkill(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+
+    deleteSkill(command: DeleteSkillCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Skill/DeleteSkill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteSkill(_response);
+        });
+    }
+
+    protected processDeleteSkill(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
 }
 
 export interface IStaffClient {
     get(): Promise<StaffListViewModel>;
     getStaffMemberProfile(id: number): Promise<StaffDto>;
     getStaffMemberByEmail(email: string | null): Promise<StaffDto>;
-    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string>;
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<StaffDto>;
     uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string>;
     deleteStaffMemberProfile(staffMember: DeleteStaffMemberProfileCommand): Promise<string>;
 }
@@ -1136,7 +1292,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
         return Promise.resolve<StaffDto>(<any>null);
     }
 
-    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<string> {
+    upsertStaffMemberProfile(staffMember: UpsertStaffMemberProfileCommand): Promise<StaffDto> {
         let url_ = this.baseUrl + "/api/Staff/UpsertStaffMemberProfile";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1158,14 +1314,14 @@ export class StaffClient extends BaseClient implements IStaffClient {
         });
     }
 
-    protected processUpsertStaffMemberProfile(response: Response): Promise<string> {
+    protected processUpsertStaffMemberProfile(response: Response): Promise<StaffDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = StaffDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1173,7 +1329,7 @@ export class StaffClient extends BaseClient implements IStaffClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(<any>null);
+        return Promise.resolve<StaffDto>(<any>null);
     }
 
     uploadStaffMemberProfilePicture(id: number, file: FileParameter | null | undefined): Promise<string> {
@@ -1959,6 +2115,42 @@ export enum AchievementStatus {
     NotFound = 1,
     Duplicate = 2,
     Error = 3,
+}
+
+export class DeleteAchievementCommand implements IDeleteAchievementCommand {
+    id?: number;
+
+    constructor(data?: IDeleteAchievementCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteAchievementCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteAchievementCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteAchievementCommand {
+    id?: number;
 }
 
 export class LeaderboardListViewModel implements ILeaderboardListViewModel {
@@ -2801,6 +2993,42 @@ export interface IClaimRewardForUserCommand {
     code?: string | undefined;
 }
 
+export class DeleteRewardCommand implements IDeleteRewardCommand {
+    id?: number;
+
+    constructor(data?: IDeleteRewardCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DeleteRewardCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteRewardCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IDeleteRewardCommand {
+    id?: number;
+}
+
 export class SkillListViewModel implements ISkillListViewModel {
     skills?: string[] | undefined;
 
@@ -2843,6 +3071,78 @@ export class SkillListViewModel implements ISkillListViewModel {
 
 export interface ISkillListViewModel {
     skills?: string[] | undefined;
+}
+
+export class UpsertSkillCommand implements IUpsertSkillCommand {
+    skill?: string | undefined;
+
+    constructor(data?: IUpsertSkillCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.skill = _data["skill"];
+        }
+    }
+
+    static fromJS(data: any): UpsertSkillCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpsertSkillCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["skill"] = this.skill;
+        return data; 
+    }
+}
+
+export interface IUpsertSkillCommand {
+    skill?: string | undefined;
+}
+
+export class DeleteSkillCommand implements IDeleteSkillCommand {
+    skill?: string | undefined;
+
+    constructor(data?: IDeleteSkillCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.skill = _data["skill"];
+        }
+    }
+
+    static fromJS(data: any): DeleteSkillCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteSkillCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["skill"] = this.skill;
+        return data; 
+    }
+}
+
+export interface IDeleteSkillCommand {
+    skill?: string | undefined;
 }
 
 export class StaffListViewModel implements IStaffListViewModel {
@@ -3042,7 +3342,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
 
     constructor(data?: IUpsertStaffMemberProfileCommand) {
         if (data) {
@@ -3068,7 +3368,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
                 for (let item of _data["skills"])
-                    this.skills!.push(item);
+                    this.skills!.push(StaffSkillDto.fromJS(item));
             }
         }
     }
@@ -3095,7 +3395,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
-                data["skills"].push(item);
+                data["skills"].push(item.toJSON());
         }
         return data; 
     }
@@ -3112,7 +3412,7 @@ export interface IUpsertStaffMemberProfileCommand {
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
     rate?: number;
-    skills?: string[] | undefined;
+    skills?: StaffSkillDto[] | undefined;
 }
 
 export class DeleteStaffMemberProfileCommand implements IDeleteStaffMemberProfileCommand {
