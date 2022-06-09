@@ -1,6 +1,5 @@
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,7 +7,6 @@ using Serilog;
 using SSW.Rewards.Persistence;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SSW.Rewards
@@ -21,18 +19,9 @@ namespace SSW.Rewards
 	        {
 		        IHost host = CreateHostBuilder(args).Build();
 
-				bool seedUserRoles = args.Contains("/SeedUserRoles");
+		        await ApplyDbMigrations(host);
 
-				bool mapAchievementTypes = args.Contains("/MapAchievementTypes");
-
-				bool mapStaffAchievements = args.Contains("/MapStaffAchievements");
-
-		        if (!await ApplyDbMigrations(host, seedUserRoles, mapAchievementTypes, mapStaffAchievements))
-		        {
-			        return;
-		        }
-
-				host.Run();
+				await host.RunAsync();
 			}
 	        catch (Exception ex)
 	        {
@@ -44,43 +33,26 @@ namespace SSW.Rewards
 	        }
         }
 
-        private static async Task<bool> ApplyDbMigrations(IHost host, bool seedUserRoles, bool mapAchievmentTypes, bool mapStaffAchievements)
+        private static async Task ApplyDbMigrations(IHost host)
         {
-	        using (IServiceScope scope = host.Services.CreateScope())
+	        using IServiceScope scope = host.Services.CreateScope();
+	        IServiceProvider services = scope.ServiceProvider;
+
+	        try
 	        {
-		        IServiceProvider services = scope.ServiceProvider;
-
-		        try
-		        {
-					var initialiser = services.GetRequiredService<DBInitialiser>();
-					initialiser.Run();
-
-					if (seedUserRoles)
-                    {
-						await initialiser.EnsureStaffAndAdminRolesSeeded();
-                    }
-
-					if (mapStaffAchievements)
-                    {
-						await initialiser.MapStaffToAchievements();
-                    }
-
-                    if (mapAchievmentTypes)
-                    {
-                        await initialiser.MapAchievementTypes();
-                    }
-
-                    return true;
-				}
-		        catch (Exception ex)
-		        {
-			        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-			        logger.LogCritical(ex, "An error occurred while migrating or initializing the database.");
-			        return false;
-				}
+		        var initializer = services.GetRequiredService<DbInitializer>();
+		        await initializer.Run();
 	        }
-		}
+	        catch (Exception)
+	        {
+		        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+		        logger.LogCritical("An error occurred while migrating or initializing the database");
+		        throw;
+	        }
+        }
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        // needs to be public so nswag has an entrypoint
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

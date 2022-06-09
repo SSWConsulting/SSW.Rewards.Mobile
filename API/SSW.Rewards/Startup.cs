@@ -35,15 +35,13 @@ namespace SSW.Rewards
             ConfigureSettings(services);
 			ConfigureSecrets(services);
 
-			string SigningAuthority = Configuration.GetValue<string>(nameof(SigningAuthority));
+			string signingAuthority = Configuration.GetValue<string>(nameof(signingAuthority));
 
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = SigningAuthority;
-
+                options.Authority = signingAuthority;
                 options.Audience = "rewards";
-
                 options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
             });
 
