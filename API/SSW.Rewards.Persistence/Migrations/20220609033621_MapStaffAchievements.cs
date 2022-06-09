@@ -25,6 +25,11 @@ namespace SSW.Rewards.Persistence.Migrations
             
             // map staff onto achievement type
             migrationBuilder.Sql(@"
+                UPDATE Achievements
+                SET Name = 'Kosta Madorsky'
+                WHERE Name = 'Kosta Madorski'
+            ");
+            migrationBuilder.Sql(@"
                 UPDATE A
                 SET
                     [Type] = CASE
