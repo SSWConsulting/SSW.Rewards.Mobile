@@ -10,9 +10,12 @@ namespace SSW.Rewards.ViewModels
     public class LoginPageViewModel : BaseViewModel
     {
         public ICommand LoginTappedCommand { get; set; }
+        
         private IUserService _userService { get; set; }
+        
         public bool isRunning { get; set; }
-        public bool LoginButtonEnabled { get { return !isRunning; } }
+
+        public bool LoginButtonEnabled { get; set; }
 
         bool _isStaff = false;
 
@@ -29,6 +32,8 @@ namespace SSW.Rewards.ViewModels
         private async void SignIn()
         {
             isRunning = true;
+            LoginButtonEnabled = false;
+            bool enablebuttonAfterLogin = true;
             RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
 
             ApiStatus status;
@@ -40,18 +45,14 @@ namespace SSW.Rewards.ViewModels
             {
                 status = ApiStatus.LoginFailure;
                 //Crashes.TrackError(exception);
-                Console.WriteLine("ERROR logging in");
-                Console.WriteLine(exception.Message);
                 await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
             }
-
-            Console.WriteLine("Login status:");
-            Console.WriteLine(status);
 
             switch (status)
             {
                 case ApiStatus.Success:
                     await OnAfterLogin();
+                    enablebuttonAfterLogin = false;
                     break;
                 case ApiStatus.Unavailable:
                     await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
@@ -64,8 +65,9 @@ namespace SSW.Rewards.ViewModels
                     break;
             }
 
+            LoginButtonEnabled = enablebuttonAfterLogin;
             isRunning = false;
-            RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
+            RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
         }
 
         public async Task Refresh()
@@ -78,11 +80,17 @@ namespace SSW.Rewards.ViewModels
 
                 try
                 {
-                    await _userService.RefreshLoginAsync();
+                    if(await _userService.RefreshLoginAsync())
+                    {
+                        // TODO: Do we need this in a refresh?
+                        await _userService.UpdateMyDetailsAsync();
 
-                    await _userService.UpdateMyDetailsAsync();
-
-                    await OnAfterLogin();
+                        await OnAfterLogin();
+                    }
+                    else
+                    {
+                        LoginButtonEnabled = true;
+                    }
                 }
                 catch (Exception e)
                 {

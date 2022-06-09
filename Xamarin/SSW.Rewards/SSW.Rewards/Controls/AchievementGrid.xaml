@@ -16,6 +16,7 @@
                 <StackLayout HeightRequest="100"
                              WidthRequest="100">
                     <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
+                                 Command="{Binding AchievementTappedCommand}"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center"
                                  WidthRequest="76"

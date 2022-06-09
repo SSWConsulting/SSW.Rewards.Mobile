@@ -36,13 +36,13 @@ namespace SSW.Rewards.Controls
             {
                 case 0:
                 default:
-                    barControl.Bar.TranslateTo(250, 0, 300, Easing.SinOut);
+                    barControl.Bar.TranslateTo(250, 0, 200, Easing.SinOut);
                     break;
                 case 1:
                     barControl.Bar.TranslateTo(170, 0, 300, Easing.SinOut);
                     break;
                 case 2:
-                    barControl.Bar.TranslateTo(50, 0, 300, Easing.SinOut);
+                    barControl.Bar.TranslateTo(50, 0, 400, Easing.SinOut);
                     break;
             }
         }

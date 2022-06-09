@@ -144,7 +144,7 @@ namespace SSW.Rewards.Services
             throw new NotImplementedException();
         }
 
-        public async Task RefreshLoginAsync()
+        public async Task<bool> RefreshLoginAsync()
         {
             RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
@@ -158,8 +158,11 @@ namespace SSW.Rewards.Services
                 {
                     await SettRefreshToken(result.RefreshToken);
                     AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
+                    return true;
                 }
             }
+
+            return false;
         }
 
         #endregion
@@ -206,7 +209,6 @@ namespace SSW.Rewards.Services
 
             if (user is null)
             {
-                Console.WriteLine("User is null");
                 return;
             }
 
@@ -233,11 +235,13 @@ namespace SSW.Rewards.Services
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set(nameof(MyPoints), user.Points);
+                Console.WriteLine($"[UserService] Got points: {user.Points}");
             }
 
             if (!string.IsNullOrWhiteSpace(user.Balance.ToString()))
             {
                 Preferences.Set(nameof(MyBalance), user.Balance);
+                Console.WriteLine($"[UserService] Got balance: {user.Balance}");
             }
 
             if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))

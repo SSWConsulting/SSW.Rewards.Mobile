@@ -105,6 +105,11 @@ namespace SSW.Rewards.Application.Services
 
             var user = await _dbContext.Users
                     .Where(u => u.Email == currentUserEmail)
+                    .Include(u => u.UserAchievements)
+                        .ThenInclude(ua => ua.Achievement)
+                    .Include(u => u.UserRewards)
+                        .ThenInclude(ur => ur.Reward)
+                    .AsNoTracking()
                     .SingleOrDefaultAsync(cancellationToken);
 
             if (!user.Activated)

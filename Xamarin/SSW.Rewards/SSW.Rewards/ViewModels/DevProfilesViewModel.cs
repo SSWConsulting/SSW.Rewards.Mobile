@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Models;
+﻿using SSW.Rewards.Controls;
+using SSW.Rewards.Models;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -16,16 +17,20 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand OnCardSwiped => new Command(SetDevDetails);
 
-        public ICommand StaffQRCommand => new Command(async () => await ShowScannedMessage());
+        public ICommand StaffQRCommand => new Command(ShowScannedMessage);
 
         public ICommand OnTwitterTapped => new Command(async () => await OpenTwitter());
         public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
         public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
 
+        public ICommand PeopleCommand => new Command(async () => await OpenPeople());
+
         public ICommand ForwardCommand => new Command(NavigateForward);
         public ICommand BackCommand => new Command(NavigateBack);
 
         public EventHandler<int> ScrollToRequested;
+
+        public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
         public bool IsRunning { get; set; }
 
@@ -49,9 +54,14 @@ namespace SSW.Rewards.ViewModels
         public string DevTitle { get; set; }
         public string DevBio { get; set; }
 
+        public bool PageInView { get; set; } = false;
+
+        public SnackbarOptions SnackOptions { get; set; }
+
         private string _twitterURI;
         private string _githubURI;
         private string _linkedinUri;
+        private string _peopleUri;
 
         private int _lastProfileIndex;
 
@@ -66,6 +76,15 @@ namespace SSW.Rewards.ViewModels
             IsRunning = true;
             TwitterEnabled = true;
             _devService = devService;
+            SnackOptions = new SnackbarOptions
+            {
+                Glyph = "\uf636",
+                ActionCompleted = true,
+                GlyphIsBrand = false,
+                Message = "",
+                Points = 500,
+                ShowPoints = false
+            };
             OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
         }
 
@@ -82,8 +101,6 @@ namespace SSW.Rewards.ViewModels
 
                 IsRunning = false;
 
-                _initialised = true;
-
                 _lastProfileIndex = Profiles.Count - 1;
 
                 SelectedProfile = Profiles[_lastProfileIndex];
@@ -94,9 +111,14 @@ namespace SSW.Rewards.ViewModels
 
                 for (int i = _lastProfileIndex; i > -1; i--)
                 {
-                    ScrollToRequested.Invoke(this, i);
-                    await Task.Delay(50);
+                    if (PageInView)
+                    {
+                        ScrollToRequested.Invoke(this, i);
+                        await Task.Delay(50);
+                    }
                 }
+
+                _initialised = true;
 
                 SetDevDetails();
 
@@ -110,38 +132,32 @@ namespace SSW.Rewards.ViewModels
         {
             if (_initialised)
             {
-                try
+                DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
+
+                DevTitle = SelectedProfile.Title;
+
+                DevBio = SelectedProfile.Bio;
+
+                _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
+                _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
+                _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
+                _peopleUri = GetPeopleUri(DevName);
+
+                TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
+                GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
+                LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
+
+                Scanned = SelectedProfile.Scanned;
+
+                Points = SelectedProfile.Points;
+
+                RaisePropertyChanged(OnSwipedUpdatePropertyList);
+
+                Skills.Clear();
+
+                foreach (var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
                 {
-                    DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
-
-                    DevTitle = SelectedProfile.Title;
-
-                    DevBio = SelectedProfile.Bio;
-
-                    _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
-                    _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
-                    _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
-
-                    TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);
-                    GitHubEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.GitHubID);
-                    LinkedinEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.LinkedInId);
-
-                    Scanned = SelectedProfile.Scanned;
-
-                    Points = SelectedProfile.Points;
-
-                    RaisePropertyChanged(OnSwipedUpdatePropertyList);
-
-                    Skills.Clear();
-
-                    foreach(var skill in SelectedProfile.Skills.OrderByDescending(s => s.Level).Take(5))
-                    {
-                        Skills.Add(skill);
-                    }    
-                }
-                catch (Exception)
-                {
-                    // silently fail
+                    Skills.Add(skill);
                 }
             }
         }
@@ -174,6 +190,15 @@ namespace SSW.Rewards.ViewModels
             }
         }
 
+        private string GetPeopleUri(string devname)
+        {
+            var profile = devname.Replace(' ', '-');
+
+            profile = profile.TrimEnd('-').ToLower();
+
+            return $"https://www.ssw.com.au/people/{profile}";
+        }
+
         private async Task OpenTwitter()
         {
             await Launcher.OpenAsync(new Uri(_twitterURI));
@@ -189,9 +214,25 @@ namespace SSW.Rewards.ViewModels
             await Launcher.OpenAsync(new Uri(_linkedinUri));
         }
 
-        private async Task ShowScannedMessage()
+        private async Task OpenPeople()
         {
-            
+            await Launcher.OpenAsync(new Uri(_peopleUri));
+        }
+
+        private void ShowScannedMessage()
+        {
+            var options = new SnackbarOptions
+            {
+                ActionCompleted = Scanned,
+                Points = Points,
+                Message = Scanned ? $"You've scanned {DevName}" : $"You haven't scanned {DevName} yet",
+                ShowPoints = false,
+                Glyph = "\uf636"
+            };
+
+            var args = new ShowSnackbarEventArgs { Options = options };
+
+            ShowSnackbar.Invoke(this, args);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Rg.Plugins.Popup.Services;
+using SSW.Rewards.Controls;
 using SSW.Rewards.Models;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -27,15 +29,29 @@ namespace SSW.Rewards.ViewModels
 
         public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
+        public SnackbarOptions SnackOptions { get; set; }
+
         public ICommand CameraCommand => new Command(async () => await ShowCameraPageAsync());
 
         private bool _isMe;
+
+        public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
         public ProfileViewModel(IUserService userService)
         {
             IsLoading = true;
             RaisePropertyChanged("IsLoading");
             _userService = userService;
+
+            SnackOptions = new SnackbarOptions
+            {
+                ActionCompleted = true,
+                GlyphIsBrand = true,
+                Glyph = "\uf420",
+                Message = "You have completed the Angular quiz",
+                Points = 1000,
+                ShowPoints = true
+            };
         }
 
         public ProfileViewModel(LeaderSummaryViewModel vm)
@@ -54,6 +70,7 @@ namespace SSW.Rewards.ViewModels
         public async Task Initialise(bool me)
         {
             MessagingCenter.Subscribe<object>(this, "ProfilePicChanged", async (obj) => { await Refresh(); });
+            MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
 
             _isMe = me;
 
@@ -102,7 +119,7 @@ namespace SSW.Rewards.ViewModels
 
             foreach (var achievement in profileAchievements)
             {
-                achivementsSection.Achievements.Add(achievement);
+                achivementsSection.Achievements.Add(achievement.ToProfileAchievement());
             }
 
             ProfileSections.Add(achivementsSection);
@@ -179,6 +196,33 @@ namespace SSW.Rewards.ViewModels
         {
             ProfilePic = _userService.MyProfilePic;
             RaisePropertyChanged(nameof(ProfilePic));
+        }
+
+        private void ShowAchievementSnackbar(ProfileAchievement achievement)
+        {
+            // TODO: set Glyph when given values
+            var options = new SnackbarOptions
+            {
+                ActionCompleted = achievement.Complete,
+                Points = achievement.Value,
+                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}"
+            };
+
+            var args = new ShowSnackbarEventArgs { Options = options };
+
+            ShowSnackbar.Invoke(this, args);
+        }
+
+        public string GetPrefix(bool completed)
+        {
+            string prefix = _isMe ? "You have " : $"{Name} has ";
+
+            if (!completed)
+            {
+                prefix += "not ";
+            }
+
+            return prefix;
         }
     }
 }

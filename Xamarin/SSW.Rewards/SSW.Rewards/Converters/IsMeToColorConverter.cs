@@ -11,14 +11,14 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["LeaderSummarySelected"];
+                return (Color)Application.Current.Resources["primary"];
             }
         }
         public Color NotMe
         {
             get
             {
-                return (Color)Application.Current.Resources["LeaderSummary"];
+                return (Color)Application.Current.Resources["LeaderCardBackground"];
             }
         }
 

@@ -22,7 +22,7 @@ namespace SSW.Rewards.Services
         // auth methods
         Task<ApiStatus> SignInAsync();
         Task ResetPassword();
-        Task RefreshLoginAsync();
+        Task<bool> RefreshLoginAsync();
         void SignOut();
 
         // user details

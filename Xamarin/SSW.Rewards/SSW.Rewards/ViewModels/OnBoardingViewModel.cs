@@ -93,30 +93,21 @@ namespace SSW.Rewards.ViewModels
 
         private async void DoAction()
         {
-            try
+            // find next item
+            var selectedIndex = Items.IndexOf(SelectedItem);
+
+            var isFirstItem = selectedIndex == 0;
+
+            var isLastItem = selectedIndex == Items.Count - 1;
+
+            if (isLastItem)
             {
-                // find next item
-                var selectedIndex = Items.IndexOf(SelectedItem);
-
-                var isFirstItem = selectedIndex == 0;
-
-                var isLastItem = selectedIndex == Items.Count - 1;
-
-                if (isLastItem)
-                {
-                    await SkipOnboarding();
-                }
-                else
-                {
-                    ScrollToRequested.Invoke(this, ++selectedIndex);
-                }
+                await SkipOnboarding();
             }
-            catch (System.Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                ScrollToRequested.Invoke(this, ++selectedIndex);
             }
-            
         }
 
         private async Task SkipOnboarding()

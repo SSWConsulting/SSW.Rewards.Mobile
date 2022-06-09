@@ -27,6 +27,8 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand ScrollToTopCommand => new Command(() => MessagingCenter.Send("ScrollToTop", "ScrollToTop"));
 
+        public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
+
         public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
 
         public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
@@ -43,12 +45,15 @@ namespace SSW.Rewards.ViewModels
 
         public int MyBalance { get; set; }
 
+        bool _loaded = false;
+
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
             Title = "Leaderboard";
             OnRefreshCommand = new Command(Refresh);
             _leaderService = leaderService;
             _userService = userService;
+
             ProfilePic = _userService.MyProfilePic;
 
             MyPoints = _userService.MyPoints;
@@ -90,10 +95,29 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Initialise()
         {
-            IsRunning = true;
-            RaisePropertyChanged("IsRunning");
+            if (!_loaded)
+            {
+                IsRunning = true;
+                RaisePropertyChanged("IsRunning");
+                await LoadLeaderboard();
+                _loaded = true;
+            }
+        }
+
+        private async Task RefreshLeaderboard()
+        {
+            await LoadLeaderboard();
+
+            IsRefreshing = false;
+            OnPropertyChanged(nameof(IsRefreshing));
+        }
+
+        private async Task LoadLeaderboard()
+        {
             IEnumerable<Models.LeaderSummary> summaries = await _leaderService.GetLeadersAsync(false);
             int myId = _userService.MyUserId;
+
+            Leaders.Clear();
 
             foreach (Models.LeaderSummary summary in summaries)
             {

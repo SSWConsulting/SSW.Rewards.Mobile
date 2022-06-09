@@ -20,10 +20,8 @@ namespace SSW.Rewards
 
         public App()
         {
-            Console.WriteLine("Calling app constructor");
             InitializeComponent();
 
-            Console.WriteLine("App InitializeComponent completed successfully.");
             Resolver.Initialize();
             Resolver.Resolve<IPushNotificationActionService>()
                 .ActionTriggered += NotificationActionTriggered;
@@ -32,29 +30,19 @@ namespace SSW.Rewards
 
         private void InitialiseApp()
         {
-            Console.WriteLine("Beginning proprietary app initialisation.");
-
             AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
                 "ios=e33283b1-7326-447d-baae-e783ece0789b",
                 typeof(Analytics), typeof(Crashes));
 
-            Console.WriteLine("Checking first run status.");
 
             if (Preferences.Get("FirstRun", true))
             {
-                Console.WriteLine("Never run. Launching first run experience.");
-
                 Preferences.Set("FirstRun", false);
                 MainPage = new NavigationPage(new OnBoarding());
-                //MainPage = new TestPushPage();
-                Console.WriteLine("Onboarding set as main page successfully.");
             }
             else
             {
-                Console.WriteLine("Has run. Launching login page.");
                 MainPage = new LoginPage();
-                //MainPage = new TestPushPage();
-                Console.WriteLine("Login page set as main page successfully.");
             }
         }
 
@@ -83,7 +71,6 @@ namespace SSW.Rewards
 
         private async Task CheckApiCompatibilityAsync()
         {
-            Console.WriteLine("Checking API compatibility...");
             try
             {
                 ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
@@ -94,14 +81,13 @@ namespace SSW.Rewards
                 {
                     await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
                 }
-
-                Console.WriteLine($"API compatibility check: {compatible}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR checking API compat");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                // TODO: log these instead to AppCenter
+                Console.WriteLine("[App] ERROR checking API compat");
+                Console.WriteLine($"[App] {ex.Message}");
+                Console.WriteLine($"[App {ex.StackTrace}");
             }
         }
     }
