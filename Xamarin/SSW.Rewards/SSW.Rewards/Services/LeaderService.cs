@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -14,26 +14,22 @@ namespace SSW.Rewards.Services
             _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
         }
 
-        public async Task<IEnumerable<LeaderSummary>> GetLeadersAsync(bool forceRefresh)
+        public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh)
         {
-            List<LeaderSummary> summaries = new List<LeaderSummary>();
+            List<LeaderboardUserDto> summaries = new List<LeaderboardUserDto>();
 
             try
             {
                 var apiLeaderList = await _leaderBoardClient.GetAsync();
 
-                foreach (var Leader in apiLeaderList.Users)
+                foreach (var leader in apiLeaderList.Users)
                 {
-                    LeaderSummary leaderSummary = new LeaderSummary
+                    if (string.IsNullOrWhiteSpace(leader.ProfilePic))
                     {
-                        BaseScore = Leader.Points,
-                        id = Leader.UserId,
-                        Name = Leader.Name,
-                        Rank = Leader.Rank,
-                        ProfilePic = string.IsNullOrWhiteSpace(Leader.ProfilePic?.ToString()) ? "v2sophie" : Leader.ProfilePic.ToString()
-                    };
+                        leader.ProfilePic = "v2sophie";
+                    }
 
-                    summaries.Add(leaderSummary);
+                    summaries.Add(leader);
                 }
             }
             catch(ApiException e)

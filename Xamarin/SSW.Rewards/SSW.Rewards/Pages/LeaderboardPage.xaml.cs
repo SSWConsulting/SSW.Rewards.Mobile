@@ -22,5 +22,26 @@ namespace SSW.Rewards.Pages
             base.OnAppearing();
             await _viewModel.Initialise();
         }
+
+        private void FilterChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value)
+            {
+                var radio = (RadioButton)sender;
+
+                switch (radio.Content as string)
+                {
+                    case "This Month":
+                        _viewModel.SortLeaders("month");
+                        break;
+                    case "This Year":
+                        _viewModel.SortLeaders("year");
+                        break;
+                    default:
+                        _viewModel.SortLeaders("all");
+                        break;
+                }
+            }
+        }
     }
 }

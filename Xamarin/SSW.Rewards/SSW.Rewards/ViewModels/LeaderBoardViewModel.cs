@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using SSW.Rewards.Pages;
 using SSW.Rewards.Services;
+using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Xamarin.Forms;
 using System.Threading.Tasks;
-using SSW.Rewards.Pages;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
 {
@@ -21,7 +20,7 @@ namespace SSW.Rewards.ViewModels
         
         private IUserService _userService;
         
-        public ICommand LeaderTapped => new Command<LeaderSummaryViewModel>(async (x) => await HandleLeaderTapped(x));
+        public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
 
         public ICommand OnRefreshCommand { get; set; }
 
@@ -29,13 +28,13 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
 
-        public ObservableCollection<LeaderSummaryViewModel> Leaders { get; set; }
+        public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
-        public Action<LeaderSummaryViewModel> ScrollToMe { get; set; }
+        public Action<LeaderViewModel> ScrollToMe { get; set; }
 
-        public Action<LeaderSummaryViewModel> ScrollToTop { get; set; }
+        public Action<LeaderViewModel> ScrollToTop { get; set; }
 
-        private ObservableCollection<LeaderSummaryViewModel> searchResults = new ObservableCollection<LeaderSummaryViewModel>();
+        private ObservableCollection<LeaderViewModel> searchResults = new ObservableCollection<LeaderViewModel>();
 
         public int TotalLeaders { get; set; }
 
@@ -46,6 +45,8 @@ namespace SSW.Rewards.ViewModels
         public int MyBalance { get; set; }
 
         bool _loaded = false;
+
+        private string _sortFilter;
 
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
@@ -60,26 +61,26 @@ namespace SSW.Rewards.ViewModels
 
             MyBalance = _userService.MyBalance;
 
-            Leaders = new ObservableCollection<LeaderSummaryViewModel>();
+            Leaders = new ObservableCollection<LeaderViewModel>();
             MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
             MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(); });
+
+            _sortFilter = "all";
         }
 
 
         public ICommand SearchTextChanged => new Command<string>((string query) =>
         {
+            // TODO: check time filter, or switch to all time when searching
             if (query != null || query != String.Empty)
             {
                 var filtered = Leaders.Where(l => l.Name.ToLower().Contains(query.ToLower()));
-                SearchResults = new ObservableCollection<LeaderSummaryViewModel>(filtered);
-
+                SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
                 return;
             }
-            SearchResults = Leaders;
-
         });
 
-        public ObservableCollection<LeaderSummaryViewModel> SearchResults
+        public ObservableCollection<LeaderViewModel> SearchResults
         {
             get
             {
@@ -98,9 +99,15 @@ namespace SSW.Rewards.ViewModels
             if (!_loaded)
             {
                 IsRunning = true;
-                RaisePropertyChanged("IsRunning");
+                RaisePropertyChanged(nameof(IsRunning));
+
                 await LoadLeaderboard();
                 _loaded = true;
+
+                SortByThisMonth();
+
+                IsRunning = false;
+                RaisePropertyChanged(nameof(IsRunning));
             }
         }
 
@@ -114,40 +121,129 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadLeaderboard()
         {
-            IEnumerable<Models.LeaderSummary> summaries = await _leaderService.GetLeadersAsync(false);
+            var summaries = await _leaderService.GetLeadersAsync(false);
+
             int myId = _userService.MyUserId;
 
             Leaders.Clear();
 
-            foreach (Models.LeaderSummary summary in summaries)
+            foreach (var summary in summaries)
             {
-                LeaderSummaryViewModel vm = new LeaderSummaryViewModel(summary);
-                vm.IsMe = (summary.id == myId);
+                var isMe = myId == summary.UserId;
+                var vm = new LeaderViewModel(summary, isMe);
+
+                Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
 
                 Leaders.Add(vm);
             }
 
-            IsRunning = false;
-            SearchResults = Leaders;
-
-            var mysummary = Leaders.FirstOrDefault(l => l.IsMe == true);
-
             TotalLeaders = summaries.Count();
 
-            MyRank = mysummary.Rank;
+            OnPropertyChanged(nameof(TotalLeaders));
 
-            RaisePropertyChanged(nameof(IsRunning), nameof(searchResults), nameof(MyRank), nameof(TotalLeaders));
-
-            ScrollToMe?.Invoke(mysummary);
             var firstLeader = Leaders.FirstOrDefault();
             ScrollToTop?.Invoke(firstLeader);
         }
 
+        public void SortLeaders(string filter)
+        {
+            _sortFilter = filter;
+
+            switch(_sortFilter)
+            {
+                case "month":
+                    SortByThisMonth();
+                    break;
+                case "year":
+                    SortByThisYear();
+                    break;
+                case "all":
+                default:
+                    SortByAlltime();
+                    break;
+            }
+        }
+
+        private void SortByThisMonth()
+        {
+            SearchResults.Clear();
+
+            var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
+
+            int rank = 1;
+
+            foreach(var leader in leaders)
+            {
+                leader.Rank = rank;
+
+                leader.DisplayPoints = leader.PointsThisMonth;
+
+                SearchResults.Add(leader);
+
+                rank++;
+            }
+
+            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
+
+            MyRank = mysummary.Rank;
+
+            OnPropertyChanged(nameof(MyRank));
+        }
+
+        private void SortByThisYear()
+        {
+            SearchResults.Clear();
+
+            var leaders = Leaders.OrderByDescending(l => l.PointsThisYear);
+
+            int rank = 1;
+
+            foreach (var leader in leaders)
+            {
+                leader.Rank = rank;
+
+                leader.DisplayPoints = leader.PointsThisYear;
+
+                SearchResults.Add(leader);
+
+                rank++;
+            }
+
+            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
+
+            MyRank = mysummary.Rank;
+
+            OnPropertyChanged(nameof(MyRank));
+        }
+
+        private void SortByAlltime()
+        {
+            SearchResults.Clear();
+
+            var leaders = Leaders.OrderByDescending(l => l.TotalPoints);
+
+            int rank = 1;
+
+            foreach (var leader in leaders)
+            {
+                leader.Rank = rank;
+
+                leader.DisplayPoints = leader.TotalPoints;
+
+                SearchResults.Add(leader);
+
+                rank++;
+            }
+
+            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
+
+            MyRank = mysummary.Rank;
+
+            OnPropertyChanged(nameof(MyRank));
+        }
 
         public async void Refresh()
         {
-            // = true;
-            //RaisePropertyChanged("IsRunning");
             var summaries = await _leaderService.GetLeadersAsync(false);
             int myId = _userService.MyUserId;
 
@@ -155,18 +251,20 @@ namespace SSW.Rewards.ViewModels
             
             foreach (var summary in summaries)
             {
-                LeaderSummaryViewModel vm = new LeaderSummaryViewModel(summary);
-                vm.IsMe = (summary.id == myId);
+                var isMe = myId == summary.UserId;
+                var vm = new LeaderViewModel(summary, isMe);
 
                 Leaders.Add(vm);
             }
-            SearchResults = Leaders;
+
+            SortLeaders(_sortFilter);
             
             IsRefreshing = false;
+            
             RaisePropertyChanged("IsRefreshing");
         }
 
-        private async Task HandleLeaderTapped(LeaderSummaryViewModel leader)
+        private async Task HandleLeaderTapped(LeaderViewModel leader)
         {
             if (leader.IsMe)
                 await Shell.Current.GoToAsync("main");

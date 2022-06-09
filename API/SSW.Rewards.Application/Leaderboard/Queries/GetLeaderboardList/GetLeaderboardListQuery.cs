@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Leaderboard.Queries.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,8 +38,8 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
                 {
                     // need to set rank outside of AutoMapper
                     Users = users
-						.Where(u => !string.IsNullOrWhiteSpace(u.Name))
-                        .OrderByDescending(u => u.Points)
+                        .Where(u => !string.IsNullOrWhiteSpace(u.Name))
+                        .OrderByDescending(u => u.TotalPoints)
                         .Select((u, i) =>
                         {
                             u.Rank = i + 1;
