@@ -19,7 +19,6 @@ namespace SSW.Rewards.ViewModels
 
         public string ProfilePic { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
         public int Points { get; set; }
         public int Balance { get; set; }
 
@@ -54,15 +53,14 @@ namespace SSW.Rewards.ViewModels
             };
         }
 
-        public ProfileViewModel(LeaderSummaryViewModel vm)
+        public ProfileViewModel(LeaderViewModel vm)
         {
             IsLoading = true;
             RaisePropertyChanged("IsLoading");
             ProfilePic = vm.ProfilePic;
             Name = vm.Name;
-            Email = vm.Title;
-            userId = vm.Id;
-            Points = vm.Score;
+            userId = vm.UserId;
+            Points = vm.TotalPoints;
             // TODO: add this to LeaderSummaryViewModel
             // Balance = vm.Balance;
         }
@@ -81,7 +79,6 @@ namespace SSW.Rewards.ViewModels
                 //initialise me
                 ProfilePic = profilePic;
                 Name = _userService.MyName;
-                Email = _userService.MyEmail;
                 Points = _userService.MyPoints;
                 Balance = _userService.MyBalance;
             }

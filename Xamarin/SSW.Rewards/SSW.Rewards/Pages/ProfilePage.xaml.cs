@@ -23,7 +23,7 @@ namespace SSW.Rewards.Pages
             _isMe = true;
         }
 
-        public ProfilePage(LeaderSummaryViewModel vm)
+        public ProfilePage(LeaderViewModel vm)
         {
             InitializeComponent();
             viewModel = new ProfileViewModel(vm);

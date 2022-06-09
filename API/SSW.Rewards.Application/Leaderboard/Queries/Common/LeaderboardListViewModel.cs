@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList
+namespace SSW.Rewards.Application.Leaderboard.Queries.Common
 {
     public class LeaderboardListViewModel
     {

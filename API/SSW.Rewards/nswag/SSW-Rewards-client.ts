@@ -2202,7 +2202,9 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     userId?: number;
     name?: string | undefined;
     profilePic?: string | undefined;
-    points?: number;
+    totalPoints?: number;
+    pointsThisMonth?: number;
+    pointsThisYear?: number;
 
     constructor(data?: ILeaderboardUserDto) {
         if (data) {
@@ -2219,7 +2221,9 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.userId = _data["userId"];
             this.name = _data["name"];
             this.profilePic = _data["profilePic"];
-            this.points = _data["points"];
+            this.totalPoints = _data["totalPoints"];
+            this.pointsThisMonth = _data["pointsThisMonth"];
+            this.pointsThisYear = _data["pointsThisYear"];
         }
     }
 
@@ -2236,7 +2240,9 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["userId"] = this.userId;
         data["name"] = this.name;
         data["profilePic"] = this.profilePic;
-        data["points"] = this.points;
+        data["totalPoints"] = this.totalPoints;
+        data["pointsThisMonth"] = this.pointsThisMonth;
+        data["pointsThisYear"] = this.pointsThisYear;
         return data; 
     }
 }
@@ -2246,7 +2252,9 @@ export interface ILeaderboardUserDto {
     userId?: number;
     name?: string | undefined;
     profilePic?: string | undefined;
-    points?: number;
+    totalPoints?: number;
+    pointsThisMonth?: number;
+    pointsThisYear?: number;
 }
 
 export class NotificationHistoryListViewModel implements INotificationHistoryListViewModel {

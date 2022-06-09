@@ -1,15 +1,9 @@
-﻿using SSW.Rewards.Models;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
 {
-    public class LeaderSummaryViewModel : BaseViewModel
-    {
-        public int Rank{ get { return _summary.Rank; } }
-        public string ProfilePic { get { return _summary.ProfilePic; } }
-        public string Name { get { return _summary.Name; } }
-        public int Score { get { return _summary.BaseScore; } }
-        public int Id { get { return _summary.id; } }
+    public class LeaderViewModel : LeaderboardUserDto
+    {        
         public bool IsMe
         {
             get
@@ -43,11 +37,25 @@ namespace SSW.Rewards.ViewModels
             }
         }
 
-        private LeaderSummary _summary;
+        public int DisplayPoints { get; set; }
 
-        public LeaderSummaryViewModel(LeaderSummary summary)
+        public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
         {
-            _summary = summary;
+            Rank = dto.Rank;
+
+            UserId = dto.UserId;
+
+            Name = dto.Name;
+
+            ProfilePic = dto.ProfilePic;
+
+            TotalPoints = dto.TotalPoints;
+
+            PointsThisMonth = dto.PointsThisMonth;
+
+            PointsThisYear = dto.PointsThisYear;
+
+            IsMe = isMe;
         }
     }
 }

@@ -21,6 +21,48 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
             await _viewModel.Initialise();
+            _viewModel.ScrollTo += ScrollTo;
+        }
+
+        private void FilterChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value)
+            {
+                var radio = (RadioButton)sender;
+
+                switch (radio.Content as string)
+                {
+                    case "This Month":
+                        _viewModel.SortLeaders("month");
+                        break;
+                    case "This Year":
+                        _viewModel.SortLeaders("year");
+                        break;
+                    default:
+                        _viewModel.SortLeaders("all");
+                        break;
+                }
+            }
+        }
+
+
+        private void ScrollTo(int i)
+        {
+            LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center);
+        }
+
+        private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+        {
+            if (e.FirstVisibleItemIndex > 1)
+            {
+                // show the scrolling controls
+                ScrollButtons.IsVisible = true;
+            }
+            else
+            {
+                // hide the scrolling controls
+                ScrollButtons.IsVisible = false;
+            }
         }
     }
 }

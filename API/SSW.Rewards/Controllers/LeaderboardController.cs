@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SSW.Rewards.Application.Leaderboard.Queries.Common;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
+using System.Threading.Tasks;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {

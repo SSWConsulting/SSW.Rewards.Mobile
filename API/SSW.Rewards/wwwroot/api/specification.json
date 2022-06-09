@@ -1401,10 +1401,17 @@
           },
           "profilePic": {
             "type": "string",
-            "format": "uri",
             "nullable": true
           },
-          "points": {
+          "totalPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisMonth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisYear": {
             "type": "integer",
             "format": "int32"
           }

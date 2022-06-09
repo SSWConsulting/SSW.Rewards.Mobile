@@ -4370,10 +4370,16 @@ namespace SSW.Rewards
         public string Name { get; set; }
     
         [Newtonsoft.Json.JsonProperty("profilePic", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri ProfilePic { get; set; }
+        public string ProfilePic { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("points", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Points { get; set; }
+        [Newtonsoft.Json.JsonProperty("totalPoints", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int TotalPoints { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("pointsThisMonth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int PointsThisMonth { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("pointsThisYear", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int PointsThisYear { get; set; }
     
     
     }

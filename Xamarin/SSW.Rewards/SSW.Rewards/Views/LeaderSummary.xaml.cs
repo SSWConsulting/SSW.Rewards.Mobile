@@ -17,7 +17,7 @@ namespace SSW.Rewards.Views
 
         }
 
-        public LeaderSummary(LeaderSummaryViewModel viewModel)
+        public LeaderSummary(LeaderViewModel viewModel)
         {
             InitializeComponent();
             BindingContext = viewModel;
