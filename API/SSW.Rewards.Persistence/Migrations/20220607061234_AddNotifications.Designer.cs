@@ -10,8 +10,8 @@ using SSW.Rewards.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(SSWRewardsDbContext))]
-    [Migration("20220607061234_UnFuckDatabase")]
-    partial class UnFuckDatabase
+    [Migration("20220607061234_AddNotifications")]
+    partial class AddNotifications
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

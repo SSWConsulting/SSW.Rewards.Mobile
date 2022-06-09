@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SSW.Rewards.Persistence.Migrations
 {
-    public partial class UnFuckDatabase : Migration
+    public partial class AddNotifications : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
