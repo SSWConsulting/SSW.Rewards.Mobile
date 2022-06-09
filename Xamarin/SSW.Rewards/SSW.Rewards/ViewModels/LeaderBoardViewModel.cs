@@ -24,15 +24,20 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand OnRefreshCommand { get; set; }
 
-        public ICommand ScrollToTopCommand => new Command(() => MessagingCenter.Send("ScrollToTop", "ScrollToTop"));
+        public ICommand ScrollToTopCommand => new Command(ScrollToFirstCard);
+
+        public ICommand ScrollToEndCommand => new Command(ScrollToLastCard);
+
+        public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
 
         public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
 
+        public ICommand CancelSearchCommand => new Command(CancelSearch);
+
         public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
-        public Action<LeaderViewModel> ScrollToMe { get; set; }
+        public Action<int> ScrollTo { get; set; }
 
-        public Action<LeaderViewModel> ScrollToTop { get; set; }
 
         private ObservableCollection<LeaderViewModel> searchResults = new ObservableCollection<LeaderViewModel>();
 
@@ -68,17 +73,35 @@ namespace SSW.Rewards.ViewModels
             _sortFilter = "all";
         }
 
-
-        public ICommand SearchTextChanged => new Command<string>((string query) =>
+        public ICommand SearchTextChanged => new Command(() =>
         {
             // TODO: check time filter, or switch to all time when searching
-            if (query != null || query != String.Empty)
+            if (SearchBarText != null || SearchBarText != String.Empty)
             {
-                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(query.ToLower()));
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
                 SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                SearchBarIcon = DismissIcon;
+                OnPropertyChanged(nameof(SearchBarIcon));
                 return;
             }
+
+            SearchBarIcon = SearchIcon;
+            OnPropertyChanged(nameof(SearchBarIcon));
         });
+
+        private void CancelSearch()
+        {
+            SearchBarText = string.Empty;
+            SearchBarIcon = SearchIcon;
+            RaisePropertyChanged(nameof(SearchBarText), nameof(SearchBarIcon));
+        }
+
+        private const string DismissIcon = "\ue4c3";
+        private const string SearchIcon = "\uea7c";
+
+        public string SearchBarIcon { get; set; } = SearchIcon;
+
+        public string SearchBarText { get; set; }
 
         public ObservableCollection<LeaderViewModel> SearchResults
         {
@@ -141,8 +164,7 @@ namespace SSW.Rewards.ViewModels
 
             OnPropertyChanged(nameof(TotalLeaders));
 
-            var firstLeader = Leaders.FirstOrDefault();
-            ScrollToTop?.Invoke(firstLeader);
+            ScrollTo?.Invoke(0);
         }
 
         public void SortLeaders(string filter)
@@ -262,6 +284,24 @@ namespace SSW.Rewards.ViewModels
             IsRefreshing = false;
             
             RaisePropertyChanged("IsRefreshing");
+        }
+
+        private void ScrollToMyCard()
+        {
+            var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
+            var myIndex = SearchResults.IndexOf(myCard);
+
+            ScrollTo.Invoke(myIndex);
+        }
+
+        private void ScrollToFirstCard()
+        {
+            ScrollTo.Invoke(0);
+        }
+
+        private void ScrollToLastCard()
+        {
+            ScrollTo.Invoke(SearchResults.Count() - 1);
         }
 
         private async Task HandleLeaderTapped(LeaderViewModel leader)
