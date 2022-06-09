@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.WebAPI.Filters;
-using SSW.Rewards.WebAPI.Security;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [CustomExceptionFilter]
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -15,7 +14,7 @@ namespace SSW.Rewards.WebAPI.Controllers
     {
         private IMediator _mediator;
 
-        protected IMediator Mediator => _mediator ?? (_mediator = HttpContext.RequestServices.GetService<IMediator>());
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
     }
 }
 
