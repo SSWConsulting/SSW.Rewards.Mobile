@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 using SSW.Rewards.Application.Achievements.Command.PostAchievement;
-using SSW.Rewards.Application.Achievements.Commands.AddAchievement;
 using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
@@ -48,11 +47,6 @@ namespace SSW.Rewards.WebAPI.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AchievementDto>> Add([FromQuery] string achievementCode)
-        {
-            return Ok(await Mediator.Send(new AddAchievementCommand { Code = achievementCode }));
-        }
 
         [HttpPost]
         public async Task<ActionResult<PostAchievementResult>> Post([FromQuery] string achievementCode)

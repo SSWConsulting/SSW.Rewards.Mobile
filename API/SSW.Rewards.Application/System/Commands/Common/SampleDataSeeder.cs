@@ -34,18 +34,18 @@ namespace SSW.Rewards.Application.System.Commands.Common
 
             AddExistingAchievementIcons(existingAchievements);
 
-            SetupAchievement(existingAchievements, "Claim a prize", 500, AchievementType.Completed, Icons.Gift);
-            SetupAchievement(existingAchievements, "Get into the top 100", 500, AchievementType.Completed, Icons.Trophy);
-            SetupAchievement(existingAchievements, "Follow SSW TV on Twitter", 500, AchievementType.Linked, Icons.Twitter, true);
-            SetupAchievement(existingAchievements, "Follow SSW TV on YouTube", 500, AchievementType.Linked, Icons.Youtube, true);
-            SetupAchievement(existingAchievements, "Follow SSW on LinkedIn", 500, AchievementType.Linked, Icons.Linkedin, true);
-            SetupAchievement(existingAchievements, "Follow SSW on GitHub", 500, AchievementType.Linked, Icons.Github, true);
-            SetupAchievement(existingAchievements, "Scan an SSWer", 500, AchievementType.Completed, Icons.Handshake);
-            SetupAchievement(existingAchievements, "Upload a profile picture", 500, AchievementType.Completed, Icons.Camera);
-            SetupAchievement(existingAchievements, "Attend an SSW Superpowers", 500, AchievementType.Completed, Icons.Lightning);
-            SetupAchievement(existingAchievements, "Attend a NetUG", 500, AchievementType.Completed, Icons.Puzzle);
-            SetupAchievement(existingAchievements, "Attend an SSW Workshop", 500, AchievementType.Completed, Icons.Certificate);
-            SetupAchievement(existingAchievements, "Attend an SSW Hackday", 500, AchievementType.Completed, Icons.Lightbulb);
+            SetupAchievement(existingAchievements, MilestoneAchievements.ClaimPrize, 50, AchievementType.Completed, Icons.Gift);
+            SetupAchievement(existingAchievements, MilestoneAchievements.Leaderboard, 500, AchievementType.Completed, Icons.Trophy);
+            SetupAchievement(existingAchievements, "Follow SSW TV on Twitter", 150, AchievementType.Linked, Icons.Twitter, true);
+            SetupAchievement(existingAchievements, "Follow SSW TV on YouTube", 150, AchievementType.Linked, Icons.Youtube, true);
+            SetupAchievement(existingAchievements, "Follow SSW on LinkedIn", 150, AchievementType.Linked, Icons.Linkedin, true);
+            SetupAchievement(existingAchievements, "Follow SSW on GitHub", 150, AchievementType.Linked, Icons.Github, true);
+            SetupAchievement(existingAchievements, MilestoneAchievements.MeetSSW, 300, AchievementType.Completed, Icons.Handshake);
+            SetupAchievement(existingAchievements, MilestoneAchievements.ProfilePic, 100, AchievementType.Completed, Icons.Camera);
+            SetupAchievement(existingAchievements, MilestoneAchievements.AttendSuperpowers, 250, AchievementType.Completed, Icons.Lightning);
+            SetupAchievement(existingAchievements, MilestoneAchievements.AttendUG, 200, AchievementType.Completed, Icons.Puzzle);
+            SetupAchievement(existingAchievements, MilestoneAchievements.AttendWorkshop, 300, AchievementType.Completed, Icons.Certificate);
+            SetupAchievement(existingAchievements, MilestoneAchievements.AttendHackday, 200, AchievementType.Completed, Icons.Lightbulb);
 
             await _context.SaveChangesAsync(cancellationToken);
         }

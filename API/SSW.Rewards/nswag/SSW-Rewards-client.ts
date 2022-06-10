@@ -26,7 +26,6 @@ export interface IAchievementClient {
     adminList(): Promise<AchievementAdminListViewModel>;
     create(command: CreateAchievementCommand): Promise<AchievementAdminViewModel>;
     claimForUser(command: ClaimAchievementForUserCommand): Promise<ClaimAchievementResult>;
-    add(achievementCode: string | null): Promise<AchievementDto>;
     post(achievementCode: string | null): Promise<PostAchievementResult>;
     techQuiz(user: string | null): Promise<FileResponse>;
     delete(command: DeleteAchievementCommand): Promise<FileResponse>;
@@ -193,46 +192,6 @@ export class AchievementClient extends BaseClient implements IAchievementClient 
             });
         }
         return Promise.resolve<ClaimAchievementResult>(<any>null);
-    }
-
-    add(achievementCode: string | null): Promise<AchievementDto> {
-        let url_ = this.baseUrl + "/api/Achievement/Add?";
-        if (achievementCode === undefined)
-            throw new Error("The parameter 'achievementCode' must be defined.");
-        else if(achievementCode !== null)
-            url_ += "achievementCode=" + encodeURIComponent("" + achievementCode) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processAdd(_response);
-        });
-    }
-
-    protected processAdd(response: Response): Promise<AchievementDto> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AchievementDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<AchievementDto>(<any>null);
     }
 
     post(achievementCode: string | null): Promise<PostAchievementResult> {
@@ -1459,7 +1418,7 @@ export interface IUserClient {
     achievements(userId: number): Promise<UserAchievementsViewModel>;
     rewards(userId: number): Promise<UserRewardsViewModel>;
     profileAchievements(userId: number): Promise<UserAchievementsViewModel>;
-    uploadProfilePic(file: FileParameter | null | undefined): Promise<string>;
+    uploadProfilePic(file: FileParameter | null | undefined): Promise<ProfilePicResponseDto>;
     myRoles(): Promise<string[]>;
     register(): Promise<FileResponse>;
 }
@@ -1670,7 +1629,7 @@ export class UserClient extends BaseClient implements IUserClient {
         return Promise.resolve<UserAchievementsViewModel>(<any>null);
     }
 
-    uploadProfilePic(file: FileParameter | null | undefined): Promise<string> {
+    uploadProfilePic(file: FileParameter | null | undefined): Promise<ProfilePicResponseDto> {
         let url_ = this.baseUrl + "/api/User/UploadProfilePic";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1693,14 +1652,14 @@ export class UserClient extends BaseClient implements IUserClient {
         });
     }
 
-    protected processUploadProfilePic(response: Response): Promise<string> {
+    protected processUploadProfilePic(response: Response): Promise<ProfilePicResponseDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = ProfilePicResponseDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1708,7 +1667,7 @@ export class UserClient extends BaseClient implements IUserClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(<any>null);
+        return Promise.resolve<ProfilePicResponseDto>(<any>null);
     }
 
     myRoles(): Promise<string[]> {
@@ -3852,6 +3811,46 @@ export class UserRewardsViewModel implements IUserRewardsViewModel {
 export interface IUserRewardsViewModel {
     userId?: number;
     userRewards?: UserRewardDto[] | undefined;
+}
+
+export class ProfilePicResponseDto implements IProfilePicResponseDto {
+    picUrl?: string | undefined;
+    achievementAwarded?: boolean;
+
+    constructor(data?: IProfilePicResponseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.picUrl = _data["picUrl"];
+            this.achievementAwarded = _data["achievementAwarded"];
+        }
+    }
+
+    static fromJS(data: any): ProfilePicResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfilePicResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["picUrl"] = this.picUrl;
+        data["achievementAwarded"] = this.achievementAwarded;
+        return data; 
+    }
+}
+
+export interface IProfilePicResponseDto {
+    picUrl?: string | undefined;
+    achievementAwarded?: boolean;
 }
 
 export interface FileParameter {

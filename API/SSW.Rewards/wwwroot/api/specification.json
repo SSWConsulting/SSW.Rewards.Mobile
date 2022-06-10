@@ -110,38 +110,6 @@
         }
       }
     },
-    "/api/Achievement/Add": {
-      "post": {
-        "tags": [
-          "Achievement"
-        ],
-        "operationId": "Achievement_Add",
-        "parameters": [
-          {
-            "name": "achievementCode",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AchievementDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Achievement/Post": {
       "post": {
         "tags": [
@@ -1150,7 +1118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ProfilePicResponseDto"
                 }
               }
             }
@@ -2148,6 +2116,19 @@
             "items": {
               "$ref": "#/components/schemas/UserRewardDto"
             }
+          }
+        }
+      },
+      "ProfilePicResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "picUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "achievementAwarded": {
+            "type": "boolean"
           }
         }
       }
