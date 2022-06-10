@@ -22,6 +22,8 @@ namespace SSW.Rewards.ViewModels
         public int Points { get; set; }
         public int Balance { get; set; }
 
+        public double Progress { get; set; } = 0;
+
         private int userId { get; set; }
 
         public bool IsLoading { get; set; }
@@ -61,12 +63,14 @@ namespace SSW.Rewards.ViewModels
             Name = vm.Name;
             userId = vm.UserId;
             Points = vm.TotalPoints;
+            _userService = Resolver.Resolve<IUserService>();
             // TODO: add this to LeaderSummaryViewModel
             // Balance = vm.Balance;
         }
 
         public async Task Initialise(bool me)
         {
+            // TODO: probably don't want to trigger this refresh on profile pic change
             MessagingCenter.Subscribe<object>(this, "ProfilePicChanged", async (obj) => { await Refresh(); });
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
 
@@ -82,11 +86,25 @@ namespace SSW.Rewards.ViewModels
                 Points = _userService.MyPoints;
                 Balance = _userService.MyBalance;
             }
+
+            var rewardsService = Resolver.Resolve<IRewardService>();
+
+            var rewards = await rewardsService.GetRewards();
+
+            var topReward = rewards.OrderByDescending(r => r.Cost).First();
+
+            double progress = Balance / (double)topReward.Cost;
+
+            if (progress < 1)
+            {
+                Progress = progress;
+            }    
             else
             {
-                //initialise other
-                _userService = Resolver.Resolve<IUserService>();
+                Progress = 1;
             }
+
+            OnPropertyChanged(nameof(Progress));
 
             if (!ProfileSections.Any())
             {

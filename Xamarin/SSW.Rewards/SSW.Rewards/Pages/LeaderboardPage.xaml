@@ -126,7 +126,8 @@
                 <controls:BorderlessEntry Grid.Column="0"
                                           x:Name="SearchEntry"
                                           Margin="10,0,0,0"
-                                          Text="{Binding SearchBarText}">
+                                          Text="{Binding SearchBarText}"
+                                          TextColor="White">
                     <controls:BorderlessEntry.Behaviors>
                         <behaviors:EventToCommandBehavior Command="{Binding SearchTextChanged}"
                                                           CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}"

@@ -2,8 +2,6 @@
 using SSW.Rewards.Helpers;
 using SSW.Rewards.Services;
 using SSW.Rewards.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TinyIoC;
@@ -45,6 +43,7 @@ namespace SSW.Rewards
             Container.Register<IUserService, UserService>();
             Container.Register<IDevService, DevService>();
             Container.Register<IChallengeService, ChallengeService>();
+            Container.Register<IRewardService, RewardService>();
             Container.Register<IBrowser, AuthBrowser>();
             Container.Register<IPushNotificationActionService, PushNotificationActionService>();
             Container.Register<INotificationRegistrationService, NotificationRegistrationService>();
