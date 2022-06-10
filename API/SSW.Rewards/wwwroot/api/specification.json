@@ -671,6 +671,27 @@
         }
       }
     },
+    "/api/Seed/SeedV2Data": {
+      "get": {
+        "tags": [
+          "Seed"
+        ],
+        "operationId": "Seed_SeedV2Data",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Skill/Get": {
       "get": {
         "tags": [

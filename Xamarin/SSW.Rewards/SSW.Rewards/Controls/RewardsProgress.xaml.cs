@@ -62,7 +62,7 @@ namespace SSW.Rewards.Controls
             {
                 Style = SKPaintStyle.Stroke,
                 Color = new SKColor(52,52,52), // gray background, red part rgb(204, 65, 65)
-                StrokeWidth = 75
+                StrokeWidth = 60
             };
 
             var radius = (info.Width * 0.75f) / 2; // this will make the circle take up 3/4 the width

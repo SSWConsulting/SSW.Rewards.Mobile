@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSW.Rewards.Persistence
+namespace SSW.Rewards.Application.System.Commands.Common
 {
     public class SampleDataSeeder
     {
@@ -22,6 +22,91 @@ namespace SSW.Rewards.Persistence
         public SampleDataSeeder(ISSWRewardsDbContext context)
         {
             _context = context;
+        }
+
+
+        public async Task SeedV2DataAsync(CancellationToken cancellationToken)
+        {
+            var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
+            var existingRewards = await _context.Rewards.ToListAsync(cancellationToken);
+
+            MigratePrefixes(existingAchievements, existingRewards);
+
+            AddExistingAchievementIcons(existingAchievements);
+
+            SetupAchievement(existingAchievements, "Claim a prize", 500, AchievementType.Completed, Icons.Gift);
+            SetupAchievement(existingAchievements, "Get into the top 100", 500, AchievementType.Completed, Icons.Trophy);
+            SetupAchievement(existingAchievements, "Follow SSW TV on Twitter", 500, AchievementType.Linked, Icons.Twitter, true);
+            SetupAchievement(existingAchievements, "Follow SSW TV on YouTube", 500, AchievementType.Linked, Icons.Youtube, true);
+            SetupAchievement(existingAchievements, "Follow SSW on LinkedIn", 500, AchievementType.Linked, Icons.Linkedin, true);
+            SetupAchievement(existingAchievements, "Follow SSW on GitHub", 500, AchievementType.Linked, Icons.Github, true);
+            SetupAchievement(existingAchievements, "Scan an SSWer", 500, AchievementType.Completed, Icons.Handshake);
+            SetupAchievement(existingAchievements, "Upload a profile picture", 500, AchievementType.Completed, Icons.Camera);
+            SetupAchievement(existingAchievements, "Attend an SSW Superpowers", 500, AchievementType.Completed, Icons.Lightning);
+            SetupAchievement(existingAchievements, "Attend a NetUG", 500, AchievementType.Completed, Icons.Puzzle);
+            SetupAchievement(existingAchievements, "Attend an SSW Workshop", 500, AchievementType.Completed, Icons.Certificate);
+            SetupAchievement(existingAchievements, "Attend an SSW Hackday", 500, AchievementType.Completed, Icons.Lightbulb);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        private void AddExistingAchievementIcons(List<Achievement> achievements)
+        {
+            foreach (var achievement in achievements)
+            {
+                if (achievement.Type == AchievementType.Scanned)
+                {
+                    achievement.Icon = Icons.QRCode;
+                }
+                else if (achievement.Type == AchievementType.Attended)
+                {
+                    var name = achievement.Name.ToLower();
+
+                    if (name.Contains("workshop"))
+                    {
+                        achievement.Icon = Icons.Certificate;
+
+                    }
+                    else if (name.Contains("superpowers"))
+                    {
+                        achievement.Icon = Icons.Lightning;
+                    }
+                    else if (name.Contains("hackday") || name.Contains("hack day"))
+                    {
+                        achievement.Icon = Icons.Lightbulb;
+                    }
+                    else
+                    {
+                        achievement.Icon = Icons.Puzzle;
+                    }
+                }
+
+                achievement.IconIsBranded = false;
+            }
+        }
+
+        private void MigratePrefixes(List<Achievement> achievements, List<Reward> rewards)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var achievement in achievements)
+            {
+                var codeData = Encoding.ASCII.GetBytes($"ach:{achievement.Name}");
+                achievement.Code = Convert.ToBase64String(codeData);
+
+                sb.AppendLine(achievement.Code);
+            }
+
+            foreach (var reward in rewards)
+            {
+                var codeData = Encoding.ASCII.GetBytes($"rwd:{reward.Name}");
+                reward.Code = Convert.ToBase64String(codeData);
+
+                sb.AppendLine(reward.Code);
+            }
+
+            Console.WriteLine("Migrated achievement and rewards codes:");
+            Console.WriteLine(sb.ToString());
         }
 
         public async Task SeedAllAsync(byte[] profileData, CancellationToken cancellationToken)
@@ -135,7 +220,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, "NETUG June 2020 - Build your first deep learning solution using Azure Automated ML", 500);
             SetupAchievement(existingAchievements, "NETUG July 2020 - Power Apps - The Tesla of Software Development", 500);
             SetupAchievement(existingAchievements, "NETUG August 2020 - Blazor WebApps - Goodbye JavaScript! Im in love with C#", 500);
-            
+
             // Hack days
             SetupAchievement(existingAchievements, "AI Hackday Feb 2020", 500);
             SetupAchievement(existingAchievements, "AI Hack Day Online - June 2020", 500);
@@ -151,7 +236,7 @@ namespace SSW.Rewards.Persistence
             SetupAchievement(existingAchievements, ".NET Core Superpowers Online April 2020", 500);
             SetupAchievement(existingAchievements, "Clean Architecture Superpowers Online May 2020", 500);
             SetupAchievement(existingAchievements, "Angular Superpowers Online May 2020", 500);
-            
+
             // workshops
             SetupAchievement(existingAchievements, "2019 2 Day Angular Workshop", 500);
             SetupAchievement(existingAchievements, "Clean Architecture 2-day Workshop July 2020", 500);
@@ -163,7 +248,7 @@ namespace SSW.Rewards.Persistence
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        private void SetupAchievement(IEnumerable<Achievement> existingAchievements, string name, int value)
+        private void SetupAchievement(IEnumerable<Achievement> existingAchievements, string name, int value, AchievementType type = AchievementType.Completed, Icons icon = Icons.Trophy, bool branded = false)
         {
             var achievement = existingAchievements
                 .FirstOrDefault(a => a.Name.Equals(name, StringComparison.InvariantCulture))
@@ -172,6 +257,9 @@ namespace SSW.Rewards.Persistence
             achievement.Name = name;
             achievement.Code = GenerateCode(name);
             achievement.Value = value;
+            achievement.Type = type;
+            achievement.Icon = icon;
+            achievement.IconIsBranded = branded;
 
             if (achievement.Id == 0)
             {
@@ -196,7 +284,7 @@ namespace SSW.Rewards.Persistence
             reward.Code = Convert.ToBase64String(codeData);
             reward.Cost = cost;
 
-            if(reward.Id == 0)
+            if (reward.Id == 0)
             {
                 _context.Rewards.Add(reward);
             }
