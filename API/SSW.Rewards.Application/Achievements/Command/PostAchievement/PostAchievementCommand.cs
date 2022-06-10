@@ -3,7 +3,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.Application.Users.Common.Interfaces;
+using SSW.Rewards.Domain.Entities;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,71 +15,142 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
     public class PostAchievementCommand : IRequest<PostAchievementResult>
     {
         public string Code { get; set; }
+    }
 
-        public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
+    public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
+    {
+        private readonly IUserService _userService;
+        private readonly ISSWRewardsDbContext _context;
+        private readonly IMapper _mapper;
+
+        public PostAchievementCommandHandler(
+            IUserService UserService,
+            ISSWRewardsDbContext context,
+            IMapper mapper)
         {
-            private readonly IUserService _userService;
-            private readonly ISSWRewardsDbContext _context;
-            private readonly IMapper _mapper;
+            _userService = UserService;
+            _context = context;
+            _mapper = mapper;
+        }
 
-            public PostAchievementCommandHandler(
-                IUserService UserService,
-                ISSWRewardsDbContext context,
-                IMapper mapper)
+        public async Task<PostAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
+        {
+            var achievement = await _context
+               .Achievements
+               .Where(a => a.Code == request.Code)
+               .FirstOrDefaultAsync(cancellationToken);
+
+            if (achievement == null)
             {
-                _userService = UserService;
-                _context = context;
-                _mapper = mapper;
-            }
-
-            public async Task<PostAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
-            {
-                var achievement = await _context
-                   .Achievements
-                   .Where(a => a.Code == request.Code)
-                   .FirstOrDefaultAsync(cancellationToken);
-
-                if (achievement == null)
-                {
-                    return new PostAchievementResult
-                    {
-                        status = AchievementStatus.NotFound
-                    };
-                }
-
-                var user = await _userService.GetCurrentUser(cancellationToken);
-                var userHasAchievement = await _context
-                    .UserAchievements
-                    .Where(ua => ua.UserId == user.Id)
-                    .Where(ua => ua.AchievementId == achievement.Id)
-                    .AnyAsync(cancellationToken);
-
-                if (userHasAchievement)
-                {
-                    return new PostAchievementResult
-                    {
-                        status = AchievementStatus.Duplicate
-                    };
-                }
-
-                await _context
-                    .UserAchievements
-                    .AddAsync(new Domain.Entities.UserAchievement
-                    {
-                        UserId = user.Id,
-                        AchievementId = achievement.Id
-                    }, cancellationToken);
-
-                await _context.SaveChangesAsync(cancellationToken);
-
-                var achievementModel = _mapper.Map<AchievementDto>(achievement);
-
                 return new PostAchievementResult
                 {
-                    viewModel = achievementModel,
-                    status = AchievementStatus.Added
+                    status = AchievementStatus.NotFound
                 };
             }
+
+            var user = await _userService.GetCurrentUser(cancellationToken);
+
+            var userAchievements = await _context
+                .UserAchievements
+                .Where(ua => ua.UserId == user.Id)
+                .Where(ua => ua.AchievementId == achievement.Id)
+                .ToListAsync(cancellationToken);
+
+            if (userAchievements.Any(ua => ua.Achievement == achievement))
+            {
+                return new PostAchievementResult
+                {
+                    status = AchievementStatus.Duplicate
+                };
+            }
+
+            var userAchievement = new UserAchievement
+            {
+                UserId = user.Id,
+                Achievement = achievement
+            };
+
+            _context.UserAchievements.Add(userAchievement);
+
+            // check for milestone achievements
+            if (achievement.Type == AchievementType.Scanned)
+            {
+                if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
+                {
+                    var meetAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.MeetSSW, cancellationToken);
+
+                    var meetAchevement = new UserAchievement
+                    {
+                        UserId = user.Id,
+                        Achievement = meetAchievement
+                    };
+
+                    _context.UserAchievements.Add(meetAchevement);
+                }
+            }
+
+            if (achievement.Type == AchievementType.Attended)
+            {
+                var milestoneAchievement = new UserAchievement { UserId = user.Id };
+
+                // UG = puzzle, Hackday = lightbulb, Superpowers = lightning, Workshop = certificate
+                switch (achievement.Icon)
+                {
+                    case Icons.Puzzle:
+
+                        if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG))
+                        {
+                            var ugAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
+                            milestoneAchievement.Achievement = ugAchievement;
+                        }
+                        break;
+
+                    case Icons.Lightbulb:
+
+                        if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday))
+                        {
+                            var hdAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
+                            milestoneAchievement.Achievement = hdAchievement;
+                        }
+                        break;
+
+                    case Icons.Lightning:
+
+                        if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers))
+                        {
+                            var spAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
+                            milestoneAchievement.Achievement = spAchievement;
+                        }
+                        break;
+
+                    case Icons.Certificate:
+
+                        if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop))
+                        {
+                            var wsAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
+                            milestoneAchievement.Achievement = wsAchievement;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (milestoneAchievement.Achievement != null)
+                {
+                    _context.UserAchievements.Add(milestoneAchievement);
+                }
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var achievementModel = _mapper.Map<AchievementDto>(achievement);
+
+            return new PostAchievementResult
+            {
+                viewModel = achievementModel,
+                status = AchievementStatus.Added
+            };
         }
     }
 }
