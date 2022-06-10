@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,10 +44,11 @@ namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements
             {
                 profileAchievements.Add(new UserAchievementDto
                 {
-                    AchievementName = achievement.Name,
-                    AchievementType = achievement.Type,
-                    AchievementValue = achievement.Value,
-                    Complete = false
+                    AchievementName     = achievement.Name,
+                    AchievementType     = achievement.Type,
+                    AchievementValue    = achievement.Value,
+                    Icon                = achievement.Icon,
+                    Complete            = false
                 });
             }
 

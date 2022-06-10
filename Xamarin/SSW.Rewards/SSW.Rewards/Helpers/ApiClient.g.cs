@@ -4891,9 +4891,89 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("achievementType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AchievementType AchievementType { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("icon", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Icons Icon { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("awardedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? AwardedAt { get; set; }
     
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum Icons
+    {
+        Twitter = 0,
+    
+        Github = 1,
+    
+        LinkedinIn = 2,
+    
+        Instagram = 3,
+    
+        Linkedin = 4,
+    
+        TwitterSquare = 5,
+    
+        GithubSquare = 6,
+    
+        Youtube = 7,
+    
+        Microsoft = 8,
+    
+        Facebook = 9,
+    
+        Camera = 10,
+    
+        Certificate = 11,
+    
+        Lightning = 12,
+    
+        Mortarboard = 13,
+    
+        Handshake = 14,
+    
+        Lightbulb = 15,
+    
+        More = 16,
+    
+        People = 17,
+    
+        Puzzle = 18,
+    
+        Trophy = 19,
+    
+        Alert = 20,
+    
+        RightChevron = 21,
+    
+        LeftChevron = 22,
+    
+        ArrowExportUp = 23,
+    
+        SignOut = 24,
+    
+        Person = 25,
+    
+        PersonAdd = 26,
+    
+        Cake = 27,
+    
+        CalendarEmpty = 28,
+    
+        CalendarCheck = 29,
+    
+        Help = 30,
+    
+        Chat = 31,
+    
+        Gift = 32,
+    
+        Home = 33,
+    
+        Info = 34,
+    
+        QRCode = 35,
     
     }
     
