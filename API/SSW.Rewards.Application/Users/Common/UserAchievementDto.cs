@@ -15,7 +15,9 @@ namespace SSW.Rewards.Application.Users.Common
         
         public AchievementType AchievementType { get; set; }
 
-        public Icons Icon { get; set; }
+        public Icons AchievementIcon { get; set; }
+
+        public bool AchievementIconIsBranded { get; set; }
 
         public DateTime? AwardedAt { get; set; }
     }

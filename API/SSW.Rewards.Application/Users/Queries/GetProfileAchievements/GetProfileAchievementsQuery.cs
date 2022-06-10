@@ -44,11 +44,12 @@ namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements
             {
                 profileAchievements.Add(new UserAchievementDto
                 {
-                    AchievementName     = achievement.Name,
-                    AchievementType     = achievement.Type,
-                    AchievementValue    = achievement.Value,
-                    Icon                = achievement.Icon,
-                    Complete            = false
+                    AchievementName             = achievement.Name,
+                    AchievementType             = achievement.Type,
+                    AchievementValue            = achievement.Value,
+                    AchievementIcon             = achievement.Icon,
+                    AchievementIconIsBranded    = achievement.IconIsBranded,
+                    Complete                    = false
                 });
             }
 

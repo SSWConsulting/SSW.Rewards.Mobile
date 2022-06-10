@@ -4891,8 +4891,11 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("achievementType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AchievementType AchievementType { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("icon", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Icons Icon { get; set; }
+        [Newtonsoft.Json.JsonProperty("achievementIcon", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Icons AchievementIcon { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("achievementIconIsBranded", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool AchievementIconIsBranded { get; set; }
     
         [Newtonsoft.Json.JsonProperty("awardedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset? AwardedAt { get; set; }

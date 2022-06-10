@@ -282,7 +282,9 @@ namespace SSW.Rewards.Services
                     Name = achievement.AchievementName,
                     Value = achievement.AchievementValue,
                     Type = achievement.AchievementType,
-                    AwardedAt = achievement.AwardedAt?.DateTime
+                    AwardedAt = achievement.AwardedAt?.DateTime,
+                    AchievementIcon = achievement.AchievementIcon,
+                    IconIsBranded = achievement.AchievementIconIsBranded
                 });
             }
 

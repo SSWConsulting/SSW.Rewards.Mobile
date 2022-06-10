@@ -2074,8 +2074,11 @@
           "achievementType": {
             "$ref": "#/components/schemas/AchievementType"
           },
-          "icon": {
+          "achievementIcon": {
             "$ref": "#/components/schemas/Icons"
+          },
+          "achievementIconIsBranded": {
+            "type": "boolean"
           },
           "awardedAt": {
             "type": "string",

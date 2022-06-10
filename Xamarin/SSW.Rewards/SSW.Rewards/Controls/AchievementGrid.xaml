@@ -6,6 +6,8 @@
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:AchievementCompletedColorConverter x:Key="CompletedToColor"/>
+            <converters:BoolToFontConverter x:Key="BoolToFont"/>
+            <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
     <CollectionView ItemsLayout="VerticalGrid, 3"
@@ -21,7 +23,14 @@
                                  VerticalOptions="Center"
                                  WidthRequest="76"
                                  HeightRequest="76"
-                                 CornerRadius="38"/>
+                                 Padding="20"
+                                 CornerRadius="38">
+                        <ImageButton.Source>
+                            <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                                             Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                                             Color="White"/>
+                        </ImageButton.Source>
+                    </ImageButton>
                 </StackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>

@@ -3663,7 +3663,8 @@ export class UserAchievementDto implements IUserAchievementDto {
     achievementValue?: number;
     complete?: boolean;
     achievementType?: AchievementType;
-    icon?: Icons;
+    achievementIcon?: Icons;
+    achievementIconIsBranded?: boolean;
     awardedAt?: Date | undefined;
 
     constructor(data?: IUserAchievementDto) {
@@ -3682,7 +3683,8 @@ export class UserAchievementDto implements IUserAchievementDto {
             this.achievementValue = _data["achievementValue"];
             this.complete = _data["complete"];
             this.achievementType = _data["achievementType"];
-            this.icon = _data["icon"];
+            this.achievementIcon = _data["achievementIcon"];
+            this.achievementIconIsBranded = _data["achievementIconIsBranded"];
             this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
         }
     }
@@ -3701,7 +3703,8 @@ export class UserAchievementDto implements IUserAchievementDto {
         data["achievementValue"] = this.achievementValue;
         data["complete"] = this.complete;
         data["achievementType"] = this.achievementType;
-        data["icon"] = this.icon;
+        data["achievementIcon"] = this.achievementIcon;
+        data["achievementIconIsBranded"] = this.achievementIconIsBranded;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
         return data; 
     }
@@ -3713,7 +3716,8 @@ export interface IUserAchievementDto {
     achievementValue?: number;
     complete?: boolean;
     achievementType?: AchievementType;
-    icon?: Icons;
+    achievementIcon?: Icons;
+    achievementIconIsBranded?: boolean;
     awardedAt?: Date | undefined;
 }
 

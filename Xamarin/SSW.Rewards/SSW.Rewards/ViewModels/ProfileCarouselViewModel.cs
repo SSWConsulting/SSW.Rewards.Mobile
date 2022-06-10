@@ -45,7 +45,9 @@ namespace SSW.Rewards.ViewModels
                 Complete = achievement.Complete,
                 Name = achievement.Name,
                 Type = achievement.Type,
-                Value = achievement.Value
+                Value = achievement.Value,
+                AchievementIcon = achievement.AchievementIcon,
+                IconIsBranded = achievement.IconIsBranded
             };
         }
     }
