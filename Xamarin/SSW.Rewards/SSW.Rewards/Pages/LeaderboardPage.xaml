@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             x:Name="Leaderboard"
              x:Class="SSW.Rewards.Pages.LeaderboardPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -193,7 +194,9 @@
                                   ColumnDefinitions="40, 40, *, 80"
                                   Padding="10,0">
                                 <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding LeaderTapped}"/>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
+                                                          CommandParameter="{Binding  .}"/>
                                 </Grid.GestureRecognizers>
 
                                 <Image Grid.Column="0"

@@ -197,37 +197,28 @@ namespace SSW.Rewards.ViewModels
 
         private void SortByThisMonth()
         {
-            try
+            SearchResults.Clear();
+
+            var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
+
+            int rank = 1;
+
+            foreach (var leader in leaders)
             {
-                SearchResults.Clear();
+                leader.Rank = rank;
 
-                var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
+                leader.DisplayPoints = leader.PointsThisMonth;
 
-                int rank = 1;
+                SearchResults.Add(leader);
 
-                foreach (var leader in leaders)
-                {
-                    leader.Rank = rank;
-
-                    leader.DisplayPoints = leader.PointsThisMonth;
-
-                    SearchResults.Add(leader);
-
-                    rank++;
-                }
-
-                var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
-
-                MyRank = mysummary.Rank;
-
-                OnPropertyChanged(nameof(MyRank));
+                rank++;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[LeaderboardViewModel] Error sorting leaders: {ex.Message}");
 
-                Console.WriteLine($"[LeaderboardViewModel] Error sorting leaders: {ex.StackTrace}");
-            }
+            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
+
+            MyRank = mysummary.Rank;
+
+            OnPropertyChanged(nameof(MyRank));
         }
 
         private void SortByThisYear()
