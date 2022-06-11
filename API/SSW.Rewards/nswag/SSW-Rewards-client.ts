@@ -2197,6 +2197,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
+    balance?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
 
@@ -2216,6 +2217,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.name = _data["name"];
             this.profilePic = _data["profilePic"];
             this.totalPoints = _data["totalPoints"];
+            this.balance = _data["balance"];
             this.pointsThisMonth = _data["pointsThisMonth"];
             this.pointsThisYear = _data["pointsThisYear"];
         }
@@ -2235,6 +2237,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["name"] = this.name;
         data["profilePic"] = this.profilePic;
         data["totalPoints"] = this.totalPoints;
+        data["balance"] = this.balance;
         data["pointsThisMonth"] = this.pointsThisMonth;
         data["pointsThisYear"] = this.pointsThisYear;
         return data; 
@@ -2247,6 +2250,7 @@ export interface ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
+    balance?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
 }
@@ -3663,6 +3667,8 @@ export class UserAchievementDto implements IUserAchievementDto {
     achievementValue?: number;
     complete?: boolean;
     achievementType?: AchievementType;
+    achievementIcon?: Icons;
+    achievementIconIsBranded?: boolean;
     awardedAt?: Date | undefined;
 
     constructor(data?: IUserAchievementDto) {
@@ -3681,6 +3687,8 @@ export class UserAchievementDto implements IUserAchievementDto {
             this.achievementValue = _data["achievementValue"];
             this.complete = _data["complete"];
             this.achievementType = _data["achievementType"];
+            this.achievementIcon = _data["achievementIcon"];
+            this.achievementIconIsBranded = _data["achievementIconIsBranded"];
             this.awardedAt = _data["awardedAt"] ? new Date(_data["awardedAt"].toString()) : <any>undefined;
         }
     }
@@ -3699,6 +3707,8 @@ export class UserAchievementDto implements IUserAchievementDto {
         data["achievementValue"] = this.achievementValue;
         data["complete"] = this.complete;
         data["achievementType"] = this.achievementType;
+        data["achievementIcon"] = this.achievementIcon;
+        data["achievementIconIsBranded"] = this.achievementIconIsBranded;
         data["awardedAt"] = this.awardedAt ? this.awardedAt.toISOString() : <any>undefined;
         return data; 
     }
@@ -3710,7 +3720,48 @@ export interface IUserAchievementDto {
     achievementValue?: number;
     complete?: boolean;
     achievementType?: AchievementType;
+    achievementIcon?: Icons;
+    achievementIconIsBranded?: boolean;
     awardedAt?: Date | undefined;
+}
+
+export enum Icons {
+    Twitter = 0,
+    Github = 1,
+    LinkedinIn = 2,
+    Instagram = 3,
+    Linkedin = 4,
+    TwitterSquare = 5,
+    GithubSquare = 6,
+    Youtube = 7,
+    Microsoft = 8,
+    Facebook = 9,
+    Camera = 10,
+    Certificate = 11,
+    Lightning = 12,
+    Mortarboard = 13,
+    Handshake = 14,
+    Lightbulb = 15,
+    More = 16,
+    People = 17,
+    Puzzle = 18,
+    Trophy = 19,
+    Alert = 20,
+    RightChevron = 21,
+    LeftChevron = 22,
+    ArrowExportUp = 23,
+    SignOut = 24,
+    Person = 25,
+    PersonAdd = 26,
+    Cake = 27,
+    CalendarEmpty = 28,
+    CalendarCheck = 29,
+    Help = 30,
+    Chat = 31,
+    Gift = 32,
+    Home = 33,
+    Info = 34,
+    QRCode = 35,
 }
 
 export class UserAchievementsViewModel implements IUserAchievementsViewModel {

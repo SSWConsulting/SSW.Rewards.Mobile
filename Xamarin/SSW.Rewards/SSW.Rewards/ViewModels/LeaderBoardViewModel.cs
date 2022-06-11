@@ -194,7 +194,7 @@ namespace SSW.Rewards.ViewModels
 
             int rank = 1;
 
-            foreach(var leader in leaders)
+            foreach (var leader in leaders)
             {
                 leader.Rank = rank;
 
@@ -309,7 +309,7 @@ namespace SSW.Rewards.ViewModels
             if (leader.IsMe)
                 await Shell.Current.GoToAsync("main");
             else
-                await Shell.Current.Navigation.PushAsync(new ProfilePage(leader));
+                await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
         }
     }
 }

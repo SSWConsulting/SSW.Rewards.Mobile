@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace SSW.Rewards.Services
 {
@@ -16,19 +17,36 @@ namespace SSW.Rewards.Services
 
         public async Task<List<Reward>> GetRewards()
         {
-            var rewards = await _rewardClient.ListAsync();
-
             var rewardList = new List<Reward>();
 
-            foreach (var reward in rewards.Rewards)
+            try
             {
-                rewardList.Add(new Reward
+                var rewards = await _rewardClient.ListAsync();
+
+                foreach (var reward in rewards.Rewards)
                 {
-                    Cost = reward.Cost,
-                    Id = reward.Id,
-                    ImageUri = reward.ImageUri,
-                    Name = reward.Name
-                });
+                    rewardList.Add(new Reward
+                    {
+                        Cost = reward.Cost,
+                        Id = reward.Id,
+                        ImageUri = reward.ImageUri,
+                        Name = reward.Name
+                    });
+                }
+
+                return rewardList;
+            }
+            catch (ApiException e)
+            {
+                if (e.StatusCode == 401)
+                {
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    Application.Current.MainPage = new Views.LoginPage();
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                }
             }
 
             return rewardList;

@@ -14,7 +14,7 @@ namespace SSW.Consulting.iOS
             base.OnElementChanged(e);
             if (Control != null)
             {
-                Control.BackgroundColor = UIColor.FromWhiteAlpha(1, 1);
+                Control.BackgroundColor = UIColor.Clear;
                 Control.Layer.BorderWidth = 0;
                 Control.BorderStyle = UITextBorderStyle.None;
             }

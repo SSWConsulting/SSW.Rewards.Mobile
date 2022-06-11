@@ -104,7 +104,10 @@
                                     </AbsoluteLayout>
 
 									<Frame.GestureRecognizers>
-										<TapGestureRecognizer BindingContext="{Binding Source={x:Reference EarnPointsView}, Path=BindingContext}" Command="{Binding OnEventTapped}" CommandParameter="{Binding  Source={x:Reference Item}, Path=BindingContext.Url}" NumberOfTapsRequired="1" />
+										<TapGestureRecognizer BindingContext="{Binding Source={x:Reference EarnPointsView}, Path=BindingContext}"
+                                                              Command="{Binding OnEventTapped}"
+                                                              CommandParameter="{Binding  Source={x:Reference Item}, Path=BindingContext.Url}"
+                                                              NumberOfTapsRequired="1" />
 									</Frame.GestureRecognizers>
                                 </Frame>
                             </ContentView>

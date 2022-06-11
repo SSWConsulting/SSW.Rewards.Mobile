@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Helpers
 {
-    public static class Icons
+    public static class Icon
     {
         // Branded icons
         public const string Twitter = "\uf099";

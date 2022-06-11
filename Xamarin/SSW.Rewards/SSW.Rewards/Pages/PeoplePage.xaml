@@ -5,7 +5,7 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.PeoplePage">
-    <Shell.TitleView>
+    <!--<Shell.TitleView>
         <StackLayout VerticalOptions="CenterAndExpand"
                      HorizontalOptions="CenterAndExpand"
                      Padding="0,10,60,0">
@@ -25,7 +25,7 @@
                 </Label.GestureRecognizers>
             </Label>
         </StackLayout>
-    </Shell.TitleView>
+    </Shell.TitleView>-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>

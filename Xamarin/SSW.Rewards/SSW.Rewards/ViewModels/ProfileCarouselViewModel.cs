@@ -14,6 +14,18 @@ namespace SSW.Rewards.ViewModels
         public List<Activity> RecentActivity { get; set; } = new List<Activity>();
 
         public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        public bool IsMe { get; set; }
+
+        public string ProfileName { get; set; }
+
+        public string EmptyHeader
+        {
+            get
+            {
+                return IsMe ? "You have no recent activity" : $"{ProfileName} has no recent activity";
+            }
+        }
     }
 
     public enum CarouselType
@@ -45,7 +57,9 @@ namespace SSW.Rewards.ViewModels
                 Complete = achievement.Complete,
                 Name = achievement.Name,
                 Type = achievement.Type,
-                Value = achievement.Value
+                Value = achievement.Value,
+                AchievementIcon = achievement.AchievementIcon,
+                IconIsBranded = achievement.IconIsBranded
             };
         }
     }
