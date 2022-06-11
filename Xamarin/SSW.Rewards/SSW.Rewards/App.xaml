@@ -28,7 +28,6 @@
         <Color x:Key="SkillsBadgeBackgroundColour">#373737</Color>
         <Color x:Key="ProfileBorder">#979797</Color>
         <Color x:Key="FlyoutBackgroundColour">#3b3b3b</Color>
-        <Color x:Key="FlyoutItemColour">#1d1d1d</Color>
         <Color x:Key="PointsColour">#ffc700</Color>
         <Color x:Key="TwitterBlue">#007aff</Color>
         <Color x:Key="ContactButtonRed">#ff453a</Color>

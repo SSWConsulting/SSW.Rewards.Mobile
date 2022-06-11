@@ -1,9 +1,4 @@
-﻿using Rg.Plugins.Popup.Services;
-using SSW.Rewards.PopupPages;
-using SSW.Rewards.Services;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Xamarin.Essentials;
+﻿using SSW.Rewards.Services;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -15,7 +10,6 @@ namespace SSW.Rewards.ViewModels
         public string ProfilePic{ get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string VersionInfo { get; set; }
 
         public bool Staff { get; set; }
 
@@ -31,7 +25,6 @@ namespace SSW.Rewards.ViewModels
             Name = _userService.MyName;
             Email = _userService.MyEmail;
             Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
-            VersionInfo = string.Format("Version {0}", AppInfo.VersionString);
             MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(obj); });
         }
 

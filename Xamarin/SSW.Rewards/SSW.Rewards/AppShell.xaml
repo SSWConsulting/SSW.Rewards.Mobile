@@ -11,6 +11,7 @@
        FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
        FlyoutIcon="icon_menu"
        x:Class="SSW.Rewards.AppShell"
+       MenuItemTemplate="{StaticResource SSWMenuTemplate}"
        x:Name="RewardsShell">
 
     <!-- 
@@ -31,6 +32,60 @@
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
             </Style>
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+
+            <DataTemplate x:Key="SSWMenuTemplate">
+                <StackLayout>
+                    <Grid ColumnDefinitions="30,*"
+                      Margin="0,30,30,0">
+                        <Grid.Triggers>
+                            <DataTrigger TargetType="Grid"
+                                     Binding="{Binding Text}"
+                                     Value="My QRCode">
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
+                            </DataTrigger>
+
+                            <DataTrigger TargetType="Grid"
+                                     Binding="{Binding Text}"
+                                     Value="Join SSW">
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowJoinMenuItem}"/>
+                            </DataTrigger>
+                        </Grid.Triggers>
+                        <Grid.Padding>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="5" />
+                                <On Platform="iOS" Value="0" />
+                            </OnPlatform>
+                        </Grid.Padding>
+                        <Grid.Margin>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="20,5" />
+                                <On Platform="iOS" Value="10,5,10,0" />
+                            </OnPlatform>
+                        </Grid.Margin>
+
+                        <Image Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           HeightRequest="30"
+                           WidthRequest="30"
+                           Source="{Binding Icon}">
+                        </Image>
+
+                        <Label Grid.Column="1"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="20,0,0,0"
+                           Text="{Binding Text}">
+                            <Label.FontSize>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="iOS">18</On>
+                                    <On Platform="Android">18</On>
+                                </OnPlatform>
+                            </Label.FontSize>
+                        </Label>
+                    </Grid>
+                </StackLayout>
+            </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
 
@@ -38,75 +93,6 @@
         <controls:FlyoutHeader/>
     </Shell.FlyoutHeader>
 
-    <Shell.MenuItemTemplate>
-        <DataTemplate>
-            <StackLayout>
-                <Grid BackgroundColor="{StaticResource FlyoutItemColour}">
-                    <Grid.Triggers>
-                        <DataTrigger TargetType="Grid"
-                                     Binding="{Binding Text}"
-                                     Value="My QRCode">
-                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
-                        </DataTrigger>
-                    </Grid.Triggers>
-                    <Grid.Padding>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="Android" Value="5" />
-                            <On Platform="iOS" Value="0" />
-                        </OnPlatform>
-                    </Grid.Padding>
-                    <Grid.Margin>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="Android" Value="20,5" />
-                            <On Platform="iOS" Value="10,5,10,0" />
-                        </OnPlatform>
-                    </Grid.Margin>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="6*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Image Grid.Column="0"
-                           HorizontalOptions="Start"
-                           Margin="5"
-                           Source="{Binding Icon}">
-                       
-                        <Image.HeightRequest>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="iOS">30</On>
-                                <On Platform="Android">30</On>
-                            </OnPlatform>
-                        </Image.HeightRequest>
-                        <Image.WidthRequest>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="iOS">30</On>
-                                <On Platform="Android">30</On>
-                            </OnPlatform>
-                        </Image.WidthRequest>
-                        <Image.Scale>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="iOS">1</On>
-                                <On Platform="Android">0.8</On>
-                            </OnPlatform>
-                        </Image.Scale>
-                    </Image>
-
-                    <Label Grid.Column="1"
-                            Style="{StaticResource Leaderboard}"
-                            VerticalOptions="Center"
-                            FontSize="18"
-                            Text="{Binding Text}">
-                        <Label.FontSize>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="iOS">18</On>
-                                <On Platform="Android">18</On>
-                            </OnPlatform>
-                        </Label.FontSize>
-                    </Label>
-                </Grid>
-            </StackLayout>
-        </DataTemplate>
-    </Shell.MenuItemTemplate>
 
     <FlyoutItem Style="{StaticResource BaseStyle}">
         <Shell.ItemTemplate>
@@ -153,32 +139,107 @@
         </Tab>-->
     </FlyoutItem>
 
-    <MenuItem Text="Earn Rewards"
-              IconImageSource="icon_badge"
-              Clicked="Handle_HowToPlayClicked"/>
+    <MenuItem Text="Rewards"
+              Clicked="Handle_HowToPlayClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf455;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 
-    <MenuItem Text="Tech Quiz"
-              IconImageSource="icon_code"
-              Clicked="Handle_QuizClicked"/>
+    <MenuItem Text="SSW Events"
+              Clicked="Handle_EventsClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf226;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 
-    <MenuItem Text="Events"
-              IconImageSource="icon_calendar"
-              Clicked="Handle_EventsClicked"/>
-
-    <MenuItem Text="Join us @SSW"
-              IconImageSource="icon_join"
-              Clicked="Handle_JoinClicked"/>
-
-    <MenuItem Text="About SSW"
-              IconImageSource="icon_ssw"
-              Clicked="Handle_AboutClicked"/>
+    <MenuItem Text="Join SSW"
+              Clicked="Handle_JoinClicked"
+              x:Name="JoinMenuItem">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf5c2;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 
     <MenuItem Text="My QRCode"
-              IconImageSource="icon_qrcode"
               Clicked="Handle_QRClicked"
-              x:Name="QRMenuItem"/>
+              x:Name="QRMenuItem">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf635;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 
-    <MenuItem Text="Log Out"
-              Clicked="Handle_LogOutClicked"/>
+    <MenuItem Text="About SSW"
+              Clicked="Handle_AboutClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf4a3;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <Shell.FlyoutFooter>
+        <StackLayout Orientation="Horizontal">
+            <StackLayout>
+                <Grid ColumnDefinitions="30,*"
+                      Margin="0,30,30,0">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="Handle_LogOutClicked"/>
+                    </Grid.GestureRecognizers>
+                    <Grid.Padding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="5" />
+                            <On Platform="iOS" Value="0" />
+                        </OnPlatform>
+                    </Grid.Padding>
+                    <Grid.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="20,5" />
+                            <On Platform="iOS" Value="10,5,10,0" />
+                        </OnPlatform>
+                    </Grid.Margin>
+
+                    <Label Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           HeightRequest="30"
+                           WidthRequest="30"
+                           FontSize="28"
+                           FontFamily="{StaticResource FluentIcons}"
+                           TextColor="White"
+                           Text="&#xeafa;">
+                    </Label>
+
+                    <Label Grid.Column="1"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="20,0,0,0"
+                           FontSize="18"
+                           Text="Log Out" />
+                </Grid>
+            </StackLayout>
+
+            <StackLayout HorizontalOptions="EndAndExpand">
+                <Image HorizontalOptions="End"
+                       Margin="10,0,10,0"
+                       Source="SSWwhite"/>
+
+                <Label HorizontalOptions="End"
+                       x:Name="VersionLabel"
+                       Margin="10,0,10,0"
+                       TextColor="White"
+                       d:Text="Version 1.1.0"/>
+            </StackLayout>
+        </StackLayout>
+    </Shell.FlyoutFooter>
 
 </Shell>
