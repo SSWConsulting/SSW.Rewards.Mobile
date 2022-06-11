@@ -1,5 +1,6 @@
 ﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Controls;
+using SSW.Rewards.Helpers;
 using SSW.Rewards.Models;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
@@ -22,17 +23,25 @@ namespace SSW.Rewards.ViewModels
         public int Points { get; set; }
         public int Balance { get; set; }
 
+        public bool ShowBalance { get; set; } = true;
+
         public double Progress { get; set; } = 0;
 
         private int userId { get; set; }
 
         public bool IsLoading { get; set; }
 
+        public bool ShowCamera => _isMe && !IsLoading;
+
         public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
         public SnackbarOptions SnackOptions { get; set; }
 
         public ICommand CameraCommand => new Command(async () => await ShowCameraPageAsync());
+
+        public ICommand PopProfile => new Command(async () => await Navigation.PopModalAsync());
+
+        public bool ShowPopButton { get; set; } = false;
 
         private bool _isMe;
 
@@ -65,7 +74,9 @@ namespace SSW.Rewards.ViewModels
             Points = vm.TotalPoints;
             _userService = Resolver.Resolve<IUserService>();
             // TODO: add this to LeaderSummaryViewModel
-            // Balance = vm.Balance;
+            Balance = vm.Balance;
+            ShowBalance = false;
+            ShowPopButton = true;
         }
 
         public async Task Initialise(bool me)
@@ -123,7 +134,7 @@ namespace SSW.Rewards.ViewModels
 
             IsLoading = false;
 
-            RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance));
+            RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance), nameof(ShowCamera));
         }
 
         private async Task ShowCameraPageAsync()
@@ -133,9 +144,9 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
-            var rewardList = await _userService.GetRewardsAsync();
+            var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync();
-            var achievementList = await _userService.GetAchievementsAsync();
+            var achievementList = await _userService.GetAchievementsAsync(userId);
 
             //===== Achievements =====
 
@@ -153,6 +164,8 @@ namespace SSW.Rewards.ViewModels
 
             var activitySection = new ProfileCarouselViewModel();
             activitySection.Type = CarouselType.RecentActivity;
+            activitySection.IsMe = _isMe;
+            activitySection.ProfileName = Name;
 
             var activityList = new List<Activity>();
 
@@ -230,7 +243,9 @@ namespace SSW.Rewards.ViewModels
             {
                 ActionCompleted = achievement.Complete,
                 Points = achievement.Value,
-                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}"
+                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}",
+                GlyphIsBrand = achievement.IconIsBranded,
+                Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
             };
 
             var args = new ShowSnackbarEventArgs { Options = options };

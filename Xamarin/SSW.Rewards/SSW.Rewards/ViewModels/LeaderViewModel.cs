@@ -55,6 +55,8 @@ namespace SSW.Rewards.ViewModels
 
             PointsThisYear = dto.PointsThisYear;
 
+            Balance = dto.Balance;
+
             IsMe = isMe;
         }
     }

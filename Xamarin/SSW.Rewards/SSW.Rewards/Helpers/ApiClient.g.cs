@@ -4370,6 +4370,9 @@ namespace SSW.Rewards
         [Newtonsoft.Json.JsonProperty("totalPoints", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int TotalPoints { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("balance", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Balance { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("pointsThisMonth", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int PointsThisMonth { get; set; }
     

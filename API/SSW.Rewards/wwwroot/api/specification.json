@@ -1396,6 +1396,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "balance": {
+            "type": "integer",
+            "format": "int32"
+          },
           "pointsThisMonth": {
             "type": "integer",
             "format": "int32"

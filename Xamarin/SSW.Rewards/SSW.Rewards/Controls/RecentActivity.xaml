@@ -29,7 +29,7 @@
                         <StackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      WidthRequest="200">
-                            <Label Text="You have no recent activity"
+                            <Label Text="{Binding EmptyHeader}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
                                    HorizontalTextAlignment="Center"

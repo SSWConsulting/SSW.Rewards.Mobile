@@ -2197,6 +2197,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
+    balance?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
 
@@ -2216,6 +2217,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.name = _data["name"];
             this.profilePic = _data["profilePic"];
             this.totalPoints = _data["totalPoints"];
+            this.balance = _data["balance"];
             this.pointsThisMonth = _data["pointsThisMonth"];
             this.pointsThisYear = _data["pointsThisYear"];
         }
@@ -2235,6 +2237,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["name"] = this.name;
         data["profilePic"] = this.profilePic;
         data["totalPoints"] = this.totalPoints;
+        data["balance"] = this.balance;
         data["pointsThisMonth"] = this.pointsThisMonth;
         data["pointsThisYear"] = this.pointsThisYear;
         return data; 
@@ -2247,6 +2250,7 @@ export interface ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
+    balance?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
 }

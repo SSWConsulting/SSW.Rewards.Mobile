@@ -4,7 +4,6 @@
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              xmlns:helpers="clr-namespace:SSW.Rewards.Helpers"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              x:Class="SSW.Rewards.Pages.ProfilePage">
     <ContentPage.Resources>
         <DataTemplate x:Key="AchievementsTemplate">
@@ -23,8 +22,6 @@
                                          Notifications="{StaticResource NotificationsTemplate}"
                                          Achievements="{StaticResource AchievementsTemplate}"
                                          RecentActivity="{StaticResource ActivityTemplate}" />
-
-        <converters:InverseBoolConverter x:Key="InverseBool"/>
     </ContentPage.Resources>
     
     <Grid RowDefinitions="*,*,10"
@@ -39,6 +36,7 @@
 
             <StackLayout Grid.Row="1"
                          Orientation="Horizontal"
+                         IsVisible="{Binding ShowBalance}"
                          HorizontalOptions="Center">
                 <Label HorizontalOptions="End"
                        Text="⭐"
@@ -95,7 +93,7 @@
                          HeightRequest="30"
                          Command="{Binding CameraCommand}"
                          Padding="3"
-                         IsVisible="{Binding IsLoading, Converter={StaticResource InverseBool}}">
+                         IsVisible="{Binding ShowCamera}">
                 <ImageButton.Source>
                     <FontImageSource FontFamily="{StaticResource FluentIcons}"
                                      Glyph="&#xe299;"
@@ -103,6 +101,22 @@
                 </ImageButton.Source>
             </ImageButton>
 
+            <ImageButton Grid.Row="0"
+                         HorizontalOptions="End"
+                         BackgroundColor="{StaticResource ProfileBackgroundColour}"
+                         VerticalOptions="End"
+                         CornerRadius="20"
+                         WidthRequest="40"
+                         HeightRequest="40"
+                         Command="{Binding PopProfile}"
+                         Padding="3"
+                         IsVisible="{Binding ShowPopButton}">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xe4c3;"
+                                     Color="{StaticResource primary}"/>
+                </ImageButton.Source>
+            </ImageButton>
         </Grid>
 
         <CarouselView Grid.Row="1"
