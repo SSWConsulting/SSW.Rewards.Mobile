@@ -152,21 +152,12 @@ namespace SSW.Rewards.ViewModels
 
             foreach (var summary in summaries)
             {
-                try
-                {
-                    var isMe = myId == summary.UserId;
-                    var vm = new LeaderViewModel(summary, isMe);
+                var isMe = myId == summary.UserId;
+                var vm = new LeaderViewModel(summary, isMe);
 
-                    Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
+                Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
 
-                    Leaders.Add(vm);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {summary.Name}");
-                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {ex.Message}");
-                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {ex.StackTrace}");
-                }
+                Leaders.Add(vm);
             }
 
             TotalLeaders = summaries.Count();
