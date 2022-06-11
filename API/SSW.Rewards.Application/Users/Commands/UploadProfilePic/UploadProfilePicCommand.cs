@@ -56,15 +56,14 @@ namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic
                 .Where(u => u.Email.ToLower() == _currentUserService.GetUserEmail())
                 .Include(u => u.UserAchievements)
                     .ThenInclude(ua => ua.Achievement)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
             
             user.Avatar = url;
 
-            var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ProfilePic, cancellationToken);
-
-            if (!user.UserAchievements.Any(a => a.Achievement == achievement))
+            if (!user.UserAchievements.Any(a => a.Achievement.Name == MilestoneAchievements.ProfilePic))
             {
+                var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ProfilePic, cancellationToken);
+
                 user.UserAchievements.Add(new UserAchievement
                 {
                     Achievement = achievement
