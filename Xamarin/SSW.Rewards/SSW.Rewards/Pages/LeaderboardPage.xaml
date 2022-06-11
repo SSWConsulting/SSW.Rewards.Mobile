@@ -192,6 +192,9 @@
                                   HeightRequest="50"
                                   ColumnDefinitions="40, 40, *, 80"
                                   Padding="10,0">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding LeaderTapped}"/>
+                                </Grid.GestureRecognizers>
 
                                 <Image Grid.Column="0"
                                        Source="{Binding ProfilePic}"
@@ -199,7 +202,8 @@
                                        HorizontalOptions="Center"
                                        Aspect="AspectFill"
                                        WidthRequest="30"
-                                       HeightRequest="30">
+                                       HeightRequest="30"
+                                       InputTransparent="True">
                                     <Image.Clip>
                                         <EllipseGeometry Center="15,15"
                                                      RadiusX="15"
@@ -213,25 +217,29 @@
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        IsVisible="{Binding IsLeader}"
-                                       TranslationY="-20"/>
+                                       TranslationY="-20"
+                                       InputTransparent="True"/>
 
                                 <Label Grid.Column="1"
                                        Text="{Binding Rank, StringFormat='&#35;{0}'}"
                                        TextColor="White"
                                        VerticalOptions="Center"
-                                       HorizontalOptions="Center" />
+                                       HorizontalOptions="Center"
+                                       InputTransparent="True"/>
 
                                 <Label Grid.Column="2"
                                        Text="{Binding Name}"
                                        TextColor="White"
                                        FontAttributes="Bold"
-                                       VerticalOptions="Center"/>
+                                       VerticalOptions="Center"
+                                       InputTransparent="True"/>
 
                                 <Label Grid.Column="3"
                                        Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
                                        TextColor="White"
                                        VerticalOptions="Center"
-                                       HorizontalOptions="End"/>
+                                       HorizontalOptions="End"
+                                       InputTransparent="True"/>
 
                             </Grid>
                         </DataTemplate>

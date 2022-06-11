@@ -95,14 +95,24 @@ namespace SSW.Rewards.ViewModels
 
             double progress = Balance / (double)topReward.Cost;
 
-            if (progress < 1)
+
+            // TODO: we can get rid of this 0 condition if we award a 'sign up'
+            // achievement. We could also potentially get the ring to render
+            // empty.
+            if (progress == 0)
+            {
+                Progress = 0.01;
+            }
+            else if(progress < 1)
             {
                 Progress = progress;
-            }    
+            } 
             else
             {
                 Progress = 1;
             }
+
+
 
             OnPropertyChanged(nameof(Progress));
 

@@ -25,6 +25,7 @@ namespace SSW.Rewards.ViewModels
         {
             _userService = userService;
             LoginTappedCommand = new Command(SignIn);
+            LoginButtonEnabled = true;
             ButtonText = "Sign up / Log in";
             OnPropertyChanged("ButtonText");
         }
@@ -34,7 +35,7 @@ namespace SSW.Rewards.ViewModels
             isRunning = true;
             LoginButtonEnabled = false;
             bool enablebuttonAfterLogin = true;
-            RaisePropertyChanged(new string[] { "isRunning", "LoginButtonEnabled" });
+            RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
 
             ApiStatus status;
             try
@@ -72,8 +73,11 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Refresh()
         {
+            bool enablebuttonAfterLogin = true;
+
             if (_userService.HasCachedAccount)
             {
+                LoginButtonEnabled = false;
                 isRunning = true;
                 ButtonText = "Logging you in...";
                 RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
@@ -85,11 +89,10 @@ namespace SSW.Rewards.ViewModels
                         // TODO: Do we need this in a refresh?
                         await _userService.UpdateMyDetailsAsync();
 
+                        enablebuttonAfterLogin = false;
+
                         await OnAfterLogin();
-                    }
-                    else
-                    {
-                        LoginButtonEnabled = true;
+
                     }
                 }
                 catch (Exception e)
@@ -102,6 +105,7 @@ namespace SSW.Rewards.ViewModels
                 finally
                 {
                     isRunning = false;
+                    LoginButtonEnabled = enablebuttonAfterLogin;
                     ButtonText = "Sign up / Log in";
                     RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
                 }

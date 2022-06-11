@@ -152,12 +152,21 @@ namespace SSW.Rewards.ViewModels
 
             foreach (var summary in summaries)
             {
-                var isMe = myId == summary.UserId;
-                var vm = new LeaderViewModel(summary, isMe);
+                try
+                {
+                    var isMe = myId == summary.UserId;
+                    var vm = new LeaderViewModel(summary, isMe);
 
-                Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
+                    Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
 
-                Leaders.Add(vm);
+                    Leaders.Add(vm);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {summary.Name}");
+                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {ex.Message}");
+                    Console.WriteLine($"[LeaderboardViewModel] Error adding leader: {ex.StackTrace}");
+                }
             }
 
             TotalLeaders = summaries.Count();
@@ -188,28 +197,37 @@ namespace SSW.Rewards.ViewModels
 
         private void SortByThisMonth()
         {
-            SearchResults.Clear();
-
-            var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
-
-            int rank = 1;
-
-            foreach(var leader in leaders)
+            try
             {
-                leader.Rank = rank;
+                SearchResults.Clear();
 
-                leader.DisplayPoints = leader.PointsThisMonth;
+                var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
 
-                SearchResults.Add(leader);
+                int rank = 1;
 
-                rank++;
+                foreach (var leader in leaders)
+                {
+                    leader.Rank = rank;
+
+                    leader.DisplayPoints = leader.PointsThisMonth;
+
+                    SearchResults.Add(leader);
+
+                    rank++;
+                }
+
+                var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
+
+                MyRank = mysummary.Rank;
+
+                OnPropertyChanged(nameof(MyRank));
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LeaderboardViewModel] Error sorting leaders: {ex.Message}");
 
-            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
-
-            MyRank = mysummary.Rank;
-
-            OnPropertyChanged(nameof(MyRank));
+                Console.WriteLine($"[LeaderboardViewModel] Error sorting leaders: {ex.StackTrace}");
+            }
         }
 
         private void SortByThisYear()

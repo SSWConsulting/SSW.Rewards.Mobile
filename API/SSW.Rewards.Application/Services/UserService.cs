@@ -109,7 +109,6 @@ namespace SSW.Rewards.Application.Services
                         .ThenInclude(ua => ua.Achievement)
                     .Include(u => u.UserRewards)
                         .ThenInclude(ur => ur.Reward)
-                    .AsNoTracking()
                     .SingleOrDefaultAsync(cancellationToken);
 
             if (!user.Activated)
