@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Persistence;
+using SSW.Rewards.Application.System.Commands.Common;
 using System.Threading;
 using System.Threading.Tasks;
 

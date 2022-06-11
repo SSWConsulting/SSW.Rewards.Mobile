@@ -12,6 +12,10 @@ namespace SSW.Rewards.Domain.Entities
 
         public AchievementType Type { get; set; }
 
+        public Icons Icon { get; set; }
+
+        public bool IconIsBranded { get; set; }
+
         public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
     }
 }

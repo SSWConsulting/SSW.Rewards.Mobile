@@ -34,9 +34,7 @@ namespace SSW.Rewards.Application.Rewards.Commands.AddReward
                 imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFileName);
             }
 
-
-
-            var codeData = Encoding.ASCII.GetBytes(request.Name);
+            var codeData = Encoding.ASCII.GetBytes($"rwd:{request.Name}");
             string code = Convert.ToBase64String(codeData);
 
             var entity = new SSW.Rewards.Domain.Entities.Reward
