@@ -3349,7 +3349,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
-    rate?: number;
+    points?: number;
     skills?: StaffSkillDto[] | undefined;
 
     constructor(data?: IUpsertStaffMemberProfileCommand) {
@@ -3372,7 +3372,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
             this.gitHubUsername = _data["gitHubUsername"];
             this.linkedInUrl = _data["linkedInUrl"];
             this.profilePhoto = _data["profilePhoto"];
-            this.rate = _data["rate"];
+            this.points = _data["points"];
             if (Array.isArray(_data["skills"])) {
                 this.skills = [] as any;
                 for (let item of _data["skills"])
@@ -3399,7 +3399,7 @@ export class UpsertStaffMemberProfileCommand implements IUpsertStaffMemberProfil
         data["gitHubUsername"] = this.gitHubUsername;
         data["linkedInUrl"] = this.linkedInUrl;
         data["profilePhoto"] = this.profilePhoto;
-        data["rate"] = this.rate;
+        data["points"] = this.points;
         if (Array.isArray(this.skills)) {
             data["skills"] = [];
             for (let item of this.skills)
@@ -3419,7 +3419,7 @@ export interface IUpsertStaffMemberProfileCommand {
     gitHubUsername?: string | undefined;
     linkedInUrl?: string | undefined;
     profilePhoto?: string | undefined;
-    rate?: number;
+    points?: number;
     skills?: StaffSkillDto[] | undefined;
 }
 

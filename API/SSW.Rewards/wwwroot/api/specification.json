@@ -1924,7 +1924,7 @@
             "format": "uri",
             "nullable": true
           },
-          "rate": {
+          "points": {
             "type": "integer",
             "format": "int32"
           },
