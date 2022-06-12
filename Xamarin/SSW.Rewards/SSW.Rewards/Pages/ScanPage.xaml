@@ -21,10 +21,10 @@
               Grid.Column="1"
               Grid.Row="1">
             <zxing:ZXingScannerView x:Name="scannerView"
-                                        OnScanResult="Handle_OnScanResult"
-                                        IsScanning="true"
-                                        WidthRequest="300"
-                                        HeightRequest="300"/>
+                                    OnScanResult="Handle_OnScanResult"
+                                    IsScanning="true"
+                                    WidthRequest="300"
+                                    HeightRequest="300"/>
 
             <Image Source="qr_filter"
                        Opacity="0.5"/>

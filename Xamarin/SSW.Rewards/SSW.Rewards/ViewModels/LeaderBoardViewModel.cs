@@ -306,7 +306,7 @@ namespace SSW.Rewards.ViewModels
         private async Task HandleLeaderTapped(LeaderViewModel leader)
         {
             if (leader.IsMe)
-                await Shell.Current.GoToAsync("main");
+                await Shell.Current.GoToAsync("//main");
             else
                 await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
         }

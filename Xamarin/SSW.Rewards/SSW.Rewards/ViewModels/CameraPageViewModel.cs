@@ -80,8 +80,10 @@ namespace SSW.Rewards.ViewModels
                     PhotoSize = PhotoSize.Small,
                     DefaultCamera = Plugin.Media.Abstractions.CameraDevice.Front,
 
-                    AllowCropping = true
-                });
+                    AllowCropping = true,
+
+                    SaveMetaData = false
+                }); ;
 
                 SetPhoto(file);
             }

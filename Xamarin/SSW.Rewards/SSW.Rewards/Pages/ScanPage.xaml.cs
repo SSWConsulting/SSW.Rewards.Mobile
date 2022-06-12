@@ -19,5 +19,11 @@ namespace SSW.Rewards.Pages
             scannerView.IsScanning = false;
             await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            scannerView.IsScanning = false;
+        }
     }
 }
