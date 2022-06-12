@@ -4,6 +4,7 @@ using SSW.Rewards.Services;
 using SSW.Rewards.Views;
 using System;
 using System.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Rewards
@@ -13,13 +14,16 @@ namespace SSW.Rewards
         private IUserService _userService { get; set; }
 
         bool _showQRMenu;
+        bool _showJoinMenu;
 
         public AppShell(IUserService userService, bool isStaff)
         {
             InitializeComponent();
             _userService = userService;
             ShowQRCodeMenuItem = isStaff;
+            ShowJoinMenuItem = !isStaff;
             BindingContext = this;
+            VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString); ;
         }
 
         public bool ShowQRCodeMenuItem
@@ -32,10 +36,25 @@ namespace SSW.Rewards
             }
         }
 
+        public bool ShowJoinMenuItem
+        {
+            get => _showJoinMenu;
+            set
+            {
+                _showJoinMenu = value;
+                OnPropertyChanged();
+            }
+        }
+
         public async void Handle_LogOutClicked(object sender, EventArgs e)
         {
-            _userService.SignOut();
-            await Navigation.PushModalAsync(new LoginPage());
+            var sure = await App.Current.MainPage.DisplayAlert("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
+
+            if (sure)
+            {
+                _userService.SignOut();
+                await Navigation.PushModalAsync(new LoginPage()); 
+            }
         }
 
         public async void Handle_QuizClicked(object sender, EventArgs e)
@@ -72,16 +91,16 @@ namespace SSW.Rewards
         }
 
         protected override bool OnBackButtonPressed()
-		{
-			if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
-			{
-				return base.OnBackButtonPressed();
-			}
-			else
-			{
-				System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
-				return true;
-			}
-		}
+        {
+            if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
+            {
+                return base.OnBackButtonPressed();
+            }
+            else
+            {
+                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
+                return true;
+            }
+        }
     }
 }

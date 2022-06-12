@@ -5,78 +5,64 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:transforms="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              HeightRequest="150">
     <Grid HeightRequest="100"
-          Margin="5,5,5,30">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+          ColumnDefinitions="90, *"
+          RowDefinitions="*, *">
 
-        <ffimage:CachedImage Grid.Column="0"
-                             Grid.Row="0"
-                             Grid.RowSpan="3"
-                             Aspect="AspectFit"
-                             Source="{Binding ProfilePic}"
-                             LoadingPlaceholder="placeholder_user"
-                             ErrorPlaceholder="placeholder_user"
-                             CacheType="Disk"
-                             CacheDuration="90"
-                             d:Source="MattGMain"
-                             HeightRequest="150"
-                             WidthRequest="150"
-                             VerticalOptions="Center"
-                             Margin="10,0,5,0">
-             <ffimage:CachedImage.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding OnProfiePicTapped}"
-                                NumberOfTapsRequired="1" />
-                        </ffimage:CachedImage.GestureRecognizers>
-            <ffimage:CachedImage.Transformations>
-                <transforms:CircleTransformation BorderHexColor="#979797"
-                                                 BorderSize="30"/>
-            </ffimage:CachedImage.Transformations>
-        </ffimage:CachedImage>
-
-        <Label Grid.Column="1"
+        <Image Grid.Column="0"
                Grid.Row="0"
-               Style="{StaticResource Leaderboard}"
-               VerticalOptions="End"
-               FontSize="16"
-               Text="{Binding Name}"
-               d:Text="Matt Goldman"/>
+               Grid.RowSpan="2"
+               Aspect="AspectFill"
+               Source="{Binding ProfilePic}"
+               HeightRequest="70"
+               WidthRequest="7"
+               VerticalOptions="Center"
+               Margin="15,5,5,0">
+            <Image.Clip>
+                <EllipseGeometry Center="35,35"
+                                 RadiusX="35"
+                                 RadiusY="35"/>
+            </Image.Clip>
+        </Image>
+
+        <StackLayout Orientation="Horizontal"
+                     Grid.Column="1"
+                     Grid.Row="0"
+                     Margin="0,5,5,0"
+                     VerticalOptions="End">
+            <Label FontSize="16"
+                   Text="{Binding Name}"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   
+                   VerticalTextAlignment="End"
+                   d:Text="Matt Goldman"/>
+
+            <Label FontFamily="{StaticResource FA6Brands}"
+                   TextColor="White"
+                   VerticalTextAlignment="Center"
+                   TranslationY="1"
+                   Text="&#xf3ca;"
+                   IsVisible="{Binding Staff}"/>
+        </StackLayout>
 
         <Label Grid.Column="1"
                Grid.Row="1"
-               Style="{StaticResource Leaderboard}"
+               TextColor="White"
                VerticalOptions="Start"
                Text="{Binding Email}"
+               Margin="0,0,5,30"
                d:Text="mattgoldman@ssw.com.au"/>
 
-        <Image Grid.Row="2"
-               Grid.Column="0"
-               Grid.ColumnSpan="2"
-               HorizontalOptions="End"
-               Margin="10,0,10,0"
-               Source="SSWwhite"/>
-
-        <Label Grid.Row="3"
-               Grid.Column="0"
-               Grid.ColumnSpan="2"
-               HorizontalOptions="End"
-               Text="{Binding VersionInfo}"
-               Margin="10,0,10,0"
-               Style="{StaticResource Leaderboard}"
-               d:Text="Version 1.1.0"/>
-
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="White"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 Grid.Row="1"
+                 Margin="0,25,0,0"
+                 VerticalOptions="Center"/>
     </Grid>
 </ContentView>

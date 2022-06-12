@@ -103,7 +103,7 @@
 
             <ImageButton Grid.Row="0"
                          HorizontalOptions="End"
-                         BackgroundColor="{StaticResource ProfileBackgroundColour}"
+                         BackgroundColor="{StaticResource MainBackground}"
                          VerticalOptions="End"
                          CornerRadius="20"
                          WidthRequest="40"
