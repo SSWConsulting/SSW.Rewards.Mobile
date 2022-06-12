@@ -1,18 +1,29 @@
 ﻿using SSW.Rewards.Admin.Models.Achievements;
+using SSW.Rewards.Api;
 using System.Net.Http.Json;
 
 namespace SSW.Rewards.Admin.Services;
 
 public class AchievementsService
 {
-    private HttpClient _httpClient;
+    private readonly AchievementClient _client;
     public AchievementsService(IHttpClientFactory clientFactory)
     {
-        this._httpClient = clientFactory.CreateClient(Constants.RewardsApiClient);
+        _client = new AchievementClient(clientFactory.CreateClient(Constants.RewardsApiClient));
     }
 
-    public async Task<_AchievementAdminListViewModel?> GetAchievements()
+    public async Task<AchievementAdminListViewModel?> AdminListAsync()
     {
-        return await this._httpClient.GetFromJsonAsync<_AchievementAdminListViewModel>("Achievement/AdminList");
+        return await _client.AdminListAsync();
+    }
+
+    public async Task CreateAsync(CreateAchievementCommand command)
+    {
+        await _client.CreateAsync(command);
+    }
+
+    public async Task DeleteAsync(DeleteAchievementCommand command)
+    {
+        await _client.DeleteAsync(command);
     }
 }

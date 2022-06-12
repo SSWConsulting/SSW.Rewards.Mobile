@@ -1,19 +1,30 @@
 ﻿using SSW.Rewards.Admin.Models.Achievements;
 using SSW.Rewards.Admin.Models.Rewards;
+using SSW.Rewards.Api;
 using System.Net.Http.Json;
 
 namespace SSW.Rewards.Admin.Services;
 
 public class RewardsService
 {
-    private HttpClient _httpClient;
+    private readonly RewardClient _client;
     public RewardsService(IHttpClientFactory clientFactory)
     {
-        this._httpClient = clientFactory.CreateClient(Constants.RewardsApiClient);
+        _client = new RewardClient(clientFactory.CreateClient(Constants.RewardsApiClient));
     }
 
-    public async Task<_RewardAdminListViewModel?> GetRewards()
+    public async Task<RewardAdminListViewModel?> AdminListAsync()
     {
-        return await this._httpClient.GetFromJsonAsync<_RewardAdminListViewModel>("Reward/AdminList");
+        return await _client.AdminListAsync();
+    }
+
+    public async Task DeleteAsync(DeleteRewardCommand command)
+    {
+        await _client.DeleteAsync(command);
+    }
+
+    public async Task AddAsync(AddRewardCommand command)
+    {
+        await _client.AddAsync(command);
     }
 }

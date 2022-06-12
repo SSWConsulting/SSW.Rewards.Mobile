@@ -1,18 +1,19 @@
 ﻿using SSW.Rewards.Admin.Models.Leaderboard;
+using SSW.Rewards.Api;
 using System.Net.Http.Json;
 
 namespace SSW.Rewards.Admin.Services;
 
 public class LeaderboardService
 {
-    private HttpClient _httpClient;
+    private readonly LeaderboardClient _client;
     public LeaderboardService(IHttpClientFactory clientFactory)
     {
-        this._httpClient = clientFactory.CreateClient(Constants.RewardsApiClient);
+        _client = new LeaderboardClient(clientFactory.CreateClient(Constants.RewardsApiClient));
     }
 
-    public async Task<_LeaderboardListViewModel?> GetLeaderboard()
+    public async Task<LeaderboardListViewModel?> GetAsync()
     {
-        return await this._httpClient.GetFromJsonAsync<_LeaderboardListViewModel>("Leaderboard/Get");
+        return await _client.GetAsync();
     }
 }

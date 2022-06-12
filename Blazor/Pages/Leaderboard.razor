@@ -1,14 +1,14 @@
 ﻿@page "/leaderboard"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.Models.Leaderboard
-@using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Models.Interfaces
 @using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Services
+@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
-@inject LeaderboardService httpService
+@inject LeaderboardService _client
 
 <MudText Typo="Typo.h2">Leaderboard</MudText>
 <MudText Typo="Typo.body1">All users ranked by total points</MudText>
@@ -24,8 +24,8 @@
 @code {
     protected bool Loading = true;
     
-    private _LeaderboardListViewModel? _model;
-    protected _LeaderboardListViewModel? Model
+    private LeaderboardListViewModel? _model;
+    protected LeaderboardListViewModel? Model
     {
         get => _model;
         set
@@ -49,15 +49,20 @@
     private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
     {
         var item = _model?.Users.FirstOrDefault(x => x.UserId == obj.Item.Id);
-
-        Console.WriteLine(item?.Name);
     }
     
     protected override async Task OnInitializedAsync()
     {
+        await GetLeaderboard();
+
+        await base.OnInitializedAsync();
+    }
+    
+    protected async Task GetLeaderboard()
+    {
         try
         {
-            Model = await httpService.GetLeaderboard();
+            Model = await _client.GetAsync();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -67,8 +72,6 @@
         {
 
         }
-
-        await base.OnInitializedAsync();
     }
 
     public class LeaderboardItemsViewModel : ITableItems
@@ -81,10 +84,17 @@
         public string Name { get; set; }
         public RenderFragment OverwriteRowRender(string rowName)
         {
-            if (rowName == nameof(Name))
+            if (rowName == "Name")
             {
-                return @<div>
-                           <MudImage Src="@ProfilePic.AbsoluteUri" Alt="Users Profile Picture" Elevation="5" Class="rounded-circle"/>
+                return @<div class="d-flex flex-nowrap gap-2 align-center">
+                           @if (@ProfilePic?.AbsoluteUri != null)
+                           {
+                               <MudImage Src="@ProfilePic.AbsoluteUri" Alt="Users Profile Picture" Elevation="5" Class="rounded-circle"/>
+                           }
+                           else
+                           {
+                               <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+                           }
                            <MudText Typo="Typo.body1">@Name</MudText>
                        </div>;
             }

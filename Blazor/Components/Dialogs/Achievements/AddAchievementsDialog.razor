@@ -1,10 +1,11 @@
+@using SSW.Rewards.Api
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Achievement</MudText>    
     </TitleContent>
     <DialogContent>
-        <MudTextField Class="d-inline" T="string" Label="Achievement Name"></MudTextField>
-        <MudTextField Class="d-inline" T="int" Label="Achievement Value"></MudTextField>
+        <MudTextField Class="d-inline" T="string" Label="Achievement Name"  @bind-Value="@dto.Name"/>
+        <MudTextField Class="d-inline" T="int" Label="Achievement Value" @bind-Value="@dto.Value"/>
     </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -14,7 +15,9 @@
 
 @code {
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
-
-    void Submit() => MudDialog?.Close(DialogResult.Ok(true));
+    [Parameter]
+    public AchievementAdminViewModel dto { get; set; } = new();
+    
+    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
     void Cancel() => MudDialog?.Cancel();
 }

@@ -1,0 +1,23 @@
+@using SSW.Rewards.Api
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Staff Profile</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Class="d-inline" T="string" Label="Full Name" @bind-Value="@dto.Name"/>
+        <MudTextField Class="d-inline" T="string" Label="Staff Email" @bind-Value="@dto.Email"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [Parameter]
+    public StaffDto dto { get; set; } = new();
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    void Cancel() => MudDialog?.Cancel();
+}

@@ -1,13 +1,14 @@
 ﻿@page "/achievements"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.Models.Achievements
-@using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Components.Dialogs.Achievements
 @using SSW.Rewards.Admin.Models.Interfaces
+@using SSW.Rewards.Admin.Services
+@using SSW.Rewards.Api
 @attribute [Authorize]
 
-@inject AchievementsService httpService
+@inject AchievementsService _client
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Achievements</MudText>
@@ -23,30 +24,23 @@
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
 <MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
 
+
 @* TODO: Clean this code up - Move it into code behind *@
+
 @code {
-    private _AchievementAdminListViewModel? _model;
     DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-
-    private void OpenDialog(DialogOptions options)
-    {
-        DialogService.Show<AddAchievementsDialog>("Add Achievements", options);
-    }
-
-    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
-    {
-        var item = _model.Achievements.FirstOrDefault(x => x.Id == obj.Item.Id);
-
-        Console.WriteLine(item.Name);
-    }
-
-    private void OnFabClicked()
-    {
-    }
-
     protected bool Loading = true;
 
-    protected _AchievementAdminListViewModel? Model
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Code", Overwrite = true },
+        new TableHeaders { Heading = "Name" },
+        new TableHeaders { Heading = "Value" },
+    };
+
+    private AchievementAdminListViewModel? _model;
+
+    protected AchievementAdminListViewModel? Model
     {
         get => _model;
         set
@@ -60,22 +54,53 @@
         }
     }
 
-    private readonly List<TableHeaders> _headings = new()
+    private List<AchievementItemsViewModel> _AchievementItemsViewModels;
+
+    private async Task OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
     {
-        new TableHeaders { Heading = "Code", Overwrite = true },
-        new TableHeaders { Heading = "Name" },
-        new TableHeaders { Heading = "Value" },
-    };
+        var item = _model.Achievements.FirstOrDefault(x => x.Id == obj.Item.Id);
 
-    private
-        List<AchievementItemsViewModel> _AchievementItemsViewModels;
+        // TODO: Implement an upsert on the Api 
+        //! Note: This is a readonly Dialog, which only allows for viewing and deleting.
+        var parameters = new DialogParameters { ["dto"] = item };
+        var dialog = DialogService.Show<AchievementEditDialog>("Edit an Achievement", parameters);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            if (result.Data is int id)
+            {
+            //! Note: This can error as the StaffMembers table has a reference to Achievements 
+            await _client.DeleteAsync(new(){ Id = id });
+            }
+            await GetAchievements();
+        }
+    }
 
-    protected override async
-        Task OnInitializedAsync()
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<AddAchievementsDialog>("Create an Achievement", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            if (result.Data is AchievementAdminViewModel dto)
+            {
+                await _client.CreateAsync(
+                    new CreateAchievementCommand
+                    {
+                        Name = dto.Name,
+                        Value = dto.Value
+                    }
+                    );
+            }
+            await GetAchievements();
+        }
+    }
+
+    private async Task GetAchievements()
     {
         try
         {
-            Model = await httpService.GetAchievements();
+            Model = await _client.AdminListAsync();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -85,6 +110,11 @@
         {
     // ignored
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAchievements();
 
         await base.OnInitializedAsync();
     }
@@ -97,7 +127,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public static AchievementItemsViewModel FromDto(AchievementAdminDto dto)
+        public static AchievementItemsViewModel FromDto(AchievementAdminViewModel dto)
             => new()
             {
                 Id = dto.Id,

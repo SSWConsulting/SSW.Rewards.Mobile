@@ -1,0 +1,24 @@
+﻿@using SSW.Rewards.Api
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">New Notification</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Class="d-inline" T="string" Label="Message" @bind-Value="@dto.Text"/>
+        <MudTextField Class="d-inline" T="string" Label="Action" @bind-Value="@dto.Action"/>
+        <MudCheckBox @bind-Checked="@dto.Silent" Label="Silent" Color="Color.Primary"></MudCheckBox>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Send</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [Parameter]
+    public RequestNotificationCommand dto { get; set; } = new();
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    void Cancel() => MudDialog?.Cancel();
+}

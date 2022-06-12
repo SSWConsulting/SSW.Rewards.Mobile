@@ -1,0 +1,23 @@
+@using SSW.Rewards.Api
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Reward</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Class="d-inline" T="string" Label="Reward Name" @bind-Value="@dto.Name"/>
+        <MudTextField Class="d-inline" T="int" Label="Reward Cost" @bind-Value="@dto.Cost"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [Parameter]
+    public RewardViewModel dto { get; set; } = new();
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    void Cancel() => MudDialog?.Cancel();
+}

@@ -1,0 +1,33 @@
+@using SSW.Rewards.Admin.Models.Rewards
+@using SSW.Rewards.Api
+@using Microsoft.AspNetCore.Components
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true"/>
+        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true"/>
+        <MudTextField @bind-Value="@dto.Value" Label="Value" ReadOnly="true"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Success" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public AchievementAdminViewModel dto { get; set; } = new();
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    void Cancel() => MudDialog?.Cancel();
+    void Delete() => MudDialog?.Close(DialogResult.Ok(dto.Id));
+}

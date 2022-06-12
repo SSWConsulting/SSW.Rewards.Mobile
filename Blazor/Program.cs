@@ -1,11 +1,9 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SSW.Rewards.Admin;
 using MudBlazor.Services;
-using SSW.Rewards;
 using SSW.Rewards.Admin.Services;
+using SSW.Rewards.Api;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,32 +25,10 @@ builder.Services.AddHttpClient(Constants.RewardsApiClient, client => client.Base
 // Services
 builder.Services.AddScoped<AchievementsService>();
 builder.Services.AddScoped<LeaderboardService>();
+builder.Services.AddScoped<NotificationsService>();
 builder.Services.AddScoped<RewardsService>();
-
-// register services from nswag
-const string generatedClientName = "generatedClient";
-string baseUrl = apiBaseUrl.Replace("/api", string.Empty);
-builder.Services.AddHttpClient(generatedClientName)
-    .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
-
-var generatedClients = typeof(Program).Assembly
-    .GetTypes()
-    .Where(t => t.IsAssignableTo(typeof(GeneratedClientBase)))
-    .Select(s => new
-    {
-        Implementation = s,
-        Interface = s.GetInterface($"I{s.Name}"), // nswag follows this convention
-    })
-    .Where(x => x.Interface != null);
-
-foreach (var client in generatedClients)
-{
-    builder.Services.AddScoped(client.Interface!, sp =>
-    {
-        var ctor = client.Implementation.GetConstructor(new[] { typeof(string), typeof(HttpClient) })!;
-        return ctor.Invoke(new object?[] { baseUrl, sp.GetService<IHttpClientFactory>()!.CreateClient(generatedClientName) });
-    });
-}
+builder.Services.AddScoped<StaffService>();
+builder.Services.AddScoped<SkillService>();
 
 builder.Services.AddMudServices();
 

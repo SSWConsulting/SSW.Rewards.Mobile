@@ -1,14 +1,15 @@
 ﻿@page "/rewards"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.Models.Rewards
-@using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.Components.Dialogs.Rewards
 @using SSW.Rewards.Admin.Models.Interfaces
+@using SSW.Rewards.Admin.Services
+@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
-@inject RewardsService httpService
+@inject RewardsService _client
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Rewards</MudText>
@@ -18,25 +19,85 @@
             Headings="@_headings"
             TableTitle="Rewards"
             SearchPlaceholderText="Search for a Reward"
-            IsLoading="@_loading"
+            IsLoading="@Loading"
             OnClick="@(OnRowClicked)"/>
 
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
-<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(_disableBackdropClick))"/>
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
 
 
 @* TODO: Move this to the code behind? *@
 @code {
-    readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true };
-    private _RewardAdminListViewModel? _model;
+    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+    protected bool Loading = true;
+    
+    private RewardAdminListViewModel? _model;
+    protected RewardAdminListViewModel? Model
+    {
+        get => _model;
+        set
+        {
+            _model = value;
+            _rewardItemsViewModels = _model?.Rewards
+                .Select(RewardItemsViewModel.FromDto)
+                .ToList();
+            Loading = false;
+        }
+    }
     private List<RewardItemsViewModel>? _rewardItemsViewModels;
-    private bool _loading = true;
+    
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Code", Overwrite = true },
+        new TableHeaders { Heading = "Name" },
+        new TableHeaders { Heading = "Cost" },
+    };
+    
+    private async Task OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
+    {
+        var item = _model?.Rewards.FirstOrDefault(x => x.Id == obj.Item.Id);
+
+        // TODO: Implement this on the Api 
+        //! Note: This is a readonly Dialog, which only allows for viewing and deleting.
+        var parameters = new DialogParameters { ["dto"]=item };
+        var dialog = DialogService.Show<RewardsEditDialog>("Edit a Reward", parameters);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            // TODO: Update the Reward 
+            if (result.Data is int id)
+            {
+                await _client.DeleteAsync(new(){ Id = id });
+            }
+            await GetRewards();
+        }
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<AddRewardDialog>("Create a Reward", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            // Add the Reward
+            if (result.Data is RewardViewModel dto)
+            {
+                await _client.AddAsync(new AddRewardCommand
+                {
+                    Name = dto.Name,
+                    Cost = dto.Cost,
+                    RewardType = RewardType.Digital
+                });
+            }
+            await GetRewards();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Model = await httpService.GetRewards();
+            await GetRewards();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -50,37 +111,20 @@
         await base.OnInitializedAsync();
     }
     
-
-    private _RewardAdminListViewModel? Model
+    protected async Task GetRewards()
     {
-        get => _model;
-        set
+        try
         {
-            _model = value;
-            _rewardItemsViewModels = _model?.Rewards
-                .Select(RewardItemsViewModel.FromDto)
-                .ToList();
-            _loading = false;
+            Model = await _client.AdminListAsync();
         }
-    }
-    
-    private readonly List<TableHeaders> _headings = new()
-    {
-        new TableHeaders { Heading = "Code", Overwrite = true },
-        new TableHeaders { Heading = "Name" },
-        new TableHeaders { Heading = "Cost" },
-    };
-    
-    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
-    {
-        var item = _model?.Rewards.FirstOrDefault(x => x.Id == obj.Item.Id);
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
 
-        Console.WriteLine(item?.Name);
-    }
-
-    private void OpenDialog(DialogOptions options)
-    {
-        DialogService.Show<AddAchievementsDialog>("Create a Reward", options);
+        }
     }
 
     public class RewardItemsViewModel : ITableItems
@@ -98,7 +142,7 @@
             }
             return null;
         }
-        public static RewardItemsViewModel FromDto(RewardAdminDto dto)
+        public static RewardItemsViewModel FromDto(RewardAdminViewModel dto)
             => new()
             {
                 Id = dto.Id,

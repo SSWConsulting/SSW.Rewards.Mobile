@@ -1,19 +1,60 @@
 @page "/Notifications"
 @using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.Components
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Components.Dialogs.Notifications
+@using SSW.Rewards.Admin.Models.Interfaces
+@using SSW.Rewards.Admin.Services
+@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
+@inject NotificationsService _client
+@inject IDialogService DialogService
+
 <MudText Typo="Typo.h2">Notifications</MudText>
 <MudText Typo="Typo.body1">Send and view notifications</MudText>
+<MudButton  OnClick="@((e) => OpenDialog(disableBackdropClick))" Variant="Variant.Filled" Color="Color.Primary">
+    New notification
+</MudButton>
+@if (_model != null)
+{
+    <MudTable Items="@_model.List" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@IsLoading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Date</MudTh>
+        <MudTh>Message</MudTh>
+        <MudTh>Created by</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Date">@context.CreatedDate.ToLocalTime().ToString("dd/MM/yy hh:mm")</MudTd>
+        <MudTd DataLabel="Message">@context.Message</MudTd>
+        <MudTd DataLabel="Created by">@context.EmailAddress</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+}
+
+
 
 @code {
-    
+    DialogOptions disableBackdropClick = new DialogOptions() {
+            DisableBackdropClick = true,
+            MaxWidth = MaxWidth.Medium
+    };
+    public bool IsLoading { get; set; } = true;
+    public EventCallback<TableRowClickEventArgs<NotificationHistoryDto>> OnClick { get; set; }
+    private string _searchText = "";
+    private NotificationHistoryDto? _selectedItem = null;
+    private HashSet<NotificationHistoryDto> _selectedItems = new HashSet<NotificationHistoryDto>();
+    private NotificationHistoryListViewModel? _model;
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Model = await httpService.GetLeaderboard();
+            GetNotifications();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -26,5 +67,40 @@
 
         await base.OnInitializedAsync();
     }
-    
+    private bool FilterItemsFunc(NotificationHistoryDto item) => FilterFunc(item, _searchText);
+
+    private bool FilterFunc(NotificationHistoryDto item, string searchString)
+    {
+        return string.IsNullOrWhiteSpace(searchString) || item.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async void GetNotifications()
+    {
+        IsLoading = true;
+        _model = await _client.ListAsync();
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<NewNotificationDialog>("New Notification", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            // Add the Reward
+            if (result.Data is RequestNotificationCommand dto)
+            {
+                await _client.AddAsync(new RequestNotificationCommand
+                {
+                    Text    = dto.Text,
+                    Silent  = dto.Silent,
+                    Action  = dto.Action,
+                    Tags    = new List<string>()
+                });
+
+                GetNotifications();
+            }
+        }
+    }
 }

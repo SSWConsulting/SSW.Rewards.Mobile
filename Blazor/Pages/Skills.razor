@@ -1,0 +1,138 @@
+@page "/Skills"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Components.Dialogs.Skills
+@using SSW.Rewards.Admin.Models.Interfaces
+@using SSW.Rewards.Admin.Services
+@using SSW.Rewards.Api
+
+@attribute [Authorize]
+
+@inject SkillService _client
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h2">Skills</MudText>
+<MudText Typo="Typo.body1">All Staff Skills</MudText>
+
+<MudTable Items="@_model"
+          CanCancelEdit="true"
+          Filter="new Func<string, bool>(FilterItemsFunc)"
+          @bind-SelectedItem="@selectedItem"
+          CommitEditTooltip="Commit Edit"
+          RowEditCommit="RowEditCommit"
+          OnCommitEditClick="OnEditSubmit">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Staff Skills</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Name">
+            <MudTextField @bind-Value="@context" Required/>
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+
+@* TODO: Implement Deleting Skills *@
+@code {
+    bool Loading = true;
+    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+    private string searchString = "";
+    private string selectedItem = null;
+    private List<string> _model { get; set; }
+
+    private readonly List<TableHeaders> _headings = new()
+    {
+        new TableHeaders { Heading = "Name" },
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetSkills();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetSkills()
+    {
+        try
+        {
+            var skillVm = await _client.GetAsync();
+            _model = skillVm.Skills.ToList();
+        }
+        catch
+        {
+    //Log.
+        }
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+    var dialog = DialogService.Show<AddSkillDialog>("Create a Skill", options);
+    var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            // Add the Skill
+            if (result.Data is string skill)
+            {
+                await _client.UpsertSkill(new(){ Skill = skill });
+            }
+            await GetSkills();
+        }
+    }
+
+    private bool FilterItemsFunc(string item) => FilterFunc(item, searchString);
+
+    //! Note: This is only filtering on the name
+    private bool FilterFunc(string item, string searchString)
+    {
+        return string.IsNullOrWhiteSpace(searchString) || item.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private async Task OnEditSubmit()
+    {
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        
+        try
+        {
+            await _client.UpsertSkill(new(){ Skill = selectedItem });
+            Snackbar.Add("Updated Skill!", Severity.Success);
+        }
+        catch
+        {
+            Snackbar.Add("Error Saving", Severity.Error);
+        }
+        
+
+    }
+
+    private void RowEditCommit(object obj)
+    {
+        // TODO: Figure out how to edit these..
+    }
+
+}

@@ -1,0 +1,29 @@
+@inject ISnackbar Snackbar
+<InputFile id="uploadFile" OnChange="UploadFiles" hidden accept=".jpg, .jpeg, .png" />
+
+<MudButton HtmlTag="label"
+           Variant="Variant.Filled"
+           Color="Color.Primary"
+           StartIcon="@Icons.Filled.CloudUpload"
+           for="uploadFile">
+    Upload Profile Picture
+</MudButton>
+
+@code
+{
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnClick { get; set; }
+    
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        var entries = e.GetMultipleFiles();
+        //Do your validations here
+        // Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        // Snackbar.Add($"Files with {entries.FirstOrDefault().Size} bytes size are not allowed", Severity.Error);
+        // Snackbar.Add($"Files starting with letter {entries.FirstOrDefault().Name.Substring(0, 1)} are not recommended", Severity.Warning);
+        // Snackbar.Add($"This file has the extension {entries.FirstOrDefault().Name.Split(".").Last()}", Severity.Info);
+
+        await OnClick.InvokeAsync(e);
+        
+    }
+}
