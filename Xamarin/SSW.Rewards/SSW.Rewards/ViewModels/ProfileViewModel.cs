@@ -97,6 +97,7 @@ namespace SSW.Rewards.ViewModels
                 Name = _userService.MyName;
                 Points = _userService.MyPoints;
                 Balance = _userService.MyBalance;
+                userId = _userService.MyUserId;
             }
 
             var rewardsService = Resolver.Resolve<IRewardService>();
