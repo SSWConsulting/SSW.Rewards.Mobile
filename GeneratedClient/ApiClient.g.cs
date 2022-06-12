@@ -46,13 +46,6 @@ namespace SSW.Rewards
         System.Threading.Tasks.Task<ClaimAchievementResult> ClaimForUserAsync(ClaimAchievementForUserCommand command, System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AchievementDto> AddAsync(string achievementCode);
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AchievementDto> AddAsync(string achievementCode, System.Threading.CancellationToken cancellationToken);
-    
-        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<PostAchievementResult> PostAsync(string achievementCode);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -76,7 +69,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class AchievementClient : IAchievementClient
+    public partial class AchievementClient : GeneratedClientBase, IAchievementClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -740,7 +733,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class AdminTestClient : IAdminTestClient
+    public partial class AdminTestClient : GeneratedClientBase, IAdminTestClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -1024,7 +1017,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class LeaderboardClient : ILeaderboardClient
+    public partial class LeaderboardClient : GeneratedClientBase, ILeaderboardClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -1263,7 +1256,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class NotificationsClient : INotificationsClient
+    public partial class NotificationsClient : GeneratedClientBase, INotificationsClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -1776,7 +1769,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class RewardClient : IRewardClient
+    public partial class RewardClient : GeneratedClientBase, IRewardClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -2436,10 +2429,17 @@ namespace SSW.Rewards
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<FileResponse> SeedDataAsync(System.Threading.CancellationToken cancellationToken);
     
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> SeedV2DataAsync();
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> SeedV2DataAsync(System.Threading.CancellationToken cancellationToken);
+    
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class SeedClient : ISeedClient
+    public partial class SeedClient : GeneratedClientBase, ISeedClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -2737,7 +2737,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class SkillClient : ISkillClient
+    public partial class SkillClient : GeneratedClientBase, ISkillClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -3138,7 +3138,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class StaffClient : IStaffClient
+    public partial class StaffClient : GeneratedClientBase, IStaffClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
@@ -3768,11 +3768,11 @@ namespace SSW.Rewards
         System.Threading.Tasks.Task<UserAchievementsViewModel> ProfileAchievementsAsync(int userId, System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> UploadProfilePicAsync(FileParameter file);
+        System.Threading.Tasks.Task<ProfilePicResponseDto> UploadProfilePicAsync(FileParameter file);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> UploadProfilePicAsync(FileParameter file, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProfilePicResponseDto> UploadProfilePicAsync(FileParameter file, System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> MyRolesAsync();
@@ -3791,7 +3791,7 @@ namespace SSW.Rewards
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class UserClient : IUserClient
+    public partial class UserClient : GeneratedClientBase, IUserClient
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;

@@ -91,6 +91,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Views\AboutPage.xaml.cs" />
+    <Compile Include="..\..\..\GeneratedClient\ApiClient.g.cs">
+      <Link>Helpers\ApiClient.g.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\GeneratedClient\GeneratedClientBase.g.cs">
+      <Link>Helpers\GeneratedClientBase.g.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Views\RewardsPage.xaml.cs">
