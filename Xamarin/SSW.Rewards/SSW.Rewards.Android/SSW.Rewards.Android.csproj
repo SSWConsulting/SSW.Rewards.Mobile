@@ -183,12 +183,6 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\RedStar.png">
-      <SubType>
-      </SubType>
-      <Generator>
-      </Generator>
-    </AndroidResource>
     
     <AndroidResource Include="Resources\drawable-xxxhdpi\SSWwhite.png">
       <SubType>
@@ -854,14 +848,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\file_paths.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-xxxhdpi\SSWWhite_preview.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\SSWWhite_preview.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\SSWWhite_preview.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\SSWWhite_preview.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\SSWWhite_preview.png" />
-    <AndroidResource Include="Resources\drawable-ldpi\SSWWhite_preview.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
