@@ -25,5 +25,11 @@ namespace SSW.Rewards.Pages
             base.OnDisappearing();
             scannerView.IsScanning = false;
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            scannerView.IsScanning = true;
+        }
     }
 }
