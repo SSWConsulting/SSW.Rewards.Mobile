@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Rg.Plugins.Popup.Services;
+﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Models;
 using SSW.Rewards.Services;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -18,38 +17,42 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnOkCommand { get; set; }
         public Color HeadingColour { get; set; }
         private IUserService _userService { get; set; }
-        private IChallengeService _challengeService { get; set; }
+        private IScannerService _scannerService { get; set; }
 
         private bool _wonPrize { get; set; }
 
-        public ScanResultViewModel(string scanData, IUserService userService)
+        private string data;
+
+        public ScanResultViewModel(string scanData)
         {
-            OnOkCommand = new Command(DismissPopups);
-            _userService = userService;
-            _challengeService = Resolver.Resolve<IChallengeService>();
-            _ = CheckScanData(scanData);
+            OnOkCommand = new Command(async () => await DismissPopups());
+
+            _userService = Resolver.Resolve<IUserService>();
+            _scannerService = Resolver.Resolve<IScannerService>();
+
+            data = scanData;
         }
 
-        private async Task CheckScanData(string data)
+        public async Task CheckScanData()
         {
             AnimationRef = "qr-code-scanner.json";
             AnimationLoop = true;
             ResultHeading = "Verifying your QR code...";
             RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
 
-            ChallengeResultViewModel result = await _challengeService.ValidateQRCodeAsync(data);
+            ScanResponseViewModel result = await _scannerService.ValidateQRCodeAsync(data);
 
             AnimationLoop = false;
 
             switch (result.result)
             {
-                case ChallengeResult.Added:
-                    if(result.ChallengeType == ChallengeType.Achievement)
+                case ScanResult.Added:
+                    if(result.ScanType == ScanType.Achievement)
                     {
                         ResultHeading = "Achivement Added!";
                         ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
                     }
-                    else if(result.ChallengeType == ChallengeType.Reward)
+                    else if(result.ScanType == ScanType.Reward)
                     {
                         ResultHeading = "Congratulations!";
                         ResultBody = string.Format("You have claimed this reward!");
@@ -58,9 +61,9 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
-                    MessagingCenter.Send<object>(this, "NewAchievement");
+                    MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
                     break;
-                case ChallengeResult.Duplicate:
+                case ScanResult.Duplicate:
                     AnimationRef = "rapid-scan.json";
                     AnimationLoop = true;
                     ResultHeading = "Already Scanned!";
@@ -69,7 +72,7 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = Color.White;
                     _wonPrize = false;
                     break;
-                case ChallengeResult.NotFound:
+                case ScanResult.NotFound:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "Unrecognised";
                     ResultBody = "This doesn't look like an SSW code";
@@ -77,7 +80,7 @@ namespace SSW.Rewards.ViewModels
                     _wonPrize = false;
                     HeadingColour = Color.White;
                     break;
-                case ChallengeResult.Error:
+                case ScanResult.Error:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "It's not you it's me...";
                     ResultBody = "Something went wrong there. Please try again.";
@@ -89,19 +92,22 @@ namespace SSW.Rewards.ViewModels
 
             RaisePropertyChanged(new string[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
 
-            if (result.result == ChallengeResult.Added)
-                await CollectNewPointsAsync();
+            if (result.result == ScanResult.Added)
+            {
+                await _userService.UpdateMyDetailsAsync();
+                MessagingCenter.Send(this, ScannerService.PointsAwardedMessage);
+            }
         }
 
-        private void DismissPopups()
+        private async Task DismissPopups()
         {
             if(_wonPrize)
             {
-                _ = DismissWithWon();
+                await DismissWithWon();
             }
             else
             {
-                _ = DismissWithoutWon();
+                await DismissWithoutWon();
             }
         }
 
@@ -114,11 +120,6 @@ namespace SSW.Rewards.ViewModels
         private async Task DismissWithoutWon()
         {
             await PopupNavigation.Instance.PopAllAsync();
-        }
-
-        private async Task CollectNewPointsAsync()
-        {
-            await _userService.UpdateMyDetailsAsync();
         }
     }
 }

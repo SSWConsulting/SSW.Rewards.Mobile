@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using Rg.Plugins.Popup.Pages;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
+﻿using Rg.Plugins.Popup.Pages;
 using SSW.Rewards.ViewModels;
-using Xamarin.Forms;
 
 namespace SSW.Rewards.PopupPages
 {
     public partial class ScanResult : PopupPage
     {
+        ScanResultViewModel _viewModel;
+
         public ScanResult(string scanData)
         {
             InitializeComponent();
-            ScanResultViewModel viewModel = new ScanResultViewModel(scanData, Resolver.Resolve<IUserService>());
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
+            _viewModel = new ScanResultViewModel(scanData);
+            _viewModel.Navigation = Navigation;
+            BindingContext = _viewModel;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _viewModel.CheckScanData();
         }
     }
 }

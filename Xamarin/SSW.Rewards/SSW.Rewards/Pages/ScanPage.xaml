@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
              BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Pages.ScanPage">
-    <StackLayout>
-        <StackLayout>
+    <Grid RowDefinitions="*,300,*"
+          ColumnDefinitions="*,300,*">
+        <StackLayout Grid.Row="0"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="3">
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
@@ -12,7 +16,10 @@
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
         </StackLayout>
-        <Grid>
+        <Grid WidthRequest="300"
+              HeightRequest="300"
+              Grid.Column="1"
+              Grid.Row="1">
             <zxing:ZXingScannerView x:Name="scannerView"
                                         OnScanResult="Handle_OnScanResult"
                                         IsScanning="true"
@@ -23,5 +30,5 @@
                        Opacity="0.5"/>
             <Image Source="qr_reticle"/>
         </Grid>
-    </StackLayout>
+    </Grid>
 </ContentPage>

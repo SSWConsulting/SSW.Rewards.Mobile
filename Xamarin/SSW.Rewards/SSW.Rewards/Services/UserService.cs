@@ -15,6 +15,8 @@ namespace SSW.Rewards.Services
 {
     public class UserService : BaseService, IUserService
     {
+        public const string UserDetailsUpdatedMessage = "UserDetailsUpdated";
+
         private UserClient _userClient { get; set; }
 
         private readonly OidcClientOptions _options;
@@ -199,9 +201,12 @@ namespace SSW.Rewards.Services
             FileParameter parameter = new FileParameter(image);
 
             var response = await _userClient.UploadProfilePicAsync(parameter);
-            Preferences.Set("MyProfilePic", response.PicUrl);
+            Preferences.Set(nameof(MyProfilePic), response.PicUrl);
 
-            // TODO: notify achievement awarded
+            if (response.AchievementAwarded)
+            {
+                await UpdateMyDetailsAsync();
+            }
 
             return response.PicUrl;
         }
@@ -238,19 +243,19 @@ namespace SSW.Rewards.Services
             if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
             {
                 Preferences.Set(nameof(MyPoints), user.Points);
-                Console.WriteLine($"[UserService] Got points: {user.Points}");
             }
 
             if (!string.IsNullOrWhiteSpace(user.Balance.ToString()))
             {
                 Preferences.Set(nameof(MyBalance), user.Balance);
-                Console.WriteLine($"[UserService] Got balance: {user.Balance}");
             }
 
             if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
             {
                 Preferences.Set(nameof(MyQrCode), user.QrCode);
             }
+
+            MessagingCenter.Send(this, UserService.UserDetailsUpdatedMessage);
         }
 
         public async Task<IEnumerable<Achievement>> GetAchievementsAsync()

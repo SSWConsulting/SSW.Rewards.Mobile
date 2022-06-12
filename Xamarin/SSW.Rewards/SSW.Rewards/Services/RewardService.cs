@@ -1,4 +1,5 @@
 ﻿using SSW.Rewards.Models;
+using SSW.Rewards.Pages;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace SSW.Rewards.Services
                 if (e.StatusCode == 401)
                 {
                     await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    Application.Current.MainPage = new Views.LoginPage();
+                    Application.Current.MainPage = new LoginPage();
                 }
                 else
                 {

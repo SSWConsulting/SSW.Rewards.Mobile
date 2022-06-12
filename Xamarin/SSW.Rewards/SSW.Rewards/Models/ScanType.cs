@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Models
 {
-    public enum ChallengeType
+    public enum ScanType
     {
         Achievement,
         Reward

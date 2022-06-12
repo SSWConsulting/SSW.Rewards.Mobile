@@ -113,8 +113,7 @@ namespace SSW.Rewards.ViewModels
         {
             IsUploading = true;
             RaisePropertyChanged("IsUploading");
-            string picUri = await _userService.UploadImageAsync(fileStream.GetStream());
-            MessagingCenter.Send<string>(picUri, "ProfilePicChanged");
+            await _userService.UploadImageAsync(fileStream.GetStream());
             await PopupNavigation.Instance.PopAllAsync();
         }
     }
