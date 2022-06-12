@@ -141,7 +141,6 @@ namespace SSW.Rewards.ViewModels
         private async Task OnPointsAwarded()
         {
             UpdatePoints();
-            ProfileSections.Clear();
             await LoadProfileSections();
         }
 
@@ -178,6 +177,9 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
+
+            ProfileSections.Clear();
+
             var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync();
             var achievementList = await _userService.GetAchievementsAsync(userId);

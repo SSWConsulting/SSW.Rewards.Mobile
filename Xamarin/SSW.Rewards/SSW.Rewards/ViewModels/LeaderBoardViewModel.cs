@@ -154,8 +154,6 @@ namespace SSW.Rewards.ViewModels
                 var isMe = myId == summary.UserId;
                 var vm = new LeaderViewModel(summary, isMe);
 
-                Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
-
                 Leaders.Add(vm);
             }
 
