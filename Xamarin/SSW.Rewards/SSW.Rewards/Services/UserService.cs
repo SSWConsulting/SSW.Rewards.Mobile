@@ -302,6 +302,9 @@ namespace SSW.Rewards.Services
 
             var achievementsList = await _userClient.AchievementsAsync(userId);
 
+
+            Console.WriteLine($"[UserService] Got {achievementsList.UserAchievements.Count} achievements for user {userId}");
+
             foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
             {
                 achievements.Add(new Achievement
@@ -343,6 +346,8 @@ namespace SSW.Rewards.Services
                     AwardedAt = userReward.AwardedAt?.DateTime
                 });
             }
+
+            Console.WriteLine($"[UserService] Got {rewardsList.UserRewards.Count} rewards for user {userId}");
 
             return rewards;
         }

@@ -82,7 +82,7 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Initialise(bool me)
         {
-            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, async (obj) => RefreshProfilePic());
+            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
             MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
@@ -232,6 +232,8 @@ namespace SSW.Rewards.ViewModels
             }
 
             activityList.OrderByDescending(a => a.OcurredAt).Take(10).ToList().ForEach(a => activitySection.RecentActivity.Add(a));
+
+            Console.WriteLine($"[ProfileViewModel] Recent activity count: {activityList.Count}");
 
             ProfileSections.Add(activitySection);
 
