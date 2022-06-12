@@ -1,0 +1,228 @@
+﻿@page "/profile/{id:int?}"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.Components
+@using System.ComponentModel.DataAnnotations
+
+@attribute [Authorize]
+
+@inject IStaffClient Client
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+@if (_loading)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <EditForm Model="@_profile" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" sm="7">
+                        <MudTextField Label="Name" @bind-Value="_profile.Name" For="@(() => _profile.Name)"/>
+                        <MudTextField Label="Job Title" @bind-Value="_profile.Title" For="@(() => _profile.Title)"/>
+                        <MudTextField Label="Email" @bind-Value="_profile.Email" For="@(() => _profile.Email)"/>
+                            
+                        <MudTextField Label="Profile" @bind-Value="_profile.Profile" For="@(() => _profile.Profile)" Lines="10"/>
+                        
+                        <MudTextField Label="Points" @bind-Value="_profile.Points" For="@(() => _profile.Points)"/>
+                        
+                        <MudText Typo="Typo.h6">Skills</MudText>
+                        <MudChipSet AllClosable="true" OnClose="RemoveSkill">
+                            @foreach (var skill in _profile.Skills.OrderByDescending(s => s.Level).ThenBy(s => s.Name))
+                            {
+                                <MudChip Icon="@GetChipIcon(skill.Level)"
+                                         Text="@skill.Name"
+                                         OnClick="async _ => await OpenAddSkillDialog(skill)" />
+                            }
+                        </MudChipSet>
+                        <MudButton OnClick="async _ => await OpenAddSkillDialog(null)">Add a skill</MudButton>
+                            
+                        <MudTextField Label="Twitter" @bind-Value="_profile.TwitterUsername" For="@(() => _profile.TwitterUsername)"/>
+                        <MudTextField Label="GitHub" @bind-Value="_profile.GitHubUsername" For="@(() => _profile.GitHubUsername)"/>
+                        <MudTextField Label="LinkedIn" @bind-Value="_profile.LinkedInUrl" For="@(() => _profile.LinkedInUrl)"/>
+                            
+                        <MudCheckBox Label="Deleted" @bind-Value="_profile.IsDeleted" For="@(() => _profile.IsDeleted)"/>
+                        <MudCheckBox Label="External" @bind-Value="_profile.IsExternal" For="@(() => _profile.IsExternal)"/>
+                    </MudItem>
+                    <MudItem xs="12" sm="5">
+                        @if (string.IsNullOrEmpty(_profile.ProfilePhoto))
+                        {
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+                        }
+                        else
+                        {
+                            <MudImage Fluid="true" Src="@_profile.ProfilePhoto" />
+                        }
+                        
+                        @if (_profile.Id > 0)
+                        {
+                            <FileDropZone class="drop-zone">
+                                <InputFile OnChange="OnProfilePhotoChange"/>
+                            </FileDropZone>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private bool _loading = true;
+    private ProfileForm _profile = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (Id.HasValue is false)
+        {
+            _loading = false;
+            return;
+        }
+        
+        try
+        {
+            await Task.Delay(500);
+            _profile = new ProfileForm(await Client.GetStaffMemberProfileAsync(Id.Value));
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task OpenAddSkillDialog(StaffSkillDto? dto)
+    {
+        var parameters = new DialogParameters { ["StaffSkill"] = dto ?? new StaffSkillDto() };
+
+        var dialog = DialogService.Show<AddSkillDialog>("Update Skill", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            var skill = (StaffSkillDto)result.Data;
+            _profile.Skills = _profile.Skills.Where(s => s.Name != skill.Name).Concat(new[] { skill }).ToArray();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        try
+        {
+            _loading = true;
+            var command = new UpsertStaffMemberProfileCommand
+            {               
+                Id = _profile.Id,
+                Name = _profile.Name,
+                Title = _profile.Title,
+                Email = _profile.Email,
+                Profile = _profile.Profile,
+                TwitterUsername = _profile.TwitterUsername,
+                GitHubUsername = _profile.GitHubUsername,
+                LinkedInUrl = _profile.LinkedInUrl,
+                Points = _profile.Points,
+                Skills = _profile.Skills,
+            };
+            _profile = new ProfileForm(await Client.UpsertStaffMemberProfileAsync(command));
+
+            if (_profile.Id != Id)
+            {
+                NavigationManager.NavigateTo($"/profile/{_profile.Id}");
+            }
+            
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task OnProfilePhotoChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        var fileParameter = new FileParameter(
+            file.OpenReadStream(file.Size),
+            file.Name,
+            file.ContentType);
+        _profile.ProfilePhoto = await Client.UploadStaffMemberProfilePictureAsync(_profile.Id, fileParameter);
+    }
+
+    private void RemoveSkill(MudChip chip)
+    {
+        _profile.Skills = _profile.Skills.Where(s => s.Name != chip.Text).ToArray();
+    }
+
+    private static string GetChipIcon(SkillLevel skillLevel)
+    {
+        return skillLevel switch
+        {
+            SkillLevel.Beginner => Icons.Material.Filled.Warning,
+            SkillLevel.Intermediate => Icons.Material.Filled.Done,
+            SkillLevel.Advanced => Icons.Material.Filled.DoneAll,
+            _ => string.Empty
+        };
+    }
+
+    private class ProfileForm
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string Name { get; set; } = string.Empty;
+        
+        [Required]
+        public string Title { get; set; } = string.Empty;
+        
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        
+        [Required]
+        public string Profile { get; set; } = string.Empty;
+        public string ProfilePhoto { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; }
+        public string TwitterUsername { get; set; } = string.Empty;
+        public string GitHubUsername { get; set; } = string.Empty;
+        public string LinkedInUrl { get; set; } = string.Empty;
+        public bool IsExternal { get; set; }
+        
+        [Required]
+        public int Points { get; set; }
+        public ICollection<StaffSkillDto> Skills { get; set; } = Array.Empty<StaffSkillDto>();
+
+        public ProfileForm(StaffDto profile) : this()
+        {
+            Id = profile.Id;
+            Name = profile.Name;
+            Title = profile.Title;
+            Email = profile.Email;
+            Profile = profile.Profile;
+            ProfilePhoto = profile.ProfilePhoto;
+            IsDeleted = profile.IsDeleted;
+            TwitterUsername = profile.TwitterUsername;
+            GitHubUsername = profile.GitHubUsername;
+            LinkedInUrl = profile.LinkedInUrl;
+            IsExternal = profile.IsExternal;
+            Points = profile.StaffAchievement?.Value ?? 0;
+            Skills = profile.Skills;
+        }
+        
+        public ProfileForm()
+        {
+        }
+    }
+}

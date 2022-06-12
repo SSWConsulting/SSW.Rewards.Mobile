@@ -1,103 +1,59 @@
 ﻿@page "/profiles"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.Models.Staff
-@using SSW.Rewards.Admin.Services
 @using Microsoft.AspNetCore.Authorization
-@using SSW.Rewards.Admin.Components
-@using SSW.Rewards.Admin.Models.Interfaces
 
 @attribute [Authorize]
 
-@inject StaffService httpService
-@inject IDialogService DialogService
+@inject IStaffClient Client
+@inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h2">Profiles</MudText>
 <MudText Typo="Typo.body1">All staff profiles available for editing</MudText>
 
-<AdminTable Items="@(_ProfileItemsViewModels?.Cast<ITableItems>().ToList())"
-            Headings="@_headings"
-            TableTitle="Rewards"
-            SearchPlaceholderText="Search for a Reward"
-            IsLoading="@Loading"
-            OnClick="@(OnRowClicked)"/>
+<MudTable
+    Items="@_profiles.Staff"
+    Striped="true"
+    Loading="@_loading"
+    OnRowClick="(TableRowClickEventArgs<StaffDto> args) => GotoProfile(args.Item.Id)">
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<StaffDto, object>(x => x.Name)">Name</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Pic">
+            <img src="@context.ProfilePhoto"
+                 style="max-height: 50px"
+                 loading="lazy">
+        </MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+    </RowTemplate>
+</MudTable>
 
-@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
-<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="_ => GotoProfile(null)" />
 
-@* TODO: Move this to the code behind *@
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    protected bool Loading = true;
-    
-    private _StaffListViewModel? _model;
-    protected _StaffListViewModel? Model
-    {
-        get => _model;
-        set
-        {
-            _model = value;
-            _ProfileItemsViewModels = _model?.Staff
-                .Select(ProfileItemsViewModel.FromDto)
-                .ToList();
-            Loading = false;
-        }
-    }
-    
-    private List<ProfileItemsViewModel>? _ProfileItemsViewModels;
-    
-    private readonly List<TableHeaders> _headings = new()
-    {
-        new TableHeaders { Heading = "Name" },
-        new TableHeaders { Heading = "Title" }
-    };
-    
-    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
-    {
-        var item = _model?.Staff.FirstOrDefault(x => x.Id == obj.Item.Id);
-
-        Console.WriteLine(item?.Name);
-    }
-
-    private void OpenDialog(DialogOptions options)
-    {
-        DialogService.Show<AddAchievementsDialog>("Create a Staff Profile", options);
-    }
-
+    private bool _loading = true;
+    private StaffListViewModel _profiles = new();
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         try
         {
-            Model = await httpService.GetStaff();
+            await Task.Delay(500);
+            _profiles = await Client.GetAsync();
+            _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-
-        }
-
-        await base.OnInitializedAsync();
     }
 
-    public class ProfileItemsViewModel : ITableItems
+    private void GotoProfile(int? id)
     {
-        public string Title { get; set; }
-        
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public RenderFragment OverwriteRowRender(string rowName)
-        {
-            throw new NotImplementedException();
-        }
-        public static ProfileItemsViewModel FromDto(StaffDto dto)
-            => new()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Title = dto.Title,
-            };
+        NavigationManager.NavigateTo($"/profile/{id}");
     }
 }

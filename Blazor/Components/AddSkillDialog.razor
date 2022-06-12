@@ -1,0 +1,40 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Skill</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Class="d-inline" T="string" Label="Name" @bind-Value="_skillName" />
+        <MudSelect Class="d-inline" T="SkillLevel" Label="Achievement Value" @bind-Value="_skillLevel">
+            @foreach (var level in Enum.GetValues<SkillLevel>())
+            {
+                <MudSelectItem Value="@level">@level.ToString()</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [Parameter]
+    public StaffSkillDto StaffSkill { get; set; } = null!;
+    
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    private string _skillName = string.Empty;
+    private SkillLevel _skillLevel;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _skillName = StaffSkill.Name;
+        _skillLevel = StaffSkill.Level;
+    }
+
+    private void Submit() => MudDialog?.Close(DialogResult.Ok(new StaffSkillDto { Name = _skillName, Level = _skillLevel }));
+    private void Cancel() => MudDialog?.Cancel();
+}

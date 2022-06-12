@@ -18,20 +18,40 @@
             Headings="@_headings"
             TableTitle="Rewards"
             SearchPlaceholderText="Search for a Reward"
-            IsLoading="@Loading"
+            IsLoading="@_loading"
             OnClick="@(OnRowClicked)"/>
 
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
-<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(_disableBackdropClick))"/>
 
 
 @* TODO: Move this to the code behind? *@
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    protected bool Loading = true;
-    
+    readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true };
     private _RewardAdminListViewModel? _model;
-    protected _RewardAdminListViewModel? Model
+    private List<RewardItemsViewModel>? _rewardItemsViewModels;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Model = await httpService.GetRewards();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+    
+
+    private _RewardAdminListViewModel? Model
     {
         get => _model;
         set
@@ -40,10 +60,9 @@
             _rewardItemsViewModels = _model?.Rewards
                 .Select(RewardItemsViewModel.FromDto)
                 .ToList();
-            Loading = false;
+            _loading = false;
         }
     }
-    private List<RewardItemsViewModel>? _rewardItemsViewModels;
     
     private readonly List<TableHeaders> _headings = new()
     {
@@ -62,24 +81,6 @@
     private void OpenDialog(DialogOptions options)
     {
         DialogService.Show<AddAchievementsDialog>("Create a Reward", options);
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            Model = await httpService.GetRewards();
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-        catch (Exception ex)
-        {
-
-        }
-
-        await base.OnInitializedAsync();
     }
 
     public class RewardItemsViewModel : ITableItems

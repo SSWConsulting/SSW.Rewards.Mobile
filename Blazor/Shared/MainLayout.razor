@@ -27,7 +27,7 @@
         <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        <MudContainer Fixed="true" Class="my-16 pt-16">
+        <MudContainer Fixed="true" Class="mb-16 pt-2">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -59,7 +59,6 @@
         if (firstRender)
         {
             _isDarkMode = await _mudThemeProvider.GetSystemPreference();
-            // _isDarkMode = false;
             StateHasChanged();
         }
     }

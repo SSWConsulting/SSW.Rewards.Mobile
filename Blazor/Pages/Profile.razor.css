@@ -1,0 +1,8 @@
+::deep .drop-zone {
+    padding: 32px;
+    border: dashed 2px transparent;
+    transition: border linear 0.2s;
+}
+::deep .drop-zone.hover {
+    border: dashed 2px darkorange;
+}
