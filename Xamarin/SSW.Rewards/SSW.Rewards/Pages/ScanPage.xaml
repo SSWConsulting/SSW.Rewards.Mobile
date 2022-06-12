@@ -4,11 +4,8 @@
              xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
              BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Pages.ScanPage">
-    <Grid RowDefinitions="*,300,*"
-          ColumnDefinitions="*,300,*">
-        <StackLayout Grid.Row="0"
-                     Grid.Column="0"
-                     Grid.ColumnSpan="3">
+    <Grid>
+        <StackLayout Padding="0,0,0,200">
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
@@ -16,19 +13,12 @@
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
         </StackLayout>
-        <Grid WidthRequest="300"
-              HeightRequest="300"
-              Grid.Column="1"
-              Grid.Row="1">
-            <zxing:ZXingScannerView x:Name="scannerView"
+        <zxing:ZXingScannerView x:Name="scannerView"
                                     OnScanResult="Handle_OnScanResult"
                                     IsScanning="true"
                                     WidthRequest="300"
                                     HeightRequest="300"/>
 
-            <Image Source="qr_filter"
-                       Opacity="0.5"/>
             <Image Source="qr_reticle"/>
-        </Grid>
     </Grid>
 </ContentPage>

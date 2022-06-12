@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Models;
+﻿using SSW.Rewards.Helpers;
+using SSW.Rewards.Models;
 using SSW.Rewards.Pages;
 using SSW.Rewards.ViewModels;
 using System.Threading.Tasks;
@@ -150,11 +151,13 @@ namespace SSW.Rewards.Services
 
         public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string qrCodeData)
         {
-            if (qrCodeData.StartsWith("ach:"))
+            var decodedQR = StringHelpers.Base64Decode(qrCodeData);
+
+            if (decodedQR.StartsWith("ach:"))
             {
                 return await PostAchievementAsync(qrCodeData);
             }
-            else if (qrCodeData.StartsWith("rwd:"))
+            else if (decodedQR.StartsWith("rwd:"))
             {
                 return await PostRewardAsync(qrCodeData);
             }
