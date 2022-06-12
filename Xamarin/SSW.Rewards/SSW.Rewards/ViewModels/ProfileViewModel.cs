@@ -141,6 +141,7 @@ namespace SSW.Rewards.ViewModels
         private async Task OnPointsAwarded()
         {
             UpdatePoints();
+            ProfileSections.Clear();
             await LoadProfileSections();
         }
 
