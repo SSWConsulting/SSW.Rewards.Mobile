@@ -4,7 +4,7 @@ using Microsoft.AppCenter.Crashes;
 using SSW.Rewards.Helpers;
 using SSW.Rewards.Models;
 using SSW.Rewards.Services;
-using SSW.Rewards.Views;
+using SSW.Rewards.Pages;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Essentials;

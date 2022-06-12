@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace SSW.Rewards.Views
+namespace SSW.Rewards.Pages
 {
     public partial class LoginPage : ContentPage
     {

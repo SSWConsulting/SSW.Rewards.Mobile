@@ -5,7 +5,7 @@ using SSW.Rewards.Services;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
-namespace SSW.Rewards.Views
+namespace SSW.Rewards.Pages
 {
     public partial class TestPushPage : ContentPage
     {

@@ -38,10 +38,6 @@
     <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Views\AboutPage.xaml" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Controls\AchievementGrid.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
@@ -79,29 +75,17 @@
     <EmbeddedResource Update="Pages\ScanPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\LeaderSummary.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\RewardsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Behaviors\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Views\AboutPage.xaml.cs" />
-    <Compile Include="..\..\..\GeneratedClient\ApiClient.g.cs">
-      <Link>Helpers\ApiClient.g.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\GeneratedClient\GeneratedClientBase.g.cs">
-      <Link>Helpers\GeneratedClientBase.g.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Views\RewardsPage.xaml.cs">
-      <DependentUpon>Views\RewardsPage.xaml</DependentUpon>
-    </Compile>
+	  <Compile Include="..\..\..\GeneratedClient\ApiClient.g.cs">
+		  <Link>Helpers\ApiClient.g.cs</Link>
+	  </Compile>
+	  <Compile Include="..\..\..\GeneratedClient\GeneratedClientBase.g.cs">
+		  <Link>Helpers\GeneratedClientBase.g.cs</Link>
+	  </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.Extensions.Configuration.UserSecrets" />

@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
-             x:Class="SSW.Rewards.Views.OnBoarding">
+             x:Class="SSW.Rewards.Pages.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="SelectedStyle" TargetType="Frame">
