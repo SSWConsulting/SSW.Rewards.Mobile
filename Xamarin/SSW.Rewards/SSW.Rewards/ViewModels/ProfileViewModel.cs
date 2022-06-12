@@ -84,7 +84,7 @@ namespace SSW.Rewards.ViewModels
         {
             MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, async (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
-            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, (obj) => UpdatePoints());
+            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
             _isMe = me;
 
@@ -136,6 +136,12 @@ namespace SSW.Rewards.ViewModels
             IsLoading = false;
 
             RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance), nameof(ShowCamera));
+        }
+
+        private async Task OnPointsAwarded()
+        {
+            UpdatePoints();
+            await LoadProfileSections();
         }
 
         private void UpdatePoints()
