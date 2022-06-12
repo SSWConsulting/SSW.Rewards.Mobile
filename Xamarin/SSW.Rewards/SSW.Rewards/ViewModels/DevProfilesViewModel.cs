@@ -201,16 +201,19 @@ namespace SSW.Rewards.ViewModels
 
         private async Task OpenTwitter()
         {
+            if (TwitterEnabled)
             await Launcher.OpenAsync(new Uri(_twitterURI));
         }
 
         private async Task OpenGithub()
         {
+            if (GitHubEnabled)
             await Launcher.OpenAsync(new Uri(_githubURI));
         }
 
         private async Task OpenLinkedin()
         {
+            if (LinkedinEnabled)
             await Launcher.OpenAsync(new Uri(_linkedinUri));
         }
 

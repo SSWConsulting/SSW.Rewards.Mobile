@@ -56,7 +56,7 @@ namespace SSW.Rewards.ViewModels
         public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
         {
             Title = "Leaderboard";
-            OnRefreshCommand = new Command(Refresh);
+            OnRefreshCommand = new Command(async () => await Refresh());
             _leaderService = leaderService;
             _userService = userService;
 
@@ -67,8 +67,7 @@ namespace SSW.Rewards.ViewModels
             MyBalance = _userService.MyBalance;
 
             Leaders = new ObservableCollection<LeaderViewModel>();
-            MessagingCenter.Subscribe<object>(this, "NewAchievement", (obj) => { Refresh(); });
-            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(); });
+            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await Refresh());
 
             _sortFilter = "all";
         }
@@ -154,8 +153,6 @@ namespace SSW.Rewards.ViewModels
             {
                 var isMe = myId == summary.UserId;
                 var vm = new LeaderViewModel(summary, isMe);
-
-                Console.WriteLine($"[LeaderboardViewModel] ${summary.Name} is me: {isMe}");
 
                 Leaders.Add(vm);
             }
@@ -264,7 +261,7 @@ namespace SSW.Rewards.ViewModels
             OnPropertyChanged(nameof(MyRank));
         }
 
-        public async void Refresh()
+        public async Task Refresh()
         {
             var summaries = await _leaderService.GetLeadersAsync(false);
             int myId = _userService.MyUserId;
@@ -307,7 +304,7 @@ namespace SSW.Rewards.ViewModels
         private async Task HandleLeaderTapped(LeaderViewModel leader)
         {
             if (leader.IsMe)
-                await Shell.Current.GoToAsync("main");
+                await Shell.Current.GoToAsync("//main");
             else
                 await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
         }

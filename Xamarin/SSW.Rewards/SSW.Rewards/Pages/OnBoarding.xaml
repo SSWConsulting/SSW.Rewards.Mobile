@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
-             x:Class="SSW.Rewards.Views.OnBoarding">
+             x:Class="SSW.Rewards.Pages.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="SelectedStyle" TargetType="Frame">
@@ -24,7 +24,11 @@
         <Grid RowDefinitions="5*, 20*, 4*, 7*, 4*, 5*">
 
             <Image Source="rewardsbackground"
-                   Aspect="AspectFill"/>
+                   Aspect="AspectFill"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="FillAndExpand"
+                   Grid.Row="0"
+                   Grid.RowSpan="6"/>
 
             <Label HorizontalOptions="FillAndExpand"
                    Grid.Row="0"
@@ -39,6 +43,11 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Command="{Binding Skip}"/>
                 </Label.GestureRecognizers>
+                <Label.TranslationY>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="30"/>
+                    </OnPlatform>
+                </Label.TranslationY>
             </Label>
 
             <CarouselView Grid.Row="1"

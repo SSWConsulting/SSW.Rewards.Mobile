@@ -1,7 +1,6 @@
-﻿using System;
-namespace SSW.Rewards.Models
+﻿namespace SSW.Rewards.Models
 {
-    public enum ChallengeResult
+    public enum ScanResult
     {
         Added,
         Duplicate,

@@ -25,13 +25,13 @@ namespace SSW.Rewards.ViewModels
             Name = _userService.MyName;
             Email = _userService.MyEmail;
             Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
-            MessagingCenter.Subscribe<string>(this, "ProfilePicChanged", (obj) => { Refresh(obj); });
+            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => Refresh());
         }
 
-        private void Refresh(string newPicUri)
+        private void Refresh()
         {
-            ProfilePic = newPicUri;
-            RaisePropertyChanged("ProfilePic");
+            ProfilePic = _userService.MyProfilePic;
+            OnPropertyChanged(nameof(ProfilePic));
         }
     }
 }

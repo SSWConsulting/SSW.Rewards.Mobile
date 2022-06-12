@@ -6,7 +6,6 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Lottie.Forms.Droid;
-using PanCardView.Droid;
 using Plugin.CurrentActivity;
 using Firebase.Messaging;
 
@@ -51,9 +50,7 @@ namespace SSW.Rewards.Droid
             global::Xamarin.Forms.Forms.SetFlags("Shell_Experimental", "Visual_Experimental", "CollectionView_Experimental", "FastRenderers_Experimental", "Brush_Experimental");
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            CardsViewRenderer.Preserve();
             AnimationViewRenderer.Init();
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             LoadApplication(new App());
             ProcessNotificationActions(Intent);

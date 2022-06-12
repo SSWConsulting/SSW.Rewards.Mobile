@@ -1,5 +1,5 @@
 ﻿using SSW.Rewards.Services;
-using SSW.Rewards.Views;
+using SSW.Rewards.Pages;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -112,20 +112,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task SkipOnboarding()
         {
-            if (_userService.IsLoggedIn)
-            {
-                await Navigation.PopModalAsync();
-
-                /*AppShell shell = new AppShell();
-                //Application.Current.MainPage = shell;
-                Navigation.PushAsync(shell);*/
-
-            }
-            else
-            {
-                //Application.Current.MainPage = new LoginPage();
-                await Navigation.PushAsync(new LoginPage());
-            }
+            await Navigation.PopModalAsync();
         }
 
         private void SetDetails()

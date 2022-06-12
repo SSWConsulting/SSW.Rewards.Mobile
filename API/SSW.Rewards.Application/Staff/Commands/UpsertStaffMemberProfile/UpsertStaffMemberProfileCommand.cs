@@ -148,7 +148,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
 
         private static string GenerateCode(string inputValue)
         {
-            var codeData = Encoding.ASCII.GetBytes(inputValue);
+            var codeData = Encoding.ASCII.GetBytes($"ach:{inputValue}");
             return Convert.ToBase64String(codeData);
         }
     }

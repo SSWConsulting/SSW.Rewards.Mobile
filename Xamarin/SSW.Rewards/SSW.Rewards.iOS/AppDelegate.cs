@@ -3,7 +3,6 @@ using Lottie.Forms.iOS.Renderers;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using PanCardView.iOS;
 using SSW.Rewards.iOS.Extensions;
 using SSW.Rewards.iOS.Services;
 using SSW.Rewards.Services;
@@ -73,8 +72,6 @@ namespace SSW.Rewards.iOS
 
             AnimationViewRenderer.Init();
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
-            CardsViewRenderer.Preserve();
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
             ObjCRuntime.Class.ThrowOnInitFailure = false;
 

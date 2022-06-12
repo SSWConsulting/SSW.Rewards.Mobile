@@ -45,6 +45,8 @@ namespace SSW.Rewards.ViewModels
 
         private bool _isMe;
 
+        private double _topRewardCost;
+
         public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
         public ProfileViewModel(IUserService userService)
@@ -73,7 +75,6 @@ namespace SSW.Rewards.ViewModels
             userId = vm.UserId;
             Points = vm.TotalPoints;
             _userService = Resolver.Resolve<IUserService>();
-            // TODO: add this to LeaderSummaryViewModel
             Balance = vm.Balance;
             ShowBalance = false;
             ShowPopButton = true;
@@ -81,9 +82,9 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Initialise(bool me)
         {
-            // TODO: probably don't want to trigger this refresh on profile pic change
-            MessagingCenter.Subscribe<object>(this, "ProfilePicChanged", async (obj) => { await Refresh(); });
+            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, async (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
+            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
             _isMe = me;
 
@@ -104,7 +105,9 @@ namespace SSW.Rewards.ViewModels
 
             var topReward = rewards.OrderByDescending(r => r.Cost).First();
 
-            double progress = Balance / (double)topReward.Cost;
+            _topRewardCost = (double)topReward.Cost;
+
+            double progress = Balance / _topRewardCost;
 
 
             // TODO: we can get rid of this 0 condition if we award a 'sign up'
@@ -123,8 +126,6 @@ namespace SSW.Rewards.ViewModels
                 Progress = 1;
             }
 
-
-
             OnPropertyChanged(nameof(Progress));
 
             if (!ProfileSections.Any())
@@ -137,6 +138,38 @@ namespace SSW.Rewards.ViewModels
             RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance), nameof(ShowCamera));
         }
 
+        private async Task OnPointsAwarded()
+        {
+            UpdatePoints();
+            await LoadProfileSections();
+        }
+
+        private void UpdatePoints()
+        {
+            Points = _userService.MyPoints;
+            Balance = _userService.MyBalance;
+
+            double progress = Balance / _topRewardCost;
+
+            // TODO: we can get rid of this 0 condition if we award a 'sign up'
+            // achievement. We could also potentially get the ring to render
+            // empty.
+            if (progress == 0)
+            {
+                Progress = 0.01;
+            }
+            else if (progress < 1)
+            {
+                Progress = progress;
+            }
+            else
+            {
+                Progress = 1;
+            }
+
+            RaisePropertyChanged(nameof(Balance), nameof(Points), nameof(Progress));
+        }
+
         private async Task ShowCameraPageAsync()
         {
             await PopupNavigation.Instance.PushAsync(new CameraPage());
@@ -144,6 +177,9 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
+
+            ProfileSections.Clear();
+
             var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync();
             var achievementList = await _userService.GetAchievementsAsync(userId);
@@ -230,7 +266,7 @@ namespace SSW.Rewards.ViewModels
             }
         }
 
-        private async Task Refresh()
+        private void RefreshProfilePic()
         {
             ProfilePic = _userService.MyProfilePic;
             RaisePropertyChanged(nameof(ProfilePic));

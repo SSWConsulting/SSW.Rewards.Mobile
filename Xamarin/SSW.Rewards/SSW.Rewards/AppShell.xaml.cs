@@ -1,7 +1,7 @@
 ﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Services;
-using SSW.Rewards.Views;
+using SSW.Rewards.Pages;
 using System;
 using System.Linq;
 using Xamarin.Essentials;

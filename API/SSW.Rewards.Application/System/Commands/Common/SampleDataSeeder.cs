@@ -167,7 +167,7 @@ namespace SSW.Rewards.Application.System.Commands.Common
                 staffMember.Profile = p.Profile;
                 staffMember.TwitterUsername = p.TwitterUsername;
                 staffMember.IsExternal = p.IsExternal;
-                staffMember.StaffAchievement = new Achievement { Name = p.Name, Value = p.Value, Code = GenerateCode(p.Name) };
+                staffMember.StaffAchievement = new Achievement { Name = p.Name, Value = p.Value, Code = GenerateCode(p.Name, false) };
 
                 if (staffMember.Id == 0)
                 {
@@ -255,7 +255,7 @@ namespace SSW.Rewards.Application.System.Commands.Common
                 ?? new Achievement();
 
             achievement.Name = name;
-            achievement.Code = GenerateCode(name);
+            achievement.Code = GenerateCode(name, false);
             achievement.Value = value;
             achievement.Type = type;
             achievement.Icon = icon;
@@ -267,9 +267,10 @@ namespace SSW.Rewards.Application.System.Commands.Common
             }
         }
 
-        private string GenerateCode(string inputValue)
+        private string GenerateCode(string inputValue, bool IsReward)
         {
-            var codeData = Encoding.ASCII.GetBytes(inputValue);
+            var prefix = IsReward ? "rwd:" : "ach:";
+            var codeData = Encoding.ASCII.GetBytes($"{prefix}{inputValue}");
             return Convert.ToBase64String(codeData);
         }
 
@@ -280,7 +281,7 @@ namespace SSW.Rewards.Application.System.Commands.Common
                 ?? new Reward();
 
             reward.Name = name;
-            var codeData = Encoding.ASCII.GetBytes(name);
+            var codeData = Encoding.ASCII.GetBytes($"rwd:{name}");
             reward.Code = Convert.ToBase64String(codeData);
             reward.Cost = cost;
 

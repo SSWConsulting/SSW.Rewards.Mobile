@@ -1,7 +1,7 @@
 ﻿using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 
-namespace SSW.Rewards.Views
+namespace SSW.Rewards.Pages
 {
     public partial class OnBoarding : ContentPage
     {

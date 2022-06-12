@@ -19,14 +19,9 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />  
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
-    <PackageReference Include="CardsView" Version="2.8.1" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3" />
-    <PackageReference Include="Xamarin.Forms.Skeleton" Version="2.0.0" />
     <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
@@ -37,10 +32,6 @@
     <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie" Version="3.0.3" />
     <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Views\AboutPage.xaml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Controls\AchievementGrid.xaml">
@@ -79,29 +70,17 @@
     <EmbeddedResource Update="Pages\ScanPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\LeaderSummary.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\RewardsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Behaviors\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Views\AboutPage.xaml.cs" />
-    <Compile Include="..\..\..\GeneratedClient\ApiClient.g.cs">
-      <Link>Helpers\ApiClient.g.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\GeneratedClient\GeneratedClientBase.g.cs">
-      <Link>Helpers\GeneratedClientBase.g.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Views\RewardsPage.xaml.cs">
-      <DependentUpon>Views\RewardsPage.xaml</DependentUpon>
-    </Compile>
+	  <Compile Include="..\..\..\GeneratedClient\ApiClient.g.cs">
+		  <Link>Helpers\ApiClient.g.cs</Link>
+	  </Compile>
+	  <Compile Include="..\..\..\GeneratedClient\GeneratedClientBase.g.cs">
+		  <Link>Helpers\GeneratedClientBase.g.cs</Link>
+	  </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.Extensions.Configuration.UserSecrets" />
