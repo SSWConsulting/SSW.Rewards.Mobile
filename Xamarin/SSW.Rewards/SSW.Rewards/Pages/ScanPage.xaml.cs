@@ -18,18 +18,19 @@ namespace SSW.Rewards.Pages
         {
             scannerView.IsScanning = false;
             await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
-            scannerView.IsScanning = true;
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             scannerView.IsScanning = false;
+            MessagingCenter.Unsubscribe<object>(this, "EnableScanner");
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            MessagingCenter.Subscribe<object>(this, "EnableScanner", (obj) => scannerView.IsScanning = true);
             scannerView.IsScanning = true;
         }
     }

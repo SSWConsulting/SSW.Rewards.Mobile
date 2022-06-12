@@ -119,6 +119,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task DismissWithoutWon()
         {
+            MessagingCenter.Send(this, "EnableScanner");
             await PopupNavigation.Instance.PopAllAsync();
         }
     }
