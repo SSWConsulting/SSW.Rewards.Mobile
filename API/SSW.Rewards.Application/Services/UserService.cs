@@ -72,6 +72,11 @@ namespace SSW.Rewards.Application.Services
 
         public async Task<int> CreateUser(User user, CancellationToken cancellationToken)
         {
+            if (await _dbContext.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                throw new AlreadyExistsException($"User {user.Email} already exists");
+            }
+
             var userRole = await _dbContext.Roles
                 .FirstOrDefaultAsync(r => r.Name == "User");
 
