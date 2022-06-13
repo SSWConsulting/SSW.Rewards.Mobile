@@ -9,7 +9,7 @@
 #elif QA
         public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
-        public string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";
+        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
         public string AppCenterAndroidId = "60b96e0a-c6dd-4320-855f-ed58e44ffd00";
 #endif
         public string MaxApiSupportedVersion = "1.0";
