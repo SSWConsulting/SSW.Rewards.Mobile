@@ -146,7 +146,6 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -159,7 +158,6 @@
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-
     <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\qr_reticle%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -172,7 +170,6 @@
     <ImageAsset Include="Assets.xcassets\qr_reticle.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-
     <ImageAsset Include="Assets.xcassets\logo_large.imageset\logo_large%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -185,7 +182,6 @@
     <ImageAsset Include="Assets.xcassets\logo_large.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-
     <ImageAsset Include="Assets.xcassets\logo_ssw_colour.imageset\logo_ssw_colour%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -268,16 +264,13 @@
     <ImageAsset Include="Assets.xcassets\external.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-
     <BundleResource Include="trophy.json" />
     <BundleResource Include="empty-box.json" />
     <BundleResource Include="judgement.json" />
-
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
     <BundleResource Include="placeholder.gif" />
-
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -287,7 +280,6 @@
     <ImageAsset Include="Assets.xcassets\dev_placeholder.imageset\dev_placeholder.png">
       <Visible>false</Visible>
     </ImageAsset>
-
     <ImageAsset Include="Assets.xcassets\external.imageset\external%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -297,10 +289,8 @@
     <ImageAsset Include="Assets.xcassets\external.imageset\external.png">
       <Visible>false</Visible>
     </ImageAsset>
-
     <BundleResource Include="qr-code-scanner.json" />
     <BundleResource Include="rapid-scan.json" />
-
     <ImageAsset Include="Assets.xcassets\rewardslogo.imageset\rewardslogo%403x.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -397,16 +387,27 @@
     <ImageAsset Include="Assets.xcassets\v2win.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-
-    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%403x.png" />
-    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%402x.png" />
-    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu.png" />
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\icon_menu.imageset\icon_menu.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_menu.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%403x.png" />
-    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%402x.png" />
-    <ImageAsset Include="Assets.xcassets\menu.imageset\menu.png" />
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\menu.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
