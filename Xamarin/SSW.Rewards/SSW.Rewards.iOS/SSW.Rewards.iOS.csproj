@@ -404,6 +404,12 @@
     <ImageAsset Include="Assets.xcassets\icon_menu.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%403x.png" />
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu%402x.png" />
+    <ImageAsset Include="Assets.xcassets\menu.imageset\menu.png" />
+    <ImageAsset Include="Assets.xcassets\menu.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
