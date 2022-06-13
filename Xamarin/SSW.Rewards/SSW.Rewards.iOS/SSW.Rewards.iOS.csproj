@@ -83,7 +83,6 @@
     </Nullable>
     <OnDemandResourcesInitialInstallTags>
     </OnDemandResourcesInitialInstallTags>
-    <CodesignProvision>Anna's iPhone Dev Profile</CodesignProvision>
     <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhoneSimulator'">
