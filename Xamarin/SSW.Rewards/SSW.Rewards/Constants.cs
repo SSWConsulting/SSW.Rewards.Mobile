@@ -3,13 +3,13 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://rwds.goforgoldman.com";
+        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";//"https://rwds.goforgoldman.com";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
         public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
-        public string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";
+        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
         public string AppCenterAndroidId = "60b96e0a-c6dd-4320-855f-ed58e44ffd00";
 #endif
         public string MaxApiSupportedVersion = "1.0";
@@ -17,7 +17,7 @@
         public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-        public string AuthorityUri { get; } = "https://ids.goforgoldman.com";
+        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";//"https://ids.goforgoldman.com";
 #else
         public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
 #endif
