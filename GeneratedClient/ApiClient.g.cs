@@ -3368,11 +3368,11 @@ namespace SSW.Rewards
         System.Threading.Tasks.Task<string> UploadStaffMemberProfilePictureAsync(int id, FileParameter file, System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember);
+        System.Threading.Tasks.Task<FileResponse> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FileResponse> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken);
     
     }
     
@@ -3791,14 +3791,14 @@ namespace SSW.Rewards
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<string> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember)
+        public System.Threading.Tasks.Task<FileResponse> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember)
         {
             return DeleteStaffMemberProfileAsync(staffMember, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<string> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<FileResponse> DeleteStaffMemberProfileAsync(DeleteStaffMemberProfileCommand staffMember, System.Threading.CancellationToken cancellationToken)
         {
             if (staffMember == null)
                 throw new System.ArgumentNullException("staffMember");
@@ -3816,7 +3816,7 @@ namespace SSW.Rewards
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("DELETE");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/octet-stream"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -3837,14 +3837,12 @@ namespace SSW.Rewards
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 200 || status_ == 206)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, null, response_); 
+                            disposeClient_ = false; disposeResponse_ = false; // response and client are disposed by FileResponse
+                            return fileResponse_;
                         }
                         else
                         {

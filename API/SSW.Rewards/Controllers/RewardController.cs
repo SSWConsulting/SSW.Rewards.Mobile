@@ -55,12 +55,14 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> Delete(DeleteRewardCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPatch]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> UpdateReward(UpdateRewardCommand command)
         {
             return Ok(await Mediator.Send(command));

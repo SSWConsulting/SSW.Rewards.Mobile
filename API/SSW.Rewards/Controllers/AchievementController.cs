@@ -64,12 +64,14 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> Delete(DeleteAchievementCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPatch]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> UpdateAchievement(UpdateAchievementCommand command)
         {
             return Ok(await Mediator.Send(command));
