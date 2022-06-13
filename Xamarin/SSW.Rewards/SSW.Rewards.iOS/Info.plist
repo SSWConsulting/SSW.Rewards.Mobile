@@ -58,7 +58,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.80</string>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This permission will enable you to save SSW User Groups and other events</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -70,8 +70,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Helvetica-Bold-Font.ttf</string>
-	    <string>FluentSystemIcons-Regular.ttf</string>
-    	<string>Font Awesome 6 Brands-Regular-400.otf</string>
+		<string>FluentSystemIcons-Regular.ttf</string>
+		<string>Font Awesome 6 Brands-Regular-400.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
