@@ -35,15 +35,7 @@ namespace SSW.Rewards
                 typeof(Analytics), typeof(Crashes));
 
 
-            if (Preferences.Get("FirstRun", true))
-            {
-                Preferences.Set("FirstRun", false);
-                MainPage = new NavigationPage(new OnBoarding());
-            }
-            else
-            {
-                MainPage = new LoginPage();
-            }
+            MainPage = new LoginPage();
         }
 
         void NotificationActionTriggered(object sender, PushNotificationAction e) => ShowActionAlert(e);

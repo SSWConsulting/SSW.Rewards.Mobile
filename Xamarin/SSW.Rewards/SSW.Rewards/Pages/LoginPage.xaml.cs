@@ -1,5 +1,6 @@
 ﻿using SSW.Rewards.ViewModels;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Pages
@@ -37,7 +38,15 @@ namespace SSW.Rewards.Pages
 
                 );
 
-            await _viewModel.Refresh();
+            if (Preferences.Get("FirstRun", true))
+            {
+                Preferences.Set("FirstRun", false);
+                await Navigation.PushModalAsync(new OnBoarding());
+            }
+            else
+            {
+                await _viewModel.Refresh();
+            }
         }
     }
 }
