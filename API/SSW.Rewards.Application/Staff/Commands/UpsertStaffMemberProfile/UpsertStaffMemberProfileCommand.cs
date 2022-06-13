@@ -62,7 +62,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 staffMemberEntity = new StaffMember();
                 await _context.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
             }
-            
+
             staffMemberEntity.Email = request.Email ??= string.Empty;
             staffMemberEntity.Name = request.Name ??= string.Empty;
             staffMemberEntity.Profile = request.Profile ??= string.Empty;
@@ -72,7 +72,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             staffMemberEntity.Title = request.Title ??= string.Empty;
 
             await UpdateSkills(request, staffMemberEntity, cancellationToken);
-            
+
             // Add staff achievement if it doesn't exist
             staffMemberEntity.StaffAchievement ??= new Achievement
             {
@@ -90,6 +90,10 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
             StaffMember staffMemberEntity,
             CancellationToken cancellationToken)
         {
+
+            if (request?.Skills == null)
+                return;
+
             var staffSkills = staffMemberEntity.StaffMemberSkills;
 
             var skillsToRemove = staffSkills
@@ -126,6 +130,7 @@ namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile
                 var staffSkill = request.Skills.FirstOrDefault(sms => sms.Name == updateSkill.Skill.Name);
                 updateSkill.Level = staffSkill.Level;
             }
+
         }
 
         private async Task<Skill> GetSkill(

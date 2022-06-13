@@ -208,6 +208,39 @@
         }
       }
     },
+    "/api/Achievement/UpdateAchievement": {
+      "patch": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_UpdateAchievement",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAchievementCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/AdminTest/Admin": {
       "get": {
         "tags": [
@@ -618,6 +651,39 @@
         }
       }
     },
+    "/api/Reward/UpdateReward": {
+      "patch": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_UpdateReward",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRewardCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Seed/SeedData": {
       "get": {
         "tags": [
@@ -673,6 +739,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SkillListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Skill/GetAdmin": {
+      "get": {
+        "tags": [
+          "Skill"
+        ],
+        "operationId": "Skill_GetAdmin",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminSkill"
+                  }
                 }
               }
             }
@@ -1359,6 +1448,20 @@
           }
         }
       },
+      "UpdateAchievementCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "LeaderboardListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -1737,6 +1840,20 @@
           }
         }
       },
+      "UpdateRewardCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "SkillListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -1750,10 +1867,28 @@
           }
         }
       },
+      "AdminSkill": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "UpsertSkillCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "skill": {
             "type": "string",
             "nullable": true
@@ -1764,9 +1899,9 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "skill": {
-            "type": "string",
-            "nullable": true
+          "id": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

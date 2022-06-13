@@ -12,7 +12,7 @@ namespace SSW.Rewards.Application.Skills.Commands.DeleteSkill
 {
     public class DeleteSkillCommand : IRequest<Unit>
     {
-        public string Skill { get; set; }
+        public int Id{ get; set; }
 
         public sealed class UpsertSkillCommandHandler : IRequestHandler<DeleteSkillCommand, Unit>
         {
@@ -25,21 +25,21 @@ namespace SSW.Rewards.Application.Skills.Commands.DeleteSkill
 
             public async Task<Unit> Handle(DeleteSkillCommand request, CancellationToken cancellationToken)
             {
-                if (!string.IsNullOrWhiteSpace(request.Skill))
+                if (request?.Id == null)
                 {
-                    var found = _context.Skills.FirstOrDefault(x => x.Name == request.Skill);
-
-                    if (found == null)
-                    {
-                        throw new NotFoundException("Bad Request");
-                    }
-
-                    _context.Skills.Remove(found);
-                    await _context.SaveChangesAsync(cancellationToken);
-                    return Unit.Value;
+                    throw new Exception("Bad Request");
                 }
 
-                throw new Exception("Bad Request");
+                var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
+
+                if (found == null)
+                {
+                    throw new NotFoundException("Bad Request");
+                }
+
+                _context.Skills.Remove(found);
+                await _context.SaveChangesAsync(cancellationToken);
+                return Unit.Value;
             }
         }
     }
