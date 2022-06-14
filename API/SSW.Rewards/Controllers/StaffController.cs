@@ -47,7 +47,7 @@ namespace SSW.Rewards.WebAPI.Controllers
 
         [HttpDelete]
         [Authorize(Roles = AuthorizationRoles.Admin)]
-        public async Task<ActionResult<string>> DeleteStaffMemberProfile(DeleteStaffMemberProfileCommand staffMember)
+        public async Task<ActionResult> DeleteStaffMemberProfile(DeleteStaffMemberProfileCommand staffMember)
         {
             return Ok(await Mediator.Send(staffMember));
         }

@@ -11,6 +11,7 @@ namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill
 {
     public class UpsertSkillCommand : IRequest<Unit>
     {
+        public int Id { get; set; }
         public string Skill { get; set; }
 
         public sealed class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, Unit>
@@ -26,7 +27,7 @@ namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill
             {
                 if (!string.IsNullOrWhiteSpace(request.Skill))
                 {
-                    var found = _context.Skills.FirstOrDefault(x => x.Name == request.Skill);
+                    var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
 
                     if (found == null)
                     {

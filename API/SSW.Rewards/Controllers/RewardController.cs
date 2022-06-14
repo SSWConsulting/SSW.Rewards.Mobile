@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SSW.Rewards.Application.Rewards.Commands.AddReward;
 using SSW.Rewards.WebAPI.Settings;
 using SSW.Rewards.Application.Rewards.Commands.DeleteReward;
+using SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 
 namespace SSW.Rewards.WebAPI.Controllers
 {
@@ -54,7 +55,15 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> Delete(DeleteRewardCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPatch]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
+        public async Task<ActionResult> UpdateReward(UpdateRewardCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

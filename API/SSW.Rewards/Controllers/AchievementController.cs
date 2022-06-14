@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 using SSW.Rewards.Application.Achievements.Command.PostAchievement;
+using SSW.Rewards.Application.Achievements.Command.UpdateAchievement;
 using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
@@ -63,9 +64,18 @@ namespace SSW.Rewards.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
         public async Task<ActionResult> Delete(DeleteAchievementCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
+
+        [HttpPatch]
+        [Authorize(Roles = AuthorizationRoles.Admin)]
+        public async Task<ActionResult> UpdateAchievement(UpdateAchievementCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
     }
 }
