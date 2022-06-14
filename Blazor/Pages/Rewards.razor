@@ -4,12 +4,10 @@
 @using SSW.Rewards.Admin.Components
 @using SSW.Rewards.Admin.Components.Dialogs.Rewards
 @using SSW.Rewards.Admin.Models.Interfaces
-@using SSW.Rewards.Admin.Services
-@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
-@inject RewardsService _client
+@inject IRewardClient _client
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Rewards</MudText>
@@ -64,10 +62,28 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            // TODO: Update the Reward 
-            if (result.Data is int id)
+            switch (result.Data)
             {
-                await _client.DeleteAsync(new(){ Id = id });
+                case int id:
+                    await _client.DeleteAsync(new(){ Id = id });
+                    break;
+                case RewardAdminViewModel dto:
+                    await _client.UpdateRewardAsync(new UpdateRewardCommand
+                    {
+                        Id = dto.Id,
+                        Cost = dto.Cost
+                    });
+                    break;
+                case AssignReward usr:
+                    if (usr?.Id == null) return;
+                    
+                    // TODO: Add nice notification for returned status
+                    await _client.ClaimForUserAsync(new ClaimRewardForUserCommand
+                    {
+                        Code = usr.Code,
+                        UserId = usr.Id
+                    });
+                    break;
             }
             await GetRewards();
         }

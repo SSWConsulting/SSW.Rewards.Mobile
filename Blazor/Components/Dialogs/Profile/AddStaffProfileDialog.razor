@@ -1,15 +1,31 @@
-@using SSW.Rewards.Api
+@using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Staff Profile</MudText>    
     </TitleContent>
     <DialogContent>
-        <MudTextField Class="d-inline" T="string" Label="Full Name" @bind-Value="@dto.Name"/>
-        <MudTextField Class="d-inline" T="string" Label="Staff Email" @bind-Value="@dto.Email"/>
+    <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid" @bind-Errors="@errors">
+        <MudGrid>
+                    <MudItem xs="12">
+                        <MudTextField Label="Name" @bind-Value="dto.Name" Required="true" AutoFocus="true"/>
+                        <MudTextField Label="Job Title" @bind-Value="dto.Title"  Required="true" />
+                        <MudTextField Label="Email" @bind-Value="dto.Email"  Required="true" 
+                                    />
+                        <MudTextField Label="Profile" @bind-Value="dto.Profile" Lines="4" Counter="200" />
+                        <MudTextField Label="Twitter" @bind-Value="dto.TwitterUsername" />
+                        <MudTextField Label="GitHub" @bind-Value="dto.GitHubUsername" />
+                        <MudTextField Label="LinkedIn" @bind-Value="dto.LinkedInUrl"/>
+                        <MudCheckBox T="bool" Label="External" @bind-Value="dto.IsExternal" />
+                    </MudItem>
+            </MudGrid>
+    </MudForm >
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Create</MudButton>
+        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary" OnClick="Submit">Create</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -17,7 +33,21 @@
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
     [Parameter]
     public StaffDto dto { get; set; } = new();
+    
 
-    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    MudForm form;
+    public bool valid;
+    string[] errors = { };
+
+    void Submit()
+    {
+        form.Validate();
+        if (valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(dto));
+        }
+    }
+
     void Cancel() => MudDialog?.Cancel();
+    
 }

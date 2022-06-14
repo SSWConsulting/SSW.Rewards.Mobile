@@ -1,12 +1,11 @@
 @page "/profile/{Id}"
-@using SSW.Rewards.Api
+@using SSW.Rewards.Admin.Helpers
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
-@using SSW.Rewards.Admin.Services
 
-@inject StaffService _client
-@inject SkillService _skillsClient
+@inject IStaffClient _client
+@inject ISkillClient _skillsClient
 @inject IJSRuntime JSRuntime
 
 @attribute [Authorize]
@@ -57,24 +56,30 @@
 </div>
 
 @* Skill Section *@
-<div>
-    <MudSelect T="string"
-               MultiSelection="true"
-               SelectAllText="Select all felines"
-               HelperText="@value"
-               @bind-Value="@value"
-               @bind-SelectedValues="@selected"
-               MaxLength="5"
-               Counter="5"
-               MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
-               Label="Skills"
-               Clearable="true"
-               AdornmentIcon="@Icons.Material.Filled.Search">
-        @foreach (var skill in selectionSkills)
-        {
-            <MudSelectItem T="string" Value="@skill.Name" Disabled="@skill.IsDisabled" >@skill.Name</MudSelectItem>
-        }
-    </MudSelect>
+<MudPaper Class="mt-8">
+    <div class="d-flex justify-center" >
+            <div style="width: 50%">
+                <MudSelect T="string"
+                           MultiSelection="true"
+                           SelectAllText="Select all felines"
+                           HelperText="@value"
+                           @bind-Value="@value"
+                           @bind-SelectedValues="@selected"
+                           MaxLength="5"
+                           Counter="5"
+                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                           Label="Skills"
+                           Clearable="true"
+                           AdornmentIcon="@Icons.Material.Filled.Search"
+                           Class="ml-9">
+                    @foreach (var skill in selectionSkills)
+                    {
+                        <MudSelectItem T="string" Value="@skill.Name" Disabled="@skill.IsDisabled">@skill.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+    </div>
+
     <MudDropContainer T="StaffSkillDto"
                       Items="@_staff?.Skills"
                       ItemDropped="ItemUpdated"
@@ -96,12 +101,21 @@
             <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
         </ItemRenderer>
     </MudDropContainer>
-</div>
+</MudPaper>
 
 @* Button Section *@
-<div>
-    <MudButton ButtonType="ButtonType.Reset">Delete</MudButton>
-    <MudButton OnClick="OnSaveClick" ButtonType="ButtonType.Submit">Save</MudButton>
+<div class="d-flex justify-end gap-4">
+    <MudButton OnClick="OnArchiveClicked" 
+               Size="Size.Large"
+               Variant="Variant.Outlined"
+               Color="Color.Warning"
+               ButtonType="ButtonType.Reset">
+        @((bool)_staff?.IsDeleted ? "Restore" : "Archive")</MudButton>
+    <MudButton OnClick="OnSaveClick" 
+               Size="Size.Large"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               ButtonType="ButtonType.Submit">Save</MudButton>
 </div>
 
 @* TODO: Need to limit selected Skills to max 5 minimum of 3  *@
@@ -280,7 +294,7 @@
                         _currentBrowserFile.ContentType));
             }
 
-            await _client.UpsertStaffMemberProfileAsync(StaffService.FromDto(_staff));
+            await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(_staff));
             // isPreviewImage = false;
         }
         catch (Exception ex)
@@ -288,6 +302,15 @@
             //Log.
         }
 
+    }
+
+    private async Task OnArchiveClicked()
+    {
+        await _client.DeleteStaffMemberProfileAsync(new DeleteStaffMemberProfileCommand
+        {
+            Id = _staff.Id
+        });
+        await GetProfile();
     }
 
 }

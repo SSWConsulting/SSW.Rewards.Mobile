@@ -1,21 +1,36 @@
-@using SSW.Rewards.Admin.Models.Rewards
-@using SSW.Rewards.Api
 @using Microsoft.AspNetCore.Components
+@using SSW.Rewards.Admin.Models.Interfaces
 @inject ISnackbar Snackbar
+@inject ILeaderboardClient _client
 
 <MudDialog>
     <TitleContent>
-        <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+        <div class="d-flex justify-center">
+            <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+        </div>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true"/>
-        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true"/>
-        <MudTextField @bind-Value="@dto.Cost" Label="Cost" ReadOnly="true"/>
+        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
+        <MudTextField @bind-Value="@dto.Cost" Label="Cost" AutoFocus="true" />
+        <MudSelect
+            @bind-Value="_selectedValue"
+            T="@LeaderboardUserDto" Label="Assign to User" AnchorOrigin="Origin.CenterLeft" TransformOrigin="Origin.CenterRight" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary">
+            @if (_usersList != null)
+            {
+                foreach (var usr in _usersList)
+                {
+                    <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
+                }
+            }
+        </MudSelect>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Success" OnClick="Submit">Ok</MudButton>
+        <MudButton OnClick="AssignReward" Color="Color.Info">Redeem Reward for User</MudButton>
+        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary" OnClick="Submit">Ok</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -27,7 +42,36 @@
     [Parameter]
     public RewardAdminViewModel dto { get; set; } = new();
 
+    public LeaderboardUserDto _selectedValue { get; set; }
+    private List<LeaderboardUserDto>? _usersList;
+    
     void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
     void Cancel() => MudDialog?.Cancel();
     void Delete() => MudDialog?.Close(DialogResult.Ok(dto.Id));
+    void AssignReward() 
+    {
+        if (_selectedValue != null)
+        {
+            MudDialog?.Close(DialogResult.Ok(new AssignReward
+            {
+                Code = dto.Code,
+                Id = _selectedValue.UserId
+            }));
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var list = await _client.GetAsync();
+            _usersList = list.Users as List<LeaderboardUserDto>;
+        }
+        catch
+        {
+            //Log.
+        }
+        base.OnInitialized();
+    }
 }

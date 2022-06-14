@@ -19,7 +19,15 @@
         {
             foreach (var head in Headings)
             {
-                <MudTh>@head.Heading</MudTh>
+                if (!string.IsNullOrWhiteSpace(head.Label))
+                {
+                    <MudTh>@head.Label</MudTh>
+                }
+                else
+                {
+                    <MudTh>@head.Heading</MudTh>
+                }
+                
             }
         }
     </HeaderContent>
@@ -40,12 +48,9 @@
         }
     </RowTemplate>
     <NoRecordsContent>
-        @for (int i = 0; i < 3; i++)
-        {
-            <div class="d-flex flex-grow-1">
-                <MudSkeleton Class="flex-1" Height="200px"/>
-            </div>
-        }
+        <div class="d-flex flex-grow-1 justify-center">
+            <MudText Typo="Typo.subtitle1">No Results</MudText>
+        </div>
     </NoRecordsContent>
     <PagerContent>
         <MudTablePager/>

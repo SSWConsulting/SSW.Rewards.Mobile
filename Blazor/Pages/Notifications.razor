@@ -4,12 +4,10 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.Components.Dialogs.Notifications
 @using SSW.Rewards.Admin.Models.Interfaces
-@using SSW.Rewards.Admin.Services
-@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
-@inject NotificationsService _client
+@inject INotificationsClient _client
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Notifications</MudText>
@@ -91,7 +89,7 @@
             // Add the Reward
             if (result.Data is RequestNotificationCommand dto)
             {
-                await _client.AddAsync(new RequestNotificationCommand
+                await _client.RequestPushAsync(new RequestNotificationCommand
                 {
                     Text    = dto.Text,
                     Silent  = dto.Silent,

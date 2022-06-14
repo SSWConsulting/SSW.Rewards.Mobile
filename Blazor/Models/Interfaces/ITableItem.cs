@@ -13,5 +13,6 @@ public interface ITableItems
 public class TableHeaders
 {
     public string Heading { get; set; }
+    public string? Label { get; set; }
     public bool Overwrite { get; set; } = false;
 }

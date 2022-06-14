@@ -1,14 +1,19 @@
-@using SSW.Rewards.Api
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Skill</MudText>    
     </TitleContent>
     <DialogContent>
-        <MudTextField Class="d-inline" T="string" Label="Reward Name" @bind-Value="@dto"/>
+        <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid">
+        <MudTextField
+            AutoFocus="true"
+            Class="d-inline" T="string" Label="Reward Name" @bind-Value="@dto" Required="true"/>
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Create</MudButton>
+        <MudButton 
+            Variant="Variant.Filled"
+            Color="Color.Primary" OnClick="Submit">Create</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -17,7 +22,16 @@
 
     [Parameter]
     public string dto { get; set; } = string.Empty;
-
-    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
+    MudForm form;
+    public bool valid;
+    
+    void Submit()
+    {
+        form.Validate();
+        if (valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(dto));
+        }
+    }
     void Cancel() => MudDialog?.Cancel();
 }

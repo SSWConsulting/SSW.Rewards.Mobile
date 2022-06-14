@@ -3,12 +3,10 @@
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Models.Interfaces
 @using SSW.Rewards.Admin.Components
-@using SSW.Rewards.Admin.Services
-@using SSW.Rewards.Api
 
 @attribute [Authorize]
 
-@inject LeaderboardService _client
+@inject ILeaderboardClient _client
 
 <MudText Typo="Typo.h2">Leaderboard</MudText>
 <MudText Typo="Typo.body1">All users ranked by total points</MudText>
@@ -43,7 +41,10 @@
     {
         new TableHeaders { Heading = "Rank"},
         new TableHeaders { Heading = "Name", Overwrite = true  },
-        new TableHeaders { Heading = "Points" },
+        new TableHeaders { Heading = "Balance" },
+        new TableHeaders { Heading = "PointsThisMonth", Label= "Points This Month"  },
+        new TableHeaders { Heading = "PointsThisYear", Label = "Points This Year" },
+        new TableHeaders { Heading = "TotalPoints", Label = "Total Points" },
     };
 
     private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
@@ -76,7 +77,10 @@
 
     public class LeaderboardItemsViewModel : ITableItems
     {
-        public int Points { get; set; }
+        public int TotalPoints { get; set; }
+        public int PointsThisYear { get; set; }
+        public int PointsThisMonth { get; set; }
+        public int Balance { get; set; }
         public int Rank { get; set; }
         public Uri ProfilePic { get; set; }
         
@@ -106,8 +110,11 @@
                 Id = dto.UserId,
                 Name = dto.Name,
                 Rank = dto.Rank,
-                Points = dto.Points,
-                ProfilePic = dto.ProfilePic
+                TotalPoints = dto.TotalPoints,
+                PointsThisMonth = dto.PointsThisMonth,
+                PointsThisYear = dto.PointsThisYear,
+                Balance = dto.Balance,
+                ProfilePic = dto.ProfilePic != null ? new Uri(dto.ProfilePic) : null
             };
     }
 }

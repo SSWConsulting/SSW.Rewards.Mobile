@@ -3,52 +3,67 @@
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
 @using SSW.Rewards.Admin.Components.Dialogs.Profile
+@using SSW.Rewards.Admin.Helpers
 @using SSW.Rewards.Admin.Models.Interfaces
-@using SSW.Rewards.Admin.Services
-@using SSW.Rewards.Api
-@using StaffDto = SSW.Rewards.Api.StaffDto
 
+@inject IDialogService DialogService
 @inject NavigationManager Navigation
-
+@inject IStaffClient _client
 
 @attribute [Authorize]
-
-@inject StaffService _client
-@inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Profiles</MudText>
 <MudText Typo="Typo.body1">All staff profiles available for editing</MudText>
 
-<AdminTable Items="@(_ProfileItemsViewModels?.Cast<ITableItems>().ToList())"
+<MudPaper Class="pa-2" Elevation="0">
+    <MudCheckBox T="bool" @bind-Checked="@ShowArchivedStaff" Label="Filter List for Archived Staff" />
+</MudPaper>
+
+<AdminTable Items="@(_profileItemsViewModels?.Cast<ITableItems>().ToList())"
             Headings="@_headings"
             TableTitle="Rewards"
             SearchPlaceholderText="Search for a Reward"
-            IsLoading="@Loading"
+            IsLoading="@_loading"
             OnClick="@(OnRowClicked)"/>
 
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
-<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(_disableBackdropClick))"/>
 
 @* TODO: Move this to the code behind *@
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    protected bool Loading = true;
+    readonly DialogOptions _disableBackdropClick = new DialogOptions() { DisableBackdropClick = true,  MaxWidth = MaxWidth.Medium, FullWidth = true };
+    private bool _loading = true;
+    private bool _showArchivedStaff = false;
+    private bool ShowArchivedStaff
+    {
+        get => _showArchivedStaff;
+        set
+        {
+            _showArchivedStaff = value;
+            _profileItemsViewModels = _model?.Staff
+                .Select(ProfileItemsViewModel.FromDto)
+                .Where(x => x.IsDeleted == value)
+                .ToList();
+        }
+    } 
     
     private StaffListViewModel? _model;
-    protected StaffListViewModel? Model
+
+    private StaffListViewModel? Model
     {
         get => _model;
         set
         {
             _model = value;
-            _ProfileItemsViewModels = _model?.Staff
+            _profileItemsViewModels = _model?.Staff
                 .Select(ProfileItemsViewModel.FromDto)
+                .Where(x => !x.IsDeleted)
                 .ToList();
-            Loading = false;
+            _loading = false;
         }
     }
     
-    private List<ProfileItemsViewModel>? _ProfileItemsViewModels;
+    private List<ProfileItemsViewModel>? _profileItemsViewModels;
     
     private readonly List<TableHeaders> _headings = new()
     {
@@ -59,8 +74,8 @@
     private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
     {
         var item = _model?.Staff.FirstOrDefault(x => x.Id == obj.Item.Id);
-        
-        Navigation.NavigateTo($"/profile/{item.Id}");
+
+        if (item != null) Navigation.NavigateTo($"/profile/{item.Id}");
     }
 
     private async Task OpenDialog(DialogOptions options)
@@ -72,7 +87,7 @@
     // Add the Reward
             if (result.Data is StaffDto dto)
             {
-                await _client.UpsertStaffMemberProfileAsync(StaffService.FromDto(dto));
+                await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(dto));
             }
             await GetStaff();
         }
@@ -85,8 +100,8 @@
 
         await base.OnInitializedAsync();
     }
-    
-    protected async Task GetStaff()
+
+    private async Task GetStaff()
     {
         try
         {
@@ -98,13 +113,14 @@
         }
         catch (Exception ex)
         {
-
+            //Log.
         }
     }
 
     public class ProfileItemsViewModel : ITableItems
     {
-        public string Title { get; set; }
+        private string Title { get; set; }
+        public bool IsDeleted { get; set; }
         
         public int Id { get; set; }
         public string Name { get; set; }
@@ -118,6 +134,7 @@
                 Id = dto.Id,
                 Name = dto.Name,
                 Title = dto.Title,
+                IsDeleted = dto.IsDeleted
             };
     }
 }

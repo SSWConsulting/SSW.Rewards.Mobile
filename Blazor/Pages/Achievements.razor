@@ -4,11 +4,9 @@
 @using SSW.Rewards.Admin.Components
 @using SSW.Rewards.Admin.Components.Dialogs.Achievements
 @using SSW.Rewards.Admin.Models.Interfaces
-@using SSW.Rewards.Admin.Services
-@using SSW.Rewards.Api
 @attribute [Authorize]
 
-@inject AchievementsService _client
+@inject IAchievementClient _client
 @inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Achievements</MudText>
@@ -69,8 +67,27 @@
         {
             if (result.Data is int id)
             {
-            //! Note: This can error as the StaffMembers table has a reference to Achievements 
-            await _client.DeleteAsync(new(){ Id = id });
+                //! Note: This can error as the StaffMembers table has a reference to Achievements 
+                await _client.DeleteAsync(new(){ Id = id });
+            }
+            if (result.Data is AchievementAdminViewModel dto)
+            {
+                await _client.UpdateAchievementAsync(new UpdateAchievementCommand
+                {
+                    Id = dto.Id,
+                    Value = dto.Value
+                });
+            }
+            if (result.Data is AssignReward usr)
+            {
+                if (usr?.Id == null) return;
+                    
+                // TODO: Add nice notification for returned status
+                await _client.ClaimForUserAsync(new ClaimAchievementForUserCommand
+                {
+                    Code = usr.Code,
+                    UserId = usr.Id
+                });
             }
             await GetAchievements();
         }
@@ -84,13 +101,21 @@
         {
             if (result.Data is AchievementAdminViewModel dto)
             {
-                await _client.CreateAsync(
-                    new CreateAchievementCommand
-                    {
-                        Name = dto.Name,
-                        Value = dto.Value
-                    }
-                    );
+                try
+                {
+                    await _client.CreateAsync(
+                        new CreateAchievementCommand
+                        {
+                            Name = dto.Name,
+                            Value = dto.Value
+                        }
+                        );
+                }
+                catch
+                {
+                    //Log and show nice notification
+                }
+
             }
             await GetAchievements();
         }
