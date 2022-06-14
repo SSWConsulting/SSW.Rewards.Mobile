@@ -6,11 +6,22 @@ namespace SSW.Rewards.Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // fix typo
+            migrationBuilder.Sql(@"
+                UPDATE Achievements
+                SET Name = 'Kosta Madorsky'
+                WHERE Name = 'Kosta Madorski'
+            ");
+
             // remove duplicates
             migrationBuilder.Sql(@"
                 delete A
                 FROM Achievements A
-                INNER JOIN (SELECT Name, MIN(CreatedUtc) as CreatedUtc FROM Achievements GROUP BY Name HAVING COUNT(0) > 1) dupe on A.Name = dupe.Name and A.CreatedUtc = dupe.CreatedUtc
+                WHERE Id NOT IN (
+				SELECT Achievements.Id  FROM Achievements 
+				INNER JOIN staffMembers on StaffAchievementId=Achievements.Id
+				)
+				AND Name IN (SELECT Name FROM StaffMembers)
             ");
             
             // map staff to achievements
@@ -24,11 +35,7 @@ namespace SSW.Rewards.Persistence.Migrations
             ");
             
             // map staff onto achievement type
-            migrationBuilder.Sql(@"
-                UPDATE Achievements
-                SET Name = 'Kosta Madorsky'
-                WHERE Name = 'Kosta Madorski'
-            ");
+            
             migrationBuilder.Sql(@"
                 UPDATE A
                 SET
