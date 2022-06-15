@@ -21,8 +21,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\js\DetailedProfile.js" />
+        <Content Update="wwwroot/appsettings.json">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="wwwroot/appsettings.Development.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Include="wwwroot\js\DetailedProfile.js" />
     </ItemGroup>
-
-
+    <None Include="wwwroot\js\DetailedProfile.js" />
 </Project>
