@@ -124,7 +124,7 @@ jobs:
 
   DeployAndroid:
     needs: [Android]
-    if: ${{ github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v') }}
+    #if: ${{ github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
 
 
@@ -147,7 +147,7 @@ jobs:
 
   DeployiOS:
     needs: [iOS]
-    if: ${{ github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v') }}
+    #if: ${{ github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
 
 
