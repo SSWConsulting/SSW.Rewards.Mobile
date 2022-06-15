@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.85" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="21">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="22" android:versionName="2.0">
 	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="30" />
-	<application android:label="SSW Rewards" android:icon="@mipmap/launcher_foreground" android:roundIcon="@mipmap/ic_launcher_round">
+	<application android:label="SSW Rewards" android:icon="@mipmap/icon" android:roundIcon="@mipmap/ic_launcher_round">
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
 		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification" />
 		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
