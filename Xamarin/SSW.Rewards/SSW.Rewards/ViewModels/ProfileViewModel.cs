@@ -33,7 +33,7 @@ namespace SSW.Rewards.ViewModels
 
         public bool ShowCamera => _isMe && !IsLoading;
 
-        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
+        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; }// = new ObservableCollection<ProfileCarouselViewModel>();
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -85,6 +85,9 @@ namespace SSW.Rewards.ViewModels
             MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
             MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
+
+            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+            OnPropertyChanged(nameof(ProfileSections));
 
             _isMe = me;
 
@@ -178,11 +181,10 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
-
-            ProfileSections.Clear();
+            //ProfileSections.Clear();
 
             var rewardList = await _userService.GetRewardsAsync(userId);
-            var profileAchievements = await _userService.GetProfileAchievementsAsync();
+            var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
             var achievementList = await _userService.GetAchievementsAsync(userId);
 
             //===== Achievements =====
@@ -196,7 +198,7 @@ namespace SSW.Rewards.ViewModels
             }
 
             ProfileSections.Add(achivementsSection);
-            
+
             // ===== Recent activity =====
 
             var activitySection = new ProfileCarouselViewModel();
