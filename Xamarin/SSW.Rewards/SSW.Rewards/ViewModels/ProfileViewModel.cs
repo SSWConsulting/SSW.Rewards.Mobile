@@ -33,7 +33,7 @@ namespace SSW.Rewards.ViewModels
 
         public bool ShowCamera => _isMe && !IsLoading;
 
-        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
+        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; }
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -85,6 +85,9 @@ namespace SSW.Rewards.ViewModels
             MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
             MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
+
+            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+            OnPropertyChanged(nameof(ProfileSections));
 
             _isMe = me;
 
@@ -178,11 +181,10 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
-
-            ProfileSections.Clear();
+            //ProfileSections.Clear();
 
             var rewardList = await _userService.GetRewardsAsync(userId);
-            var profileAchievements = await _userService.GetProfileAchievementsAsync();
+            var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
             var achievementList = await _userService.GetAchievementsAsync(userId);
 
             //===== Achievements =====
@@ -196,7 +198,7 @@ namespace SSW.Rewards.ViewModels
             }
 
             ProfileSections.Add(achivementsSection);
-            
+
             // ===== Recent activity =====
 
             var activitySection = new ProfileCarouselViewModel();
@@ -212,7 +214,7 @@ namespace SSW.Rewards.ViewModels
             {
                 activityList.Add(new Activity
                 {
-                    ActivityName = $"{achievement.Type.ToActivityType()} {achievement.Name}",
+                    ActivityName = GetMessage(achievement, true),
                     OcurredAt = achievement.AwardedAt,
                     Type = achievement.Type.ToActivityType()
                 });
@@ -282,7 +284,7 @@ namespace SSW.Rewards.ViewModels
             {
                 ActionCompleted = achievement.Complete,
                 Points = achievement.Value,
-                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}",
+                Message = $"{GetMessage(achievement)}",
                 GlyphIsBrand = achievement.IconIsBranded,
                 Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
             };
@@ -292,16 +294,51 @@ namespace SSW.Rewards.ViewModels
             ShowSnackbar.Invoke(this, args);
         }
 
-        public string GetPrefix(bool completed)
+        public string GetMessage(Achievement achievement, bool IsActivity = false)
         {
             string prefix = _isMe ? "You have " : $"{Name} has ";
 
-            if (!completed)
+            if (!achievement.Complete)
             {
                 prefix += "not ";
             }
 
-            return prefix;
+
+            string activity = achievement.Name;
+
+            string action = string.Empty;
+
+            activity = char.ToLower(activity[0]) + activity.Substring(1);
+
+            switch (achievement.Type)
+            {
+                case AchievementType.Attended:
+                    action = "attended";
+                    break;
+
+                case AchievementType.Completed:
+                    action = "completed";
+                    break;
+
+                case AchievementType.Linked:
+                    action = "followed";
+                    activity = activity.Replace("follow", "");
+                    break;
+
+                case AchievementType.Scanned:
+                    action = "scanned";
+                    break;
+            }
+
+            if (IsActivity)
+            {
+                action = char.ToUpper(action[0]) + action.Substring(1);
+                return $"{action} {activity}";
+            }
+            else
+            {
+                return $"{prefix} {action} {activity}";
+            }
         }
     }
 }

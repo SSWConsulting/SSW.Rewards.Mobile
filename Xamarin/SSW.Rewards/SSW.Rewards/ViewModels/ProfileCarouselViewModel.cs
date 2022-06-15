@@ -23,7 +23,7 @@ namespace SSW.Rewards.ViewModels
         {
             get
             {
-                return IsMe ? "You have no recent activity" : $"{ProfileName} has no recent activity";
+                return IsMe ? "You have no recent activity." : $"{ProfileName} has no recent activity.";
             }
         }
     }

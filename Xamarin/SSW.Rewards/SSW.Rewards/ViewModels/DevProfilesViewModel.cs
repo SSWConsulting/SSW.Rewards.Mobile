@@ -140,7 +140,7 @@ namespace SSW.Rewards.ViewModels
 
                 _twitterURI = "https://twitter.com/" + SelectedProfile.TwitterID;
                 _githubURI = "https://github.com/" + SelectedProfile.GitHubID;
-                _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.TwitterID;
+                _linkedinUri = "https://www.linkedin.com/in/" + SelectedProfile.LinkedInId;
                 _peopleUri = GetPeopleUri(DevName);
 
                 TwitterEnabled = !string.IsNullOrWhiteSpace(SelectedProfile.TwitterID);

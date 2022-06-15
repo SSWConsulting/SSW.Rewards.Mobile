@@ -69,7 +69,7 @@ namespace SSW.Rewards.Services
                     {
                         await SetLoggedInState(token, idToken);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
 
                         return ApiStatus.Unavailable;

@@ -80,6 +80,8 @@ namespace SSW.Rewards.Services
                 vm.result = ScanResult.Error;
             }
 
+            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
+
             return vm;
         }
 
@@ -118,6 +120,11 @@ namespace SSW.Rewards.Services
                             vm.Title = "Unrecognised";
                             break;
 
+                        case RewardStatus.NotEnoughPoints:
+                            vm.result = ScanResult.InsufficientBalance;
+                            vm.Title = "Not enough points";
+                            break;
+
                         default:
                             vm.result = ScanResult.Error;
                             vm.Title = "Error";
@@ -145,6 +152,7 @@ namespace SSW.Rewards.Services
             {
                 vm.result = ScanResult.Error;
             }
+            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
 
             return vm;
         }

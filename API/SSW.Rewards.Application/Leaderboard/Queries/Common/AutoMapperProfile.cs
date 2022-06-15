@@ -16,8 +16,15 @@ namespace SSW.Rewards.Application.Leaderboard.Queries.Common
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dst => dst.TotalPoints, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Sum(ua => ua.Achievement.Value)))
-                .ForMember(dst => dst.Balance, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)
-                                                                       - src.UserRewards.Sum(ur =>ur.Reward.Cost)))
+                .ForMember(dst => dst.Balance, opt => {
+                    opt.PreCondition(src => src.UserRewards.Any());
+                    opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)
+                                       - src.UserRewards.Sum(ur => ur.Reward.Cost));
+                })
+                .ForMember(dst => dst.Balance, opt => {
+                    opt.PreCondition(src => !src.UserRewards.Any());
+                    opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value));
+                })
                 .ForMember(dst => dst.PointsThisYear, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
                                                                                     .Sum(ua => ua.Achievement.Value)))

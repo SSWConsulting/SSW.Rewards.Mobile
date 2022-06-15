@@ -140,6 +140,7 @@
     <BundleResource Include="Resources\Font Awesome 6 Brands-Regular-400.otf" />
     <Compile Include="Extensions\NSDataExtensions.cs" />
     <Compile Include="Services\DeviceInstallationService.cs" />
+    <BundleResource Include="coin.json" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
@@ -408,6 +409,18 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\menu.imageset\Contents.json">
+      <Visible>False</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
   </ItemGroup>
