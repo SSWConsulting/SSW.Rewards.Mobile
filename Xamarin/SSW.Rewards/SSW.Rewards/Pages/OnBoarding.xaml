@@ -62,9 +62,14 @@
                     <DataTemplate>
                         <Image Source="{Binding Image}"
                                Margin="60"
-                               WidthRequest="200"
-                               HeightRequest="200"
-                               Aspect="AspectFit"/>
+                               Aspect="AspectFit">
+                            <Image.Scale>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="iOS" Value="1"/>
+                                    <On Platform="Android" Value="0.7"/>
+                                </OnPlatform>
+                            </Image.Scale>
+                        </Image>
                     </DataTemplate>
 
                 </CarouselView.ItemTemplate>

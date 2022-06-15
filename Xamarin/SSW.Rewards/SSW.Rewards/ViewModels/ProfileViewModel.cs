@@ -130,8 +130,6 @@ namespace SSW.Rewards.ViewModels
                 Progress = 1;
             }
 
-            Console.WriteLine($"[ProfileViewModel] Leader: {Name}; Progress:{Progress}; Balance:{Balance}; Points: {Points}");
-
             OnPropertyChanged(nameof(Progress));
 
             if (!ProfileSections.Any())
