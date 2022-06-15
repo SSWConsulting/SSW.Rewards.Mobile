@@ -62,7 +62,9 @@
                     <DataTemplate>
                         <Image Source="{Binding Image}"
                                Margin="60"
-                               Scale="0.7"/>
+                               WidthRequest="200"
+                               HeightRequest="200"
+                               Aspect="AspectFit"/>
                     </DataTemplate>
 
                 </CarouselView.ItemTemplate>
