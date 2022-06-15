@@ -140,6 +140,7 @@
     <BundleResource Include="Resources\Font Awesome 6 Brands-Regular-400.otf" />
     <Compile Include="Extensions\NSDataExtensions.cs" />
     <Compile Include="Services\DeviceInstallationService.cs" />
+    <BundleResource Include="coin.json" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">

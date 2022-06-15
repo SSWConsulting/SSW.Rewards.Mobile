@@ -165,6 +165,9 @@
     <AndroidAsset Include="Assets\rapid-scan.json" />
     <AndroidAsset Include="Assets\FluentSystemIcons-Regular.ttf" />
     <AndroidAsset Include="Assets\Font Awesome 6 Brands-Regular-400.otf" />
+    <AndroidAsset Include="Assets\coin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.xml" />

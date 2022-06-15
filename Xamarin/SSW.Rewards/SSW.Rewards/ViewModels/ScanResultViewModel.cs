@@ -50,19 +50,22 @@ namespace SSW.Rewards.ViewModels
                     if(result.ScanType == ScanType.Achievement)
                     {
                         ResultHeading = "Achivement Added!";
+                        AnimationRef = "coin.json";
                         ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
                     }
                     else if(result.ScanType == ScanType.Reward)
                     {
                         ResultHeading = "Congratulations!";
+                        AnimationRef = "trophy.json";
                         ResultBody = string.Format("You have claimed this reward!");
                     }
-                    AnimationRef = "trophy.json";
+                    
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
                     MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
                     break;
+
                 case ScanResult.Duplicate:
                     AnimationRef = "rapid-scan.json";
                     AnimationLoop = true;
@@ -72,6 +75,7 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = Color.White;
                     _wonPrize = false;
                     break;
+
                 case ScanResult.NotFound:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "Unrecognised";
@@ -80,6 +84,16 @@ namespace SSW.Rewards.ViewModels
                     _wonPrize = false;
                     HeadingColour = Color.White;
                     break;
+
+                case ScanResult.InsufficientBalance:
+                    AnimationRef = "coin.json";
+                    ResultHeading = "Not Enough Points";
+                    ResultBody = "You do not have enough points to claim this reward yet. Try again later.";
+                    AchievementHeading = string.Empty;
+                    _wonPrize = false;
+                    HeadingColour = Color.White;
+                    break;
+
                 case ScanResult.Error:
                     AnimationRef = "empty-box.json";
                     ResultHeading = "It's not you it's me...";

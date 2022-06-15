@@ -5,6 +5,7 @@
         Added,
         Duplicate,
         NotFound,
+        InsufficientBalance,
         Error
     }
 }
