@@ -56,9 +56,9 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>1.85</string>
+	<string>2.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This permission will enable you to save SSW User Groups and other events</string>
 	<key>NSPhotoLibraryUsageDescription</key>
