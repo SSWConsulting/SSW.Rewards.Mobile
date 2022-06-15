@@ -33,7 +33,7 @@ namespace SSW.Rewards.ViewModels
 
         public bool ShowCamera => _isMe && !IsLoading;
 
-        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; }// = new ObservableCollection<ProfileCarouselViewModel>();
+        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; }
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -216,7 +216,7 @@ namespace SSW.Rewards.ViewModels
             {
                 activityList.Add(new Activity
                 {
-                    ActivityName = $"{achievement.Type.ToActivityType()} {achievement.Name}",
+                    ActivityName = GetMessage(achievement, true),
                     OcurredAt = achievement.AwardedAt,
                     Type = achievement.Type.ToActivityType()
                 });
@@ -286,7 +286,7 @@ namespace SSW.Rewards.ViewModels
             {
                 ActionCompleted = achievement.Complete,
                 Points = achievement.Value,
-                Message = $"{GetMessage(achievement)}",//.Complete)} {achievement.Type} {achievement.Name}",
+                Message = $"{GetMessage(achievement)}",
                 GlyphIsBrand = achievement.IconIsBranded,
                 Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
             };
@@ -296,7 +296,7 @@ namespace SSW.Rewards.ViewModels
             ShowSnackbar.Invoke(this, args);
         }
 
-        public string GetMessage(ProfileAchievement achievement)
+        public string GetMessage(Achievement achievement, bool IsActivity = false)
         {
             string prefix = _isMe ? "You have " : $"{Name} has ";
 
@@ -332,7 +332,15 @@ namespace SSW.Rewards.ViewModels
                     break;
             }
 
-            return $"{prefix} {action} {activity}";
+            if (IsActivity)
+            {
+                action = char.ToUpper(action[0]) + action.Substring(1);
+                return $"{action} {activity}";
+            }
+            else
+            {
+                return $"{prefix} {action} {activity}";
+            }
         }
     }
 }

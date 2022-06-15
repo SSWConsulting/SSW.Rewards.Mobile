@@ -411,9 +411,15 @@
     <ImageAsset Include="Assets.xcassets\menu.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%403x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%402x.png" />
-    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax.png" />
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\prize_hubmax.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\prize_hubmax.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
