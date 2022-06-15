@@ -31,5 +31,4 @@
         </Content>
         <None Include="wwwroot\js\DetailedProfile.js" />
     </ItemGroup>
-    <None Include="wwwroot\js\DetailedProfile.js" />
 </Project>
