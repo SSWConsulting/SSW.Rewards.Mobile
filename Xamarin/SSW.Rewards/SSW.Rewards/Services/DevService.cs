@@ -36,6 +36,8 @@ namespace SSW.Rewards.Services
                         Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "dev_placeholder" : profile.ProfilePhoto.ToString(),
 						Title = profile.Title,
                         TwitterID = profile.TwitterUsername,
+                        GitHubID = profile.GitHubUsername,
+                        LinkedInId = profile.LinkedInUrl,
 						Skills = profile.Skills?.ToList(),
                         IsExternal = profile.IsExternal,
                         AchievementId = profile.StaffAchievement.Id,

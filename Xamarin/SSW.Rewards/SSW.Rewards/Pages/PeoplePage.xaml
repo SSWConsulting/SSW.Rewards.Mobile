@@ -151,7 +151,7 @@
                 <StackLayout Grid.Column="1"
                              Grid.ColumnSpan="2"
                              Grid.Row="3"
-                             Spacing="20"
+                             Spacing="15"
                              Orientation="Horizontal"
                              HorizontalOptions="End"
                              Padding="0,0,10,0">
@@ -159,7 +159,7 @@
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf099;"
-                           FontSize="36"
+                           FontSize="30"
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HorizontalTextAlignment="Center"
@@ -191,7 +191,7 @@
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf08c;"
-                           FontSize="36"
+                           FontSize="30"
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HeightRequest="100"
@@ -208,7 +208,7 @@
                     <Label FontFamily="{StaticResource FA6Brands}"
                            TextColor="White"
                            Text="&#xf3ca;"
-                           FontSize="36"
+                           FontSize="30"
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HeightRequest="100"
@@ -223,19 +223,19 @@
                 </StackLayout>
 
             </Grid>
-            
 
-            <Label Grid.Row="2"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="3"
-                   HorizontalOptions="FillAndExpand"
-                   VerticalOptions="FillAndExpand"
-                   HorizontalTextAlignment="Center"
-                   BackgroundColor="{StaticResource MainBackground}"
-                   FontSize="11"
-                   TextColor="White"
-                   Padding="22,16"
-                   Text="{Binding DevBio}"/>
+
+            <ScrollView Grid.Row="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3">
+                <Label HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       HorizontalTextAlignment="Center"
+                       BackgroundColor="{StaticResource MainBackground}"
+                       TextColor="White"
+                       Padding="22,16"
+                       Text="{Binding DevBio}"/>
+            </ScrollView>
 
             <ActivityIndicator Color="{StaticResource primary}"
                                IsRunning="True"

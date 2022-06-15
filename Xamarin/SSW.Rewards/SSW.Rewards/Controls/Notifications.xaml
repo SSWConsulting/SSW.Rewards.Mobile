@@ -29,7 +29,7 @@
                         <StackLayout HorizontalOptions="Center"
                                      VerticalOptions="Center"
                                      WidthRequest="200">
-                            <Label Text="You have no outstanding notifications"
+                            <Label Text="You have no outstanding notifications."
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
                                    HorizontalTextAlignment="Center"

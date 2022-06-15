@@ -80,6 +80,8 @@ namespace SSW.Rewards.Services
                 vm.result = ScanResult.Error;
             }
 
+            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
+
             return vm;
         }
 
@@ -145,6 +147,7 @@ namespace SSW.Rewards.Services
             {
                 vm.result = ScanResult.Error;
             }
+            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
 
             return vm;
         }

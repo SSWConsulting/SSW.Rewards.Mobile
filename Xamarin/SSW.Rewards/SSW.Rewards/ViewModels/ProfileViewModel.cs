@@ -282,7 +282,7 @@ namespace SSW.Rewards.ViewModels
             {
                 ActionCompleted = achievement.Complete,
                 Points = achievement.Value,
-                Message = $"{GetPrefix(achievement.Complete)} {achievement.Type} {achievement.Name}",
+                Message = $"{GetMessage(achievement)}",//.Complete)} {achievement.Type} {achievement.Name}",
                 GlyphIsBrand = achievement.IconIsBranded,
                 Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
             };
@@ -292,16 +292,43 @@ namespace SSW.Rewards.ViewModels
             ShowSnackbar.Invoke(this, args);
         }
 
-        public string GetPrefix(bool completed)
+        public string GetMessage(ProfileAchievement achievement)
         {
             string prefix = _isMe ? "You have " : $"{Name} has ";
 
-            if (!completed)
+            if (!achievement.Complete)
             {
                 prefix += "not ";
             }
 
-            return prefix;
+
+            string activity = achievement.Name;
+
+            string action = string.Empty;
+
+            activity = char.ToLower(activity[0]) + activity.Substring(1);
+
+            switch (achievement.Type)
+            {
+                case AchievementType.Attended:
+                    action = "attended";
+                    break;
+
+                case AchievementType.Completed:
+                    action = "completed";
+                    break;
+
+                case AchievementType.Linked:
+                    action = "followed";
+                    activity = activity.Replace("follow", "");
+                    break;
+
+                case AchievementType.Scanned:
+                    action = "scanned";
+                    break;
+            }
+
+            return $"{prefix} {action} {activity}";
         }
     }
 }
