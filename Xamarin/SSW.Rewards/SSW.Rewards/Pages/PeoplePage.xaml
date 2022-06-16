@@ -107,7 +107,7 @@
                                    HeightRequest="1000"
                                    HorizontalOptions="StartAndExpand"
                                    VerticalOptions="End"
-                                   Scale="1.2"
+                                   Scale="1.1"
                                    TranslationX="-80"
                                    Source="{Binding Picture}"
                                    x:Name="DevImage"
