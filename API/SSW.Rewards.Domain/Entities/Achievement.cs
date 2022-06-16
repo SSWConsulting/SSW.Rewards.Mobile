@@ -16,6 +16,8 @@ namespace SSW.Rewards.Domain.Entities
 
         public bool IconIsBranded { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
     }
 }
