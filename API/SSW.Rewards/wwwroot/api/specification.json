@@ -1362,6 +1362,9 @@
           "value": {
             "type": "integer",
             "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AchievementType"
           }
         }
       },
@@ -1460,6 +1463,9 @@
           "value": {
             "type": "integer",
             "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AchievementType"
           }
         }
       },

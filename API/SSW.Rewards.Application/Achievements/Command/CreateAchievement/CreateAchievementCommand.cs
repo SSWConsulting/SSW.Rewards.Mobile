@@ -15,53 +15,47 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
     {
         public string Name { get; set; }
         public int Value { get; set; }
+        public AchievementType Type { get; set; }
+    }
 
-        public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminViewModel>
+    public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminViewModel>
+    {
+        private readonly ISSWRewardsDbContext _context;
+
+        public CreateAchievementCommandHandler(ISSWRewardsDbContext context)
         {
-            private readonly ICurrentUserService _currentUserService;
-            private readonly ISSWRewardsDbContext _context;
-            private readonly IMapper _mapper;
+            _context = context;
+        }
 
-            public CreateAchievementCommandHandler(
-                ICurrentUserService currentUserService,
-                ISSWRewardsDbContext context,
-                IMapper mapper)
+        public async Task<AchievementAdminViewModel> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
+        {
+            var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
+
+            var achievement = existingAchievements
+                .FirstOrDefault(a => a.Name.Equals(request.Name, StringComparison.InvariantCulture))
+                ?? new Domain.Entities.Achievement();
+
+            achievement.Name = request.Name;
+            var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
+            achievement.Code = Convert.ToBase64String(codeData);
+            achievement.Value = request.Value;
+            achievement.Type = request.Type;
+
+            if (achievement.Id == 0)
             {
-                _currentUserService = currentUserService;
-                _context = context;
-                _mapper = mapper;
-            }
-
-            public async Task<AchievementAdminViewModel> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
-            {
-                var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
-
-                var achievement = existingAchievements
-                    .FirstOrDefault(a => a.Name.Equals(request.Name, StringComparison.InvariantCulture))
-                    ?? new Domain.Entities.Achievement();
-
-                achievement.Name = request.Name;
-                var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
-                achievement.Code = Convert.ToBase64String(codeData);
-                achievement.Value = request.Value;
-                achievement.Type = AchievementType.Attended;
-
-                if (achievement.Id == 0)
+                _context.Achievements.Add(achievement);
+                await _context.SaveChangesAsync(cancellationToken);
+                return new AchievementAdminViewModel()
                 {
-                    _context.Achievements.Add(achievement);
-                    await _context.SaveChangesAsync(cancellationToken);
-                    return new AchievementAdminViewModel()
-                    {
-                        Code = achievement.Code,
-                        Name = achievement.Name,
-                        Value = achievement.Value,
-                        Type = achievement.Type,
-                    };
+                    Code = achievement.Code,
+                    Name = achievement.Name,
+                    Value = achievement.Value,
+                    Type = achievement.Type,
+                };
 
-                }
-
-                return null;
             }
+
+            return null;
         }
     }
 }
