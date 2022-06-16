@@ -13,6 +13,12 @@
         <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
         <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
         <MudTextField @bind-Value="@dto.Value" Label="Value" AutoFocus="true" />
+        <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
+            @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
+            {
+                <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
+            }
+        </MudSelect>
         <MudSelect
             @bind-Value="_selectedValue"
             T="@LeaderboardUserDto" Label="Assign to User" AnchorOrigin="Origin.CenterLeft" TransformOrigin="Origin.CenterRight" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary">

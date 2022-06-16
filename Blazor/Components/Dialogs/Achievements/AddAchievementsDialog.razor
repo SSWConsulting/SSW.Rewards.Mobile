@@ -6,6 +6,12 @@
         <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid">
             <MudTextField Class="d-inline" T="string" Label="Achievement Name" @bind-Value="@dto.Name" AutoFocus="true" Required="true"/>
             <MudTextField Class="d-inline" T="int" Label="Achievement Value" @bind-Value="@dto.Value" Required="true"/>
+            <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
+                @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
+                {
+                    <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
+                }
+            </MudSelect>
         </MudForm>
     </DialogContent>
         <DialogActions>

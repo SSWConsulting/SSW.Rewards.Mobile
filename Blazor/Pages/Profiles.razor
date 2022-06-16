@@ -21,8 +21,8 @@
 
 <AdminTable Items="@(_profileItemsViewModels?.Cast<ITableItems>().ToList())"
             Headings="@_headings"
-            TableTitle="Rewards"
-            SearchPlaceholderText="Search for a Reward"
+            TableTitle="Profiles"
+            SearchPlaceholderText="Search for a profile"
             IsLoading="@_loading"
             OnClick="@(OnRowClicked)"/>
 

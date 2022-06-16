@@ -75,7 +75,8 @@
                 await _client.UpdateAchievementAsync(new UpdateAchievementCommand
                 {
                     Id = dto.Id,
-                    Value = dto.Value
+                    Value = dto.Value,
+                    Type = dto.Type
                 });
             }
             if (result.Data is AssignReward usr)
@@ -107,7 +108,8 @@
                         new CreateAchievementCommand
                         {
                             Name = dto.Name,
-                            Value = dto.Value
+                            Value = dto.Value,
+                            Type = dto.Type
                         }
                         );
                 }
