@@ -47,6 +47,9 @@ jobs:
         version-name: '${{ env.MAJOR }}.${{ env.MINOR }}'
         print-file: true
 
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
     - name: Build
       env:
         ANDROID_KEYSTORE_PWD: ${{ secrets.ANDROID_KEYSTORE_PWD }}
