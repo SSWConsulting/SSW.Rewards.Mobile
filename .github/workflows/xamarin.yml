@@ -15,6 +15,10 @@ on:
 jobs:
   Android:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: rewards
     steps:
     - uses: actions/checkout@v2
       with:
