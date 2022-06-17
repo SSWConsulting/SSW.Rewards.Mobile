@@ -67,7 +67,7 @@ namespace SSW.Rewards.ViewModels
 
         private bool _initialised = false;
 
-        private bool _firstRun = true;
+        private bool _firstRun = false; //true; Disabled this as the scrolling naimation is janky, and probably not needed in this version. Keeping this here in case we decide to re-enable it.
 
         public string[] OnSwipedUpdatePropertyList { get; set; }
 
@@ -94,37 +94,40 @@ namespace SSW.Rewards.ViewModels
             {
                 var profiles = await _devService.GetProfilesAsync();
 
-                foreach (var profile in profiles)
+                if (profiles.Any())
                 {
-                    Profiles.Add(profile);
-                }
-
-                IsRunning = false;
-
-                _lastProfileIndex = Profiles.Count - 1;
-
-                SelectedProfile = Profiles[_lastProfileIndex];
-                OnPropertyChanged(nameof(SelectedProfile));
-
-                ShowDevCards = true;
-                OnPropertyChanged(nameof(ShowDevCards));
-
-                for (int i = _lastProfileIndex; i > -1; i--)
-                {
-                    if (PageInView)
+                    foreach (var profile in profiles)
                     {
-                        ScrollToRequested.Invoke(this, i);
-                        await Task.Delay(50);
+                        Profiles.Add(profile);
                     }
+
+                    IsRunning = false;
+
+                    _lastProfileIndex = Profiles.Count - 1;
+
+                    SelectedProfile = Profiles[_lastProfileIndex];
+                    OnPropertyChanged(nameof(SelectedProfile));
+
+                    ShowDevCards = true;
+                    OnPropertyChanged(nameof(ShowDevCards));
+
+                    for (int i = _lastProfileIndex; i > -1; i--)
+                    {
+                        if (PageInView)
+                        {
+                            ScrollToRequested.Invoke(this, i);
+                            await Task.Delay(50);
+                        }
+                    }
+
+                    _initialised = true;
+
+                    SetDevDetails();
+
+                    RaisePropertyChanged(nameof(IsRunning));
+
+                    _firstRun = false;
                 }
-
-                _initialised = true;
-
-                SetDevDetails();
-
-                RaisePropertyChanged(nameof(IsRunning));
-
-                _firstRun = false;
             }
         }
 
