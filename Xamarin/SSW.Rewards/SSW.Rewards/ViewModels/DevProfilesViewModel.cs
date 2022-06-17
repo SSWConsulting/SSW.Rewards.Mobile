@@ -94,37 +94,46 @@ namespace SSW.Rewards.ViewModels
             {
                 var profiles = await _devService.GetProfilesAsync();
 
-                foreach (var profile in profiles)
+                if (profiles.Any())
                 {
-                    Profiles.Add(profile);
-                }
-
-                IsRunning = false;
-
-                _lastProfileIndex = Profiles.Count - 1;
-
-                SelectedProfile = Profiles[_lastProfileIndex];
-                OnPropertyChanged(nameof(SelectedProfile));
-
-                ShowDevCards = true;
-                OnPropertyChanged(nameof(ShowDevCards));
-
-                for (int i = _lastProfileIndex; i > -1; i--)
-                {
-                    if (PageInView)
+                    foreach (var profile in profiles)
                     {
-                        ScrollToRequested.Invoke(this, i);
-                        await Task.Delay(50);
+                        Profiles.Add(profile);
                     }
+
+                    IsRunning = false;
+
+                    _lastProfileIndex = Profiles.Count - 1;
+
+                    SelectedProfile = Profiles[_lastProfileIndex];
+                    OnPropertyChanged(nameof(SelectedProfile));
+
+                    ShowDevCards = true;
+                    OnPropertyChanged(nameof(ShowDevCards));
+
+                    // Disabling the scrolling carousel effect because
+                    // it's janky and probably not needed for v2 (it was
+                    // a v1 issue). Leacving this here becase we can 
+                    // probably fix the jankiness and re-enable for a nice
+                    // effect when we have time.
+
+                    //for (int i = _lastProfileIndex; i > -1; i--)
+                    //{
+                    //    if (PageInView)
+                    //    {
+                    //        ScrollToRequested.Invoke(this, i);
+                    //        await Task.Delay(50);
+                    //    }
+                    //}
+
+                    _initialised = true;
+
+                    SetDevDetails();
+
+                    RaisePropertyChanged(nameof(IsRunning));
+
+                    _firstRun = false;
                 }
-
-                _initialised = true;
-
-                SetDevDetails();
-
-                RaisePropertyChanged(nameof(IsRunning));
-
-                _firstRun = false;
             }
         }
 
