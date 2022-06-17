@@ -53,7 +53,7 @@ namespace SSW.Rewards.Services
             {
                 if (e.StatusCode == 401)
                 {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "This is a test.", "OK");
                     Application.Current.MainPage = new LoginPage();
                 }
                 else
