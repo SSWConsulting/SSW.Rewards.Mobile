@@ -141,7 +141,9 @@
     <Compile Include="Extensions\NSDataExtensions.cs" />
     <Compile Include="Services\DeviceInstallationService.cs" />
     <BundleResource Include="coin.json" />
-    <BundleResource Include="Sophie.json" />
+    <BundleResource Include="Sophie.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite%403x.png">
