@@ -69,7 +69,8 @@
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
-                  RowDefinitions="25*, 7*, 2*, 5*">
+                  RowDefinitions="25*, 7*, 2*, 5*"
+                  x:Name="CentralGrid">
 
                 <FlexLayout Grid.Row="0"
                             Grid.Column="0"
@@ -89,7 +90,7 @@
                               Grid.Column="0"
                               Grid.RowSpan="4"
                               Grid.ColumnSpan="3"
-                              HorizontalOptions="FillAndExpand"
+                              HorizontalOptions="StartAndExpand"
                               VerticalOptions="FillAndExpand"
                               Margin="0"
                               TranslationY="10"
@@ -103,16 +104,15 @@
                             <Image Margin="0"
                                    Aspect="AspectFit"
                                    TranslationY="10"
+                                   HorizontalOptions="StartAndExpand"
                                    WidthRequest="1000"
                                    HeightRequest="1000"
-                                   HorizontalOptions="StartAndExpand"
+                                   TranslationX="-100"
                                    VerticalOptions="End"
-                                   Scale="1.1"
-                                   TranslationX="-80"
                                    Source="{Binding Picture}"
                                    x:Name="DevImage"
-                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5}"
-                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
@@ -227,11 +227,11 @@
 
             <ScrollView Grid.Row="2"
                         Grid.Column="0"
-                        Grid.ColumnSpan="3">
+                        Grid.ColumnSpan="3"
+                        BackgroundColor="{StaticResource MainBackground}">
                 <Label HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
-                       BackgroundColor="{StaticResource MainBackground}"
                        TextColor="White"
                        Padding="22,16"
                        Text="{Binding DevBio}"/>
