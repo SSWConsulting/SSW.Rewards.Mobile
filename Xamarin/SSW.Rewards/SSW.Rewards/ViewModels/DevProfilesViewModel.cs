@@ -67,7 +67,7 @@ namespace SSW.Rewards.ViewModels
 
         private bool _initialised = false;
 
-        private bool _firstRun = false; //true; Disabled this as the scrolling naimation is janky, and probably not needed in this version. Keeping this here in case we decide to re-enable it.
+        private bool _firstRun = true;
 
         public string[] OnSwipedUpdatePropertyList { get; set; }
 
@@ -111,14 +111,20 @@ namespace SSW.Rewards.ViewModels
                     ShowDevCards = true;
                     OnPropertyChanged(nameof(ShowDevCards));
 
-                    for (int i = _lastProfileIndex; i > -1; i--)
-                    {
-                        if (PageInView)
-                        {
-                            ScrollToRequested.Invoke(this, i);
-                            await Task.Delay(50);
-                        }
-                    }
+                    // Disabling the scrolling carousel effect because
+                    // it's janky and probably not needed for v2 (it was
+                    // a v1 issue). Leacving this here becase we can 
+                    // probably fix the jankiness and re-enable for a nice
+                    // effect when we have time.
+
+                    //for (int i = _lastProfileIndex; i > -1; i--)
+                    //{
+                    //    if (PageInView)
+                    //    {
+                    //        ScrollToRequested.Invoke(this, i);
+                    //        await Task.Delay(50);
+                    //    }
+                    //}
 
                     _initialised = true;
 
