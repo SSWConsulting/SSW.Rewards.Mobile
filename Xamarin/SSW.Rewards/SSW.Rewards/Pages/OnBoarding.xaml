@@ -77,7 +77,7 @@
                             </Image>
 
                             <lottie:AnimationView x:Name="ResultAnimation"
-                                                  Animation="{Binding Image}"
+                                                  Animation="{Binding Animation}"
                                                   IsVisible="{Binding IsAnimation}"
                                                   AutoPlay="True"
                                                   Loop="False"
