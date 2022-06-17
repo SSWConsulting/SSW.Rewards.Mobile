@@ -1,11 +1,9 @@
-﻿
-using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Plugin.Media;
+﻿using Plugin.Media;
 using Plugin.Media.Abstractions;
 using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Services;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels

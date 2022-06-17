@@ -1,5 +1,6 @@
 ﻿using SSW.Rewards.Models;
 using SSW.Rewards.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,9 +41,9 @@ namespace SSW.Rewards.Services
                         LinkedInId = profile.LinkedInUrl,
 						Skills = profile.Skills?.ToList(),
                         IsExternal = profile.IsExternal,
-                        AchievementId = profile.StaffAchievement.Id,
+                        AchievementId = profile.StaffAchievement?.Id ?? 0,
                         Scanned = profile.Scanned,
-                        Points = profile.StaffAchievement.Value
+                        Points = profile.StaffAchievement?.Value ?? 0
 					};
 
                     profiles.Add(dev);

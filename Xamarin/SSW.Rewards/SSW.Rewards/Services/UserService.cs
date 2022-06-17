@@ -208,6 +208,7 @@ namespace SSW.Rewards.Services
                 await UpdateMyDetailsAsync();
             }
 
+            MessagingCenter.Send<object>(this, UserDetailsUpdatedMessage);
             return response.PicUrl;
         }
 
