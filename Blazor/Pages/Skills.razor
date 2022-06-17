@@ -14,7 +14,7 @@
 <MudText Typo="Typo.h2">Skills</MudText>
 <MudText Typo="Typo.body1">All Staff Skills</MudText>
 
-<MudTable Items="@_model"
+<MudTable Items="@_model.OrderBy(s => s.Name)"
           T="AdminSkill"
           CanCancelEdit="true"
           Filter="new Func<AdminSkill, bool>(FilterItemsFunc)"
@@ -28,6 +28,7 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Name</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>

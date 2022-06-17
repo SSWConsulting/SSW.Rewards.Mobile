@@ -19,7 +19,7 @@
     <MudCheckBox T="bool" @bind-Checked="@ShowArchivedStaff" Label="Filter List for Archived Staff" />
 </MudPaper>
 
-<AdminTable Items="@(_profileItemsViewModels?.Cast<ITableItems>().ToList())"
+<AdminTable Items="@(_profileItemsViewModels?.Cast<ITableItems>().OrderBy(i => i.Name).ToList())"
             Headings="@_headings"
             TableTitle="Profiles"
             SearchPlaceholderText="Search for a profile"

@@ -49,7 +49,7 @@
                 <MudTextField T="string" Label="GitHub Username" @bind-Value="@_staff.GitHubUsername"/>
             </MudItem>
             <MudItem xs="12">
-                <MudTextField T="string" Label="Profile Description" @bind-Value="@_staff.Profile" MaxLength="200" Counter="200"/>
+                <MudTextField T="string" Label="Profile Description" @bind-Value="@_staff.Profile" Lines="5" MaxLength="200" Counter="200"/>
             </MudItem>
         </MudGrid>
     </div>
@@ -72,7 +72,7 @@
                            Clearable="true"
                            AdornmentIcon="@Icons.Material.Filled.Search"
                            Class="ml-9">
-                    @foreach (var skill in selectionSkills)
+                    @foreach (var skill in selectionSkills.OrderBy(s => s.Name))
                     {
                         <MudSelectItem T="string" Value="@skill.Name" Disabled="@skill.IsDisabled">@skill.Name</MudSelectItem>
                     }
