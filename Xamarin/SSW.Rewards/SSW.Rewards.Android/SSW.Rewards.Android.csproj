@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Helvetica-Bold-Font.ttf" />
+    <AndroidAsset Include="Assets\Sophie.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

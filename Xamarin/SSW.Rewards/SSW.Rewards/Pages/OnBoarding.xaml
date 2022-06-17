@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              mc:Ignorable="d"
              NavigationPage.HasNavigationBar="False"
              x:Class="SSW.Rewards.Pages.OnBoarding">
@@ -18,6 +20,7 @@
                 <Setter Property="OutlineColor"
                         Value="#bcbcbc"/>
             </Style>
+            <converters:InverseBoolConverter x:Key="InverseBool"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -60,16 +63,30 @@
 
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
-                        <Image Source="{Binding Image}"
-                               Margin="60"
-                               Aspect="AspectFit">
-                            <Image.Scale>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="iOS" Value="1"/>
-                                    <On Platform="Android" Value="0.7"/>
-                                </OnPlatform>
-                            </Image.Scale>
-                        </Image>
+                        <Grid>
+                            <Image Source="{Binding Image}"
+                                   Margin="60"
+                                   Aspect="AspectFit"
+                                   IsVisible="{Binding IsAnimation, Converter={StaticResource InverseBool}}">
+                                <Image.Scale>
+                                    <OnPlatform x:TypeArguments="x:Double">
+                                        <On Platform="iOS" Value="1"/>
+                                        <On Platform="Android" Value="0.7"/>
+                                    </OnPlatform>
+                                </Image.Scale>
+                            </Image>
+
+                            <lottie:AnimationView x:Name="ResultAnimation"
+                                                  Animation="{Binding Image}"
+                                                  IsVisible="{Binding IsAnimation}"
+                                                  AutoPlay="True"
+                                                  Loop="False"
+                                                  VerticalOptions="CenterAndExpand"
+                                                  HorizontalOptions="CenterAndExpand"
+                                                  HeightRequest="200"
+                                                  WidthRequest="200"
+                                                  Scale="1"/>
+                        </Grid>
                     </DataTemplate>
 
                 </CarouselView.ItemTemplate>

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
@@ -33,7 +34,7 @@ namespace SSW.Rewards.ViewModels
 
         public bool ShowCamera => _isMe && !IsLoading;
 
-        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; }
+        public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -86,8 +87,11 @@ namespace SSW.Rewards.ViewModels
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
             MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
-            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-            OnPropertyChanged(nameof(ProfileSections));
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+                OnPropertyChanged(nameof(ProfileSections));
+            }
 
             _isMe = me;
 
@@ -117,7 +121,7 @@ namespace SSW.Rewards.ViewModels
             // TODO: we can get rid of this 0 condition if we award a 'sign up'
             // achievement. We could also potentially get the ring to render
             // empty.
-            if (progress == 0)
+            if (progress <= 0)
             {
                 Progress = 0.01;
             }
@@ -181,8 +185,11 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
-            //ProfileSections.Clear();
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                ProfileSections.Clear();
 
+            }
             var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
             var achievementList = await _userService.GetAchievementsAsync(userId);
