@@ -107,12 +107,18 @@
                                    HorizontalOptions="StartAndExpand"
                                    WidthRequest="1000"
                                    HeightRequest="1000"
-                                   TranslationX="-80"
                                    VerticalOptions="End"
                                    Source="{Binding Picture}"
                                    x:Name="DevImage"
                                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
-                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1.2}"/>
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1.2}">
+                                <Image.TranslationX>
+                                    <OnPlatform x:TypeArguments="x:Double">
+                                        <On Platform="Android" Value="-80" />
+                                        <On Platform="iOS" Value="-200" />
+                                    </OnPlatform>
+                                </Image.TranslationX>
+                            </Image>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
