@@ -30,7 +30,7 @@ jobs:
         # keystore=$RUNNER_TEMP/key.keystore
         # keystore=$(echo -n "$ANDROID_SIGNING_KEY_BASE64" | base64 --decode)
         # echo -n "$ANDROID_SIGNING_KEY_BASE64" | base64 --decode --output $keystore
-        $keystore = $Env:RUNNER_TEMP/key.keystore
+        & $keystore = $Env:RUNNER_TEMP/key.keystore
         [System.Convert]::FromBase64String($Env:ANDROID_SIGNING_KEY_BASE64) | $keystore
 
     - name: Extract version from tag
