@@ -109,14 +109,14 @@ namespace SSW.Rewards.ViewModels
                 ShowDevCards = true;
                 OnPropertyChanged(nameof(ShowDevCards));
 
-                for (int i = _lastProfileIndex; i > -1; i--)
-                {
-                    if (PageInView)
-                    {
-                        ScrollToRequested.Invoke(this, i);
-                        await Task.Delay(50);
-                    }
-                }
+                //for (int i = _lastProfileIndex; i > -1; i--)
+                //{
+                //    if (PageInView)
+                //    {
+                //        ScrollToRequested.Invoke(this, i);
+                //        await Task.Delay(50);
+                //    }
+                //}
 
                 _initialised = true;
 
