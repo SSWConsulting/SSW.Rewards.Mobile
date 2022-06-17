@@ -112,7 +112,7 @@
                                    Source="{Binding Picture}"
                                    x:Name="DevImage"
                                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
-                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1.2}"/>
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
