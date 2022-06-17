@@ -132,6 +132,11 @@ namespace SSW.Rewards.ViewModels
         {
             if (_initialised)
             {
+                if (SelectedProfile == null)
+                {
+                    SelectedProfile = Profiles[0];
+                }
+
                 DevName = $"{SelectedProfile.FirstName} {SelectedProfile.LastName}";
 
                 DevTitle = SelectedProfile.Title;
