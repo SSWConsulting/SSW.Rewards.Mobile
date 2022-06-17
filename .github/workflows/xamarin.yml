@@ -9,8 +9,8 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - 'Xamarin/**'
+    # paths:
+    #   - 'Xamarin/**'
 
 jobs:
   Android:
