@@ -101,10 +101,10 @@ namespace SSW.Rewards.ViewModels
 
                 IsRunning = false;
 
-                _lastProfileIndex = Profiles.Count - 1;
+                //_lastProfileIndex = Profiles.Count - 1;
 
-                SelectedProfile = Profiles[_lastProfileIndex];
-                OnPropertyChanged(nameof(SelectedProfile));
+                //SelectedProfile = Profiles[_lastProfileIndex];
+                //OnPropertyChanged(nameof(SelectedProfile));
 
                 ShowDevCards = true;
                 OnPropertyChanged(nameof(ShowDevCards));
