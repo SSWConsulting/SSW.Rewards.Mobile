@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList
             {
                 var results = await _context
                     .Achievements
+                    .Where(a => !a.IsDeleted) // TODO: remove this when we add a 'show archived' filter to the admn portal. See: Product Backlog Item 70587: 🔥Blazor - Add 'show archived achievements' to filter by isdeleted
                     .ProjectTo<AchievementAdminViewModel>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 

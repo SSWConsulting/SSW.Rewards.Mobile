@@ -111,6 +111,14 @@ namespace SSW.Rewards.ViewModels
 
             var rewards = await rewardsService.GetRewards();
 
+            // TODO: If there is an authentication failure, the RewardsService
+            // will pop a modal login page so the user can reauthenticate. In
+            // that case, do nothing here. We can remove this check when we
+            // implement Polly instead to make this process more robust. See
+            // https://github.com/SSWConsulting/SSW.Rewards/issues/276
+            if (!rewards.Any())
+                return;
+
             var topReward = rewards.OrderByDescending(r => r.Cost).First();
 
             _topRewardCost = (double)topReward.Cost;
