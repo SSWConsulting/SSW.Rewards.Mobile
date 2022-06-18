@@ -1,6 +1,7 @@
 name: Build and Deploy Xamarin
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
