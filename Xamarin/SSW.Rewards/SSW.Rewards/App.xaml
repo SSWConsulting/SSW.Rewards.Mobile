@@ -57,5 +57,4 @@
             <Setter Property="TextColor" Value="#999999"/>
         </Style>
     </Application.Resources>
-
 </Application>

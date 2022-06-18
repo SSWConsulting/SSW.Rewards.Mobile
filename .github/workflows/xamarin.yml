@@ -1,20 +1,23 @@
 name: Build and Deploy Xamarin
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
     paths:
       - 'Xamarin/**'
+      - '.github/workflows/xamarin.yml'
   pull_request:
     branches:
       - master
     paths:
       - 'Xamarin/**'
+      - '.github/workflows/xamarin.yml'
 
 jobs:
   Android:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
       with:
@@ -59,7 +62,7 @@ jobs:
 
 
   iOS:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
       with:
