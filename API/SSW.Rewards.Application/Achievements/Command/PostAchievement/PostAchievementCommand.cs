@@ -70,7 +70,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
 				Achievement = requestedAchievement
             };
 
-            _context.UserAchievements.Update(userAchievement);
+            _context.UserAchievements.Add(userAchievement);
 
             // check for milestone achievements
             if (requestedAchievement.Type == AchievementType.Scanned)
