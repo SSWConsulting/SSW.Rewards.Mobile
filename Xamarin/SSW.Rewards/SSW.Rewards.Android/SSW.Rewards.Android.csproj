@@ -152,6 +152,9 @@
     <AndroidAsset Include="Assets\Sophie.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidAsset>
+    <AndroidAsset Include="Assets\coin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -164,8 +167,12 @@
     <AndroidAsset Include="Assets\empty-box.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidAsset>
-    <AndroidAsset Include="Assets\qr-code-scanner.json" />
-    <AndroidAsset Include="Assets\rapid-scan.json" />
+    <AndroidAsset Include="Assets\qr-code-scanner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\rapid-scan.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
     <AndroidAsset Include="Assets\FluentSystemIcons-Regular.ttf" />
     <AndroidAsset Include="Assets\Font Awesome 6 Brands-Regular-400.otf" />
   </ItemGroup>
