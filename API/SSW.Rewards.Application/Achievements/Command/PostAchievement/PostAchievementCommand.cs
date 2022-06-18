@@ -66,7 +66,6 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
             var userAchievement = new UserAchievement
             {
                 UserId = user.Id,
-				AchievementId = requestedAchievement.Id,
 				Achievement = requestedAchievement
             };
 
@@ -82,7 +81,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                     var userMeetAchievement = new UserAchievement
                     {
                         UserId = user.Id,
-						AchievementId = meetAchievement.Id
+						Achievement = meetAchievement
                     };
 
                     _context.UserAchievements.Add(userMeetAchievement);
@@ -101,7 +100,6 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG))
                         {
                             var ugAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
-                            milestoneAchievement.AchievementId = ugAchievement.Id;
 							milestoneAchievement.Achievement = ugAchievement;
 						}
                         break;
@@ -111,7 +109,6 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday))
                         {
                             var hdAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
-                            milestoneAchievement.AchievementId = hdAchievement.Id;
 							milestoneAchievement.Achievement = hdAchievement;
 						}
                         break;
@@ -121,7 +118,6 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers))
                         {
                             var spAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
-                            milestoneAchievement.AchievementId = spAchievement.Id;
 							milestoneAchievement.Achievement = spAchievement;
 						}
                         break;
@@ -131,7 +127,6 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop))
                         {
                             var wsAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
-                            milestoneAchievement.AchievementId = wsAchievement.Id;
 							milestoneAchievement.Achievement = wsAchievement;
                         }
                         break;
