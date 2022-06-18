@@ -35,12 +35,12 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
 
         public async Task<PostAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
         {
-            var achievement = await _context
+            var requestedAchievement = await _context
                .Achievements
                .Where(a => a.Code == request.Code)
                .FirstOrDefaultAsync(cancellationToken);
 
-            if (achievement == null)
+            if (requestedAchievement == null)
             {
                 return new PostAchievementResult
                 {
@@ -52,11 +52,10 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
 
             var userAchievements = await _context
                 .UserAchievements
-                .Where(ua => ua.UserId == user.Id)
-                .Where(ua => ua.AchievementId == achievement.Id)
+                .Where(ua => ua.UserId == user.Id)                
                 .ToListAsync(cancellationToken);
 
-            if (userAchievements.Any(ua => ua.Achievement == achievement))
+            if (userAchievements.Any(ua => ua.Achievement == requestedAchievement))
             {
                 return new PostAchievementResult
                 {
@@ -67,42 +66,42 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
             var userAchievement = new UserAchievement
             {
                 UserId = user.Id,
-                Achievement = achievement
+				Achievement = requestedAchievement
             };
 
             _context.UserAchievements.Add(userAchievement);
 
             // check for milestone achievements
-            if (achievement.Type == AchievementType.Scanned)
+            if (requestedAchievement.Type == AchievementType.Scanned)
             {
                 if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
                 {
                     var meetAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.MeetSSW, cancellationToken);
 
-                    var meetAchevement = new UserAchievement
+                    var userMeetAchievement = new UserAchievement
                     {
                         UserId = user.Id,
-                        Achievement = meetAchievement
+						Achievement = meetAchievement
                     };
 
-                    _context.UserAchievements.Add(meetAchevement);
+                    _context.UserAchievements.Add(userMeetAchievement);
                 }
             }
 
-            if (achievement.Type == AchievementType.Attended)
+            if (requestedAchievement.Type == AchievementType.Attended)
             {
                 var milestoneAchievement = new UserAchievement { UserId = user.Id };
 
                 // UG = puzzle, Hackday = lightbulb, Superpowers = lightning, Workshop = certificate
-                switch (achievement.Icon)
+                switch (requestedAchievement.Icon)
                 {
                     case Icons.Puzzle:
 
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG))
                         {
                             var ugAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
-                            milestoneAchievement.Achievement = ugAchievement;
-                        }
+							milestoneAchievement.Achievement = ugAchievement;
+						}
                         break;
 
                     case Icons.Lightbulb:
@@ -110,8 +109,8 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday))
                         {
                             var hdAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
-                            milestoneAchievement.Achievement = hdAchievement;
-                        }
+							milestoneAchievement.Achievement = hdAchievement;
+						}
                         break;
 
                     case Icons.Lightning:
@@ -119,8 +118,8 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers))
                         {
                             var spAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
-                            milestoneAchievement.Achievement = spAchievement;
-                        }
+							milestoneAchievement.Achievement = spAchievement;
+						}
                         break;
 
                     case Icons.Certificate:
@@ -128,7 +127,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                         if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop))
                         {
                             var wsAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
-                            milestoneAchievement.Achievement = wsAchievement;
+							milestoneAchievement.Achievement = wsAchievement;
                         }
                         break;
 
@@ -142,15 +141,15 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
                 }
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+			await _context.SaveChangesAsync(cancellationToken);
 
-            var achievementModel = _mapper.Map<AchievementDto>(achievement);
+			var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
-            return new PostAchievementResult
-            {
-                viewModel = achievementModel,
-                status = AchievementStatus.Added
-            };
-        }
+			return new PostAchievementResult
+			{
+				viewModel = achievementModel,
+				status = AchievementStatus.Added
+			};
+		}
     }
 }
