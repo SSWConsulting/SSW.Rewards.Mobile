@@ -83,7 +83,7 @@
     </Nullable>
     <OnDemandResourcesInitialInstallTags>
     </OnDemandResourcesInitialInstallTags>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|iPhoneSimulator'">
     <DebugSymbols>true</DebugSymbols>
