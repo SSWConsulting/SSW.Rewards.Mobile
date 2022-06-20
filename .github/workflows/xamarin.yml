@@ -62,18 +62,11 @@ jobs:
 
 
   iOS:
-    runs-on: macos-11
+    runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Set default VS version
-      run: |
-        mv "/Applications/Visual Studio.app" "/Applications/Visual Studio 2022.app"
-        mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
-    - name: Set default Xamarin SDK versions
-      run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.4
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
