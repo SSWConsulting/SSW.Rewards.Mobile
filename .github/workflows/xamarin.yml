@@ -73,7 +73,7 @@ jobs:
       mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
     - name: Set default Xamarin SDK versions
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.8
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.4
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
