@@ -22,9 +22,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Set default Xamarin SDK versions
+    - name: Set Xamarin Android Version 
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=14.10
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --android=11.2
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
@@ -70,9 +70,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Set default Xamarin SDK versions
+    - name: Set Xamarin iOS version
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=14.10
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --ios=15.8
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
