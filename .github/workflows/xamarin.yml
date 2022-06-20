@@ -74,7 +74,7 @@ jobs:
         
     - name: Set default Xamarin SDK versions
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.0.0.6
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.0.0.6 --android=11.3
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
