@@ -71,7 +71,10 @@ jobs:
       run: |
         mv "/Applications/Visual Studio.app" "/Applications/Visual Studio 2022.app"
         mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
-        
+
+    - name: Setup NuGet.Config
+      run: echo '<configuration><packageSources><add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" /></packageSources></configuration>' > ~/.config/NuGet/NuGet.Config
+      
     - name: Set default Xamarin SDK versions
       run: |
         $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.0.0.6 --android=11.3
