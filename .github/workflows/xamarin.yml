@@ -69,8 +69,8 @@ jobs:
         fetch-depth: 0
     - name: Set default VS version
       run: |
-      mv "/Applications/Visual Studio.app" "/Applications/Visual Studio 2022.app"
-      mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
+        mv "/Applications/Visual Studio.app" "/Applications/Visual Studio 2022.app"
+        mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
     - name: Set default Xamarin SDK versions
       run: |
         $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --ios=15.4
