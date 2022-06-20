@@ -3,10 +3,10 @@
         <MudText Typo="Typo.h6">New Notification</MudText>    
     </TitleContent>
     <DialogContent>
-        <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid">
-            <MudTextField Class="d-inline" T="string" Label="Message" @bind-Value="@dto.Text" AutoFocus="true" Required="true" />
-            <MudTextField Class="d-inline" T="string" Label="Action" @bind-Value="@dto.Action" Required="true"/>
-            <MudCheckBox @bind-Checked="@dto.Silent" Label="Silent" Color="Color.Primary"></MudCheckBox>
+        <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid">
+            <MudTextField Class="d-inline" T="string" Label="Message" @bind-Value="@Dto.Text" AutoFocus="true" Required="true" />
+            <MudTextField Class="d-inline" T="string" Label="Action" @bind-Value="@Dto.Action" Required="true"/>
+            <MudCheckBox @bind-Checked="@Dto.Silent" Label="Silent" Color="Color.Primary"></MudCheckBox>
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -17,19 +17,24 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
-    [Parameter]
-    public RequestNotificationCommand dto { get; set; } = new();
-
-    MudForm form;
-    public bool valid;
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
     
-    void Submit()
+    [Parameter]
+    public RequestNotificationCommand Dto { get; set; } = new();
+
+    private MudForm? _form;
+    private bool valid;
+    
+    private async Task Submit()
     {
-        form.Validate();
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
         if (valid)
         {
-            MudDialog?.Close(DialogResult.Ok(dto));
+            MudDialog?.Close(DialogResult.Ok(Dto));
         }
     }
     void Cancel() => MudDialog?.Cancel();

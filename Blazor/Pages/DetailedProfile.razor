@@ -1,22 +1,24 @@
 @page "/profile/{Id}"
+
 @using SSW.Rewards.Admin.Helpers
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
 
-@inject IStaffClient _client
-@inject ISkillClient _skillsClient
 @inject IJSRuntime JSRuntime
+@inject ISkillClient _skillsClient
+@inject ISnackbar _snackbar
+@inject IStaffClient _client
 
 @attribute [Authorize]
 
-<div class="d-flex no-wrap gap-6">
+<div class="d-block d-md-flex no-wrap gap-6">
 
     @* Image Section *@
     <div class="d-flex flex-column gap-4">
-        @if (!string.IsNullOrWhiteSpace(_staff?.ProfilePhoto) || isPreviewImage)
+        @if (!string.IsNullOrWhiteSpace(_staff.ProfilePhoto) || _isPreviewImage)
         {
-            <MudImage id="profileImg" Src="@_staff?.ProfilePhoto" Height="500" Elevation="1" Alt="Staffs Profile image"/>
+            <MudImage id="profileImg" Src="@_staff.ProfilePhoto" Height="500" Elevation="1" Alt="Staffs Profile image"/>
         }
         else
         {
@@ -28,28 +30,31 @@
     </div>
 
     @* Data Entry Fields *@
-    <div class="flex-grow-1">
+    <div class="flex-grow-1 d-sm-block">
         <MudGrid>
-            <MudItem xs="6">
+            <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="Name" @bind-Value="@_staff.Name"/>
             </MudItem>
-            <MudItem xs="6">
+            <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="Title" @bind-Value="@_staff.Title"/>
             </MudItem>
-            <MudItem xs="6">
+            <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="Email" @bind-Value="@_staff.Email"/>
             </MudItem>
-            <MudItem xs="6">
+            <MudItem xs="12" md="6">
+                <MudTextField T="int" Label="Points" @bind-Value="@_staff.StaffAchievement.Value"/>
+            </MudItem>
+            <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="Twitter Handle" @bind-Value="@_staff.TwitterUsername"/>
             </MudItem>
-            <MudItem xs="6">
-                <MudTextField T="string" Label="LinkedIn Url" @bind-Value="@_staff.LinkedInUrl"/>
-            </MudItem>
-            <MudItem xs="6">
+            <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="GitHub Username" @bind-Value="@_staff.GitHubUsername"/>
             </MudItem>
             <MudItem xs="12">
-                <MudTextField T="string" Label="Profile Description" @bind-Value="@_staff.Profile" Lines="5" MaxLength="200" Counter="200"/>
+                <MudTextField T="string" Label="LinkedIn Username" @bind-Value="@_staff.LinkedInUrl" HelperText="https://www.linkedin.com/in/XXX/"/>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField T="string" Label="Profile Description" @bind-Value="@_staff.Profile" Lines="10" MaxLength="200" Counter="200"/>
             </MudItem>
         </MudGrid>
     </div>
@@ -110,7 +115,7 @@
                Variant="Variant.Outlined"
                Color="Color.Warning"
                ButtonType="ButtonType.Reset">
-        @((bool)_staff?.IsDeleted ? "Restore" : "Archive")</MudButton>
+        @((bool)_staff.IsDeleted ? "Restore" : "Archive")</MudButton>
     <MudButton OnClick="OnSaveClick" 
                Size="Size.Large"
                Variant="Variant.Filled"
@@ -123,21 +128,24 @@
 @code {
 
     [Parameter]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     private const int MaxSkills = 5;
 
-    private bool isPreviewImage = false;
-    private IBrowserFile _currentBrowserFile { get; set; }
-    private IJSObjectReference DetailedProfileJsModule { get; set; }
+    private bool _isPreviewImage;
+    private IBrowserFile? _currentBrowserFile { get; set; }
+    private IJSObjectReference DetailedProfileJsModule { get; set; } = null!;
 
-    private StaffDto _staff = new();
+    private StaffDto _staff = new()
+    {
+        StaffAchievement = new()
+    };
     private IEnumerable<string> skills { get; set; } = new List<string>();
     private IEnumerable<string> selected { get; set; } = new List<string>();
     private IEnumerable<SelectionSkills> selectionSkills { get; set; } = new List<SelectionSkills>();
 
     private class SelectionSkills
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public bool IsDisabled { get; set; }
     }
 
@@ -148,28 +156,18 @@
     {
         if (firstRender)
         {
-            try
-            {
-    // Load the JS Helpers Module
-                DetailedProfileJsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/DetailedProfile.js");
-            }
-            catch (Exception ex)
-            {
-    //Log.
-            }
+            DetailedProfileJsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/DetailedProfile.js");
         }
     }
 
     protected override async void OnInitialized()
     {
-    // Look up the staff user by Id
-        var tmp = await _skillsClient.GetAsync();
-        skills = tmp.Skills;
+        await base.OnInitializedAsync();
+    
+        skills = (await _skillsClient.GetAsync()).Skills;
         selectionSkills = skills.Select(x => new SelectionSkills{Name = x, IsDisabled = false}).ToList();
         
         await GetProfile();
-
-        base.OnInitialized();
     }
 
     private void UpdateSelectedSkills()
@@ -191,24 +189,23 @@
         var skills = string.Join(", ", selectedValues.Select(x => $"\"{x}\""));
         var selectedSkills = selectionSkills.Where(x => !selectedValues.Contains(x.Name)).ToList();
         
-        if (selectedValues.Count() < MaxSkills)
+        if (selectedValues.Count < MaxSkills)
         {
-            
             selectedSkills.ForEach(x => x.IsDisabled = false);
             UpdateStaffSkills(selectedValues);
             
             return $"{selectedValues.Count} - {skills}";
         }
 
-        if (selectedValues.Count() == MaxSkills)
+        if (selectedValues.Count == MaxSkills)
         {
             // Need to limit to 5. Setting the selectedSkills to disabled = true
             selectedSkills.ForEach(x => x.IsDisabled = true);
             UpdateStaffSkills(selectedValues);
-            return $"{selectedValues.Count()} - {skills} selected (max 5)";
+            return $"{selectedValues.Count} - {skills} selected (max 5)";
         }
         
-        return $"{selectedValues.Count()}";
+        return $"{selectedValues.Count}";
     }
 
     private void UpdateStaffSkills(List<string> selectedValues)
@@ -233,7 +230,7 @@
         });
     }
 
-    protected async Task GetProfile()
+    private async Task GetProfile()
     {
     // Get the profile from the database
         try
@@ -248,25 +245,24 @@
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-        }
     }
 
     private void ItemUpdated(MudItemDropInfo<StaffSkillDto> dropItem)
     {
-        if (selected.Contains(dropItem.Item.Name))
+        if (!selected.Contains(dropItem.Item.Name))
         {
-            Enum.TryParse(dropItem.DropzoneIdentifier, out SkillLevel level);
-            dropItem.Item.Level = level;
-            _staff.Skills.First(x => x.Name == dropItem.Item.Name).Level = level;
+            return;
         }
+
+        Enum.TryParse(dropItem.DropzoneIdentifier, out SkillLevel level);
+        dropItem.Item.Level = level;
+        _staff.Skills.First(x => x.Name == dropItem.Item.Name).Level = level;
     }
 
     //! Note: Need to use JS to stream the file to the client and "preview" the image
     private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
     {
-        isPreviewImage = true;
+        _isPreviewImage = true;
         var imageFile = e.File;
         var resizedImage =
             await imageFile.RequestImageFileAsync("image/jpg", 250, 250);
@@ -276,7 +272,7 @@
         _currentBrowserFile = imageFile;
     }
 
-    private bool ItemsSelector(StaffSkillDto item, string dropzone)
+    private static bool ItemsSelector(StaffSkillDto item, string dropzone)
     {
         var level = Enum.GetName(typeof(SkillLevel), item.Level);
         return level == dropzone;
@@ -284,24 +280,17 @@
 
     async Task OnSaveClick()
     {
-        try
+        if (!string.IsNullOrWhiteSpace(_currentBrowserFile?.Name))
         {
-            if (!string.IsNullOrWhiteSpace(_currentBrowserFile?.Name))
-            {
-                await _client.UploadStaffMemberProfilePictureAsync(_staff.Id,
-                    new FileParameter(_currentBrowserFile.OpenReadStream(_currentBrowserFile.Size), 
-                        _currentBrowserFile.Name,
-                        _currentBrowserFile.ContentType));
-            }
-
-            await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(_staff));
-            // isPreviewImage = false;
-        }
-        catch (Exception ex)
-        {
-            //Log.
+            await _client.UploadStaffMemberProfilePictureAsync(_staff.Id,
+                new FileParameter(_currentBrowserFile.OpenReadStream(_currentBrowserFile.Size), 
+                    _currentBrowserFile.Name,
+                    _currentBrowserFile.ContentType));
         }
 
+        await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(_staff));
+
+        _snackbar.Add("User saved", Severity.Success);
     }
 
     private async Task OnArchiveClicked()

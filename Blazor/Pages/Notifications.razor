@@ -1,9 +1,7 @@
 @page "/Notifications"
 @using Microsoft.AspNetCore.Authorization
-@using SSW.Rewards.Admin.Components
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.Components.Dialogs.Notifications
-@using SSW.Rewards.Admin.Models.Interfaces
 
 @attribute [Authorize]
 
@@ -15,37 +13,38 @@
 <MudButton  OnClick="@((e) => OpenDialog(disableBackdropClick))" Variant="Variant.Filled" Color="Color.Primary">
     New notification
 </MudButton>
+
 @if (_model != null)
 {
-    <MudTable Items="@_model.List" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@IsLoading" LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>Date</MudTh>
-        <MudTh>Message</MudTh>
-        <MudTh>Created by</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Date">@context.CreatedDate.ToLocalTime().ToString("dd/MM/yy hh:mm")</MudTd>
-        <MudTd DataLabel="Message">@context.Message</MudTd>
-        <MudTd DataLabel="Created by">@context.EmailAddress</MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager/>
-    </PagerContent>
-</MudTable>
+    <MudTable Items="@_model.List"
+              Hover="true"
+              Breakpoint="Breakpoint.Sm"
+              Loading="@_isLoading"
+              LoadingProgressColor="Color.Info">
+        <HeaderContent>
+            <MudTh>Date</MudTh>
+            <MudTh>Message</MudTh>
+            <MudTh>Created by</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Date">@context.CreatedDate.ToLocalTime().ToString("dd/MM/yy hh:mm")</MudTd>
+            <MudTd DataLabel="Message">@context.Message</MudTd>
+            <MudTd DataLabel="Created by">@context.EmailAddress</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
 }
 
-
-
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() {
+    private readonly DialogOptions disableBackdropClick = new()
+    {
             DisableBackdropClick = true,
             MaxWidth = MaxWidth.Medium
     };
-    public bool IsLoading { get; set; } = true;
-    public EventCallback<TableRowClickEventArgs<NotificationHistoryDto>> OnClick { get; set; }
-    private string _searchText = "";
-    private NotificationHistoryDto? _selectedItem = null;
-    private HashSet<NotificationHistoryDto> _selectedItems = new HashSet<NotificationHistoryDto>();
+
+    private bool _isLoading = true;
     private NotificationHistoryListViewModel? _model;
 
     protected override async Task OnInitializedAsync()
@@ -58,26 +57,15 @@
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-            // Log
-        }
 
         await base.OnInitializedAsync();
-    }
-    private bool FilterItemsFunc(NotificationHistoryDto item) => FilterFunc(item, _searchText);
-
-    private bool FilterFunc(NotificationHistoryDto item, string searchString)
-    {
-        return string.IsNullOrWhiteSpace(searchString) || item.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase);
     }
 
     private async void GetNotifications()
     {
-        IsLoading = true;
+        _isLoading = true;
         _model = await _client.ListAsync();
-        IsLoading = false;
-        StateHasChanged();
+        _isLoading = false;
     }
 
     private async Task OpenDialog(DialogOptions options)

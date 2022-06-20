@@ -49,15 +49,15 @@
 
 @* TODO: Implement Deleting Skills *@
 @code {
-    bool Loading = true;
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    private string searchString = "";
-    private AdminSkill selectedItem = null;
-    private List<AdminSkill> _model { get; set; }
+    private DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private string searchString = string.Empty;
+    private AdminSkill? selectedItem;
+    private IEnumerable<AdminSkill> _model { get; set; } = Enumerable.Empty<AdminSkill>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         try
         {
             await GetSkills();
@@ -66,23 +66,11 @@
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-        }
-
-        await base.OnInitializedAsync();
     }
 
     private async Task GetSkills()
     {
-        try
-        {
-            _model =  await _client.GetAdminAsync() as List<AdminSkill> ?? new List<AdminSkill>();
-        }
-        catch
-        {
-            //Log.
-        }
+        _model =  await _client.GetAdminAsync();
     }
 
     private async Task OpenDialog(DialogOptions options)
@@ -115,7 +103,7 @@
         
         try
         {
-            await _client.UpsertSkillAsync(new(){ Id = selectedItem.Id, Skill = selectedItem.Name });
+            await _client.UpsertSkillAsync(new(){ Id = selectedItem!.Id, Skill = selectedItem!.Name });
             Snackbar.Add("Updated Skill!", Severity.Success);
         }
         catch

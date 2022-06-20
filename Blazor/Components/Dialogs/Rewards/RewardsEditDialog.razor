@@ -1,27 +1,30 @@
 @using Microsoft.AspNetCore.Components
 @using SSW.Rewards.Admin.Models.Interfaces
-@inject ISnackbar Snackbar
-@inject ILeaderboardClient _client
+
+@inject ILeaderboardClient Client
 
 <MudDialog>
     <TitleContent>
         <div class="d-flex justify-center">
-            <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+            <AdminQRCode Height="200" QRCodeString="@Dto.Code"/>
         </div>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
-        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
-        <MudTextField @bind-Value="@dto.Cost" Label="Cost" AutoFocus="true" />
+        <MudTextField @bind-Value="@Dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+        <MudTextField @bind-Value="@Dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
+        <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true" />
         <MudSelect
             @bind-Value="_selectedValue"
-            T="@LeaderboardUserDto" Label="Assign to User" AnchorOrigin="Origin.CenterLeft" TransformOrigin="Origin.CenterRight" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary">
-            @if (_usersList != null)
+            T="@LeaderboardUserDto"
+            Label="Assign to User"
+            AnchorOrigin="Origin.TopCenter"
+            TransformOrigin="Origin.BottomCenter"
+            Variant="Variant.Outlined"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            AdornmentColor="Color.Primary">
+            @foreach (var usr in _usersList.OrderBy(u => u.Name))
             {
-                foreach (var usr in _usersList)
-                {
-                    <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                }
+                <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
             }
         </MudSelect>
     </DialogContent>
@@ -37,41 +40,35 @@
 @code {
 
     [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
+    MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public RewardAdminViewModel dto { get; set; } = new();
+    public RewardAdminViewModel Dto { get; set; } = new();
 
-    public LeaderboardUserDto _selectedValue { get; set; }
-    private List<LeaderboardUserDto>? _usersList;
-    
-    void Submit() => MudDialog?.Close(DialogResult.Ok(dto));
-    void Cancel() => MudDialog?.Cancel();
-    void Delete() => MudDialog?.Close(DialogResult.Ok(dto.Id));
-    void AssignReward() 
-    {
-        if (_selectedValue != null)
-        {
-            MudDialog?.Close(DialogResult.Ok(new AssignReward
-            {
-                Code = dto.Code,
-                Id = _selectedValue.UserId
-            }));
-        }
-    }
-
+    private LeaderboardUserDto? _selectedValue;
+    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        await base.OnInitializedAsync();
+        _usersList = (await Client.GetAsync()).Users;
+    }
+    
+    void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
+    void Cancel() => MudDialog?.Cancel();
+    void Delete() => MudDialog?.Close(DialogResult.Ok(Dto.Id));
+    
+    void AssignReward()
+    {
+        if (_selectedValue == null)
         {
-            var list = await _client.GetAsync();
-            _usersList = list.Users as List<LeaderboardUserDto>;
+            return;
         }
-        catch
+
+        MudDialog?.Close(DialogResult.Ok(new AssignReward
         {
-            //Log.
-        }
-        base.OnInitialized();
+            Code = Dto.Code,
+            Id = _selectedValue.UserId
+        }));
     }
 }

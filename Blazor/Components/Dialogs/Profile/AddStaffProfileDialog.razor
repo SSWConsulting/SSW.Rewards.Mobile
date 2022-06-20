@@ -6,18 +6,18 @@
         <MudText Typo="Typo.h6">Add Staff Profile</MudText>    
     </TitleContent>
     <DialogContent>
-    <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid" @bind-Errors="@errors">
+    <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid" @bind-Errors="@errors">
         <MudGrid>
                     <MudItem xs="12">
-                        <MudTextField Label="Name" @bind-Value="dto.Name" Required="true" AutoFocus="true"/>
-                        <MudTextField Label="Job Title" @bind-Value="dto.Title"  Required="true" />
-                        <MudTextField Label="Email" @bind-Value="dto.Email"  Required="true" 
+                        <MudTextField Label="Name" @bind-Value="Dto.Name" Required="true" AutoFocus="true"/>
+                        <MudTextField Label="Job Title" @bind-Value="Dto.Title"  Required="true" />
+                        <MudTextField Label="Email" @bind-Value="Dto.Email"  Required="true" 
                                     />
-                        <MudTextField Label="Profile" @bind-Value="dto.Profile" Lines="4" Counter="200" />
-                        <MudTextField Label="Twitter" @bind-Value="dto.TwitterUsername" />
-                        <MudTextField Label="GitHub" @bind-Value="dto.GitHubUsername" />
-                        <MudTextField Label="LinkedIn" @bind-Value="dto.LinkedInUrl"/>
-                        <MudCheckBox T="bool" Label="External" @bind-Value="dto.IsExternal" />
+                        <MudTextField Label="Profile" @bind-Value="Dto.Profile" Lines="4" Counter="200" />
+                        <MudTextField Label="Twitter" @bind-Value="Dto.TwitterUsername" />
+                        <MudTextField Label="GitHub" @bind-Value="Dto.GitHubUsername" />
+                        <MudTextField Label="LinkedIn" @bind-Value="Dto.LinkedInUrl"/>
+                        <MudCheckBox T="bool" Label="External" @bind-Value="Dto.IsExternal" />
                     </MudItem>
             </MudGrid>
     </MudForm >
@@ -30,21 +30,26 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+    
     [Parameter]
-    public StaffDto dto { get; set; } = new();
+    public StaffDto Dto { get; set; } = new();
     
 
-    MudForm form;
-    public bool valid;
-    string[] errors = { };
+    private MudForm? _form;
+    private bool valid;
+    private string[] errors = Array.Empty<string>();
 
-    void Submit()
+    private async Task Submit()
     {
-        form.Validate();
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
         if (valid)
         {
-            MudDialog?.Close(DialogResult.Ok(dto));
+            MudDialog?.Close(DialogResult.Ok(Dto));
         }
     }
 

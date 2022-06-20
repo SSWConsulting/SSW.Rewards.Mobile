@@ -1,66 +1,83 @@
 ﻿@page "/achievements"
+
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
 @using SSW.Rewards.Admin.Components.Dialogs.Achievements
 @using SSW.Rewards.Admin.Models.Interfaces
+
 @attribute [Authorize]
 
 @inject IAchievementClient _client
 @inject IDialogService DialogService
+@inject ISnackbar SnackBar
 
 <MudText Typo="Typo.h2">Achievements</MudText>
 <MudText Typo="Typo.body1">All achievevements available for scanning</MudText>
 
-<AdminTable Items="@(_AchievementItemsViewModels?.Cast<ITableItems>().ToList())"
-            Headings="@_headings"
-            TableTitle="Achievements"
-            SearchPlaceholderText="Search for an Achievement"
-            IsLoading="@Loading"
-            OnClick="@(OnRowClicked)"/>
+<Table TItem="AchievementAdminViewModel"
+       Items="@(_model.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
+       TableTitle="Profiles"
+       OnRowClick="OnRowClicked"
+       IsLoading="@_loading">
+    <ToolbarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search for a Reward"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" />
+    </ToolbarContent>
+    <HeadingTemplate>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
+                Code
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Value)">
+                Value
+            </MudTableSortLabel>
+        </MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Code">
+            <AdminQRCode QRCodeString="@context.Code" Height="100" />
+        </MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Value">
+            @context.Value
+        </MudTd>
+    </RowTemplate>
+</Table>
 
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
 <MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
 
-
-@* TODO: Clean this code up - Move it into code behind *@
-
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    protected bool Loading = true;
+    private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private bool _loading = true;
+    private string _searchString = string.Empty;
+    private IEnumerable<AchievementAdminViewModel> _model = Enumerable.Empty<AchievementAdminViewModel>();
 
-    private readonly List<TableHeaders> _headings = new()
+    protected override async Task OnInitializedAsync()
     {
-        new TableHeaders { Heading = "Code", Overwrite = true },
-        new TableHeaders { Heading = "Name" },
-        new TableHeaders { Heading = "Value" },
-    };
-
-    private AchievementAdminListViewModel? _model;
-
-    protected AchievementAdminListViewModel? Model
-    {
-        get => _model;
-        set
-        {
-            _model = value;
-
-            _AchievementItemsViewModels = _model.Achievements
-                .Select(AchievementItemsViewModel.FromDto)
-                .ToList();
-            Loading = false;
-        }
+        await base.OnInitializedAsync();
+        await GetAchievements();
     }
 
-    private List<AchievementItemsViewModel> _AchievementItemsViewModels;
-
-    private async Task OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
+    private async Task OnRowClicked(TableRowClickEventArgs<AchievementAdminViewModel> obj)
     {
-        var item = _model.Achievements.FirstOrDefault(x => x.Id == obj.Item.Id);
+        var item = _model.FirstOrDefault(x => x.Id == obj.Item.Id);
 
         // TODO: Implement an upsert on the Api 
         //! Note: This is a readonly Dialog, which only allows for viewing and deleting.
-        var parameters = new DialogParameters { ["dto"] = item };
+        var parameters = new DialogParameters { ["Dto"] = item };
         var dialog = DialogService.Show<AchievementEditDialog>("Edit an Achievement", parameters);
         var result = await dialog.Result;
         if (!result.Cancelled)
@@ -69,6 +86,7 @@
             {
                 //! Note: This can error as the StaffMembers table has a reference to Achievements 
                 await _client.DeleteAsync(new(){ Id = id });
+                SnackBar.Add($"Achievement deleted", Severity.Success);
             }
             if (result.Data is AchievementAdminViewModel dto)
             {
@@ -78,6 +96,7 @@
                     Value = dto.Value,
                     Type = dto.Type
                 });
+                SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }
             if (result.Data is AssignReward usr)
             {
@@ -89,6 +108,7 @@
                     Code = usr.Code,
                     UserId = usr.Id
                 });
+                SnackBar.Add($"Achievement claimed", Severity.Success);
             }
             await GetAchievements();
         }
@@ -102,22 +122,14 @@
         {
             if (result.Data is AchievementAdminViewModel dto)
             {
-                try
-                {
-                    await _client.CreateAsync(
-                        new CreateAchievementCommand
-                        {
-                            Name = dto.Name,
-                            Value = dto.Value,
-                            Type = dto.Type
-                        }
-                        );
-                }
-                catch
-                {
-                    //Log and show nice notification
-                }
-
+                await _client.CreateAsync(
+                    new CreateAchievementCommand
+                    {
+                        Name = dto.Name,
+                        Value = dto.Value,
+                        Type = dto.Type
+                    });
+                SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }
             await GetAchievements();
         }
@@ -127,50 +139,14 @@
     {
         try
         {
-            Model = await _client.AdminListAsync();
+            _loading = true;
+            await Task.Delay(250);
+            _model = (await _client.AdminListAsync()).Achievements;
+            _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-    // ignored
-        }
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetAchievements();
-
-        await base.OnInitializedAsync();
-    }
-
-    public class AchievementItemsViewModel : ITableItems
-    {
-        public int Value { get; set; }
-        public string Code { get; set; }
-
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public static AchievementItemsViewModel FromDto(AchievementAdminViewModel dto)
-            => new()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Value = dto.Value,
-                Code = dto.Code,
-            };
-
-        public RenderFragment OverwriteRowRender(string rowName)
-        {
-            if (rowName == "Code")
-            {
-                return @<AdminQRCode Height="100" QRCodeString="@Code"/>;
-            }
-            return null;
-        }
-    }
-
 }

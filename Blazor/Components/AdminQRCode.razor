@@ -23,7 +23,7 @@
         QRCodeData qrCodeData = qrGenerator.CreateQrCode(QRCodeString, QRCodeGenerator.ECCLevel.Q);
         PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
         byte[] qrCodeAsPngByteArr = qrCode.GetGraphic(20);
-        QRCodeStr = "data:image/png;base64," + Convert.ToBase64String(qrCodeAsPngByteArr);
+        QRCodeStr = $"data:image/png;base64,{Convert.ToBase64String(qrCodeAsPngByteArr)}";
     }
 
 }

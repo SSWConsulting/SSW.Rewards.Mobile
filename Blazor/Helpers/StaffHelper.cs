@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Admin.Helpers
 {
-    public class StaffHelper
+    public static class StaffHelper
     {
         public static UpsertStaffMemberProfileCommand FromDto(StaffDto dto)
         {
@@ -16,6 +16,7 @@
                 Profile = dto.Profile ?? string.Empty,
                 ProfilePhoto = dto.ProfilePhoto != null ? new Uri(dto.ProfilePhoto) : null,
                 Skills = (ICollection<StaffSkillDto>)dto.Skills,
+                Points = dto.StaffAchievement.Value,
             };
         }
     }

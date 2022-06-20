@@ -1,7 +1,7 @@
 ﻿@page "/leaderboard"
+
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
-@using SSW.Rewards.Admin.Models.Interfaces
 @using SSW.Rewards.Admin.Components
 
 @attribute [Authorize]
@@ -11,110 +11,87 @@
 <MudText Typo="Typo.h2">Leaderboard</MudText>
 <MudText Typo="Typo.body1">All users ranked by total points</MudText>
 
-<AdminTable Items="@(_leaderboardItemsViewModels?.Cast<ITableItems>().ToList())"
-            Headings="@_headings"
-            TableTitle="Leaderboard"
-            SearchPlaceholderText="Search the leaderboard by name"
-            IsLoading="@Loading"
-            OnClick="@(OnRowClicked)"/>
+<Table TItem="LeaderboardUserDto"
+       Items="@(_model.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
+       TableTitle="Leaderboard"
+       IsLoading="@_loading">
+    <ToolbarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search the leaderboard by name"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" />
+    </ToolbarContent>
+    <HeadingTemplate>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.Rank)" InitialDirection="SortDirection.Ascending">
+                Rank
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.Balance)">
+                Balance
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisMonth)">
+                Points This Month
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisYear)">
+                Points This Year
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.TotalPoints)">
+                Total Points
+            </MudTableSortLabel>
+        </MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Rank">@context.Rank</MudTd>
+        <MudTd DataLabel="Name">
+            <div class="d-flex flex-nowrap gap-2 align-center">
+                <Avatar Url="@context.ProfilePic"/>
+                <MudText Typo="Typo.body1">@context.Name</MudText>
+            </div>
+        </MudTd>
+        <MudTd DataLabel="Balance">@context.Balance</MudTd>
+        <MudTd DataLabel="PointsThisMonth">@context.PointsThisMonth</MudTd>
+        <MudTd DataLabel="PointsThisYear">@context.PointsThisYear</MudTd>
+        <MudTd DataLabel="TotalPoints">@context.TotalPoints</MudTd>
+    </RowTemplate>
+</Table>
 
 @* TODO: Move this to the code behind? *@
 @code {
-    protected bool Loading = true;
-    
-    private LeaderboardListViewModel? _model;
-    protected LeaderboardListViewModel? Model
-    {
-        get => _model;
-        set
-        {
-            _model = value;
-            _leaderboardItemsViewModels = _model?.Users
-                .Select(LeaderboardItemsViewModel.FromDto)
-                .ToList();
-            Loading = false;
-        }
-    }
-    
-    private List<LeaderboardItemsViewModel>? _leaderboardItemsViewModels;
-    private readonly List<TableHeaders> _headings = new()
-    {
-        new TableHeaders { Heading = "Rank"},
-        new TableHeaders { Heading = "Name", Overwrite = true  },
-        new TableHeaders { Heading = "Balance" },
-        new TableHeaders { Heading = "PointsThisMonth", Label= "Points This Month"  },
-        new TableHeaders { Heading = "PointsThisYear", Label = "Points This Year" },
-        new TableHeaders { Heading = "TotalPoints", Label = "Total Points" },
-    };
+    private bool _loading = true;
+    private string _searchString = string.Empty;
+    private IEnumerable<LeaderboardUserDto> _model = Enumerable.Empty<LeaderboardUserDto>();
 
-    private void OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
-    {
-        var item = _model?.Users.FirstOrDefault(x => x.UserId == obj.Item.Id);
-    }
-    
     protected override async Task OnInitializedAsync()
     {
-        await GetLeaderboard();
-
         await base.OnInitializedAsync();
+        await GetLeaderboard();
     }
-    
-    protected async Task GetLeaderboard()
+
+    private async Task GetLeaderboard()
     {
         try
         {
-            Model = await _client.GetAsync();
+            _loading = true;
+            await Task.Delay(250);
+            _model = (await _client.GetAsync()).Users;
+            _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-        catch (Exception ex)
-        {
-
-        }
-    }
-
-    public class LeaderboardItemsViewModel : ITableItems
-    {
-        public int TotalPoints { get; set; }
-        public int PointsThisYear { get; set; }
-        public int PointsThisMonth { get; set; }
-        public int Balance { get; set; }
-        public int Rank { get; set; }
-        public Uri ProfilePic { get; set; }
-        
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public RenderFragment OverwriteRowRender(string rowName)
-        {
-            if (rowName == "Name")
-            {
-                return @<div class="d-flex flex-nowrap gap-2 align-center">
-                           @if (@ProfilePic?.AbsoluteUri != null)
-                           {
-                               <MudImage Src="@ProfilePic.AbsoluteUri" Alt="Users Profile Picture" Elevation="5" Class="rounded-circle"/>
-                           }
-                           else
-                           {
-                               <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
-                           }
-                           <MudText Typo="Typo.body1">@Name</MudText>
-                       </div>;
-            }
-            return null;
-        }
-        public static LeaderboardItemsViewModel FromDto(LeaderboardUserDto dto)
-            => new()
-            {
-                Id = dto.UserId,
-                Name = dto.Name,
-                Rank = dto.Rank,
-                TotalPoints = dto.TotalPoints,
-                PointsThisMonth = dto.PointsThisMonth,
-                PointsThisYear = dto.PointsThisYear,
-                Balance = dto.Balance,
-                ProfilePic = dto.ProfilePic != null ? new Uri(dto.ProfilePic) : null
-            };
     }
 }

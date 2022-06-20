@@ -3,10 +3,10 @@
         <MudText Typo="Typo.h6">Add Achievement</MudText>    
     </TitleContent>
     <DialogContent>
-        <MudForm  @ref="form" Model="@dto" @bind-IsValid="@valid">
-            <MudTextField Class="d-inline" T="string" Label="Achievement Name" @bind-Value="@dto.Name" AutoFocus="true" Required="true"/>
-            <MudTextField Class="d-inline" T="int" Label="Achievement Value" @bind-Value="@dto.Value" Required="true"/>
-            <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
+        <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@_valid">
+            <MudTextField Class="d-inline" T="string" Label="Achievement Name" @bind-Value="@Dto.Name" AutoFocus="true" Required="true"/>
+            <MudTextField Class="d-inline" T="int" Label="Achievement Value" @bind-Value="@Dto.Value" Required="true"/>
+            <MudSelect @bind-Value="@Dto.Type" Label="Achievement Type">
                 @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
                 {
                     <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
@@ -24,20 +24,26 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    private MudForm? _form;
+    private bool _valid;
+    
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+    
     [Parameter]
-    public AchievementAdminViewModel dto { get; set; } = new();
-    
-    MudForm form;
-    public bool valid;
-    
-    void Submit()
+    public AchievementAdminViewModel Dto { get; set; } = new();
+
+    private async Task Submit()
     {
-        form.Validate();
-        if (valid)
+        if (_form is not null)
         {
-            MudDialog?.Close(DialogResult.Ok(dto));
+            await _form.Validate();   
+        }
+        if (_valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(Dto));
         }
     }
-    void Cancel() => MudDialog?.Cancel();
+    
+    private void Cancel() => MudDialog?.Cancel();
 }

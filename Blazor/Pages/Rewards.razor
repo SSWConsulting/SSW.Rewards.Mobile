@@ -1,4 +1,5 @@
 ﻿@page "/rewards"
+
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.Components
@@ -9,55 +10,89 @@
 
 @inject IRewardClient _client
 @inject IDialogService DialogService
+@inject ISnackbar SnackBar
 
 <MudText Typo="Typo.h2">Rewards</MudText>
 <MudText Typo="Typo.body1">All rewards available to be claimed</MudText>
 
-<AdminTable Items="@(_rewardItemsViewModels?.Cast<ITableItems>().ToList())"
-            Headings="@_headings"
-            TableTitle="Rewards"
-            SearchPlaceholderText="Search for a Reward"
-            IsLoading="@Loading"
-            OnClick="@(OnRowClicked)"/>
+<Table TItem="RewardAdminViewModel"
+       Items="@(_model.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
+       TableTitle="Profiles"
+       OnRowClick="OnRowClicked"
+       IsLoading="@_loading">
+    <ToolbarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search for a Reward"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" />
+    </ToolbarContent>
+    <HeadingTemplate>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
+                Code
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Cost)">
+                Cost
+            </MudTableSortLabel>
+        </MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Code">
+            <AdminQRCode QRCodeString="@context.Code" Height="100" />
+        </MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Cost">
+            @context.Cost
+        </MudTd>
+    </RowTemplate>
+</Table>
 
 @* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
 <MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
 
-
-@* TODO: Move this to the code behind? *@
 @code {
-    DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    protected bool Loading = true;
-    
-    private RewardAdminListViewModel? _model;
-    protected RewardAdminListViewModel? Model
+    private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private bool _loading = true;
+    private string _searchString = string.Empty;
+    private IEnumerable<RewardAdminViewModel> _model = Enumerable.Empty<RewardAdminViewModel>();
+
+    protected override async Task OnInitializedAsync()
     {
-        get => _model;
-        set
+        await base.OnInitializedAsync();
+        await GetRewards();
+    }
+
+    private async Task GetRewards()
+    {
+        try
         {
-            _model = value;
-            _rewardItemsViewModels = _model?.Rewards
-                .Select(RewardItemsViewModel.FromDto)
-                .ToList();
-            Loading = false;
+            _loading = true;
+            await Task.Delay(250);
+            _model = (await _client.AdminListAsync()).Rewards;
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
         }
     }
-    private List<RewardItemsViewModel>? _rewardItemsViewModels;
     
-    private readonly List<TableHeaders> _headings = new()
+    private async Task OnRowClicked(TableRowClickEventArgs<RewardAdminViewModel> obj)
     {
-        new TableHeaders { Heading = "Code", Overwrite = true },
-        new TableHeaders { Heading = "Name" },
-        new TableHeaders { Heading = "Cost" },
-    };
-    
-    private async Task OnRowClicked(TableRowClickEventArgs<ITableItems> obj)
-    {
-        var item = _model?.Rewards.FirstOrDefault(x => x.Id == obj.Item.Id);
+        var item = _model.FirstOrDefault(x => x.Id == obj.Item.Id);
 
         // TODO: Implement this on the Api 
         //! Note: This is a readonly Dialog, which only allows for viewing and deleting.
-        var parameters = new DialogParameters { ["dto"]=item };
+        var parameters = new DialogParameters { ["Dto"]=item };
         var dialog = DialogService.Show<RewardsEditDialog>("Edit a Reward", parameters);
         var result = await dialog.Result;
         if (!result.Cancelled)
@@ -66,6 +101,7 @@
             {
                 case int id:
                     await _client.DeleteAsync(new(){ Id = id });
+                    SnackBar.Add($"Reward deleted", Severity.Success);
                     break;
                 case RewardAdminViewModel dto:
                     await _client.UpdateRewardAsync(new UpdateRewardCommand
@@ -73,6 +109,7 @@
                         Id = dto.Id,
                         Cost = dto.Cost
                     });
+                    SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
                     break;
                 case AssignReward usr:
                     if (usr?.Id == null) return;
@@ -83,6 +120,7 @@
                         Code = usr.Code,
                         UserId = usr.Id
                     });
+                    SnackBar.Add($"Reward claimed", Severity.Success);
                     break;
             }
             await GetRewards();
@@ -104,67 +142,9 @@
                     Cost = dto.Cost,
                     RewardType = RewardType.Digital
                 });
+                SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
             }
             await GetRewards();
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            await GetRewards();
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-        catch (Exception ex)
-        {
-
-        }
-
-        await base.OnInitializedAsync();
-    }
-    
-    protected async Task GetRewards()
-    {
-        try
-        {
-            Model = await _client.AdminListAsync();
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-        catch (Exception ex)
-        {
-
-        }
-    }
-
-    public class RewardItemsViewModel : ITableItems
-    {
-        public int Cost { get; set; }
-        public string Code { get; set; }
-        
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public RenderFragment OverwriteRowRender(string rowName)
-        {
-            if (rowName == "Code")
-            {
-                return @<AdminQRCode Height="100" QRCodeString="@Code"/>;
-            }
-            return null;
-        }
-        public static RewardItemsViewModel FromDto(RewardAdminViewModel dto)
-            => new()
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Cost = dto.Cost,
-                Code = dto.Code,
-            };
     }
 }
