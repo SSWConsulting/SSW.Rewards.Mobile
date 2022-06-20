@@ -71,12 +71,6 @@ jobs:
       run: |
         mv "/Applications/Visual Studio.app" "/Applications/Visual Studio 2022.app"
         mv "/Applications/Visual Studio 2019.app" "/Applications/Visual Studio.app"
-
-      # macOS agents recently have empty NuGet config files, resulting in restore failures,
-      # see https://github.com/actions/virtual-environments/issues/5768
-      # Add the global nuget package source manually for now.
-    - name: Setup NuGet.Config
-      run: echo '<configuration><packageSources><add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" /></packageSources></configuration>' > ~/.config/NuGet/NuGet.Config
       
     - name: Set default Xamarin SDK versions
       run: |
