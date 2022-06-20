@@ -24,7 +24,7 @@ jobs:
         fetch-depth: 0
     - name: Set Xamarin Android Version 
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --android=11.2
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=11.0 --android=11.2
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
@@ -72,7 +72,7 @@ jobs:
         fetch-depth: 0
     - name: Set Xamarin iOS version
       run: |
-        $VM_ASSETS/select-xamarin-sdk-v2.sh --ios=15.8
+        $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=11.0 --ios=15.8
 
     - name: Install dependencies
       run: nuget restore Xamarin/SSW.Rewards.sln
