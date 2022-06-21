@@ -29,9 +29,12 @@ namespace SSW.Rewards.WebAPI.Controllers
 
         [HttpGet]
         [Authorize(Roles = AuthorizationRoles.Admin)]
-        public async Task<ActionResult<AchievementAdminListViewModel>> AdminList()
+        public async Task<ActionResult<AchievementAdminListViewModel>> AdminList([FromQuery] bool includeArchived = false)
         {
-            return Ok(await Mediator.Send(new GetAchievementAdminListQuery()));
+            return Ok(await Mediator.Send(new GetAchievementAdminListQuery
+            {
+                IncludeArchived = includeArchived,
+            }));
         }
 
         [HttpPost]
