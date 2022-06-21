@@ -16,7 +16,7 @@
 <MudText Typo="Typo.body1">All achievevements available for scanning</MudText>
 
 <Table TItem="AchievementAdminViewModel"
-       Items="@(_model.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
+       Items="FilteredAchievementList"
        TableTitle="Profiles"
        OnRowClick="OnRowClicked"
        IsLoading="@_loading">
@@ -24,21 +24,23 @@
         <MudTextField @bind-Value="_searchString"
                       Placeholder="Search for a Reward"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" />
+                      Class="mt-0"/>
+        
+        <MudCheckBox @bind-Checked="ShowArchived" Label="Show archived"></MudCheckBox>
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
                 Code
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Name)">
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Name)">
                 Name
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel,object>(x => x.Value)">
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Value)">
                 Value
             </MudTableSortLabel>
         </MudTh>
@@ -64,6 +66,11 @@
     private bool _loading = true;
     private string _searchString = string.Empty;
     private IEnumerable<AchievementAdminViewModel> _model = Enumerable.Empty<AchievementAdminViewModel>();
+
+    private IEnumerable<AchievementAdminViewModel> FilteredAchievementList => _model
+        .Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase) && (ShowArchived || !s.IsArchived.GetValueOrDefault(false)));
+
+    private bool ShowArchived { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -141,7 +148,7 @@
         {
             _loading = true;
             await Task.Delay(250);
-            _model = (await _client.AdminListAsync()).Achievements;
+            _model = (await _client.AdminListAsync(true)).Achievements;
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)

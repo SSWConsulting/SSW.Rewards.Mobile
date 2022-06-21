@@ -25,11 +25,11 @@ namespace SSW.Rewards
         System.Threading.Tasks.Task<AchievementListViewModel> ListAsync(System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync();
+        System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(bool? includeArchived);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(bool? includeArchived, System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AchievementAdminViewModel> CreateAsync(CreateAchievementCommand command);
@@ -180,17 +180,22 @@ namespace SSW.Rewards
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync()
+        public System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(bool? includeArchived)
         {
-            return AdminListAsync(System.Threading.CancellationToken.None);
+            return AdminListAsync(includeArchived, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AchievementAdminListViewModel> AdminListAsync(bool? includeArchived, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Achievement/AdminList");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Achievement/AdminList?");
+            if (includeArchived != null) 
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("includeArchived") + "=").Append(System.Uri.EscapeDataString(ConvertToString(includeArchived, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -4819,6 +4824,9 @@ namespace SSW.Rewards
     
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AchievementType Type { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("isArchived", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? IsArchived { get; set; }
     
     
     }
