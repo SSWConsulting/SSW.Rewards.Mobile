@@ -11,6 +11,8 @@ namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList
 {
     public class GetAchievementAdminListQuery : IRequest<AchievementAdminListViewModel>
     {
+        public bool IncludeArchived { get; set; }
+        
         public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievementAdminListQuery, AchievementAdminListViewModel>
         {
             private readonly IMapper _mapper;
@@ -27,9 +29,9 @@ namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList
             {
                 var results = await _context
                     .Achievements
-                    .Where(a => !a.IsDeleted) // TODO: remove this when we add a 'show archived' filter to the admn portal. See: Product Backlog Item 70587: 🔥Blazor - Add 'show archived achievements' to filter by isdeleted
+                    .Where(a => request.IncludeArchived || !a.IsDeleted)
                     .ProjectTo<AchievementAdminViewModel>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 return new AchievementAdminListViewModel
                 {

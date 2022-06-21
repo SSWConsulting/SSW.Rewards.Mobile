@@ -7,5 +7,6 @@
         public int Value { get; set; }
         public string Code { get; set; }
         public AchievementType Type { get; set; }
+        public bool? IsArchived { get; set; } 
     }
 }
