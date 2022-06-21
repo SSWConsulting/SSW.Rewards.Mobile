@@ -1,7 +1,9 @@
 @using Microsoft.AspNetCore.Components
+@using SSW.Rewards.Admin.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.Models.Interfaces
 
 @inject ILeaderboardClient Client
+@inject IDialogService DialogService
 
 <MudDialog>
     <TitleContent>
@@ -56,8 +58,21 @@
     
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
     void Cancel() => MudDialog?.Cancel();
-    void Delete() => MudDialog?.Close(DialogResult.Ok(Dto.Id));
-    
+    async Task Delete()
+    {
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{Dto.Name}?\"",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Deleting will prevent future users from claiming points for this reward")
+            ).Result;
+
+        if (!result.Cancelled && (bool) result.Data)
+        {
+            MudDialog?.Close(DialogResult.Ok(Dto.Id));
+        }
+    }
+
     void AssignReward()
     {
         if (_selectedValue == null)

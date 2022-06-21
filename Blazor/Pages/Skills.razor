@@ -1,6 +1,7 @@
 @page "/Skills"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.Components.Dialogs.Skills
 @using SSW.Rewards.Admin.Models.Interfaces
 
@@ -114,11 +115,22 @@
 
     private async Task OnDeletedClicked(AdminSkill item)
     {
-        await _client.DeleteSkillAsync(new DeleteSkillCommand
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{item.Name}?\"",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Deleting will remove this skill from all users")
+            ).Result;
+
+        if (!result.Cancelled && (bool) result.Data)
         {
-            Id = item.Id
-        });
-        await GetSkills();
+            await _client.DeleteSkillAsync(new DeleteSkillCommand
+            {
+                Id = item.Id
+            });
+            await GetSkills();
+        }
+        
     }
     
 

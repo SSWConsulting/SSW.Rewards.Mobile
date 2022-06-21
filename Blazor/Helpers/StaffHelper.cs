@@ -16,7 +16,7 @@
                 Profile = dto.Profile ?? string.Empty,
                 ProfilePhoto = dto.ProfilePhoto != null ? new Uri(dto.ProfilePhoto) : null,
                 Skills = (ICollection<StaffSkillDto>)dto.Skills,
-                Points = dto.StaffAchievement.Value,
+                Points = dto.StaffAchievement?.Value ?? 0,
             };
         }
     }

@@ -1,7 +1,9 @@
 @using Microsoft.AspNetCore.Components
+@using SSW.Rewards.Admin.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.Models.Interfaces
 
 @inject ILeaderboardClient _client
+@inject IDialogService DialogService
 
 <MudDialog>
     <TitleContent>
@@ -37,7 +39,7 @@
     <DialogActions>
         <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton OnClick="ClaimAchievement" Color="Color.Info">Claim Achievemnet for User</MudButton>
+        <MudButton OnClick="ClaimAchievement" Color="Color.Info">Claim Achievement for User</MudButton>
         <MudButton 
             Variant="Variant.Filled"
             Color="Color.Primary"
@@ -71,9 +73,19 @@
         MudDialog?.Cancel();
     }
 
-    void Delete()
+    async Task Delete()
     {
-        MudDialog?.Close(DialogResult.Ok(dto.Id));
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{dto.Name}?\"",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Deleting will prevent future users from claiming points for this achievement")
+            ).Result;
+
+        if (!result.Cancelled && (bool) result.Data)
+        {
+            MudDialog?.Close(DialogResult.Ok(dto.Id));
+        }
     }
 
     private void ClaimAchievement()
