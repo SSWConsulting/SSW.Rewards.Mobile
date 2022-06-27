@@ -58,8 +58,9 @@
     </RowTemplate>
 </Table>
 
-@* TODO: Make this like current rewards (sticky to the bottom right with padding from the bottom of the table when scrolled to the bottom)   *@
-<MudFab Class="sticky object-right-bottom" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+<FabContainer>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+</FabContainer>
 
 @code {
     private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };

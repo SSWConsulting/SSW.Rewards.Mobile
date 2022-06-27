@@ -1,0 +1,8 @@
+<div class="fab-container">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+}
