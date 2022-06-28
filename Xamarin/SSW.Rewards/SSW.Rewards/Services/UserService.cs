@@ -84,6 +84,10 @@ namespace SSW.Rewards.Services
                     return ApiStatus.LoginFailure;
                 }
             }
+            catch(TaskCanceledException taskEx)
+            {
+                return ApiStatus.LoginFailure;
+            }
             catch (Exception ex)
             {
                 return ApiStatus.Error;
