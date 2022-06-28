@@ -27,3 +27,20 @@ The resource names are in the process of being changed to align with the diagram
 ### Auth
 Auth is excluded from the architecture diagram. If you are working on auth, refer to the [SSW.IdentityServer](https://github.com/SSWConsulting/SSW.IdentityServer) project.
 
+### Architecture Diagrams 
+
+![Xamarin Architecture](imgs/ssw-rewards-xamarin-architecture-diagram.drawio.png)
+
+**Figure: Xamarin Architecture Diagram**
+
+![Azure Notifications Hub Architecture](imgs/azure-notifications-hub-architecture-diagram.drawio.png)
+
+**Figure: Azure Notifications Hub Architecture Diagram**
+
+![Admin Portal (Blazor) Architecture](imgs/admin-portal-blazor-architecture-diagram.drawio.png)
+
+**Figure: Admin Portal Architecture Diagram**
+
+![Admin Portal (React) Architecture](imgs/admin-portal-react-architecture-diagram.drawio.png)
+
+**Figure: Admin Portal (React) Architecture Diagram**
