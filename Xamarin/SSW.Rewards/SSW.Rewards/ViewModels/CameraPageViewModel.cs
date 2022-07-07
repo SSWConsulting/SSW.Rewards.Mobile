@@ -14,7 +14,7 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnChoosePhotoTapped { get; set; }
         public ICommand UseButtonTapped { get; set; }
 
-        public bool UseButtonEnabled { get; set; } = false;
+        public bool UseButtonEnabled { get; set; }
 
         public ImageSource ProfilePicture { get; set; } = ImageSource.FromFile("");
 
