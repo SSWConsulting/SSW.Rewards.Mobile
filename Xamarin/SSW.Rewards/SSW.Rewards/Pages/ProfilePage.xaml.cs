@@ -45,5 +45,11 @@ namespace SSW.Rewards.Pages
             ProfilePageSnackbar.Options = e.Options;
             await ProfilePageSnackbar.ShowSnackbar();
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            viewModel.OnDisappearing();
+        }
     }
 }
