@@ -32,6 +32,17 @@
           "Achievement"
         ],
         "operationId": "Achievement_AdminList",
+        "parameters": [
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1348,6 +1359,10 @@
           },
           "type": {
             "$ref": "#/components/schemas/AchievementType"
+          },
+          "isArchived": {
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
