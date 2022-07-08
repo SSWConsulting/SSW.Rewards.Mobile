@@ -17,14 +17,14 @@ namespace SSW.Rewards.Pages
 
         public async void Handle_OnScanResult(Result result)
         {
-            scannerView.IsScanning = false;
+            scannerView.IsAnalyzing = false;
             await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            scannerView.IsScanning = false;
+            scannerView.IsAnalyzing = false;
             MessagingCenter.Unsubscribe<object>(this, EnableScannerMessage);
         }
 
@@ -32,20 +32,12 @@ namespace SSW.Rewards.Pages
         {
             base.OnAppearing();
             MessagingCenter.Subscribe<object>(this, EnableScannerMessage, (obj) => EnableScanner());
-            scannerView.IsScanning = true;
+            scannerView.IsAnalyzing = true;
         }
 
         private void EnableScanner()
         {
-            try
-            {
-                scannerView.IsScanning = true;
-            }
-            catch (System.Exception ex)
-            {
-
-                throw;
-            }
+            scannerView.IsAnalyzing = true;
         }
     }
 }

@@ -19,6 +19,6 @@
                                 WidthRequest="300"
                                 HeightRequest="300"/>
 
-            <Image Source="qr_reticle"/>
+        <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>
