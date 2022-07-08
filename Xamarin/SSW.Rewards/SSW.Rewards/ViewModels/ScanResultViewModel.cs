@@ -58,7 +58,7 @@ namespace SSW.Rewards.ViewModels
                 case ScanResult.Added:
                     if(result.ScanType == ScanType.Achievement)
                     {
-                        ResultHeading = "Achivement Added!";
+                        ResultHeading = "Achievement Added!";
                         AnimationRef = "star.json";
                         ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
                     }
