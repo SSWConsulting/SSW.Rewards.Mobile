@@ -14,11 +14,11 @@
                    TextColor="White"/>
         </StackLayout>
         <zxing:ZXingScannerView x:Name="scannerView"
-                                    OnScanResult="Handle_OnScanResult"
-                                    IsScanning="true"
-                                    WidthRequest="300"
-                                    HeightRequest="300"/>
+                                OnScanResult="Handle_OnScanResult"
+                                IsScanning="true"
+                                WidthRequest="300"
+                                HeightRequest="300"/>
 
-            <Image Source="qr_reticle"/>
+        <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>

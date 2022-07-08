@@ -9,6 +9,7 @@ namespace SSW.Rewards.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ScanPage : ContentPage
     {
+        public const string EnableScannerMessage = "EnableScanner";
         public ScanPage()
         {
             InitializeComponent();
@@ -16,22 +17,27 @@ namespace SSW.Rewards.Pages
 
         public async void Handle_OnScanResult(Result result)
         {
-            scannerView.IsScanning = false;
+            scannerView.IsAnalyzing = false;
             await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            scannerView.IsScanning = false;
-            MessagingCenter.Unsubscribe<object>(this, "EnableScanner");
+            scannerView.IsAnalyzing = false;
+            MessagingCenter.Unsubscribe<object>(this, EnableScannerMessage);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            MessagingCenter.Subscribe<object>(this, "EnableScanner", (obj) => scannerView.IsScanning = true);
-            scannerView.IsScanning = true;
+            MessagingCenter.Subscribe<object>(this, EnableScannerMessage, (obj) => EnableScanner());
+            scannerView.IsAnalyzing = true;
+        }
+
+        private void EnableScanner()
+        {
+            scannerView.IsAnalyzing = true;
         }
     }
 }

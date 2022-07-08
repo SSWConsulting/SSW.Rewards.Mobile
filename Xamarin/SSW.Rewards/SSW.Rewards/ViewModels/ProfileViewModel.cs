@@ -355,5 +355,16 @@ namespace SSW.Rewards.ViewModels
                 return $"{prefix} {action} {activity}";
             }
         }
+
+        // The following method is required as a workaround
+        // for a bug in Xamarin.Forms. See:
+        // https://github.com/xamarin/Xamarin.Forms/issues/14952
+        // for both the issue and the workaround.
+        public void OnDisappearing()
+        {
+            IsBusy = false;
+            IsLoading = false;
+            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+        }
     }
 }

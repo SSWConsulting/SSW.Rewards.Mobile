@@ -1,5 +1,6 @@
 ﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Models;
+using SSW.Rewards.Pages;
 using SSW.Rewards.Services;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,13 +11,21 @@ namespace SSW.Rewards.ViewModels
     public class ScanResultViewModel : BaseViewModel
     {
         public string AnimationRef { get; set; }
+
         public bool AnimationLoop { get; set; }
+        
         public string ResultHeading { get; set; }
+        
         public string ResultBody { get; set; }
+        
         public string AchievementHeading { get; set; }
+        
         public ICommand OnOkCommand { get; set; }
+        
         public Color HeadingColour { get; set; }
+        
         private IUserService _userService { get; set; }
+        
         private IScannerService _scannerService { get; set; }
 
         private bool _wonPrize { get; set; }
@@ -49,8 +58,8 @@ namespace SSW.Rewards.ViewModels
                 case ScanResult.Added:
                     if(result.ScanType == ScanType.Achievement)
                     {
-                        ResultHeading = "Achivement Added!";
-                        AnimationRef = "coin.json";
+                        ResultHeading = "Achievement Added!";
+                        AnimationRef = "star.json";
                         ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
                     }
                     else if(result.ScanType == ScanType.Reward)
@@ -63,14 +72,14 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
-                    MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
+                    MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
                     break;
 
                 case ScanResult.Duplicate:
                     AnimationRef = "rapid-scan.json";
                     AnimationLoop = true;
                     ResultHeading = "Already Scanned!";
-                    ResultBody = "Are you scanning a bit too aggressively?";
+                    ResultBody = "Did you re-scan that accidentally?";
                     AchievementHeading = string.Empty;
                     HeadingColour = Color.White;
                     _wonPrize = false;
@@ -109,7 +118,7 @@ namespace SSW.Rewards.ViewModels
             if (result.result == ScanResult.Added)
             {
                 await _userService.UpdateMyDetailsAsync();
-                MessagingCenter.Send(this, ScannerService.PointsAwardedMessage);
+                MessagingCenter.Send(this, ScannerService.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
             }
         }
 
@@ -133,7 +142,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task DismissWithoutWon()
         {
-            MessagingCenter.Send(this, "EnableScanner");
+            MessagingCenter.Send<object>(this, ScanPage.EnableScannerMessage); // TODO: dependency on page here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
             await PopupNavigation.Instance.PopAllAsync();
         }
     }

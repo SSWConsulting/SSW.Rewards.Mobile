@@ -144,6 +144,7 @@
     <BundleResource Include="Sophie.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="star.json" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\SSWwhite.imageset\SSWwhite%403x.png">

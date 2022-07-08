@@ -36,7 +36,7 @@ namespace SSW.Rewards
                 e.IsSubclassOf(typeof(Page)) ||
                 e.IsSubclassOf(typeof(BaseViewModel))))
             {
-                Container.Register(type.AsType());
+                Container.Register(type.AsType()).AsMultiInstance();
             }
 
             Container.Register<ILeaderService, LeaderService>();
