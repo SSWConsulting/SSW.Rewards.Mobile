@@ -2,6 +2,7 @@
 {
     public enum Icons
     {
+
          Twitter,
 
          Github,
@@ -76,5 +77,7 @@
          Info,
 
          QRCode,
+
+         Angular,
     }
 }
