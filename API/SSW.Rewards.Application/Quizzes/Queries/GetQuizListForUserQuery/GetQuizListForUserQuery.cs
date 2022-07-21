@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
-using System;
+using SSW.Rewards.Application.Users.Common.Interfaces;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,31 +15,51 @@ namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUserQuery
 
         public sealed class Handler : IRequestHandler<GetQuizListForUserQuery, IEnumerable<QuizDto>>
         {
-            private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
-            private readonly ICurrentUserService _userService;
-
+            private readonly ICurrentUserService _currentUserService;
+            private readonly IUserService _userService;
             public Handler(
-                IMapper mapper,
-                ISSWRewardsDbContext context)
+                ISSWRewardsDbContext context,
+                ICurrentUserService currentUserService,
+                IUserService userService)
             {
-                _mapper = mapper;
-                _context = context;
+                _context            = context;
+                _currentUserService = currentUserService;
+                _userService        = userService;
             }
 
             public async Task<IEnumerable<QuizDto>> Handle(GetQuizListForUserQuery request, CancellationToken cancellationToken)
             {
-                return new List<QuizDto>
+                // get all quizzes
+                var masterQuizList = await _context.Quizzes
+                                                    .Include(q => q.Questions)
+                                                        .ThenInclude(x => x.Answers)
+                                                    .OrderBy(q => q.Title)
+                                                    .AsNoTracking()
+                                                    .ToListAsync(cancellationToken);
+
+                // get the quiz Ids for the quizzes the user has completed so we can mark off 
+                // the quizzes that they've already completed
+                var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());
+                var userQuizzes = await _context.CompletedQuizzes
+                                                .Where(q => q.UserId == userId)
+                                                .Select(r => r.QuizId)
+                                                .ToListAsync(cancellationToken);
+
+                List<QuizDto> retVal = new List<QuizDto>();
+                foreach(var quiz in masterQuizList)
                 {
-                    new QuizDto
+                    retVal.Add(new QuizDto
                     {
-                        Id = 1,
-                        Title = "Angular",
-                        Description = "Sick Angular quiz!",
-                        Icon = Domain.Entities.Icons.Angular,
-                        Passed = false
-                    }
-                };
+                        Id          = quiz.Id,
+                        Title       = quiz.Title,
+                        Description = quiz.Description,
+                        Icon        = quiz.Icon,
+                        Passed      = userQuizzes.Contains(quiz.Id)
+                    });
+                }
+
+                return retVal;
             }
         }
 

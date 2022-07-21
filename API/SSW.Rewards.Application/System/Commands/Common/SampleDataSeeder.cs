@@ -46,7 +46,7 @@ namespace SSW.Rewards.Application.System.Commands.Common
             SetupAchievement(existingAchievements, MilestoneAchievements.AttendUG, 200, AchievementType.Completed, Icons.Puzzle);
             SetupAchievement(existingAchievements, MilestoneAchievements.AttendWorkshop, 300, AchievementType.Completed, Icons.Certificate);
             SetupAchievement(existingAchievements, MilestoneAchievements.AttendHackday, 200, AchievementType.Completed, Icons.Lightbulb);
-
+            await SeedQuizzes(cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
@@ -246,6 +246,140 @@ namespace SSW.Rewards.Application.System.Commands.Common
             SetupAchievement(existingAchievements, "SSW/SSW TV Twitter", 100);
 
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task SeedQuizzes(CancellationToken cancellationToken)
+        {
+            var existingQuizzes = await _context.Quizzes.ToListAsync(cancellationToken);
+            if (existingQuizzes.FirstOrDefault(x => x.Title == "Angular 2022") == null)
+            {
+                Quiz angularQuiz = new Quiz
+                {
+                    Title = "Angular 2022",
+                    Description = "How well do you know Angular?",
+                    Icon = Icons.Angular,
+                    IsArchived = false,
+                    Questions = new List<QuizQuestion>
+                    {
+                        new QuizQuestion
+                        {
+                            Text = "Is Angular better than React?",
+                            Answers = new List<QuizAnswer>
+                            {
+                                new QuizAnswer
+                                {
+                                    Text = "Yes",
+                                    IsCorrect = true
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "No",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "They are equal",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "The false dichotomy presented in this question is both fallacious and misrepresentative of the front-end world. There is no available metric with which to objectively measure the 'betterness' of different front-end languages and you should feel ashamed for asking me this question",
+                                    IsCorrect = false
+                                }
+                            }
+                        },
+                        new QuizQuestion
+                        {
+                            Text = "Which company made Angular?",
+                            Answers = new List<QuizAnswer>
+                            {
+                                new QuizAnswer
+                                {
+                                    Text = "Facebook",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "Amazon",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "Google",
+                                    IsCorrect = true
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "Woolworths",
+                                    IsCorrect = false
+                                }
+                            }
+                        },
+                        new QuizQuestion
+                        {
+                            Text = "How do you spell Angular?",
+                            Answers = new List<QuizAnswer>
+                            {
+                                new QuizAnswer
+                                {
+                                    Text = "A-N-G-U-L-A-R",
+                                    IsCorrect = true
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "A-N-G-L-E-R",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "A-N-G-E-L-R",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "React",
+                                    IsCorrect = false
+                                }
+                            }
+                        },
+                        new QuizQuestion
+                        {
+                            Text = "Does Angular support multi-threading?",
+                            Answers = new List<QuizAnswer>
+                            {
+                                new QuizAnswer
+                                {
+                                    Text = "Yes",
+                                    IsCorrect = false
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "No",
+                                    IsCorrect = true
+                                },
+                                new QuizAnswer
+                                {
+                                    Text = "Sometimes",
+                                    IsCorrect = false
+                                }
+                            }
+                        },
+                    },
+                    Achievement = new Achievement
+                    {
+                        Code = GenerateCode("Angular Quiz", false),
+                        Icon = Icons.Trophy,
+                        IconIsBranded = false,
+                        Name = "Quiz: Angular 2022",
+                        Type = AchievementType.Completed,
+                        IsDeleted = false,
+                        Value = 500
+                    }
+                };
+                _context.Quizzes.Add(angularQuiz);
+            }
+            
+
         }
 
         private void SetupAchievement(IEnumerable<Achievement> existingAchievements, string name, int value, AchievementType type = AchievementType.Completed, Icons icon = Icons.Trophy, bool branded = false)

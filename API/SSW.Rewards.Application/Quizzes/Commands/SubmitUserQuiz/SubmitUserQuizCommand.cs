@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Users.Common.Interfaces;
+using SSW.Rewards.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,42 +22,80 @@ namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz
         {
             private readonly IMapper _mapper;
             private readonly ISSWRewardsDbContext _context;
-            private readonly ICurrentUserService _userService;
+            private readonly ICurrentUserService _currentUserService;
+            private readonly IUserService _userService;
 
             public Handler(
                 IMapper mapper,
                 ISSWRewardsDbContext context,
-                ICurrentUserService userServ)
+                ICurrentUserService currentUserService,
+                IUserService userService)
             {
-                _mapper = mapper;
-                _context = context;
-                _userService = userServ;
+                _mapper             = mapper;
+                _context            = context;
+                _currentUserService = currentUserService;
+                _userService        = userService;
             }
 
             public async Task<QuizResultDto> Handle(SubmitUserQuizCommand request, CancellationToken cancellationToken)
             {
-                // check results
+                // get quiz from db
+                var dbQuiz = await _context.Quizzes
+                                        .Include(x => x.Achievement)
+                                        .Include(x => x.Questions)
+                                            .ThenInclude(x => x.Answers)
+                                        .Where(x => x.Id == request.QuizId)
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync(cancellationToken);
 
-                // success? Add achievement and get points!
-
-                // oh no! they've done it already!
-
-                return new QuizResultDto
+                // build return object
+                QuizResultDto retVal = new QuizResultDto
                 {
-                    QuizId = 1,
-                    Passed = true,
-                    Results = new List<QuestionResultDto>
+                    QuizId  = dbQuiz.Id,
+                    Passed  = false, // set it to false here because we conditionally set it to true further down.
+                    Results = request.Answers.Select(userAnswer => new QuestionResultDto
                     {
-                        new QuestionResultDto
-                        {
-                            QuestionId = 1,
-                            Correct = true
-                        }
-                    }
+                        QuestionId  = userAnswer.QuestionId,
+                        Correct     = userAnswer.SelectedAnswerId == dbQuiz.Questions
+                                            .First(q => q.Id == userAnswer.QuestionId).Answers
+                                                .First(dbAnswer => dbAnswer.IsCorrect).Id
+                    }).ToList()
                 };
+
+                // success? Add the quiz to the user's completed list and give them the achievement!
+                if (!retVal.Results.Any(x => !x.Correct))
+                {
+                    var userId = await _userService.GetUserId(_currentUserService.GetUserId());
+                    AddCompletedQuiz(dbQuiz.Id, userId);
+                    AddQuizAchievement(dbQuiz.AchievementId, userId);
+                    await _context.SaveChangesAsync(cancellationToken);
+
+                    retVal.Passed = true;
+                    retVal.Points = dbQuiz.Achievement.Value;
+                }
+                return retVal;
             }
-        
-        
+
+            private void AddQuizAchievement(int achievementId, int userId)
+            {
+                UserAchievement quizCompletedAchievement = new UserAchievement
+                {
+                    UserId        = userId,
+                    AwardedAt     = DateTime.UtcNow,
+                    AchievementId = achievementId
+                };
+                _context.UserAchievements.Add(quizCompletedAchievement);
+            }
+
+            private void AddCompletedQuiz(int quizId, int userId)
+            {
+                CompletedQuiz c = new CompletedQuiz
+                {
+                    QuizId = quizId,
+                    UserId = userId
+                };
+                _context.CompletedQuizzes.Add(c);
+            }
         }
 
         public class SubmitUserQuizCommandValidator : AbstractValidator<SubmitUserQuizCommand>

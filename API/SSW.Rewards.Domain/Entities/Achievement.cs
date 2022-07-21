@@ -19,6 +19,7 @@ namespace SSW.Rewards.Domain.Entities
         public bool IsDeleted { get; set; }
 
         public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
+        public ICollection<Quiz> Quizzes { get; set; } = new HashSet<Quiz>();
     }
 }
 

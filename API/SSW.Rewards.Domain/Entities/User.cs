@@ -23,6 +23,7 @@ namespace SSW.Rewards.Domain.Entities
         public ICollection<UserRole> Roles { get; set; } = new HashSet<UserRole>();
         
         public ICollection<Notifications> SentNotifications { get; set; } = new HashSet<Notifications>();
+        public ICollection<CompletedQuiz> CompletedQuizzes { get; set; } = new HashSet<CompletedQuiz>();
     }
 }
 
