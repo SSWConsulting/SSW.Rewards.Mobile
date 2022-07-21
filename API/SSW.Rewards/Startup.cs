@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,6 +65,7 @@ namespace SSW.Rewards
 			
 			services
                 .AddControllers()
+				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ISSWRewardsDbContext>())
                 .AddNewtonsoftJson();
 
             services.AddCors(options => 
