@@ -19,13 +19,17 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand NextCommand { get; set; }
 
-        public ICommand BackCommand { get; set; }
+        public ICommand BackCommand => new Command(async () => await GoBack());
+
+        public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
 
         public string QuizTitle { get; set; }
 
         public string QuizDescription { get; set; }
 
         public string ButtonText { get; set; }
+
+        public QuizQuestionDto CurrentQuestion { get; set; }
 
         public QuizDetailsViewModel(IQuizService quizService)
         {
@@ -88,6 +92,20 @@ namespace SSW.Rewards.ViewModels
             {
                 // do commiserations and stuff
             }
+        }
+
+        private async Task GoBack()
+        {
+            var confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
+
+            if (confirmed)
+            await Shell.Current.GoToAsync("..");
+        }
+
+        private void CurrentQuestionChanged()
+        {
+            QuizDescription = CurrentQuestion.Text;
+            OnPropertyChanged(nameof(QuizDescription));
         }
     }
 }
