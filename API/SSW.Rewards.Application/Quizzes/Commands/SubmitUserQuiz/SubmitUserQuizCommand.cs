@@ -65,7 +65,7 @@ namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz
                 // success? Add the quiz to the user's completed list and give them the achievement!
                 if (!retVal.Results.Any(x => !x.Correct))
                 {
-                    var userId = await _userService.GetUserId(_currentUserService.GetUserId());
+                    var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());
                     AddCompletedQuiz(dbQuiz.Id, userId);
                     AddQuizAchievement(dbQuiz.AchievementId, userId);
                     await _context.SaveChangesAsync(cancellationToken);
