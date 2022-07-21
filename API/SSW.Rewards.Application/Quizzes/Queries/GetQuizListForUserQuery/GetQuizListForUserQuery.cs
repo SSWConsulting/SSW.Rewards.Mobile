@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common.Interfaces;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-
-namespace SSW.Rewards.Domain.Entities
+﻿namespace SSW.Rewards.Domain.Entities
 {
     public class QuizAnswer : Entity
     {
