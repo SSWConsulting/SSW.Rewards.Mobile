@@ -4,10 +4,12 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              BackgroundColor="{StaticResource MainBackground}"
              Title="Tech Trivia"
+             x:Name="QuizPage"
              x:Class="SSW.Rewards.Pages.QuizPage">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PassedToBackgroundConverter x:Key="PassedToColor"/>
+            <converters:PassedToQuizIconColour x:Key="PassedToIconColor"/>
             <converters:IconToGlyphConverter x:Key="IconToGlyph"/>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -32,9 +34,13 @@
                         <Grid HeightRequest="144"
                               WidthRequest="144"
                               BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference QuizPage}, Path=BindingContext.OpenQuizCommand}"
+                                                      CommandParameter="{Binding Id}" />
+                            </Grid.GestureRecognizers>
 
                             <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                   TextColor="{StaticResource SSWRed}"
+                                   TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
                                    FontFamily="{StaticResource FA6Brands}"
                                    FontSize="72"
                                    HorizontalOptions="Center"
@@ -43,7 +49,12 @@
                                    VerticalTextAlignment="Center"/>
 
                             <Label Text="&#xe30b;"
-                                   TextColor=""
+                                   TextColor="{StaticResource QuizCheckColor}"
+                                   FontFamily="{StaticResource FluentIcons}"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="End"
+                                   IsVisible="{Binding Passed}"
+                                   Margin="5"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
