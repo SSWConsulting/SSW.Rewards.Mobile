@@ -65,6 +65,8 @@ namespace SSW.Rewards
 			
 			services
                 .AddControllers()
+				// TODO: Tech Debt - Move AddFluentValidation to Application project when we update
+				// to .NET 6
 				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ISSWRewardsDbContext>())
                 .AddNewtonsoftJson();
 
