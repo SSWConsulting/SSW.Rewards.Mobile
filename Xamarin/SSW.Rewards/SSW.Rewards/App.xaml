@@ -46,6 +46,9 @@
         <Color x:Key="PeopleBackground">#363636</Color>
         <Color x:Key="MutedText">#a3a3a3</Color>
         <Color x:Key="HighlightedText">#dbdbdb</Color>
+        <Color x:Key="PassedQuiz">#818181</Color>
+        <Color x:Key="Quiz">#f7f7f7</Color>
+        <Color x:Key="QuizCheckColor">#1d4c39</Color>
 
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>

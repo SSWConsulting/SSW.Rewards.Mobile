@@ -1,12 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             BackgroundColor="{StaticResource MainBackground}"
+             Title="Tech Trivia"
              x:Class="SSW.Rewards.Pages.QuizPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PassedToBackgroundConverter x:Key="PassedToColor"/>
+            <converters:IconToGlyphConverter x:Key="IconToGlyph"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Spacing="30">
+            <Label Text="Select a category and prove you know your stuff. Earn bonus points for each completed quiz!"
+                   LineBreakMode="WordWrap"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="CenterAndExpand"
+                   HorizontalOptions="CenterAndExpand" />
+
+            <CollectionView ItemsSource="{Binding Quizzes}"
+                            Margin="40,0">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="2"
+                                     Orientation="Vertical"
+                                     HorizontalItemSpacing="44"
+                                     VerticalItemSpacing="44"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HeightRequest="144"
+                              WidthRequest="144"
+                              BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+
+                            <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
+                                   TextColor="{StaticResource SSWRed}"
+                                   FontFamily="{StaticResource FA6Brands}"
+                                   FontSize="72"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"/>
+
+                            <Label Text="&#xe30b;"
+                                   TextColor=""
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
