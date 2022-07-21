@@ -38,23 +38,6 @@ namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetailsQuery
                                             .ThenInclude(x => x.Answers)
                                         .Where(x => x.Id == request.QuizId)
                                         .ProjectTo<QuizDetailsDto>(_mapper.ConfigurationProvider)
-                                        //.Select(x => new QuizDetailsDto
-                                        //{
-                                        //    QuizId      = x.Id,
-                                        //    Title       = x.Title,
-                                        //    Description = x.Description,
-                                        //    Questions   = x.Questions.Select(q => new QuizQuestionDto
-                                        //    {
-                                        //        QuestionId  = q.Id,
-                                        //        Text        = q.Text,
-                                        //        Answers     = q.Answers.Select(a => new QuestionAnswerDto
-                                        //        {
-                                        //            QuestionAnswerId = a.Id,
-                                        //            Text             = a.Text
-                                        //        }).ToList()
-                                        //    }).ToList()
-                                        //})
-                                        //.AsNoTracking()
                                         .FirstOrDefaultAsync(cancellationToken);
             }
         }

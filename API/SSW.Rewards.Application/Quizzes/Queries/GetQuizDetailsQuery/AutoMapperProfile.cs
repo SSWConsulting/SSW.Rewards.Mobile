@@ -8,11 +8,9 @@ namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetailsQuery
         {
             CreateMap<Domain.Entities.Quiz, QuizDetailsDto>()
                 .ForMember(dst => dst.QuizId, opt => opt.MapFrom(src => src.Id));
-            //.ForMember(dst => dst.Questions, opt => opt.MapFrom(src => src.Questions));
 
             CreateMap<Domain.Entities.QuizQuestion, QuizQuestionDto>()
                 .ForMember(dst => dst.QuestionId, opt => opt.MapFrom(src => src.Id));
-                //.ForMember(dst => dst.Answers, opt => opt.MapFrom(src => src.Answers));
 
             CreateMap<Domain.Entities.QuizAnswer, QuestionAnswerDto>()
                 .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id));
