@@ -62,6 +62,7 @@ namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz
                     }).ToList()
                 };
 
+                
                 // success? Add the quiz to the user's completed list and give them the achievement!
                 if (!retVal.Results.Any(x => !x.Correct))
                 {
@@ -98,27 +99,31 @@ namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz
             }
         }
 
-        public class SubmitUserQuizCommandValidator : AbstractValidator<SubmitUserQuizCommand>
+
+    }
+    public class SubmitUserQuizCommandValidator : AbstractValidator<SubmitUserQuizCommand>
+    {
+        private readonly ISSWRewardsDbContext _context;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IUserService _userService;
+
+        public SubmitUserQuizCommandValidator(
+            ISSWRewardsDbContext context,
+            ICurrentUserService currentUserService,
+            IUserService userService)
         {
-            private readonly ISSWRewardsDbContext _context;
-            private readonly ICurrentUserService _currentUserService;
-
-            public SubmitUserQuizCommandValidator(ISSWRewardsDbContext context, ICurrentUserService currentUserService)
-            {
-                this._context = context;
-                this._currentUserService = currentUserService;
-                RuleFor(x => x.QuizId)
-                    .MustAsync(CanSubmit);
-            }
-
-            public async Task<bool> CanSubmit(int quizId, CancellationToken token)
-            {
-                // get the quiz from the UserQuizzes table by QuizId and if it exists return false (to fail)
-
-                return true;
-            }
+            this._context = context;
+            this._currentUserService = currentUserService;
+            this._userService = userService;
+            RuleFor(x => x.QuizId)
+                .MustAsync(CanSubmit);
         }
 
+        public async Task<bool> CanSubmit(int quizId, CancellationToken token)
+        {
+            var userId = await this._userService.GetUserId(this._currentUserService.GetUserEmail());
+            return !this._context.CompletedQuizzes.Any(x => x.QuizId == quizId && x.UserId == userId);
+        }
     }
     public class QuizAnswer
     {
