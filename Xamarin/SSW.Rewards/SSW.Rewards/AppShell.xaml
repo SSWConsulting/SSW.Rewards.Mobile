@@ -122,19 +122,19 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
-        <Tab Route="scan">
-            <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xf636;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-        </Tab>
         <Tab Route="quiz">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
                                  Glyph="&#xf28a;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
+        </Tab>
+        <Tab Route="scan">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf636;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>
     </FlyoutItem>
 

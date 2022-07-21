@@ -43,9 +43,12 @@ namespace SSW.Rewards.ViewModels
 
             var quizzes = await _quizService.GetQuizzes();
 
-            foreach (var quiz in quizzes)
+            for (int i = 0; i < 10; i++)
             {
-                Quizzes.Add(quiz);
+                foreach (var quiz in quizzes)
+                {
+                    Quizzes.Add(quiz);
+                } 
             }
 
             IsBusy = false;

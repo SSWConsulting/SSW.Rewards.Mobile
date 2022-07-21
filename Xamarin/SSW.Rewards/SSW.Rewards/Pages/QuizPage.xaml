@@ -3,9 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              BackgroundColor="{StaticResource MainBackground}"
-             Title="Tech Trivia"
-             x:Name="QuizPage"
+             x:Name="QuizList"
              x:Class="SSW.Rewards.Pages.QuizPage">
+    <Shell.TitleView>
+        <Label Text="Tech Trivia"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Center"
+               FontSize="18"
+               Margin="0,15,0,0"
+               x:Name="TitleText"
+               TextColor="White"/>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PassedToBackgroundConverter x:Key="PassedToColor"/>
@@ -16,6 +25,8 @@
     <ContentPage.Content>
         <StackLayout Spacing="30">
             <Label Text="Select a category and prove you know your stuff. Earn bonus points for each completed quiz!"
+                   TextColor="White"
+                   Margin="40,55,40,10"
                    LineBreakMode="WordWrap"
                    HorizontalTextAlignment="Center"
                    VerticalOptions="CenterAndExpand"
@@ -26,36 +37,42 @@
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Span="2"
                                      Orientation="Vertical"
-                                     HorizontalItemSpacing="44"
-                                     VerticalItemSpacing="44"/>
+                                     HorizontalItemSpacing="20"
+                                     VerticalItemSpacing="20"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid HeightRequest="144"
-                              WidthRequest="144"
-                              BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={x:Reference QuizPage}, Path=BindingContext.OpenQuizCommand}"
-                                                      CommandParameter="{Binding Id}" />
-                            </Grid.GestureRecognizers>
+                        <StackLayout>
+                            <Frame CornerRadius="5"
+                                   WidthRequest="100"
+                                   HeightRequest="100"
+                                   BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+                                <Grid Padding="0"
+                                      Margin="0">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                                              CommandParameter="{Binding Id}" />
+                                    </Grid.GestureRecognizers>
 
-                            <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                   TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
-                                   FontFamily="{StaticResource FA6Brands}"
-                                   FontSize="72"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"/>
+                                    <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
+                                           TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
+                                           FontFamily="{StaticResource FA6Brands}"
+                                           FontSize="92"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
 
-                            <Label Text="&#xe30b;"
-                                   TextColor="{StaticResource QuizCheckColor}"
-                                   FontFamily="{StaticResource FluentIcons}"
-                                   HorizontalOptions="End"
-                                   VerticalOptions="End"
-                                   IsVisible="{Binding Passed}"
-                                   Margin="5"/>
-                        </Grid>
+                                    <Label Text="&#xe30b;"
+                                           TextColor="{StaticResource QuizCheckColor}"
+                                           FontFamily="{StaticResource FluentIcons}"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="End"
+                                           IsVisible="{Binding Passed}"
+                                           Margin="5"/>
+                                </Grid>
+                            </Frame>
+                        </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

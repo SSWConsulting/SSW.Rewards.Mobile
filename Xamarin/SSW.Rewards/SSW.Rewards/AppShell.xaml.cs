@@ -23,7 +23,8 @@ namespace SSW.Rewards
             ShowQRCodeMenuItem = isStaff;
             ShowJoinMenuItem = !isStaff;
             BindingContext = this;
-            VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString); ;
+            VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
+            Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
         }
 
         public bool ShowQRCodeMenuItem
