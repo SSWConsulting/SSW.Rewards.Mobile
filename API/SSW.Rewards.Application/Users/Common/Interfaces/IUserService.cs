@@ -41,7 +41,7 @@ namespace SSW.Rewards.Application.Users.Common.Interfaces
         // Get user
         UserViewModel GetUser(int userId);
         Task<UserViewModel> GetUser(int userId, CancellationToken cancellationToken);
-
+        Task<int> GetUserId(string email);
 
         // Get user achievements
         UserAchievementsViewModel GetUserAchievements(int userId);

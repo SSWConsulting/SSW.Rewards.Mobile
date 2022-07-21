@@ -98,7 +98,16 @@ namespace SSW.Rewards.Application.Services
 
             return user.Id;
         }
-
+        public async Task<int> GetUserId(string email)
+        {
+            if (String.IsNullOrWhiteSpace(email))
+                throw new ArgumentNullException("no email provided");
+            email = email.Trim().ToLower();
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+            if (user == null)
+                throw new NotFoundException("No user found");
+            return user.Id;
+        }
         public CurrentUserViewModel GetCurrentUser()
         {
             return GetCurrentUser(CancellationToken.None).Result;
