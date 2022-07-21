@@ -108,4 +108,9 @@ namespace SSW.Rewards.ViewModels
             OnPropertyChanged(nameof(QuizDescription));
         }
     }
+
+    public class QuizAnswerViewModel : QuestionAnswerDto
+    {
+        public bool IsSelected { get; set; }
+    }
 }

@@ -62,15 +62,17 @@
                         <ScrollView WidthRequest="400"
                                          HeightRequest="700">
                             <StackLayout BindableLayout.ItemsSource="{Binding Answers}"
-                                         RadioButtonGroup.GroupName="AnswerGroup"
+                                         RadioButtonGroup.GroupName="{Binding QuestionId}"
                                          HorizontalOptions="FillAndExpand"
                                          Padding="50"
                                          Spacing="40">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <RadioButton Value="{Binding QestionAnswerId}">
+                                            <!--IsChecked="{Binding IsSelected, Mode=OneWayToSource}">-->
                                             <RadioButton.Content>
                                                 <Label Text="{Binding Text}"
+                                                       FontSize="30"
                                                        TextColor="White"/>
                                             </RadioButton.Content>
                                         </RadioButton>
