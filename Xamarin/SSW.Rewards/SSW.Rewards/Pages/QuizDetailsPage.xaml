@@ -13,73 +13,8 @@
                x:Name="TitleText"
                TextColor="White"/>
     </Shell.TitleView>
-    <ContentPage.Resources>
-        <ControlTemplate x:Key="RadioButtonTemplate">
-            <Frame BorderColor="#F3F2F1"
-                   BackgroundColor="#F3F2F1"
-                   HasShadow="False"
-                   HeightRequest="100"
-                   WidthRequest="100"
-                   HorizontalOptions="Start"
-                   VerticalOptions="Start"
-                   Padding="0">
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CheckedStates">
-                            <VisualState x:Name="Checked">
-                                <VisualState.Setters>
-                                    <Setter Property="BorderColor"
-                                            Value="#FF3300" />
-                                    <Setter TargetName="check"
-                                            Property="Opacity"
-                                            Value="1" />
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="Unchecked">
-                                <VisualState.Setters>
-                                    <Setter Property="BackgroundColor"
-                                            Value="#F3F2F1" />
-                                    <Setter Property="BorderColor"
-                                            Value="#F3F2F1" />
-                                    <Setter TargetName="check"
-                                            Property="Opacity"
-                                            Value="0" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </VisualStateManager.VisualStateGroups>
-                <Grid Margin="4"
-                      ColumnDefinitions="30, *">
-                    <Grid WidthRequest="18"
-                          HeightRequest="18"
-                          HorizontalOptions="End"
-                          VerticalOptions="Start">
-                        <Ellipse Stroke="{StaticResource SSWRed}"
-                                 Fill="White"
-                                 WidthRequest="16"
-                                 HeightRequest="16"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center" />
-                        <Ellipse x:Name="check"
-                                 Fill="{StaticResource SSWRed}"
-                                 WidthRequest="8"
-                                 HeightRequest="8"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center" />
-                    </Grid>
-                    <ContentPresenter Grid.Column="1"/>
-                </Grid>
-            </Frame>
-        </ControlTemplate>
-
-        <Style TargetType="RadioButton">
-            <Setter Property="ControlTemplate"
-                    Value="{StaticResource RadioButtonTemplate}" />
-        </Style>
-    </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="70, 100, *, 20, 75">
+        <Grid RowDefinitions="70, 100, *, 20, 60">
 
             <Label Grid.Row="0"
                    HorizontalOptions="Center"
@@ -117,39 +52,48 @@
                    BackgroundColor="{StaticResource QuizDescriptionBackground}"/>
 
             <CarouselView Grid.Row="2"
+                          IndicatorView="QuestionIndicator"
+                          Loop="False"
                           ItemsSource="{Binding Questions}"
                           CurrentItem="{Binding CurrentQuestion}"
                           CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}">
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout BindableLayout.ItemsSource="{Binding Answers}"
-                                     RadioButtonGroup.GroupName="AnswerGroup"
-                                     Padding="50"
-                                     Spacing="80">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <RadioButton Value="{Binding QestionAnswerId}">
-                                        <RadioButton.Content>
-                                            <Label Text="{Binding Text}"
-                                                   TextColor="White"/>
-                                        </RadioButton.Content>
-                                    </RadioButton>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </StackLayout>
+                        <ScrollView WidthRequest="400"
+                                         HeightRequest="700">
+                            <StackLayout BindableLayout.ItemsSource="{Binding Answers}"
+                                         RadioButtonGroup.GroupName="AnswerGroup"
+                                         HorizontalOptions="FillAndExpand"
+                                         Padding="50"
+                                         Spacing="40">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton Value="{Binding QestionAnswerId}">
+                                            <RadioButton.Content>
+                                                <Label Text="{Binding Text}"
+                                                       TextColor="White"/>
+                                            </RadioButton.Content>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </ScrollView>
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
                 
             </CarouselView>
 
-            <IndicatorView Grid.Row="3" />
+            <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                           IndicatorColor="{StaticResource IndicatorColor}"
+                           Grid.Row="3"
+                           x:Name="QuestionIndicator"/>
 
             <Button Grid.Row="4"
                     Text="Next"
                     TextColor="White"
                     HeightRequest="40"
-                    Margin="30,10"
-                    VerticalOptions="Center"
+                    Margin="30,0,30,10"
+                    VerticalOptions="Start"
                     HorizontalOptions="Center"
                     Padding="0"
                     BackgroundColor="{StaticResource SSWRed}"

@@ -37,6 +37,8 @@ namespace SSW.Rewards.ViewModels
 
         public async Task Initialise()
         {
+            Quizzes.Clear();
+
             IsBusy = true;
 
             OnPropertyChanged(nameof(IsBusy));
