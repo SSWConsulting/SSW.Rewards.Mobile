@@ -19,7 +19,7 @@ namespace SSW.Rewards.ViewModels
 
         public ObservableCollection<QuizQuestionViewModel> Questions { get; set; } = new ObservableCollection<QuizQuestionViewModel>();
 
-        public ObservableCollection<bool> Results { get; set; } = new ObservableCollection<bool>();
+        public ObservableCollection<QuestionResultDto> Results { get; set; } = new ObservableCollection<QuestionResultDto>();
 
         public ICommand ButtonCommand { get; set; }
 
@@ -153,7 +153,7 @@ namespace SSW.Rewards.ViewModels
 
                 ResultButtonText = "Take Another Quiz";
 
-                ResultsTitle = "Test Failed";
+                ResultsTitle = "Test Passed!";
 
                 TestPassed = true;
 
@@ -169,6 +169,10 @@ namespace SSW.Rewards.ViewModels
                     ShowPoints = true
                 };
 
+                var args = new ShowSnackbarEventArgs { Options = SnackOptions };
+
+                ShowSnackbar.Invoke(this, args);
+
                 MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
             }
             else
@@ -177,7 +181,7 @@ namespace SSW.Rewards.ViewModels
 
                 ResultButtonText = "Try Again";
 
-                ResultsTitle = "Test Passed!";
+                ResultsTitle = "Test Failed";
 
                 TestPassed = false;
 
@@ -188,15 +192,15 @@ namespace SSW.Rewards.ViewModels
                     RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible));
                 });
 
-                var questionResults = result.Results.OrderBy(r => r.QuestionId).ToList();
-
-                foreach (var questionResult in questionResults)
+                Results.Clear();
+                
+                foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
                 {
-                    Results.Add(questionResult.Correct);
+                    Results.Add(questionResult);
                 }
             }
 
-            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(SheildGlyph), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed));
+            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(SheildGlyph), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
         }
 
         private async Task GoBack(bool askFirst = true)

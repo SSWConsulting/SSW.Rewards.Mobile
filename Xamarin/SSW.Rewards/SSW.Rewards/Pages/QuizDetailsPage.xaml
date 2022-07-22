@@ -126,14 +126,17 @@
 
                     <Label Text="{Binding ResultsTitle}"
                            TextTransform="Uppercase"
-                           FontSize="48"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           FontSize="Title"
                            TextColor="White"
                            Grid.Row="0"/>
 
                     <BoxView BackgroundColor="{StaticResource SSWRed}"
-                             WidthRequest="100"
+                             WidthRequest="150"
                              HeightRequest="40"
-                             CornerRadius="10"
+                             CornerRadius="5"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
                              Grid.Row="1"/>
@@ -150,6 +153,7 @@
                     <Image Source="v2win"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand"
+                           HeightRequest="270"
                            Aspect="AspectFit"
                            x:Name="ShieldImage"
                            Grid.Row="2"/>
@@ -161,15 +165,16 @@
                            VerticalTextAlignment="Center"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=X, Constant=10}"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=X, Constant=1}"
                            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=Y, Constant=50}"
                            Grid.Row="2"/>
 
                     <Frame BackgroundColor="{StaticResource MainBackground}"
                            BorderColor="#979797"
                            CornerRadius="5"
-                           WidthRequest="280"
+                           WidthRequest="250"
                            HeightRequest="48"
+                           Padding="0"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            Grid.Row="3">
@@ -189,7 +194,7 @@
 
                     <FlexLayout WidthRequest="400"
                                 Direction="Row"
-                                JustifyContent="SpaceEvenly"
+                                JustifyContent="SpaceAround"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
                                 Grid.Row="4"
@@ -200,13 +205,15 @@
                                 <Grid>
                                     <BoxView WidthRequest="20"
                                              HeightRequest="20"
+                                             VerticalOptions="Center"
                                              CornerRadius="10"
-                                             BackgroundColor="{Binding ., Converter={StaticResource PassedToColor}}"/>
+                                             BackgroundColor="{Binding Correct, Converter={StaticResource PassedToColor}}"/>
 
                                     <Label Text="&#xe9b7;"
                                            FontFamily="{StaticResource FluentIcons}"
                                            TextColor="White"
-                                           FontSize="8"
+                                           Margin="0"
+                                           FontSize="14"
                                            HorizontalTextAlignment="Center"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"

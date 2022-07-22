@@ -16,6 +16,8 @@ namespace SSW.Rewards.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var myVal = value;
+
             if ((bool)value)
                     return Passed;
 
