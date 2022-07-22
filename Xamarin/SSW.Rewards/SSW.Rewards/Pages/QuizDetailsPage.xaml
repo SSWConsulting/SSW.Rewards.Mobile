@@ -62,7 +62,7 @@
                     <DataTemplate>
                         <ScrollView WidthRequest="400"
                                          HeightRequest="700">
-                            <StackLayout BindableLayout.ItemsSource="{Binding Answers}"
+                            <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
                                          RadioButtonGroup.GroupName="{Binding QuestionId}"
                                          HorizontalOptions="FillAndExpand"
                                          Padding="50"
@@ -70,7 +70,7 @@
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <RadioButton Value="{Binding QestionAnswerId}"
-                                                     IsChecked="{Binding IsSelected, Mode=OneWayToSource}"
+                                                     IsChecked="{Binding IsSelected}"
                                                      WidthRequest="300"
                                                      TextColor="White"
                                                      Content="{Binding Text}"
@@ -101,6 +101,13 @@
                     Padding="0"
                     BackgroundColor="{StaticResource SSWRed}"
                     WidthRequest="250"/>
+
+            <ActivityIndicator HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource SSWRed}"
+                               IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               Grid.Row="2"/>
 
         </Grid>
     </ContentPage.Content>

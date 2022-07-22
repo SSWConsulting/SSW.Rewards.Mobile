@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Services;
+﻿using Newtonsoft.Json;
+using SSW.Rewards.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,9 +15,7 @@ namespace SSW.Rewards.ViewModels
         private readonly IQuizService _quizService;
         private int _quizId;
 
-        public ObservableCollection<QuizQuestionDto> Questions { get; set; } = new ObservableCollection<QuizQuestionDto>();
-
-        private List<QuizAnswer> _answers = new List<QuizAnswer>();
+        public ObservableCollection<QuizQuestionViewModel> Questions { get; set; } = new ObservableCollection<QuizQuestionViewModel>();
 
         public ICommand ButtonCommand { get; set; }
 
@@ -32,7 +31,7 @@ namespace SSW.Rewards.ViewModels
 
         public EventHandler<int> OnNextQuestionRequested;
 
-        public QuizQuestionDto CurrentQuestion { get; set; }
+        public QuizQuestionViewModel CurrentQuestion { get; set; }
 
         public QuizDetailsViewModel(IQuizService quizService)
         {
@@ -50,7 +49,7 @@ namespace SSW.Rewards.ViewModels
 
             foreach (var question in quiz.Questions)
             {
-                Questions.Add(question);
+                Questions.Add(new QuizQuestionViewModel(question));
             }
 
             QuizTitle = quiz.Title;
@@ -61,39 +60,64 @@ namespace SSW.Rewards.ViewModels
             RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription));
         }
 
-        public void AddOrUpdateAnswer(QuizAnswer answer)
-        {
-            var response = _answers.FirstOrDefault(a => a.QuestionId == answer.QuestionId);
-
-            if (response is null)
-            {
-                _answers.Add(answer);
-            }
-            else
-            {
-                response.SelectedAnswerId = answer.SelectedAnswerId;
-            }
-        }
-
         private async Task SubmitResponses()
         {
-            var command = new SubmitUserQuizCommand
+            bool allQuestionsAnswered = true;
+
+            var answers = new List<QuizAnswer>();
+
+            foreach (var question in Questions)
             {
-                Answers = _answers,
-                QuizId = _quizId
-            };
+                var answer = question.MyAnswers.FirstOrDefault(a => a.IsSelected);
 
-            var result = await _quizService.SubmitQuiz(command);
+                if (answer is null)
+                {
+                    allQuestionsAnswered = false;
+                }
+                else
+                {
+                    answers.Add(new QuizAnswer
+                    {
+                        SelectedAnswerId = answer.QuestionAnswerId,
+                        QuestionId = answer.QuestionId
+                    });
+                }
+            }
 
-            if (result.Passed)
+            if (allQuestionsAnswered)
             {
-                // do congrats and stuff
+                var command = new SubmitUserQuizCommand
+                {
+                    Answers = answers,
+                    QuizId = _quizId
+                };
 
-                MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
+                var response = JsonConvert.SerializeObject(command);
+
+                IsBusy = true;
+                OnPropertyChanged(nameof(IsBusy));
+
+                var result = await _quizService.SubmitQuiz(command);
+
+                IsBusy = false;
+                OnPropertyChanged(nameof(IsBusy));
+
+                if (result.Passed)
+                {
+                    // do congrats and stuff
+                    await App.Current.MainPage.DisplayAlert("Congratulations!", $"You passed the {QuizTitle} quiz and earned {result.Points} points.", "OK");
+
+                    MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
+                }
+                else
+                {
+                    // do commiserations and stuff
+                    await App.Current.MainPage.DisplayAlert("You Died.", String.Empty, "OK");
+                }
             }
             else
             {
-                // do commiserations and stuff
+                await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz. {Environment.NewLine}TIP: You can swipe backwards through the questions.", "OK");
             }
         }
 
@@ -134,6 +158,29 @@ namespace SSW.Rewards.ViewModels
 
     public class QuizAnswerViewModel : QuestionAnswerDto
     {
+        public int QuestionId { get; set; }
+
         public bool IsSelected { get; set; }
+    }
+
+    public class QuizQuestionViewModel : QuizQuestionDto
+    {
+        public QuizQuestionViewModel(QuizQuestionDto questionDto)
+        {
+            this.QuestionId = questionDto.QuestionId;
+            this.Text = questionDto.Text;
+
+            foreach (var answer in questionDto.Answers)
+            {
+                MyAnswers.Add(new QuizAnswerViewModel
+                {
+                    QuestionAnswerId = answer.QuestionAnswerId,
+                    Text = answer.Text,
+                    QuestionId = questionDto.QuestionId
+                });
+            }
+        }
+
+        public ObservableCollection<QuizAnswerViewModel> MyAnswers { get; set; } = new ObservableCollection<QuizAnswerViewModel>();
     }
 }

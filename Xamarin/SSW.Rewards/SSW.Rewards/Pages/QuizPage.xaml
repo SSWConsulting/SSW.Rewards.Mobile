@@ -32,6 +32,12 @@
                    VerticalOptions="CenterAndExpand"
                    HorizontalOptions="CenterAndExpand" />
 
+            <ActivityIndicator HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource SSWRed}"
+                               IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"/>
+
             <CollectionView ItemsSource="{Binding Quizzes}"
                             Margin="40,0">
                 <CollectionView.ItemsLayout>
@@ -46,6 +52,8 @@
                             <Frame CornerRadius="5"
                                    WidthRequest="100"
                                    HeightRequest="100"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
                                    BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
                                 <Grid Padding="0"
                                       Margin="0">
@@ -64,12 +72,23 @@
                                            VerticalTextAlignment="Center"/>
 
                                     <Label Text="&#xe30b;"
-                                           TextColor="{StaticResource QuizCheckColor}"
+                                           TextColor="Green"
                                            FontFamily="{StaticResource FluentIcons}"
+                                           FontSize="28"
                                            HorizontalOptions="End"
                                            VerticalOptions="End"
-                                           IsVisible="{Binding Passed}"
-                                           Margin="5"/>
+                                           IsVisible="{Binding Passed}">
+                                        <Label.TranslationX>
+                                            <OnPlatform x:TypeArguments="x:Double">
+                                                <On Platform="Android" Value="15"/>
+                                            </OnPlatform>
+                                        </Label.TranslationX>
+                                        <Label.TranslationY>
+                                            <OnPlatform x:TypeArguments="x:Double">
+                                                <On Platform="Android" Value="15"/>
+                                            </OnPlatform>
+                                        </Label.TranslationY>
+                                    </Label>
                                 </Grid>
                             </Frame>
                         </StackLayout>
