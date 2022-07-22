@@ -17,7 +17,7 @@ namespace SSW.Rewards.ViewModels
 
         public ObservableCollection<QuizDto> Quizzes { get; set; } = new ObservableCollection<QuizDto>();
 
-        public ICommand OpenQuizCommand { get; set; }//=> new Command<int>(async (id) => await OpenQuiz(id));
+        public ICommand OpenQuizCommand { get; set; }
 
         public QuizViewModel(IQuizService quizService)
         {
@@ -45,12 +45,9 @@ namespace SSW.Rewards.ViewModels
 
             var quizzes = await _quizService.GetQuizzes();
 
-            for (int i = 0; i < 10; i++)
+            foreach (var quiz in quizzes)
             {
-                foreach (var quiz in quizzes)
-                {
-                    Quizzes.Add(quiz);
-                } 
+                Quizzes.Add(quiz);
             }
 
             IsBusy = false;

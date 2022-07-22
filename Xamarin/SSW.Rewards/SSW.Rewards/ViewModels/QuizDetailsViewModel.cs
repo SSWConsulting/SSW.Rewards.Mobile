@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using SSW.Rewards.Controls;
+using SSW.Rewards.Helpers;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.Generic;
@@ -17,11 +19,15 @@ namespace SSW.Rewards.ViewModels
 
         public ObservableCollection<QuizQuestionViewModel> Questions { get; set; } = new ObservableCollection<QuizQuestionViewModel>();
 
+        public ObservableCollection<bool> Results { get; set; } = new ObservableCollection<bool>();
+
         public ICommand ButtonCommand { get; set; }
 
         public ICommand BackCommand => new Command(async () => await GoBack());
 
         public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
+
+        public ICommand ResultsButtonCommand { get; set; }
 
         public string QuizTitle { get; set; }
 
@@ -29,25 +35,47 @@ namespace SSW.Rewards.ViewModels
 
         public string ButtonText { get; set; } = "Next";
 
+        public string SheildGlyph { get; set; }
+
+        public string Score { get; set; }
+
+        public string ResultsTitle { get; set; }
+
+        public string ResultButtonText { get; set; }
+
+        public bool QuestionsVisible { get; set; } = true;
+
+        public bool ResultsVisible { get; set; } = false;
+
+        public bool TestPassed { get; set; }
+
+        public SnackbarOptions SnackOptions { get; set; }
+
         public EventHandler<int> OnNextQuestionRequested;
 
+        public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
+
         public QuizQuestionViewModel CurrentQuestion { get; set; }
+
+        private string _quizIcon;
 
         public QuizDetailsViewModel(IQuizService quizService)
         {
             _quizService = quizService;
         }
 
-        public async Task Initialise(int quizId)
+        public async Task Initialise(int quizId, string icon)
         {
             _quizId = quizId;
+
+            _quizIcon = icon;
 
             IsBusy = true;
             OnPropertyChanged(nameof(IsBusy));
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
 
-            foreach (var question in quiz.Questions)
+            foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
             {
                 Questions.Add(new QuizQuestionViewModel(question));
             }
@@ -92,8 +120,6 @@ namespace SSW.Rewards.ViewModels
                     QuizId = _quizId
                 };
 
-                var response = JsonConvert.SerializeObject(command);
-
                 IsBusy = true;
                 OnPropertyChanged(nameof(IsBusy));
 
@@ -102,28 +128,90 @@ namespace SSW.Rewards.ViewModels
                 IsBusy = false;
                 OnPropertyChanged(nameof(IsBusy));
 
-                if (result.Passed)
-                {
-                    // do congrats and stuff
-                    await App.Current.MainPage.DisplayAlert("Congratulations!", $"You passed the {QuizTitle} quiz and earned {result.Points} points.", "OK");
-
-                    MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
-                }
-                else
-                {
-                    // do commiserations and stuff
-                    await App.Current.MainPage.DisplayAlert("You Died.", String.Empty, "OK");
-                }
+                await ProcessResult(result);
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz. {Environment.NewLine}TIP: You can swipe backwards through the questions.", "OK");
+                await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz. {Environment.NewLine}{Environment.NewLine}TIP: You can swipe backwards through the questions.", "OK");
             }
         }
 
-        private async Task GoBack()
+        public async Task ProcessResult(QuizResultDto result)
         {
-            var confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
+            QuestionsVisible = false;
+            ResultsVisible = true;
+
+            var total = result.Results.Count();
+
+            var correct = result.Results.Count(r => r.Correct);
+
+            Score = $"{correct}/{total}";
+
+            if (result.Passed)
+            {
+                SheildGlyph = Icon.Check;
+
+                ResultButtonText = "Take Another Quiz";
+
+                ResultsTitle = "Test Failed";
+
+                TestPassed = true;
+
+                ResultsButtonCommand = new Command(async () => await GoBack(false));
+
+                SnackOptions = new SnackbarOptions
+                {
+                    ActionCompleted = true,
+                    GlyphIsBrand = true,
+                    Glyph = _quizIcon,
+                    Message = $"You have completed the {QuizTitle} quiz",
+                    Points = result.Points,
+                    ShowPoints = true
+                };
+
+                MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
+            }
+            else
+            {
+                SheildGlyph = Icon.Sad;
+
+                ResultButtonText = "Try Again";
+
+                ResultsTitle = "Test Passed!";
+
+                TestPassed = false;
+
+                ResultsButtonCommand = new Command(() =>
+                {
+                    QuestionsVisible = true;
+                    ResultsVisible = false;
+                    RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible));
+                });
+
+                var questionResults = result.Results.OrderBy(r => r.QuestionId).ToList();
+
+                foreach (var questionResult in questionResults)
+                {
+                    Results.Add(questionResult.Correct);
+                }
+            }
+
+            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(SheildGlyph), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed));
+        }
+
+        private async Task GoBack(bool askFirst = true)
+        {
+            bool confirmed;
+            
+            if (askFirst)
+            {
+                confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
+            }
+            else
+            {
+                confirmed = true;
+            }
+            
 
             if (confirmed)
             await Shell.Current.GoToAsync("..");
