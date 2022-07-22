@@ -68,8 +68,6 @@
                         <VisualStateGroup x:Name="CheckedStates">
                             <VisualState x:Name="Checked">
                                 <VisualState.Setters>
-                                    <!--<Setter Property="BorderColor"
-                                            Value="#FF3300" />-->
                                     <Setter TargetName="check"
                                             Property="Opacity"
                                             Value="1" />
@@ -77,10 +75,6 @@
                             </VisualState>
                             <VisualState x:Name="Unchecked">
                                 <VisualState.Setters>
-                                    <!--<Setter Property="BackgroundColor"
-                                            Value="#F3F2F1" />
-                                    <Setter Property="BorderColor"
-                                            Value="#F3F2F1" />-->
                                     <Setter TargetName="check"
                                             Property="Opacity"
                                             Value="0" />
@@ -90,7 +84,8 @@
                     </VisualStateGroupList>
                 </VisualStateManager.VisualStateGroups>
                 <Grid Margin="4"
-                      ColumnDefinitions="30, *">
+                      ColumnDefinitions="40, *"
+                      WidthRequest="300">
                     <Grid WidthRequest="18"
                           HeightRequest="18"
                           HorizontalOptions="End"

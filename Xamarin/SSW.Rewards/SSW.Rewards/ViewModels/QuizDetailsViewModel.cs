@@ -1,4 +1,5 @@
 ﻿using SSW.Rewards.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace SSW.Rewards.ViewModels
 
         private List<QuizAnswer> _answers = new List<QuizAnswer>();
 
-        public ICommand NextCommand { get; set; }
+        public ICommand ButtonCommand { get; set; }
 
         public ICommand BackCommand => new Command(async () => await GoBack());
 
@@ -27,7 +28,9 @@ namespace SSW.Rewards.ViewModels
 
         public string QuizDescription { get; set; }
 
-        public string ButtonText { get; set; }
+        public string ButtonText { get; set; } = "Next";
+
+        public EventHandler<int> OnNextQuestionRequested;
 
         public QuizQuestionDto CurrentQuestion { get; set; }
 
@@ -104,8 +107,28 @@ namespace SSW.Rewards.ViewModels
 
         private void CurrentQuestionChanged()
         {
+            var selectedIndex = Questions.IndexOf(CurrentQuestion);
+
+            var isLastQuestion = selectedIndex == Questions.Count - 1;
+
+            if (isLastQuestion)
+            {
+                ButtonText = "Submit";
+                ButtonCommand = new Command(async () => await SubmitResponses());
+            }
+            else
+            {
+                ButtonText = "Next";
+                ButtonCommand = new Command(() => MoveNext(++selectedIndex));
+            }
+
             QuizDescription = CurrentQuestion.Text;
-            OnPropertyChanged(nameof(QuizDescription));
+            RaisePropertyChanged(nameof(QuizDescription), nameof(ButtonText), nameof(ButtonCommand));
+        }
+
+        private void MoveNext(int next)
+        {
+            OnNextQuestionRequested.Invoke(this, next);
         }
     }
 

@@ -27,6 +27,18 @@ namespace SSW.Rewards.Pages
             int quizId = int.Parse(QuizId);
 
             await _viewModel.Initialise(quizId);
+            _viewModel.OnNextQuestionRequested += ScrollToIndex;
+        }
+
+        private void ScrollToIndex(object sender, int index)
+        {
+            QuestionsCarousel.ScrollTo(index);
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.OnNextQuestionRequested -= ScrollToIndex;
         }
 
         protected override void OnSizeAllocated(double width, double height)

@@ -56,7 +56,8 @@
                           Loop="False"
                           ItemsSource="{Binding Questions}"
                           CurrentItem="{Binding CurrentQuestion}"
-                          CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}">
+                          CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
+                          x:Name="QuestionsCarousel">
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
                         <ScrollView WidthRequest="400"
@@ -68,13 +69,12 @@
                                          Spacing="40">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
-                                        <RadioButton Value="{Binding QestionAnswerId}">
-                                            <!--IsChecked="{Binding IsSelected, Mode=OneWayToSource}">-->
-                                            <RadioButton.Content>
-                                                <Label Text="{Binding Text}"
-                                                       FontSize="30"
-                                                       TextColor="White"/>
-                                            </RadioButton.Content>
+                                        <RadioButton Value="{Binding QestionAnswerId}"
+                                                     IsChecked="{Binding IsSelected, Mode=OneWayToSource}"
+                                                     WidthRequest="300"
+                                                     TextColor="White"
+                                                     Content="{Binding Text}"
+                                                     ControlTemplate="{StaticResource RadioButtonTemplate}">
                                         </RadioButton>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
@@ -91,7 +91,8 @@
                            x:Name="QuestionIndicator"/>
 
             <Button Grid.Row="4"
-                    Text="Next"
+                    Text="{Binding ButtonText}"
+                    Command="{Binding ButtonCommand}"
                     TextColor="White"
                     HeightRequest="40"
                     Margin="30,0,30,10"
