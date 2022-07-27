@@ -1,6 +1,7 @@
 ﻿using SSW.Rewards.Controls;
 using SSW.Rewards.Services;
 using SSW.Rewards.ViewModels;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

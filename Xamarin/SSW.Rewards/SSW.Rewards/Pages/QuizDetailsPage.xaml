@@ -159,14 +159,11 @@
                            Grid.Row="2"/>
 
                     <Label Text="{Binding SheildGlyph}"
+                           FontFamily="{StaticResource FluentIcons}"
                            TextColor="White"
                            FontSize="72"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=X, Constant=1}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=Y, Constant=50}"
+                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=X, Constant=100}"
+                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=Y, Constant=100}"
                            Grid.Row="2"/>
 
                     <Frame BackgroundColor="{StaticResource MainBackground}"
@@ -194,7 +191,7 @@
 
                     <FlexLayout WidthRequest="400"
                                 Direction="Row"
-                                JustifyContent="SpaceAround"
+                                JustifyContent="SpaceEvenly"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
                                 Grid.Row="4"
@@ -206,18 +203,31 @@
                                     <BoxView WidthRequest="20"
                                              HeightRequest="20"
                                              VerticalOptions="Center"
+                                             HorizontalOptions="Center"
                                              CornerRadius="10"
                                              BackgroundColor="{Binding Correct, Converter={StaticResource PassedToColor}}"/>
 
-                                    <Label Text="&#xe9b7;"
-                                           FontFamily="{StaticResource FluentIcons}"
-                                           TextColor="White"
-                                           Margin="0"
-                                           FontSize="14"
-                                           HorizontalTextAlignment="Center"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           VerticalTextAlignment="Center"/>
+                                <Label Text="&#xf36f;"
+                                       TextColor="{StaticResource SSWRed}"
+                                       FontAttributes="Bold"
+                                       FontFamily="{StaticResource FluentIcons}"
+                                       Margin="0,0.5,0.05,0"
+                                       FontSize="14"
+                                       HorizontalTextAlignment="Center"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"/>
+
+                                <Label Text="&#xe9b7;"
+                                       FontFamily="{StaticResource FluentIcons}"
+                                       IsVisible="{Binding Correct}"
+                                       TextColor="White"
+                                       Margin="0,0.5,0.1815,0"
+                                       FontSize="14"
+                                       HorizontalTextAlignment="Center"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
