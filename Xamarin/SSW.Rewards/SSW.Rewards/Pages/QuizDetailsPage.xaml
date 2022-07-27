@@ -150,23 +150,23 @@
                            VerticalTextAlignment="Center"
                            Grid.Row="1"/>
 
-                    <Image Source="v2win"
+                    <Image Source="test_passed"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand"
                            HeightRequest="270"
                            Aspect="AspectFit"
-                           x:Name="ShieldImage"
+                           IsVisible="{Binding TestPassed}"
                            Grid.Row="2"/>
 
-                    <Label Text="{Binding SheildGlyph}"
-                           FontFamily="{StaticResource FluentIcons}"
-                           TextColor="White"
-                           FontSize="72"
-                           RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=X, Constant=100}"
-                           RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=ShieldImage, Property=Y, Constant=100}"
+                    <Image Source="test_failed"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           HeightRequest="270"
+                           Aspect="AspectFit"
+                           IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
                            Grid.Row="2"/>
 
-                    <Frame BackgroundColor="{StaticResource MainBackground}"
+                <Frame BackgroundColor="{StaticResource MainBackground}"
                            BorderColor="#979797"
                            CornerRadius="5"
                            WidthRequest="250"
@@ -234,7 +234,7 @@
                     </FlexLayout>
 
                     <controls:Snackbar Grid.Row="0"
-                                       Grid.RowSpan="4"
+                                       Grid.RowSpan="5"
                                        Options="{Binding SnackOptions}"
                                        InputTransparent="True"
                                        VerticalOptions="End" 

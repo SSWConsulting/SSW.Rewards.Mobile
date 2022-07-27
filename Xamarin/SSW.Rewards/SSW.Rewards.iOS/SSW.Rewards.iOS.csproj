@@ -487,15 +487,27 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed%403x.png" />
-    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed%402x.png" />
-    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed.png" />
+    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\test_failed.imageset\test_failed.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\test_failed.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed%403x.png" />
-    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed%402x.png" />
-    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed.png" />
+    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed%403x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed%402x.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\test_passed.imageset\test_passed.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\test_passed.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
