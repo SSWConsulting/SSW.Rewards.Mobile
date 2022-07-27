@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Pages.QuizDetailsPage">
     <Shell.TitleView>
@@ -199,36 +200,22 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <BoxView BackgroundColor="{StaticResource SSWRed}"
-                                             HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             WidthRequest="20"
-                                             HeightRequest="20"
-                                             CornerRadius="10"
-                                             IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
 
-                                    <Label Text="-"
-                                           TextColor="White"
-                                           FontAttributes="Bold"
-                                           Margin="1,0,1,0"
-                                           FontSize="20"
-                                           HorizontalTextAlignment="Center"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           VerticalTextAlignment="Center"
-                                           IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
+                                    <lottie:AnimationView Animation="pass.json"
+                                                          AutoPlay="True"
+                                                          Loop="False"
+                                                          WidthRequest="30"
+                                                          HeightRequest="30"
+                                                          IsVisible="{Binding Correct}"/>
 
-                                    <Label Text="&#xe9b7;"
-                                           FontFamily="{StaticResource FluentIcons}"
-                                           IsVisible="{Binding Correct}"
-                                           TextColor="White"
-                                           Margin="0,0.5,0.1815,0"
-                                           FontSize="20"
-                                           HorizontalTextAlignment="Center"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           VerticalTextAlignment="Center"/>
-                                </Grid>
+                                    <lottie:AnimationView Animation="fail.json"
+                                                          AutoPlay="True"
+                                                          Loop="False"
+                                                          WidthRequest="30"
+                                                          HeightRequest="30"
+                                                          IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
+
+                            </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
