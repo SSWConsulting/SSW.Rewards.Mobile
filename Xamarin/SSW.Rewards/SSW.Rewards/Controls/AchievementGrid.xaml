@@ -10,14 +10,23 @@
             <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
-    <CollectionView ItemsLayout="VerticalGrid, 3"
+    <StackLayout Padding="20">
+        <Label Text="Achievements"
+                 TextColor="White"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 HorizontalTextAlignment="Center"
+                 VerticalOptions="Start"
+                 FontSize="Title"
+                 Margin="10"/>
+        <CollectionView ItemsLayout="VerticalGrid, 3"
                     ItemsSource="{Binding Achievements}"
                     Margin="30,10">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <StackLayout HeightRequest="100"
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout HeightRequest="100"
                              WidthRequest="100">
-                    <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
+                        <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
                                  Command="{Binding AchievementTappedCommand}"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center"
@@ -25,14 +34,15 @@
                                  HeightRequest="76"
                                  Padding="20"
                                  CornerRadius="38">
-                        <ImageButton.Source>
-                            <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                            <ImageButton.Source>
+                                <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
                                              Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
                                              Color="White"/>
-                        </ImageButton.Source>
-                    </ImageButton>
-                </StackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
 </ContentView>

@@ -58,7 +58,6 @@
 
         <ControlTemplate x:Key="RadioButtonTemplate">
             <Frame HasShadow="False"
-                   WidthRequest="400"
                    BackgroundColor="Transparent"
                    HorizontalOptions="Start"
                    VerticalOptions="Start"
@@ -84,22 +83,21 @@
                     </VisualStateGroupList>
                 </VisualStateManager.VisualStateGroups>
                 <Grid Margin="4"
-                      ColumnDefinitions="40, *"
-                      WidthRequest="300">
+                      ColumnDefinitions="60, *">
                     <Grid WidthRequest="18"
                           HeightRequest="18"
-                          HorizontalOptions="End"
-                          VerticalOptions="Start">
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center">
                         <Ellipse Stroke="{StaticResource SSWRed}"
                                  Fill="White"
-                                 WidthRequest="16"
-                                 HeightRequest="16"
+                                 WidthRequest="20"
+                                 HeightRequest="20"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center" />
                         <Ellipse x:Name="check"
                                  Fill="{StaticResource SSWRed}"
-                                 WidthRequest="8"
-                                 HeightRequest="8"
+                                 WidthRequest="10"
+                                 HeightRequest="10"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center" />
                     </Grid>

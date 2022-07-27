@@ -69,12 +69,11 @@
                                   x:Name="QuestionsCarousel">
                         <CarouselView.ItemTemplate>
                             <DataTemplate>
-                                <ScrollView WidthRequest="400"
-                                            HeightRequest="700">
+                                <ScrollView HeightRequest="700">
                                     <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
                                                  RadioButtonGroup.GroupName="{Binding QuestionId}"
                                                  HorizontalOptions="FillAndExpand"
-                                                 Padding="50"
+                                                 Padding="20"
                                                  Spacing="40">
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate>
@@ -235,7 +234,6 @@
 
                     <controls:Snackbar Grid.Row="0"
                                        Grid.RowSpan="5"
-                                       Options="{Binding SnackOptions}"
                                        InputTransparent="True"
                                        VerticalOptions="End" 
                                        x:Name="QuizResultsPageSnackbar"/>

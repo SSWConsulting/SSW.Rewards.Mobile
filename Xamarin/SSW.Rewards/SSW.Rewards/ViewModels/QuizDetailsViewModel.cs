@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using SSW.Rewards.Controls;
-using SSW.Rewards.Helpers;
+﻿using SSW.Rewards.Controls;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.Generic;
@@ -34,8 +32,6 @@ namespace SSW.Rewards.ViewModels
         public string QuizDescription { get; set; }
 
         public string ButtonText { get; set; } = "Next";
-
-        public string SheildGlyph { get; set; }
 
         public string Score { get; set; }
 
@@ -149,8 +145,6 @@ namespace SSW.Rewards.ViewModels
 
             if (result.Passed)
             {
-                SheildGlyph = Icon.Check;
-
                 ResultButtonText = "Take Another Quiz";
 
                 ResultsTitle = "Test Passed!";
@@ -177,8 +171,6 @@ namespace SSW.Rewards.ViewModels
             }
             else
             {
-                SheildGlyph = Icon.Sad;
-
                 ResultButtonText = "Try Again";
 
                 ResultsTitle = "Test Failed";
@@ -200,7 +192,7 @@ namespace SSW.Rewards.ViewModels
                 }
             }
 
-            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(SheildGlyph), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
+            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
         }
 
         private async Task GoBack(bool askFirst = true)

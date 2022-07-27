@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Services;
+﻿using SSW.Rewards.Helpers;
+using SSW.Rewards.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +26,11 @@ namespace SSW.Rewards.ViewModels
 
             OpenQuizCommand = new Command<int>(
                 execute:
-                async (id) => await OpenQuiz(id),
+                async (id) => 
+                {
+                    var quiz = Quizzes.FirstOrDefault(q => q.Id == id);
+                    await OpenQuiz(id, quiz.Icon);
+                },
                 canExecute:
                 (id) =>
                 {
@@ -55,9 +60,9 @@ namespace SSW.Rewards.ViewModels
             OnPropertyChanged(nameof(IsBusy));
         }
 
-        private async Task OpenQuiz(int quizId)
+        private async Task OpenQuiz(int quizId, Icons icon)
         {
-            await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}");
+            await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
         }
     }
 }
