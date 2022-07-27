@@ -9,8 +9,6 @@ namespace SSW.Rewards.Services
 {
     public class ScannerService : BaseService, IScannerService
     {
-        public const string PointsAwardedMessage = "PointsAwarded";
-
         private AchievementClient _achievementClient { get; set; }
         private RewardClient _rewardClient { get; set; }
 
@@ -80,7 +78,7 @@ namespace SSW.Rewards.Services
                 vm.result = ScanResult.Error;
             }
 
-            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
+            MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
 
             return vm;
         }
@@ -152,7 +150,7 @@ namespace SSW.Rewards.Services
             {
                 vm.result = ScanResult.Error;
             }
-            MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage);
+            MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
 
             return vm;
         }

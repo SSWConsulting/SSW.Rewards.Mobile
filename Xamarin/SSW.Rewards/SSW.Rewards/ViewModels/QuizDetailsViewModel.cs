@@ -169,7 +169,7 @@ namespace SSW.Rewards.ViewModels
 
                 ShowSnackbar.Invoke(this, args);
 
-                MessagingCenter.Send<object>(this, QuizViewModel.QuizzesUpdatedMessage);
+                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
             }
             else
             {

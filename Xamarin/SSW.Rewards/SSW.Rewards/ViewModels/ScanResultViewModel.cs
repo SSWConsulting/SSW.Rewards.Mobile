@@ -72,7 +72,7 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
-                    MessagingCenter.Send<object>(this, ScannerService.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
+                    MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
                     break;
 
                 case ScanResult.Duplicate:
@@ -118,7 +118,7 @@ namespace SSW.Rewards.ViewModels
             if (result.result == ScanResult.Added)
             {
                 await _userService.UpdateMyDetailsAsync();
-                MessagingCenter.Send(this, ScannerService.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
+                MessagingCenter.Send(this, Constants.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
             }
         }
 

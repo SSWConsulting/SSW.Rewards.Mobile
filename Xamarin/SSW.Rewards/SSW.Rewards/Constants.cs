@@ -25,5 +25,7 @@
 
         public string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
 
+        public const string PointsAwardedMessage = "PointsAwarded";
+
     }
 }
