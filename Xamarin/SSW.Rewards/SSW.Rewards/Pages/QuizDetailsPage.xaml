@@ -199,12 +199,18 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
+                                    <BoxView BackgroundColor="{StaticResource SSWRed}"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             WidthRequest="20"
+                                             HeightRequest="20"
+                                             CornerRadius="10"
+                                             IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
 
-                                    <Label Text="&#xf36f;"
-                                           TextColor="{StaticResource SSWRed}"
+                                    <Label Text="-"
+                                           TextColor="White"
                                            FontAttributes="Bold"
-                                           FontFamily="{StaticResource FluentIcons}"
-                                           Margin="0,0.5,0.05,0"
+                                           Margin="1,0,1,0"
                                            FontSize="20"
                                            HorizontalTextAlignment="Center"
                                            HorizontalOptions="Center"
