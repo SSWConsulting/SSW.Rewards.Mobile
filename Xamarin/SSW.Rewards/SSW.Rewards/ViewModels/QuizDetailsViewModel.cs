@@ -71,6 +71,8 @@ namespace SSW.Rewards.ViewModels
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
 
+            Questions.Clear();
+
             foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
             {
                 Questions.Add(new QuizQuestionViewModel(question));

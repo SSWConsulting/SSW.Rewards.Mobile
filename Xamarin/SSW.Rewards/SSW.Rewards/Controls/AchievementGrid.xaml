@@ -10,7 +10,7 @@
             <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
-    <StackLayout Padding="20">
+    <StackLayout>
         <Label Text="Achievements"
                  TextColor="White"
                  FontAttributes="Bold"

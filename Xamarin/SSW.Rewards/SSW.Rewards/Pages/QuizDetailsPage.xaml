@@ -123,7 +123,7 @@
                       RowDefinitions="70, 100, 300, 100, 100"
                       IsVisible="{Binding ResultsVisible}">
 
-                    <Label Text="{Binding ResultsTitle}"
+                <Label Text="{Binding ResultsTitle}"
                            TextTransform="Uppercase"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
@@ -165,7 +165,7 @@
                            IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
                            Grid.Row="2"/>
 
-                <Frame BackgroundColor="{StaticResource MainBackground}"
+                    <Frame BackgroundColor="{StaticResource MainBackground}"
                            BorderColor="#979797"
                            CornerRadius="5"
                            WidthRequest="250"
@@ -199,34 +199,29 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <BoxView WidthRequest="20"
-                                             HeightRequest="20"
-                                             VerticalOptions="Center"
-                                             HorizontalOptions="Center"
-                                             CornerRadius="10"
-                                             BackgroundColor="{Binding Correct, Converter={StaticResource PassedToColor}}"/>
 
-                                <Label Text="&#xf36f;"
-                                       TextColor="{StaticResource SSWRed}"
-                                       FontAttributes="Bold"
-                                       FontFamily="{StaticResource FluentIcons}"
-                                       Margin="0,0.5,0.05,0"
-                                       FontSize="14"
-                                       HorizontalTextAlignment="Center"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       VerticalTextAlignment="Center"/>
+                                    <Label Text="&#xf36f;"
+                                           TextColor="{StaticResource SSWRed}"
+                                           FontAttributes="Bold"
+                                           FontFamily="{StaticResource FluentIcons}"
+                                           Margin="0,0.5,0.05,0"
+                                           FontSize="20"
+                                           HorizontalTextAlignment="Center"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"
+                                           IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
 
-                                <Label Text="&#xe9b7;"
-                                       FontFamily="{StaticResource FluentIcons}"
-                                       IsVisible="{Binding Correct}"
-                                       TextColor="White"
-                                       Margin="0,0.5,0.1815,0"
-                                       FontSize="14"
-                                       HorizontalTextAlignment="Center"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       VerticalTextAlignment="Center"/>
+                                    <Label Text="&#xe9b7;"
+                                           FontFamily="{StaticResource FluentIcons}"
+                                           IsVisible="{Binding Correct}"
+                                           TextColor="White"
+                                           Margin="0,0.5,0.1815,0"
+                                           FontSize="20"
+                                           HorizontalTextAlignment="Center"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
