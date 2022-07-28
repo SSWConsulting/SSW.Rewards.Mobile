@@ -187,7 +187,9 @@ namespace SSW.Rewards.ViewModels
                 });
 
                 Results.Clear();
-                
+
+                RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
+
                 foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
                 {
                     Results.Add(questionResult);
