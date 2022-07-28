@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Admin.Helpers
+﻿namespace SSW.Rewards.Admin.UI.Helpers
 {
     public static class StaffHelper
     {

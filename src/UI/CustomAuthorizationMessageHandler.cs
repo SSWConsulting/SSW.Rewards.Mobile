@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace SSW.Rewards.Admin;
+namespace SSW.Rewards.Admin.UI;
 public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
 {
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
+
     public CustomAuthorizationMessageHandler(
         IAccessTokenProvider provider,
         IConfiguration config,

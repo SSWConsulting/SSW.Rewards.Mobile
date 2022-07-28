@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>abaa8db5-c195-4a86-bd29-069a802aa8d5</UserSecretsId>
     </PropertyGroup>

@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Admin;
+﻿namespace SSW.Rewards.Admin.UI;
 
 public static class Constants
 {

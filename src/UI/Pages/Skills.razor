@@ -1,9 +1,9 @@
 @page "/Skills"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.Components.Dialogs.Confirmations
-@using SSW.Rewards.Admin.Components.Dialogs.Skills
-@using SSW.Rewards.Admin.Components
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Skills
+@using SSW.Rewards.Admin.UI.Components
 
 @attribute [Authorize]
 
@@ -77,7 +77,7 @@
 
     private async Task OpenDialog(DialogOptions options)
     {
-    var dialog = DialogService.Show<SSW.Rewards.Admin.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
+    var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
     var result = await dialog.Result;
         if (!result.Cancelled)
         {

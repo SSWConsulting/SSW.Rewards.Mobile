@@ -1,4 +1,4 @@
-namespace SSW.Rewards.Admin.Components.Dialogs.Confirmations;
+namespace SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations;
 
 public enum SimpleConfirmationDialogType
 {

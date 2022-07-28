@@ -1,11 +1,9 @@
 using MudBlazor;
 
-namespace SSW.Rewards.Admin;
+namespace SSW.Rewards.Admin.UI;
 
-public static class AdminPortalMudTheme 
+public static class AdminPortalMudTheme
 {
-    public static MudTheme Theme { get; set; }
-
     static AdminPortalMudTheme()
     {
         Theme = new MudTheme()
@@ -15,7 +13,7 @@ public static class AdminPortalMudTheme
                 Primary = "#cc4141",
                 Secondary = "#333333",
                 AppbarBackground = "#cc4141",
-                Background = "#ffffffff"
+                Background = "#ffffffff",
             },
             PaletteDark = new Palette()
             {
@@ -48,4 +46,6 @@ public static class AdminPortalMudTheme
             },
         };
     }
+
+    public static MudTheme Theme { get; set; }
 }
