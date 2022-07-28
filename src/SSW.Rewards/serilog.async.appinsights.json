@@ -1,0 +1,21 @@
+{
+  "Serilog": {
+    "WriteTo": [
+      {
+        "Name": "Async",
+        "Args": {
+          "configure": [
+            {
+              "Name": "ApplicationInsights",
+              "Args": {
+                "restrictedToMinimumLevel": "Information",
+                "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Exceptions\**" />
+    <Compile Remove="Infrastructure\**" />
+    <Compile Remove="ValueObjects\**" />
+    <EmbeddedResource Remove="Exceptions\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="ValueObjects\**" />
+    <None Remove="Exceptions\**" />
+    <None Remove="Infrastructure\**" />
+    <None Remove="ValueObjects\**" />
+  </ItemGroup>
+
+</Project>
