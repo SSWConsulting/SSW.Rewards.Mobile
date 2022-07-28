@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Skills.Queries.GetAdminSkillList;
+﻿namespace SSW.Rewards.Application.Skills.Queries.GetAdminSkillList;
 public class GetAdminSkillList : IRequest<List<AdminSkillDto>>
 {
     

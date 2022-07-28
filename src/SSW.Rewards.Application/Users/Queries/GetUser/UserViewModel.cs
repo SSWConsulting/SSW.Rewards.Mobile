@@ -1,8 +1,6 @@
-using AutoMapper;
 using SSW.Rewards.Application.Common.Mappings;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Users.Queries.GetUser;
 

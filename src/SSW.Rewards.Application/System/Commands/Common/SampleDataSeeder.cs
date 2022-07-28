@@ -1,9 +1,6 @@
 ﻿using System.Text;
 using ExcelDataReader;
-using Microsoft.EntityFrameworkCore;
 using MoreLinq;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.System.Commands.Common;

@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 

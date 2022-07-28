@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
+﻿namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
 
 public class RegisterUserCommand : IRequest
 {

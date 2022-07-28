@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace SSW.Rewards.Application.Common.Models;
+﻿namespace SSW.Rewards.Application.Common.Models;
 public class PaginatedList<T>
 {
     public List<T> Items { get; }

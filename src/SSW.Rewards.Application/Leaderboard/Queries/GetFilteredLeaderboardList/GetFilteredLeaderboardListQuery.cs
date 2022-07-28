@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using AutoMapper.QueryableExtensions;
 using SSW.Rewards.Application.Leaderboard.Queries.Common;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;

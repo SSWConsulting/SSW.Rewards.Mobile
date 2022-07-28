@@ -1,5 +1,3 @@
-using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;

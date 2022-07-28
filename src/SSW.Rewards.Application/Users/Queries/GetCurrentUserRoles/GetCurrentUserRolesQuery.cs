@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
+﻿namespace SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
 
 public class GetCurrentUserRolesQuery : IRequest<string[]>
 {

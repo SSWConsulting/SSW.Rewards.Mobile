@@ -1,6 +1,4 @@
-using AutoMapper;
 using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 

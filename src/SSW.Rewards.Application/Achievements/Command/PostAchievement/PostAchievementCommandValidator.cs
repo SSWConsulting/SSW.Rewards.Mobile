@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
+﻿namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
 public class PostAchievementCommandValidator : AbstractValidator<PostAchievementCommand>
 {

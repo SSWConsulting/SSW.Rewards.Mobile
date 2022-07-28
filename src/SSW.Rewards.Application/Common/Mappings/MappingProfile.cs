@@ -1,5 +1,4 @@
 using System.Reflection;
-using AutoMapper;
 
 namespace SSW.Rewards.Application.Common.Mappings;
 

@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Skills.Queries;
+﻿namespace SSW.Rewards.Application.Skills.Queries;
 
 public class GetSkillListQuery : IRequest<SkillListViewModel>
 {

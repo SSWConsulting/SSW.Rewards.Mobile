@@ -1,6 +1,3 @@
-using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
 namespace SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 
 public class DeleteInstallationCommand : IRequest<Unit>

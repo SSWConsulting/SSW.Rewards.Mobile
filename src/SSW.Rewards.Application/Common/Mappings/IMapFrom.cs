@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-namespace SSW.Rewards.Application.Common.Mappings;
+﻿namespace SSW.Rewards.Application.Common.Mappings;
 
 public interface IMapFrom<T>
 {

@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Domain.Entities;
+﻿using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.Application.Staff.Commands.DeleteStaffProfile;
 public class DeleteStaffProfile : IRequest<Unit>

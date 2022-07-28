@@ -1,6 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.Application.Skills.Commands.DeleteSkill;
 

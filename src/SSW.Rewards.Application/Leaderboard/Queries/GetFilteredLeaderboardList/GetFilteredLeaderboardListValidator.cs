@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
+﻿namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
 public class GetFilteredLeaderboardListValidator : AbstractValidator<GetFilteredLeaderboardList>
 {
     public GetFilteredLeaderboardListValidator()

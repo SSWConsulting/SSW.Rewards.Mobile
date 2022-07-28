@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
+﻿namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
 
 public class GetUserRewardsQuery : IRequest<UserRewardsViewModel>
 {

@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Common.Models;
-using SSW.Rewards.Domain.Entities;
+﻿using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 public class RequestNotification : IRequest<Unit>

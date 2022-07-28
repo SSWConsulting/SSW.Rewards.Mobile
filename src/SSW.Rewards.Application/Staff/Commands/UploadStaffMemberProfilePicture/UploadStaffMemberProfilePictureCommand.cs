@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 

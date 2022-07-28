@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Domain.Entities;
+﻿using SSW.Rewards.Application.Common.Mappings;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.Common;
 

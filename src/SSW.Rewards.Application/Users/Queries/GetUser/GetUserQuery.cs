@@ -1,6 +1,3 @@
-using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
 namespace SSW.Rewards.Application.Users.Queries.GetUser;
 
 public class GetUserQuery : IRequest<UserViewModel>

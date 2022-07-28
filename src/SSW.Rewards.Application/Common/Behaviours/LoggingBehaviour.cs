@@ -1,5 +1,4 @@
-﻿using SSW.Rewards.Application.Common.Interfaces;
-using MediatR.Pipeline;
+﻿using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Application.Common.Behaviours;
@@ -10,14 +9,11 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
 
-    //private readonly IIdentityService _identityService;
-
     public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IUserService userService)//, IIdentityService identityService)
     {
         _logger = logger;
         _currentUserService = currentUserService;
         _userService = userService;
-        //_identityService = identityService;
     }
 
     public async Task Process(TRequest request, CancellationToken cancellationToken)

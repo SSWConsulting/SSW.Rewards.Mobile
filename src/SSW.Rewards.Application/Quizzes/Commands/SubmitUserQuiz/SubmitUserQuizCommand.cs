@@ -1,10 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Domain.Entities;
-
-namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
+﻿namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 
 public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 {

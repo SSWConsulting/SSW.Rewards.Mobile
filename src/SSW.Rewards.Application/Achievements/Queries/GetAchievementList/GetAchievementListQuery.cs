@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
 using SSW.Rewards.Application.Achievements.Queries.Common;
-using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 

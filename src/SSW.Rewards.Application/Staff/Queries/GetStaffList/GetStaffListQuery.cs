@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using AutoMapper.QueryableExtensions;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList;
 

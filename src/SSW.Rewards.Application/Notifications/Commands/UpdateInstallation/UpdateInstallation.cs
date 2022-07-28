@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Common.Models;
+﻿using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
 public class UpdateInstallation : IRequest<Unit>

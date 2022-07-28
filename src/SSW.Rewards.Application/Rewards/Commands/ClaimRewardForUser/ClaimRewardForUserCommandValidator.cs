@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace SSW.Rewards.Application.Rewards.Commands;
+﻿namespace SSW.Rewards.Application.Rewards.Commands;
 
 public class ClaimRewardForUserCommandValidator : AbstractValidator<ClaimRewardForUserCommand>
 {

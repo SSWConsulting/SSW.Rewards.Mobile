@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Users.Common;
+﻿using SSW.Rewards.Application.Users.Common;
 
 namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 

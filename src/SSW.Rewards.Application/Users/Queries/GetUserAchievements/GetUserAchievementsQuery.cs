@@ -1,5 +1,3 @@
-using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common;
 
 namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements;

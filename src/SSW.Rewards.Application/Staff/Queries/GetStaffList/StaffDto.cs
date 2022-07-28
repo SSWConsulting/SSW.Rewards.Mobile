@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using SSW.Rewards.Application.Achievements.Queries.Common;
+﻿using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList;
 

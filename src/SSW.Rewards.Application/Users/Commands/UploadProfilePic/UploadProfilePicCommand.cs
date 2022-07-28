@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
 using SSW.Rewards.Application.System.Commands.Common;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 

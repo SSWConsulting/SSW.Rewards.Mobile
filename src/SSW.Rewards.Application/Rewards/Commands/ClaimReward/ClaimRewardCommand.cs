@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Rewards.Common;
+﻿using SSW.Rewards.Application.Rewards.Common;
 using SSW.Rewards.Application.System.Commands.Common;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
 

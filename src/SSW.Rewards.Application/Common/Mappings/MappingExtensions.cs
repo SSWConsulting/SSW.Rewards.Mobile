@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper.QueryableExtensions;
 using SSW.Rewards.Application.Common.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace SSW.Rewards.Application.Common.Mappings;
 

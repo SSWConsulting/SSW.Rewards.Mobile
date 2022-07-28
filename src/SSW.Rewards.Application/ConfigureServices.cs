@@ -1,9 +1,6 @@
 ﻿using System.Reflection;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Behaviours;
-using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;

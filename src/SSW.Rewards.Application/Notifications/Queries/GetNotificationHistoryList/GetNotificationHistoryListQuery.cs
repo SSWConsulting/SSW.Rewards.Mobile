@@ -1,8 +1,4 @@
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 

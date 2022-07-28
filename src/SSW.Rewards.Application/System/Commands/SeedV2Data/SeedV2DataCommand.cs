@@ -1,6 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.System.Commands.Common;
+﻿using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.System.Commands.SeedV2Data;
 

@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill;
+﻿namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill;
 public class UpsertSkill : IRequest<Unit>
 {
     public int Id { get; set; }

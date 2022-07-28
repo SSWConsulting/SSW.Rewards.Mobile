@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-namespace SSW.Rewards.Application.Rewards.Queries.GetRecentRewards;
+﻿namespace SSW.Rewards.Application.Rewards.Queries.GetRecentRewards;
 
 public class GetRecentRewardsQuery : IRequest<RecentRewardListViewModel>
 {

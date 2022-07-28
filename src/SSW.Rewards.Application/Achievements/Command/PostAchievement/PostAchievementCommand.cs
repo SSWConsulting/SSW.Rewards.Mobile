@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Achievements.Queries.Common;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.System.Commands.Common;
-using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;

@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
 

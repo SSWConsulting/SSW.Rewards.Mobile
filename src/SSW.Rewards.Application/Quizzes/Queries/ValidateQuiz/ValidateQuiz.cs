@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
+﻿using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.ValidateQuiz;
 public class ValidateQuiz : IRequest<QuizResultDto>

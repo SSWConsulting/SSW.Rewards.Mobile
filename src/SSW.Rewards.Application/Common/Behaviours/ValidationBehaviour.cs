@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
-using ValidationException = SSW.Rewards.Application.Common.Exceptions.ValidationException;
+﻿using ValidationException = SSW.Rewards.Application.Common.Exceptions.ValidationException;
 
 namespace SSW.Rewards.Application.Common.Behaviours;
 

@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 

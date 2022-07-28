@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-
-namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUserQuery;
+﻿namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUserQuery;
 
 public class GetQuizListForUserQuery : IRequest<IEnumerable<QuizDto>>
 {

@@ -1,8 +1,6 @@
-using MediatR;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 

@@ -1,15 +1,11 @@
 ﻿using System.Net.Mail;
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Services;
 

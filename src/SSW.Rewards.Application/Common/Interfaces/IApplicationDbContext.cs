@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Domain.Entities;
-
-namespace SSW.Rewards.Application.Common.Interfaces;
+﻿namespace SSW.Rewards.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
