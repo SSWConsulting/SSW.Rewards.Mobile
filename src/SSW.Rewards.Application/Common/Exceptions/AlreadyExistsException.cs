@@ -1,17 +1,13 @@
-﻿using System;
-
-namespace SSW.Rewards.Application.Common.Exceptions
+﻿namespace SSW.Rewards.Application.Common.Exceptions;
+public class AlreadyExistsException : Exception
 {
-    public class AlreadyExistsException : Exception
+    public AlreadyExistsException() : base()
     {
-        public AlreadyExistsException() : base()
-        {
 
-        }
+    }
 
-        public AlreadyExistsException(string message) : base(message)
-        {
+    public AlreadyExistsException(string message) : base(message)
+    {
 
-        }
     }
 }

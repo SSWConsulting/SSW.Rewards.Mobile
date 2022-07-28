@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace SSW.Rewards.Application.Common.Models
+﻿namespace SSW.Rewards.Application.Common.Models;
+public class DeviceInstall
 {
-    public class DeviceInstall
-    {
-        public string InstallationId { get; set; }
-        public string Platform { get; set; }
-        public string PushChannel { get; set; }
-        public IList<string> Tags { get; set; } = Array.Empty<string>();
-    }
+    public string InstallationId { get; set; } = string.Empty;
+    public string Platform { get; set; } = string.Empty;
+    public string PushChannel { get; set; } = string.Empty;
+    public IList<string> Tags { get; set; } = new List<string>();
 }

@@ -1,11 +1,18 @@
-using System;
+﻿using AutoMapper;
+using SSW.Rewards.Application.Common.Mappings;
+using SSW.Rewards.Domain.Entities;
 
-namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList
+namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
+public class NotificationHistoryDto : IMapFrom<Notification>
 {
-    public class NotificationHistoryDto
+    public string Message { get; set; } = string.Empty;
+    public DateTime CreatedDate { get; set; }
+    public string EmailAddress { get; set; } = string.Empty;
+
+    public void Mapping(Profile profile)
     {
-        public string Message { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string EmailAddress { get; set; }
+        profile.CreateMap<Notification, NotificationHistoryDto>()
+            .ForMember(dst => dst.EmailAddress, opt => opt.MapFrom(s => s.SentByStaffMember.Email))
+            .ForMember(dst => dst.CreatedDate, opt => opt.MapFrom(s => s.CreatedUtc));
     }
 }

@@ -1,31 +1,16 @@
-﻿using System.Collections.Generic;
-
-namespace SSW.Rewards.Domain.Entities
+﻿namespace SSW.Rewards.Domain.Entities;
+public class StaffMember : BaseEntity
 {
-    public class StaffMember : Entity
-    {
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public string Email { get; set; }
-
-        public string Profile { get; set; }
-
-        public string TwitterUsername { get; set; }
-        public string GitHubUsername { get; set; }
-        public string LinkedInUrl { get; set; }
-
-
-        public bool IsExternal { get; set; }
-
-        public Achievement StaffAchievement { get; set; }
-
-        public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
-
-        public string ProfilePhoto { get; set; }
-        public bool IsDeleted { get; set; }
-    }
+    public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Profile { get; set; } = string.Empty;
+    public string TwitterUsername { get; set; } = string.Empty;
+    public string GitHubUsername { get; set; } = string.Empty;
+    public string LinkedInUrl { get; set; } = string.Empty;
+    public bool IsExternal { get; set; }
+    public Achievement StaffAchievement { get; set; } = new();
+    public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
+    public string ProfilePhoto { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; }
 }
-
-

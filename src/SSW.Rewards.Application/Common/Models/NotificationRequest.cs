@@ -1,12 +1,8 @@
-﻿using System;
-
-namespace SSW.Rewards.Application.Common.Models
+﻿namespace SSW.Rewards.Application.Common.Models;
+public class NotificationRequest
 {
-    public class NotificationRequest
-    {
-        public string Text { get; set; }
-        public string Action { get; set; }
-        public string[] Tags { get; set; } = Array.Empty<string>();
-        public bool Silent { get; set; }
-    }
+    public string Text { get; set; } = string.Empty;
+    public string Action { get; set; } = string.Empty;
+    public IList<string> Tags { get; set; } = new List<string>();
+    public bool Silent { get; set; }
 }

@@ -1,15 +1,9 @@
-﻿using System;
-
-namespace SSW.Rewards.Domain.Entities
+﻿namespace SSW.Rewards.Domain.Entities;
+public class UserAchievement : BaseEntity
 {
-    public class UserAchievement : Entity
-    {
-        public int UserId { get; set; }
-        public User User { get; set; }
-        public int AchievementId { get; set; }
-        public Achievement Achievement { get; set; }
-        public DateTime AwardedAt { get; set; }
-    }
+    public int UserId { get; set; }
+    public User User { get; set; } = new();
+    public int AchievementId { get; set; }
+    public Achievement Achievement { get; set; } = new();
+    public DateTime AwardedAt { get; set; }
 }
-
-

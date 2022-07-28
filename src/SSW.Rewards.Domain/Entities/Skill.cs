@@ -1,9 +1,5 @@
-﻿namespace SSW.Rewards.Domain.Entities
+﻿namespace SSW.Rewards.Domain.Entities;
+public class Skill : BaseEntity
 {
-    public class Skill : Entity
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; } = string.Empty;
 }
-
-
