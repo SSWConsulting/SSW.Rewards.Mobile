@@ -1,4 +1,5 @@
 ﻿namespace SSW.Rewards.Application.Common.Interfaces;
+
 public interface IStorageProvider
 {
     Task<Uri> GetUri(string containerName, string blobName);

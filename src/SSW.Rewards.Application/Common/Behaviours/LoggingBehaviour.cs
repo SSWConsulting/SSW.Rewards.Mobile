@@ -8,24 +8,36 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
 {
     private readonly ILogger _logger;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
 
-    public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IIdentityService identityService)
+    //private readonly IIdentityService _identityService;
+
+    public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IUserService userService)//, IIdentityService identityService)
     {
         _logger = logger;
         _currentUserService = currentUserService;
-        _identityService = identityService;
+        _userService = userService;
+        //_identityService = identityService;
     }
 
     public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
-        var userId = _currentUserService.UserId ?? string.Empty;
         string userName = string.Empty;
+        int userId = 0;
 
-        if (!string.IsNullOrEmpty(userId))
+        var userEmail = _currentUserService.GetUserId() ?? string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(userEmail))
         {
-            userName = await _identityService.GetUserNameAsync(userId);
+            userId = await _userService.GetUserId(userEmail);
+
+            if (userId > 0)
+            {
+                var user = await _userService.GetUser(userId, cancellationToken);
+
+                userName = user.FullName;
+            }
         }
 
         _logger.LogInformation("SSW.Rewards Request: {Name} {@UserId} {@UserName} {@Request}",

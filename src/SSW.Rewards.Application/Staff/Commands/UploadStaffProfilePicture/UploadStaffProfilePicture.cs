@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.Application.Staff.Commands.UploadStaffProfilePicture;
-public class UploadStaffProfilePicture
+public class UploadStaffProfilePicture : IRequest<string>
 {
     public int Id { get; set; }
     public IFormFile File { get; set; }

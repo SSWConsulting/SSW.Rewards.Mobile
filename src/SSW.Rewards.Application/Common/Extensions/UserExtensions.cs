@@ -1,7 +1,8 @@
-﻿using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
-using System.Net.Mail;
+﻿using System.Net.Mail;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 
 namespace SSW.Rewards.Application.Common.Extensions;
+
 public static class UserExtensions
 {
     public static bool IsStaff(this CurrentUserViewModel viewModel)

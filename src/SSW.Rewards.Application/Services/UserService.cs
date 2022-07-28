@@ -2,12 +2,17 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Users.Common;
+using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
+using SSW.Rewards.Application.Users.Queries.GetUser;
+using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Services;
+
 public class UserService : IUserService, IRolesService
 {
     private readonly IApplicationDbContext _dbContext;
@@ -15,16 +20,14 @@ public class UserService : IUserService, IRolesService
     private readonly IMapper _mapper;
     private readonly string StaffSMTPDomain;
 
-    public UserService(
-        IApplicationDbContext dbContext, 
-        ICurrentUserService currentUserService, 
-        IMapper mapper, 
-        IOptions<UserServiceOptions> options)
+    public UserService(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper, IConfiguration configuration)
     {
-        _dbContext          = dbContext;
+        _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _mapper             = mapper;
-        StaffSMTPDomain     = options.Value.StaffSmtpDomain;
+        _mapper = mapper;
+
+        // TODO: @william update this to IOptionsPattern when upgrading to .NET 6
+        StaffSMTPDomain = configuration.GetValue<string>(nameof(StaffSMTPDomain));
     }
 
     public int AddRole(Role role)
@@ -114,7 +117,7 @@ public class UserService : IUserService, IRolesService
                     .ThenInclude(ua => ua.Achievement)
                 .Include(u => u.UserRewards)
                     .ThenInclude(ur => ur.Reward)
-                .FirstAsync(cancellationToken);
+                .SingleOrDefaultAsync(cancellationToken);
 
         if (!user.Activated)
         {
@@ -142,7 +145,7 @@ public class UserService : IUserService, IRolesService
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);
 
-        foreach (var role in userRoles)
+        foreach(var role in userRoles)
         {
             roles.Add(role.Role);
         }

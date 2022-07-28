@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Notifications.Commands.RequestNotification;
@@ -42,7 +43,7 @@ public class RequestNotificationHandler : IRequestHandler<RequestNotification, U
             Text    = request.Text,
             Action  = request.Action,
             Silent  = request.Silent,
-            Tags    = request.Tags
+            Tags    = request.Tags.ToArray()
         };
 
         if ((notification.Silent && string.IsNullOrWhiteSpace(notification?.Action)) ||

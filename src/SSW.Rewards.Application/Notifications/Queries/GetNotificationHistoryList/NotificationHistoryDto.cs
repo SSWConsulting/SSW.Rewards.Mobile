@@ -1,13 +1,14 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SSW.Rewards.Application.Common.Mappings;
 using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
+
 public class NotificationHistoryDto : IMapFrom<Notification>
 {
-    public string Message { get; set; } = string.Empty;
+    public string Message { get; set; }
     public DateTime CreatedDate { get; set; }
-    public string EmailAddress { get; set; } = string.Empty;
+    public string EmailAddress { get; set; }
 
     public void Mapping(Profile profile)
     {

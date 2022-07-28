@@ -1,4 +1,5 @@
 ﻿namespace SSW.Rewards.Application.Common.Exceptions;
+
 public class BlobContainerNotFoundException : Exception
 {
     public BlobContainerNotFoundException()

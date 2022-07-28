@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SSW.Rewards.Application.Rewards.Common;
 
-namespace SSW.Rewards.Application.Rewards.Common;
+namespace SSW.Rewards.Application.Rewards.Commands;
+
 public class ClaimRewardResult
 {
-    public RewardViewModel ViewModel { get; set; }
-    public RewardStatus Status { get; set; }
+    public RewardViewModel viewModel { get; set; }
+    public RewardStatus status { get; set; }
 }
 
-
+public enum RewardStatus
+{
+    Claimed,
+    NotFound,
+    Duplicate,
+    NotEnoughPoints,
+    Error
+}

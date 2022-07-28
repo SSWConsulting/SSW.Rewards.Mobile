@@ -10,18 +10,22 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
+
+    //private readonly IIdentityService _identityService;
 
     public PerformanceBehaviour(
         ILogger<TRequest> logger,
         ICurrentUserService currentUserService,
-        IIdentityService identityService)
+        //IIdentityService identityService)
+        IUserService userService)
     {
         _timer = new Stopwatch();
 
         _logger = logger;
         _currentUserService = currentUserService;
-        _identityService = identityService;
+        _userService = userService;
+        //_identityService = identityService;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -37,12 +41,21 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         if (elapsedMilliseconds > 500)
         {
             var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId ?? string.Empty;
-            var userName = string.Empty;
+            string userName = string.Empty;
+            int userId = 0;
 
-            if (!string.IsNullOrEmpty(userId))
+            var userEmail = _currentUserService.GetUserId() ?? string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(userEmail))
             {
-                userName = await _identityService.GetUserNameAsync(userId);
+                userId = await _userService.GetUserId(userEmail);
+
+                if (userId > 0)
+                {
+                    var user = await _userService.GetUser(userId, cancellationToken);
+
+                    userName = user.FullName;
+                }
             }
 
             _logger.LogWarning("SSW.Rewards Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",

@@ -1,4 +1,5 @@
 ﻿namespace SSW.Rewards.Application.Common.Models;
+
 public class PhysicalRewardEmail
 {
     public string RecipientName { get; set; }

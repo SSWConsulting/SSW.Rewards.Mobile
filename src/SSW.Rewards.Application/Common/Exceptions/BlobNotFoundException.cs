@@ -1,8 +1,7 @@
 ﻿namespace SSW.Rewards.Application.Common.Exceptions;
+
 public class BlobNotFoundException : Exception
 {
-    public string ContainerName { get; } = string.Empty;
-    public string BlobName { get; } = string.Empty;
     public BlobNotFoundException()
     {
     }
@@ -12,4 +11,7 @@ public class BlobNotFoundException : Exception
         ContainerName = containerName;
         BlobName = blobName;
     }
+
+    public string ContainerName { get; }
+    public string BlobName { get; }
 }

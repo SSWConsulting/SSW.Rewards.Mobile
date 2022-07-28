@@ -1,4 +1,5 @@
 ﻿namespace SSW.Rewards.Application.Common.Interfaces;
+
 public interface IProfileStorageProvider
 {
     Task<byte[]> GetProfileData();

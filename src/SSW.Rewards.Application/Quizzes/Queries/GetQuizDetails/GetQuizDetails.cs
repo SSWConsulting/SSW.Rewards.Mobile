@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Quizzes.Queries.Common;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
 public class GetQuizDetails : IRequest<QuizDetailsDto>
