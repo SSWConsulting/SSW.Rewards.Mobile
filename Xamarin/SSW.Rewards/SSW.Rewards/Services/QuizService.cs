@@ -28,7 +28,7 @@ namespace SSW.Rewards.Services
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
                 }
 
                 return null;
@@ -59,7 +59,7 @@ namespace SSW.Rewards.Services
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
                 }
 
                 return null;
@@ -81,7 +81,7 @@ namespace SSW.Rewards.Services
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
                 }
 
                 return null;

@@ -1,6 +1,5 @@
 ﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
 using SSW.Rewards.Services;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -72,7 +71,7 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
-                    MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
+                    MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
                     break;
 
                 case ScanResult.Duplicate:
@@ -118,7 +117,7 @@ namespace SSW.Rewards.ViewModels
             if (result.result == ScanResult.Added)
             {
                 await _userService.UpdateMyDetailsAsync();
-                MessagingCenter.Send(this, Constants.PointsAwardedMessage); // TODO: dependency on implementation here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
+                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
             }
         }
 
@@ -142,7 +141,7 @@ namespace SSW.Rewards.ViewModels
 
         private async Task DismissWithoutWon()
         {
-            MessagingCenter.Send<object>(this, ScanPage.EnableScannerMessage); // TODO: dependency on page here. See: https://github.com/SSWConsulting/SSW.Rewards/issues/312
+            MessagingCenter.Send<object>(this, Constants.EnableScannerMessage);
             await PopupNavigation.Instance.PopAllAsync();
         }
     }

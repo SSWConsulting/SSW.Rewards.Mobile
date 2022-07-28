@@ -27,5 +27,7 @@
 
         public const string PointsAwardedMessage = "PointsAwarded";
 
+        public const string EnableScannerMessage = "EnableScanner";
+
     }
 }
