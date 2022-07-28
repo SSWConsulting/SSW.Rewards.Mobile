@@ -1,7 +1,7 @@
 {
-    "files.exclude": {
-        "**/build": true,
-        "**/node_modules": true
-    },
-    "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true
+  },
+  "editor.formatOnSave": true
 }
