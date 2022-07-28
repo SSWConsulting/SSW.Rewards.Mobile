@@ -3,7 +3,7 @@
     public class Constants
     {
 #if DEBUG
-        public string ApiBaseUrl = "https://rwds.goforgoldman.com";//"https://sswconsulting-prod.azurewebsites.net";
+        public string ApiBaseUrl = "https://sswconsulting-prod.azurewebsites.net";
         public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
 
 #elif QA
@@ -17,7 +17,7 @@
         public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-        public string AuthorityUri { get; } = "https://ids.goforgoldman.com";//"https://sswidentity-stage.azurewebsites.net";
+        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
 #else
         public string AuthorityUri { get; } = "https://identity.ssw.com.au";
 #endif
