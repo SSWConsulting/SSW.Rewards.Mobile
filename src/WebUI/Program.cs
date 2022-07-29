@@ -61,7 +61,7 @@ app.MapControllerRoute(
 
 //app.MapRazorPages();
 
-app.MapFallbackToFile("index.html"); ;
+//app.MapFallbackToFile("index.html"); ;
 
 string _allowSpecificOrigins = "_AllowSpecificOrigins";
 

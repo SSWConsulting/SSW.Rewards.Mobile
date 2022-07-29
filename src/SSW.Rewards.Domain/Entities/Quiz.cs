@@ -1,8 +1,8 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
 public class Quiz : BaseEntity
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
     public Icons Icon { get; set; }
     public DateTime? LastUpdatedUtc { get; set; }
     public bool IsArchived { get; set; }

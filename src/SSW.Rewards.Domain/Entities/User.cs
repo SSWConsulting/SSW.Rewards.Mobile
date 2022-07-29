@@ -1,9 +1,9 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
 public class User : BaseEntity
 {
-    public string FullName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Avatar { get; set; } = string.Empty;
+    public string? FullName { get; set; } = string.Empty;
+    public string? Email { get; set; } = string.Empty;
+    public string? Avatar { get; set; } = string.Empty;
     public PostalAddress Address { get; set; } = new();
     public int? AddressId { get; set; }
     public bool Activated { get; set; }

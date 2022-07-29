@@ -1,9 +1,9 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
 public class Achievement : BaseEntity
 {
-    public string Code { get; set; }
+    public string? Code { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public int Value { get; set; }
 

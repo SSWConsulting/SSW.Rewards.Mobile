@@ -22,7 +22,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         string userName = string.Empty;
         int userId = 0;
 
-        var userEmail = _currentUserService.GetUserId() ?? string.Empty;
+        var userEmail = _currentUserService.GetUserEmail() ?? string.Empty;
 
         if (!string.IsNullOrWhiteSpace(userEmail))
         {

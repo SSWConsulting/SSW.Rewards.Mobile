@@ -9,6 +9,14 @@ public class LeaderboardController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<LeaderboardListViewModel>> Get()
     {
-        return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
+		try
+		{
+			return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
+		}
+		catch (Exception ex)
+		{
+
+			throw;
+		}
     }
 }
