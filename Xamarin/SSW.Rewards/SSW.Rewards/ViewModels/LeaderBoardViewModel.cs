@@ -67,7 +67,7 @@ namespace SSW.Rewards.ViewModels
             MyBalance = _userService.MyBalance;
 
             Leaders = new ObservableCollection<LeaderViewModel>();
-            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await Refresh());
+            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await Refresh());
 
             _sortFilter = "all";
         }

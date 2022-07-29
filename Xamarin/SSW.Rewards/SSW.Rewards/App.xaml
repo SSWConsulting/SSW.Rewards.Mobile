@@ -46,10 +46,71 @@
         <Color x:Key="PeopleBackground">#363636</Color>
         <Color x:Key="MutedText">#a3a3a3</Color>
         <Color x:Key="HighlightedText">#dbdbdb</Color>
+        <Color x:Key="PassedQuiz">#818181</Color>
+        <Color x:Key="Quiz">#f7f7f7</Color>
+        <Color x:Key="QuizCheckColor">#1d4c39</Color>
+        <Color x:Key="PassedQuizIcon">#181818</Color>
+        <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
 
         <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
             <On Platform="iOS" Value="SFProDisplay"/>
         </OnPlatform>
+
+        <ControlTemplate x:Key="RadioButtonTemplate">
+            <Frame HasShadow="False"
+                   BackgroundColor="Transparent"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Start"
+                   Padding="0">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CheckedStates">
+                            <VisualState x:Name="Checked">
+                                <VisualState.Setters>
+                                    <Setter TargetName="check"
+                                            Property="Opacity"
+                                            Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Unchecked">
+                                <VisualState.Setters>
+                                    <Setter TargetName="check"
+                                            Property="Opacity"
+                                            Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+                <Grid Margin="4"
+                      ColumnDefinitions="60, *">
+                    <Grid WidthRequest="18"
+                          HeightRequest="18"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center">
+                        <Ellipse Stroke="{StaticResource SSWRed}"
+                                 Fill="White"
+                                 WidthRequest="20"
+                                 HeightRequest="20"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center" />
+                        <Ellipse x:Name="check"
+                                 Fill="{StaticResource SSWRed}"
+                                 WidthRequest="10"
+                                 HeightRequest="10"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center" />
+                    </Grid>
+                    <ContentPresenter Grid.Column="1"
+                                      VerticalOptions="Start"/>
+                </Grid>
+            </Frame>
+        </ControlTemplate>
+
+        <Style TargetType="RadioButton">
+            <Setter Property="ControlTemplate"
+                    Value="{StaticResource RadioButtonTemplate}" />
+        </Style>
 
         <Style x:Key="Leaderboard" TargetType="Label">
             <Setter Property="FontFamily" Value="{StaticResource LeaderboardFont}"/>

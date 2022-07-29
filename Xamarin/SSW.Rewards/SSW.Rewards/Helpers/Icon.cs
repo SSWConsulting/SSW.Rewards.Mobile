@@ -23,6 +23,8 @@
 
         public const string Facebook = "\uf09a";
 
+        public const string Angular = "\uf420";
+
 
         // Unbranded icons
 
@@ -77,5 +79,11 @@
         public const string Infor = "\uf4a3";
 
         public const string QRCode = "\uf635";
+
+        public const string StarburstCheck = "\ue30b";
+
+        public const string Sad = "\uf3ea";
+
+        public const string Check = "\ue9b7";
     }
 }

@@ -44,6 +44,7 @@ namespace SSW.Rewards
             Container.Register<IDevService, DevService>();
             Container.Register<IScannerService, ScannerService>();
             Container.Register<IRewardService, RewardService>();
+            Container.Register<IQuizService, QuizService>();
             Container.Register<IBrowser, AuthBrowser>();
             Container.Register<IPushNotificationActionService, PushNotificationActionService>();
             Container.Register<INotificationRegistrationService, NotificationRegistrationService>();

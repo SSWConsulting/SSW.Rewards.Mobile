@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             BackgroundColor="{StaticResource MainBackground}"
+             x:Class="SSW.Rewards.Pages.QuizDetailsPage">
+    <Shell.TitleView>
+        <Label Text="Tech Trivia"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Center"
+               FontSize="18"
+               Margin="0,15,0,0"
+               x:Name="TitleText"
+               TextColor="White"/>
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <converters:PassedToResultColourConverter x:Key="PassedToColor"/>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+            <Grid>
+                <Grid RowDefinitions="70, 100, *, 20, 60"
+                      IsVisible="{Binding QuestionsVisible}"
+                      x:Name="QuestionsView">
+
+                    <Label Grid.Row="0"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="White"
+                           FontSize="Title"
+                           Text="{Binding QuizTitle}"/>
+
+                    <Label Grid.Row="0"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="White"
+                           FontSize="32"
+                           Margin="20,0,0,0"
+                           FontFamily="{StaticResource FluentIcons}"
+                           Text="&#xf189;">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Command="{Binding BackCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Row="1"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="White"
+                           FontSize="Medium"
+                           Text="{Binding QuizDescription}"
+                           BackgroundColor="{StaticResource QuizDescriptionBackground}"/>
+
+                    <CarouselView Grid.Row="2"
+                                  IndicatorView="QuestionIndicator"
+                                  Loop="False"
+                                  ItemsSource="{Binding Questions}"
+                                  CurrentItem="{Binding CurrentQuestion}"
+                                  CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
+                                  x:Name="QuestionsCarousel">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <ScrollView HeightRequest="700">
+                                    <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
+                                                 RadioButtonGroup.GroupName="{Binding QuestionId}"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 Padding="20"
+                                                 Spacing="40">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate>
+                                                <RadioButton Value="{Binding QestionAnswerId}"
+                                                             IsChecked="{Binding IsSelected}"
+                                                             WidthRequest="300"
+                                                             TextColor="White"
+                                                             Content="{Binding Text}"
+                                                             ControlTemplate="{StaticResource RadioButtonTemplate}">
+                                                </RadioButton>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </StackLayout>
+                                </ScrollView>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+
+                    </CarouselView>
+
+                    <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                                   IndicatorColor="{StaticResource IndicatorColor}"
+                                   Grid.Row="3"
+                                   x:Name="QuestionIndicator"/>
+
+                    <Button Grid.Row="4"
+                            Text="{Binding ButtonText}"
+                            Command="{Binding ButtonCommand}"
+                            TextColor="White"
+                            HeightRequest="40"
+                            Margin="30,0,30,10"
+                            VerticalOptions="Start"
+                            HorizontalOptions="Center"
+                            Padding="0"
+                            BackgroundColor="{StaticResource SSWRed}"
+                            WidthRequest="250"/>
+
+                    <ActivityIndicator HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Color="{StaticResource SSWRed}"
+                                       IsVisible="{Binding IsBusy}"
+                                       IsRunning="{Binding IsBusy}"
+                                       Grid.Row="2"/>
+
+                </Grid>
+
+                <Grid x:Name="ResultsView"
+                      RowDefinitions="70, 100, 300, 100, 100"
+                      IsVisible="{Binding ResultsVisible}">
+
+                <Label Text="{Binding ResultsTitle}"
+                           TextTransform="Uppercase"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Center"
+                           FontSize="Title"
+                           TextColor="White"
+                           Grid.Row="0"/>
+
+                    <BoxView BackgroundColor="{StaticResource SSWRed}"
+                             WidthRequest="150"
+                             HeightRequest="40"
+                             CornerRadius="5"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Grid.Row="1"/>
+
+                    <Label Text="{Binding Score}"
+                           TextColor="White"
+                           FontSize="Title"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Grid.Row="1"/>
+
+                    <Image Source="test_passed"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           HeightRequest="270"
+                           Aspect="AspectFit"
+                           IsVisible="{Binding TestPassed}"
+                           Grid.Row="2"/>
+
+                    <Image Source="test_failed"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand"
+                           HeightRequest="270"
+                           Aspect="AspectFit"
+                           IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
+                           Grid.Row="2"/>
+
+                    <Frame BackgroundColor="{StaticResource MainBackground}"
+                           BorderColor="#979797"
+                           CornerRadius="5"
+                           WidthRequest="250"
+                           HeightRequest="48"
+                           Padding="0"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Grid.Row="3">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Command="{Binding ResultsButtonCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="{Binding ResultButtonText}"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               FontSize="Medium"
+                               InputTransparent="True"/>
+                    </Frame>
+
+                    <FlexLayout WidthRequest="400"
+                                Direction="Row"
+                                JustifyContent="SpaceEvenly"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Grid.Row="4"
+                                IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
+                                BindableLayout.ItemsSource="{Binding Results}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+
+                                    <lottie:AnimationView Animation="pass.json"
+                                                          AutoPlay="True"
+                                                          Loop="False"
+                                                          WidthRequest="30"
+                                                          HeightRequest="30"
+                                                          IsVisible="{Binding Correct}"/>
+
+                                    <lottie:AnimationView Animation="fail.json"
+                                                          AutoPlay="True"
+                                                          Loop="False"
+                                                          WidthRequest="30"
+                                                          HeightRequest="30"
+                                                          IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
+
+                            </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+
+                    <controls:Snackbar Grid.Row="0"
+                                       Grid.RowSpan="5"
+                                       InputTransparent="True"
+                                       VerticalOptions="End" 
+                                       x:Name="QuizResultsPageSnackbar"/>
+                    
+                </Grid>
+            </Grid>
+    </ContentPage.Content>
+</ContentPage>

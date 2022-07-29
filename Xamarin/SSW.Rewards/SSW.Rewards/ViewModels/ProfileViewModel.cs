@@ -85,7 +85,7 @@ namespace SSW.Rewards.ViewModels
         {
             MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
             MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
-            MessagingCenter.Subscribe<object>(this, ScannerService.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
+            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
             if (DeviceInfo.Platform == DevicePlatform.iOS)
             {
@@ -156,11 +156,12 @@ namespace SSW.Rewards.ViewModels
 
         private async Task OnPointsAwarded()
         {
-            UpdatePoints();
+            await _userService.UpdateMyDetailsAsync();
+            await UpdatePoints();
             await LoadProfileSections();
         }
 
-        private void UpdatePoints()
+        private Task UpdatePoints()
         {
             Points = _userService.MyPoints;
             Balance = _userService.MyBalance;
@@ -184,6 +185,8 @@ namespace SSW.Rewards.ViewModels
             }
 
             RaisePropertyChanged(nameof(Balance), nameof(Points), nameof(Progress));
+
+            return Task.CompletedTask;
         }
 
         private async Task ShowCameraPageAsync()

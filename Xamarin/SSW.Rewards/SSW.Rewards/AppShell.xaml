@@ -122,6 +122,13 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
+        <Tab Route="quiz">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf28a;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
+        </Tab>
         <Tab Route="scan">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
@@ -129,14 +136,6 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>
-        <!-- TODO: enable after NDC -->
-        <!--<Tab Route="quiz">
-            <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xf28a;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
-        </Tab>-->
     </FlyoutItem>
 
     <MenuItem Text="Rewards"

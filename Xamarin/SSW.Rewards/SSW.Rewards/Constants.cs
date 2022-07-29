@@ -17,13 +17,17 @@
         public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-        public string AuthorityUri { get; } = "https://identity.ssw.com.au";//"https://sswidentity-stage.azurewebsites.net";
+        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
 #else
         public string AuthorityUri { get; } = "https://identity.ssw.com.au";
 #endif
         public string ClientId { get; } = "ssw-rewards-mobile-app";
 
         public string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
+
+        public const string PointsAwardedMessage = "PointsAwarded";
+
+        public const string EnableScannerMessage = "EnableScanner";
 
     }
 }
