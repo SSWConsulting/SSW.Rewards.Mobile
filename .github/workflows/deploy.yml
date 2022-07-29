@@ -50,7 +50,7 @@ jobs:
       with:        
         inlineScript: |
           az storage blob service-properties update `
-            --account-name stsswrewardsadminmattzvd `
+            --account-name ${{ steps.bicep.outputs.storageAccountName }} `
             --static-website `
             --404-document index.html `
             --index-document index.html
@@ -62,7 +62,7 @@ jobs:
         inlineScript: |
           $expiry = (Get-Date -AsUTC).AddMinutes(10).ToString('yyyy-MM-ddTHH:mm:ssZ')
           $token = az storage container generate-sas `
-            --account-name stsswrewardsadminmattzvd `
+            --account-name ${{ steps.bicep.outputs.storageAccountName }} `
             --name '$web' `
             --permissions acdrw `
             --expiry $expiry --https-only --permissions dlrw -o tsv
