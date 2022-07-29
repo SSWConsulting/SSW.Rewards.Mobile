@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebUIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebUIServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -25,8 +25,6 @@ public static class ConfigureServices
         services.AddControllersWithViews(options =>
             options.Filters.Add<ApiExceptionFilterAttribute>())
                 .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
-
-        services.AddRazorPages();
 
         // Customise default API behaviour
         services.Configure<ApiBehaviorOptions>(options =>
@@ -45,6 +43,23 @@ public static class ConfigureServices
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
+
+        string _allowSpecificOrigins = "_AllowSpecificOrigins";
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(_allowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins(configuration["AllowedOrigin"])
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
+        });
+
+        services.AddApplicationInsightsTelemetry();
+        services.AddDistributedMemoryCache();
 
         return services;
     }

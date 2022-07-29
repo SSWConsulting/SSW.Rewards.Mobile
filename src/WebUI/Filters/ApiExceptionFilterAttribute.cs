@@ -1,7 +1,6 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.WebUI.Filters;
 

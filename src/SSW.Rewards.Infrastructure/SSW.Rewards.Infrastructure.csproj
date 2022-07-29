@@ -13,6 +13,7 @@
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.5" />
 		<PackageReference Include="FluentEmail.Core" Version="2.8.0" />

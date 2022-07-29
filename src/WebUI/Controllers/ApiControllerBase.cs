@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace SSW.Rewards.WebUI.Controllers;
+namespace SSW.Rewards.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

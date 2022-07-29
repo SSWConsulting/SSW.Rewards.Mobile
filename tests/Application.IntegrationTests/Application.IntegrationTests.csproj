@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\WebUI\WebUI.csproj" />
+        <ProjectReference Include="..\..\src\WebUI\WebAPI.csproj" />
     </ItemGroup>
 
 </Project>

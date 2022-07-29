@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.UnitTests", "tests\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.IntegrationTests", "tests\Application.IntegrationTests\Application.IntegrationTests.csproj", "{277029AF-D9E1-4B75-9F11-48FEA7345AD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "src\WebUI\WebUI.csproj", "{22454EE9-16B3-4B7A-8352-37E59B858155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "src\WebUI\WebAPI.csproj", "{22454EE9-16B3-4B7A-8352-37E59B858155}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI.AcceptanceTests", "tests\WebUI.AcceptanceTests\WebUI.AcceptanceTests.csproj", "{712BEC26-420A-40F8-8C79-FD6896353D71}"
 EndProject

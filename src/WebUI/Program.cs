@@ -1,13 +1,24 @@
-using SSW.Rewards.Infrastructure.Persistence;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebUIServices();
+builder.Services.AddWebUIServices(builder.Configuration);
 
 var app = builder.Build();
+
+if (app.Environment.IsProduction())
+{
+    var uri = builder.Configuration.GetValue<string>("KeyVaultUri");
+    var secretClient = new SecretClient(
+                        new Uri(uri),
+                        new DefaultAzureCredential());
+    builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -16,12 +27,12 @@ if (app.Environment.IsDevelopment())
     app.UseMigrationsEndPoint();
 
     // Initialise and seed database
-    using (var scope = app.Services.CreateScope())
-    {
-        var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-        await initialiser.InitialiseAsync();
-        await initialiser.SeedAsync();
-    }
+    //using (var scope = app.Services.CreateScope())
+    //{
+    //    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+    //    await initialiser.InitialiseAsync();
+    //    await initialiser.SeedAsync();
+    //}
 }
 else
 {
@@ -42,16 +53,19 @@ app.UseSwaggerUi3(settings =>
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+//app.MapRazorPages();
 
 app.MapFallbackToFile("index.html"); ;
+
+string _allowSpecificOrigins = "_AllowSpecificOrigins";
+
+app.UseCors(_allowSpecificOrigins);
 
 app.Run();
 

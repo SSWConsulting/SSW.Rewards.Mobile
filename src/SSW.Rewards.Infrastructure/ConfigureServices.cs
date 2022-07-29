@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.Infrastructure.Persistence.Interceptors;
+using SSW.Rewards.Infrastructure.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -19,8 +22,17 @@ public static class ConfigureServices
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
+        services.AddOptions<NotificationHubOptions>()
+                .Configure(configuration.GetSection("NotificationHub").Bind)
+                .ValidateDataAnnotations();
+
+        services.AddOptions<CloudBlobProviderOptions>()
+                .Configure(configuration.GetSection(nameof(CloudBlobProviderOptions)).Bind)
+                .ValidateDataAnnotations();
+
         services.AddSingleton<ICloudBlobClientProvider, CloudBlobClientProvider>();
         services.AddSingleton<IStorageProvider, AzureStorageProvider>();
+        services.AddSingleton<INotificationService, NotificationsService>();
 
         services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
         services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
@@ -29,7 +41,6 @@ public static class ConfigureServices
         services.AddScoped<IEmailService, EmailService>();
 
         services.AddScoped<IRewardSender, RewardSender>();
-
 
         SMTPSettings smtpSettings = new SMTPSettings();
 
@@ -40,6 +51,16 @@ public static class ConfigureServices
         services.AddFluentEmail(smtpSettings.DefaultSender, smtpSettings.DefaultSenderName)
                     .AddRazorRenderer()
                     .AddSendGridSender(SendGridAPIKey);
+
+        string signingAuthority = configuration.GetValue<string>(nameof(signingAuthority));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.Authority = signingAuthority;
+            options.Audience = "rewards";
+            options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+        });
 
         return services;
     }
