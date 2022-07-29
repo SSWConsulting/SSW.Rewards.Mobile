@@ -22,14 +22,14 @@ public class UploadStaffProfilePictureHandler : IRequestHandler<UploadStaffProfi
 
     public UploadStaffProfilePictureHandler(
         ICurrentUserService currentUserService,
-        IApplicationDbContext sSWRewardsDbContext,
+        IApplicationDbContext ApplicationDbContext,
         IProfileStorageProvider profileStorageProvider,
         IMapper mapper)
     {
         _currentUserService = currentUserService;
         _mapper = mapper;
         _storage = profileStorageProvider;
-        _context = sSWRewardsDbContext;
+        _context = ApplicationDbContext;
     }
 
     public async Task<string> Handle(UploadStaffProfilePicture request, CancellationToken cancellationToken)

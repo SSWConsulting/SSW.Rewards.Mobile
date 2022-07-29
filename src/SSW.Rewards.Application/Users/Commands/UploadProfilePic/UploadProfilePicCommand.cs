@@ -16,14 +16,14 @@ public class UploadProfilePicHandler : IRequestHandler<UploadProfilePicCommand, 
     public ICurrentUserService _currentUserService { get; }
 
     public UploadProfilePicHandler(ICurrentUserService currentUserService,
-        IApplicationDbContext sSWRewardsDbContext,
+        IApplicationDbContext ApplicationDbContext,
         IProfilePicStorageProvider profilePicStorageProvider,
         IMapper mapper)
     {
         _currentUserService = currentUserService;
         _mapper = mapper;
         _storage = profilePicStorageProvider;
-        _context = sSWRewardsDbContext;
+        _context = ApplicationDbContext;
     }
 
     public async Task<ProfilePicResponseDto> Handle(UploadProfilePicCommand request, CancellationToken cancellationToken)
