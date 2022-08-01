@@ -4,18 +4,18 @@ public interface IApplicationDbContext
 {
     DbSet<StaffMember> StaffMembers { get; set; }
     DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }
-    DbSet<Domain.Entities.Skill> Skills { get; set; }
-    DbSet<Domain.Entities.User> Users { get; set; }
-    public DbSet<UserAchievement> UserAchievements { get; set; }
-    public DbSet<Domain.Entities.Achievement> Achievements { get; set; }
-    public DbSet<UserReward> UserRewards { get; set; }
-    public DbSet<Domain.Entities.Reward> Rewards { get; set; }
-    public DbSet<PostalAddress> Addresses { get; set; }
-    public DbSet<Domain.Entities.Notification> Notifications { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UserRoles { get; set; }
-    public DbSet<Quiz> Quizzes { get; set; }
-    public DbSet<QuizQuestion> QuizQuestions { get; set; }
-    public DbSet<CompletedQuiz> CompletedQuizzes { get; set; }
+    DbSet<Skill> Skills { get; set; }
+    DbSet<User> Users { get; set; }
+    DbSet<UserAchievement> UserAchievements { get; set; }
+    DbSet<Achievement> Achievements { get; set; }
+    DbSet<UserReward> UserRewards { get; set; }
+    DbSet<Reward> Rewards { get; set; }
+    DbSet<PostalAddress> Addresses { get; set; }
+    DbSet<Notification> Notifications { get; set; }
+    DbSet<Role> Roles { get; set; }
+    DbSet<UserRole> UserRoles { get; set; }
+    DbSet<Quiz> Quizzes { get; set; }
+    DbSet<QuizQuestion> QuizQuestions { get; set; }
+    DbSet<CompletedQuiz> CompletedQuizzes { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -16,9 +16,9 @@ public class RewardSender : IRewardSender
         _logger = logger;
     }
 
-    public Task SendReward(User user, Reward reward)
+    public void SendReward(User user, Reward reward)
     {
-        return SendRewardAsync(user, reward, CancellationToken.None);
+        SendRewardAsync(user, reward, CancellationToken.None).RunSynchronously();
     }
 
     public async Task SendRewardAsync(User user, Reward reward, CancellationToken cancellationToken)

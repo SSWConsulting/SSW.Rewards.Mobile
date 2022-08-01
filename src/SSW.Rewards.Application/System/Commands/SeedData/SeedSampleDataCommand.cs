@@ -22,7 +22,7 @@ public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataComman
     public async Task<Unit> Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
     {
         var seeder = new SampleDataSeeder(_context);
-        var profileData = await _storageProvider.GetProfileData();
+        var profileData = await _storageProvider.GetBlob("NDC-Profiles-2019.xlsx");
         await seeder.SeedAllAsync(profileData, cancellationToken);
 
         return Unit.Value;

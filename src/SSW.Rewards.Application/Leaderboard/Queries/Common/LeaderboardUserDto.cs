@@ -22,8 +22,7 @@ public class LeaderboardUserDto : IMapFrom<User>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Entities.User, LeaderboardUserDto>()
-                .ForMember(dst => dst.UserId, opt => opt.Ignore())
+        profile.CreateMap<User, LeaderboardUserDto>()
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))

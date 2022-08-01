@@ -35,20 +35,13 @@ public class RequestNotificationCommand : IRequest<Unit>
                 Silent = request.Silent,
                 Tags = request.Tags
             };
-            
-            if ((notification.Silent && string.IsNullOrWhiteSpace(notification?.Action)) ||
-                (!notification.Silent && string.IsNullOrWhiteSpace(notification?.Text)))
-                throw new Exception("Bad Request");
 
-            var success = await _notificationService
+            await _notificationService
                 .RequestNotificationAsync(notification, cancellationToken);
-        
-            if (!success)
-                throw new Exception("Request Failed");
 
             var user = await this._userService.GetCurrentUser(cancellationToken);
 
-            var notificationEntry = new Domain.Entities.Notification
+            var notificationEntry = new Notification
             {
                 Message             = notification.Text,
                 NotificationTag     = string.Join(",", notification.Tags),

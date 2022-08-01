@@ -25,13 +25,8 @@ public class NotificationsService : INotificationService
             };
     }
 
-    public async Task<bool> CreateOrUpdateInstallationAsync(DeviceInstall deviceInstallation, CancellationToken token)
+    public async Task CreateOrUpdateInstallationAsync(DeviceInstall deviceInstallation, CancellationToken token)
     {
-        if (string.IsNullOrWhiteSpace(deviceInstallation?.InstallationId) ||
-            string.IsNullOrWhiteSpace(deviceInstallation?.Platform) ||
-            string.IsNullOrWhiteSpace(deviceInstallation?.PushChannel))
-            return false;
-
         var installation = new Installation()
         {
             InstallationId = deviceInstallation.InstallationId,
@@ -39,49 +34,20 @@ public class NotificationsService : INotificationService
             Tags = deviceInstallation.Tags
         };
 
-        try
-        {
-            if (!_installationPlatform.TryGetValue(deviceInstallation.Platform, out var platform))
-            {
-                return false;
-            }
-            installation.Platform = platform;
+        _installationPlatform.TryGetValue(deviceInstallation.Platform, out var platform);
 
-            await _hub.CreateOrUpdateInstallationAsync(installation, token);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
-        }
+        installation.Platform = platform;
 
-        return false;
+        await _hub.CreateOrUpdateInstallationAsync(installation, token);
     }
 
-    public async Task<bool> DeleteInstallationByIdAsync(string installationId, CancellationToken token)
+    public async Task DeleteInstallationByIdAsync(string installationId, CancellationToken token)
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(installationId))
-            {
-                await _hub.DeleteInstallationAsync(installationId, token);
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("\nStackTrace ---\n{0}", ex.StackTrace);
-        }
-
-        return false;
+        await _hub.DeleteInstallationAsync(installationId, token);
     }
 
-    public async Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token)
+    public async Task RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token)
     {
-        if ((notificationRequest.Silent && string.IsNullOrWhiteSpace(notificationRequest?.Action)) ||
-            (!notificationRequest.Silent && (string.IsNullOrWhiteSpace(notificationRequest?.Text)) ||
-            string.IsNullOrWhiteSpace(notificationRequest?.Action)))
-            return false;
         var androidPushTemplate = Convert.ToBoolean(notificationRequest.Silent) ?
             PushTemplates.Silent.Android :
             PushTemplates.Generic.Android;
@@ -100,33 +66,23 @@ public class NotificationsService : INotificationService
             notificationRequest.Text,
             notificationRequest.Action);
 
-        try
+        if (notificationRequest.Tags.Length == 0)
         {
-            if (notificationRequest.Tags.Length == 0)
-            {
-                // This will broadcast to all users registered in the notification hub
-                await SendPlatformNotificationsAsync(androidPayload, iOSPayload, token);
-            }
-            else if (notificationRequest.Tags.Length <= 20)
-            {
-                await SendPlatformNotificationsAsync(androidPayload, iOSPayload, notificationRequest.Tags, token);
-            }
-            else
-            {
-                var notificationTasks = notificationRequest.Tags
-                    .Select((value, index) => (value, index))
-                    .GroupBy(g => g.index / 20, i => i.value)
-                    .Select(tags => SendPlatformNotificationsAsync(androidPayload, iOSPayload, tags, token));
-
-                await Task.WhenAll(notificationTasks);
-            }
-
-            return true;
+            // This will broadcast to all users registered in the notification hub
+            await SendPlatformNotificationsAsync(androidPayload, iOSPayload, token);
         }
-        catch (Exception e)
+        else if (notificationRequest.Tags.Length <= 20)
         {
-            _logger.LogError(e, "Unexpected error sending notification");
-            return false;
+            await SendPlatformNotificationsAsync(androidPayload, iOSPayload, notificationRequest.Tags, token);
+        }
+        else
+        {
+            var notificationTasks = notificationRequest.Tags
+                .Select((value, index) => (value, index))
+                .GroupBy(g => g.index / 20, i => i.value)
+                .Select(tags => SendPlatformNotificationsAsync(androidPayload, iOSPayload, tags, token));
+
+            await Task.WhenAll(notificationTasks);
         }
     }
 
