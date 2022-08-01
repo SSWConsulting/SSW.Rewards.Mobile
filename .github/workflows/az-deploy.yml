@@ -1,0 +1,71 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      RESOURCE_GROUP:
+        required: true
+        type: string
+      APP_SERVICE_PLAN:
+        required: true
+        type: string
+      APP_SERVICE_PLAN_RESOURCE_GROUP:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+      SQL_ADMIN_GROUP:
+        required: true
+      SQL_ADMIN_GROUP_SID:
+        required: true
+
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Download artifacts from build
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+
+    # Log into Azure
+    - name: Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    # Create Azure infrastructure
+    - name: Azure deploy
+      id: bicep
+      shell: pwsh
+      env:
+        sqlAdminGroup: ${{ secrets.SQL_ADMIN_GROUP }}
+        sqlAdminSid: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      run: | 
+        $out = az deployment group create `
+          --resource-group ${{ inputs.RESOURCE_GROUP }} `
+          --template-file .\infra\main.bicep `
+          --parameters environment=${{ inputs.ENVIRONMENT }} `
+            appServicePlanName=${{ inputs.APP_SERVICE_PLAN }} `
+            appServicePlanResourceGroup=${{ inputs.APP_SERVICE_PLAN_RESOURCE_GROUP }} `
+            sqlAdministratorsLoginName=$env:sqlAdminGroup `
+            sqlAdministratorsObjectId=$env:sqlAdminSid `
+            | convertfrom-json | foreach properties | foreach outputs
+        $out | Get-Member -MemberType NoteProperty | ForEach-Object {
+            $keyname = $_.Name
+            $value = $out.$keyname.value
+            echo "::set-output name=$keyname::$value" }
+            
+    
+    # Deploy Web API
+    - name: Deploy API
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: ${{ steps.bicep.outputs.appServiceName }}
+        package: './api/api.zip'

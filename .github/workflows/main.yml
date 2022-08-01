@@ -1,0 +1,52 @@
+name: Build and deploy
+
+on:
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    name: Build and upload artifacts
+    uses: ./.github/workflows/build.yml
+  
+  deploy_dev:
+    needs: build
+    name: Deploy dev
+    uses: ./.github/workflows/az-deploy.yml
+    with:
+      ENVIRONMENT: dev
+      RESOURCE_GROUP: SSW.Rewards.Dev
+      APP_SERVICE_PLAN: Default1
+      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+
+  deploy_staging:
+    needs: deploy_dev
+    name: Deploy staging
+    uses: ./.github/workflows/az-deploy.yml
+    with:
+      ENVIRONMENT: staging
+      RESOURCE_GROUP: SSW.Rewards.Staging
+      APP_SERVICE_PLAN: Default1
+      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+
+  deploy_prod:
+    needs: deploy_staging
+    name: Deploy prod
+    uses: ./.github/workflows/az-deploy.yml
+    with:
+      ENVIRONMENT: prod
+      RESOURCE_GROUP: SSW.Rewards.Prod
+      APP_SERVICE_PLAN: Default1
+      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
