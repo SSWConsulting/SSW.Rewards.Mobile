@@ -15,8 +15,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      # - name: Test
-      #   run: dotnet test --configuration Release --no-build
+      - name: Test
+        run: dotnet test --configuration Release --no-build
       - name: Publish
         run: dotnet publish --configuration Release --no-build --output ./published
       - name: Zip
