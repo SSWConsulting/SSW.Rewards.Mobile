@@ -28,6 +28,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
     steps:
 
     # Download artifacts from build
