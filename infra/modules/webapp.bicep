@@ -1,12 +1,9 @@
 param projectName string
 param location string = resourceGroup().location
 param environment string
+param keyVaultName string
+param appServicePlanId string
 
-param appServicePlanName string
-
-resource hostingPlan 'Microsoft.Web/serverfarms@2022-03-01' existing = {
-  name: appServicePlanName
-}
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
@@ -21,9 +18,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: 'app-${projectName}-api-${environment}'
   location: location
   properties: {
-    serverFarmId: hostingPlan.id
+    serverFarmId: appServicePlanId
     httpsOnly: true
     siteConfig: {
+      netFrameworkVersion: 'v6.0'
       alwaysOn: true
       appSettings: [
         {
@@ -63,14 +61,16 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
           value: '~1'
         }
         {
-          name: 'XDT_MicrosoftApplicationInsights_Java'
-          value: '1'
-        }
-        {
           name: 'XDT_MicrosoftApplicationInsights_Mode'
           value: 'recommended'
+        }
+        {
+          name: 'KeyVaultName'
+          value: keyVaultName
         }
       ]
     }
   }
 }
+
+output appServiceName string = appService.name
