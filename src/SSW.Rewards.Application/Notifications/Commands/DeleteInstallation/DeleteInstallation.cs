@@ -19,11 +19,8 @@ public class DeleteInstallationHandler : IRequestHandler<DeleteInstallation, Uni
     }
     public async Task<Unit> Handle(DeleteInstallation request, CancellationToken cancellationToken)
     {
-        var success = await _notificationService
+        await _notificationService
             .DeleteInstallationByIdAsync(request.InstallationId, CancellationToken.None);
-
-        if (!success)
-            throw new Exception("Bad Request");
 
         return Unit.Value;
     }

@@ -1,77 +1,79 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Security;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Application.TodoLists.Commands.PurgeTodoLists;
-using SSW.Rewards.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.Common.Security;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Application.TodoLists.Commands.PurgeTodoLists;
+//using SSW.Rewards.Domain.Entities;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
 
-public class PurgeTodoListsTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldDenyAnonymousUser()
-    {
-        var command = new PurgeTodoListsCommand();
+//using static Testing;
 
-        command.GetType().Should().BeDecoratedWith<AuthorizeAttribute>();
+//public class PurgeTodoListsTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldDenyAnonymousUser()
+//    {
+//        var command = new PurgeTodoListsCommand();
 
-        var action = () => SendAsync(command);
+//        command.GetType().Should().BeDecoratedWith<AuthorizeAttribute>();
 
-        await action.Should().ThrowAsync<UnauthorizedAccessException>();
-    }
+//        var action = () => SendAsync(command);
 
-    [Test]
-    public async Task ShouldDenyNonAdministrator()
-    {
-        await RunAsDefaultUserAsync();
+//        await action.Should().ThrowAsync<UnauthorizedAccessException>();
+//    }
 
-        var command = new PurgeTodoListsCommand();
+//    [Test]
+//    public async Task ShouldDenyNonAdministrator()
+//    {
+//        await RunAsDefaultUserAsync();
 
-        var action = () => SendAsync(command);
+//        var command = new PurgeTodoListsCommand();
 
-        await action.Should().ThrowAsync<ForbiddenAccessException>();
-    }
+//        var action = () => SendAsync(command);
 
-    [Test]
-    public async Task ShouldAllowAdministrator()
-    {
-        await RunAsAdministratorAsync();
+//        await action.Should().ThrowAsync<ForbiddenAccessException>();
+//    }
 
-        var command = new PurgeTodoListsCommand();
+//    [Test]
+//    public async Task ShouldAllowAdministrator()
+//    {
+//        await RunAsAdministratorAsync();
 
-        var action = () => SendAsync(command);
+//        var command = new PurgeTodoListsCommand();
 
-        await action.Should().NotThrowAsync<ForbiddenAccessException>();
-    }
+//        var action = () => SendAsync(command);
 
-    [Test]
-    public async Task ShouldDeleteAllLists()
-    {
-        await RunAsAdministratorAsync();
+//        await action.Should().NotThrowAsync<ForbiddenAccessException>();
+//    }
 
-        await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List #1"
-        });
+//    [Test]
+//    public async Task ShouldDeleteAllLists()
+//    {
+//        await RunAsAdministratorAsync();
 
-        await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List #2"
-        });
+//        await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List #1"
+//        });
 
-        await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List #3"
-        });
+//        await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List #2"
+//        });
 
-        await SendAsync(new PurgeTodoListsCommand());
+//        await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List #3"
+//        });
 
-        var count = await CountAsync<TodoList>();
+//        await SendAsync(new PurgeTodoListsCommand());
 
-        count.Should().Be(0);
-    }
-}
+//        var count = await CountAsync<TodoList>();
+
+//        count.Should().Be(0);
+//    }
+//}

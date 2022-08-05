@@ -11,7 +11,7 @@ namespace SSW.Rewards.Application.IntegrationTests;
 
 using static Testing;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -30,7 +30,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services
                 .Remove<ICurrentUserService>()
                 .AddTransient(provider => Mock.Of<ICurrentUserService>(s =>
-                    s.UserId == GetCurrentUserId()));
+                    s.GetUserId() == GetCurrentUserId()));
 
             services
                 .Remove<DbContextOptions<ApplicationDbContext>>()

@@ -47,11 +47,8 @@ public class RequestNotificationHandler : IRequestHandler<RequestNotification, U
             (!notification.Silent && string.IsNullOrWhiteSpace(notification?.Text)))
             throw new Exception("Bad Request");
 
-        var success = await _notificationService
+        await _notificationService
             .RequestNotificationAsync(notification, cancellationToken);
-
-        if (!success)
-            throw new Exception("Request Failed");
 
         var user = await this._userService.GetCurrentUser(cancellationToken);
 

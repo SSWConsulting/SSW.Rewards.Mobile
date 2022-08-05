@@ -1,45 +1,47 @@
-﻿using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SSW.Rewards.Application.Common.Behaviours;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
+﻿// TODO: refactor for remaining commands and queries
 
-namespace SSW.Rewards.Application.UnitTests.Common.Behaviours;
+//using Microsoft.Extensions.Logging;
+//using Moq;
+//using NUnit.Framework;
+//using SSW.Rewards.Application.Common.Behaviours;
+//using SSW.Rewards.Application.Common.Interfaces;
+//using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
 
-public class RequestLoggerTests
-{
-    private Mock<ILogger<CreateTodoItemCommand>> _logger = null!;
-    private Mock<ICurrentUserService> _currentUserService = null!;
-    private Mock<IIdentityService> _identityService = null!;
+//namespace SSW.Rewards.Application.UnitTests.Common.Behaviours;
 
-    [SetUp]
-    public void Setup()
-    {
-        _logger = new Mock<ILogger<CreateTodoItemCommand>>();
-        _currentUserService = new Mock<ICurrentUserService>();
-        _identityService = new Mock<IIdentityService>();
-    }
+//public class RequestLoggerTests
+//{
+//    private Mock<ILogger<CreateTodoItemCommand>> _logger = null!;
+//    private Mock<ICurrentUserService> _currentUserService = null!;
+//    private Mock<IIdentityService> _identityService = null!;
 
-    [Test]
-    public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
-    {
-        _currentUserService.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
+//    [SetUp]
+//    public void Setup()
+//    {
+//        _logger = new Mock<ILogger<CreateTodoItemCommand>>();
+//        _currentUserService = new Mock<ICurrentUserService>();
+//        _identityService = new Mock<IIdentityService>();
+//    }
 
-        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
+//    [Test]
+//    public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
+//    {
+//        _currentUserService.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
 
-        await requestLogger.Process(new CreateTodoItemCommand { ListId = 1, Title = "title" }, new CancellationToken());
+//        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
-    }
+//        await requestLogger.Process(new CreateTodoItemCommand { ListId = 1, Title = "title" }, new CancellationToken());
 
-    [Test]
-    public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
-    {
-        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
+//        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
+//    }
 
-        await requestLogger.Process(new CreateTodoItemCommand { ListId = 1, Title = "title" }, new CancellationToken());
+//    [Test]
+//    public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
+//    {
+//        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
-    }
-}
+//        await requestLogger.Process(new CreateTodoItemCommand { ListId = 1, Title = "title" }, new CancellationToken());
+
+//        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
+//    }
+//}

@@ -1,56 +1,58 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Domain.Entities;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
 
-public class CreateTodoListTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldRequireMinimumFields()
-    {
-        var command = new CreateTodoListCommand();
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
-    }
+//using static Testing;
 
-    [Test]
-    public async Task ShouldRequireUniqueTitle()
-    {
-        await SendAsync(new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        });
+//public class CreateTodoListTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldRequireMinimumFields()
+//    {
+//        var command = new CreateTodoListCommand();
+//        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
+//    }
 
-        var command = new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        };
+//    [Test]
+//    public async Task ShouldRequireUniqueTitle()
+//    {
+//        await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "Shopping"
+//        });
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<ValidationException>();
-    }
+//        var command = new CreateTodoListCommand
+//        {
+//            Title = "Shopping"
+//        };
 
-    [Test]
-    public async Task ShouldCreateTodoList()
-    {
-        var userId = await RunAsDefaultUserAsync();
+//        await FluentActions.Invoking(() =>
+//            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+//    }
 
-        var command = new CreateTodoListCommand
-        {
-            Title = "Tasks"
-        };
+//    [Test]
+//    public async Task ShouldCreateTodoList()
+//    {
+//        var userId = await RunAsDefaultUserAsync();
 
-        var id = await SendAsync(command);
+//        var command = new CreateTodoListCommand
+//        {
+//            Title = "Tasks"
+//        };
 
-        var list = await FindAsync<TodoList>(id);
+//        var id = await SendAsync(command);
 
-        list.Should().NotBeNull();
-        list!.Title.Should().Be(command.Title);
-        list.CreatedBy.Should().Be(userId);
-        list.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
-    }
-}
+//        var list = await FindAsync<TodoList>(id);
+
+//        list.Should().NotBeNull();
+//        list!.Title.Should().Be(command.Title);
+//        list.CreatedBy.Should().Be(userId);
+//        list.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
+//    }
+//}

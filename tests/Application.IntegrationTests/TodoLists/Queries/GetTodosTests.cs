@@ -1,63 +1,65 @@
-﻿using SSW.Rewards.Application.TodoLists.Queries.GetTodos;
-using SSW.Rewards.Domain.Entities;
-using SSW.Rewards.Domain.ValueObjects;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Queries;
+//using SSW.Rewards.Application.TodoLists.Queries.GetTodos;
+//using SSW.Rewards.Domain.Entities;
+//using SSW.Rewards.Domain.ValueObjects;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Queries;
 
-public class GetTodosTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldReturnPriorityLevels()
-    {
-        await RunAsDefaultUserAsync();
+//using static Testing;
 
-        var query = new GetTodosQuery();
+//public class GetTodosTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldReturnPriorityLevels()
+//    {
+//        await RunAsDefaultUserAsync();
 
-        var result = await SendAsync(query);
+//        var query = new GetTodosQuery();
 
-        result.PriorityLevels.Should().NotBeEmpty();
-    }
+//        var result = await SendAsync(query);
 
-    [Test]
-    public async Task ShouldReturnAllListsAndItems()
-    {
-        await RunAsDefaultUserAsync();
+//        result.PriorityLevels.Should().NotBeEmpty();
+//    }
 
-        await AddAsync(new TodoList
-        {
-            Title = "Shopping",
-            Colour = Colour.Blue,
-            Items =
-                    {
-                        new TodoItem { Title = "Apples", Done = true },
-                        new TodoItem { Title = "Milk", Done = true },
-                        new TodoItem { Title = "Bread", Done = true },
-                        new TodoItem { Title = "Toilet paper" },
-                        new TodoItem { Title = "Pasta" },
-                        new TodoItem { Title = "Tissues" },
-                        new TodoItem { Title = "Tuna" }
-                    }
-        });
+//    [Test]
+//    public async Task ShouldReturnAllListsAndItems()
+//    {
+//        await RunAsDefaultUserAsync();
 
-        var query = new GetTodosQuery();
+//        await AddAsync(new TodoList
+//        {
+//            Title = "Shopping",
+//            Colour = Colour.Blue,
+//            Items =
+//                    {
+//                        new TodoItem { Title = "Apples", Done = true },
+//                        new TodoItem { Title = "Milk", Done = true },
+//                        new TodoItem { Title = "Bread", Done = true },
+//                        new TodoItem { Title = "Toilet paper" },
+//                        new TodoItem { Title = "Pasta" },
+//                        new TodoItem { Title = "Tissues" },
+//                        new TodoItem { Title = "Tuna" }
+//                    }
+//        });
 
-        var result = await SendAsync(query);
+//        var query = new GetTodosQuery();
 
-        result.Lists.Should().HaveCount(1);
-        result.Lists.First().Items.Should().HaveCount(7);
-    }
+//        var result = await SendAsync(query);
 
-    [Test]
-    public async Task ShouldDenyAnonymousUser()
-    {
-        var query = new GetTodosQuery();
+//        result.Lists.Should().HaveCount(1);
+//        result.Lists.First().Items.Should().HaveCount(7);
+//    }
 
-        var action = () => SendAsync(query);
-        
-        await action.Should().ThrowAsync<UnauthorizedAccessException>();
-    }
-}
+//    [Test]
+//    public async Task ShouldDenyAnonymousUser()
+//    {
+//        var query = new GetTodosQuery();
+
+//        var action = () => SendAsync(query);
+
+//        await action.Should().ThrowAsync<UnauthorizedAccessException>();
+//    }
+//}

@@ -35,11 +35,8 @@ public class UpdateInstallationHandler : IRequestHandler<UpdateInstallation, Uni
             Tags            = request.Tags
         };
 
-        var success = await _notificationService
+        await _notificationService
             .CreateOrUpdateInstallationAsync(deviceInstallation, cancellationToken);
-
-        if (!success)
-            throw new Exception("Bad Request");
 
         return Unit.Value;
     }

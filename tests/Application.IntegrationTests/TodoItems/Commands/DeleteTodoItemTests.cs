@@ -1,44 +1,46 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
-using SSW.Rewards.Application.TodoItems.Commands.DeleteTodoItem;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
+//using SSW.Rewards.Application.TodoItems.Commands.DeleteTodoItem;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Domain.Entities;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
 
-public class DeleteTodoItemTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldRequireValidTodoItemId()
-    {
-        var command = new DeleteTodoItemCommand(99);
+//using static Testing;
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
-    }
+//public class DeleteTodoItemTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldRequireValidTodoItemId()
+//    {
+//        var command = new DeleteTodoItemCommand(99);
 
-    [Test]
-    public async Task ShouldDeleteTodoItem()
-    {
-        var listId = await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+//        await FluentActions.Invoking(() =>
+//            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+//    }
 
-        var itemId = await SendAsync(new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "New Item"
-        });
+//    [Test]
+//    public async Task ShouldDeleteTodoItem()
+//    {
+//        var listId = await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List"
+//        });
 
-        await SendAsync(new DeleteTodoItemCommand(itemId));
+//        var itemId = await SendAsync(new CreateTodoItemCommand
+//        {
+//            ListId = listId,
+//            Title = "New Item"
+//        });
 
-        var item = await FindAsync<TodoItem>(itemId);
+//        await SendAsync(new DeleteTodoItemCommand(itemId));
 
-        item.Should().BeNull();
-    }
-}
+//        var item = await FindAsync<TodoItem>(itemId);
+
+//        item.Should().BeNull();
+//    }
+//}

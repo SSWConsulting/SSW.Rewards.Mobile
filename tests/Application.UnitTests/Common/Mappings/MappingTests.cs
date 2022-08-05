@@ -1,10 +1,9 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
-using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Application.Common.Models;
-using SSW.Rewards.Application.TodoLists.Queries.GetTodos;
-using SSW.Rewards.Domain.Entities;
 using NUnit.Framework;
+using SSW.Rewards.Application.Common.Mappings;
+using SSW.Rewards.Application.Leaderboard.Queries.Common;
+using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.UnitTests.Common.Mappings;
 
@@ -28,10 +27,7 @@ public class MappingTests
     }
 
     [Test]
-    [TestCase(typeof(TodoList), typeof(TodoListDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
-    [TestCase(typeof(TodoList), typeof(LookupDto))]
-    [TestCase(typeof(TodoItem), typeof(LookupDto))]
+    [TestCase(typeof(User), typeof(LeaderboardUserDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

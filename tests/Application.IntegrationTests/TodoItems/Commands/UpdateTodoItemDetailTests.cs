@@ -1,61 +1,64 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
-using SSW.Rewards.Application.TodoItems.Commands.UpdateTodoItem;
-using SSW.Rewards.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Domain.Entities;
-using SSW.Rewards.Domain.Enums;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
 
-using static Testing;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
+//using SSW.Rewards.Application.TodoItems.Commands.UpdateTodoItem;
+//using SSW.Rewards.Application.TodoItems.Commands.UpdateTodoItemDetail;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Domain.Entities;
+//using SSW.Rewards.Domain.Enums;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-public class UpdateTodoItemDetailTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldRequireValidTodoItemId()
-    {
-        var command = new UpdateTodoItemCommand { Id = 99, Title = "New Title" };
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
-    }
+//namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
 
-    [Test]
-    public async Task ShouldUpdateTodoItem()
-    {
-        var userId = await RunAsDefaultUserAsync();
+//using static Testing;
 
-        var listId = await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+//public class UpdateTodoItemDetailTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldRequireValidTodoItemId()
+//    {
+//        var command = new UpdateTodoItemCommand { Id = 99, Title = "New Title" };
+//        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+//    }
 
-        var itemId = await SendAsync(new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "New Item"
-        });
+//    [Test]
+//    public async Task ShouldUpdateTodoItem()
+//    {
+//        var userId = await RunAsDefaultUserAsync();
 
-        var command = new UpdateTodoItemDetailCommand
-        {
-            Id = itemId,
-            ListId = listId,
-            Note = "This is the note.",
-            Priority = PriorityLevel.High
-        };
+//        var listId = await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List"
+//        });
 
-        await SendAsync(command);
+//        var itemId = await SendAsync(new CreateTodoItemCommand
+//        {
+//            ListId = listId,
+//            Title = "New Item"
+//        });
 
-        var item = await FindAsync<TodoItem>(itemId);
+//        var command = new UpdateTodoItemDetailCommand
+//        {
+//            Id = itemId,
+//            ListId = listId,
+//            Note = "This is the note.",
+//            Priority = PriorityLevel.High
+//        };
 
-        item.Should().NotBeNull();
-        item!.ListId.Should().Be(command.ListId);
-        item.Note.Should().Be(command.Note);
-        item.Priority.Should().Be(command.Priority);
-        item.LastModifiedBy.Should().NotBeNull();
-        item.LastModifiedBy.Should().Be(userId);
-        item.LastModified.Should().NotBeNull();
-        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
-    }
-}
+//        await SendAsync(command);
+
+//        var item = await FindAsync<TodoItem>(itemId);
+
+//        item.Should().NotBeNull();
+//        item!.ListId.Should().Be(command.ListId);
+//        item.Note.Should().Be(command.Note);
+//        item.Priority.Should().Be(command.Priority);
+//        item.LastModifiedBy.Should().NotBeNull();
+//        item.LastModifiedBy.Should().Be(userId);
+//        item.LastModified.Should().NotBeNull();
+//        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
+//    }
+//}

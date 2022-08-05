@@ -31,6 +31,13 @@
       <ProjectReference Include="..\SSW.Rewards.Infrastructure\SSW.Rewards.Infrastructure.csproj" />
     </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="SSW.Rewards.Application.IntegrationTests" />
+		<InternalsVisibleTo Include="SSW.Rewards.Application.UnitTests" />
+		<InternalsVisibleTo Include="SSW.Rewards.Domain.UnitTests" />
+		<InternalsVisibleTo Include="SSW.Rewards.WebUI.AcceptanceTests" />
+	</ItemGroup>
+
     <PropertyGroup>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     </PropertyGroup>

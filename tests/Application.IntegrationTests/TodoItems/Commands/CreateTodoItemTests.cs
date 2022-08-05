@@ -1,51 +1,53 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.TodoItems.Commands.CreateTodoItem;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Domain.Entities;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoItems.Commands;
 
-public class CreateTodoItemTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldRequireMinimumFields()
-    {
-        var command = new CreateTodoItemCommand();
+//using static Testing;
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<ValidationException>();
-    }
+//public class CreateTodoItemTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldRequireMinimumFields()
+//    {
+//        var command = new CreateTodoItemCommand();
 
-    [Test]
-    public async Task ShouldCreateTodoItem()
-    {
-        var userId = await RunAsDefaultUserAsync();
+//        await FluentActions.Invoking(() =>
+//            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+//    }
 
-        var listId = await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+//    [Test]
+//    public async Task ShouldCreateTodoItem()
+//    {
+//        var userId = await RunAsDefaultUserAsync();
 
-        var command = new CreateTodoItemCommand
-        {
-            ListId = listId,
-            Title = "Tasks"
-        };
+//        var listId = await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List"
+//        });
 
-        var itemId = await SendAsync(command);
+//        var command = new CreateTodoItemCommand
+//        {
+//            ListId = listId,
+//            Title = "Tasks"
+//        };
 
-        var item = await FindAsync<TodoItem>(itemId);
+//        var itemId = await SendAsync(command);
 
-        item.Should().NotBeNull();
-        item!.ListId.Should().Be(command.ListId);
-        item.Title.Should().Be(command.Title);
-        item.CreatedBy.Should().Be(userId);
-        item.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
-        item.LastModifiedBy.Should().Be(userId);
-        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
-    }
-}
+//        var item = await FindAsync<TodoItem>(itemId);
+
+//        item.Should().NotBeNull();
+//        item!.ListId.Should().Be(command.ListId);
+//        item.Title.Should().Be(command.Title);
+//        item.CreatedBy.Should().Be(userId);
+//        item.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
+//        item.LastModifiedBy.Should().Be(userId);
+//        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
+//    }
+//}

@@ -1,35 +1,37 @@
-﻿using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
-using SSW.Rewards.Application.TodoLists.Commands.DeleteTodoList;
-using SSW.Rewards.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
+﻿// Replace with remaining queries and commands
 
-namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
+//using SSW.Rewards.Application.Common.Exceptions;
+//using SSW.Rewards.Application.TodoLists.Commands.CreateTodoList;
+//using SSW.Rewards.Application.TodoLists.Commands.DeleteTodoList;
+//using SSW.Rewards.Domain.Entities;
+//using FluentAssertions;
+//using NUnit.Framework;
 
-using static Testing;
+//namespace SSW.Rewards.Application.IntegrationTests.TodoLists.Commands;
 
-public class DeleteTodoListTests : BaseTestFixture
-{
-    [Test]
-    public async Task ShouldRequireValidTodoListId()
-    {
-        var command = new DeleteTodoListCommand(99);
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
-    }
+//using static Testing;
 
-    [Test]
-    public async Task ShouldDeleteTodoList()
-    {
-        var listId = await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
+//public class DeleteTodoListTests : BaseTestFixture
+//{
+//    [Test]
+//    public async Task ShouldRequireValidTodoListId()
+//    {
+//        var command = new DeleteTodoListCommand(99);
+//        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+//    }
 
-        await SendAsync(new DeleteTodoListCommand(listId));
+//    [Test]
+//    public async Task ShouldDeleteTodoList()
+//    {
+//        var listId = await SendAsync(new CreateTodoListCommand
+//        {
+//            Title = "New List"
+//        });
 
-        var list = await FindAsync<TodoList>(listId);
+//        await SendAsync(new DeleteTodoListCommand(listId));
 
-        list.Should().BeNull();
-    }
-}
+//        var list = await FindAsync<TodoList>(listId);
+
+//        list.Should().BeNull();
+//    }
+//}
