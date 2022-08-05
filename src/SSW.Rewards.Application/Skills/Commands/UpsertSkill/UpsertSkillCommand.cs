@@ -4,40 +4,37 @@ public class UpsertSkillCommand : IRequest<Unit>
 {
     public int Id { get; set; }
     public string Skill { get; set; }
+}
 
-    public sealed class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, Unit>
+public class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, Unit>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IDateTime _dateTime;
+
+    public UpsertSkillCommandHandler(IApplicationDbContext context, IDateTime dateTime)
     {
-        private readonly IApplicationDbContext _context;
+        _context = context;
+        _dateTime = dateTime;
+    }
 
-        public UpsertSkillCommandHandler(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<Unit> Handle(UpsertSkillCommand request, CancellationToken cancellationToken)
+    {
+        var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
 
-        public async Task<Unit> Handle(UpsertSkillCommand request, CancellationToken cancellationToken)
+        if (found == null)
         {
-            if (!string.IsNullOrWhiteSpace(request.Skill))
+            _context.Skills.Add(new Skill
             {
-                var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
-
-                if (found == null)
-                {
-                    _context.Skills.Add(new Domain.Entities.Skill 
-                    { 
-                        Name = request.Skill, 
-                        CreatedUtc = DateTime.Now 
-                    });
-                }
-                else
-                {
-                    found.Name = request.Skill;
-                }
-
-                await _context.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
-            }
-
-            throw new Exception("Bad Request");
+                Name = request.Skill,
+                CreatedUtc = _dateTime.Now
+            });
         }
+        else
+        {
+            found.Name = request.Skill;
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return Unit.Value;
     }
 }

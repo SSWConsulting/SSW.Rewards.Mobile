@@ -37,6 +37,10 @@ public class LeaderboardUserDto : IMapFrom<User>
                     opt.PreCondition(src => !src.UserRewards.Any());
                     opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value));
                 })
+                // TODO:    Using DateTime.Now here presents instability for testing the queries dependent
+                //          on this DTO. As discussed with williamliebenberg@ssw.com.au, we will accept
+                //          this tech debt for now and investigate a better approach in the future. See
+                //          https://github.com/SSWConsulting/SSW.Rewards.API/issues/7
                 .ForMember(dst => dst.PointsThisYear, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
                                                                                     .Sum(ua => ua.Achievement.Value)))

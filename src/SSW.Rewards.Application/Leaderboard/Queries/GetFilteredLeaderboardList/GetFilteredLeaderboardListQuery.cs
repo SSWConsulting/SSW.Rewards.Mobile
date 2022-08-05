@@ -12,11 +12,16 @@ public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFiltere
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IDateTime _dateTime;
 
-    public GetFilteredLeaderboardListQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetFilteredLeaderboardListQueryHandler(
+        IApplicationDbContext context,
+        IMapper mapper,
+        IDateTime dateTime)
     {
         _context = context;
         _mapper = mapper;
+        _dateTime = dateTime;
     }
 
     public async Task<LeaderboardListViewModel> Handle(GetFilteredLeaderboardListQuery request, CancellationToken cancellationToken)
@@ -26,11 +31,11 @@ public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFiltere
 
         if (request.Filter == LeaderboardFilter.ThisYear)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == DateTime.Now.Year));
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
         }
-        else if (request.Filter == LeaderboardFilter.ThisMonth) // and year
+        else if (request.Filter == LeaderboardFilter.ThisMonth)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Month == DateTime.Now.Month));
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Month == _dateTime.Now.Month && a.AwardedAt.Year == _dateTime.Now.Year));
         }
 
         var users = await query.Include(u => u.UserAchievements)

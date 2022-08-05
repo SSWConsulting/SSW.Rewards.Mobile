@@ -54,6 +54,8 @@ public static class ConfigureServices
 
         string signingAuthority = configuration.GetValue<string>(nameof(signingAuthority));
 
+        services.AddTransient<IDateTime, DateTimeService>();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
