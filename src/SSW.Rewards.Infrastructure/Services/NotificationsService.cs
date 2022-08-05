@@ -71,18 +71,14 @@ public class NotificationsService : INotificationService
             // This will broadcast to all users registered in the notification hub
             await SendPlatformNotificationsAsync(androidPayload, iOSPayload, token);
         }
-        else if (notificationRequest.Tags.Length <= 20)
-        {
-            await SendPlatformNotificationsAsync(androidPayload, iOSPayload, notificationRequest.Tags, token);
-        }
         else
         {
-            var notificationTasks = notificationRequest.Tags
-                .Select((value, index) => (value, index))
-                .GroupBy(g => g.index / 20, i => i.value)
-                .Select(tags => SendPlatformNotificationsAsync(androidPayload, iOSPayload, tags, token));
+            var chunkSize = 20;
 
-            await Task.WhenAll(notificationTasks);
+            foreach (var chunk in notificationRequest.Tags.Chunk(chunkSize))
+            {
+                await SendPlatformNotificationsAsync(androidPayload, iOSPayload, chunk, token);
+            }
         }
     }
 
