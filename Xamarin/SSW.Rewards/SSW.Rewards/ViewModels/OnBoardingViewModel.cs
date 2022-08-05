@@ -59,17 +59,16 @@ namespace SSW.Rewards.ViewModels
                     ButtonText = "NEXT",
                     IsAnimation = false
                 },
-                // TODO: uncomment when we get keepcups available again (as per conversation with camilla@ssw.com.au)
-                //new CarouselViewModel
-                //{
-                //    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
-                //    Image = "v2cups",
-                //    SubHeading = "SSW Smart Keepcup",
-                //    HasPoints = true,
-                //    Points = 2000,
-                //    ButtonText = "NEXT",
-                //    IsAnimation = false
-                //},
+                new CarouselViewModel
+                {
+                    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
+                    Image = "v2cups",
+                    SubHeading = "SSW Smart Keepcup",
+                    HasPoints = true,
+                    Points = 2000,
+                    ButtonText = "NEXT",
+                    IsAnimation = false
+                },
                 new CarouselViewModel
                 {
                     Content = "Get on the leaderboard and earn a Mi Wrist band. Just like a FitBit, except more functionality and a month's battery life!",
