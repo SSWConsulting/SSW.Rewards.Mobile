@@ -1,35 +1,30 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.System.Commands.Common;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using SSW.Rewards.Application.System.Commands.Common;
 
-namespace SSW.Rewards.Application.System.Commands.SeedData
+namespace SSW.Rewards.Application.System.Commands.SeedData;
+
+public class SeedSampleDataCommand : IRequest
 {
-    public class SeedSampleDataCommand : IRequest
+}
+
+public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IProfileStorageProvider _storageProvider;
+
+    public SeedSampleDataCommandHandler(
+        IApplicationDbContext context,
+        IProfileStorageProvider storageProvider)
     {
+        _context = context;
+        _storageProvider = storageProvider;
     }
 
-    public class SeedSampleDataCommandHandler : IRequestHandler<SeedSampleDataCommand>
+    public async Task<Unit> Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
     {
-        private readonly ISSWRewardsDbContext _context;
-        private readonly IProfileStorageProvider _storageProvider;
+        var seeder = new SampleDataSeeder(_context);
+        var profileData = await _storageProvider.GetBlob("NDC-Profiles-2019.xlsx");
+        await seeder.SeedAllAsync(profileData, cancellationToken);
 
-        public SeedSampleDataCommandHandler(
-            ISSWRewardsDbContext context,
-            IProfileStorageProvider storageProvider)
-        {
-            _context = context;
-            _storageProvider = storageProvider;
-        }
-
-        public async Task<Unit> Handle(SeedSampleDataCommand request, CancellationToken cancellationToken)
-        {
-            var seeder = new SampleDataSeeder(_context);
-            var profileData = await _storageProvider.GetProfileData();
-            await seeder.SeedAllAsync(profileData, cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

@@ -1,28 +1,23 @@
-using MediatR;
 using SSW.Rewards.Application.Users.Common;
-using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements
+namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements;
+
+public class GetUserAchievementsQuery : IRequest<UserAchievementsViewModel>
 {
-    public class GetUserAchievementsQuery : IRequest<UserAchievementsViewModel>
+    public int UserId { get; set; }        
+}
+
+public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievementsQuery, UserAchievementsViewModel>
+{
+    private readonly IUserService _userService;
+
+    public GetUserAchievementsQueryHandler(IUserService userService)
     {
-        public int UserId { get; set; }        
+        _userService = userService;
     }
 
-    public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievementsQuery, UserAchievementsViewModel>
+    public async Task<UserAchievementsViewModel> Handle(GetUserAchievementsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IUserService _userService;
-
-        public GetUserAchievementsQueryHandler(IUserService userService)
-        {
-            _userService = userService;
-        }
-
-        public async Task<UserAchievementsViewModel> Handle(GetUserAchievementsQuery request, CancellationToken cancellationToken)
-        {
-            return await _userService.GetUserAchievements(request.UserId, cancellationToken);
-        }
+        return await _userService.GetUserAchievements(request.UserId, cancellationToken);
     }
 }

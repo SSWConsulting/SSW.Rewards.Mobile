@@ -1,18 +1,15 @@
-﻿using System;
+﻿namespace SSW.Rewards.Application.Common.Exceptions;
 
-namespace SSW.Rewards.Application.Common.Exceptions
+public class BlobContainerNotFoundException : Exception
 {
-    public class BlobContainerNotFoundException : Exception
+    public BlobContainerNotFoundException()
     {
-        public BlobContainerNotFoundException()
-        {
-        }
-
-        public BlobContainerNotFoundException(string containerName) : base($"The blob container '{containerName}' does not exist in the storage account.")
-        {
-            ContainerName = containerName;
-        }
-
-        public string ContainerName { get; }
     }
+
+    public BlobContainerNotFoundException(string containerName) : base($"The blob container '{containerName}' does not exist in the storage account.")
+    {
+        ContainerName = containerName;
+    }
+
+    public string ContainerName { get; }
 }

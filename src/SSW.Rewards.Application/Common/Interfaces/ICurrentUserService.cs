@@ -1,10 +1,9 @@
-﻿namespace SSW.Rewards.Application.Common.Interfaces
+﻿namespace SSW.Rewards.Application.Common.Interfaces;
+
+public interface ICurrentUserService
 {
-    public interface ICurrentUserService
-    {
-        string GetUserId();
-        string GetUserEmail();
-        string GetUserFullName();
-        string GetUserProfilePic();
-    }
+    string GetUserId();
+    string GetUserEmail();
+    string GetUserFullName();
+    string GetUserProfilePic();
 }

@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
-namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList
+public class AchievementAdminListViewModel
 {
-    public class AchievementAdminListViewModel
-    {
-        public List<AchievementAdminViewModel> Achievements { get; set; }
-    }
+    public List<AchievementAdminViewModel> Achievements { get; set; }
 }

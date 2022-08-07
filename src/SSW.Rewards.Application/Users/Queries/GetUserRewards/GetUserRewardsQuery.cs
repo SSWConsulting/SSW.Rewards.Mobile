@@ -1,27 +1,21 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
 
-namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
+public class GetUserRewardsQuery : IRequest<UserRewardsViewModel>
 {
-    public class GetUserRewardsQuery : IRequest<UserRewardsViewModel>
+    public int UserId { get; set; }
+}
+
+public class GetUserRewardsQueryHandler : IRequestHandler<GetUserRewardsQuery, UserRewardsViewModel>
+{
+    private readonly IUserService _userService;
+
+    public GetUserRewardsQueryHandler(IUserService userService)
     {
-        public int UserId { get; set; }
+        _userService = userService;
     }
 
-    public class GetUserRewardsQueryHandler : IRequestHandler<GetUserRewardsQuery, UserRewardsViewModel>
+    public async Task<UserRewardsViewModel> Handle(GetUserRewardsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IUserService _userService;
-
-        public GetUserRewardsQueryHandler(IUserService userService)
-        {
-            _userService = userService;
-        }
-
-        public async Task<UserRewardsViewModel> Handle(GetUserRewardsQuery request, CancellationToken cancellationToken)
-        {
-            return await _userService.GetUserRewards(request.UserId, cancellationToken);
-        }
+        return await _userService.GetUserRewards(request.UserId, cancellationToken);
     }
 }

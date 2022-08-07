@@ -1,61 +1,53 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Users.Common;
-using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using SSW.Rewards.Application.Users.Common;
 
-namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements
+namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
+
+public class GetProfileAchivementsQuery : IRequest<UserAchievementsViewModel>
 {
-    public class GetProfileAchivementsQuery : IRequest<UserAchievementsViewModel>
+    public int UserId { get; set; }
+}
+
+public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchivementsQuery, UserAchievementsViewModel>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IUserService _userService;
+
+    public GetProfileAchievementQueryHandler(IApplicationDbContext context, IUserService userService)
     {
-        public int UserId { get; set; }
+        _context = context;
+        _userService = userService;
     }
 
-    public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchivementsQuery, UserAchievementsViewModel>
+    public async Task<UserAchievementsViewModel> Handle(GetProfileAchivementsQuery request, CancellationToken cancellationToken)
     {
-        private readonly ISSWRewardsDbContext _context;
-        private readonly IUserService _userService;
+        var userAchievements = await _userService.GetUserAchievements(request.UserId, cancellationToken);
 
-        public GetProfileAchievementQueryHandler(ISSWRewardsDbContext context, IUserService userService)
+        var userAchievementNames = userAchievements.UserAchievements.Select(u => u.AchievementName).ToList();
+
+        var achievements = await _context.Achievements
+            .Where(a => (a.Type == AchievementType.Completed || a.Type == AchievementType.Linked) && !userAchievementNames.Contains(a.Name))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var profileAchievements = userAchievements.UserAchievements
+            .Where(u => u.AchievementType == AchievementType.Linked || u.AchievementType == AchievementType.Completed)
+            .ToList();
+
+        foreach (var achievement in achievements)
         {
-            _context = context;
-            _userService = userService;
-        }
-
-        public async Task<UserAchievementsViewModel> Handle(GetProfileAchivementsQuery request, CancellationToken cancellationToken)
-        {
-            var userAchievements = await _userService.GetUserAchievements(request.UserId, cancellationToken);
-
-            var userAchievementNames = userAchievements.UserAchievements.Select(u => u.AchievementName).ToList();
-
-            var achievements = await _context.Achievements
-                .Where(a => (a.Type == AchievementType.Completed || a.Type == AchievementType.Linked) && !userAchievementNames.Contains(a.Name))
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-
-            var profileAchievements = userAchievements.UserAchievements
-                .Where(u => u.AchievementType == AchievementType.Linked || u.AchievementType == AchievementType.Completed)
-                .ToList();
-
-            foreach (var achievement in achievements)
+            profileAchievements.Add(new UserAchievementDto
             {
-                profileAchievements.Add(new UserAchievementDto
-                {
-                    AchievementName             = achievement.Name,
-                    AchievementType             = achievement.Type,
-                    AchievementValue            = achievement.Value,
-                    AchievementIcon             = achievement.Icon,
-                    AchievementIconIsBranded    = achievement.IconIsBranded,
-                    Complete                    = false
-                });
-            }
-
-            userAchievements.UserAchievements = profileAchievements;
-
-            return userAchievements;
+                AchievementName             = achievement.Name,
+                AchievementType             = achievement.Type,
+                AchievementValue            = achievement.Value,
+                AchievementIcon             = achievement.Icon,
+                AchievementIconIsBranded    = achievement.IconIsBranded,
+                Complete                    = false
+            });
         }
+
+        userAchievements.UserAchievements = profileAchievements;
+
+        return userAchievements;
     }
 }

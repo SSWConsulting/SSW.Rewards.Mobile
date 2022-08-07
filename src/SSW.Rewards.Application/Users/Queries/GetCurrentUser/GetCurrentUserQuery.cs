@@ -1,51 +1,45 @@
-using MediatR;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser
+namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser;
+
+public class GetCurrentUserQuery : IRequest<CurrentUserViewModel>
+{        
+}
+
+public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
 {
-    public class GetCurrentUserQuery : IRequest<CurrentUserViewModel>
-    {        
+    private readonly ILogger<GetCurrentUserQueryHandler> _logger;
+    private readonly IUserService _userService;
+    private readonly ICurrentUserService _currentUserService;
+
+    public GetCurrentUserQueryHandler(ILogger<GetCurrentUserQueryHandler> logger, IUserService userService, ICurrentUserService currentUserService)
+    {
+        _logger = logger;
+        _userService = userService;
+        _currentUserService = currentUserService;
     }
 
-    public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
+    public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
     {
-        private readonly ILogger<GetCurrentUserQueryHandler> _logger;
-        private readonly IUserService _userService;
-        private readonly ICurrentUserService _currentUserService;
+        CurrentUserViewModel user = await _userService.GetCurrentUser(cancellationToken);
 
-        public GetCurrentUserQueryHandler(ILogger<GetCurrentUserQueryHandler> logger, IUserService userService, ICurrentUserService currentUserService)
+        if (user == null)
         {
-            _logger = logger;
-            _userService = userService;
-            _currentUserService = currentUserService;
+            throw new NotFoundException(_currentUserService.GetUserEmail(), "User");
         }
 
-        public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        if (user.IsStaff())
         {
-            CurrentUserViewModel user = await _userService.GetCurrentUser(cancellationToken);
+            var code = await _userService.GetStaffQRCode(user.Email, cancellationToken);
 
-            if (user == null)
+            if (!string.IsNullOrWhiteSpace(code))
             {
-                throw new NotFoundException(_currentUserService.GetUserEmail(), "User");
+                user.QRCode = code;
             }
-
-            if (user.IsStaff())
-            {
-                var code = await _userService.GetStaffQRCode(user.Email, cancellationToken);
-
-                if (!string.IsNullOrWhiteSpace(code))
-                {
-                    user.QRCode = code;
-                }
-            }
-
-            return user;
         }
+
+        return user;
     }
 }

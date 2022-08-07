@@ -1,46 +1,37 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using SSW.Rewards.Application.Common.Exceptions;
 
-namespace SSW.Rewards.Application.Skills.Commands.DeleteSkill
+namespace SSW.Rewards.Application.Skills.Commands.DeleteSkill;
+
+public class DeleteSkillCommand : IRequest<Unit>
 {
-    public class DeleteSkillCommand : IRequest<Unit>
+    public int Id{ get; set; }
+
+    public sealed class UpsertSkillCommandHandler : IRequestHandler<DeleteSkillCommand, Unit>
     {
-        public int Id{ get; set; }
+        private readonly IApplicationDbContext _context;
 
-        public sealed class UpsertSkillCommandHandler : IRequestHandler<DeleteSkillCommand, Unit>
+        public UpsertSkillCommandHandler(IApplicationDbContext context)
         {
-            private readonly ISSWRewardsDbContext _context;
+            _context = context;
+        }
 
-            public UpsertSkillCommandHandler(ISSWRewardsDbContext context)
+        public async Task<Unit> Handle(DeleteSkillCommand request, CancellationToken cancellationToken)
+        {
+            if (request?.Id == null)
             {
-                _context = context;
+                throw new Exception("Bad Request");
             }
 
-            public async Task<Unit> Handle(DeleteSkillCommand request, CancellationToken cancellationToken)
+            var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
+
+            if (found == null)
             {
-                if (request?.Id == null)
-                {
-                    throw new Exception("Bad Request");
-                }
-
-                var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
-
-                if (found == null)
-                {
-                    throw new NotFoundException("Bad Request");
-                }
-
-                _context.Skills.Remove(found);
-                await _context.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
+                throw new NotFoundException("Bad Request");
             }
+
+            _context.Skills.Remove(found);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Unit.Value;
         }
     }
 }

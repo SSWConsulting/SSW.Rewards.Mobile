@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Application.Common.Interfaces;
 
-namespace SSW.Rewards.Application.Common.Interfaces
+public interface IProfileStorageProvider
 {
-    public interface IProfileStorageProvider
-    {
-        Task<byte[]> GetProfileData();
-        Task<Uri> GetProfileUri(string staffMemberName);
-        Task<string> UploadProfilePicture(byte[] imageArray, string fileName);
-    }
+    Task<byte[]> GetBlob(string blobName);
+    Task<Uri> GetProfileUri(string staffMemberName);
+    Task<string> UploadProfilePicture(byte[] imageArray, string fileName);
 }

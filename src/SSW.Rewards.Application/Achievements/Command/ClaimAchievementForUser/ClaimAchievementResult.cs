@@ -1,16 +1,15 @@
-﻿namespace SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser
-{
-    public class ClaimAchievementResult
-    {
-        public ClaimAchievementStatus status { get; set; }
-    }
+﻿namespace SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 
-    public enum ClaimAchievementStatus
-    {
-        Claimed,
-        NotFound,
-        Duplicate,
-        NotEnoughPoints,
-        Error
-    }
+public class ClaimAchievementResult
+{
+    public ClaimAchievementStatus status { get; set; }
+}
+
+public enum ClaimAchievementStatus
+{
+    Claimed,
+    NotFound,
+    Duplicate,
+    NotEnoughPoints,
+    Error
 }

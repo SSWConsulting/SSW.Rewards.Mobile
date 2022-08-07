@@ -1,46 +1,35 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using SSW.Rewards.Application.Common.Exceptions;
 
+namespace SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 
-
-namespace SSW.Rewards.Application.Rewards.Commands.UpdateReward
+public class UpdateRewardCommand : IRequest<Unit>
 {
-    public class UpdateRewardCommand : IRequest<Unit>
+    public int Id { get; set; }
+    public int Cost { get; set; }
+
+    public sealed class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, Unit>
     {
-        public int Id { get; set; }
-        public int Cost { get; set; }
+        private readonly IApplicationDbContext _context;
 
-        public sealed class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, Unit>
+        public UpdateRewardCommandHandler(IApplicationDbContext context)
         {
-            private readonly ISSWRewardsDbContext _context;
+            _context = context;
+        }
 
-            public UpdateRewardCommandHandler(ISSWRewardsDbContext context)
+        public async Task<Unit> Handle(UpdateRewardCommand request, CancellationToken cancellationToken)
+        {
+            var reward = await _context.Rewards
+                    .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+
+            if (reward == null)
             {
-                _context = context;
+                throw new NotFoundException(nameof(UpdateRewardCommand), request.Id);
             }
 
-            public async Task<Unit> Handle(UpdateRewardCommand request, CancellationToken cancellationToken)
-            {
-                var reward = await _context.Rewards
-                        .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+            reward.Cost = request.Cost;
 
-                if (reward == null)
-                {
-                    throw new NotFoundException(nameof(UpdateRewardCommand), request.Id);
-                }
-
-                reward.Cost = request.Cost;
-
-                await _context.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
-            }
+            await _context.SaveChangesAsync(cancellationToken);
+            return Unit.Value;
         }
     }
 }

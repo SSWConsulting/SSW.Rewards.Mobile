@@ -1,12 +1,9 @@
-﻿using FluentValidation;
+﻿namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
-namespace SSW.Rewards.Application.Achievements.Command.PostAchievement
+public class PostAchievementCommandValidator : AbstractValidator<PostAchievementCommand>
 {
-    public class PostAchievementCommandValidator : AbstractValidator<PostAchievementCommand>
+    public PostAchievementCommandValidator()
     {
-        public PostAchievementCommandValidator()
-        {
-            RuleFor(x => x.Code).NotEmpty().MaximumLength(128);
-        }
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(128);
     }
 }

@@ -1,71 +1,67 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
+﻿using AutoMapper.QueryableExtensions;
 using SSW.Rewards.Application.Leaderboard.Queries.Common;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList
+namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
+
+public class GetFilteredLeaderboardListQuery : IRequest<LeaderboardListViewModel>
 {
-    public class GetFilteredLeaderboardListQuery : IRequest<LeaderboardListViewModel>
+    public LeaderboardFilter Filter { get; set; }
+}
+
+public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFilteredLeaderboardListQuery, LeaderboardListViewModel>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IDateTime _dateTime;
+
+    public GetFilteredLeaderboardListQueryHandler(
+        IApplicationDbContext context,
+        IMapper mapper,
+        IDateTime dateTime)
     {
-        public LeaderboardFilter Filter { get; set; }
+        _context = context;
+        _mapper = mapper;
+        _dateTime = dateTime;
     }
 
-    public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFilteredLeaderboardListQuery, LeaderboardListViewModel>
+    public async Task<LeaderboardListViewModel> Handle(GetFilteredLeaderboardListQuery request, CancellationToken cancellationToken)
     {
-        private readonly ISSWRewardsDbContext _context;
-        private readonly IMapper _mapper;
+        var query = _context.Users
+            .Where(u => u.Activated == true);
 
-        public GetFilteredLeaderboardListQueryHandler(ISSWRewardsDbContext context, IMapper mapper)
+        if (request.Filter == LeaderboardFilter.ThisYear)
         {
-            _context = context;
-            _mapper = mapper;
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
+        }
+        else if (request.Filter == LeaderboardFilter.ThisMonth)
+        {
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Month == _dateTime.Now.Month && a.AwardedAt.Year == _dateTime.Now.Year));
         }
 
-        public async Task<LeaderboardListViewModel> Handle(GetFilteredLeaderboardListQuery request, CancellationToken cancellationToken)
+        var users = await query.Include(u => u.UserAchievements)
+            .ThenInclude(ua => ua.Achievement)
+            .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+
+        var model = new LeaderboardListViewModel
         {
-            var query = _context.Users
-                .Where(u => u.Activated == true);
+            // need to set rank outside of AutoMapper
+            Users = users
+                    .Where(u => !string.IsNullOrWhiteSpace(u.Name))
+                    .OrderByDescending(u => u.TotalPoints)
+                    .Select((u, i) =>
+                    {
+                        u.Rank = i + 1;
+                        return u;
+                    }).ToList()
+        };
 
-            if (request.Filter == LeaderboardFilter.ThisYear)
-            {
-                query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == DateTime.Now.Year));
-            }
-            else if (request.Filter == LeaderboardFilter.ThisMonth) // and year
-            {
-                query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Month == DateTime.Now.Month));
-            }
-
-            var users = await query.Include(u => u.UserAchievements)
-                .ThenInclude(ua => ua.Achievement)
-                .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
-
-            var model = new LeaderboardListViewModel
-            {
-                // need to set rank outside of AutoMapper
-                Users = users
-                        .Where(u => !string.IsNullOrWhiteSpace(u.Name))
-                        .OrderByDescending(u => u.TotalPoints)
-                        .Select((u, i) =>
-                        {
-                            u.Rank = i + 1;
-                            return u;
-                        }).ToList()
-            };
-
-            return model;
-        }
+        return model;
     }
+}
 
-    public enum LeaderboardFilter
-    {
-        ThisMonth,
-        ThisYear
-    }
+public enum LeaderboardFilter
+{
+    ThisMonth,
+    ThisYear
 }

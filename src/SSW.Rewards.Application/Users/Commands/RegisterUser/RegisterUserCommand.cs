@@ -1,38 +1,31 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Users.Common.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
 
-namespace SSW.Rewards.Application.Users.Commands.RegisterUser
+public class RegisterUserCommand : IRequest
 {
-    public class RegisterUserCommand : IRequest
+}
+
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
+{
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
+
+    public RegisterUserCommandHandler(ICurrentUserService currentUserService, IUserService userService)
     {
+        _currentUserService = currentUserService;
+        _userService = userService;
     }
 
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
+    public async Task<Unit> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IUserService _userService;
-
-        public RegisterUserCommandHandler(ICurrentUserService currentUserService, IUserService userService)
+        var newUser = new Domain.Entities.User
         {
-            _currentUserService = currentUserService;
-            _userService = userService;
-        }
+            Email = _currentUserService.GetUserEmail(),
+            FullName = _currentUserService.GetUserFullName(),
+            Avatar = _currentUserService.GetUserProfilePic() // Don't see how this could be here at this point? But I may have added it to the mapping profile for a reason. TODO: test removing
+        };
 
-        public async Task<Unit> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
-        {
-            var newUser = new Domain.Entities.User
-            {
-                Email = _currentUserService.GetUserEmail(),
-                FullName = _currentUserService.GetUserFullName(),
-                Avatar = _currentUserService.GetUserProfilePic() // Don't see how this could be here at this point? But I may have added it to the mapping profile for a reason. TODO: test removing
-            };
+        await _userService.CreateUser(newUser, cancellationToken);
 
-            await _userService.CreateUser(newUser, cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

@@ -1,41 +1,37 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Achievements.Command.DeleteAchievement
+namespace SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
+
+public class DeleteAchievementCommand : IRequest<Unit>
 {
-    public class DeleteAchievementCommand : IRequest<Unit>
+    public int Id { get; set; }
+}
+
+public class DeleteAchievementCommandHandler : IRequestHandler<DeleteAchievementCommand, Unit>
+{
+    private readonly IApplicationDbContext _context;
+
+    public DeleteAchievementCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class DeleteAchievementCommandHandler : IRequestHandler<DeleteAchievementCommand, Unit>
+    public async Task<Unit> Handle(DeleteAchievementCommand request, CancellationToken cancellationToken)
     {
-        private readonly ISSWRewardsDbContext _context;
+        var achievement = await _context.Achievements
+                    .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
 
-        public DeleteAchievementCommandHandler(ISSWRewardsDbContext context)
+        if (achievement == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(DeleteAchievementCommand), request.Id);
         }
 
-        public async Task<Unit> Handle(DeleteAchievementCommand request, CancellationToken cancellationToken)
-        {
-            var achievement = await _context.Achievements
-                        .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+        achievement.IsDeleted = true;
 
-            if (achievement == null)
-            {
-                throw new NotFoundException(nameof(DeleteAchievementCommand), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            achievement.IsDeleted = true;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

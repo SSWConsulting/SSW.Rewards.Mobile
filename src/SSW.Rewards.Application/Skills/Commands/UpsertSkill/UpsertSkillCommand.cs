@@ -1,53 +1,40 @@
-﻿using MediatR;
-using SSW.Rewards.Application.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill;
 
-namespace SSW.Rewards.Application.Skills.Commands.UpsertSkill
+public class UpsertSkillCommand : IRequest<Unit>
 {
-    public class UpsertSkillCommand : IRequest<Unit>
+    public int Id { get; set; }
+    public string Skill { get; set; }
+}
+
+public class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, Unit>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IDateTime _dateTime;
+
+    public UpsertSkillCommandHandler(IApplicationDbContext context, IDateTime dateTime)
     {
-        public int Id { get; set; }
-        public string Skill { get; set; }
+        _context = context;
+        _dateTime = dateTime;
+    }
 
-        public sealed class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, Unit>
+    public async Task<Unit> Handle(UpsertSkillCommand request, CancellationToken cancellationToken)
+    {
+        var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
+
+        if (found == null)
         {
-            private readonly ISSWRewardsDbContext _context;
-
-            public UpsertSkillCommandHandler(ISSWRewardsDbContext context)
+            _context.Skills.Add(new Skill
             {
-                _context = context;
-            }
-
-            public async Task<Unit> Handle(UpsertSkillCommand request, CancellationToken cancellationToken)
-            {
-                if (!string.IsNullOrWhiteSpace(request.Skill))
-                {
-                    var found = _context.Skills.FirstOrDefault(x => x.Id == request.Id);
-
-                    if (found == null)
-                    {
-                        _context.Skills.Add(new Domain.Entities.Skill 
-                        { 
-                            Name = request.Skill, 
-                            CreatedUtc = DateTime.Now 
-                        });
-                    }
-                    else
-                    {
-                        found.Name = request.Skill;
-                    }
-
-                    await _context.SaveChangesAsync(cancellationToken);
-                    return Unit.Value;
-                }
-
-                throw new Exception("Bad Request");
-            }
+                Name = request.Skill,
+                CreatedUtc = _dateTime.Now
+            });
         }
+        else
+        {
+            found.Name = request.Skill;
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        return Unit.Value;
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic
-{
-    public class ProfilePicResponseDto
-    {
-        public string PicUrl { get; set; }
+﻿namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 
-        public bool AchievementAwarded { get; set; } = false;
-    }
+public class ProfilePicResponseDto
+{
+    public string PicUrl { get; set; }
+
+    public bool AchievementAwarded { get; set; } = false;
 }

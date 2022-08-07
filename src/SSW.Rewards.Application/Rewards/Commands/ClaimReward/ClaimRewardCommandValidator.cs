@@ -1,12 +1,9 @@
-﻿using FluentValidation;
+﻿namespace SSW.Rewards.Application.Rewards.Commands;
 
-namespace SSW.Rewards.Application.Rewards.Commands
+public class ClaimRewardCommandValidator : AbstractValidator<ClaimRewardCommand>
 {
-    public class ClaimRewardCommandValidator : AbstractValidator<ClaimRewardCommand>
+    public ClaimRewardCommandValidator()
     {
-        public ClaimRewardCommandValidator()
-        {
-            RuleFor(x => x.Code).NotEmpty().MaximumLength(128);
-        }
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(128);
     }
 }

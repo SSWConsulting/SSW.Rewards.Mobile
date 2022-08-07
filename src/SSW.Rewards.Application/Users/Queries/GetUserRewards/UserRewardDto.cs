@@ -1,12 +1,18 @@
-﻿using System;
+﻿using SSW.Rewards.Application.Common.Mappings;
 
-namespace SSW.Rewards.Application.Users.Queries.GetUserRewards
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
+
+public class UserRewardDto : IMapFrom<UserReward>
 {
-    public class UserRewardDto
+    public string RewardName { get; set; }
+    public int RewardCost { get; set; }
+    public bool Awarded { get; set; }
+    public DateTime? AwardedAt { get; set; }
+
+    public void Mapping(Profile profile)
     {
-        public string RewardName { get; set; }
-        public int RewardCost { get; set; }
-        public bool Awarded { get; set; }
-        public DateTime? AwardedAt { get; set; }
+        profile.CreateMap<UserReward, UserRewardDto>()
+                .ForMember(dst => dst.AwardedAt, opt => opt.MapFrom(src => src != null ? src.AwardedAt : (DateTime?)null))
+                .ForMember(dst => dst.Awarded, opt => opt.MapFrom(src => src != null));
     }
 }

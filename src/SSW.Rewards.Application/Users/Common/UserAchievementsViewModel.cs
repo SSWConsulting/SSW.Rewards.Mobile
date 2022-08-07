@@ -1,12 +1,9 @@
-using System.Collections.Generic;
+namespace SSW.Rewards.Application.Users.Common;
 
-namespace SSW.Rewards.Application.Users.Common
+public class UserAchievementsViewModel
 {
-    public class UserAchievementsViewModel
-    {
-        public int UserId { get; set; }
-        public int Points { get; set; }
+    public int UserId { get; set; }
+    public int Points { get; set; }
 
-        public IEnumerable<UserAchievementDto> UserAchievements { get; set; }
-    }
+    public IEnumerable<UserAchievementDto> UserAchievements { get; set; }
 }

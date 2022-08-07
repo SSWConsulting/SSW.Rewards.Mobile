@@ -1,13 +1,10 @@
 ﻿using SSW.Rewards.Domain.Entities;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SSW.Rewards.Application.Common.Interfaces
+namespace SSW.Rewards.Application.Common.Interfaces;
+
+public interface IRolesService
 {
-    public interface IRolesService
-    {
-        // Add roles
-        int AddRole(Role role);
-        Task<int> AddRole(Role role, CancellationToken cancellationToken);
-    }
+    // Add roles
+    int AddRole(Role role);
+    Task<int> AddRole(Role role, CancellationToken cancellationToken);
 }

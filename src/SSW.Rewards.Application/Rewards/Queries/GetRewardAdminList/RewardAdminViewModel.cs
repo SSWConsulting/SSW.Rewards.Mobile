@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SSW.Rewards.Application.Common.Mappings;
 
-namespace SSW.Rewards.Application.Rewards.Queries.GetRewardAdminList
+namespace SSW.Rewards.Application.Rewards.Queries.GetRewardAdminList;
+
+public class RewardAdminViewModel : IMapFrom<Reward>
 {
-    public class RewardAdminViewModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Cost { get; set; }
-        public string Code { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Cost { get; set; }
+    public string Code { get; set; }
 }

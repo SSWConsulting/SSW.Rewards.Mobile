@@ -1,19 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>SSW.Rewards.Domain</RootNamespace>
+        <AssemblyName>SSW.Rewards.Domain</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Exceptions\**" />
-    <Compile Remove="Infrastructure\**" />
-    <Compile Remove="ValueObjects\**" />
-    <EmbeddedResource Remove="Exceptions\**" />
-    <EmbeddedResource Remove="Infrastructure\**" />
-    <EmbeddedResource Remove="ValueObjects\**" />
-    <None Remove="Exceptions\**" />
-    <None Remove="Infrastructure\**" />
-    <None Remove="ValueObjects\**" />
-  </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="9.0.0" />
+    </ItemGroup>
 
 </Project>
