@@ -513,6 +513,9 @@
     <ImageAsset Include="Assets.xcassets\test_passed.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.JPG" />
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.JPG" />
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.JPG" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
