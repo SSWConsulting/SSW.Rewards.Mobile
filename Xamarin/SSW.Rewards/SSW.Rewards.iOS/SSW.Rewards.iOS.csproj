@@ -330,13 +330,13 @@
     <ImageAsset Include="Assets.xcassets\v2band.imageset\Contents.json">
       <Visible>False</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.png">
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.JPG">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.png">
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.JPG">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.png">
+    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.JPG">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\v2consultation.imageset\Contents.json">
@@ -512,15 +512,6 @@
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\test_passed.imageset\Contents.json">
       <Visible>False</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%403x.JPG">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation%402x.JPG">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\v2consultation.imageset\v2consultation.JPG">
-      <Visible>false</Visible>
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
