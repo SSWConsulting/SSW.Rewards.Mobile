@@ -68,12 +68,12 @@
                                    Margin="60"
                                    Aspect="AspectFit"
                                    IsVisible="{Binding IsAnimation, Converter={StaticResource InverseBool}}">
-                                <Image.Scale>
+                                <!--<Image.Scale>
                                     <OnPlatform x:TypeArguments="x:Double">
                                         <On Platform="iOS" Value="1"/>
                                         <On Platform="Android" Value="0.7"/>
                                     </OnPlatform>
-                                </Image.Scale>
+                                </Image.Scale>-->
                             </Image>
 
                             <lottie:AnimationView x:Name="ResultAnimation"
