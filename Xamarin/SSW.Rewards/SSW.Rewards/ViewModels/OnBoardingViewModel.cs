@@ -46,7 +46,7 @@ namespace SSW.Rewards.ViewModels
                 new CarouselViewModel
                 {
                     Content = "Exchange your points at SSW Events or at SSW booths at developer conferences for awesome rewards.",
-                    Image = "v2win",
+                    Image = "test_passed",
                     SubHeading = "Claim Rewards",
                     ButtonText = "NEXT",
                     IsAnimation = false
@@ -61,9 +61,9 @@ namespace SSW.Rewards.ViewModels
                 },
                 new CarouselViewModel
                 {
-                    Content = "Earn enough points and you could claim a smart water bottle with touch activated content thermometer.",
+                    Content = "Earn enough points and you could claim a cool SSW Keepcup.",
                     Image = "v2cups",
-                    SubHeading = "SSW Smart Keepcup",
+                    SubHeading = "SSW Keepcup",
                     HasPoints = true,
                     Points = 2000,
                     ButtonText = "NEXT",

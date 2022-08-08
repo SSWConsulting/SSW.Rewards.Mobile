@@ -122,13 +122,17 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
-        <Tab Route="quiz">
+        <!--TODO:   Commenting this as the full-stack quiz implementation is not completed,
+                    and requires quiz content to be developed and deployed as well. In the
+                    meantime we need to release a build that has some other interim fixes
+                    including the updated keepcup image.-->
+        <!--<Tab Route="quiz">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
                                  Glyph="&#xf28a;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
-        </Tab>
+        </Tab>-->
         <Tab Route="scan">
             <Tab.Icon>
                 <FontImageSource FontFamily="{StaticResource FluentIcons}"
