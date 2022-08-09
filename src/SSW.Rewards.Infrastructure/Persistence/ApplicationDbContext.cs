@@ -38,6 +38,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<QuizQuestion> QuizQuestions { get; set; }
     public DbSet<QuizAnswer> QuizAnswers { get; set; }
     public DbSet<CompletedQuiz> CompletedQuizzes { get; set; }
+    public DbSet<SocialMediaPlatform> SocialMediaPlatforms { get; set; }
+    public DbSet<UserSocialMediaId> UserSocialMediaIds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

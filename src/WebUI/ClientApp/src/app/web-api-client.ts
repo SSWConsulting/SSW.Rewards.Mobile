@@ -2098,6 +2098,7 @@ export interface IUserClient {
     uploadProfilePic(file: FileParameter | null | undefined): Observable<ProfilePicResponseDto>;
     myRoles(): Observable<string[]>;
     register(): Observable<FileResponse>;
+    upsertUserSocialMediaId(command: UpsertUserSocialMediaId): Observable<number>;
 }
 
 @Injectable({
@@ -2514,6 +2515,59 @@ export class UserClient implements IUserClient {
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    upsertUserSocialMediaId(command: UpsertUserSocialMediaId): Observable<number> {
+        let url_ = this.baseUrl + "/api/User/UpsertUserSocialMediaId";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpsertUserSocialMediaId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpsertUserSocialMediaId(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpsertUserSocialMediaId(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -5187,6 +5241,46 @@ export class ProfilePicResponseDto implements IProfilePicResponseDto {
 export interface IProfilePicResponseDto {
     picUrl?: string;
     achievementAwarded?: boolean;
+}
+
+export class UpsertUserSocialMediaId implements IUpsertUserSocialMediaId {
+    socialMediaPlatformId?: number;
+    socialMediaPlatformUserId?: string;
+
+    constructor(data?: IUpsertUserSocialMediaId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.socialMediaPlatformId = _data["socialMediaPlatformId"];
+            this.socialMediaPlatformUserId = _data["socialMediaPlatformUserId"];
+        }
+    }
+
+    static fromJS(data: any): UpsertUserSocialMediaId {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpsertUserSocialMediaId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["socialMediaPlatformId"] = this.socialMediaPlatformId;
+        data["socialMediaPlatformUserId"] = this.socialMediaPlatformUserId;
+        return data;
+    }
+}
+
+export interface IUpsertUserSocialMediaId {
+    socialMediaPlatformId?: number;
+    socialMediaPlatformUserId?: string;
 }
 
 export interface FileParameter {
