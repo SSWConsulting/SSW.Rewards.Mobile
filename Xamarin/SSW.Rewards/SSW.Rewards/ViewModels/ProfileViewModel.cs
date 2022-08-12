@@ -196,11 +196,8 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
-            if (DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                ProfileSections.Clear();
+            ProfileSections.Clear();
 
-            }
             var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
             var achievementList = await _userService.GetAchievementsAsync(userId);
