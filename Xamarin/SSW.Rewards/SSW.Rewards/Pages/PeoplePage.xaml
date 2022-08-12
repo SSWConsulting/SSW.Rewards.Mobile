@@ -101,18 +101,9 @@
                               IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
-                            <Image Margin="0"
-                                   Aspect="AspectFit"
-                                   TranslationY="10"
-                                   HorizontalOptions="StartAndExpand"
-                                   VerticalOptions="End"
-                                   WidthRequest="1000"
-                                   HeightRequest="2000"
-                                   TranslationX="-80"
-                                   Source="{Binding Picture}"
-                                   x:Name="DevImage"
-                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
-                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
+                            <controls:DevImageView Profile="{Binding .}"
+                                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
+                                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
