@@ -1,16 +1,14 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
+using Firebase.Messaging;
 using Lottie.Forms.Droid;
 using Plugin.CurrentActivity;
-using Firebase.Messaging;
-
 using SSW.Rewards.Droid.Services;
 using SSW.Rewards.Services;
+using System;
 
 namespace SSW.Rewards.Droid
 {
@@ -51,6 +49,7 @@ namespace SSW.Rewards.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             AnimationViewRenderer.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
             LoadApplication(new App());
             ProcessNotificationActions(Intent);

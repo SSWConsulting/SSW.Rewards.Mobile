@@ -72,6 +72,7 @@ namespace SSW.Rewards.iOS
 
             AnimationViewRenderer.Init();
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
 
             ObjCRuntime.Class.ThrowOnInitFailure = false;
 

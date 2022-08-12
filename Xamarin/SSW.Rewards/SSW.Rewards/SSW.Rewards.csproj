@@ -19,6 +19,8 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3" />
@@ -35,6 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Controls\AchievementGrid.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Controls\DevImageView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Controls\Notifications.xaml">
