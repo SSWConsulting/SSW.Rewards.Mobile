@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using ExcelDataReader;
 using MoreLinq;
+using SSW.Rewards.Application.Achievements.Common;
 using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.System.Commands.Common;
@@ -159,7 +160,7 @@ public class SampleDataSeeder
             staffMember.Profile = p.Profile;
             staffMember.TwitterUsername = p.TwitterUsername;
             staffMember.IsExternal = p.IsExternal;
-            staffMember.StaffAchievement = new Achievement { Name = p.Name, Value = p.Value, Code = GenerateCode(p.Name, false) };
+            staffMember.StaffAchievement = new Achievement { Name = p.Name, Value = p.Value, Code = AchievementHelpers.GenerateCode(p.Name, false) };
 
             if (staffMember.Id == 0)
             {
@@ -359,9 +360,9 @@ public class SampleDataSeeder
                 },
                 Achievement = new Achievement
                 {
-                    Code = GenerateCode("Angular Quiz", false),
-                    Icon = Icons.Trophy,
-                    IconIsBranded = false,
+                    Code = AchievementHelpers.GenerateCode("Angular Quiz", false),
+                    Icon = Icons.Angular,
+                    IconIsBranded = true,
                     Name = "Quiz: Angular 2022",
                     Type = AchievementType.Completed,
                     IsDeleted = false,
@@ -381,7 +382,7 @@ public class SampleDataSeeder
             ?? new Achievement();
 
         achievement.Name = name;
-        achievement.Code = GenerateCode(name, false);
+        achievement.Code = AchievementHelpers.GenerateCode(name, false);
         achievement.Value = value;
         achievement.Type = type;
         achievement.Icon = icon;
@@ -391,13 +392,6 @@ public class SampleDataSeeder
         {
             _context.Achievements.Add(achievement);
         }
-    }
-
-    private string GenerateCode(string inputValue, bool IsReward)
-    {
-        var prefix = IsReward ? "rwd:" : "ach:";
-        var codeData = Encoding.ASCII.GetBytes($"{prefix}{inputValue}");
-        return Convert.ToBase64String(codeData);
     }
 
     private void SetupReward(IEnumerable<Reward> existingRewards, string name, int cost)

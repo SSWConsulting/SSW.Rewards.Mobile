@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Application.Common.Mappings;
 
-namespace SSW.Rewards.Application.Quizzes.Queries.Common;
+namespace SSW.Rewards.Application.Quizzes.Common;
 
 public class QuizDetailsDto : IMapFrom<Quiz>
 {
@@ -33,10 +33,12 @@ public class QuestionAnswerDto : IMapFrom<QuizAnswer>
 {
     public int QuestionAnswerId { get; set; }
     public string Text { get; set; } = string.Empty;
+    public bool IsCorrect { get; set; }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<QuizAnswer, QuestionAnswerDto>()
-                .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.IsCorrect, opt => opt.Ignore());
     }
 }

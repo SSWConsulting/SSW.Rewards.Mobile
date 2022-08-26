@@ -21,6 +21,7 @@ public class AchievementController : ApiControllerBase
     }
 
     [Authorize(Roles = AuthorizationRoles.Admin)]
+    [HttpGet]
     public async Task<ActionResult<AchievementAdminListViewModel>> AdminList([FromQuery] bool includeArchived = false)
     {
         return Ok(await Mediator.Send(new GetAchievementAdminListQuery

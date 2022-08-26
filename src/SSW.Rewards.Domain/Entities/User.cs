@@ -13,4 +13,5 @@ public class User : BaseEntity
     public ICollection<Notification> SentNotifications { get; set; } = new HashSet<Notification>();
     public ICollection<CompletedQuiz> CompletedQuizzes { get; set; } = new HashSet<CompletedQuiz>();
     public ICollection<UserSocialMediaId> SocialMediaIds { get; set; } = new HashSet<UserSocialMediaId>();
+    public ICollection<Quiz> CreatedQuizzes { get; set; } = new HashSet<Quiz>();
 }

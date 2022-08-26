@@ -40,6 +40,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<CompletedQuiz> CompletedQuizzes { get; set; }
     public DbSet<SocialMediaPlatform> SocialMediaPlatforms { get; set; }
     public DbSet<UserSocialMediaId> UserSocialMediaIds { get; set; }
+    public DbSet<SubmittedQuizAnswer> SubmittedAnswers { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
