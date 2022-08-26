@@ -9,7 +9,7 @@ public class StaffMember : BaseEntity
     public string? GitHubUsername { get; set; } = string.Empty;
     public string? LinkedInUrl { get; set; } = string.Empty;
     public bool IsExternal { get; set; }
-    public Achievement StaffAchievement { get; set; } = new();
+    public Achievement? StaffAchievement { get; set; }
     public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
     public string? ProfilePhoto { get; set; } = string.Empty;
     public bool IsDeleted { get; set; }
