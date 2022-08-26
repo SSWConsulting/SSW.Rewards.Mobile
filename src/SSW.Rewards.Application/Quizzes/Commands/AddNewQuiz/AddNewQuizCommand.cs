@@ -45,23 +45,18 @@ public class AddNewQuizCommandHandler : IRequestHandler<AddNewQuizCommand, int>
 
         foreach (var question in request.Quiz.Questions)
         {
-            var dbQuestion = await _context.QuizQuestions.FirstOrDefaultAsync(q => q.Id == question.QuestionId, cancellationToken);
-
-            if (dbQuestion is null)
+            var dbQuestion = new QuizQuestion
             {
-                dbQuestion = new QuizQuestion
-                {
-                    Text = question.Text
-                };
+                Text = question.Text
+            };
 
-                foreach (var answer in question.Answers)
+            foreach (var answer in question.Answers)
+            {
+                dbQuestion.Answers.Add(new QuizAnswer
                 {
-                    dbQuestion.Answers.Add(new QuizAnswer
-                    {
-                        IsCorrect   = answer.IsCorrect,
-                        Text        = answer.Text
-                    });
-                }
+                    IsCorrect = answer.IsCorrect,
+                    Text = answer.Text
+                });
             }
 
             quiz.Questions.Add(dbQuestion);
