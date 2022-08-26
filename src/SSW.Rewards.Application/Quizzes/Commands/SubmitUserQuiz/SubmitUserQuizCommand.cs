@@ -75,7 +75,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
             _context.UserAchievements.Add(quizCompletedAchievement);
         }
 
-        private async void AddCompletedQuiz(int quizId, int userId, List<QuizAnswerDto> answers, bool passed)
+        private async Task AddCompletedQuiz(int quizId, int userId, List<QuizAnswerDto> answers, bool passed)
         {
             CompletedQuiz c = new CompletedQuiz
             {
@@ -86,9 +86,9 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 
             foreach (var answer in answers)
             {
-                var dbAnser = await _context.QuizAnswers.FirstOrDefaultAsync(q => q.Id == answer.SelectedAnswerId);
+                var dbAnswer = await _context.QuizAnswers.FirstAsync(q => q.Id == answer.SelectedAnswerId);
 
-                c.Answers.Add(dbAnser);
+                c.Answers.Add(dbAnswer);
             }
 
             _context.CompletedQuizzes.Add(c);

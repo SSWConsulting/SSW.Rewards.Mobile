@@ -14,8 +14,7 @@ public class StaffController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<StaffListViewModel>> Get()
     {
-        var result = await Mediator.Send(new GetStaffListQuery());
-        return Ok(result);
+        return Ok(await Mediator.Send(new GetStaffListQuery()));
     }
 
     [HttpGet]

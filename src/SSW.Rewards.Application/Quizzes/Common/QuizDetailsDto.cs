@@ -38,6 +38,7 @@ public class QuestionAnswerDto : IMapFrom<QuizAnswer>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<QuizAnswer, QuestionAnswerDto>()
-                .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.IsCorrect, opt => opt.Ignore());
     }
 }
