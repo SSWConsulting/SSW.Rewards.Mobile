@@ -88,7 +88,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
             {
                 var dbAnswer = await _context.QuizAnswers.FirstAsync(q => q.Id == answer.SelectedAnswerId);
 
-                c.Answers.Add(new SubmittedQuizAnswers { Answer = dbAnswer });
+                c.Answers.Add(new SubmittedQuizAnswer { Answer = dbAnswer });
             }
 
             _context.CompletedQuizzes.Add(c);

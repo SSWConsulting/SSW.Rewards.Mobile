@@ -6,5 +6,5 @@ public class CompletedQuiz : BaseEntity
     public int QuizId { get; set; }
     public virtual Quiz Quiz { get; set; }
     public bool Passed { get; set; }
-    public List<SubmittedQuizAnswers> Answers { get; set; } = new();
+    public List<SubmittedQuizAnswer> Answers { get; set; } = new();
 }
