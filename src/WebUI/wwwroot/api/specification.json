@@ -1561,6 +1561,44 @@
           }
         ]
       }
+    },
+    "/api/User/UpsertUserSocialMediaId": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_UpsertUserSocialMediaId",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertUserSocialMediaId"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -2736,6 +2774,19 @@
           },
           "achievementAwarded": {
             "type": "boolean"
+          }
+        }
+      },
+      "UpsertUserSocialMediaId": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "socialMediaPlatformId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "socialMediaPlatformUserId": {
+            "type": "string"
           }
         }
       }

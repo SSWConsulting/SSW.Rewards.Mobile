@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.RegisterUser;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
+using SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
@@ -9,7 +10,6 @@ using SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -61,5 +61,20 @@ public class UserController : ApiControllerBase
     public async Task<ActionResult> Register()
     {
         return Ok(await Mediator.Send(new RegisterUserCommand()));
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> UpsertUserSocialMediaId(UpsertUserSocialMediaId command)
+    {
+        int retVal = 0;
+        // get the isInsert to save ourselves some db round-trips when possible.
+        bool isInsert = await Mediator.Send(command);
+        if (isInsert)
+        {
+            // set achievement and return achievement id
+            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { SocialMediaPlatformId = command.SocialMediaPlatformId });
+        }
+
+        return Ok(retVal);
     }
 }

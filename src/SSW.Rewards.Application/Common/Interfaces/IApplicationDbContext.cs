@@ -17,6 +17,8 @@ public interface IApplicationDbContext
     DbSet<Quiz> Quizzes { get; set; }
     DbSet<QuizQuestion> QuizQuestions { get; set; }
     DbSet<CompletedQuiz> CompletedQuizzes { get; set; }
+    DbSet<SocialMediaPlatform> SocialMediaPlatforms { get; set; }
+    DbSet<UserSocialMediaId> UserSocialMediaIds { get; set; }
     DbSet<QuizAnswer> QuizAnswers { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

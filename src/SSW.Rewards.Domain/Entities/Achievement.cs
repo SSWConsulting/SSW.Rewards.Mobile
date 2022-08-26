@@ -17,4 +17,5 @@ public class Achievement : BaseEntity
 
     public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
     public ICollection<Quiz> Quizzes { get; set; } = new HashSet<Quiz>();
+    public ICollection<SocialMediaPlatform> SocialMediaPlatforms { get; set; } = new HashSet<SocialMediaPlatform>();
 }
