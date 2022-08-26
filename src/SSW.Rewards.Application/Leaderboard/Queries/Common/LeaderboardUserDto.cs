@@ -8,9 +8,9 @@ public class LeaderboardUserDto : IMapFrom<User>
 
     public int UserId { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
-    public string ProfilePic { get; set; }
+    public string? ProfilePic { get; set; }
 
     public int TotalPoints { get; set; }
 

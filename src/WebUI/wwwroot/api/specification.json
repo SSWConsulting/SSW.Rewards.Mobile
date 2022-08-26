@@ -1788,10 +1788,12 @@
             "format": "int32"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "profilePic": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "totalPoints": {
             "type": "integer",

@@ -125,7 +125,7 @@
       "newLineBehavior": "Auto"
     },
     "openApiToCSharpClient": {
-      "clientBaseClass": null,
+      "clientBaseClass": "GeneratedClientBase",
       "configurationClass": null,
       "generateClientClasses": true,
       "generateClientInterfaces": true,
@@ -151,7 +151,7 @@
       "contractsOutputFilePath": null,
       "parameterDateTimeFormat": "s",
       "parameterDateFormat": "yyyy-MM-dd",
-      "generateUpdateJsonSerializerSettingsMethod": true,
+      "generateUpdateJsonSerializerSettingsMethod": false,
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
@@ -199,8 +199,8 @@
       "inlineNamedTuples": true,
       "inlineNamedAny": false,
       "generateDtoTypes": true,
-      "generateOptionalPropertiesAsNullable": false,
-      "generateNullableReferenceTypes": false,
+      "generateOptionalPropertiesAsNullable": true,
+      "generateNullableReferenceTypes": true,
       "templateDirectory": null,
       "typeNameGeneratorType": null,
       "propertyNameGeneratorType": null,
