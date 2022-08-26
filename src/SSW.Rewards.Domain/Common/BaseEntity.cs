@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SSW.Rewards.Domain.Common;
+﻿namespace SSW.Rewards.Domain.Common;
 
 public abstract class BaseEntity
 {

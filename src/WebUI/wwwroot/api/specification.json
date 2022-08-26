@@ -2122,12 +2122,12 @@
           "answers": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QuizAnswer"
+              "$ref": "#/components/schemas/QuizAnswerDto"
             }
           }
         }
       },
-      "QuizAnswer": {
+      "QuizAnswerDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -2418,37 +2418,50 @@
             "format": "int32"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "profile": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "profilePhoto": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "isDeleted": {
             "type": "boolean"
           },
           "twitterUsername": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "gitHubUsername": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "linkedInUrl": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "isExternal": {
             "type": "boolean"
           },
           "staffAchievement": {
-            "$ref": "#/components/schemas/AchievementDto"
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
           },
           "scanned": {
             "type": "boolean"

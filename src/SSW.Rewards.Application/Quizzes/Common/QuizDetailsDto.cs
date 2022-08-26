@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Application.Common.Mappings;
 
-namespace SSW.Rewards.Application.Quizzes.Queries.Common;
+namespace SSW.Rewards.Application.Quizzes.Common;
 
 public class QuizDetailsDto : IMapFrom<Quiz>
 {

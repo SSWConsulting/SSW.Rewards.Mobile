@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Quizzes.Queries.Common;
+using SSW.Rewards.Application.Quizzes.Common;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetailsQuery;
 

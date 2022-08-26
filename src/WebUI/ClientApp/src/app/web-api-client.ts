@@ -3707,7 +3707,7 @@ export interface IQuestionResultDto {
 
 export class SubmitUserQuizCommand implements ISubmitUserQuizCommand {
     quizId?: number;
-    answers?: QuizAnswer[];
+    answers?: QuizAnswerDto[];
 
     constructor(data?: ISubmitUserQuizCommand) {
         if (data) {
@@ -3724,7 +3724,7 @@ export class SubmitUserQuizCommand implements ISubmitUserQuizCommand {
             if (Array.isArray(_data["answers"])) {
                 this.answers = [] as any;
                 for (let item of _data["answers"])
-                    this.answers!.push(QuizAnswer.fromJS(item));
+                    this.answers!.push(QuizAnswerDto.fromJS(item));
             }
         }
     }
@@ -3750,14 +3750,14 @@ export class SubmitUserQuizCommand implements ISubmitUserQuizCommand {
 
 export interface ISubmitUserQuizCommand {
     quizId?: number;
-    answers?: QuizAnswer[];
+    answers?: QuizAnswerDto[];
 }
 
-export class QuizAnswer implements IQuizAnswer {
+export class QuizAnswerDto implements IQuizAnswerDto {
     questionId?: number;
     selectedAnswerId?: number;
 
-    constructor(data?: IQuizAnswer) {
+    constructor(data?: IQuizAnswerDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3773,9 +3773,9 @@ export class QuizAnswer implements IQuizAnswer {
         }
     }
 
-    static fromJS(data: any): QuizAnswer {
+    static fromJS(data: any): QuizAnswerDto {
         data = typeof data === 'object' ? data : {};
-        let result = new QuizAnswer();
+        let result = new QuizAnswerDto();
         result.init(data);
         return result;
     }
@@ -3788,7 +3788,7 @@ export class QuizAnswer implements IQuizAnswer {
     }
 }
 
-export interface IQuizAnswer {
+export interface IQuizAnswerDto {
     questionId?: number;
     selectedAnswerId?: number;
 }
@@ -4521,17 +4521,17 @@ export interface IStaffListViewModel {
 
 export class StaffDto implements IStaffDto {
     id?: number;
-    name?: string;
-    title?: string;
-    email?: string;
-    profile?: string;
-    profilePhoto?: string;
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    profilePhoto?: string | undefined;
     isDeleted?: boolean;
-    twitterUsername?: string;
-    gitHubUsername?: string;
-    linkedInUrl?: string;
+    twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
-    staffAchievement?: AchievementDto;
+    staffAchievement?: AchievementDto | undefined;
     scanned?: boolean;
     skills?: StaffSkillDto[];
 
@@ -4600,17 +4600,17 @@ export class StaffDto implements IStaffDto {
 
 export interface IStaffDto {
     id?: number;
-    name?: string;
-    title?: string;
-    email?: string;
-    profile?: string;
-    profilePhoto?: string;
+    name?: string | undefined;
+    title?: string | undefined;
+    email?: string | undefined;
+    profile?: string | undefined;
+    profilePhoto?: string | undefined;
     isDeleted?: boolean;
-    twitterUsername?: string;
-    gitHubUsername?: string;
-    linkedInUrl?: string;
+    twitterUsername?: string | undefined;
+    gitHubUsername?: string | undefined;
+    linkedInUrl?: string | undefined;
     isExternal?: boolean;
-    staffAchievement?: AchievementDto;
+    staffAchievement?: AchievementDto | undefined;
     scanned?: boolean;
     skills?: StaffSkillDto[];
 }

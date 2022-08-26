@@ -5,4 +5,6 @@ public class CompletedQuiz : BaseEntity
     public virtual User User { get; set; }
     public int QuizId { get; set; }
     public virtual Quiz Quiz { get; set; }
+    public bool Passed { get; set; }
+    public List<QuizAnswer> Answers { get; set; } = new();
 }
