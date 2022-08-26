@@ -10,4 +10,5 @@ public class Quiz : BaseEntity
     public virtual Achievement Achievement { get; set; }
     public virtual ICollection<QuizQuestion> Questions { get; set; }
     public virtual ICollection<CompletedQuiz> CompletedQuizzes { get; set; }
+    public User CreatedBy { get; set; } = new();
 }

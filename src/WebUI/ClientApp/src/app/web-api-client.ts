@@ -3626,6 +3626,7 @@ export interface IQuizQuestionDto {
 export class QuestionAnswerDto implements IQuestionAnswerDto {
     questionAnswerId?: number;
     text?: string;
+    isCorrect?: boolean;
 
     constructor(data?: IQuestionAnswerDto) {
         if (data) {
@@ -3640,6 +3641,7 @@ export class QuestionAnswerDto implements IQuestionAnswerDto {
         if (_data) {
             this.questionAnswerId = _data["questionAnswerId"];
             this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
         }
     }
 
@@ -3654,6 +3656,7 @@ export class QuestionAnswerDto implements IQuestionAnswerDto {
         data = typeof data === 'object' ? data : {};
         data["questionAnswerId"] = this.questionAnswerId;
         data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
         return data;
     }
 }
@@ -3661,6 +3664,7 @@ export class QuestionAnswerDto implements IQuestionAnswerDto {
 export interface IQuestionAnswerDto {
     questionAnswerId?: number;
     text?: string;
+    isCorrect?: boolean;
 }
 
 export class QuizResultDto implements IQuizResultDto {

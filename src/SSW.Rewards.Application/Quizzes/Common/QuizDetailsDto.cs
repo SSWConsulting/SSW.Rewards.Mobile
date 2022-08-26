@@ -33,6 +33,7 @@ public class QuestionAnswerDto : IMapFrom<QuizAnswer>
 {
     public int QuestionAnswerId { get; set; }
     public string Text { get; set; } = string.Empty;
+    public bool IsCorrect { get; set; }
 
     public void Mapping(Profile profile)
     {
