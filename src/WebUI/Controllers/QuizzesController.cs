@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
-using SSW.Rewards.Application.Quizzes.Queries.Common;
+using SSW.Rewards.Application.Quizzes.Common;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizDetailsQuery;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUserQuery;
 
