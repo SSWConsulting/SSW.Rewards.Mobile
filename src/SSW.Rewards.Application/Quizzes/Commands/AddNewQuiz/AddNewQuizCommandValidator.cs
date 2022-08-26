@@ -12,10 +12,16 @@ public class AddNewQuizCommandValidator : AbstractValidator<AddNewQuizCommand>
         RuleFor(c => c)
             .MustAsync(BeUniqueQuiz);
 
-        RuleFor(c => c.Quiz.Questions)
+        RuleFor(q => q.Title)
             .NotEmpty();
 
-        RuleForEach(c => c.Quiz.Questions)
+        RuleFor(q => q.Description)
+             .NotEmpty();
+
+        RuleFor(c => c.Questions)
+            .NotEmpty();
+
+        RuleForEach(c => c.Questions)
             .ChildRules(question =>
             {
                 question.RuleFor(q => q.Text)
@@ -32,7 +38,7 @@ public class AddNewQuizCommandValidator : AbstractValidator<AddNewQuizCommand>
     private async Task<bool> BeUniqueQuiz(AddNewQuizCommand command, CancellationToken cancellationToken)
     {
         return await _context.Quizzes
-            .AnyAsync(q => !q.IsArchived && q.Title.ToLower() == command.Quiz.Title.ToLower(), cancellationToken);
+            .AnyAsync(q => !q.IsArchived && q.Title.ToLower() == command.Title.ToLower(), cancellationToken);
     }
 
     private bool HaveOneCorrectAnswer(QuizQuestionDto question)

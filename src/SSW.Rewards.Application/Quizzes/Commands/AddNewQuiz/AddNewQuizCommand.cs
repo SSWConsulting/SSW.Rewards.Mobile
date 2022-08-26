@@ -5,7 +5,11 @@ using SSW.Rewards.Domain.Enums;
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AddNewQuizCommand : IRequest<int>
 {
-    public QuizDetailsDto Quiz { get; set; }
+    public List<QuizQuestionDto> Questions { get; set; }
+
+    public string Title { get; set; }
+
+    public string Description { get; set; }
 
     public int Points { get; set; }
 
@@ -36,14 +40,14 @@ public class AddNewQuizCommandHandler : IRequestHandler<AddNewQuizCommand, int>
 
         var quiz = new Quiz
         {
-            Title       = request.Quiz.Title,
-            Description = request.Quiz.Description,
+            Title       = request.Title,
+            Description = request.Description,
             Icon        = request.Icon,
             IsArchived  = false,
             CreatedBy   = dbUser
         };
 
-        foreach (var question in request.Quiz.Questions)
+        foreach (var question in request.Questions)
         {
             var dbQuestion = new QuizQuestion
             {
@@ -66,8 +70,8 @@ public class AddNewQuizCommandHandler : IRequestHandler<AddNewQuizCommand, int>
         {
             Icon            = request.Icon,
             IconIsBranded   = true,
-            Name            = $"Quiz: {request.Quiz.Title}",
-            Code            = AchievementHelpers.GenerateCode(request.Quiz.Title, false),
+            Name            = $"Quiz: {request.Title}",
+            Code            = AchievementHelpers.GenerateCode(request.Title, false),
             Value           = request.Points
         };
 
