@@ -2784,7 +2784,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "socialMediaPlatformId": {
+          "achievementId": {
             "type": "integer",
             "format": "int32"
           },

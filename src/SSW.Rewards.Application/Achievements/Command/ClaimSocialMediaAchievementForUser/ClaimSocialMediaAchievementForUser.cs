@@ -1,7 +1,7 @@
 ﻿namespace SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 public class ClaimSocialMediaAchievementForUser : IRequest<int>
 {
-    public int SocialMediaPlatformId { get; set; }
+    public int AchievementId { get; set; }
 }
 
 public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<ClaimSocialMediaAchievementForUser, int>
@@ -23,7 +23,7 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
     {
         int? achievementId = await _context.SocialMediaPlatforms
                                           .AsNoTracking()
-                                          .Where(x => x.Id == request.SocialMediaPlatformId)
+                                          .Where(x => x.AchievementId == request.AchievementId)
                                           .Select(x => x.AchievementId)
                                           .FirstOrDefaultAsync(cancellationToken);
         if (achievementId == null)
