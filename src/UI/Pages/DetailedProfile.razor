@@ -42,7 +42,7 @@
                 <MudTextField T="string" Label="Email" @bind-Value="@_staff.Email"/>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudTextField T="int" Label="Points" @bind-Value="@_staff.StaffAchievement.Value"/>
+                <MudTextField T="int" Label="Points" @bind-Value="@_staffAchievementValue"/>
             </MudItem>
             <MudItem xs="12" md="6">
                 <MudTextField T="string" Label="Twitter Handle" @bind-Value="@_staff.TwitterUsername"/>
@@ -125,7 +125,7 @@
 
 @* TODO: Need to limit selected Skills to max 5 minimum of 3  *@
 
-@code {
+    @code {
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -134,6 +134,8 @@
     private bool _isPreviewImage;
     private IBrowserFile? _currentBrowserFile { get; set; }
     private IJSObjectReference DetailedProfileJsModule { get; set; } = null!;
+
+    private int _staffAchievementValue;
 
     private StaffDto _staff = new()
     {
@@ -163,17 +165,17 @@
     protected override async void OnInitialized()
     {
         await base.OnInitializedAsync();
-    
+
         skills = (await _skillsClient.GetAsync()).Skills;
         selectionSkills = skills.Select(x => new SelectionSkills{Name = x, IsDisabled = false}).ToList();
-        
+
         await GetProfile();
     }
 
     private void UpdateSelectedSkills()
     {
         var activeSkills = _staff.Skills.Where(x => skills.Contains(x.Name)).ToList();
-        
+
         selected = activeSkills.Select(x => x.Name).ToList();
         StateHasChanged();
     }
@@ -185,15 +187,15 @@
             UpdateStaffSkills(selectedValues);
             return $"Select some Skills";
         }
-        
+
         var skills = string.Join(", ", selectedValues.Select(x => $"\"{x}\""));
         var selectedSkills = selectionSkills.Where(x => !selectedValues.Contains(x.Name)).ToList();
-        
+
         if (selectedValues.Count < MaxSkills)
         {
             selectedSkills.ForEach(x => x.IsDisabled = false);
             UpdateStaffSkills(selectedValues);
-            
+
             return $"{selectedValues.Count} - {skills}";
         }
 
@@ -204,7 +206,7 @@
             UpdateStaffSkills(selectedValues);
             return $"{selectedValues.Count} - {skills} selected (max 5)";
         }
-        
+
         return $"{selectedValues.Count}";
     }
 
@@ -232,11 +234,14 @@
 
     private async Task GetProfile()
     {
-    // Get the profile from the database
+        // Get the profile from the database
         try
         {
             int.TryParse(Id, out int id);
             _staff = await _client.GetStaffMemberProfileAsync(id);
+
+            _staffAchievementValue = _staff.StaffAchievement?.Value ?? 0;
+
             UpdateSelectedSkills();
             UpdateStaffSkills(_staff.Skills.Select(x => x.Name).ToList());
             StateHasChanged();

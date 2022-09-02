@@ -85,7 +85,6 @@
         try
         {
             _loading = true;
-            await Task.Delay(250);
             _model = (await _client.GetAsync()).Users;
             _loading = false;
         }

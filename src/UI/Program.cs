@@ -31,7 +31,6 @@ public class Program
 
         var generatedClients = typeof(Program).Assembly
             .GetTypes()
-            .Where(t => t.IsAssignableTo(typeof(GeneratedClientBase)))
             .Select(s => new
             {
                 Implementation = s,
