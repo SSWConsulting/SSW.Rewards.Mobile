@@ -13,8 +13,7 @@ namespace SSW.Rewards.Persistence.Migrations
                 name: "CreatedById",
                 table: "Quizzes",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "Passed",
@@ -30,7 +29,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SubmissionId = table.Column<int>(type: "int", nullable: false),
-                    AnswerId = table.Column<int>(type: "int", nullable: false),
+                    AnswerId = table.Column<int>(type: "int", nullable: true),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -46,8 +45,7 @@ namespace SSW.Rewards.Persistence.Migrations
                         name: "FK_SubmittedAnswers_QuizAnswers_AnswerId",
                         column: x => x.AnswerId,
                         principalTable: "QuizAnswers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -70,8 +68,7 @@ namespace SSW.Rewards.Persistence.Migrations
                 table: "Quizzes",
                 column: "CreatedById",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

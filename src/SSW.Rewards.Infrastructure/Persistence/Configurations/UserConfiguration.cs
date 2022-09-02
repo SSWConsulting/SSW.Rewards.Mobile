@@ -16,5 +16,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion(
                 v => v.ToLowerInvariant(), 
                 v => v);
+
+        builder
+            .HasMany(u => u.CreatedQuizzes)
+            .WithOne(q => q.CreatedBy)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

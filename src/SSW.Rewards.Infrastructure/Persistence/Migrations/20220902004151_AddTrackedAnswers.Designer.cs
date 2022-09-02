@@ -12,7 +12,7 @@ using SSW.Rewards.Infrastructure.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220902001527_AddTrackedAnswers")]
+    [Migration("20220902004151_AddTrackedAnswers")]
     partial class AddTrackedAnswers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,7 +165,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<int>("AchievementId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreatedById")
+                    b.Property<int?>("CreatedById")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedUtc")
@@ -437,7 +437,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AnswerId")
+                    b.Property<int?>("AnswerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedUtc")
@@ -650,8 +650,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasOne("SSW.Rewards.Domain.Entities.User", "CreatedBy")
                         .WithMany("CreatedQuizzes")
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Achievement");
 
@@ -722,10 +721,9 @@ namespace SSW.Rewards.Persistence.Migrations
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.SubmittedQuizAnswer", b =>
                 {
                     b.HasOne("SSW.Rewards.Domain.Entities.QuizAnswer", "Answer")
-                        .WithMany()
+                        .WithMany("SubmittedAnswers")
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("SSW.Rewards.Domain.Entities.CompletedQuiz", "Submission")
                         .WithMany("Answers")
@@ -842,6 +840,11 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Navigation("CompletedQuizzes");
 
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.QuizAnswer", b =>
+                {
+                    b.Navigation("SubmittedAnswers");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.QuizQuestion", b =>

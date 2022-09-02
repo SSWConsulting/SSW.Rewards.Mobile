@@ -5,4 +5,5 @@ public class QuizAnswer : BaseEntity
     public virtual QuizQuestion Question { get; set; }
     public string? Text { get; set; }
     public bool IsCorrect { get; set; }
+    public List<SubmittedQuizAnswer> SubmittedAnswers { get; set; } = new();
 }
