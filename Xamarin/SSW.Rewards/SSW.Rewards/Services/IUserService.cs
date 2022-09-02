@@ -36,6 +36,6 @@ namespace SSW.Rewards.Services
         Task<ImageSource> GetAvatarAsync(string url);
         Task<string> UploadImageAsync(Stream image);
 
-        Task<bool> SaveSocialMediaId(int platformId, string userId);
+        Task<bool> SaveSocialMediaId(int achievementId, string userId);
     }
 }

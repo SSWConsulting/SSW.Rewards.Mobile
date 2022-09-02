@@ -3,6 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
                  xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Controls"
                  x:Class="SSW.Rewards.PopupPages.LinkSocial">
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
@@ -17,14 +18,14 @@
     </pages:PopupPage.Animation>
 
     <Frame WidthRequest="300"
-           HeightRequest="500"
+           HeightRequest="300"
            HorizontalOptions="Center"
            VerticalOptions="Center"
            HasShadow="True"
            BackgroundColor="{StaticResource LeaderCardBackground}"
            CornerRadius="1">
 
-        <Grid RowDefinitions="1*, 3*, 3*">
+        <Grid RowDefinitions="*, *, *">
             <Label Grid.Row="0"
                    x:Name="TitleLabel"
                    FontSize="Medium"
@@ -32,17 +33,40 @@
                    VerticalOptions="Center"
                    TextColor="White"/>
 
-            <Entry Grid.Row="1"
+            <!--<Entry Grid.Row="1"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    Placeholder="Username"
                    TextChanged="UsernameEntry_TextChanged"
-                   x:Name="UsernameEntry"/>
+                   x:Name="UsernameEntry"/>-->
+
+            <Grid Grid.Row="1"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center"
+                  HeightRequest="45"
+                  Padding="0,10">
+                <BoxView Grid.Column="0"
+                         BackgroundColor="{StaticResource TabBarBackground}"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="CenterAndExpand"
+                         CornerRadius="10"/>
+
+                <controls:BorderlessEntry Grid.Column="0"
+                                          x:Name="UsernameEntry"
+                                          TextChanged="UsernameEntry_TextChanged"
+                                          WidthRequest="200"
+                                          Margin="10,0,0,0"
+                                          TextColor="White"/>
+            </Grid>
 
             <Button Grid.Row="2"
                     Text="Save"
                     TextColor="White"
                     BackgroundColor="{StaticResource SSWRed}"
+                    HeightRequest="40"
+                    WidthRequest="80"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
                     Clicked="SaveButton_Clicked"
                     x:Name="SaveButton"/>
         </Grid>

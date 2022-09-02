@@ -4,8 +4,8 @@
     {
         public const string SocialUsernameAddedMessage = "SocialUsernameAdded";
 
-        public string Username { get; set; }
+        public Achievement Achievement { get; set; }
 
-        public string PlatformName { get; set; }
+        public string Username { get; set; }
     }
 }

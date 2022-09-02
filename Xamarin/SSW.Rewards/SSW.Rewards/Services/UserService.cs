@@ -294,7 +294,8 @@ namespace SSW.Rewards.Services
                     Type = achievement.AchievementType,
                     AwardedAt = achievement.AwardedAt?.DateTime,
                     AchievementIcon = achievement.AchievementIcon,
-                    IconIsBranded = achievement.AchievementIconIsBranded
+                    IconIsBranded = achievement.AchievementIconIsBranded,
+                    Id = achievement.AchievementId
                 });
             }
 
@@ -362,18 +363,23 @@ namespace SSW.Rewards.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SaveSocialMediaId(int platformId, string userId)
+        public async Task<bool> SaveSocialMediaId(int achievementId, string userId)
         {
             var achieved = await _userClient.UpsertUserSocialMediaIdAsync(new UpsertUserSocialMediaId
             {
-                SocialMediaPlatformId = platformId,
+                AchievementId = achievementId,
                 SocialMediaPlatformUserId = userId
             });
 
             if (achieved == 0)
+            {
                 return false;
-
-            return true;
+            }
+            else
+            {
+                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+                return true;
+            }
         }
 
         #endregion

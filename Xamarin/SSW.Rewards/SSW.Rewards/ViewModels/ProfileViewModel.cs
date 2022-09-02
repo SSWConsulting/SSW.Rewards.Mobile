@@ -307,7 +307,8 @@ namespace SSW.Rewards.ViewModels
                 {
                     MessagingCenter.Subscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage, async (obj, msg) => await AddSocialMediaId(msg));
 
-                    var popup = new LinkSocial(achievement.Name);
+                    var popup = new LinkSocial(achievement);
+                    await PopupNavigation.Instance.PushAsync(popup);
                 }
                 else
                 {
@@ -322,10 +323,25 @@ namespace SSW.Rewards.ViewModels
 
             IsBusy = true;
 
-            // claim achievement
-            await _userService.SaveSocialMediaId(1, message.Username);
+            var result =  await _userService.SaveSocialMediaId(message.Achievement.Id, message.Username);
 
-            // if good, show snackbar
+            var options = new SnackbarOptions
+            {
+                ActionCompleted = false,
+                Points = message.Achievement.Value,
+                Message = $"{GetMessage(message.Achievement)}",
+                GlyphIsBrand = message.Achievement.IconIsBranded,
+                Glyph = (string)typeof(Icon).GetField(message.Achievement.AchievementIcon.ToString()).GetValue(null)
+            };
+
+            if (result)
+            {
+                options.ActionCompleted = true;
+            }
+
+            var args = new ShowSnackbarEventArgs { Options = options };
+
+            ShowSnackbar.Invoke(this, args);
 
             IsBusy = false;
         }
