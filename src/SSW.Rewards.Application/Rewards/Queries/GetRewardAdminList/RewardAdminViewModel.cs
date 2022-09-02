@@ -8,4 +8,5 @@ public class RewardAdminViewModel : IMapFrom<Reward>
     public string Name { get; set; }
     public int Cost { get; set; }
     public string Code { get; set; }
+    public string? ImageUri { get; set; }
 }

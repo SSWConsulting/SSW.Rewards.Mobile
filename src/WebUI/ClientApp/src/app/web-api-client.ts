@@ -4001,6 +4001,7 @@ export class RewardAdminViewModel implements IRewardAdminViewModel {
     name?: string;
     cost?: number;
     code?: string;
+    imageUri?: string | undefined;
 
     constructor(data?: IRewardAdminViewModel) {
         if (data) {
@@ -4017,6 +4018,7 @@ export class RewardAdminViewModel implements IRewardAdminViewModel {
             this.name = _data["name"];
             this.cost = _data["cost"];
             this.code = _data["code"];
+            this.imageUri = _data["imageUri"];
         }
     }
 
@@ -4033,6 +4035,7 @@ export class RewardAdminViewModel implements IRewardAdminViewModel {
         data["name"] = this.name;
         data["cost"] = this.cost;
         data["code"] = this.code;
+        data["imageUri"] = this.imageUri;
         return data;
     }
 }
@@ -4042,6 +4045,7 @@ export interface IRewardAdminViewModel {
     name?: string;
     cost?: number;
     code?: string;
+    imageUri?: string | undefined;
 }
 
 export class RecentRewardListViewModel implements IRecentRewardListViewModel {
@@ -4336,6 +4340,10 @@ export interface IDeleteRewardCommand {
 export class UpdateRewardCommand implements IUpdateRewardCommand {
     id?: number;
     cost?: number;
+    rewardName?: string | undefined;
+    imageFilename?: string | undefined;
+    imageBytesInBase64?: string | undefined;
+    isOnboardingReward?: boolean | undefined;
 
     constructor(data?: IUpdateRewardCommand) {
         if (data) {
@@ -4350,6 +4358,10 @@ export class UpdateRewardCommand implements IUpdateRewardCommand {
         if (_data) {
             this.id = _data["id"];
             this.cost = _data["cost"];
+            this.rewardName = _data["rewardName"];
+            this.imageFilename = _data["imageFilename"];
+            this.imageBytesInBase64 = _data["imageBytesInBase64"];
+            this.isOnboardingReward = _data["isOnboardingReward"];
         }
     }
 
@@ -4364,6 +4376,10 @@ export class UpdateRewardCommand implements IUpdateRewardCommand {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["cost"] = this.cost;
+        data["rewardName"] = this.rewardName;
+        data["imageFilename"] = this.imageFilename;
+        data["imageBytesInBase64"] = this.imageBytesInBase64;
+        data["isOnboardingReward"] = this.isOnboardingReward;
         return data;
     }
 }
@@ -4371,6 +4387,10 @@ export class UpdateRewardCommand implements IUpdateRewardCommand {
 export interface IUpdateRewardCommand {
     id?: number;
     cost?: number;
+    rewardName?: string | undefined;
+    imageFilename?: string | undefined;
+    imageBytesInBase64?: string | undefined;
+    isOnboardingReward?: boolean | undefined;
 }
 
 export class SkillListViewModel implements ISkillListViewModel {
