@@ -8,6 +8,10 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
 {
     public void Configure(EntityTypeBuilder<Quiz> builder)
     {
+        builder
+            .HasOne(q => q.CreatedBy)
+            .WithMany(c => c.CreatedQuizzes)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 
