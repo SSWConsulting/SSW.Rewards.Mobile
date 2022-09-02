@@ -135,14 +135,9 @@
         if (!result.Cancelled)
         {
             // Add the Reward
-            if (result.Data is RewardViewModel dto)
+            if (result.Data is AddRewardCommand dto)
             {
-                await _client.AddAsync(new AddRewardCommand
-                {
-                    Name = dto.Name,
-                    Cost = dto.Cost,
-                    RewardType = RewardType.Digital
-                });
+                await _client.AddAsync(dto);
                 SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
             }
             await GetRewards();

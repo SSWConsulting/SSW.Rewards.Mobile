@@ -6,14 +6,17 @@
            Color="Color.Primary"
            StartIcon="@Icons.Filled.CloudUpload"
            for="uploadFile">
-    Upload Profile Picture
+    @Label
 </MudButton>
 
 @code
 {
     [Parameter]
     public EventCallback<InputFileChangeEventArgs> OnClick { get; set; }
-    
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
         var entries = e.GetMultipleFiles();
