@@ -34,6 +34,8 @@ namespace SSW.Rewards.Services
         Task<IEnumerable<Reward>> GetRewardsAsync();
         Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
         Task<ImageSource> GetAvatarAsync(string url);
-        Task<string> UploadImageAsync(Stream image);        
+        Task<string> UploadImageAsync(Stream image);
+
+        Task<bool> SaveSocialMediaId(int platformId, string userId);
     }
 }

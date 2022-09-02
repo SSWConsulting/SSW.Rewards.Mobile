@@ -305,13 +305,29 @@ namespace SSW.Rewards.ViewModels
             {
                 if (achievement.Type == AchievementType.Linked)
                 {
+                    MessagingCenter.Subscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage, async (obj, msg) => await AddSocialMediaId(msg));
 
+                    var popup = new LinkSocial(achievement.Name);
                 }
                 else
                 {
                     ShowAchievementSnackbar(achievement);
                 }
             }
+        }
+
+        private async Task AddSocialMediaId(SocialUsernameMessage message)
+        {
+            MessagingCenter.Unsubscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage);
+
+            IsBusy = true;
+
+            // claim achievement
+            await _userService.SaveSocialMediaId(1, message.Username);
+
+            // if good, show snackbar
+
+            IsBusy = false;
         }
 
         private void ShowAchievementSnackbar(ProfileAchievement achievement)

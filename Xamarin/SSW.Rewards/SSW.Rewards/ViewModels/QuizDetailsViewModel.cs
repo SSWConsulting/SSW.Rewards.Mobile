@@ -90,7 +90,7 @@ namespace SSW.Rewards.ViewModels
         {
             bool allQuestionsAnswered = true;
 
-            var answers = new List<QuizAnswer>();
+            var answers = new List<QuizAnswerDto>();
 
             foreach (var question in Questions)
             {
@@ -102,7 +102,7 @@ namespace SSW.Rewards.ViewModels
                 }
                 else
                 {
-                    answers.Add(new QuizAnswer
+                    answers.Add(new QuizAnswerDto
                     {
                         SelectedAnswerId = answer.QuestionAnswerId,
                         QuestionId = answer.QuestionId

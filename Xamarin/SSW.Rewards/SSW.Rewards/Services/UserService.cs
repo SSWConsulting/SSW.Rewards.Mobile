@@ -362,6 +362,20 @@ namespace SSW.Rewards.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> SaveSocialMediaId(int platformId, string userId)
+        {
+            var achieved = await _userClient.UpsertUserSocialMediaIdAsync(new UpsertUserSocialMediaId
+            {
+                SocialMediaPlatformId = platformId,
+                SocialMediaPlatformUserId = userId
+            });
+
+            if (achieved == 0)
+                return false;
+
+            return true;
+        }
+
         #endregion
     }
 }
