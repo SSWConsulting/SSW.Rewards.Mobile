@@ -3899,7 +3899,7 @@ export class RewardViewModel implements IRewardViewModel {
     id?: number;
     name?: string;
     cost?: number;
-    imageUri?: string;
+    imageUri?: string | undefined;
     rewardType?: RewardType;
 
     constructor(data?: IRewardViewModel) {
@@ -3943,7 +3943,7 @@ export interface IRewardViewModel {
     id?: number;
     name?: string;
     cost?: number;
-    imageUri?: string;
+    imageUri?: string | undefined;
     rewardType?: RewardType;
 }
 

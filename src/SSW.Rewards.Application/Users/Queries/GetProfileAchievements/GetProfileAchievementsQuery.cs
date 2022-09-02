@@ -42,7 +42,8 @@ public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchiv
                 AchievementValue            = achievement.Value,
                 AchievementIcon             = achievement.Icon,
                 AchievementIconIsBranded    = achievement.IconIsBranded,
-                Complete                    = false
+                Complete                    = false,
+                AchievementId               = achievement.Id,
             });
         }
 
