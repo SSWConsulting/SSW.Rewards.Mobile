@@ -27,6 +27,7 @@
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <None Include="Components\Dialogs\Quizzes\QuizQuestionDialog.razor" />
         <None Include="wwwroot\js\DetailedProfile.js" />
     </ItemGroup>
 </Project>
