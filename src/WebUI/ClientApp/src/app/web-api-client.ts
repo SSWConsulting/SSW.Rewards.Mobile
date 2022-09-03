@@ -816,8 +816,12 @@ export class NotificationsClient implements INotificationsClient {
 }
 
 export interface IQuizzesClient {
+    getAllQuizzes(): Observable<AdminQuizDto[]>;
+    addNewQuiz(quiz: AdminQuizDetailsDto): Observable<number>;
+    updateQuiz(quiz: AdminQuizDetailsDto): Observable<number>;
     getQuizListForUser(): Observable<QuizDto[]>;
     getQuizDetails(id: number): Observable<QuizDetailsDto>;
+    getQuizDetailsForEdit(id: number): Observable<AdminQuizDetailsDto>;
     submitCompletedQuiz(quiz: SubmitUserQuizCommand): Observable<QuizResultDto>;
 }
 
@@ -832,6 +836,167 @@ export class QuizzesClient implements IQuizzesClient {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getAllQuizzes(): Observable<AdminQuizDto[]> {
+        let url_ = this.baseUrl + "/api/Quizzes/GetAllQuizzes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllQuizzes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllQuizzes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AdminQuizDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AdminQuizDto[]>;
+        }));
+    }
+
+    protected processGetAllQuizzes(response: HttpResponseBase): Observable<AdminQuizDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AdminQuizDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addNewQuiz(quiz: AdminQuizDetailsDto): Observable<number> {
+        let url_ = this.baseUrl + "/api/Quizzes/AddNewQuiz";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(quiz);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddNewQuiz(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddNewQuiz(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddNewQuiz(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateQuiz(quiz: AdminQuizDetailsDto): Observable<number> {
+        let url_ = this.baseUrl + "/api/Quizzes/UpdateQuiz";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(quiz);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateQuiz(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateQuiz(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpdateQuiz(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
 
     getQuizListForUser(): Observable<QuizDto[]> {
@@ -930,6 +1095,57 @@ export class QuizzesClient implements IQuizzesClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = QuizDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getQuizDetailsForEdit(id: number): Observable<AdminQuizDetailsDto> {
+        let url_ = this.baseUrl + "/api/Quizzes/GetQuizDetailsForEdit/edit/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetQuizDetailsForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetQuizDetailsForEdit(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AdminQuizDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AdminQuizDetailsDto>;
+        }));
+    }
+
+    protected processGetQuizDetailsForEdit(response: HttpResponseBase): Observable<AdminQuizDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AdminQuizDetailsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3423,6 +3639,262 @@ export interface IUpdateInstallationCommand {
     tags?: string[];
 }
 
+export class AdminQuizDto implements IAdminQuizDto {
+    id?: number;
+    title?: string;
+    description?: string;
+    points?: number;
+    dateCreated?: Date;
+
+    constructor(data?: IAdminQuizDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.points = _data["points"];
+            this.dateCreated = _data["dateCreated"] ? new Date(_data["dateCreated"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AdminQuizDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminQuizDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["points"] = this.points;
+        data["dateCreated"] = this.dateCreated ? this.dateCreated.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAdminQuizDto {
+    id?: number;
+    title?: string;
+    description?: string;
+    points?: number;
+    dateCreated?: Date;
+}
+
+export class AdminQuizDetailsDto implements IAdminQuizDetailsDto {
+    quizId?: number;
+    title?: string;
+    description?: string;
+    points?: number;
+    icon?: Icons;
+    isArchived?: boolean;
+    questions?: AdminQuizQuestionDto[];
+
+    constructor(data?: IAdminQuizDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.quizId = _data["quizId"];
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.points = _data["points"];
+            this.icon = _data["icon"];
+            this.isArchived = _data["isArchived"];
+            if (Array.isArray(_data["questions"])) {
+                this.questions = [] as any;
+                for (let item of _data["questions"])
+                    this.questions!.push(AdminQuizQuestionDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AdminQuizDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminQuizDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quizId"] = this.quizId;
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["points"] = this.points;
+        data["icon"] = this.icon;
+        data["isArchived"] = this.isArchived;
+        if (Array.isArray(this.questions)) {
+            data["questions"] = [];
+            for (let item of this.questions)
+                data["questions"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAdminQuizDetailsDto {
+    quizId?: number;
+    title?: string;
+    description?: string;
+    points?: number;
+    icon?: Icons;
+    isArchived?: boolean;
+    questions?: AdminQuizQuestionDto[];
+}
+
+export enum Icons {
+    Twitter = 0,
+    Github = 1,
+    LinkedinIn = 2,
+    Instagram = 3,
+    Linkedin = 4,
+    TwitterSquare = 5,
+    GithubSquare = 6,
+    Youtube = 7,
+    Microsoft = 8,
+    Facebook = 9,
+    Camera = 10,
+    Certificate = 11,
+    Lightning = 12,
+    Mortarboard = 13,
+    Handshake = 14,
+    Lightbulb = 15,
+    More = 16,
+    People = 17,
+    Puzzle = 18,
+    Trophy = 19,
+    Alert = 20,
+    RightChevron = 21,
+    LeftChevron = 22,
+    ArrowExportUp = 23,
+    SignOut = 24,
+    Person = 25,
+    PersonAdd = 26,
+    Cake = 27,
+    CalendarEmpty = 28,
+    CalendarCheck = 29,
+    Help = 30,
+    Chat = 31,
+    Gift = 32,
+    Home = 33,
+    Info = 34,
+    QRCode = 35,
+    Angular = 36,
+}
+
+export class AdminQuizQuestionDto implements IAdminQuizQuestionDto {
+    questionId?: number;
+    text?: string;
+    answers?: AdminQuestionAnswerDto[];
+
+    constructor(data?: IAdminQuizQuestionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.questionId = _data["questionId"];
+            this.text = _data["text"];
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(AdminQuestionAnswerDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AdminQuizQuestionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminQuizQuestionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["questionId"] = this.questionId;
+        data["text"] = this.text;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAdminQuizQuestionDto {
+    questionId?: number;
+    text?: string;
+    answers?: AdminQuestionAnswerDto[];
+}
+
+export class AdminQuestionAnswerDto implements IAdminQuestionAnswerDto {
+    questionAnswerId?: number;
+    text?: string;
+    isCorrect?: boolean;
+
+    constructor(data?: IAdminQuestionAnswerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.questionAnswerId = _data["questionAnswerId"];
+            this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
+        }
+    }
+
+    static fromJS(data: any): AdminQuestionAnswerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminQuestionAnswerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["questionAnswerId"] = this.questionAnswerId;
+        data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
+        return data;
+    }
+}
+
+export interface IAdminQuestionAnswerDto {
+    questionAnswerId?: number;
+    text?: string;
+    isCorrect?: boolean;
+}
+
 export class QuizDto implements IQuizDto {
     id?: number;
     title?: string;
@@ -3475,50 +3947,12 @@ export interface IQuizDto {
     icon?: Icons;
 }
 
-export enum Icons {
-    Twitter = 0,
-    Github = 1,
-    LinkedinIn = 2,
-    Instagram = 3,
-    Linkedin = 4,
-    TwitterSquare = 5,
-    GithubSquare = 6,
-    Youtube = 7,
-    Microsoft = 8,
-    Facebook = 9,
-    Camera = 10,
-    Certificate = 11,
-    Lightning = 12,
-    Mortarboard = 13,
-    Handshake = 14,
-    Lightbulb = 15,
-    More = 16,
-    People = 17,
-    Puzzle = 18,
-    Trophy = 19,
-    Alert = 20,
-    RightChevron = 21,
-    LeftChevron = 22,
-    ArrowExportUp = 23,
-    SignOut = 24,
-    Person = 25,
-    PersonAdd = 26,
-    Cake = 27,
-    CalendarEmpty = 28,
-    CalendarCheck = 29,
-    Help = 30,
-    Chat = 31,
-    Gift = 32,
-    Home = 33,
-    Info = 34,
-    QRCode = 35,
-    Angular = 36,
-}
-
 export class QuizDetailsDto implements IQuizDetailsDto {
     quizId?: number;
     title?: string;
     description?: string;
+    points?: number;
+    icon?: Icons;
     questions?: QuizQuestionDto[];
 
     constructor(data?: IQuizDetailsDto) {
@@ -3535,6 +3969,8 @@ export class QuizDetailsDto implements IQuizDetailsDto {
             this.quizId = _data["quizId"];
             this.title = _data["title"];
             this.description = _data["description"];
+            this.points = _data["points"];
+            this.icon = _data["icon"];
             if (Array.isArray(_data["questions"])) {
                 this.questions = [] as any;
                 for (let item of _data["questions"])
@@ -3555,6 +3991,8 @@ export class QuizDetailsDto implements IQuizDetailsDto {
         data["quizId"] = this.quizId;
         data["title"] = this.title;
         data["description"] = this.description;
+        data["points"] = this.points;
+        data["icon"] = this.icon;
         if (Array.isArray(this.questions)) {
             data["questions"] = [];
             for (let item of this.questions)
@@ -3568,6 +4006,8 @@ export interface IQuizDetailsDto {
     quizId?: number;
     title?: string;
     description?: string;
+    points?: number;
+    icon?: Icons;
     questions?: QuizQuestionDto[];
 }
 
