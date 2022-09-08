@@ -14,7 +14,7 @@ namespace SSW.Rewards.WebAPI.Controllers;
 
 public class RewardController : ApiControllerBase
 {
-	    [HttpGet]
+	[HttpGet]
     public async Task<ActionResult<RewardListViewModel>> List()
     {
         return Ok(await Mediator.Send(new GetRewardListQuery()));
