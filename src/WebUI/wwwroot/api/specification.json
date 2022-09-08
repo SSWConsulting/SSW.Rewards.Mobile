@@ -488,6 +488,116 @@
         }
       }
     },
+    "/api/Quizzes/GetAllQuizzes": {
+      "get": {
+        "tags": [
+          "Quizzes"
+        ],
+        "operationId": "Quizzes_GetAllQuizzes",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminQuizDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/Quizzes/AddNewQuiz": {
+      "post": {
+        "tags": [
+          "Quizzes"
+        ],
+        "operationId": "Quizzes_AddNewQuiz",
+        "requestBody": {
+          "x-name": "quiz",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminQuizDetailsDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/Quizzes/UpdateQuiz": {
+      "put": {
+        "tags": [
+          "Quizzes"
+        ],
+        "operationId": "Quizzes_UpdateQuiz",
+        "requestBody": {
+          "x-name": "quiz",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminQuizDetailsDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
     "/api/Quizzes/GetQuizListForUser": {
       "get": {
         "tags": [
@@ -541,6 +651,43 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/QuizDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Quizzes/GetQuizDetailsForEdit/edit/{id}": {
+      "get": {
+        "tags": [
+          "Quizzes"
+        ],
+        "operationId": "Quizzes_GetQuizDetailsForEdit",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminQuizDetailsDto"
                 }
               }
             }
@@ -1955,7 +2102,7 @@
           }
         }
       },
-      "QuizDto": {
+      "AdminQuizDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1969,11 +2116,45 @@
           "description": {
             "type": "string"
           },
-          "passed": {
-            "type": "boolean"
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dateCreated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AdminQuizDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "quizId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
           },
           "icon": {
             "$ref": "#/components/schemas/Icons"
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminQuizQuestionDto"
+            }
           }
         }
       },
@@ -2059,6 +2240,63 @@
           36
         ]
       },
+      "AdminQuizQuestionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "questionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "text": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminQuestionAnswerDto"
+            }
+          }
+        }
+      },
+      "AdminQuestionAnswerDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "questionAnswerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "text": {
+            "type": "string"
+          },
+          "isCorrect": {
+            "type": "boolean"
+          }
+        }
+      },
+      "QuizDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/Icons"
+          }
+        }
+      },
       "QuizDetailsDto": {
         "type": "object",
         "additionalProperties": false,
@@ -2072,6 +2310,13 @@
           },
           "description": {
             "type": "string"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/Icons"
           },
           "questions": {
             "type": "array",
@@ -2259,6 +2504,10 @@
           },
           "code": {
             "type": "string"
+          },
+          "imageUri": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -2388,6 +2637,22 @@
           "cost": {
             "type": "integer",
             "format": "int32"
+          },
+          "rewardName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageFilename": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageBytesInBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "isOnboardingReward": {
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
