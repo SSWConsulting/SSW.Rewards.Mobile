@@ -18,7 +18,7 @@ jobs:
       - name: Test
         run: dotnet test --configuration Release --no-build
       - name: Publish
-        run: dotnet publish --configuration Release --no-build --output ./published
+        run: dotnet publish src/WebUI/WebAPI.csproj --configuration Release --no-build --output ./published
       - name: Zip
         shell: pwsh
         run: Compress-Archive -Path ./published/* -DestinationPath ./api.zip
