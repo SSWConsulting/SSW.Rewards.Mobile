@@ -3,7 +3,8 @@ param location string = resourceGroup().location
 param environment string
 param keyVaultName string
 param appServicePlanId string
-
+param adminPortalUrl string
+param idsUrl string
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
@@ -102,6 +103,14 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'UserServiceOptions__StaffSmtpDomain'
           value: 'ssw.com.au'
+        }
+        {
+          name: 'AllowedOrigin'
+          value: adminPortalUrl
+        }
+        {
+          name: 'SigningAuthority'
+          value: idsUrl
         }
       ]
     }

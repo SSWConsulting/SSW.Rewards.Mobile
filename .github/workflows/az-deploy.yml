@@ -15,6 +15,12 @@ on:
       APP_SERVICE_PLAN_RESOURCE_GROUP:
         required: true
         type: string
+      ADMIN_PORTAL_URL:
+        required: true
+        type: string
+      IDS_URL:
+        required: true
+        type: string
     secrets:
       AZURE_CREDENTIALS:
         required: true
@@ -57,6 +63,8 @@ jobs:
             appServicePlanResourceGroup=${{ inputs.APP_SERVICE_PLAN_RESOURCE_GROUP }} `
             sqlAdministratorsLoginName=$env:sqlAdminGroup `
             sqlAdministratorsObjectId=$env:sqlAdminSid `
+            adminPortalUrl=${{ inputs.ADMIN_PORTAL_URL }} `
+            idsUrl=${{ inputs.IDS_URL }} `
             | convertfrom-json | foreach properties | foreach outputs
         $out | Get-Member -MemberType NoteProperty | ForEach-Object {
             $keyname = $_.Name
