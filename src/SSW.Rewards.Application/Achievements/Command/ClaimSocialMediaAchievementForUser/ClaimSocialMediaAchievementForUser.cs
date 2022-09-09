@@ -30,17 +30,20 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
             return 0;
         int currentUserId = await _userService.GetUserId(_currentUserService.GetUserEmail());
         var userAchievement = await _context.UserAchievements
-                                            .AsNoTracking()
                                             .Where(x => x.UserId == currentUserId && x.AchievementId == achievementId.Value)
                                             .FirstOrDefaultAsync(cancellationToken);
+
         if (userAchievement == null)
         {
+            var user = await _context.Users.FindAsync(currentUserId);
+            var achievement = await _context.Achievements.FindAsync(achievementId);
+
             userAchievement = new UserAchievement
             {
-                AchievementId = achievementId.Value,
-                UserId        = currentUserId,
-                AwardedAt     = _dateTimeService.Now,
-                CreatedUtc    = _dateTimeService.Now
+                Achievement = achievement,
+                User        = user, 
+                AwardedAt   = _dateTimeService.Now,
+                CreatedUtc  = _dateTimeService.Now
             };
             _context.UserAchievements.Add(userAchievement);
             await _context.SaveChangesAsync(cancellationToken);

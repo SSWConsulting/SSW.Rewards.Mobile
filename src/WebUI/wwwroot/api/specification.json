@@ -737,6 +737,26 @@
         ]
       }
     },
+    "/api/Reward/GetOnboardingRewards": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_GetOnboardingRewards",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardListViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Reward/List": {
       "get": {
         "tags": [
