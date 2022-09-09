@@ -2574,23 +2574,33 @@
         }
       },
       "AddRewardCommand": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/RewardViewModel"
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
           },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "imageBytesInBase64": {
-                "type": "string"
-              },
-              "imageFileName": {
-                "type": "string"
-              }
-            }
+          "name": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "imageUri": {
+            "type": "string"
+          },
+          "rewardType": {
+            "$ref": "#/components/schemas/RewardType"
+          },
+          "imageBytesInBase64": {
+            "type": "string"
+          },
+          "imageFileName": {
+            "type": "string"
           }
-        ]
+        }
       },
       "ClaimRewardResult": {
         "type": "object",
