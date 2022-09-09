@@ -15,7 +15,8 @@ public class QuizDetailsDto : IMapFrom<Quiz>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<Quiz, QuizDetailsDto>()
-                .ForMember(dst => dst.QuizId, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dst => dst.QuizId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.Achievement.Value));
     }
 }
 

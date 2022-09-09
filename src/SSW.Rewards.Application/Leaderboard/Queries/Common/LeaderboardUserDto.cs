@@ -26,6 +26,7 @@ public class LeaderboardUserDto : IMapFrom<User>
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
+                .ForMember(dst => dst.Rank, opt => opt.Ignore())
                 .ForMember(dst => dst.TotalPoints, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.Balance, opt => {
