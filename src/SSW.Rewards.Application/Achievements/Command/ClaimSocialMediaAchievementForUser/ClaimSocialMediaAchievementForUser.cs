@@ -35,6 +35,11 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
 
         if (userAchievement == null)
         {
+            //TECHNICAL DEBT:   I tried to just use the user ID and achievement ID
+            //                  for the userAchievement entity, but this resulted
+            //                  in a strange bug. Switching to use the user and
+            //                  achievement entities resolved the problem. See:
+            //                  https://github.com/SSWConsulting/SSW.Rewards.API/issues/20
             var user = await _context.Users.FindAsync(currentUserId);
             var achievement = await _context.Achievements.FindAsync(achievementId);
 

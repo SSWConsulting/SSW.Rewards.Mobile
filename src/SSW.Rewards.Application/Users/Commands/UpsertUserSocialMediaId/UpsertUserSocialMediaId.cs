@@ -29,6 +29,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
         bool isInsert = false;
 
         var platform = await _context.SocialMediaPlatforms
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.AchievementId == request.AchievementId, cancellationToken);
 
         if (platform == null)
