@@ -17,6 +17,10 @@ public class UserViewModel : IMapFrom<User>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, UserViewModel>()
-                .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar));
+                .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
+                .ForMember(dst => dst.Points, opt => opt.Ignore())
+                .ForMember(dst => dst.Balance, opt => opt.Ignore())
+                .ForMember(dst => dst.Rewards, opt => opt.MapFrom(src => src.UserRewards))
+                .ForMember(dst => dst.Achievements, opt => opt.MapFrom(src => src.UserAchievements));
     }
 }

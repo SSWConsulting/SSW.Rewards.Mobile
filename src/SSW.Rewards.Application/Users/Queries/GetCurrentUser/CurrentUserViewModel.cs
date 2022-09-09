@@ -21,8 +21,9 @@ public class CurrentUserViewModel : IMapFrom<User>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, CurrentUserViewModel>()
-                .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)))
-                .ForMember(dst => dst.Balance, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value) - src.UserRewards.Sum(ur => ur.Reward.Cost)))
-                .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar));
+                .ForMember(dst => dst.Points, opt => opt.Ignore())
+                .ForMember(dst => dst.Balance, opt => opt.Ignore())
+                .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
+                .ForMember(dst => dst.QRCode, opt => opt.Ignore());
     }
 }

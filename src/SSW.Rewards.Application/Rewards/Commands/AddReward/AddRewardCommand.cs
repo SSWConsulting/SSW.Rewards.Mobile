@@ -3,8 +3,13 @@ using SSW.Rewards.Application.Rewards.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands.AddReward;
 
-public class AddRewardCommand : RewardViewModel, IRequest<int>
+public class AddRewardCommand : IRequest<int>
 {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Cost { get; set; }
+    public string ImageUri { get; set; }
+    public RewardType RewardType { get; set; }
     public string ImageBytesInBase64 { get; set; }
     public string ImageFileName { get; set; }
 }
