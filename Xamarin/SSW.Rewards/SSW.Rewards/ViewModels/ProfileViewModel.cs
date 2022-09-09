@@ -84,7 +84,7 @@ namespace SSW.Rewards.ViewModels
         public async Task Initialise(bool me)
         {
             MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
-            MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ShowAchievementSnackbar((ProfileAchievement)obj));
+            MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, async (obj) => await ProcessAchievement((ProfileAchievement)obj));
             MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
             if (DeviceInfo.Platform == DevicePlatform.iOS)
@@ -290,6 +290,64 @@ namespace SSW.Rewards.ViewModels
         {
             ProfilePic = _userService.MyProfilePic;
             RaisePropertyChanged(nameof(ProfilePic));
+        }
+
+        private async Task ProcessAchievement(ProfileAchievement achievement)
+        {
+            if (achievement.Complete)
+            {
+                ShowAchievementSnackbar(achievement);
+            }
+            else
+            {
+                if (achievement.Type == AchievementType.Linked)
+                {
+                    MessagingCenter.Subscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage, async (obj, msg) => await AddSocialMediaId(msg));
+
+                    var popup = new LinkSocial(achievement);
+                    await PopupNavigation.Instance.PushAsync(popup);
+                }
+                else
+                {
+                    ShowAchievementSnackbar(achievement);
+                }
+            }
+        }
+
+        private async Task AddSocialMediaId(SocialUsernameMessage message)
+        {
+            MessagingCenter.Unsubscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage);
+
+            IsBusy = true;
+
+            var result =  await _userService.SaveSocialMediaId(message.Achievement.Id, message.Username);
+
+            var options = new SnackbarOptions
+            {
+                ActionCompleted = false,
+                Points = message.Achievement.Value,
+                GlyphIsBrand = message.Achievement.IconIsBranded,
+                Glyph = (string)typeof(Icon).GetField(message.Achievement.AchievementIcon.ToString()).GetValue(null)
+            };
+
+            if (result)
+            {
+                options.ActionCompleted = true;
+                message.Achievement.Complete = true;
+            }
+
+            options.Message = $"{GetMessage(message.Achievement)}";
+
+            var args = new ShowSnackbarEventArgs { Options = options };
+
+            ShowSnackbar.Invoke(this, args);
+
+            if (result)
+            {
+                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+            }
+
+            IsBusy = false;
         }
 
         private void ShowAchievementSnackbar(ProfileAchievement achievement)

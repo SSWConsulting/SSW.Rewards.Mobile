@@ -24,11 +24,8 @@ namespace SSW.Rewards.ViewModels
 
         public EventHandler<int> ScrollToRequested;
 
-        private IUserService _userService { get; set; }
-
-        public OnBoardingViewModel(IUserService userService)
+        public OnBoardingViewModel()
         {
-            _userService = userService;
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(SetDetails);
             Skip = new Command(async () => await SkipOnboarding());

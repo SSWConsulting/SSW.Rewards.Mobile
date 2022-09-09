@@ -59,7 +59,8 @@ namespace SSW.Rewards.ViewModels
                 Type = achievement.Type,
                 Value = achievement.Value,
                 AchievementIcon = achievement.AchievementIcon,
-                IconIsBranded = achievement.IconIsBranded
+                IconIsBranded = achievement.IconIsBranded,
+                Id = achievement.Id
             };
         }
     }
