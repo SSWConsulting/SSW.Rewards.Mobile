@@ -1,6 +1,4 @@
-using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,15 +8,6 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebUIServices(builder.Configuration);
 
 var app = builder.Build();
-
-if (app.Environment.IsProduction())
-{
-    var uri = $"https://{builder.Configuration.GetValue<string>("KeyVaultName")}.vault.azure.net";
-    var secretClient = new SecretClient(
-                        new Uri(uri),
-                        new DefaultAzureCredential());
-    builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
