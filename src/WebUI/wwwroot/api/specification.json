@@ -2475,7 +2475,8 @@
             "format": "int32"
           },
           "imageUri": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "rewardType": {
             "$ref": "#/components/schemas/RewardType"
@@ -3079,7 +3080,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "socialMediaPlatformId": {
+          "achievementId": {
             "type": "integer",
             "format": "int32"
           },

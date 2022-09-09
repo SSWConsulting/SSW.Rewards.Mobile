@@ -1,7 +1,7 @@
 ﻿namespace SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 public class ClaimSocialMediaAchievementForUser : IRequest<int>
 {
-    public int SocialMediaPlatformId { get; set; }
+    public int AchievementId { get; set; }
 }
 
 public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<ClaimSocialMediaAchievementForUser, int>
@@ -23,24 +23,32 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
     {
         int? achievementId = await _context.SocialMediaPlatforms
                                           .AsNoTracking()
-                                          .Where(x => x.Id == request.SocialMediaPlatformId)
+                                          .Where(x => x.AchievementId == request.AchievementId)
                                           .Select(x => x.AchievementId)
                                           .FirstOrDefaultAsync(cancellationToken);
         if (achievementId == null)
             return 0;
         int currentUserId = await _userService.GetUserId(_currentUserService.GetUserEmail());
         var userAchievement = await _context.UserAchievements
-                                            .AsNoTracking()
                                             .Where(x => x.UserId == currentUserId && x.AchievementId == achievementId.Value)
                                             .FirstOrDefaultAsync(cancellationToken);
+
         if (userAchievement == null)
         {
+            //TECHNICAL DEBT:   I tried to just use the user ID and achievement ID
+            //                  for the userAchievement entity, but this resulted
+            //                  in a strange bug. Switching to use the user and
+            //                  achievement entities resolved the problem. See:
+            //                  https://github.com/SSWConsulting/SSW.Rewards.API/issues/20
+            var user = await _context.Users.FindAsync(currentUserId);
+            var achievement = await _context.Achievements.FindAsync(achievementId);
+
             userAchievement = new UserAchievement
             {
-                AchievementId = achievementId.Value,
-                UserId        = currentUserId,
-                AwardedAt     = _dateTimeService.Now,
-                CreatedUtc    = _dateTimeService.Now
+                Achievement = achievement,
+                User        = user, 
+                AwardedAt   = _dateTimeService.Now,
+                CreatedUtc  = _dateTimeService.Now
             };
             _context.UserAchievements.Add(userAchievement);
             await _context.SaveChangesAsync(cancellationToken);

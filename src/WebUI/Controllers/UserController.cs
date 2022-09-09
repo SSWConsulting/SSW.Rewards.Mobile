@@ -72,7 +72,7 @@ public class UserController : ApiControllerBase
         if (isInsert)
         {
             // set achievement and return achievement id
-            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { SocialMediaPlatformId = command.SocialMediaPlatformId });
+            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { AchievementId = command.AchievementId });
         }
 
         return Ok(retVal);

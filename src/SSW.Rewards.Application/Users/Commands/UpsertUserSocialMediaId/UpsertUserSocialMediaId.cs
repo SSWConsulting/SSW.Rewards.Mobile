@@ -1,7 +1,7 @@
 ﻿namespace SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
 public class UpsertUserSocialMediaId : IRequest<bool>
 {
-    public int SocialMediaPlatformId { get; set; }
+    public int AchievementId { get; set; }
     public string SocialMediaPlatformUserId { get; set; } = string.Empty;
 }
 
@@ -28,9 +28,12 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
     {
         bool isInsert = false;
 
-        var platform = await _context.SocialMediaPlatforms.FindAsync(request.SocialMediaPlatformId, cancellationToken);
+        var platform = await _context.SocialMediaPlatforms
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.AchievementId == request.AchievementId, cancellationToken);
+
         if (platform == null)
-            throw new ArgumentException($"No Social Media Platform with id {request.SocialMediaPlatformId} found");
+            throw new ArgumentException($"Social Media Platform not found");
 
         int currentUserId = await this._userService.GetUserId(this._currentUserService.GetUserEmail());
         var record = await _context.UserSocialMediaIds

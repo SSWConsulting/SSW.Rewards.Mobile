@@ -4388,7 +4388,7 @@ export class RewardViewModel implements IRewardViewModel {
     id?: number;
     name?: string;
     cost?: number;
-    imageUri?: string;
+    imageUri?: string | undefined;
     rewardType?: RewardType;
 
     constructor(data?: IRewardViewModel) {
@@ -4432,7 +4432,7 @@ export interface IRewardViewModel {
     id?: number;
     name?: string;
     cost?: number;
-    imageUri?: string;
+    imageUri?: string | undefined;
     rewardType?: RewardType;
 }
 
@@ -5780,7 +5780,7 @@ export interface IProfilePicResponseDto {
 }
 
 export class UpsertUserSocialMediaId implements IUpsertUserSocialMediaId {
-    socialMediaPlatformId?: number;
+    achievementId?: number;
     socialMediaPlatformUserId?: string;
 
     constructor(data?: IUpsertUserSocialMediaId) {
@@ -5794,7 +5794,7 @@ export class UpsertUserSocialMediaId implements IUpsertUserSocialMediaId {
 
     init(_data?: any) {
         if (_data) {
-            this.socialMediaPlatformId = _data["socialMediaPlatformId"];
+            this.achievementId = _data["achievementId"];
             this.socialMediaPlatformUserId = _data["socialMediaPlatformUserId"];
         }
     }
@@ -5808,14 +5808,14 @@ export class UpsertUserSocialMediaId implements IUpsertUserSocialMediaId {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["socialMediaPlatformId"] = this.socialMediaPlatformId;
+        data["achievementId"] = this.achievementId;
         data["socialMediaPlatformUserId"] = this.socialMediaPlatformUserId;
         return data;
     }
 }
 
 export interface IUpsertUserSocialMediaId {
-    socialMediaPlatformId?: number;
+    achievementId?: number;
     socialMediaPlatformUserId?: string;
 }
 
