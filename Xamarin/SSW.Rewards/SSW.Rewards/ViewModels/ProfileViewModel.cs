@@ -343,6 +343,11 @@ namespace SSW.Rewards.ViewModels
 
             ShowSnackbar.Invoke(this, args);
 
+            if (result)
+            {
+                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+            }
+
             IsBusy = false;
         }
 
