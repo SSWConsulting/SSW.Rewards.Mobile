@@ -329,7 +329,6 @@ namespace SSW.Rewards.ViewModels
             {
                 ActionCompleted = false,
                 Points = message.Achievement.Value,
-                Message = $"{GetMessage(message.Achievement)}",
                 GlyphIsBrand = message.Achievement.IconIsBranded,
                 Glyph = (string)typeof(Icon).GetField(message.Achievement.AchievementIcon.ToString()).GetValue(null)
             };
@@ -337,7 +336,10 @@ namespace SSW.Rewards.ViewModels
             if (result)
             {
                 options.ActionCompleted = true;
+                message.Achievement.Complete = true;
             }
+
+            options.Message = $"{GetMessage(message.Achievement)}";
 
             var args = new ShowSnackbarEventArgs { Options = options };
 
