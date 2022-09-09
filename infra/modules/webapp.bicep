@@ -23,6 +23,13 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
     siteConfig: {
       netFrameworkVersion: 'v6.0'
       alwaysOn: true
+      connectionStrings: [
+        {
+          name: 'DefaultConnection'
+          type: 'SQLServer'
+          connectionString: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SqlConnectionString)'
+        }
+      ]
       appSettings: [
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
@@ -67,6 +74,34 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'KeyVaultName'
           value: keyVaultName
+        }
+        {
+          name: 'NotificationHub__ConnectionString'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=NotificationHub--ConnectionString)'
+        }
+        {
+          name: 'NotificationHub__Name'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=NotificationHub--Name)'
+        }
+        {
+          name: 'CloudBlobProviderOptions__ContentStorageConnectionString'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=ContentStorageConnectionString)'
+        }
+        {
+          name: 'SendGridAPIKey'
+          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SendGridAPIKey)'
+        }
+        {
+          name: 'SMTPSettings__DefaultSender'
+          value: 'info@ssw.com.au'
+        }
+        {
+          name: 'SMTPSettings__DefaultSenderName'
+          value: 'SSW'
+        }
+        {
+          name: 'UserServiceOptions__StaffSmtpDomain'
+          value: 'ssw.com.au'
         }
       ]
     }
