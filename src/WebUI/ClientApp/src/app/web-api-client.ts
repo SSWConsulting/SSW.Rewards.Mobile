@@ -4665,39 +4665,62 @@ export interface IGetRecentRewardsQuery {
     since?: Date | undefined;
 }
 
-export class AddRewardCommand extends RewardViewModel implements IAddRewardCommand {
+export class AddRewardCommand implements IAddRewardCommand {
+    id?: number;
+    name?: string;
+    cost?: number;
+    imageUri?: string;
+    rewardType?: RewardType;
     imageBytesInBase64?: string;
     imageFileName?: string;
 
     constructor(data?: IAddRewardCommand) {
-        super(data);
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
 
-    override init(_data?: any) {
-        super.init(_data);
+    init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.cost = _data["cost"];
+            this.imageUri = _data["imageUri"];
+            this.rewardType = _data["rewardType"];
             this.imageBytesInBase64 = _data["imageBytesInBase64"];
             this.imageFileName = _data["imageFileName"];
         }
     }
 
-    static override fromJS(data: any): AddRewardCommand {
+    static fromJS(data: any): AddRewardCommand {
         data = typeof data === 'object' ? data : {};
         let result = new AddRewardCommand();
         result.init(data);
         return result;
     }
 
-    override toJSON(data?: any) {
+    toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["cost"] = this.cost;
+        data["imageUri"] = this.imageUri;
+        data["rewardType"] = this.rewardType;
         data["imageBytesInBase64"] = this.imageBytesInBase64;
         data["imageFileName"] = this.imageFileName;
-        super.toJSON(data);
         return data;
     }
 }
 
-export interface IAddRewardCommand extends IRewardViewModel {
+export interface IAddRewardCommand {
+    id?: number;
+    name?: string;
+    cost?: number;
+    imageUri?: string;
+    rewardType?: RewardType;
     imageBytesInBase64?: string;
     imageFileName?: string;
 }
