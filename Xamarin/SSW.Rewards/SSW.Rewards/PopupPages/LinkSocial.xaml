@@ -32,14 +32,7 @@
                    HorizontalTextAlignment="Center"
                    VerticalOptions="Center"
                    TextColor="White"/>
-
-            <!--<Entry Grid.Row="1"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   Placeholder="Username"
-                   TextChanged="UsernameEntry_TextChanged"
-                   x:Name="UsernameEntry"/>-->
-
+            
             <Grid Grid.Row="1"
                   VerticalOptions="Center"
                   HorizontalOptions="Center"
