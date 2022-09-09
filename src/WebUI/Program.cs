@@ -13,7 +13,7 @@ var app = builder.Build();
 
 if (app.Environment.IsProduction())
 {
-    var uri = builder.Configuration.GetValue<string>("KeyVaultUri");
+    var uri = $"https://{builder.Configuration.GetValue<string>("KeyVaultName")}.vault.azure.net";
     var secretClient = new SecretClient(
                         new Uri(uri),
                         new DefaultAzureCredential());
