@@ -67,6 +67,15 @@ module appService 'modules/webapp.bicep' = {
   }
 }
 
+module kvAccessPolicyForAppService 'modules/create-kvAccessPolicy.bicep' = {
+  name: 'kvap-${now}'
+  params: {
+    keyVaultName: keyVault.outputs.keyVaultName
+    objectId: appService.outputs.principalId
+    tenantId: appService.outputs.tenantId
+  }
+}
+
 module storage 'modules/storage.bicep' = {
   name: 'st-${now}'
   params: {

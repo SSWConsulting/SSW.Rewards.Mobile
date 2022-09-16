@@ -14,8 +14,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
   location: location
   properties: {
-    enabledForDeployment: true
-    enableRbacAuthorization: true
+    enabledForDeployment: false
+    enabledForTemplateDeployment: true
+    enableRbacAuthorization: false
     tenantId: tenant().tenantId
     sku: keyVaultSku
   }

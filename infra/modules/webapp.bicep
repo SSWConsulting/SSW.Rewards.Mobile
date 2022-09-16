@@ -15,9 +15,36 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+resource kv 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
+  name: keyVaultName
+}
+
+resource notificationHubConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'NotificationHub--ConnectionString'
+}
+
+resource notificationHubNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'NotificationHub--Name'
+}
+
+resource contentStorageConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'ContentStorageConnectionString'
+}
+
+resource sendGridAPIKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'SendGridAPIKey'
+}
+
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: 'app-${projectName}-api-${environment}'
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
@@ -78,19 +105,19 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'NotificationHub__ConnectionString'
-          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=NotificationHub--ConnectionString)'
+          value: notificationHubConnectionStringSecret.properties.secretUri
         }
         {
           name: 'NotificationHub__Name'
-          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=NotificationHub--Name)'
+          value: notificationHubNameSecret.properties.secretUri
         }
         {
           name: 'CloudBlobProviderOptions__ContentStorageConnectionString'
-          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=ContentStorageConnectionString)'
+          value: contentStorageConnectionStringSecret.properties.secretUri
         }
         {
           name: 'SendGridAPIKey'
-          value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SendGridAPIKey)'
+          value: sendGridAPIKeySecret.properties.secretUri
         }
         {
           name: 'SMTPSettings__DefaultSender'
@@ -118,3 +145,5 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 output appServiceName string = appService.name
+output tenantId string = appService.identity.tenantId
+output principalId string = appService.identity.principalId
