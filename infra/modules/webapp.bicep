@@ -105,19 +105,19 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         }
         {
           name: 'NotificationHub__ConnectionString'
-          value: notificationHubConnectionStringSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${notificationHubConnectionStringSecret.properties.secretUri})'
         }
         {
           name: 'NotificationHub__Name'
-          value: notificationHubNameSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${notificationHubNameSecret.properties.secretUri})'
         }
         {
           name: 'CloudBlobProviderOptions__ContentStorageConnectionString'
-          value: contentStorageConnectionStringSecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${contentStorageConnectionStringSecret.properties.secretUri})'
         }
         {
           name: 'SendGridAPIKey'
-          value: sendGridAPIKeySecret.properties.secretUri
+          value: '@Microsoft.KeyVault(SecretUri=${sendGridAPIKeySecret.properties.secretUri})'
         }
         {
           name: 'SMTPSettings__DefaultSender'
