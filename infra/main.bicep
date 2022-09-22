@@ -72,13 +72,12 @@ module appService 'modules/webapp.bicep' = {
 // obtain the role id via: az role definition list --name "Key Vault Secrets User" --query "[].name" -o tsv
 var keyVaultSecretsUserRoleId = '4633458b-17de-408a-b874-0445c86b69e6'
 
-module kvRoleAssignment 'modules/add-kv-role-assignment.bicep' = {
+module kvWebAppRoleAssignment 'modules/add-kv-role-assignment.bicep' = {
   name: 'kvra-${now}'
   params: {
     keyVaultName: keyVault.outputs.keyVaultName
     principalId: appService.outputs.principalId
-    roleAssignmentName: guid(keyVaultSecretsUserRoleId, keyVault.outputs.keyVaultId)
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretsUserRoleId)
+    roleDefinitionId: keyVaultSecretsUserRoleId
   }
 }
 
