@@ -67,17 +67,17 @@ module appService 'modules/webapp.bicep' = {
   }
 }
 
-// Role = Key Vault Reader
+// Role = Key Vault Secrets User
 // Note the confusion that the role ".name" property IS the GUID we need. The .roleName property is the text name of the role :(
 // obtain the role id via: az role definition list --name "Key Vault Secrets User" --query "[].name" -o tsv
-var keyVaultReaderRoleId = '21090545-7ca7-4776-b22c-e363652d74d2'
+var keyVaultSecretsUserRoleId = '4633458b-17de-408a-b874-0445c86b69e6'
 
 module kvWebAppRoleAssignment 'modules/add-kv-role-assignment.bicep' = {
   name: 'kvra-${now}'
   params: {
     keyVaultName: keyVault.outputs.keyVaultName
     principalId: appService.outputs.principalId
-    roleDefinitionId: keyVaultReaderRoleId
+    roleDefinitionId: keyVaultSecretsUserRoleId
   }
 }
 
