@@ -5,6 +5,17 @@ param keyVaultName string
 param appServicePlanId string
 param adminPortalUrl string
 param idsUrl string
+param sendGridKey string
+param now string
+
+module sendGridSecrets 'create-secrets.bicep' = {
+  name: 'sendGridSecrets-${now}'
+  params: {
+    keyVaultName: keyVaultName
+    secretName: 'SendGridAPIKey'
+    secretValue: sendGridKey
+  }
+}
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'

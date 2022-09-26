@@ -21,6 +21,9 @@ on:
       IDS_URL:
         required: true
         type: string
+      SENDGRID_KEY:
+        required: true
+        type: string
     secrets:
       AZURE_CREDENTIALS:
         required: true
