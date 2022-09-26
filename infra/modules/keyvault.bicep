@@ -14,12 +14,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
   location: location
   properties: {
-    enabledForDeployment: false
-    enabledForTemplateDeployment: true
-    enableRbacAuthorization: false
+    enabledForDeployment: true
+    enableRbacAuthorization: true
     tenantId: tenant().tenantId
     sku: keyVaultSku
+    accessPolicies: [
+    ]
   }
 }
 
 output keyVaultName string = keyVault.name
+output keyVaultId string = keyVault.id
