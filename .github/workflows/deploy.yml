@@ -8,8 +8,16 @@ on:
         required: true
         type: string
     secrets:
-      AZURE_CREDENTIALS:
+      CLIENT_ID:
         required: true
+      TENANT_ID:
+        required: true
+      SUBSCRIPTION_ID:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
@@ -19,59 +27,59 @@ jobs:
       name: ${{ inputs.environment }}
       url: ${{ steps.bicep.outputs.storageAccountUrl }}
 
-    
     steps:
-    - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
 
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
 
-    - name: Deploy Bicep
-      id: bicep
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
+      - name: Deploy Bicep
+        id: bicep
+        shell: pwsh
+        run: |
           $out = az deployment group create `
             --resource-group ${{ inputs.resourceGroupName }} `
             --template-file .\infra\main.bicep `
-            --parameters `
-              environment=${{ inputs.environment }} `
-            | convertfrom-json `
-            | foreach properties `
-            | foreach outputs
-          
-          $out | Get-Member -MemberType NoteProperty | ForEach-Object {
-            echo "::set-output name=$_.name::$out.$name.value"
+            --parameters environment=${{ inputs.environment }} `
+            | convertfrom-json | foreach properties | foreach outputs
+
+          $out.PSObject.Properties | ForEach-Object {
+              $name = $_.Name
+              $value = $_.Value.value
+              Write-Output "::set-output name=$($name)::$($value)"
           }
 
-    - name: Enable Static Website on Azure Storage
-      uses: azure/CLI@v1
-      with:        
-        inlineScript: |
+      - name: Enable Static Website on Azure Storage
+        id: enable-static-site
+        shell: pwsh
+        run: |
           az storage blob service-properties update `
             --account-name ${{ steps.bicep.outputs.storageAccountName }} `
             --static-website `
             --404-document index.html `
             --index-document index.html
 
-    - name: Get SAS key
-      uses: azure/CLI@v1
-      id: storage
-      with:        
-        inlineScript: |
+      - name: Get SAS key
+        id: storage
+        shell: pwsh
+        run: |
           $expiry = (Get-Date -AsUTC).AddMinutes(10).ToString('yyyy-MM-ddTHH:mm:ssZ')
           $token = az storage container generate-sas `
             --account-name ${{ steps.bicep.outputs.storageAccountName }} `
             --name '$web' `
             --permissions acdrw `
             --expiry $expiry --https-only --permissions dlrw -o tsv
-          echo "::set-output name=sastoken::$token"
+          Write-Output "::set-output name=sastoken::$($token)"
 
-    - name: Upload UI
-      uses: bacongobbler/azure-blob-storage-upload@main
-      with:
-        source_dir: 'ui'
-        container_name: '$web'
-        sas_token: ${{ steps.storage.outputs.sastoken }}
-        sync: 'true'
+      - name: Upload UI
+        uses: bacongobbler/azure-blob-storage-upload@main
+        with:
+          source_dir: "ui"
+          container_name: "$web"
+          account_name: ${{ steps.bicep.outputs.storageAccountName }}
+          sas_token: ${{ steps.storage.outputs.sastoken }}
+          sync: "true"

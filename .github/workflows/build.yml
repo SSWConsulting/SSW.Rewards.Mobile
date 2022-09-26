@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ui
-        path: out
+        path: out/wwwroot
         if-no-files-found: error
 
     - name: Upload a Infra Artifact
