@@ -25,20 +25,20 @@ jobs:
       resourceGroupName: ssw.rewards.dev
     secrets: inherit
 
-  # deploy_staging:
-  #   name: Deploy
-  #   needs: deploy_dev
-  #   uses: ./.github/workflows/deploy.yml
-  #   with:
-  #     environment: staging
-  #     resourceGroupName: ssw.rewards.staging
-  #   secrets: inherit
+  deploy_staging:
+     name: Deploy Staging
+     needs: deploy_dev
+     uses: ./.github/workflows/deploy.yml
+     with:
+       environment: staging
+       resourceGroupName: ssw.rewards.staging
+     secrets: inherit
 
-  # deploy_prod:
-  #   name: Deploy
-  #   needs: deploy_staging
-  #   uses: ./.github/workflows/deploy.yml
-  #   with:
-  #     environment: prod
-  #     resourceGroupName: ssw.rewards.prod
-  #   secrets: inherit
+  deploy_prod:
+     name: Deploy Prod
+     needs: deploy_staging
+     uses: ./.github/workflows/deploy.yml
+     with:
+       environment: prod
+       resourceGroupName: ssw.rewards.prod
+     secrets: inherit
