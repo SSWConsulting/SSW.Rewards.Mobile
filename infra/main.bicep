@@ -18,7 +18,6 @@ param sqlAdministratorsObjectId string
 param adminPortalUrl string
 param idsUrl string
 
-@secure()
 param sendGridKey string
 
 @secure()

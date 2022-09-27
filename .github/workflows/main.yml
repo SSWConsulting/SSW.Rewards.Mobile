@@ -20,11 +20,11 @@ jobs:
       APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
       ADMIN_PORTAL_URL: https://dev.rewards.ssw.com.au
       IDS_URL: https://app-ssw-ident-staging-api.azurewebsites.net
-      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
 
   deploy_staging:
     needs: deploy_dev
@@ -38,11 +38,11 @@ jobs:
       # TODO: Correct the Admin Portal URL when we have a staging env
       ADMIN_PORTAL_URL: https://dev.rewards.ssw.com.au
       IDS_URL: https://app-ssw-ident-staging-api.azurewebsites.net
-      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
 
   deploy_prod:
     needs: deploy_staging
@@ -55,8 +55,8 @@ jobs:
       APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
       ADMIN_PORTAL_URL: https://rewards.ssw.com.au
       IDS_URL: https://identity.ssw.com.au
-      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      SENDGRID_KEY: ${{ secrets.SENDGRID_KEY }}
