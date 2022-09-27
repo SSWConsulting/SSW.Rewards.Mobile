@@ -25,7 +25,6 @@ public class Program
 
         // register services from nswag
         const string generatedClientName = "generatedClient";
-        string baseUrl = apiBaseUrl.Replace("/api", string.Empty);
         builder.Services.AddHttpClient(generatedClientName)
             .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
 
@@ -43,7 +42,7 @@ public class Program
             builder.Services.AddScoped(client.Interface!, sp =>
             {
                 var ctor = client.Implementation.GetConstructor(new[] { typeof(string), typeof(HttpClient) }) !;
-                return ctor.Invoke(new object?[] { baseUrl, sp.GetService<IHttpClientFactory>() !.CreateClient(generatedClientName) });
+                return ctor.Invoke(new object?[] { apiBaseUrl, sp.GetService<IHttpClientFactory>() !.CreateClient(generatedClientName) });
             });
         }
 
