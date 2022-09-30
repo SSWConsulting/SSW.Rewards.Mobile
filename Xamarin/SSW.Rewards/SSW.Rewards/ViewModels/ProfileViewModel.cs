@@ -48,6 +48,8 @@ namespace SSW.Rewards.ViewModels
 
         private double _topRewardCost;
 
+        private bool _loadingProfileSections;
+
         public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
         public ProfileViewModel(IUserService userService)
@@ -196,7 +198,18 @@ namespace SSW.Rewards.ViewModels
 
         private async Task LoadProfileSections()
         {
+            if (_loadingProfileSections)
+                return;
+
+            _loadingProfileSections = true;
+
             ProfileSections.Clear();
+
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+                OnPropertyChanged(nameof(ProfileSections));
+            }
 
             var rewardList = await _userService.GetRewardsAsync(userId);
             var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
@@ -284,6 +297,8 @@ namespace SSW.Rewards.ViewModels
 
                 ProfileSections.Add(notificationsSection);
             }
+
+            _loadingProfileSections = false;
         }
 
         private void RefreshProfilePic()

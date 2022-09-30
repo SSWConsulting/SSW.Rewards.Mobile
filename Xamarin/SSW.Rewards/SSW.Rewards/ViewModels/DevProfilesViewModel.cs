@@ -86,54 +86,61 @@ namespace SSW.Rewards.ViewModels
                 ShowPoints = false
             };
             OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
+
+            // TODO: Change all references to <object> to <string>
+            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (msg) => await LoadProfiles());
         }
 
         public async Task Initialise()
         {
             if (_firstRun)
             {
-                var profiles = await _devService.GetProfilesAsync();
+                await LoadProfiles();
+                _firstRun = false;
+            }
+        }
 
-                if (profiles.Any())
+        private async Task LoadProfiles()
+        {
+            var profiles = await _devService.GetProfilesAsync();
+
+            if (profiles.Any())
+            {
+                foreach (var profile in profiles)
                 {
-                    foreach (var profile in profiles)
-                    {
-                        Profiles.Add(profile);
-                    }
-
-                    IsRunning = false;
-
-                    _lastProfileIndex = Profiles.Count - 1;
-
-                    //SelectedProfile = Profiles[_lastProfileIndex];
-                    //OnPropertyChanged(nameof(SelectedProfile));
-
-                    ShowDevCards = true;
-                    OnPropertyChanged(nameof(ShowDevCards));
-
-                    // Disabling the scrolling carousel effect because
-                    // it's janky and probably not needed for v2 (it was
-                    // a v1 issue). Leacving this here becase we can 
-                    // probably fix the jankiness and re-enable for a nice
-                    // effect when we have time.
-
-                    //for (int i = _lastProfileIndex; i > -1; i--)
-                    //{
-                    //    if (PageInView)
-                    //    {
-                    //        ScrollToRequested.Invoke(this, i);
-                    //        await Task.Delay(50);
-                    //    }
-                    //}
-
-                    _initialised = true;
-
-                    SetDevDetails();
-
-                    RaisePropertyChanged(nameof(IsRunning));
-
-                    _firstRun = false;
+                    Profiles.Add(profile);
                 }
+
+                IsRunning = false;
+
+                _lastProfileIndex = Profiles.Count - 1;
+
+                //SelectedProfile = Profiles[_lastProfileIndex];
+                //OnPropertyChanged(nameof(SelectedProfile));
+
+                ShowDevCards = true;
+                OnPropertyChanged(nameof(ShowDevCards));
+
+                // Disabling the scrolling carousel effect because
+                // it's janky and probably not needed for v2 (it was
+                // a v1 issue). Leacving this here becase we can 
+                // probably fix the jankiness and re-enable for a nice
+                // effect when we have time.
+
+                //for (int i = _lastProfileIndex; i > -1; i--)
+                //{
+                //    if (PageInView)
+                //    {
+                //        ScrollToRequested.Invoke(this, i);
+                //        await Task.Delay(50);
+                //    }
+                //}
+
+                _initialised = true;
+
+                SetDevDetails();
+
+                RaisePropertyChanged(nameof(IsRunning));
             }
         }
 

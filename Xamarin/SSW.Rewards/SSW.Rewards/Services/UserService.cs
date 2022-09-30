@@ -36,7 +36,7 @@ namespace SSW.Rewards.Services
                 Scope = App.Constants.Scope,
                 RedirectUri = App.Constants.AuthRedirectUrl,
                 Browser = browser,
-                
+
             };
 
             _userClient = new UserClient(BaseUrl, AuthenticatedClient);
@@ -188,8 +188,8 @@ namespace SSW.Rewards.Services
 
         public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
 
-        public string MyProfilePic 
-        { 
+        public string MyProfilePic
+        {
             get
             {
                 var pic = Preferences.Get(nameof(MyProfilePic), string.Empty);
