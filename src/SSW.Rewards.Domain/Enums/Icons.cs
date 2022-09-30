@@ -78,4 +78,6 @@ public enum Icons
     QRCode,
 
     Angular,
+    
+    Ribbon
 }

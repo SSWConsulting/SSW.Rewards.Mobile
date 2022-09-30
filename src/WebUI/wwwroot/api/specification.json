@@ -2218,7 +2218,8 @@
           "Home",
           "Info",
           "QRCode",
-          "Angular"
+          "Angular",
+          "Ribbon"
         ],
         "enum": [
           0,
@@ -2257,7 +2258,8 @@
           33,
           34,
           35,
-          36
+          36,
+          37
         ]
       },
       "AdminQuizQuestionDto": {
@@ -2608,7 +2610,12 @@
         "additionalProperties": false,
         "properties": {
           "viewModel": {
-            "$ref": "#/components/schemas/RewardViewModel"
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RewardViewModel"
+              }
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/RewardStatus"

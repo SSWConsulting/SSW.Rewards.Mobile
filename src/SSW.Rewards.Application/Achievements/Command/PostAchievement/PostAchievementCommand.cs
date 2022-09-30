@@ -57,8 +57,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var userAchievement = new UserAchievement
         {
-            UserId = user.Id,
-				Achievement = requestedAchievement
+            UserId          = user.Id,
+            AchievementId   = requestedAchievement.Id
         };
 
         _context.UserAchievements.Add(userAchievement);

@@ -4,7 +4,7 @@ namespace SSW.Rewards.Application.Rewards.Commands;
 
 public class ClaimRewardResult
 {
-    public RewardViewModel viewModel { get; set; }
+    public RewardViewModel? viewModel { get; set; }
     public RewardStatus status { get; set; }
 }
 
