@@ -71,7 +71,7 @@ namespace SSW.Rewards.ViewModels
                     HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                     AchievementHeading = result.Title;
                     _wonPrize = true;
-                    MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+                    MessagingCenter.Send(this, Constants.PointsAwardedMessage);
                     break;
 
                 case ScanResult.Duplicate:
