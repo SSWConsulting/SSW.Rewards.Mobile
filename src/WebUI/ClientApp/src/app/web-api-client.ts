@@ -3170,7 +3170,7 @@ export interface IClaimAchievementForUserCommand {
 }
 
 export class PostAchievementResult implements IPostAchievementResult {
-    viewModel?: AchievementDto;
+    viewModel?: AchievementDto | undefined;
     status?: AchievementStatus;
 
     constructor(data?: IPostAchievementResult) {
@@ -3205,7 +3205,7 @@ export class PostAchievementResult implements IPostAchievementResult {
 }
 
 export interface IPostAchievementResult {
-    viewModel?: AchievementDto;
+    viewModel?: AchievementDto | undefined;
     status?: AchievementStatus;
 }
 

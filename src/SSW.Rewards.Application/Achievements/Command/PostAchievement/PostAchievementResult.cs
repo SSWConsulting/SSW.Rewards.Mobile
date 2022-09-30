@@ -4,7 +4,7 @@ namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
 public class PostAchievementResult
 {
-    public AchievementDto viewModel { get; set; }
+    public AchievementDto? viewModel { get; set; }
 
     public AchievementStatus status { get; set; }
 }
