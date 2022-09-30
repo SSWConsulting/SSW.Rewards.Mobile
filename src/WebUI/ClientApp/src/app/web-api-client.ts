@@ -3846,6 +3846,7 @@ export enum Icons {
     Info = 34,
     QRCode = 35,
     Angular = 36,
+    Ribbon = 37,
 }
 
 export class AdminQuizQuestionDto implements IAdminQuizQuestionDto {
