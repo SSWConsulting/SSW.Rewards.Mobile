@@ -344,7 +344,7 @@ namespace SSW.Rewards.ViewModels
 
             if (result)
             {
-                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
             }
 
             IsBusy = false;
