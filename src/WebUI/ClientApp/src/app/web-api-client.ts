@@ -4727,7 +4727,7 @@ export interface IAddRewardCommand {
 }
 
 export class ClaimRewardResult implements IClaimRewardResult {
-    viewModel?: RewardViewModel;
+    viewModel?: RewardViewModel | undefined;
     status?: RewardStatus;
 
     constructor(data?: IClaimRewardResult) {
@@ -4762,7 +4762,7 @@ export class ClaimRewardResult implements IClaimRewardResult {
 }
 
 export interface IClaimRewardResult {
-    viewModel?: RewardViewModel;
+    viewModel?: RewardViewModel | undefined;
     status?: RewardStatus;
 }
 

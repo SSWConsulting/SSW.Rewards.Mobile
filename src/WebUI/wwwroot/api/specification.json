@@ -2610,7 +2610,12 @@
         "additionalProperties": false,
         "properties": {
           "viewModel": {
-            "$ref": "#/components/schemas/RewardViewModel"
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RewardViewModel"
+              }
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/RewardStatus"
