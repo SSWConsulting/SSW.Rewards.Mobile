@@ -1918,7 +1918,12 @@
         "additionalProperties": false,
         "properties": {
           "viewModel": {
-            "$ref": "#/components/schemas/AchievementDto"
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/AchievementStatus"
