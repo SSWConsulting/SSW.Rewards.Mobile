@@ -47,20 +47,17 @@
                   RowDefinitions="3*, 2*"
                   ColumnDefinitions="80, *, 50">
 
-                <Image Grid.Row="0"
-                       Grid.RowSpan="2"
-                       Source="{Binding ProfilePic}"
-                       WidthRequest="74"
-                       HeightRequest="74"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center"
-                       Aspect="AspectFill">
-                    <Image.Clip>
-                        <EllipseGeometry Center="37,37"
-                                     RadiusX="37"
-                                     RadiusY="37"/>
-                    </Image.Clip>
-                </Image>
+                <ImageButton Grid.Row="0"
+                             Grid.RowSpan="2"
+                             Source="{Binding ProfilePic}"
+                             WidthRequest="74"
+                             HeightRequest="74"
+                             CornerRadius="37"
+                             Command="{Binding GoToMyProfileCommand}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Aspect="AspectFill">
+                </ImageButton>
 
                 <StackLayout Grid.Column="1"
                              Orientation="Horizontal"
