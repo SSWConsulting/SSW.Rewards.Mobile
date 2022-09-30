@@ -28,7 +28,7 @@ public class SampleDataSeeder
         AddExistingAchievementIcons(existingAchievements);
 
         SetupAchievement(existingAchievements, MilestoneAchievements.ClaimPrize, 50, AchievementType.Completed, Icons.Gift);
-        SetupAchievement(existingAchievements, MilestoneAchievements.Leaderboard, 500, AchievementType.Completed, Icons.Trophy);
+        SetupAchievement(existingAchievements, MilestoneAchievements.Leaderboard, 500, AchievementType.Completed, Icons.Ribbon);
         SetupAchievement(existingAchievements, "Follow SSW TV on Twitter", 150, AchievementType.Linked, Icons.Twitter, true);
         SetupAchievement(existingAchievements, "Follow SSW TV on YouTube", 150, AchievementType.Linked, Icons.Youtube, true);
         SetupAchievement(existingAchievements, "Follow SSW on LinkedIn", 150, AchievementType.Linked, Icons.Linkedin, true);
