@@ -34,6 +34,8 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand CancelSearchCommand => new Command(CancelSearch);
 
+        public ICommand GoToMyProfileCommand => new Command(async () => await Shell.Current.GoToAsync("//main"));
+
         public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
         public Action<int> ScrollTo { get; set; }

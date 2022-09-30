@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="25" android:versionName="2.1.1">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="26" android:versionName="2.1.2">
 	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="30" />
 	<application android:label="SSW Rewards" android:icon="@mipmap/icon" android:roundIcon="@mipmap/ic_launcher_round">
 		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />

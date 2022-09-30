@@ -76,7 +76,7 @@
 
         public const string Home = "\uf481";
 
-        public const string Infor = "\uf4a3";
+        public const string Info = "\uf4a3";
 
         public const string QRCode = "\uf635";
 
@@ -85,5 +85,7 @@
         public const string Sad = "\uf3ea";
 
         public const string Check = "\ue9b7";
+
+        public const string Ribbon = "\uea30";
     }
 }
