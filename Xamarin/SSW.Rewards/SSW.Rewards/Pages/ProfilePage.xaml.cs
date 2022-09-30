@@ -11,6 +11,8 @@ namespace SSW.Rewards.Pages
     {
         private bool _isMe;
 
+        private bool _initialised;
+
         private ProfileViewModel viewModel;
 
         public ProfilePage()
@@ -36,8 +38,16 @@ namespace SSW.Rewards.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await viewModel.Initialise(_isMe);
+            if (_isMe && _initialised)
+            {
+
+            }
+            else
+            {
+                await viewModel.Initialise(_isMe);
+            }
             viewModel.ShowSnackbar += ShowSnackbar;
+            _initialised = true;
         }
 
         private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
