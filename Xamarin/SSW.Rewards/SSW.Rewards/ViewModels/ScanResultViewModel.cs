@@ -117,7 +117,7 @@ namespace SSW.Rewards.ViewModels
             if (result.result == ScanResult.Added)
             {
                 await _userService.UpdateMyDetailsAsync();
-                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
             }
         }
 
