@@ -2934,7 +2934,8 @@
             "type": "string"
           },
           "profilePic": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "points": {
             "type": "integer",
@@ -2945,7 +2946,8 @@
             "format": "int32"
           },
           "qrCode": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
