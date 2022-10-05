@@ -47,7 +47,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             .Where(ua => ua.UserId == user.Id)                
             .ToListAsync(cancellationToken);
 
-        if (userAchievements.Any(ua => ua.Achievement == requestedAchievement))
+        if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
         {
             return new PostAchievementResult
             {
@@ -133,14 +133,14 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             }
         }
 
-			await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
-			var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
+        var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
-			return new PostAchievementResult
-			{
-				viewModel = achievementModel,
-				status = AchievementStatus.Added
-			};
-		}
+		return new PostAchievementResult
+		{
+			viewModel = achievementModel,
+			status = AchievementStatus.Added
+		};
+	}
 }

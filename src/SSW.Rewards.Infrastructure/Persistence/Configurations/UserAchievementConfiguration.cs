@@ -17,8 +17,7 @@ public class UserAchievementConfiguration : IEntityTypeConfiguration<UserAchieve
             .WithMany(u => u.UserAchievements);
 
         builder
-            .HasIndex(ua => new { ua.UserId, ua.AchievementId })
-            .IsUnique();
+            .HasIndex(ua => new { ua.UserId, ua.AchievementId });
 
         builder
             .Property(ua => ua.AwardedAt)

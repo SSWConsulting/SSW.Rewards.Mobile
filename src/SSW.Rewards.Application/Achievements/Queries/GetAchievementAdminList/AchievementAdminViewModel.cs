@@ -1,5 +1,4 @@
 ﻿using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Application.Users.Queries.GetUser;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
@@ -11,6 +10,7 @@ public class AchievementAdminViewModel : IMapFrom<Achievement>
     public string Code { get; set; }
     public AchievementType Type { get; set; }
     public bool? IsArchived { get; set; }
+    public bool? IsMultiScanEnabled { get; set; }
 
     public void Mapping(Profile profile)
     {

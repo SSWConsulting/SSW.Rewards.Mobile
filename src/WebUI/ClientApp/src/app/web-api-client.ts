@@ -2992,6 +2992,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
     code?: string;
     type?: AchievementType;
     isArchived?: boolean | undefined;
+    isMultiScanEnabled?: boolean | undefined;
 
     constructor(data?: IAchievementAdminViewModel) {
         if (data) {
@@ -3010,6 +3011,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
             this.code = _data["code"];
             this.type = _data["type"];
             this.isArchived = _data["isArchived"];
+            this.isMultiScanEnabled = _data["isMultiScanEnabled"];
         }
     }
 
@@ -3028,6 +3030,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
         data["code"] = this.code;
         data["type"] = this.type;
         data["isArchived"] = this.isArchived;
+        data["isMultiScanEnabled"] = this.isMultiScanEnabled;
         return data;
     }
 }
@@ -3039,12 +3042,14 @@ export interface IAchievementAdminViewModel {
     code?: string;
     type?: AchievementType;
     isArchived?: boolean | undefined;
+    isMultiScanEnabled?: boolean | undefined;
 }
 
 export class CreateAchievementCommand implements ICreateAchievementCommand {
     name?: string;
     value?: number;
     type?: AchievementType;
+    isMultiscanEnabled?: boolean;
 
     constructor(data?: ICreateAchievementCommand) {
         if (data) {
@@ -3060,6 +3065,7 @@ export class CreateAchievementCommand implements ICreateAchievementCommand {
             this.name = _data["name"];
             this.value = _data["value"];
             this.type = _data["type"];
+            this.isMultiscanEnabled = _data["isMultiscanEnabled"];
         }
     }
 
@@ -3075,6 +3081,7 @@ export class CreateAchievementCommand implements ICreateAchievementCommand {
         data["name"] = this.name;
         data["value"] = this.value;
         data["type"] = this.type;
+        data["isMultiscanEnabled"] = this.isMultiscanEnabled;
         return data;
     }
 }
@@ -3083,6 +3090,7 @@ export interface ICreateAchievementCommand {
     name?: string;
     value?: number;
     type?: AchievementType;
+    isMultiscanEnabled?: boolean;
 }
 
 export class ClaimAchievementResult implements IClaimAchievementResult {
@@ -3256,6 +3264,7 @@ export class UpdateAchievementCommand implements IUpdateAchievementCommand {
     id?: number;
     value?: number;
     type?: AchievementType;
+    isMultiscanEnabled?: boolean;
 
     constructor(data?: IUpdateAchievementCommand) {
         if (data) {
@@ -3271,6 +3280,7 @@ export class UpdateAchievementCommand implements IUpdateAchievementCommand {
             this.id = _data["id"];
             this.value = _data["value"];
             this.type = _data["type"];
+            this.isMultiscanEnabled = _data["isMultiscanEnabled"];
         }
     }
 
@@ -3286,6 +3296,7 @@ export class UpdateAchievementCommand implements IUpdateAchievementCommand {
         data["id"] = this.id;
         data["value"] = this.value;
         data["type"] = this.type;
+        data["isMultiscanEnabled"] = this.isMultiscanEnabled;
         return data;
     }
 }
@@ -3294,6 +3305,7 @@ export interface IUpdateAchievementCommand {
     id?: number;
     value?: number;
     type?: AchievementType;
+    isMultiscanEnabled?: boolean;
 }
 
 export class LeaderboardListViewModel implements ILeaderboardListViewModel {

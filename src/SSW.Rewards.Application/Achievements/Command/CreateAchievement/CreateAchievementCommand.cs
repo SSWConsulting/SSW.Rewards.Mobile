@@ -8,6 +8,8 @@ public class CreateAchievementCommand : IRequest<AchievementAdminViewModel>
     public string Name { get; set; }
     public int Value { get; set; }
     public AchievementType Type { get; set; }
+
+    public bool IsMultiscanEnabled { get; set; }
 }
 
 public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminViewModel>
@@ -32,6 +34,7 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
         achievement.Code = Convert.ToBase64String(codeData);
         achievement.Value = request.Value;
         achievement.Type = request.Type;
+        achievement.IsMultiscanEnabled = request.IsMultiscanEnabled;
 
         if (achievement.Id == 0)
         {
@@ -43,6 +46,7 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
                 Name = achievement.Name,
                 Value = achievement.Value,
                 Type = achievement.Type,
+                IsMultiScanEnabled = achievement.IsMultiscanEnabled
             };
 
         }

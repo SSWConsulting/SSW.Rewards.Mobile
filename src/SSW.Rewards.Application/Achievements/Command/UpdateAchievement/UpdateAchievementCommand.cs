@@ -7,6 +7,7 @@ public class UpdateAchievementCommand : IRequest<Unit>
     public int Id { get; set; }
     public int Value { get; set; }
     public AchievementType Type { get; set; }
+    public bool IsMultiscanEnabled { get; set; }
 }
 
 public sealed class UpdateAchievementCommandHandler : IRequestHandler<UpdateAchievementCommand, Unit>
@@ -30,6 +31,7 @@ public sealed class UpdateAchievementCommandHandler : IRequestHandler<UpdateAchi
 
         achievement.Value = request.Value;
         achievement.Type = request.Type;
+        achievement.IsMultiscanEnabled = request.IsMultiscanEnabled;
 
         await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;

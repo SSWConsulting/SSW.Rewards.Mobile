@@ -1854,6 +1854,10 @@
           "isArchived": {
             "type": "boolean",
             "nullable": true
+          },
+          "isMultiScanEnabled": {
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
@@ -1870,6 +1874,9 @@
           },
           "type": {
             "$ref": "#/components/schemas/AchievementType"
+          },
+          "isMultiscanEnabled": {
+            "type": "boolean"
           }
         }
       },
@@ -1970,6 +1977,9 @@
           },
           "type": {
             "$ref": "#/components/schemas/AchievementType"
+          },
+          "isMultiscanEnabled": {
+            "type": "boolean"
           }
         }
       },
