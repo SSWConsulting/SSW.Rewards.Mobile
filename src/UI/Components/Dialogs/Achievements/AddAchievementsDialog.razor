@@ -12,6 +12,7 @@
                     <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
                 }
             </MudSelect>
+            <MudCheckBox Label="Multi-scan enabled?" @bind-Checked="@Dto.IsMultiScanEnabled"/>
         </MudForm>
     </DialogContent>
         <DialogActions>

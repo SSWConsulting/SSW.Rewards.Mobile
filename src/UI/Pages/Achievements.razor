@@ -22,7 +22,7 @@
        IsLoading="@_loading">
     <ToolbarContent>
         <MudTextField @bind-Value="_searchString"
-                      Placeholder="Search for a Reward"
+                      Placeholder="Search for an achievement"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                       Class="mt-0"/>
         
@@ -102,14 +102,15 @@
                 {
                     Id = dto.Id,
                     Value = dto.Value,
-                    Type = dto.Type
+                    Type = dto.Type,
+                    IsMultiscanEnabled = dto.IsMultiScanEnabled??false
                 });
                 SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }
             if (result.Data is AssignReward usr)
             {
                 if (usr?.Id == null) return;
-                    
+
                 // TODO: Add nice notification for returned status
                 await _client.ClaimForUserAsync(new ClaimAchievementForUserCommand
                 {
@@ -130,12 +131,14 @@
         {
             if (result.Data is AchievementAdminViewModel dto)
             {
+                Console.WriteLine($"Multiscan enabled: ${dto.IsMultiScanEnabled}");
                 await _client.CreateAsync(
                     new CreateAchievementCommand
                     {
                         Name = dto.Name,
                         Value = dto.Value,
-                        Type = dto.Type
+                        Type = dto.Type,
+                        IsMultiscanEnabled = dto.IsMultiScanEnabled??false
                     });
                 SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }

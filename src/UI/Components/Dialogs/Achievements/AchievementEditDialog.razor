@@ -35,6 +35,7 @@
                 <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
             }
         </MudSelect>
+        <MudCheckBox Label="Multi-scan enabled?" @bind-Checked="@dto.IsMultiScanEnabled" />
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
