@@ -5396,10 +5396,10 @@ export class CurrentUserViewModel implements ICurrentUserViewModel {
     id?: number;
     email?: string;
     fullName?: string;
-    profilePic?: string;
+    profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    qrCode?: string;
+    qrCode?: string | undefined;
 
     constructor(data?: ICurrentUserViewModel) {
         if (data) {
@@ -5446,10 +5446,10 @@ export interface ICurrentUserViewModel {
     id?: number;
     email?: string;
     fullName?: string;
-    profilePic?: string;
+    profilePic?: string | undefined;
     points?: number;
     balance?: number;
-    qrCode?: string;
+    qrCode?: string | undefined;
 }
 
 export class UserViewModel implements IUserViewModel {
