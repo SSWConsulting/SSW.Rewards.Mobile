@@ -26,7 +26,14 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
 
         if (!string.IsNullOrWhiteSpace(userEmail))
         {
-            userId = await _userService.GetUserId(userEmail);
+            try
+            {
+                userId = await _userService.GetUserId(userEmail);
+            }
+            catch (Exception)
+            {
+                userId = 0;
+            }
 
             if (userId > 0)
             {
