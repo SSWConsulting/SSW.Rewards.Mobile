@@ -44,6 +44,11 @@
                 Value
             </MudTableSortLabel>
         </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.IsMultiScanEnabled ?? false)">
+                Multi-scan
+            </MudTableSortLabel>
+        </MudTh>
     </HeadingTemplate>
     <RowTemplate>
         <MudTd DataLabel="Code">
@@ -54,6 +59,9 @@
         </MudTd>
         <MudTd DataLabel="Value">
             @context.Value
+        </MudTd>
+        <MudTd DataLabel="Value">
+            @context.IsMultiScanEnabled
         </MudTd>
     </RowTemplate>
 </Table>
@@ -103,7 +111,7 @@
                     Id = dto.Id,
                     Value = dto.Value,
                     Type = dto.Type,
-                    IsMultiscanEnabled = dto.IsMultiScanEnabled??false
+                    IsMultiscanEnabled = dto.IsMultiScanEnabled ?? false
                 });
                 SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }
