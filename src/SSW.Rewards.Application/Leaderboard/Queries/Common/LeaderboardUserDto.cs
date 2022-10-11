@@ -33,6 +33,7 @@ public class LeaderboardUserDto : IMapFrom<User>
         var end = DateTime.Now.FirstDayOfWeek().AddDays(-7);
 
         profile.CreateMap<User, LeaderboardUserDto>()
+                .ForMember(dst => dst.Balance, opt => opt.Ignore())
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
