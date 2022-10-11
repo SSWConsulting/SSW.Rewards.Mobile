@@ -1,6 +1,7 @@
 ﻿using System.Net.Mail;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
@@ -15,13 +16,20 @@ public class UserService : IUserService, IRolesService
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
+    private readonly ILogger<UserService> _logger;
     private readonly string StaffSMTPDomain;
 
-    public UserService(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper, IConfiguration configuration)
+    public UserService(
+        IApplicationDbContext dbContext, 
+        ICurrentUserService currentUserService, 
+        IMapper mapper, 
+        IConfiguration configuration,
+        ILogger<UserService> logger)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _mapper = mapper;
+        _logger = logger;
 
         // TODO: @william update this to IOptionsPattern when upgrading to .NET 6
         StaffSMTPDomain = configuration.GetValue<string>(nameof(StaffSMTPDomain));
@@ -61,33 +69,36 @@ public class UserService : IUserService, IRolesService
         return CreateUser(user, CancellationToken.None).Result;
     }
 
-    public async Task<int> CreateUser(User user, CancellationToken cancellationToken)
+    public async Task<int> CreateUser(User newUser, CancellationToken cancellationToken)
     {
-        if (await _dbContext.Users.AnyAsync(u => u.Email == user.Email))
+        var currentUser = await _dbContext.Users.Where(u => u.Email == newUser.Email).FirstOrDefaultAsync(cancellationToken);
+
+        if (currentUser != null)
         {
-            throw new AlreadyExistsException($"User {user.Email} already exists");
+            _logger.LogWarning("User with {email} already exists", newUser.Email);
+            return currentUser.Id;
         }
 
         var userRole = await _dbContext.Roles
             .FirstOrDefaultAsync(r => r.Name == "User");
 
-        user.Roles.Add(new UserRole { Role = userRole });
+        newUser.Roles.Add(new UserRole { Role = userRole });
 
-        var userEmail = new MailAddress(user.Email);
+        var userEmail = new MailAddress(newUser.Email);
 
         if (userEmail.Host == StaffSMTPDomain)
         {
             var staffRole = await _dbContext.Roles
                 .FirstOrDefaultAsync(r => r.Name == "Staff");
 
-            user.Roles.Add(new UserRole { Role = staffRole });
+            newUser.Roles.Add(new UserRole { Role = staffRole });
         }
 
-        _dbContext.Users.Add(user);
+        _dbContext.Users.Add(newUser);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return user.Id;
+        return newUser.Id;
     }
 
     public async Task<int> GetUserId(string email)
