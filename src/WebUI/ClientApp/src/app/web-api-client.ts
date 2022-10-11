@@ -3421,6 +3421,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     rank?: number;
     userId?: number;
     name?: string | undefined;
+    email?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
     pointsClaimed?: number;
@@ -3444,6 +3445,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.rank = _data["rank"];
             this.userId = _data["userId"];
             this.name = _data["name"];
+            this.email = _data["email"];
             this.profilePic = _data["profilePic"];
             this.totalPoints = _data["totalPoints"];
             this.pointsClaimed = _data["pointsClaimed"];
@@ -3467,6 +3469,7 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["rank"] = this.rank;
         data["userId"] = this.userId;
         data["name"] = this.name;
+        data["email"] = this.email;
         data["profilePic"] = this.profilePic;
         data["totalPoints"] = this.totalPoints;
         data["pointsClaimed"] = this.pointsClaimed;
@@ -3483,6 +3486,7 @@ export interface ILeaderboardUserDto {
     rank?: number;
     userId?: number;
     name?: string | undefined;
+    email?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
     pointsClaimed?: number;
