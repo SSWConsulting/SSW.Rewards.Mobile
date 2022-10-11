@@ -2071,6 +2071,10 @@
             "type": "string",
             "nullable": true
           },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
           "profilePic": {
             "type": "string",
             "nullable": true
