@@ -67,6 +67,7 @@
                 Total Points
             </MudTableSortLabel>
         </MudTh>
+        <MudTh>Action</MudTh>
     </HeadingTemplate>
     <RowTemplate>
         <MudTd DataLabel="Rank">@context.Rank</MudTd>
@@ -83,10 +84,12 @@
         <MudTd DataLabel="PointsThisYear">@context.PointsThisYear</MudTd>
         <MudTd DataLabel="PointsClaimed">@context.PointsClaimed</MudTd>
         <MudTd DataLabel="TotalPoints">@context.TotalPoints</MudTd>
+        <MudTd DataLabel="">
+            <MudIcon Icon="@Icons.Filled.MarkEmailRead" Title="Resend Confirmation Email" onclick="@(() => ResendConfirmationEmail(context.Email))"/>
+        </MudTd>
+
     </RowTemplate>
 </Table>
-
-@* TODO: Move this to the code behind? *@
 
 @code {
     private bool _loading = true;
@@ -97,6 +100,30 @@
     {
         await base.OnInitializedAsync();
         await GetLeaderboard();
+    }
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
+    [Inject]
+    private IHttpClientFactory ClientFactory { get; set; } = null!;
+
+    private async void ResendConfirmationEmail(string userEmail)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Resend account confirmation email?!",
+            yesText: "Yes", cancelText: "Cancel");
+
+        if (result is true)
+        {
+            var identityClient = ClientFactory.CreateClient("IdentityClient");
+            var content = JsonContent.Create(new { email = userEmail });
+            var resp = await identityClient.PostAsync(new Uri("/api/resend", UriKind.Relative), content, CancellationToken.None);
+            resp.EnsureSuccessStatusCode();
+        }
+
+        StateHasChanged();
     }
 
     private async Task GetLeaderboard()
@@ -112,5 +139,4 @@
             exception.Redirect();
         }
     }
-
 }
