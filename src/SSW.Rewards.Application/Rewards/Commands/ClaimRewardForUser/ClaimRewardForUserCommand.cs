@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Rewards.Common;
+using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
 
@@ -11,14 +13,20 @@ public class ClaimRewardForUserCommand : IRequest<ClaimRewardResult>
 public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUserCommand, ClaimRewardResult>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ILogger<ClaimRewardForUserCommand> _logger;
+    private readonly IMapper _mapper;
+    private readonly ILogger<ClaimRewardForUserCommandHandler> _logger;
+    private readonly IDateTime _dateTime;
 
     public ClaimRewardForUserCommandHandler(
             IApplicationDbContext context,
-            ILogger<ClaimRewardForUserCommand> logger)
+            IMapper mapper,
+            ILogger<ClaimRewardForUserCommandHandler> logger,
+            IDateTime dateTime)
     {
         _context = context;
+        _mapper = mapper;
         _logger = logger;
+        _dateTime = dateTime;
     }
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardForUserCommand request, CancellationToken cancellationToken)
@@ -37,10 +45,19 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             };
         }
 
-        var user = await _context.Users
+        User? user = await _context.Users
             .Where(u => u.Id == request.UserId)
             .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(cancellationToken);
+
+        if (user == null)
+        {
+            _logger.LogError("User with ID {userId} claiming the reward {rewardId}({rewardName}) does not exist!", request.UserId, reward.Id, reward.Name);
+            return new ClaimRewardResult
+            {
+                status = RewardStatus.Error
+            };
+        }
 
         var userRewards = await _context
                 .UserRewards
@@ -49,8 +66,8 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
                 .ToListAsync(cancellationToken);
 
         int pointsUsed = userRewards.Sum(ur => ur.Reward.Cost);
-
-        int balance = user.UserAchievements.Sum(ua => ua.Achievement.Value) - pointsUsed;
+        int totalPoints = user.UserAchievements.Sum(ua => ua.Achievement.Value);
+        int balance = totalPoints - pointsUsed;
 
         if (balance < reward.Cost)
         {
@@ -63,13 +80,23 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
 
         try
         {
-            await _context
-                .UserRewards
-                .AddAsync(new UserReward
+            // award the user an achievement for claiming their first prize
+            if (!user.UserRewards.Any())
+            {
+                var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
+                if (achievement != null)
                 {
-                    UserId = user.Id,
-                    RewardId = reward.Id
-                }, cancellationToken);
+                    user.UserAchievements.Add(new UserAchievement { Achievement = achievement });
+                }
+            }
+
+            user.UserRewards.Add(
+                 new UserReward
+                 {
+                     UserId = user.Id,
+                     RewardId = reward.Id,
+                     AwardedAt = _dateTime.Now,
+                 });
 
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -82,9 +109,12 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             };
         }
 
+        var rewardModel = _mapper.Map<RewardViewModel>(reward);
+
         return new ClaimRewardResult
         {
-            status = RewardStatus.Claimed
+            status = RewardStatus.Claimed,
+            viewModel = rewardModel
         };
     }
 }

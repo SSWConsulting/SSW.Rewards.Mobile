@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Application.Common.Mappings;
+﻿using SSW.Rewards.Application.Common.Extensions;
+using SSW.Rewards.Application.Common.Mappings;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.Common;
 
@@ -16,12 +17,19 @@ public class LeaderboardUserDto : IMapFrom<User>
 
     public int Balance { get; set; }
 
+    public int PointsToday { get; set; }
+
+    public int PointsThisWeek { get; set; }
+
     public int PointsThisMonth { get; set; }
 
     public int PointsThisYear { get; set; }
 
     public void Mapping(Profile profile)
     {
+        var start = DateTime.Now.FirstDayOfWeek();
+        var end = DateTime.Now.FirstDayOfWeek().AddDays(-7);
+
         profile.CreateMap<User, LeaderboardUserDto>()
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
@@ -47,6 +55,12 @@ public class LeaderboardUserDto : IMapFrom<User>
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsThisMonth, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.Now.Month)
+                                                                                    .Sum(ua => ua.Achievement.Value)))
+                .ForMember(dst => dst.PointsToday, opt => opt.MapFrom(src => src.UserAchievements
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.Now.Month && ua.AwardedAt.Day == DateTime.Now.Day)
+                                                                                    .Sum(ua => ua.Achievement.Value)))
+                .ForMember(dst => dst.PointsThisWeek, opt => opt.MapFrom(src => src.UserAchievements
+                                                                                    .Where(ua => start <= ua.AwardedAt && ua.AwardedAt <= end)
                                                                                     .Sum(ua => ua.Achievement.Value)));
     }
 }

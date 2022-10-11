@@ -342,6 +342,66 @@
         ]
       }
     },
+    "/api/Leaderboard/GetEligibleUsers": {
+      "get": {
+        "tags": [
+          "Leaderboard"
+        ],
+        "operationId": "Leaderboard_GetEligibleUsers",
+        "parameters": [
+          {
+            "name": "rewardId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/LeaderboardFilter"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "balanceRequired",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "filterStaff",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibleUsersViewModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Notifications/List": {
       "get": {
         "tags": [
@@ -2023,6 +2083,14 @@
             "type": "integer",
             "format": "int32"
           },
+          "pointsToday": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisWeek": {
+            "type": "integer",
+            "format": "int32"
+          },
           "pointsThisMonth": {
             "type": "integer",
             "format": "int32"
@@ -2032,6 +2100,91 @@
             "format": "int32"
           }
         }
+      },
+      "EligibleUsersViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rewardId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rewardCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "eligibleUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligibleUserViewModel"
+            }
+          }
+        }
+      },
+      "EligibleUserViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsClaimed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsToday": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisWeek": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisMonth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pointsThisYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "balance": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "LeaderboardFilter": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "ThisMonth",
+          "ThisYear",
+          "ThisWeek",
+          "Today",
+          "Forever"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
       },
       "NotificationHistoryListViewModel": {
         "type": "object",

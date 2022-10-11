@@ -506,6 +506,7 @@ export class AdminTestClient implements IAdminTestClient {
 
 export interface ILeaderboardClient {
     get(): Observable<LeaderboardListViewModel>;
+    getEligibleUsers(rewardId: number | undefined, filter: LeaderboardFilter | undefined, balanceRequired: boolean | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel>;
 }
 
 @Injectable({
@@ -559,6 +560,70 @@ export class LeaderboardClient implements ILeaderboardClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = LeaderboardListViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getEligibleUsers(rewardId: number | undefined, filter: LeaderboardFilter | undefined, balanceRequired: boolean | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel> {
+        let url_ = this.baseUrl + "/api/Leaderboard/GetEligibleUsers?";
+        if (rewardId === null)
+            throw new Error("The parameter 'rewardId' cannot be null.");
+        else if (rewardId !== undefined)
+            url_ += "rewardId=" + encodeURIComponent("" + rewardId) + "&";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        if (balanceRequired === null)
+            throw new Error("The parameter 'balanceRequired' cannot be null.");
+        else if (balanceRequired !== undefined)
+            url_ += "balanceRequired=" + encodeURIComponent("" + balanceRequired) + "&";
+        if (filterStaff === null)
+            throw new Error("The parameter 'filterStaff' cannot be null.");
+        else if (filterStaff !== undefined)
+            url_ += "filterStaff=" + encodeURIComponent("" + filterStaff) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEligibleUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEligibleUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EligibleUsersViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EligibleUsersViewModel>;
+        }));
+    }
+
+    protected processGetEligibleUsers(response: HttpResponseBase): Observable<EligibleUsersViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EligibleUsersViewModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3359,6 +3424,8 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     profilePic?: string | undefined;
     totalPoints?: number;
     balance?: number;
+    pointsToday?: number;
+    pointsThisWeek?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
 
@@ -3379,6 +3446,8 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.profilePic = _data["profilePic"];
             this.totalPoints = _data["totalPoints"];
             this.balance = _data["balance"];
+            this.pointsToday = _data["pointsToday"];
+            this.pointsThisWeek = _data["pointsThisWeek"];
             this.pointsThisMonth = _data["pointsThisMonth"];
             this.pointsThisYear = _data["pointsThisYear"];
         }
@@ -3399,6 +3468,8 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["profilePic"] = this.profilePic;
         data["totalPoints"] = this.totalPoints;
         data["balance"] = this.balance;
+        data["pointsToday"] = this.pointsToday;
+        data["pointsThisWeek"] = this.pointsThisWeek;
         data["pointsThisMonth"] = this.pointsThisMonth;
         data["pointsThisYear"] = this.pointsThisYear;
         return data;
@@ -3412,8 +3483,142 @@ export interface ILeaderboardUserDto {
     profilePic?: string | undefined;
     totalPoints?: number;
     balance?: number;
+    pointsToday?: number;
+    pointsThisWeek?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
+}
+
+export class EligibleUsersViewModel implements IEligibleUsersViewModel {
+    rewardId?: number;
+    rewardCode?: string | undefined;
+    eligibleUsers?: EligibleUserViewModel[];
+
+    constructor(data?: IEligibleUsersViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rewardId = _data["rewardId"];
+            this.rewardCode = _data["rewardCode"];
+            if (Array.isArray(_data["eligibleUsers"])) {
+                this.eligibleUsers = [] as any;
+                for (let item of _data["eligibleUsers"])
+                    this.eligibleUsers!.push(EligibleUserViewModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): EligibleUsersViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EligibleUsersViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rewardId"] = this.rewardId;
+        data["rewardCode"] = this.rewardCode;
+        if (Array.isArray(this.eligibleUsers)) {
+            data["eligibleUsers"] = [];
+            for (let item of this.eligibleUsers)
+                data["eligibleUsers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IEligibleUsersViewModel {
+    rewardId?: number;
+    rewardCode?: string | undefined;
+    eligibleUsers?: EligibleUserViewModel[];
+}
+
+export class EligibleUserViewModel implements IEligibleUserViewModel {
+    userId?: number | undefined;
+    name?: string | undefined;
+    email?: string | undefined;
+    totalPoints?: number;
+    pointsClaimed?: number;
+    pointsToday?: number;
+    pointsThisWeek?: number;
+    pointsThisMonth?: number;
+    pointsThisYear?: number;
+    balance?: number;
+
+    constructor(data?: IEligibleUserViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.totalPoints = _data["totalPoints"];
+            this.pointsClaimed = _data["pointsClaimed"];
+            this.pointsToday = _data["pointsToday"];
+            this.pointsThisWeek = _data["pointsThisWeek"];
+            this.pointsThisMonth = _data["pointsThisMonth"];
+            this.pointsThisYear = _data["pointsThisYear"];
+            this.balance = _data["balance"];
+        }
+    }
+
+    static fromJS(data: any): EligibleUserViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EligibleUserViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["totalPoints"] = this.totalPoints;
+        data["pointsClaimed"] = this.pointsClaimed;
+        data["pointsToday"] = this.pointsToday;
+        data["pointsThisWeek"] = this.pointsThisWeek;
+        data["pointsThisMonth"] = this.pointsThisMonth;
+        data["pointsThisYear"] = this.pointsThisYear;
+        data["balance"] = this.balance;
+        return data;
+    }
+}
+
+export interface IEligibleUserViewModel {
+    userId?: number | undefined;
+    name?: string | undefined;
+    email?: string | undefined;
+    totalPoints?: number;
+    pointsClaimed?: number;
+    pointsToday?: number;
+    pointsThisWeek?: number;
+    pointsThisMonth?: number;
+    pointsThisYear?: number;
+    balance?: number;
+}
+
+export enum LeaderboardFilter {
+    ThisMonth = 0,
+    ThisYear = 1,
+    ThisWeek = 2,
+    Today = 3,
+    Forever = 4,
 }
 
 export class NotificationHistoryListViewModel implements INotificationHistoryListViewModel {
