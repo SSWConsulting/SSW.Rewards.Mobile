@@ -3423,11 +3423,12 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
-    balance?: number;
+    pointsClaimed?: number;
     pointsToday?: number;
     pointsThisWeek?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
+    balance?: number;
 
     constructor(data?: ILeaderboardUserDto) {
         if (data) {
@@ -3445,11 +3446,12 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
             this.name = _data["name"];
             this.profilePic = _data["profilePic"];
             this.totalPoints = _data["totalPoints"];
-            this.balance = _data["balance"];
+            this.pointsClaimed = _data["pointsClaimed"];
             this.pointsToday = _data["pointsToday"];
             this.pointsThisWeek = _data["pointsThisWeek"];
             this.pointsThisMonth = _data["pointsThisMonth"];
             this.pointsThisYear = _data["pointsThisYear"];
+            this.balance = _data["balance"];
         }
     }
 
@@ -3467,11 +3469,12 @@ export class LeaderboardUserDto implements ILeaderboardUserDto {
         data["name"] = this.name;
         data["profilePic"] = this.profilePic;
         data["totalPoints"] = this.totalPoints;
-        data["balance"] = this.balance;
+        data["pointsClaimed"] = this.pointsClaimed;
         data["pointsToday"] = this.pointsToday;
         data["pointsThisWeek"] = this.pointsThisWeek;
         data["pointsThisMonth"] = this.pointsThisMonth;
         data["pointsThisYear"] = this.pointsThisYear;
+        data["balance"] = this.balance;
         return data;
     }
 }
@@ -3482,11 +3485,12 @@ export interface ILeaderboardUserDto {
     name?: string | undefined;
     profilePic?: string | undefined;
     totalPoints?: number;
-    balance?: number;
+    pointsClaimed?: number;
     pointsToday?: number;
     pointsThisWeek?: number;
     pointsThisMonth?: number;
     pointsThisYear?: number;
+    balance?: number;
 }
 
 export class EligibleUsersViewModel implements IEligibleUsersViewModel {

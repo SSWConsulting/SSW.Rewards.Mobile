@@ -15,7 +15,7 @@ public class LeaderboardUserDto : IMapFrom<User>
 
     public int TotalPoints { get; set; }
 
-    public int Balance { get; set; }
+    public int PointsClaimed { get; set; }
 
     public int PointsToday { get; set; }
 
@@ -24,6 +24,8 @@ public class LeaderboardUserDto : IMapFrom<User>
     public int PointsThisMonth { get; set; }
 
     public int PointsThisYear { get; set; }
+
+    public int Balance { get { return TotalPoints - PointsClaimed; } set { _ = value; } }
 
     public void Mapping(Profile profile)
     {
@@ -35,17 +37,9 @@ public class LeaderboardUserDto : IMapFrom<User>
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dst => dst.Rank, opt => opt.Ignore())
-                .ForMember(dst => dst.TotalPoints, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Sum(ua => ua.Achievement.Value)))
-                .ForMember(dst => dst.Balance, opt => {
-                    opt.PreCondition(src => src.UserRewards.Any());
-                    opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)
-                                       - src.UserRewards.Sum(ur => ur.Reward.Cost));
-                })
-                .ForMember(dst => dst.Balance, opt => {
-                    opt.PreCondition(src => !src.UserRewards.Any());
-                    opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value));
-                })
+                .ForMember(dst => dst.TotalPoints, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)))
+                .ForMember(dst => dst.PointsClaimed, opt => opt.MapFrom(src => src.UserRewards.Sum(ur => ur.Reward.Cost)))
+
                 // TODO:    Using DateTime.Now here presents instability for testing the queries dependent
                 //          on this DTO. As discussed with williamliebenberg@ssw.com.au, we will accept
                 //          this tech debt for now and investigate a better approach in the future. See
