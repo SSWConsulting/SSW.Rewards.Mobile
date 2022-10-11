@@ -19,7 +19,7 @@
         <MudTextField @bind-Value="_searchString"
                       Placeholder="Search the leaderboard by name"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" />
+                      Class="mt-0"/>
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh>
@@ -38,6 +38,16 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsToday)">
+                Points Today
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisWeek)">
+                Points This Week
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
             <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisMonth)">
                 Points This Month
             </MudTableSortLabel>
@@ -45,6 +55,11 @@
         <MudTh>
             <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisYear)">
                 Points This Year
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsClaimed)">
+                Points Claimed
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
@@ -62,13 +77,17 @@
             </div>
         </MudTd>
         <MudTd DataLabel="Balance">@context.Balance</MudTd>
+        <MudTd DataLabel="PointsToday">@context.PointsToday</MudTd>
+        <MudTd DataLabel="PointsThisWeek">@context.PointsThisWeek</MudTd>
         <MudTd DataLabel="PointsThisMonth">@context.PointsThisMonth</MudTd>
         <MudTd DataLabel="PointsThisYear">@context.PointsThisYear</MudTd>
+        <MudTd DataLabel="PointsClaimed">@context.PointsClaimed</MudTd>
         <MudTd DataLabel="TotalPoints">@context.TotalPoints</MudTd>
     </RowTemplate>
 </Table>
 
 @* TODO: Move this to the code behind? *@
+
 @code {
     private bool _loading = true;
     private string _searchString = string.Empty;
@@ -93,4 +112,5 @@
             exception.Redirect();
         }
     }
+
 }
