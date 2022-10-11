@@ -10,9 +10,11 @@ public class GetFilteredListQueryValidator : AbstractValidator<GetFilteredLeader
 
     public bool BeValidFilter(LeaderboardFilter filter)
     {
-        if (filter == LeaderboardFilter.ThisMonth || filter == LeaderboardFilter.ThisYear)
-            return true;
-
-        return false;
+        return 
+            filter == LeaderboardFilter.ThisMonth || 
+            filter == LeaderboardFilter.ThisYear ||
+            filter == LeaderboardFilter.ThisWeek ||
+            filter == LeaderboardFilter.Today ||
+            filter == LeaderboardFilter.Forever;
     }
 }

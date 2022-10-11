@@ -24,4 +24,8 @@
         <ProjectReference Include="..\SSW.Rewards.Domain\SSW.Rewards.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="PrizeDraw\Commands\" />
+    </ItemGroup>
+
 </Project>

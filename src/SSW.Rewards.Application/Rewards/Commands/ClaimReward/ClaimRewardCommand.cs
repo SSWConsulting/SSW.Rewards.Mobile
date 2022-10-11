@@ -66,10 +66,14 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             };
         }
 
+        // award the user an achievement for claiming their first prize
         if (!user.UserRewards.Any())
         {
             var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
-            user.UserAchievements.Add(new UserAchievement { Achievement = achievement });
+            if (achievement != null)
+            {
+                user.UserAchievements.Add(new UserAchievement { Achievement = achievement });
+            }
         }
 
         user.UserRewards.Add(new UserReward

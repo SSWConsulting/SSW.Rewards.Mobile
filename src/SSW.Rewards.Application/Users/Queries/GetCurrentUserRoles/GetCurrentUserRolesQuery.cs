@@ -18,6 +18,6 @@ public class GetCurrentUserRolesQuerHandler : IRequestHandler<GetCurrentUserRole
     {
         var roles = await _userService.GetCurrentUserRoles(cancellationToken);
 
-        return roles.Select(r => r.Name).ToArray();
+        return roles?.Select(r => r.Name ?? "").ToArray() ?? Array.Empty<string>();
     }
 }

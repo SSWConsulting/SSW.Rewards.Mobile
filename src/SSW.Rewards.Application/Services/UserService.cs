@@ -6,6 +6,7 @@ using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
+using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Services;
 
@@ -117,6 +118,11 @@ public class UserService : IUserService, IRolesService
                     .ThenInclude(ur => ur.Reward)
                 .SingleOrDefaultAsync(cancellationToken);
 
+        if (user == null)
+        {
+            throw new NotFoundException(nameof(User), currentUserEmail);
+        }
+
         if (!user.Activated)
         {
             user.Activated = true;
@@ -133,22 +139,12 @@ public class UserService : IUserService, IRolesService
 
     public async Task<IEnumerable<Role>> GetCurrentUserRoles(CancellationToken cancellationToken)
     {
-        var roles = new List<Role>();
-
-        var userRoles = await _dbContext.Users
-            .Include(u => u.Roles)
-            .ThenInclude(ur => ur.Role)
-            .Where(u => u.Email == _currentUserService.GetUserEmail())
-            .Select(u => u.Roles)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        foreach(var role in userRoles)
-        {
-            roles.Add(role.Role);
-        }
-
-        return roles;
+        string email = _currentUserService.GetUserEmail();
+        return await _dbContext.UserRoles
+            .TagWith($"{nameof(UserService)}-{nameof(GetCurrentUserRoles)}")
+            .Where(x => x.User.Email == email)
+            .Select(x => x.Role)
+            .ToListAsync(cancellationToken);
     }
 
     public string GetStaffQRCode(string emailAddress)
@@ -158,14 +154,14 @@ public class UserService : IUserService, IRolesService
 
     public async Task<string> GetStaffQRCode(string emailAddress, CancellationToken cancellationToken)
     {
-        var achievement = await _dbContext.StaffMembers
+        var code = await _dbContext.StaffMembers
+                .AsNoTracking()
                 .Include(s => s.StaffAchievement)
                 .Where(s => s.Email == emailAddress)
-                .Select(s => s.StaffAchievement)
-                .AsNoTracking()
+                .Select(s => s.StaffAchievement!.Code)
                 .SingleOrDefaultAsync(cancellationToken);
 
-        return achievement.Code;
+        return code ?? string.Empty;
     }
 
     public UserViewModel GetUser(int userId)
@@ -268,20 +264,12 @@ public class UserService : IUserService, IRolesService
 
     public async Task<IEnumerable<Role>> GetUserRoles(int userId, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.Users.Where(u => u.Id == userId)
-            .Include(u => u.Roles)
-            .ThenInclude(ur => ur.Role)
+        return await _dbContext.UserRoles
             .AsNoTracking()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        var roles = new List<Role>();
-
-        foreach (var role in user.Roles)
-        {
-            roles.Add(role.Role);
-        }
-
-        return roles;
+            .TagWith($"{nameof(UserService)}-{nameof(GetUserRoles)}")
+            .Where(x => x.User.Id == userId)
+            .Select(x => x.Role)
+            .ToListAsync(cancellationToken);
     }
 
     public void RemoveUserRole(int userId, int roleId)

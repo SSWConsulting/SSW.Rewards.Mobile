@@ -1,5 +1,8 @@
 ﻿public enum LeaderboardFilter
 {
     ThisMonth,
-    ThisYear
+    ThisYear,
+    ThisWeek,
+    Today,
+    Forever
 }
