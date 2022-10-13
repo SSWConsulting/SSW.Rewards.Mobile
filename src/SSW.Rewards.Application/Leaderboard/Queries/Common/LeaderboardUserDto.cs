@@ -31,7 +31,7 @@ public class LeaderboardUserDto : IMapFrom<User>
     public void Mapping(Profile profile)
     {
         var start = DateTime.Now.FirstDayOfWeek();
-        var end = DateTime.Now.FirstDayOfWeek().AddDays(-7);
+        var end = DateTime.Now.FirstDayOfWeek().AddDays(7);
 
         profile.CreateMap<User, LeaderboardUserDto>()
                 .ForMember(dst => dst.Balance, opt => opt.Ignore())
@@ -51,10 +51,10 @@ public class LeaderboardUserDto : IMapFrom<User>
                                                                                     .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsThisMonth, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.Now.Month)
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsToday, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.Now.Month && ua.AwardedAt.Day == DateTime.Now.Day)
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month && ua.AwardedAt.Day == DateTime.UtcNow.Day)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsThisWeek, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Where(ua => start <= ua.AwardedAt && ua.AwardedAt <= end)

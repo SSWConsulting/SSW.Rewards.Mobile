@@ -48,8 +48,8 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
         }
         else if (request.Filter == LeaderboardFilter.ThisWeek)
         {
-            var start = DateTime.Now.FirstDayOfWeek();
-            var end = DateTime.Now.FirstDayOfWeek().AddDays(-7);
+            var start = _dateTime.Now.FirstDayOfWeek();
+            var end = start.AddDays(7);
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             query = query.Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
         }
