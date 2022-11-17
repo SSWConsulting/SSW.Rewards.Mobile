@@ -10,6 +10,6 @@ public class Quiz : BaseEntity
     public virtual Achievement Achievement { get; set; }
     public ICollection<QuizQuestion> Questions { get; set; } = new HashSet<QuizQuestion>();
     public ICollection<CompletedQuiz> CompletedQuizzes { get; set; } = new HashSet<CompletedQuiz>();
-    public User? CreatedBy { get; set; } = new();
+    public User CreatedBy { get; set; } = null!;
     public int? CreatedById { get; set; }
 }

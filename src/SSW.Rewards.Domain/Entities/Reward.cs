@@ -5,7 +5,7 @@ public class Reward : BaseEntity
     public string? Name { get; set; } = string.Empty;
     public int Cost { get; set; }
     public string? ImageUri { get; set; } = string.Empty;
-    public RewardType RewardType { get; set; } = new();
+    public RewardType RewardType { get; set; } = RewardType.Digital;
     public Icons Icon { get; set; }
     public bool IconIsBranded { get; set; }
     public bool IsOnboardingReward { get; set; }
