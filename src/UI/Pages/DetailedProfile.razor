@@ -293,6 +293,8 @@
                     _currentBrowserFile.ContentType));
         }
 
+        _staff.StaffAchievement.Value = _staffAchievementValue;
+
         await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(_staff));
 
         _snackbar.Add("User saved", Severity.Success);
