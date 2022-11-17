@@ -4,7 +4,7 @@ public class User : BaseEntity
     public string? FullName { get; set; } = string.Empty;
     public string? Email { get; set; } = string.Empty;
     public string? Avatar { get; set; } = string.Empty;
-    public PostalAddress Address { get; set; } = new();
+    public PostalAddress? Address { get; set; }
     public int? AddressId { get; set; }
     public bool Activated { get; set; }
     public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
