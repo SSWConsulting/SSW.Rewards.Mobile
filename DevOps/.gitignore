@@ -1,5 +1,0 @@
-# ignore the azure credential files, it is generated and contains a service principle password
-azure.json
-
-# ignore Local/Personal ARM Parameters
-infrastructure.parameters.local.json
