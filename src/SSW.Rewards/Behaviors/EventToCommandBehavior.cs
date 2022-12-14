@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Input;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.Behaviors
 {

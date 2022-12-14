@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Services;
 
-namespace SSW.Rewards.Services
+public interface IQuizService
 {
-    public interface IQuizService
-    {
-        Task<IEnumerable<QuizDto>> GetQuizzes();
+    Task<IEnumerable<QuizDto>> GetQuizzes();
 
-        Task<QuizDetailsDto> GetQuizDetails(int quizID);
+    Task<QuizDetailsDto> GetQuizDetails(int quizID);
 
-        Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command);
-    }
+    Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command);
 }

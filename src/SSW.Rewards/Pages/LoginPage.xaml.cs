@@ -1,7 +1,7 @@
 ﻿using SSW.Rewards.ViewModels;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.Pages
 {

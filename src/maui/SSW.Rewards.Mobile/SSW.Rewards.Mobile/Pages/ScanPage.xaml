@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             BackgroundColor="{StaticResource MainBackground}"
+             x:Class="SSW.Rewards.Pages.ScanPage">
+    <Grid>
+        <StackLayout Padding="0,0,0,200">
+            <Label Text="Scan a QR Code"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"/>
+            <Label Text="from an SSW Employee or Presentation"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"/>
+        </StackLayout>
+        <zx:CameraBarcodeReaderView x:Name="scannerView"
+                                    BarcodesDetected="Handle_OnScanResult"
+                                    IsDetecting="True"
+                                    WidthRequest="300"
+                                    HeightRequest="300"/>
+
+        <Image Source="qr_reticle"/>
+    </Grid>
+</ContentPage>

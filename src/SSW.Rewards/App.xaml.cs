@@ -7,8 +7,8 @@ using SSW.Rewards.Services;
 using SSW.Rewards.Pages;
 using System;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards
 {

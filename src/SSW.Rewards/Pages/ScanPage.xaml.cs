@@ -1,8 +1,8 @@
 ﻿using Rg.Plugins.Popup.Services;
 using SSW.Rewards.PopupPages;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using ZXing;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.Pages
 {

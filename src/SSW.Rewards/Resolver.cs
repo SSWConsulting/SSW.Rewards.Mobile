@@ -5,7 +5,8 @@ using SSW.Rewards.ViewModels;
 using System.Linq;
 using System.Reflection;
 using TinyIoC;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards
 {

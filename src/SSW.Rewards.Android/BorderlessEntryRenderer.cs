@@ -1,8 +1,8 @@
 ﻿using Android.Content;
 using SSW.Rewards.Controls;
 using SSW.Rewards.Droid;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 [assembly: ExportRenderer(typeof(BorderlessEntry), typeof(BorderlessEntryRenderer))]
 namespace SSW.Rewards.Droid

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SSW.Rewards.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SSW.Rewards.Mobile"
+    xmlns:pages="clr-namespace:SSW.Rewards.Pages"
+    xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+    Title="SSW.Rewards"
+    FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
+    FlyoutIcon="icon_menu"
+    MenuItemTemplate="{StaticResource SSWMenuTemplate}"
+    x:Name="RewardsShell"
+    Shell.FlyoutBehavior="Flyout">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="NavigationPrimary">Black</Color>
+            <Style x:Key="BaseStyle" TargetType="ShellItem">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource MainBackground}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource TabBarBackground}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
+            </Style>
+            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+
+            <DataTemplate x:Key="SSWMenuTemplate">
+                <StackLayout>
+                    <Grid ColumnDefinitions="30,*"
+                      Margin="0,30,30,0">
+                        <Grid.Triggers>
+                            <DataTrigger TargetType="Grid"
+                                     Binding="{Binding Text}"
+                                     Value="My QRCode">
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
+                            </DataTrigger>
+
+                            <DataTrigger TargetType="Grid"
+                                     Binding="{Binding Text}"
+                                     Value="Join SSW">
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowJoinMenuItem}"/>
+                            </DataTrigger>
+                        </Grid.Triggers>
+                        <Grid.Padding>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="5" />
+                                <On Platform="iOS" Value="0" />
+                            </OnPlatform>
+                        </Grid.Padding>
+                        <Grid.Margin>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="20,5" />
+                                <On Platform="iOS" Value="10,5,10,0" />
+                            </OnPlatform>
+                        </Grid.Margin>
+
+                        <Image Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           HeightRequest="30"
+                           WidthRequest="30"
+                           Source="{Binding Icon}">
+                        </Image>
+
+                        <Label Grid.Column="1"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="20,0,0,0"
+                           Text="{Binding Text}">
+                            <Label.FontSize>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="iOS">18</On>
+                                    <On Platform="Android">18</On>
+                                </OnPlatform>
+                            </Label.FontSize>
+                        </Label>
+                    </Grid>
+                </StackLayout>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader/>
+    </Shell.FlyoutHeader>
+
+
+    <FlyoutItem Style="{StaticResource BaseStyle}">
+        <Shell.ItemTemplate>
+            <DataTemplate>
+                <StackLayout HeightRequest="1"
+                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
+            </DataTemplate>
+        </Shell.ItemTemplate>
+        <Tab Route="main">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xe70e;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
+        </Tab>
+        <Tab Route="leader">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+        </Tab>
+        <Tab Route="people">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf5a8;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+        </Tab>
+        <Tab Route="scan">
+            <Tab.Icon>
+                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                 Glyph="&#xf636;"/>
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+        </Tab>
+    </FlyoutItem>
+
+    <MenuItem Text="Rewards"
+              Clicked="Handle_HowToPlayClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf455;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <MenuItem Text="SSW Events"
+              Clicked="Handle_EventsClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf226;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <MenuItem Text="Join SSW"
+              Clicked="Handle_JoinClicked"
+              x:Name="JoinMenuItem">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf5c2;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <MenuItem Text="My QRCode"
+              Clicked="Handle_QRClicked"
+              x:Name="QRMenuItem">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf635;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <MenuItem Text="About SSW"
+              Clicked="Handle_AboutClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                             Glyph="&#xf4a3;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <Shell.FlyoutFooter>
+        <StackLayout Padding="0"
+                     Margin="0">
+            <StackLayout Orientation="Horizontal">
+                <StackLayout>
+                    <Grid ColumnDefinitions="30,*"
+                          Margin="0,30,30,0">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Tapped="Handle_LogOutClicked"/>
+                        </Grid.GestureRecognizers>
+                        <Grid.Padding>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="5" />
+                                <On Platform="iOS" Value="0" />
+                            </OnPlatform>
+                        </Grid.Padding>
+                        <Grid.Margin>
+                            <OnPlatform x:TypeArguments="Thickness">
+                                <On Platform="Android" Value="20,5" />
+                                <On Platform="iOS" Value="10,5,10,0" />
+                            </OnPlatform>
+                        </Grid.Margin>
+
+                        <Label Grid.Column="0"
+                               HorizontalOptions="Start"
+                               Margin="5"
+                               HeightRequest="30"
+                               WidthRequest="30"
+                               FontSize="28"
+                               FontFamily="{StaticResource FluentIcons}"
+                               TextColor="White"
+                               Text="&#xeafa;">
+                        </Label>
+
+                        <Label Grid.Column="1"
+                               TextColor="White"
+                               VerticalOptions="Center"
+                               Margin="20,0,0,0"
+                               FontSize="18"
+                               Text="Log Out" />
+                    </Grid>
+                </StackLayout>
+
+                <StackLayout HorizontalOptions="EndAndExpand">
+                    <Image HorizontalOptions="End"
+                           Margin="10,0,10,0"
+                           Source="SSWwhite"/>
+
+                    <Label HorizontalOptions="End"
+                           x:Name="VersionLabel"
+                           Margin="10,0,10,0"
+                           TextColor="White"/>
+                </StackLayout>
+
+            </StackLayout>
+            <!-- workaround for iOS footer safe area-->
+            <Label Text=" ">
+                <Label.IsVisible>
+                    <OnPlatform x:TypeArguments="x:Boolean">
+                        <On Platform="iOS" Value="True"/>
+                        <On Platform="Android" Value="False"/>
+                    </OnPlatform>
+                </Label.IsVisible>
+            </Label>
+        </StackLayout>
+    </Shell.FlyoutFooter>
+
+</Shell>

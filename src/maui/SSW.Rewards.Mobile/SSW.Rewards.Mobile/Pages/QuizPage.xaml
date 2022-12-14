@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             BackgroundColor="{StaticResource MainBackground}"
+             x:Name="QuizList"
+             x:Class="SSW.Rewards.Pages.QuizPage">
+    <Shell.TitleView>
+        <Label Text="Tech Trivia"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Center"
+               FontSize="18"
+               Margin="0,15,0,0"
+               x:Name="TitleText"
+               TextColor="White"/>
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PassedToBackgroundConverter x:Key="PassedToColor"/>
+            <converters:PassedToQuizIconColour x:Key="PassedToIconColor"/>
+            <converters:IconToGlyphConverter x:Key="IconToGlyph"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout Spacing="30">
+            <Label Text="Select a category and prove you know your stuff. Earn bonus points for each completed quiz!"
+                   TextColor="White"
+                   Margin="40,55,40,10"
+                   LineBreakMode="WordWrap"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="CenterAndExpand"
+                   HorizontalOptions="CenterAndExpand" />
+
+            <ActivityIndicator HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource SSWRed}"
+                               IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"/>
+
+            <CollectionView ItemsSource="{Binding Quizzes}"
+                            Margin="40,0">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="2"
+                                     Orientation="Vertical"
+                                     HorizontalItemSpacing="20"
+                                     VerticalItemSpacing="20"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <Frame CornerRadius="5"
+                                   WidthRequest="100"
+                                   HeightRequest="100"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+                                <Grid Padding="0"
+                                      Margin="0">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                                              CommandParameter="{Binding Id}" />
+                                    </Grid.GestureRecognizers>
+
+                                    <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
+                                           TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
+                                           FontFamily="{StaticResource FA6Brands}"
+                                           FontSize="92"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+
+                                    <Label Text="&#xe30b;"
+                                           TextColor="Green"
+                                           FontFamily="{StaticResource FluentIcons}"
+                                           FontSize="28"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="End"
+                                           IsVisible="{Binding Passed}">
+                                        <Label.TranslationX>
+                                            <OnPlatform x:TypeArguments="x:Double">
+                                                <On Platform="Android" Value="15"/>
+                                            </OnPlatform>
+                                        </Label.TranslationX>
+                                        <Label.TranslationY>
+                                            <OnPlatform x:TypeArguments="x:Double">
+                                                <On Platform="Android" Value="15"/>
+                                            </OnPlatform>
+                                        </Label.TranslationY>
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

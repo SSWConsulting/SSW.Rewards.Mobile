@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+                 x:Class="SSW.Rewards.PopupPages.LinkSocial">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+
+    <Frame WidthRequest="300"
+           HeightRequest="300"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           HasShadow="True"
+           BackgroundColor="{StaticResource LeaderCardBackground}"
+           CornerRadius="1">
+
+        <Grid RowDefinitions="*, *, *">
+            <Label Grid.Row="0"
+                   x:Name="TitleLabel"
+                   FontSize="Medium"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   TextColor="White"/>
+            
+            <Grid Grid.Row="1"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center"
+                  HeightRequest="45"
+                  Padding="0,10">
+                <BoxView Grid.Column="0"
+                         BackgroundColor="{StaticResource TabBarBackground}"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="CenterAndExpand"
+                         CornerRadius="10"/>
+
+                <controls:BorderlessEntry Grid.Column="0"
+                                          x:Name="UsernameEntry"
+                                          TextChanged="UsernameEntry_TextChanged"
+                                          WidthRequest="200"
+                                          Margin="10,0,0,0"
+                                          TextColor="White"/>
+            </Grid>
+
+            <Button Grid.Row="2"
+                    Text="Save"
+                    TextColor="White"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    HeightRequest="40"
+                    WidthRequest="80"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Clicked="SaveButton_Clicked"
+                    x:Name="SaveButton"/>
+        </Grid>
+    </Frame>
+</pages:PopupPage>

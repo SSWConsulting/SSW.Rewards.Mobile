@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource MainBackground}"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
+             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             x:Name="Leaderboard"
+             x:Class="SSW.Rewards.Pages.LeaderboardPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="TabbedRadioTemplate">
+                <StackLayout>
+                    <ContentPresenter />
+                    <BoxView BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="FillAndExpand"
+                             HeightRequest="2"
+                             x:Name="SelectedUnderline"/>
+
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroupList>
+                            <VisualStateGroup x:Name="CheckedStates">
+                                <VisualState x:Name="Checked">
+                                    <VisualState.Setters>
+                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <VisualState.Setters>
+                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="0" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateGroupList>
+                    </VisualStateManager.VisualStateGroups>
+                </StackLayout>
+            </ControlTemplate>
+            <converters:IsMeToColorConverter x:Key="MeToColor"/>
+            <behaviors:EventToCommandBehavior x:Key="EventToCommand"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid Padding="30,5"
+              RowDefinitions="80, 60, 40, 25, *">
+
+            <Grid Grid.Row="0"
+                  RowDefinitions="3*, 2*"
+                  ColumnDefinitions="80, *, 50">
+
+                <ImageButton Grid.Row="0"
+                             Grid.RowSpan="2"
+                             Source="{Binding ProfilePic}"
+                             WidthRequest="74"
+                             HeightRequest="74"
+                             CornerRadius="37"
+                             Command="{Binding GoToMyProfileCommand}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Aspect="AspectFill">
+                </ImageButton>
+
+                <StackLayout Grid.Column="1"
+                             Orientation="Horizontal"
+                             Padding="10,5,0,0"
+                             VerticalOptions="End">
+
+                    <Label Text="{Binding MyRank, StringFormat='&#35;{0}'}"
+                           FontSize="Title"
+                           TextColor="White"/>
+
+                    <Label Text="{Binding TotalLeaders, StringFormat='of {0}'}"
+                           FontSize="Title"
+                           TextColor="{StaticResource MutedText}"/>
+
+                </StackLayout>
+
+                <StackLayout Grid.Column="1"
+                             Grid.Row="1"
+                             Orientation="Horizontal"
+                             Padding="10,0,5,0"
+                             VerticalOptions="Start"
+                             Spacing="10">
+
+                    <Label Text="{Binding MyBalance, StringFormat='⭐ {0:n0}'}"
+                           TextColor="{StaticResource primary}"/>
+
+                    <Label Text="{Binding MyPoints, StringFormat='⭐ {0:n0}'}"
+                           TextColor="{StaticResource HighlightedText}"/>
+
+                </StackLayout>
+
+                <ImageButton Grid.Row="0"
+                             Grid.RowSpan="2"
+                             Grid.Column="2"
+                             BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             CornerRadius="20"
+                             WidthRequest="40"
+                             HeightRequest="40"
+                             Padding="5"
+                             Command="{Binding ScrollToMeCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf151;"
+                                     Color="White"/>
+                    </ImageButton.Source>
+                </ImageButton>
+                
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*, 50"
+                  VerticalOptions="Center"
+                  HeightRequest="45"
+                  Padding="0,10">
+                <BoxView Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         BackgroundColor="{StaticResource TabBarBackground}"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="CenterAndExpand"
+                         CornerRadius="10"/>
+
+                <controls:BorderlessEntry Grid.Column="0"
+                                          x:Name="SearchEntry"
+                                          Margin="10,0,0,0"
+                                          Text="{Binding SearchBarText}"
+                                          TextColor="White">
+                    <controls:BorderlessEntry.Behaviors>
+                        <behaviors:EventToCommandBehavior Command="{Binding SearchTextChanged}"
+                                                          CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}"
+                                                          EventName="TextChanged" />
+                    </controls:BorderlessEntry.Behaviors>
+                </controls:BorderlessEntry>
+
+                <Label Grid.Column="1"
+                       FontFamily="{StaticResource FluentIcons}"
+                       Text="{Binding SearchBarIcon}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       TextColor="White">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <Label Grid.Row="2"
+                   Text="Leaderboard"
+                   TextColor="White"
+                   FontSize="Title"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+
+            <FlexLayout Grid.Row="3"
+                        JustifyContent="SpaceBetween"
+                        RadioButtonGroup.GroupName="LeaderboardFilterGroup">
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="This Month"
+                             IsChecked="True"
+                             CheckedChanged="FilterChanged"/>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="This Year"
+                             CheckedChanged="FilterChanged"/>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
+                             TextColor="{StaticResource MutedText}"
+                             Content="All Time"
+                             CheckedChanged="FilterChanged"/>
+            </FlexLayout>
+
+            <RefreshView Grid.Row="4"
+                         Command="{Binding RefreshCommand}"
+                         IsRefreshing="{Binding IsRefreshing}">
+
+                <CollectionView ItemsSource="{Binding SearchResults}"
+                                Scrolled="CollectionView_Scrolled"
+                                x:Name="LeadersCollection"
+                                Margin="0,10">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"
+                                           ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                  HeightRequest="50"
+                                  ColumnDefinitions="40, 40, *, 80"
+                                  Padding="10,0">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
+                                                          CommandParameter="{Binding  .}"/>
+                                </Grid.GestureRecognizers>
+
+                                <Image Grid.Column="0"
+                                       Source="{Binding ProfilePic}"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Aspect="AspectFill"
+                                       WidthRequest="30"
+                                       HeightRequest="30"
+                                       InputTransparent="True">
+                                    <Image.Clip>
+                                        <EllipseGeometry Center="15,15"
+                                                     RadiusX="15"
+                                                     RadiusY="15" />
+                                    </Image.Clip>
+                                </Image>
+
+                                <Label Text="👑"
+                                       FontSize="Small"
+                                       Grid.Column="0"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsLeader}"
+                                       TranslationY="-20"
+                                       InputTransparent="True"/>
+
+                                <Label Grid.Column="1"
+                                       Text="{Binding Rank, StringFormat='&#35;{0}'}"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       InputTransparent="True"/>
+
+                                <Label Grid.Column="2"
+                                       Text="{Binding Name}"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center"
+                                       InputTransparent="True"/>
+
+                                <Label Grid.Column="3"
+                                       Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End"
+                                       InputTransparent="True"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+            <StackLayout Grid.Row="0"
+                         Grid.RowSpan="5"
+                         HorizontalOptions="End"
+                         VerticalOptions="End"
+                         WidthRequest="80"
+                         IsVisible="False"
+                         TranslationX="20"
+                         x:Name="ScrollButtons">
+                
+                <ImageButton BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             CornerRadius="35"
+                             WidthRequest="70"
+                             HeightRequest="70"
+                             Padding="10"
+                             Command="{Binding ScrollToTopCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf1a5;"
+                                     Color="White"/>
+                    </ImageButton.Source>
+                </ImageButton>
+
+                <ImageButton BackgroundColor="{StaticResource primary}"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             CornerRadius="35"
+                             WidthRequest="70"
+                             HeightRequest="70"
+                             Padding="10"
+                             Command="{Binding ScrollToEndCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                                     Glyph="&#xf151;"
+                                     Color="White"/>
+                    </ImageButton.Source>
+                </ImageButton>
+
+
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="SSW.Rewards.Pages.LoginPage">
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="rewardsbackground"
+                   Aspect="AspectFill"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="FillAndExpand"/>
+
+            <StackLayout VerticalOptions="FillAndExpand"
+                         HorizontalOptions="FillAndExpand">
+
+                <Button Text="{Binding ButtonText}"
+                        Command="{Binding LoginTappedCommand}"
+                        TextColor="White"
+                        VerticalOptions="EndAndExpand"
+                        Margin="50,0,50,150"
+                        IsEnabled="{Binding LoginButtonEnabled}"
+                        BackgroundColor="{StaticResource SSWRed}"/>
+                <!--BorderColor="{Binding ButtonBorder}"/>-->
+            </StackLayout>
+
+            <ActivityIndicator HorizontalOptions="Center"
+                               Color="Red"
+                               VerticalOptions="Center"
+                               IsVisible="{Binding isRunning}"
+                               IsRunning="{Binding isRunning}"/>
+
+            <Image Source="rewardslogo"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   WidthRequest="400"
+                   Margin="0,60,0,0"
+                   x:Name="LogoImage"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

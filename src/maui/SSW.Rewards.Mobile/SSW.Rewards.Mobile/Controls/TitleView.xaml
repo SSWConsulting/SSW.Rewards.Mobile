@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SSW.Rewards.Controls.TitleView">
+  <ContentView.Content>
+      <StackLayout Orientation="Horizontal"
+                   HorizontalOptions="FillAndExpand">
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding TapTitleCommand}" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+            <Label x:Name="title"
+                   Text=""
+                   TextColor="White"
+                   VerticalTextAlignment="Center"
+                   Padding="10,0"
+                   FontSize="22"
+                   FontFamily="{StaticResource HelveticaBold}"
+                   InputTransparent="True"/>
+            <Image Source="SSWWhite_preview"
+                   InputTransparent="True"
+                   VerticalOptions="CenterAndExpand"
+                   HorizontalOptions="EndAndExpand"
+                   Margin="0,0,10,0">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" NumberOfTapsRequired="1"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </StackLayout>
+  </ContentView.Content>
+</ContentView>
