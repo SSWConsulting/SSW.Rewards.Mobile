@@ -1,38 +1,35 @@
-﻿using SSW.Rewards.Services;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿namespace SSW.Rewards.Mobile.ViewModels;
 
-namespace SSW.Rewards.ViewModels
+public class FlyoutHeaderViewModel : BaseViewModel
 {
-    public class FlyoutHeaderViewModel : BaseViewModel
+    private IUserService _userService;
+
+    public string ProfilePic{ get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+
+    public bool Staff { get; set; }
+
+    public FlyoutHeaderViewModel(IUserService userService)
     {
-        private IUserService _userService;
+        _userService = userService;
+        Initialise();
+    }
 
-        public string ProfilePic{ get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
+    private void Initialise()
+    {
+        ProfilePic = _userService.MyProfilePic;
+        Name = _userService.MyName;
+        Email = _userService.MyEmail;
+        Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
 
-        public bool Staff { get; set; }
+        // Tech Debt - https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/405
+        MessagingCenter.Subscribe<FlyoutHeaderViewModel, string>(this, UserService.UserDetailsUpdatedMessage, (vm, str) => Refresh(str));
+    }
 
-        public FlyoutHeaderViewModel(IUserService userService)
-        {
-            _userService = userService;
-            Initialise();
-        }
-
-        private void Initialise()
-        {
-            ProfilePic = _userService.MyProfilePic;
-            Name = _userService.MyName;
-            Email = _userService.MyEmail;
-            Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
-            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => Refresh());
-        }
-
-        private void Refresh()
-        {
-            ProfilePic = _userService.MyProfilePic;
-            OnPropertyChanged(nameof(ProfilePic));
-        }
+    private void Refresh(string pic)
+    {
+        ProfilePic = pic;
+        OnPropertyChanged(nameof(ProfilePic));
     }
 }

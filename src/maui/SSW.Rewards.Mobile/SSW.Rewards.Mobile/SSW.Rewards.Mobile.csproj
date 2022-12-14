@@ -53,6 +53,7 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.0.7" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.1.0" />
+		<PackageReference Include="M.BindableProperty.Generator" Version="0.9.3" />
 		<PackageReference Include="Microsoft.AppCenter" Version="4.5.3" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.3" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.3" />
