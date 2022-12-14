@@ -1,5 +1,6 @@
 ﻿using SSW.Rewards.Services;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.ViewModels
 {

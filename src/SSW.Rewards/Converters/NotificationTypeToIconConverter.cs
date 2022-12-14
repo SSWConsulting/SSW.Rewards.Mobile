@@ -1,8 +1,8 @@
 ﻿using SSW.Rewards.Models;
 using System;
 using System.Globalization;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.Converters
 {

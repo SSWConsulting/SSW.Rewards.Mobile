@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SSW.Rewards.PopupPages.ScanResult"
+             BackgroundColor="Transparent">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame WidthRequest="400"
+           HeightRequest="450"
+           Margin="10"
+           Padding="10"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}"
+           HorizontalOptions="Center"
+           VerticalOptions="Center">
+        <StackLayout>
+            <Label Text="{Binding ResultHeading}"
+                   d:Text="Achievement Unlocked"
+                   FontSize="24"
+                   Margin="10,10,10,0"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="Gold"
+                   TextColor="{Binding HeadingColour}"/>
+            <Label Text="{Binding AchievementHeading}"
+                   d:Text="Angular Superpowers Tour"
+                   FontSize="18"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="Gold"
+                   TextColor="{Binding HeadingColour}"/>
+            <lottie:SKLottieView x:Name="ResultAnimation"
+                                  Source="{Binding AnimationRef}"
+                                  IsAnimationEnabled="True"
+                                  RepeatCount="{Binding AnimationLoop}"
+                                  VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="CenterAndExpand"
+                                  HeightRequest="200"
+                                  WidthRequest="200"
+                                  Scale="1"/>
+            <Label Text="{Binding ResultBody}"
+                   d:Text="You have unlocked this achievement"
+                   TextColor="White"
+                   HorizontalTextAlignment="Center"
+                   Margin="10"/>
+
+            <Button Text="OK"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    TextColor="White"
+                    Margin="0,0,0,20"
+                    Command="{Binding OnOkCommand}"/>
+        </StackLayout>
+    </Frame>
+</pages:PopupPage>

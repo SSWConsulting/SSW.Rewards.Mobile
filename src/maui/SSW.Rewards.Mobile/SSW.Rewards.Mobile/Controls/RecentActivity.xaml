@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             x:Class="SSW.Rewards.Controls.RecentActivity">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:ActivityTypeToIconConverter x:Key="TypeToIcon"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <ContentView.Content>
+        <StackLayout Padding="20">
+            <Label Text="Recent Activity"
+                 TextColor="White"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 HorizontalTextAlignment="Center"
+                 VerticalOptions="Start"
+                 FontSize="Title"
+                 Margin="10"/>
+
+            <CollectionView ItemsSource="{Binding RecentActivity}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     WidthRequest="200">
+                            <Label Text="{Binding EmptyHeader}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                            <Label Text="Scan an SSWer, attend an event or complete a quiz to see some activity here."
+                                   LineBreakMode="WordWrap"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
+                              ColumnDefinitions="2*,10*,4*"
+                              Padding="5">
+                            <Label TextColor="White"
+                                   Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
+                                   FontFamily="{StaticResource FluentIcons}"
+                                   FontSize="Title"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding ActivityName}"
+                                   TextColor="White"
+                                   FontSize="12"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="2"
+                                   Text="{Binding OcurredAt, StringFormat='{0:dd/MM/yyyy}'}"
+                                   FontSize="11"
+                                   TextColor="White"
+                                   Margin="0,0,5,0"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>
+
+<!--, StringFormat='{0:dd//MM//yyyy}'-->

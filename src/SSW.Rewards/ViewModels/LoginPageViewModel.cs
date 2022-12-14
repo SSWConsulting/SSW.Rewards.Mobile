@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Input;
 using SSW.Rewards.Services;
-using Xamarin.Forms;
 using SSW.Rewards.Models;
 using System.Threading.Tasks;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.ViewModels
 {

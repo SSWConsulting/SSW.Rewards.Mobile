@@ -1,10 +1,8 @@
-﻿using System;
-using SSW.Rewards.Models;
+﻿using SSW.Rewards.Models;
 
-namespace SSW.Rewards.Services
+namespace SSW.Rewards.Services;
+
+public interface IPushNotificationActionService : INotificationActionService
 {
-    public interface IPushNotificationActionService : INotificationActionService
-    {
-        event EventHandler<PushNotificationAction> ActionTriggered;
-    }
+    event EventHandler<PushNotificationAction> ActionTriggered;
 }

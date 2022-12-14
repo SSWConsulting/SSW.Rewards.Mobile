@@ -1,8 +1,7 @@
-﻿namespace SSW.Rewards.Services
+﻿namespace SSW.Rewards.Services;
+
+/// <summary>Centralize the handling of notification actions</summary>
+public interface INotificationActionService
 {
-    /// <summary>Centralize the handling of notification actions</summary>
-    public interface INotificationActionService
-    {
-        void TriggerAction(string action);
-    }
+    void TriggerAction(string action);
 }

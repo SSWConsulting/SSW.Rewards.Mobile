@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             mc:Ignorable="d"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="SSW.Rewards.Pages.OnBoarding">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="SelectedStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor"
+                        Value="#cc4141"/>
+            </Style>
+            <Style x:Key="UnselectedStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor"
+                        Value="#bcbcbc"/>
+                <Setter Property="OutlineColor"
+                        Value="#bcbcbc"/>
+            </Style>
+            <converters:InverseBoolConverter x:Key="InverseBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="5*, 20*, 4*, 7*, 4*, 5*">
+
+            <Image Source="rewardsbackground"
+                   Aspect="AspectFill"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="FillAndExpand"
+                   Grid.Row="0"
+                   Grid.RowSpan="6"/>
+
+            <Label HorizontalOptions="FillAndExpand"
+                   Grid.Row="0"
+                   HorizontalTextAlignment="End"
+                   d:TextColor="White"
+                   TextColor="White"
+                   d:Text="Skip"
+                   FontSize="Small"
+                   Margin="30"
+                   Text="Skip">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Command="{Binding Skip}"/>
+                </Label.GestureRecognizers>
+                <Label.TranslationY>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="30"/>
+                    </OnPlatform>
+                </Label.TranslationY>
+            </Label>
+
+            <CarouselView Grid.Row="1"
+                          ItemsSource="{Binding Items}"
+                          CurrentItem="{Binding SelectedItem}"
+                          Loop="False"
+                          CurrentItemChangedCommand="{Binding Swiped}"
+                          IndicatorView="RewardsIndicator"
+                          x:Name="RewardsCarousel">
+
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Image Source="{Binding Image}"
+                                   Margin="60"
+                                   Aspect="AspectFit"
+                                   IsVisible="{Binding IsAnimation, Converter={StaticResource InverseBool}}">
+                                <!--<Image.Scale>
+                                    <OnPlatform x:TypeArguments="x:Double">
+                                        <On Platform="iOS" Value="1"/>
+                                        <On Platform="Android" Value="0.7"/>
+                                    </OnPlatform>
+                                </Image.Scale>-->
+                            </Image>
+
+                            <lottie:AnimationView x:Name="ResultAnimation"
+                                                  Animation="{Binding Animation}"
+                                                  IsVisible="{Binding IsAnimation}"
+                                                  AutoPlay="True"
+                                                  Loop="False"
+                                                  VerticalOptions="CenterAndExpand"
+                                                  HorizontalOptions="CenterAndExpand"
+                                                  HeightRequest="200"
+                                                  WidthRequest="200"
+                                                  Scale="1"/>
+                        </Grid>
+                    </DataTemplate>
+
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+
+            <Label HorizontalOptions="FillAndExpand"
+                   HorizontalTextAlignment="Center"
+                   d:TextColor="White"
+                   VerticalOptions="End"
+                   TextColor="White"
+                   FontSize="Large"
+                   Text="{Binding SubHeading}"
+                   d:Text="How to get them?"
+                   Grid.Row="2"/>
+
+            <StackLayout Grid.Row="3">
+                <Label TextColor="{StaticResource SSWRed}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="30,10"
+                       IsVisible="{Binding HasPoints}"
+                       Text="{Binding Points, StringFormat='⭐ {0}'}"/>
+                
+                <Label HorizontalOptions="FillAndExpand"
+                       HorizontalTextAlignment="Center"
+                       VerticalOptions="Start"
+                       TextColor="White"
+                       FontSize="Small"
+                       Margin="30,10"
+                       Text="{Binding Content}"/>
+            </StackLayout>
+
+            <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                           IndicatorColor="{StaticResource IndicatorColor}"
+                           VerticalOptions="Start"
+                           Grid.Row="4"
+                           x:Name="RewardsIndicator"/>
+
+            <Button Grid.Row="5"
+                    Text="{Binding ButtonText}"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start"
+                    WidthRequest="250"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    Command="{Binding DoActionCommand}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

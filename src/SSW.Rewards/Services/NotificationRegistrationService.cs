@@ -1,100 +1,93 @@
-﻿using Newtonsoft.Json;
-using SSW.Rewards.Models;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
+﻿using SSW.Rewards.Models;
 
-namespace SSW.Rewards.Services
+namespace SSW.Rewards.Services;
+
+public class NotificationRegistrationService : BaseService, INotificationRegistrationService
 {
-    public class NotificationRegistrationService : BaseService, INotificationRegistrationService
+    const string RequestUrl = "api/Notifications";
+    const string CachedDeviceTokenKey = "cached_device_token";
+    const string CachedTagsKey = "cached_tags";
+
+    IDeviceInstallationService _deviceInstallationService;
+
+    public NotificationRegistrationService()
     {
-        const string RequestUrl = "api/Notifications";
-        const string CachedDeviceTokenKey = "cached_device_token";
-        const string CachedTagsKey = "cached_tags";
+        AuthenticatedClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
 
-        IDeviceInstallationService _deviceInstallationService;
+    IDeviceInstallationService DeviceInstallationService
+        => _deviceInstallationService ??
+        (_deviceInstallationService = Resolver.Resolve<IDeviceInstallationService>());
 
-        public NotificationRegistrationService()
-        {
-            AuthenticatedClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        }
+    public async Task DeregisterDeviceAsync()
+    {
+        var cachedToken = await SecureStorage.GetAsync(CachedDeviceTokenKey)
+            .ConfigureAwait(false);
 
-        IDeviceInstallationService DeviceInstallationService
-            => _deviceInstallationService ??
-            (_deviceInstallationService = Resolver.Resolve<IDeviceInstallationService>());
+        if (cachedToken == null)
+            return;
 
-        public async Task DeregisterDeviceAsync()
-        {
-            var cachedToken = await SecureStorage.GetAsync(CachedDeviceTokenKey)
-                .ConfigureAwait(false);
+        var deviceId = DeviceInstallationService?.GetDeviceId();
 
-            if (cachedToken == null)
-                return;
+        if (string.IsNullOrWhiteSpace(deviceId))
+            throw new Exception("Unable to resolve an ID for the device.");
 
-            var deviceId = DeviceInstallationService?.GetDeviceId();
+        await SendAsync(HttpMethod.Delete, $"{RequestUrl}/DeleteInstallation/{deviceId}")
+            .ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(deviceId))
-                throw new Exception("Unable to resolve an ID for the device.");
+        SecureStorage.Remove(CachedDeviceTokenKey);
+        SecureStorage.Remove(CachedTagsKey);
+    }
 
-            await SendAsync(HttpMethod.Delete, $"{RequestUrl}/DeleteInstallation/{deviceId}")
-                .ConfigureAwait(false);
+    public async Task RegisterDeviceAsync(params string[] tags)
+    {
+        DeviceInstall deviceInstallation = DeviceInstallationService?.GetDeviceInstallation(tags);
 
-            SecureStorage.Remove(CachedDeviceTokenKey);
-            SecureStorage.Remove(CachedTagsKey);
-        }
+        await SendAsync<DeviceInstall>(HttpMethod.Put, $"{RequestUrl}/UpdateInstallation", deviceInstallation).ConfigureAwait(false);
 
-        public async Task RegisterDeviceAsync(params string[] tags)
-        {
-            DeviceInstall deviceInstallation = DeviceInstallationService?.GetDeviceInstallation(tags);
+        await SecureStorage.SetAsync(CachedDeviceTokenKey, deviceInstallation.PushChannel)
+            .ConfigureAwait(false);
 
-            await SendAsync<DeviceInstall>(HttpMethod.Put, $"{RequestUrl}/UpdateInstallation", deviceInstallation).ConfigureAwait(false);
+        await SecureStorage.SetAsync(CachedTagsKey, JsonConvert.SerializeObject(tags));
+    }
 
-            await SecureStorage.SetAsync(CachedDeviceTokenKey, deviceInstallation.PushChannel)
-                .ConfigureAwait(false);
+    public async Task RefreshRegistrationAsync()
+    {
+        var cachedToken = await SecureStorage.GetAsync(CachedDeviceTokenKey)
+            .ConfigureAwait(false);
 
-            await SecureStorage.SetAsync(CachedTagsKey, JsonConvert.SerializeObject(tags));
-        }
+        var serializedTags = await SecureStorage.GetAsync(CachedTagsKey)
+            .ConfigureAwait(false);
 
-        public async Task RefreshRegistrationAsync()
-        {
-            var cachedToken = await SecureStorage.GetAsync(CachedDeviceTokenKey)
-                .ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(cachedToken) ||
+            string.IsNullOrWhiteSpace(serializedTags) ||
+            string.IsNullOrWhiteSpace(DeviceInstallationService.Token) ||
+            cachedToken == DeviceInstallationService.Token)
+            return;
 
-            var serializedTags = await SecureStorage.GetAsync(CachedTagsKey)
-                .ConfigureAwait(false);
+        var tags = JsonConvert.DeserializeObject<string[]>(serializedTags);
 
-            if (string.IsNullOrWhiteSpace(cachedToken) ||
-                string.IsNullOrWhiteSpace(serializedTags) ||
-                string.IsNullOrWhiteSpace(DeviceInstallationService.Token) ||
-                cachedToken == DeviceInstallationService.Token)
-                return;
+        await RegisterDeviceAsync(tags);
+    }
 
-            var tags = JsonConvert.DeserializeObject<string[]>(serializedTags);
+    async Task SendAsync<T>(HttpMethod requestType, string requestUri, T obj)
+    {
+        string serializedContent = null;
 
-            await RegisterDeviceAsync(tags);
-        }
+        await Task.Run(() => serializedContent = JsonConvert.SerializeObject(obj))
+            .ConfigureAwait(false);
 
-        async Task SendAsync<T>(HttpMethod requestType, string requestUri, T obj)
-        {
-            string serializedContent = null;
+        await SendAsync(requestType, requestUri, serializedContent);
+    }
 
-            await Task.Run(() => serializedContent = JsonConvert.SerializeObject(obj))
-                .ConfigureAwait(false);
+    async Task SendAsync(HttpMethod requestType, string requestUri, string jsonRequest = null)
+    {
+        var request = new HttpRequestMessage(requestType, new Uri($"{App.Constants.ApiBaseUrl}/{requestUri}"));
 
-            await SendAsync(requestType, requestUri, serializedContent);
-        }
+        if (jsonRequest != null)
+            request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-        async Task SendAsync(HttpMethod requestType, string requestUri, string jsonRequest = null)
-        {
-            var request = new HttpRequestMessage(requestType, new Uri($"{App.Constants.ApiBaseUrl}/{requestUri}"));
-
-            if (jsonRequest != null)
-                request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-
-            var response = await AuthenticatedClient.SendAsync(request).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-        }
+        var response = await AuthenticatedClient.SendAsync(request).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
     }
 }

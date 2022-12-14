@@ -4,12 +4,12 @@ using SSW.Rewards.Services;
 using SSW.Rewards.Pages;
 using System;
 using System.Linq;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards
 {
-    public partial class AppShell : Xamarin.Forms.Shell
+    public partial class AppShell : Shell
     {
         private IUserService _userService { get; set; }
 
