@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Mopups.Services;
 using SSW.Rewards.PopupPages;
 
@@ -9,26 +10,34 @@ public partial class AppShell : Shell
 {
     private IUserService _userService { get; set; }
 
-    bool _showQRMenu;
+    bool _isStaff;
     bool _showJoinMenu;
 
+    private string _name;
+    private string _email;
+    private string _profilePic;
+
+    // TODO: Fix isStaff injection
     public AppShell(IUserService userService, bool isStaff)
     {
         InitializeComponent();
         _userService = userService;
-        ShowQRCodeMenuItem = isStaff;
+        IsStaff = isStaff;
         ShowJoinMenuItem = !isStaff;
         BindingContext = this;
         VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
+
+        // Tech Debt - https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/405
+        MessagingCenter.Subscribe<AppShell>(this, UserService.UserDetailsUpdatedMessage, (sh) => Refresh());
     }
 
-    public bool ShowQRCodeMenuItem
+    public bool IsStaff
     {
-        get => _showQRMenu;
+        get => _isStaff;
         set
         {
-            _showQRMenu = value;
+            _isStaff = value;
             OnPropertyChanged();
         }
     }
@@ -42,6 +51,53 @@ public partial class AppShell : Shell
             OnPropertyChanged();
         }
     }
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (value == _name)
+                return;
+
+            _name = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            if (value == _email)
+                return;
+
+            _email = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string ProfilePic
+    {
+        get => _profilePic;
+        set
+        {
+            if (value == _profilePic)
+                return;
+
+            _profilePic = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void Refresh()
+    {
+        ProfilePic = _userService.MyProfilePic;
+        Name = _userService.MyName;
+        Email = _userService.MyEmail;
+    }
+
 
     public async void Handle_LogOutClicked(object sender, EventArgs e)
     {

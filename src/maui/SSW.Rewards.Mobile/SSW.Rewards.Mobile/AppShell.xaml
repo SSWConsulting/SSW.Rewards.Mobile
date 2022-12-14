@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SSW.Rewards.Mobile"
     xmlns:pages="clr-namespace:SSW.Rewards.Pages"
-    xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
     FlyoutIcon="icon_menu"
@@ -37,7 +37,7 @@
                             <DataTrigger TargetType="Grid"
                                      Binding="{Binding Text}"
                                      Value="My QRCode">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
                             </DataTrigger>
 
                             <DataTrigger TargetType="Grid"
@@ -86,7 +86,10 @@
     </Shell.Resources>
 
     <Shell.FlyoutHeader>
-        <controls:FlyoutHeader/>
+        <controls:FlyoutHeader ProfilePic="{Binding ProfilePic}" 
+                               Name="{Binding Name}" 
+                               Email="{Binding Email}" 
+                               Staff="{Binding IsStaff}" />
     </Shell.FlyoutHeader>
 
 

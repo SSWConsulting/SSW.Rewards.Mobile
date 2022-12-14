@@ -1,19 +1,25 @@
-﻿namespace SSW.Rewards.Controls;
+﻿using Maui.BindableProperty.Generator.Core;
+
+namespace SSW.Rewards.Mobile.Controls;
 
 public partial class FlyoutHeader : ContentView
 {
-    public FlyoutHeader(FlyoutHeaderViewModel viewModel)
-    {
-        InitializeComponent();
-        viewModel.Navigation = Navigation;
-        BindingContext = viewModel;
-    }
+    [AutoBindable]
+    private string profilePic;
+
+    [AutoBindable]
+    private string name;
+
+    [AutoBindable]
+    private string email;
+
+    [AutoBindable]
+    private bool staff;
 
     public FlyoutHeader()
     {
         InitializeComponent();
-        var viewModel = Resolver.Resolve<FlyoutHeaderViewModel>();
-        viewModel.Navigation = Navigation;
-        BindingContext = viewModel;
+
+        BindingContext = this;
     }
 }
