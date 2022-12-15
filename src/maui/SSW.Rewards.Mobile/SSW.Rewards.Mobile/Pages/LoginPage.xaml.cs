@@ -1,6 +1,4 @@
-﻿using Maui.Plugins.PageResolver;
-
-namespace SSW.Rewards.Mobile.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LoginPage : ContentPage
 {
@@ -22,7 +20,6 @@ public partial class LoginPage : ContentPage
             (
                 LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
                 LogoImage.ScaleTo(3, 1000, Easing.CubicIn)
-
             );
 
         if (Preferences.Get("FirstRun", true))

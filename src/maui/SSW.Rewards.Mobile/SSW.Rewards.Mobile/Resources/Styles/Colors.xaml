@@ -41,4 +41,36 @@
     <Color x:Key="Blue200Accent">#72ACF1</Color>
     <Color x:Key="Blue300Accent">#A7CBF6</Color>
 
+
+    <Color x:Key="LeaderSummary">#e7e7e7</Color>
+    <Color x:Key="LeaderSummarySelected">White</Color>
+    <Color x:Key="LeaderboardBackground">#d8d8d8</Color>
+    <Color x:Key="SkillsBadgeBackgroundColour">#373737</Color>
+    <Color x:Key="ProfileBorder">#979797</Color>
+    <Color x:Key="FlyoutBackgroundColour">#3b3b3b</Color>
+    <Color x:Key="PointsColour">#ffc700</Color>
+    <Color x:Key="TwitterBlue">#007aff</Color>
+    <Color x:Key="ContactButtonRed">#ff453a</Color>
+    <Color x:Key="ProfileBackgroundColour">#232323</Color>
+    <Color x:Key="DividerColour">#5d5d5d</Color>
+    <Color x:Key="SSWRed">#cc4141</Color>
+    <Color x:Key="ButtonBorder">#4d4d4d</Color>
+    <Color x:Key="IndicatorColor">#bcbcbc</Color>
+
+    <!-- v2 -->
+    <Color x:Key="MainBackground">#FF121212</Color>
+    <Color x:Key="primary">#FFCC4141</Color>
+    <!-- replaces SSWRes-->
+    <Color x:Key="TabBarBackground">#FF333333</Color>
+    <Color x:Key="LeaderCardBackground">#FF505050</Color>
+    <Color x:Key="HeadingColor">#bcbcbc</Color>
+    <Color x:Key="PeopleBackground">#363636</Color>
+    <Color x:Key="MutedText">#a3a3a3</Color>
+    <Color x:Key="HighlightedText">#dbdbdb</Color>
+    <Color x:Key="PassedQuiz">#818181</Color>
+    <Color x:Key="Quiz">#f7f7f7</Color>
+    <Color x:Key="QuizCheckColor">#1d4c39</Color>
+    <Color x:Key="PassedQuizIcon">#181818</Color>
+    <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
+
 </ResourceDictionary>

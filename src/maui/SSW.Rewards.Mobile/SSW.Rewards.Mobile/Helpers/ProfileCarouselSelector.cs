@@ -1,9 +1,4 @@
-﻿using SSW.Rewards.ViewModels;
-using System;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-
-namespace SSW.Rewards.Helpers
+﻿namespace SSW.Rewards.Helpers
 {
     public class ProfileCarouselSelector : DataTemplateSelector
     {

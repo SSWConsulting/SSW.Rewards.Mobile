@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SSW.Rewards.Models
+﻿namespace SSW.Rewards.Models
 {
     public class DevProfile
     {

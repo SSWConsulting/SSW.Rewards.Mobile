@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Mopups.Services;
+﻿using Mopups.Services;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
@@ -10,21 +8,19 @@ public partial class AppShell : Shell
 {
     private IUserService _userService { get; set; }
 
-    bool _isStaff;
-    bool _showJoinMenu;
+    bool _isStaff = false;
+    bool _showJoinMenu = false;
 
     private string _name;
     private string _email;
     private string _profilePic;
 
-    // TODO: Fix isStaff injection
-    public AppShell(IUserService userService, bool isStaff)
+    public AppShell(IUserService userService)
     {
+        BindingContext = this;
+
         InitializeComponent();
         _userService = userService;
-        IsStaff = isStaff;
-        ShowJoinMenuItem = !isStaff;
-        BindingContext = this;
         VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
 
@@ -96,6 +92,9 @@ public partial class AppShell : Shell
         ProfilePic = _userService.MyProfilePic;
         Name = _userService.MyName;
         Email = _userService.MyEmail;
+
+        IsStaff = _userService.IsStaff;
+        ShowJoinMenuItem = !_isStaff;
     }
 
 

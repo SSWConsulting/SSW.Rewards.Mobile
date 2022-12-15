@@ -1,7 +1,4 @@
-﻿using SSW.Rewards.Models;
-using SSW.Rewards.Mobile.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class RewardService : BaseService, IRewardService
 {

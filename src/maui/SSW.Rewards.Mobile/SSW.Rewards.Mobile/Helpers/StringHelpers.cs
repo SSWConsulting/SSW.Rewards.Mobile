@@ -1,5 +1,4 @@
-﻿using System;
-namespace SSW.Rewards.Helpers
+﻿namespace SSW.Rewards.Helpers
 {
     public static class StringHelpers
     {

@@ -10,7 +10,7 @@
                    HorizontalOptions="FillAndExpand"
                    VerticalOptions="FillAndExpand"/>
 
-            <StackLayout VerticalOptions="FillAndExpand"
+            <VerticalStackLayout VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
 
                 <Button Text="{Binding ButtonText}"
@@ -21,7 +21,7 @@
                         IsEnabled="{Binding LoginButtonEnabled}"
                         BackgroundColor="{StaticResource SSWRed}"/>
                 <!--BorderColor="{Binding ButtonBorder}"/>-->
-            </StackLayout>
+            </VerticalStackLayout>
 
             <ActivityIndicator HorizontalOptions="Center"
                                Color="Red"

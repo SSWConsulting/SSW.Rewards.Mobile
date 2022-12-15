@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Models;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public interface IDevService
 {

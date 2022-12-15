@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Collections;
 
 namespace SSW.Rewards.Mobile.Controls
 {

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Mopups.Pages;
+﻿using Mopups.Pages;
 using Mopups.Services;
-using SSW.Rewards.Services;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.PopupPages
 {

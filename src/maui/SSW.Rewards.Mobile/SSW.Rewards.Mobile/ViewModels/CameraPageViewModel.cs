@@ -1,5 +1,4 @@
 ﻿using Mopups.Services;
-using SSW.Rewards.Mobile;
 using System.Windows.Input;
 
 namespace SSW.Rewards.ViewModels;

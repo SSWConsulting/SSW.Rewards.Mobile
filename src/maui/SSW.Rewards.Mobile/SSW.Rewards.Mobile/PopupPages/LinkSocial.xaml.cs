@@ -1,9 +1,5 @@
 ﻿using Mopups.Pages;
 using Mopups.Services;
-using SSW.Rewards.Models;
-using System.Linq;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.PopupPages
 {

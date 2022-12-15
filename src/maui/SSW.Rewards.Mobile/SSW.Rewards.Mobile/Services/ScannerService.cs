@@ -1,9 +1,4 @@
-﻿using SSW.Rewards.Helpers;
-using SSW.Rewards.Models;
-using SSW.Rewards.Mobile.Pages;
-using SSW.Rewards.ViewModels;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class ScannerService : BaseService, IScannerService
 {
