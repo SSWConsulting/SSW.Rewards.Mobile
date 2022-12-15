@@ -24,7 +24,7 @@
                          Command="{Binding BackCommand}"
                          BackgroundColor="Transparent">
                 <ImageButton.Source>
-                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                    <FontImageSource FontFamily="FluentIcons"
                                      Glyph="&#xf2ad;"
                                      Color="White"/>
                 </ImageButton.Source>
@@ -39,7 +39,7 @@
                          Command="{Binding ForwardCommand}"
                          VerticalOptions="Center">
                 <ImageButton.Source>
-                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                    <FontImageSource FontFamily="FluentIcons"
                                      Glyph="&#xf2b3;"
                                      Color="White"/>
                 </ImageButton.Source>
@@ -120,7 +120,7 @@
                         <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
                     </StackLayout.GestureRecognizers>
                     
-                    <Label FontFamily="{StaticResource FluentIcons}"
+                    <Label FontFamily="FluentIcons"
                            TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
                            Text="&#xf636;"
                            FontSize="56"
@@ -148,7 +148,7 @@
                              HorizontalOptions="End"
                              Padding="0,0,10,0">
 
-                    <Label FontFamily="{StaticResource FA6Brands}"
+                    <Label FontFamily="FA6Brands"
                            TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf099;"
                            FontSize="30"
@@ -164,7 +164,7 @@
                         </Label.GestureRecognizers>
                     </Label>
 
-                    <Label FontFamily="{StaticResource FA6Brands}"
+                    <Label FontFamily="FA6Brands"
                            TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf09b;"
                            FontSize="36"
@@ -180,7 +180,7 @@
                         </Label.GestureRecognizers>
                     </Label>
 
-                    <Label FontFamily="{StaticResource FA6Brands}"
+                    <Label FontFamily="FA6Brands"
                            TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
                            Text="&#xf08c;"
                            FontSize="30"
@@ -197,7 +197,7 @@
                         </Label.GestureRecognizers>
                     </Label>
 
-                    <Label FontFamily="{StaticResource FA6Brands}"
+                    <Label FontFamily="FA6Brands"
                            TextColor="White"
                            Text="&#xf3ca;"
                            FontSize="30"

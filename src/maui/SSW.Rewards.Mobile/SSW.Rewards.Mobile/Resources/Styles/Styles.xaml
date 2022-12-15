@@ -297,6 +297,10 @@
         <Setter Property="Offset" Value="10,10" />
     </Style>
 
+    <Style TargetType="Shell">
+        <Setter Property="FlyoutBackgroundColor" Value="{StaticResource FlyoutBackgroundColour}"/>
+    </Style>
+
     <Style TargetType="Slider">
         <Setter Property="MinimumTrackColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="MaximumTrackColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />

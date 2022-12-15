@@ -50,7 +50,7 @@
                               Padding="5">
                             <Label TextColor="White"
                                    Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
-                                   FontFamily="{StaticResource FluentIcons}"
+                                   FontFamily="FluentIcons"
                                    FontSize="Title"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"

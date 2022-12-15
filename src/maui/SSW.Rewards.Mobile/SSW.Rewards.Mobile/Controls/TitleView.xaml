@@ -17,7 +17,7 @@
                    VerticalTextAlignment="Center"
                    Padding="10,0"
                    FontSize="22"
-                   FontFamily="{StaticResource HelveticaBold}"
+                   FontFamily="HelveticaBold"
                    InputTransparent="True"/>
             <Image Source="SSWWhite_preview"
                    InputTransparent="True"

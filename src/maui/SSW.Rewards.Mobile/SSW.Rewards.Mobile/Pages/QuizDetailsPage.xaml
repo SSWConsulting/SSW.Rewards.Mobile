@@ -43,7 +43,7 @@
                            TextColor="White"
                            FontSize="32"
                            Margin="20,0,0,0"
-                           FontFamily="{StaticResource FluentIcons}"
+                           FontFamily="FluentIcons"
                            Text="&#xf189;">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1"

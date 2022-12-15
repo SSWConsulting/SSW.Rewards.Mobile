@@ -96,34 +96,34 @@
     <FlyoutItem Style="{StaticResource BaseStyle}">
         <Shell.ItemTemplate>
             <DataTemplate>
-                <StackLayout HeightRequest="1"
-                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
+                <VerticalStackLayout HeightRequest="1"
+                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
         <Tab Route="main">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
         </Tab>
         <Tab Route="leader">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xedba;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>
         <Tab Route="people">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
         <Tab Route="scan">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf636;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
@@ -133,7 +133,7 @@
     <MenuItem Text="Rewards"
               Clicked="Handle_HowToPlayClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf455;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -142,7 +142,7 @@
     <MenuItem Text="SSW Events"
               Clicked="Handle_EventsClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf226;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -152,7 +152,7 @@
               Clicked="Handle_JoinClicked"
               x:Name="JoinMenuItem">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf5c2;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -162,7 +162,7 @@
               Clicked="Handle_QRClicked"
               x:Name="QRMenuItem">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf635;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -171,7 +171,7 @@
     <MenuItem Text="About SSW"
               Clicked="Handle_AboutClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf4a3;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -207,7 +207,7 @@
                                HeightRequest="30"
                                WidthRequest="30"
                                FontSize="28"
-                               FontFamily="{StaticResource FluentIcons}"
+                               FontFamily="FluentIcons"
                                TextColor="White"
                                Text="&#xeafa;">
                         </Label>
@@ -224,7 +224,7 @@
                 <StackLayout HorizontalOptions="EndAndExpand">
                     <Image HorizontalOptions="End"
                            Margin="10,0,10,0"
-                           Source="SSWwhite"/>
+                           Source="ssw_white"/>
 
                     <Label HorizontalOptions="End"
                            x:Name="VersionLabel"

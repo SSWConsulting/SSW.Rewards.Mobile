@@ -39,7 +39,7 @@
                    
                    VerticalTextAlignment="End" />
 
-            <Label FontFamily="{StaticResource FA6Brands}"
+            <Label FontFamily="FA6Brands"
                    TextColor="White"
                    VerticalTextAlignment="Center"
                    TranslationY="1"
