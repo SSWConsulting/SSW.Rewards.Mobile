@@ -32,9 +32,32 @@ public class CameraPageViewModel : BaseViewModel
 
     }
 
-    public void Handle_takePhotoTapped()
+    public async void Handle_takePhotoTapped()
     {
-        CapturePhoto();
+        PermissionStatus storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+        PermissionStatus cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+        try
+        {
+
+            if (storageStatus != PermissionStatus.Granted)
+            {
+                await Permissions.RequestAsync<Permissions.StorageWrite>();
+            }
+
+
+            if (cameraStatus != PermissionStatus.Granted)
+            {
+                await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+
+            CapturePhoto();
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex);
+        }
     }
     public void Handle_choosePhotoTapped()
     {
@@ -55,6 +78,7 @@ public class CameraPageViewModel : BaseViewModel
         RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
     }
 
+    // TODO:  https://github.com/dotnet/maui/issues/11275#issuecomment-1335485832
 
     private async void CapturePhoto()
     {
