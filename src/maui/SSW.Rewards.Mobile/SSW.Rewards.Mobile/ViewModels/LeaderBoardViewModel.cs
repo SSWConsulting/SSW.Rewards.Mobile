@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Pages;
+﻿using SSW.Rewards.Mobile.Pages;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.ObjectModel;

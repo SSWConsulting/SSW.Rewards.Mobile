@@ -4,7 +4,7 @@ using System.Globalization;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
     public class IconToGlyphConverter : IValueConverter, IMarkupExtension
     {

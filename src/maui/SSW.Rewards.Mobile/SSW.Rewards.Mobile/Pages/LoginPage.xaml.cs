@@ -1,6 +1,6 @@
 ﻿using Maui.Plugins.PageResolver;
 
-namespace SSW.Rewards.Pages;
+namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LoginPage : ContentPage
 {

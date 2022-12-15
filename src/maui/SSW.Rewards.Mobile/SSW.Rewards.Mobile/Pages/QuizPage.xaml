@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              BackgroundColor="{StaticResource MainBackground}"
              x:Name="QuizList"
-             x:Class="SSW.Rewards.Pages.QuizPage">
+             x:Class="SSW.Rewards.Mobile.Pages.QuizPage">
     <Shell.TitleView>
         <Label Text="Tech Trivia"
                HorizontalOptions="Center"

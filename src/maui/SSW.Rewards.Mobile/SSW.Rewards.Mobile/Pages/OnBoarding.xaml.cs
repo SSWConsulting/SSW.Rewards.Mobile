@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 public partial class OnBoarding : ContentPage
 {

@@ -3,7 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-                 xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
                  x:Class="SSW.Rewards.PopupPages.LinkSocial">
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"

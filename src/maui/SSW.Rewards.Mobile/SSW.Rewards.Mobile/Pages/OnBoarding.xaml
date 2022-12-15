@@ -1,25 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             mc:Ignorable="d"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              NavigationPage.HasNavigationBar="False"
-             x:Class="SSW.Rewards.Pages.OnBoarding">
+             x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style x:Key="SelectedStyle" TargetType="Frame">
-                <Setter Property="BackgroundColor"
-                        Value="#cc4141"/>
-            </Style>
-            <Style x:Key="UnselectedStyle" TargetType="Frame">
-                <Setter Property="BackgroundColor"
-                        Value="#bcbcbc"/>
-                <Setter Property="OutlineColor"
-                        Value="#bcbcbc"/>
-            </Style>
             <converters:InverseBoolConverter x:Key="InverseBool"/>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -36,9 +23,7 @@
             <Label HorizontalOptions="FillAndExpand"
                    Grid.Row="0"
                    HorizontalTextAlignment="End"
-                   d:TextColor="White"
                    TextColor="White"
-                   d:Text="Skip"
                    FontSize="Small"
                    Margin="30"
                    Text="Skip">
@@ -76,11 +61,10 @@
                                 </Image.Scale>-->
                             </Image>
 
-                            <lottie:AnimationView x:Name="ResultAnimation"
-                                                  Animation="{Binding Animation}"
+                            <lottie:SKLottieView x:Name="ResultAnimation"
+                                                  Source="{Binding Animation}"
                                                   IsVisible="{Binding IsAnimation}"
-                                                  AutoPlay="True"
-                                                  Loop="False"
+                                                  IsAnimationEnabled="True"
                                                   VerticalOptions="CenterAndExpand"
                                                   HorizontalOptions="CenterAndExpand"
                                                   HeightRequest="200"
@@ -94,12 +78,10 @@
 
             <Label HorizontalOptions="FillAndExpand"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="White"
                    VerticalOptions="End"
                    TextColor="White"
                    FontSize="Large"
                    Text="{Binding SubHeading}"
-                   d:Text="How to get them?"
                    Grid.Row="2"/>
 
             <StackLayout Grid.Row="3">

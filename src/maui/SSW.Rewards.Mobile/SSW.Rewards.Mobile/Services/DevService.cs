@@ -1,6 +1,6 @@
 ﻿using Maui.Plugins.PageResolver;
 using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
+using SSW.Rewards.Mobile.Pages;
 
 namespace SSW.Rewards.Services;
 

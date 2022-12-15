@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Maui.Views;
 using Mopups.Services;
-using SSW.Rewards.Controls;
+using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Helpers;
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;

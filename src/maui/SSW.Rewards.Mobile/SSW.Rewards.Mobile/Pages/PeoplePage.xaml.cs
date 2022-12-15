@@ -1,6 +1,6 @@
-﻿using SSW.Rewards.Controls;
+﻿using SSW.Rewards.Mobile.Controls;
 
-namespace SSW.Rewards.Pages;
+namespace SSW.Rewards.Mobile.Pages;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class PeoplePage : ContentPage

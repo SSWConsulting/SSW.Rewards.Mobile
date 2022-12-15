@@ -2,9 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
-             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:helpers="clr-namespace:SSW.Rewards.Helpers"
-             x:Class="SSW.Rewards.Pages.ProfilePage">
+             x:Class="SSW.Rewards.Mobile.Pages.ProfilePage">
     <ContentPage.Resources>
         <DataTemplate x:Key="AchievementsTemplate">
             <controls:AchievementGrid />

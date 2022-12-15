@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Controls;
+﻿namespace SSW.Rewards.Mobile.Controls;
 
 // TODO: Rebuild this control using MauiGraphics
 

@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="SSW.Rewards.Controls.TitleView">
+             x:Class="SSW.Rewards.Mobile.Controls.TitleView">
   <ContentView.Content>
       <StackLayout Orientation="Horizontal"
                    HorizontalOptions="FillAndExpand">
