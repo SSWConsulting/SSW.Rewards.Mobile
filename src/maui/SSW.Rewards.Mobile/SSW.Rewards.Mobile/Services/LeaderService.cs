@@ -4,7 +4,7 @@ public class LeaderService : BaseService, ILeaderService
 {
     private LeaderboardClient _leaderBoardClient;
 
-    public LeaderService()
+    public LeaderService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
     }

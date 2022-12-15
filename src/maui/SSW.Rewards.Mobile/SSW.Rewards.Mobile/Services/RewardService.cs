@@ -4,7 +4,7 @@ public class RewardService : BaseService, IRewardService
 {
     private RewardClient _rewardClient;
 
-    public RewardService()
+    public RewardService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
     }

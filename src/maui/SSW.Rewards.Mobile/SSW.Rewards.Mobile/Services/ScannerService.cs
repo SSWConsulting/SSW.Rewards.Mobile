@@ -5,7 +5,7 @@ public class ScannerService : BaseService, IScannerService
     private AchievementClient _achievementClient { get; set; }
     private RewardClient _rewardClient { get; set; }
 
-    public ScannerService()
+    public ScannerService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _achievementClient = new AchievementClient(BaseUrl, AuthenticatedClient);
         _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);

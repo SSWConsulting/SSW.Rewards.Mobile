@@ -4,7 +4,7 @@ public class DevService : BaseService, IDevService
 {
     private StaffClient _staffClient;
 
-    public DevService()
+    public DevService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _staffClient = new StaffClient(BaseUrl, AuthenticatedClient);
     }

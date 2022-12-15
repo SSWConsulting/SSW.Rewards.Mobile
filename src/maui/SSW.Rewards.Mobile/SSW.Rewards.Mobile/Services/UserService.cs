@@ -1,4 +1,5 @@
 ﻿using IdentityModel.OidcClient;
+using Microsoft.Maui.ApplicationModel;
 using SSW.Rewards.PopupPages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
@@ -19,7 +20,7 @@ public class UserService : BaseService, IUserService
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
-    public UserService(IBrowser browser)
+    public UserService(IBrowser browser, IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _options = new OidcClientOptions
         {
@@ -95,7 +96,7 @@ public class UserService : BaseService, IUserService
 
     private async Task SetLoggedInState(string accessToken, string idToken)
     {
-        AuthenticatedClientFactory.SetAccessToken(accessToken);
+        AuthHandler.SetAccessToken(accessToken);
 
         Preferences.Set(nameof(HasCachedAccount), true);
 
@@ -155,7 +156,7 @@ public class UserService : BaseService, IUserService
             if (!result.IsError)
             {
                 await SettRefreshToken(result.RefreshToken);
-                AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
+                AuthHandler.SetAccessToken(result.AccessToken);
                 return true;
             }
         }

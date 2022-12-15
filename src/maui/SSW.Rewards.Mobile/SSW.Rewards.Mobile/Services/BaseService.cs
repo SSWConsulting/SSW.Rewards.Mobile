@@ -1,8 +1,16 @@
-﻿namespace SSW.Rewards.Services;
+﻿using SSW.Rewards.Mobile.Helpers;
+
+namespace SSW.Rewards.Services;
 
 public class BaseService
 {
-    protected HttpClient AuthenticatedClient => AuthenticatedClientFactory.GetClient();
+    protected readonly HttpClient AuthenticatedClient;
 
-    protected string BaseUrl = Constants.ApiBaseUrl;
+    protected readonly string BaseUrl;
+
+    public BaseService(IHttpClientFactory clientFactory, ApiOptions options)
+    {
+        AuthenticatedClient = clientFactory.CreateClient(AuthHandler.AuthenticatedClient);
+        BaseUrl = options.BaseUrl;
+    }
 }
