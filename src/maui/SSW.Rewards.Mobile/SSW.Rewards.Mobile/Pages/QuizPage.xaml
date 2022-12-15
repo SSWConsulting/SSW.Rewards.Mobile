@@ -64,7 +64,7 @@
 
                                     <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
                                            TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
-                                           FontFamily="{StaticResource FA6Brands}"
+                                           FontFamily="FA6Brands"
                                            FontSize="92"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
@@ -73,7 +73,7 @@
 
                                     <Label Text="&#xe30b;"
                                            TextColor="Green"
-                                           FontFamily="{StaticResource FluentIcons}"
+                                           FontFamily="FluentIcons"
                                            FontSize="28"
                                            HorizontalOptions="End"
                                            VerticalOptions="End"

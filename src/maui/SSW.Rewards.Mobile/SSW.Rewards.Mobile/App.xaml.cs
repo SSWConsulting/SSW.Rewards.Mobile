@@ -52,7 +52,6 @@ public partial class App : Application
         //MainPage = new LoginPage(loginPageViewModel);
 
         await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-        
     }
 
     protected override void OnSleep()

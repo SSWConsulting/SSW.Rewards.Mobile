@@ -100,7 +100,7 @@
                              Padding="5"
                              Command="{Binding ScrollToMeCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                        <FontImageSource FontFamily="FluentIcons"
                                      Glyph="&#xf151;"
                                      Color="White"/>
                     </ImageButton.Source>
@@ -134,7 +134,7 @@
                 </controls:BorderlessEntry>
 
                 <Label Grid.Column="1"
-                       FontFamily="{StaticResource FluentIcons}"
+                       FontFamily="FluentIcons"
                        Text="{Binding SearchBarIcon}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
@@ -265,7 +265,7 @@
                              Padding="10"
                              Command="{Binding ScrollToTopCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                        <FontImageSource FontFamily="FluentIcons"
                                      Glyph="&#xf1a5;"
                                      Color="White"/>
                     </ImageButton.Source>
@@ -280,7 +280,7 @@
                              Padding="10"
                              Command="{Binding ScrollToEndCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="{StaticResource FluentIcons}"
+                        <FontImageSource FontFamily="FluentIcons"
                                      Glyph="&#xf151;"
                                      Color="White"/>
                     </ImageButton.Source>

@@ -23,7 +23,7 @@ namespace SSW.Rewards.ViewModels
         public OnBoardingViewModel()
         {
             DoActionCommand = new Command(DoAction);
-            Swiped = new Command(SetDetails);
+            Swiped = new Command(HandleSwiped);
             Skip = new Command(async () => await SkipOnboarding());
             Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
             Items = new ObservableCollection<CarouselViewModel>
@@ -111,6 +111,13 @@ namespace SSW.Rewards.ViewModels
         private async Task SkipOnboarding()
         {
             await Navigation.PopModalAsync();
+        }
+
+        private void HandleSwiped()
+        {
+            var selec = SelectedItem;
+            var myItems = Items;
+            SetDetails();
         }
 
         private void SetDetails()

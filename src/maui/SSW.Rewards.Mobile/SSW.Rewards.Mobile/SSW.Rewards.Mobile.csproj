@@ -47,6 +47,44 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Fonts\FA6Brands-Regular.otf" />
+	  <None Remove="Resources\Fonts\FluentSystemIcons-Regular.ttf" />
+	  <None Remove="Resources\Fonts\Helvetica-Bold-Font.ttf" />
+	  <None Remove="Resources\Images\dev_placeholder.png" />
+	  <None Remove="Resources\Images\external.png" />
+	  <None Remove="Resources\Images\icon.png" />
+	  <None Remove="Resources\Images\icon_menu.png" />
+	  <None Remove="Resources\Images\ic_notification.png" />
+	  <None Remove="Resources\Images\logo_large.png" />
+	  <None Remove="Resources\Images\logo_splash.png" />
+	  <None Remove="Resources\Images\logo_ssw_colour.png" />
+	  <None Remove="Resources\Images\menu.png" />
+	  <None Remove="Resources\Images\prize_hubmax.png" />
+	  <None Remove="Resources\Images\qr_reticle.png" />
+	  <None Remove="Resources\Images\rewardsbackground.png" />
+	  <None Remove="Resources\Images\rewardslogo.png" />
+	  <None Remove="Resources\Images\ssw_white.png" />
+	  <None Remove="Resources\Images\test_failed.png" />
+	  <None Remove="Resources\Images\test_passed.png" />
+	  <None Remove="Resources\Images\v2band.png" />
+	  <None Remove="Resources\Images\v2consultation.JPG" />
+	  <None Remove="Resources\Images\v2cups.png" />
+	  <None Remove="Resources\Images\v2fail.png" />
+	  <None Remove="Resources\Images\v2sophie.png" />
+	  <None Remove="Resources\Images\v2win.png" />
+	  <None Remove="Resources\Raw\coin.json" />
+	  <None Remove="Resources\Raw\empty-box.json" />
+	  <None Remove="Resources\Raw\fail.json" />
+	  <None Remove="Resources\Raw\judgement.json" />
+	  <None Remove="Resources\Raw\pass.json" />
+	  <None Remove="Resources\Raw\qr-code-scanner.json" />
+	  <None Remove="Resources\Raw\rapid-scan.json" />
+	  <None Remove="Resources\Raw\Sophie.json" />
+	  <None Remove="Resources\Raw\star.json" />
+	  <None Remove="Resources\Raw\trophy.json" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="3.0.0" />

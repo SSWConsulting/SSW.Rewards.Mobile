@@ -14,9 +14,13 @@ public static class MauiProgram
         {
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            fonts.AddFont("FluentSystemIcons-Regular.ttf", "FluentIcons");
+            fonts.AddFont("FA6Brands-Regular.otf", "FA6Brands");
+            fonts.AddFont("Helvetica-Bold-Font.ttf", "HelveticaBold");
         })
         .UseMauiCommunityToolkit()
-        .ConfigureMopups();
+        .ConfigureMopups()
+        .UsePageResolver();
 
 #if DEBUG
         builder.Logging.AddDebug();
