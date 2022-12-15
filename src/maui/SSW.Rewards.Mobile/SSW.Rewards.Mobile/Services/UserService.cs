@@ -1,6 +1,5 @@
 ﻿using IdentityModel.OidcClient;
-using SSW.Rewards.Helpers;
-using SSW.Rewards.Models;
+using SSW.Rewards.PopupPages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -77,7 +76,7 @@ public class UserService : BaseService, IUserService
                 return ApiStatus.LoginFailure;
             }
         }
-        catch(TaskCanceledException taskEx)
+        catch (TaskCanceledException taskEx)
         {
             return ApiStatus.LoginFailure;
         }
@@ -192,6 +191,8 @@ public class UserService : BaseService, IUserService
             return "v2sophie";
         }
     }
+
+    public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
 
     public async Task<string> UploadImageAsync(Stream image)
     {

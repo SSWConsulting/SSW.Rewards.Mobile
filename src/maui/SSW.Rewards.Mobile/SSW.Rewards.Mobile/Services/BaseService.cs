@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Helpers;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class BaseService
 {

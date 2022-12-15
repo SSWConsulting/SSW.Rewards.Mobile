@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SSW.Rewards.Models
+﻿namespace SSW.Rewards.Models
 {
-	public class ExternalReward
+    public class ExternalReward
 	{
 		public ExternalReward()
 		{

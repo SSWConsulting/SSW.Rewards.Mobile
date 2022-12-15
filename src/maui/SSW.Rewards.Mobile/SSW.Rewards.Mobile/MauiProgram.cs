@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using SSW.Rewards.Helpers;
 using System.Reflection;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 using CommunityToolkit.Maui;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using SSW.Rewards.Models;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
 namespace SSW.Rewards.Mobile.Converters
 {

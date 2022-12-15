@@ -1,10 +1,4 @@
-﻿using System;
-
-using SSW.Rewards.Services;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-
-namespace SSW.Rewards.Mobile.Pages
+﻿namespace SSW.Rewards.Mobile.Pages
 {
     public partial class TestPushPage : ContentPage
     {

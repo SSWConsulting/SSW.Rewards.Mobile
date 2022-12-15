@@ -1,7 +1,4 @@
 ﻿//using FFImageLoading.Transformations;
-using SSW.Rewards.Models;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.Mobile.Controls
 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Mopups.Services;
 
 namespace SSW.Rewards.Mobile;
 
@@ -15,6 +16,7 @@ public partial class App : Application
     //                  constructed as required. If this bug has been resolved
     //                  we can do a fair bit of refactoring. 🤮🤮🤮
     private static IServiceProvider _serviceProvider;
+    private readonly LoginPageViewModel loginPageViewModel;
 
     public static void SetScope(IServiceCollection services)
     {
@@ -29,7 +31,7 @@ public partial class App : Application
     }
     #endregion
 
-    public App(LoginPage loginPage)
+    public App(IUserService userService)
     {
         InitializeComponent();
 
@@ -37,13 +39,20 @@ public partial class App : Application
             "ios=e33283b1-7326-447d-baae-e783ece0789b",
             typeof(Analytics), typeof(Crashes));
 
-        MainPage = loginPage;
+        MainPage = new AppShell(userService);
     }
 
     protected override async void OnStart()
     {
         //await UpdateAccessTokenAsync();
         await CheckApiCompatibilityAsync();
+
+        // HACK - Resource dictotionary isn't available here :(
+        // See discussion: https://github.com/dotnet/maui/discussions/5263
+        //MainPage = new LoginPage(loginPageViewModel);
+
+        await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
+        
     }
 
     protected override void OnSleep()

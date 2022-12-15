@@ -1,8 +1,4 @@
-﻿using SSW.Rewards.Models;
-using System.Collections.Generic;
-using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Windows.Input;
 
 namespace SSW.Rewards.ViewModels
 {

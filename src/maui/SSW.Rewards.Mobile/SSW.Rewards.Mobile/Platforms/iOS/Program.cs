@@ -1,5 +1,4 @@
-﻿using ObjCRuntime;
-using UIKit;
+﻿using UIKit;
 
 namespace SSW.Rewards.Mobile;
 

@@ -1,8 +1,4 @@
-﻿using Maui.Plugins.PageResolver;
-using SSW.Rewards.Models;
-using SSW.Rewards.Mobile.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class DevService : BaseService, IDevService
 {

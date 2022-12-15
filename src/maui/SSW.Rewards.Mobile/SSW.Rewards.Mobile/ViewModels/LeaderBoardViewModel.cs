@@ -1,12 +1,5 @@
-﻿using SSW.Rewards.Mobile.Pages;
-using SSW.Rewards.Services;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
 namespace SSW.Rewards.ViewModels
 {

@@ -1,5 +1,4 @@
-﻿using System;
-namespace SSW.Rewards.Models
+﻿namespace SSW.Rewards.Models
 {
     public class UserContext
     {
