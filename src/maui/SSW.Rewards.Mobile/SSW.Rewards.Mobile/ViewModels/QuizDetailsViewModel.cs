@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Controls;
+﻿using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Services;
 using System;
 using System.Collections.Generic;

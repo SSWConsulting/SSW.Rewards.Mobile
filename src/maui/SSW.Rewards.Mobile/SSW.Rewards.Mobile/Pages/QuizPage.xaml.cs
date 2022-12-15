@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class QuizPage : ContentPage

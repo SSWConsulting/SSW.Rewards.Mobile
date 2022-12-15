@@ -2,11 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
-             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Name="Leaderboard"
-             x:Class="SSW.Rewards.Pages.LeaderboardPage">
+             x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
     <ContentPage.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="TabbedRadioTemplate">
@@ -36,7 +36,6 @@
                 </StackLayout>
             </ControlTemplate>
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
-            <behaviors:EventToCommandBehavior x:Key="EventToCommand"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -127,9 +126,10 @@
                                           Text="{Binding SearchBarText}"
                                           TextColor="White">
                     <controls:BorderlessEntry.Behaviors>
-                        <behaviors:EventToCommandBehavior Command="{Binding SearchTextChanged}"
-                                                          CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}"
-                                                          EventName="TextChanged" />
+                        
+                        <mct:EventToCommandBehavior Command="{Binding SearchTextChanged}" 
+                                                    CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}" 
+                                                    EventName="TextChanged" />
                     </controls:BorderlessEntry.Behaviors>
                 </controls:BorderlessEntry>
 

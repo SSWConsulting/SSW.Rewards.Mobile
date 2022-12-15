@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
               xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              BackgroundColor="{StaticResource MainBackground}"
-             x:Class="SSW.Rewards.Pages.ScanPage">
+             x:Class="SSW.Rewards.Mobile.Pages.ScanPage">
     <Grid>
         <StackLayout Padding="0,0,0,200">
             <Label Text="Scan a QR Code"

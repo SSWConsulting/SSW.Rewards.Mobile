@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Helpers;
 using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
+using SSW.Rewards.Mobile.Pages;
 using SSW.Rewards.ViewModels;
 
 namespace SSW.Rewards.Services;

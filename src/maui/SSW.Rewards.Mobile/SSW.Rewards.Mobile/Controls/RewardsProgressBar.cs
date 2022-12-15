@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Controls;
+﻿namespace SSW.Rewards.Mobile.Controls;
 
 public class RewardsProgressBar : IDrawable
 {

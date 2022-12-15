@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
-namespace SSW.Rewards.Controls
+namespace SSW.Rewards.Mobile.Controls
 {
     public class RepeaterView : StackLayout
     {

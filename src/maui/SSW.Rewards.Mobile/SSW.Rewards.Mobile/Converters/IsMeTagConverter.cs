@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters;
+namespace SSW.Rewards.Mobile.Converters;
 
 public class IsMeTagConverter: IValueConverter, IMarkupExtension
 {

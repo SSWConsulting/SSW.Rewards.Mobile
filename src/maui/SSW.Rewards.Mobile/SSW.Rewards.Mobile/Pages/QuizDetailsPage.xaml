@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
-             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;SkiaSharp.Extended.UI"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              BackgroundColor="{StaticResource MainBackground}"
-             x:Class="SSW.Rewards.Pages.QuizDetailsPage">
+             x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
     <Shell.TitleView>
         <Label Text="Tech Trivia"
                HorizontalOptions="Center"
@@ -201,16 +201,14 @@
                             <DataTemplate>
                                 <Grid>
 
-                                    <lottie:AnimationView Animation="pass.json"
-                                                          AutoPlay="True"
-                                                          Loop="False"
+                                <lottie:SKLottieView Source="pass.json"
+                                                          IsAnimationEnabled="True"
                                                           WidthRequest="30"
                                                           HeightRequest="30"
                                                           IsVisible="{Binding Correct}"/>
 
-                                    <lottie:AnimationView Animation="fail.json"
-                                                          AutoPlay="True"
-                                                          Loop="False"
+                                <lottie:SKLottieView Source="fail.json"
+                                                          IsAnimationEnabled="True"
                                                           WidthRequest="30"
                                                           HeightRequest="30"
                                                           IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>

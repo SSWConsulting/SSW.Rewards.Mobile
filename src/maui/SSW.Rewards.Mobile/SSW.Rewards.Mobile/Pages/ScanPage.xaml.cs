@@ -1,7 +1,7 @@
 ﻿using Mopups.Services;
 using ZXing.Net.Maui;
 
-namespace SSW.Rewards.Pages;
+namespace SSW.Rewards.Mobile.Pages;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class ScanPage : ContentPage
