@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-             xmlns:helpers="clr-namespace:SSW.Rewards.Helpers"
+             xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
              x:Class="SSW.Rewards.Mobile.Pages.ProfilePage">
     <ContentPage.Resources>
         <DataTemplate x:Key="AchievementsTemplate">

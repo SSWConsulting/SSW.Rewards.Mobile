@@ -26,9 +26,7 @@ public static class MauiProgram
         .UsePageResolver()
         .UseBarcodeReader();
 
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
+        var options = new ApiOptions { BaseUrl = Constants.ApiBaseUrl };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
             .Where(e => e.IsSubclassOf(typeof(Page)) || e.IsSubclassOf(typeof(BaseViewModel)));
@@ -45,6 +43,17 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRewardService, RewardService>();
         builder.Services.AddSingleton<IQuizService, QuizService>();
         builder.Services.AddSingleton<IBrowser, AuthBrowser>();
+        builder.Services.AddSingleton<AuthHandler>();
+        builder.Services.AddSingleton(options);
+
+        builder.Services.AddHttpClient(AuthHandler.AuthenticatedClient)
+            .AddHttpMessageHandler((s) => s.GetService<AuthHandler>());
+
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
+
+        App.SetScope(builder.Services);
 
         return builder.Build();
     }

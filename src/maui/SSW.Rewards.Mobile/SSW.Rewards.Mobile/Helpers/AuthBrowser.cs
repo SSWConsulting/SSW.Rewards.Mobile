@@ -1,7 +1,7 @@
 ﻿using IdentityModel.OidcClient.Browser;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
-namespace SSW.Rewards.Helpers;
+namespace SSW.Rewards.Mobile.Helpers;
 
 public class AuthBrowser : IBrowser
 {

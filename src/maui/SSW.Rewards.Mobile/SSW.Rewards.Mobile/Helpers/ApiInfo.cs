@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-
-namespace SSW.Rewards.Helpers;
+namespace SSW.Rewards.Mobile.Helpers;
 
 public class ApiInfo
 {
@@ -16,10 +15,10 @@ public class ApiInfo
 
     public async Task<string> GetApiVersionAsync()
     {
-        Uri requestUri = new Uri(_baseUrl + "/swagger/SSW.Rewards%20API/swagger.json");
+        Uri requestUri = new Uri(_baseUrl + "/api/specification.json");
         var apiInfo = await _client.GetAsync(requestUri);
 
-        if(apiInfo.IsSuccessStatusCode)
+        if (apiInfo.IsSuccessStatusCode)
         {
             var content = await apiInfo.Content.ReadAsStringAsync();
             dynamic o = JObject.Parse(content);
@@ -43,16 +42,23 @@ public class ApiInfo
             return true;
         }
 
-        float apiVerf = float.Parse(apiVer);
-        float appVerf = float.Parse(appVer);
+        try
+        {
+            float apiVerf = float.Parse(apiVer);
+            float appVerf = float.Parse(appVer);
 
-        if (apiVerf > appVerf)
-        {
-            return false;
+            if (apiVerf > appVerf)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        } catch
+        { 
+            return true; 
         }
-        else
-        {
-            return true;
-        }
+
     }
 }

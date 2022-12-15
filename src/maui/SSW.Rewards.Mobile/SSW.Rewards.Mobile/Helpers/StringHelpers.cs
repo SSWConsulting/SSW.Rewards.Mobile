@@ -1,18 +1,17 @@
-﻿namespace SSW.Rewards.Helpers
+﻿namespace SSW.Rewards.Mobile.Helpers;
+
+public static class StringHelpers
 {
-    public static class StringHelpers
+    public static string Base64Decode(string data)
     {
-        public static string Base64Decode(string data)
+        try
         {
-            try
-            {
-                var encodedBytes = Convert.FromBase64String(data);
-                return System.Text.Encoding.UTF8.GetString(encodedBytes);
-            }
-            catch(Exception ex)
-            {
-                return ex.Message;
-            }
+            var encodedBytes = Convert.FromBase64String(data);
+            return System.Text.Encoding.UTF8.GetString(encodedBytes);
+        }
+        catch(Exception ex)
+        {
+            return ex.Message;
         }
     }
 }

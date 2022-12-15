@@ -4,7 +4,7 @@ public class QuizService : BaseService, IQuizService
 {
     private QuizzesClient _quizClient;
 
-    public QuizService()
+    public QuizService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _quizClient = new QuizzesClient(BaseUrl, AuthenticatedClient);
     }
