@@ -8,14 +8,22 @@ namespace SSW.Rewards.Mobile.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["primary"];
+                if (Application.Current.Resources.TryGetValue("primary", out var color))
+                {
+                    return (Color)color;
+                }
+                return Colors.Aqua;
             }
         }
         public Color NotMe
         {
             get
             {
-                return (Color)Application.Current.Resources["LeaderCardBackground"];
+                if (Application.Current.Resources.TryGetValue("LeaderCardBackground", out var color))
+                {
+                    return (Color)color;
+                }
+                return Colors.Aqua;
             }
         }
 
