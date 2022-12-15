@@ -48,7 +48,7 @@ public class LoginPageViewModel : BaseViewModel
         {
             case ApiStatus.Success:
                 enablebuttonAfterLogin = false;
-                await Navigation.PopModalAsync();
+                await OnAfterLogin();
                 break;
             case ApiStatus.Unavailable:
                 await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
@@ -86,7 +86,7 @@ public class LoginPageViewModel : BaseViewModel
 
                     enablebuttonAfterLogin = false;
 
-                    await Navigation.PopModalAsync();
+                    await OnAfterLogin();
 
                 }
             }
@@ -105,6 +105,22 @@ public class LoginPageViewModel : BaseViewModel
                 RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
             }
         }
+    }
+
+    private async Task OnAfterLogin()
+    {
+        var qr = _userService.MyQrCode;
+        if (!string.IsNullOrWhiteSpace(qr))
+        {
+            _isStaff = true;
+        }
+        else
+        {
+            _isStaff = false;
+        }
+
+        Application.Current.MainPage = App.ResolveShell(_isStaff);
+        await Shell.Current.GoToAsync("//main");
     }
 
     async Task OnForgotPassword()

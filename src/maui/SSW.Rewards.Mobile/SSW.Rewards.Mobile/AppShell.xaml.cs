@@ -15,8 +15,9 @@ public partial class AppShell : Shell
     private string _email;
     private string _profilePic;
 
-    public AppShell(IUserService userService)
+    public AppShell(IUserService userService, bool isStaff)
     {
+        IsStaff = isStaff;
         BindingContext = this;
 
         InitializeComponent();
