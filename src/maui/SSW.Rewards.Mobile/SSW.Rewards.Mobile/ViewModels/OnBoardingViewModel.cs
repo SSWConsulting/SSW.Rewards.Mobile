@@ -115,8 +115,9 @@ namespace SSW.Rewards.ViewModels
 
         private void HandleSwiped()
         {
-            var selec = SelectedItem;
-            var myItems = Items;
+            // TECH DEBT: We don't know why tf this happens
+            if (SelectedItem is null)
+                return;
             SetDetails();
         }
 

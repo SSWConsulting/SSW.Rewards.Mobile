@@ -3,6 +3,8 @@ using System.Reflection;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 using CommunityToolkit.Maui;
 using Mopups.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using ZXing.Net.Maui.Controls;
 
 namespace SSW.Rewards.Mobile;
 public static class MauiProgram
@@ -20,7 +22,9 @@ public static class MauiProgram
         })
         .UseMauiCommunityToolkit()
         .ConfigureMopups()
-        .UsePageResolver();
+        .UseSkiaSharp()
+        .UsePageResolver()
+        .UseBarcodeReader();
 
 #if DEBUG
         builder.Logging.AddDebug();

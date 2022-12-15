@@ -19,7 +19,7 @@ public partial class LoginPage : ContentPage
         await Task.WhenAny<bool>
             (
                 LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
-                LogoImage.ScaleTo(3, 1000, Easing.CubicIn)
+                LogoImage.ScaleTo(1, 1000, Easing.CubicIn)
             );
 
         if (Preferences.Get("FirstRun", true))

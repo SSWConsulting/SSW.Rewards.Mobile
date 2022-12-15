@@ -31,7 +31,7 @@ public partial class App : Application
     }
     #endregion
 
-    public App(IUserService userService)
+    public App(LoginPage page)//IUserService userService)
     {
         InitializeComponent();
 
@@ -39,7 +39,7 @@ public partial class App : Application
             "ios=e33283b1-7326-447d-baae-e783ece0789b",
             typeof(Analytics), typeof(Crashes));
 
-        MainPage = new AppShell(userService);
+        MainPage = page;//new AppShell(userService);
     }
 
     protected override async void OnStart()
@@ -51,7 +51,7 @@ public partial class App : Application
         // See discussion: https://github.com/dotnet/maui/discussions/5263
         //MainPage = new LoginPage(loginPageViewModel);
 
-        await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
+        //await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
     }
 
     protected override void OnSleep()
