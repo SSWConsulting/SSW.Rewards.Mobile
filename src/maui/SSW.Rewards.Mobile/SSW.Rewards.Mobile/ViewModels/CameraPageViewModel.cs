@@ -13,7 +13,7 @@ public class CameraPageViewModel : BaseViewModel
 
     public ImageSource ProfilePicture { get; set; } = ImageSource.FromFile("");
 
-    private Stream stream;
+    private byte[] stream;
 
     private IUserService _userService { get; set; }
 
@@ -64,21 +64,22 @@ public class CameraPageViewModel : BaseViewModel
         ChoosePhoto();
     }
 
-    private void SetPhoto(Stream stream)
+    private async Task SetPhoto(Stream stream)
     {
         if (stream == null)
             return;
 
-        this.stream = stream;
+        var memStream = new MemoryStream();
+        stream.CopyTo(memStream);
+        this.stream = memStream.ToArray();
 
         var image = ImageSource.FromStream(() => stream);
 
         ProfilePicture = image;
         UseButtonEnabled = true;
-        RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
+        RaisePropertyChanged("UseButtonEnabled");
+        //RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
     }
-
-    // TODO:  https://github.com/dotnet/maui/issues/11275#issuecomment-1335485832
 
     private async void CapturePhoto()
     {
@@ -92,7 +93,7 @@ public class CameraPageViewModel : BaseViewModel
             if (photo is not null)
             {
                 using Stream sourceStream = await photo.OpenReadAsync();
-                SetPhoto(sourceStream);
+                await SetPhoto(sourceStream);
             }
         }
         else
@@ -113,7 +114,7 @@ public class CameraPageViewModel : BaseViewModel
             if (photo is not null)
             {
                 using Stream sourceStream = await photo.OpenReadAsync();
-                SetPhoto(sourceStream);
+                await SetPhoto(sourceStream);
             }
         }
         else
@@ -126,7 +127,9 @@ public class CameraPageViewModel : BaseViewModel
     {
         IsUploading = true;
         RaisePropertyChanged("IsUploading");
-        await _userService.UploadImageAsync(stream);
+        Stream dstStream = new MemoryStream();
+        dstStream.Write(this.stream,0, this.stream.Length);
+        await _userService.UploadImageAsync(dstStream);
         await MopupService.Instance.PopAllAsync();
     }
 }
