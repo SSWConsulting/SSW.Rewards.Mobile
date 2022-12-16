@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
+
+
+	<!-- Setting Targeted sdk version to 32 instead of the latest 33 due to Android Permissions not correctly implemented yet
+		 See Issue: https://github.com/dotnet/maui/issues/11275 -->
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="32" />
+	
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -9,6 +15,7 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 	<!-- Required only if your app targets Android 13. -->
 	<!-- Declare one or more the following permissions only if your app needs
@@ -32,6 +39,9 @@
 		</intent>
 		<intent>
 			<action android:name="android.support.customtabs.action.CustomTabsService" />
+		</intent>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
 		</intent>
 	</queries>
 </manifest>
