@@ -1,6 +1,4 @@
 ﻿using IdentityModel.OidcClient;
-using Microsoft.Maui.ApplicationModel;
-using SSW.Rewards.PopupPages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -197,7 +195,10 @@ public class UserService : BaseService, IUserService
 
     public async Task<string> UploadImageAsync(Stream image)
     {
-        FileParameter parameter = new FileParameter(image);
+        var contentType = "image/png";
+        var fileName = $"{MyUserId}_{DateTime.UtcNow.Ticks}_profilepic.png";
+        
+        FileParameter parameter = new FileParameter(image, fileName, contentType);
 
         var response = await _userClient.UploadProfilePicAsync(parameter);
         Preferences.Set(nameof(MyProfilePic), response.PicUrl);
@@ -207,7 +208,7 @@ public class UserService : BaseService, IUserService
             await UpdateMyDetailsAsync();
         }
 
-        MessagingCenter.Send<object>(this, UserDetailsUpdatedMessage);
+        MessagingCenter.Send(this, UserDetailsUpdatedMessage);
         return response.PicUrl;
     }
 

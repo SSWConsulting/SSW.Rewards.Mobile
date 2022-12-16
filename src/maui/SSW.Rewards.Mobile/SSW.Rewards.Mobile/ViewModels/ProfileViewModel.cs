@@ -79,7 +79,7 @@ public class ProfileViewModel : BaseViewModel
 
     public async Task Initialise(bool me)
     {
-        MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
+        MessagingCenter.Subscribe<UserService>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
         MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ProcessAchievement((ProfileAchievement)obj));
         MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
