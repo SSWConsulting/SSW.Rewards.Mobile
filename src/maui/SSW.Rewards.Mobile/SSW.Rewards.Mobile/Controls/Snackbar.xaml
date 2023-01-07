@@ -5,8 +5,8 @@
   <ContentView.Content>
         <Grid x:Name="MainLayout"
               HorizontalOptions="CenterAndExpand"
-              HeightRequest="60"
-              WidthRequest="450"
+              HeightRequest="70"
+              WidthRequest="300"
               Margin="30"
               Padding="5"
               ColumnDefinitions="50, *, 40"
@@ -65,6 +65,7 @@
                    FontSize="Small"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
+                   BackgroundColor="Transparent"
                    TextColor="White"
                    x:Name="MessageLabel"/>
             

@@ -10,7 +10,7 @@
             <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
-    <StackLayout>
+    <Grid RowDefinitions="*,4*">
         <Label Text="Achievements"
                  TextColor="White"
                  FontAttributes="Bold"
@@ -18,9 +18,11 @@
                  HorizontalTextAlignment="Center"
                  VerticalOptions="Start"
                  FontSize="Title"
-                 Margin="10"/>
+               Grid.Row="0"
+                 Margin="10,30,10,10"/>
         <CollectionView ItemsLayout="VerticalGrid, 3"
                     ItemsSource="{Binding Achievements}"
+                        Grid.Row="1"
                     Margin="30,10">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -44,5 +46,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 </ContentView>

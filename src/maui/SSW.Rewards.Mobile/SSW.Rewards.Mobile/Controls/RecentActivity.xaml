@@ -9,7 +9,8 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <StackLayout Padding="20">
+        <Grid RowDefinitions="*,5*"
+              Padding="20">
             <Label Text="Recent Activity"
                  TextColor="White"
                  FontAttributes="Bold"
@@ -17,18 +18,20 @@
                  HorizontalTextAlignment="Center"
                  VerticalOptions="Start"
                  FontSize="Title"
-                 Margin="10"/>
+                 Margin="10"
+                   Grid.Row="0"/>
 
-            <CollectionView ItemsSource="{Binding RecentActivity}">
+            <CollectionView ItemsSource="{Binding RecentActivity}"
+                            Grid.Row="1">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="20" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.EmptyView>
                     <ContentView>
-                        <StackLayout HorizontalOptions="Center"
-                                     VerticalOptions="Center"
-                                     WidthRequest="200">
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             WidthRequest="200">
                             <Label Text="{Binding EmptyHeader}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
@@ -40,7 +43,7 @@
                                    VerticalOptions="Center"
                                    HorizontalTextAlignment="Center"
                                    TextColor="{StaticResource LeaderCardBackground}"/>
-                        </StackLayout>
+                        </VerticalStackLayout>
                     </ContentView>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
@@ -59,6 +62,7 @@
                                    Text="{Binding ActivityName}"
                                    TextColor="White"
                                    FontSize="12"
+                                   Margin="10,5"
                                    VerticalOptions="Center"/>
                             <Label Grid.Column="2"
                                    Text="{Binding OcurredAt, StringFormat='{0:dd/MM/yyyy}'}"
@@ -70,7 +74,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </StackLayout>
+        </Grid>
     </ContentView.Content>
 </ContentView>
 
