@@ -9,7 +9,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <Grid RowDefinitions="*,4*"
+        <Grid RowDefinitions="*,5*"
               Padding="20">
             <Label Text="Recent Activity"
                  TextColor="White"
