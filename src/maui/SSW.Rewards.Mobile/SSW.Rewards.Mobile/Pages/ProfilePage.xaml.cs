@@ -12,14 +12,25 @@ public partial class ProfilePage : ContentPage
     private ProfileViewModel viewModel;
 
 
-    public ProfilePage(ProfileViewModel vm, bool isMe = true)
+    public ProfilePage(ProfileViewModel vm)//, bool isMe = true)
     {
         InitializeComponent();
         viewModel = vm;
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
 
-        _isMe = isMe;
+        _isMe = true;
+    }
+
+    public ProfilePage(IRewardService rewardsService, IUserService userService, LeaderViewModel leader)
+    {
+        InitializeComponent();
+        // HACK: Need to find a better way to handle these two differnt constructors
+        viewModel = new ProfileViewModel(rewardsService, userService, leader);
+        viewModel.Navigation = Navigation;
+        BindingContext = viewModel;
+
+        _isMe = false;
     }
 
     protected override async void OnAppearing()
