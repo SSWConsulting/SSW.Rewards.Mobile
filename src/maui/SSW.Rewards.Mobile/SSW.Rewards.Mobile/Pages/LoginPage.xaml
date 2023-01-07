@@ -27,7 +27,6 @@
                         Margin="50,0,50,150"
                         IsEnabled="{Binding LoginButtonEnabled}"
                         BackgroundColor="{StaticResource SSWRed}"/>
-                <!--BorderColor="{Binding ButtonBorder}"/>-->
             </FlexLayout>
 
             <ActivityIndicator HorizontalOptions="Center"
