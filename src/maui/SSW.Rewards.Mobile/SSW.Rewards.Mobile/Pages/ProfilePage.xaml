@@ -34,10 +34,9 @@
             <controls:RewardsProgress Grid.RowSpan="7"
                                       Progress="{Binding Progress}"/>
 
-            <StackLayout Grid.Row="1"
-                         Orientation="Horizontal"
-                         IsVisible="{Binding ShowBalance}"
-                         HorizontalOptions="Center">
+            <HorizontalStackLayout Grid.Row="1"
+                                   IsVisible="{Binding ShowBalance}"
+                                   HorizontalOptions="Center">
                 <Label HorizontalOptions="End"
                        Text="⭐"
                        FontSize="Small"
@@ -50,7 +49,7 @@
                        Text="⭐"
                        FontSize="Small"
                        TextColor="{StaticResource primary}" />
-            </StackLayout>
+            </HorizontalStackLayout>
 
             <Label Grid.Row="2"
                    TextColor="{StaticResource HeadingColor}"
@@ -88,7 +87,7 @@
                          VerticalOptions="Center"
                          TranslationX="40"
                          TranslationY="-35"
-                         CornerRadius="15"
+                         CornerRadius="10"
                          WidthRequest="30"
                          HeightRequest="30"
                          Command="{Binding CameraCommand}"
@@ -127,6 +126,7 @@
         <IndicatorView Grid.Row="2"
                        SelectedIndicatorColor="{StaticResource primary}"
                        IndicatorColor="{StaticResource IndicatorColor}"
+                       HorizontalOptions="Center"
                        x:Name="ProfileIndicator"/>
 
         <ActivityIndicator Grid.Row="0"
