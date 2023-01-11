@@ -12,8 +12,8 @@ public class CameraPageViewModel : BaseViewModel
     public bool UseButtonEnabled { get; set; }
 
     public ImageSource ProfilePicture { get; set; } = ImageSource.FromFile("");
-
-    private byte[] stream;
+    
+    private FileResult _imageFile;
 
     private IUserService _userService { get; set; }
 
@@ -22,17 +22,16 @@ public class CameraPageViewModel : BaseViewModel
     public CameraPageViewModel(IUserService userService)
     {
 
-        OnTakePhotoTapped = new Command(Handle_takePhotoTapped);
-        OnChoosePhotoTapped = new Command(Handle_choosePhotoTapped);
+        OnTakePhotoTapped = new Command(async () => await Handle_takePhotoTapped());
+        OnChoosePhotoTapped = new Command(async () => await Handle_choosePhotoTapped());
         UseButtonEnabled = false;
 
         UseButtonTapped = new Command(async () => await UploadProfilePic());
 
         _userService = userService;
-
     }
 
-    public async void Handle_takePhotoTapped()
+    public async Task Handle_takePhotoTapped()
     {
         PermissionStatus storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
         PermissionStatus cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
@@ -51,37 +50,50 @@ public class CameraPageViewModel : BaseViewModel
                 await Permissions.RequestAsync<Permissions.Camera>();
             }
 
-
-            CapturePhoto();
+            
+            await CapturePhoto();
         }
         catch (Exception ex) 
         {
             Console.WriteLine(ex);
         }
     }
-    public void Handle_choosePhotoTapped()
+    
+    public async Task Handle_choosePhotoTapped()
     {
-        ChoosePhoto();
+        await ChoosePhoto();
     }
 
-    private async Task SetPhoto(Stream stream)
+    private async Task SetPhoto(FileResult file)
     {
-        if (stream == null)
+        if (file == null)
             return;
 
-        var memStream = new MemoryStream();
-        stream.CopyTo(memStream);
-        this.stream = memStream.ToArray();
+        _imageFile = file;
 
-        var image = ImageSource.FromStream(() => stream);
+        // NOTE:    This is a workaround for the fact that the ImageSource.FromStream() method
+        //          recursively closes streams all the way down.
+        var tmpStream = new MemoryStream();
+        
+        using (var stream = await file.OpenReadAsync())
+        {
+            await stream.CopyToAsync(tmpStream);
+        }
+
+        var image = ImageSource.FromStream(() =>
+        {
+            var stream = new MemoryStream(tmpStream.ToArray());
+            return stream;
+        });
 
         ProfilePicture = image;
+
         UseButtonEnabled = true;
         RaisePropertyChanged("UseButtonEnabled");
-        //RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
+        RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
     }
 
-    private async void CapturePhoto()
+    private async Task CapturePhoto()
     {
         if (MediaPicker.Default.IsCaptureSupported)
         {
@@ -92,8 +104,7 @@ public class CameraPageViewModel : BaseViewModel
 
             if (photo is not null)
             {
-                using Stream sourceStream = await photo.OpenReadAsync();
-                await SetPhoto(sourceStream);
+                await SetPhoto(photo);
             }
         }
         else
@@ -102,7 +113,7 @@ public class CameraPageViewModel : BaseViewModel
         }
     }
 
-    private async void ChoosePhoto()
+    private async Task ChoosePhoto()
     {
         if (MediaPicker.Default.IsCaptureSupported)
         {
@@ -113,8 +124,7 @@ public class CameraPageViewModel : BaseViewModel
 
             if (photo is not null)
             {
-                using Stream sourceStream = await photo.OpenReadAsync();
-                await SetPhoto(sourceStream);
+                await SetPhoto(photo);
             }
         }
         else
@@ -127,9 +137,8 @@ public class CameraPageViewModel : BaseViewModel
     {
         IsUploading = true;
         RaisePropertyChanged("IsUploading");
-        Stream dstStream = new MemoryStream();
-        dstStream.Write(this.stream,0, this.stream.Length);
-        await _userService.UploadImageAsync(dstStream);
+        var imageStream = await _imageFile.OpenReadAsync();
+        await _userService.UploadImageAsync(imageStream);
         await MopupService.Instance.PopAllAsync();
     }
 }
