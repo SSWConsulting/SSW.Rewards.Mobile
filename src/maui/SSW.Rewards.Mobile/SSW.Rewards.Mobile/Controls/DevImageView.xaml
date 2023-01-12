@@ -4,14 +4,11 @@
              x:Class="SSW.Rewards.Mobile.Controls.DevImageView">
   <ContentView.Content>
         <Image Margin="0"
-                             Aspect="AspectFit"
-                             TranslationY="10"
-                             HorizontalOptions="StartAndExpand"
-                             VerticalOptions="End"
-                             WidthRequest="1000"
-                             HeightRequest="2000"
-                             TranslationX="-80"
-                             Source="dev_placeholder"
-                             x:Name="DevImage"/>
+               Aspect="AspectFit"
+               TranslationY="10"
+               HorizontalOptions="StartAndExpand"
+               VerticalOptions="End"
+               Source="dev_placeholder"
+               x:Name="DevImage"/>
     </ContentView.Content>
 </ContentView>
