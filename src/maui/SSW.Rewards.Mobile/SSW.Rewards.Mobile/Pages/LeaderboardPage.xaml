@@ -40,7 +40,7 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid Padding="30,5"
-              RowDefinitions="80, 60, 40, 25, *">
+              RowDefinitions="80, 60, 40, 35, *">
 
             <Grid Grid.Row="0"
                   RowDefinitions="3*, 2*"
@@ -137,7 +137,7 @@
                        BackgroundColor="{StaticResource TabBarBackground}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       FontSize="20"
+                       FontSize="26"
                        TextColor="White">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
@@ -156,20 +156,55 @@
 
             <FlexLayout Grid.Row="3"
                         JustifyContent="SpaceBetween"
+                        HeightRequest="35"
+                        Margin="0,20"
                         RadioButtonGroup.GroupName="LeaderboardFilterGroup">
                 <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
-                             TextColor="{StaticResource MutedText}"
-                             Content="This Month"
-                             IsChecked="True"
-                             CheckedChanged="FilterChanged"/>
-                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
-                             TextColor="{StaticResource MutedText}"
-                             Content="This Year"
-                             CheckedChanged="FilterChanged"/>
-                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
-                             TextColor="{StaticResource MutedText}"
-                             Content="All Time"
-                             CheckedChanged="FilterChanged"/>
+                             IsChecked="True">
+                    <RadioButton.Content>
+                        <Label TextColor="{StaticResource MutedText}"
+                               FontSize="20"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               Text="This Month"
+                               ClassId="MonthRadio">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}">
+                    <RadioButton.Content>
+                        <Label TextColor="{StaticResource MutedText}"
+                               FontSize="20"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               Text="This Year"
+                               ClassId="YearRadio">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}">
+                    <RadioButton.Content>
+                        <Label TextColor="{StaticResource MutedText}"
+                               FontSize="20"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               Text="All Time"
+                               ClassId="AlltimeRadio">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </RadioButton.Content>
+                </RadioButton>
             </FlexLayout>
 
             <RefreshView Grid.Row="4"
