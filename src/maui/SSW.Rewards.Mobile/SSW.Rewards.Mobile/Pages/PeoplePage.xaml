@@ -45,11 +45,11 @@
                 </ImageButton.Source>
             </ImageButton>
 
-            <StackLayout Grid.Row="0"
-                         Grid.Column="1"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center"
-                         Spacing="1">
+            <VerticalStackLayout Grid.Row="0"
+                                 Grid.Column="1"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="1">
                 <Label Text="{Binding DevName}"
                        FontSize="Title"
                        TextColor="White"
@@ -63,7 +63,7 @@
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"/>
-            </StackLayout>
+            </VerticalStackLayout>
 
 
             <Grid Grid.Row="1"
@@ -109,16 +109,16 @@
                     </CarouselView.ItemTemplate>
                 </CarouselView>
 
-                <StackLayout Grid.Row="1"
-                             Grid.Column="2"
-                             Grid.RowSpan="2"
-                             HorizontalOptions="End"
-                             VerticalOptions="Start"
-                             TranslationY="-30"
-                             Spacing="2">
-                    <StackLayout.GestureRecognizers>
+                <VerticalStackLayout Grid.Row="1"
+                                     Grid.Column="2"
+                                     Grid.RowSpan="2"
+                                     HorizontalOptions="End"
+                                     VerticalOptions="Start"
+                                     TranslationY="-30"
+                                     Spacing="2">
+                    <VerticalStackLayout.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
-                    </StackLayout.GestureRecognizers>
+                    </VerticalStackLayout.GestureRecognizers>
                     
                     <Label FontFamily="FluentIcons"
                            TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
@@ -138,15 +138,14 @@
                            FontSize="12"
                            Margin="0,0,10,0"
                            HorizontalTextAlignment="Center"/>
-                </StackLayout>
+                </VerticalStackLayout>
 
-                <StackLayout Grid.Column="1"
-                             Grid.ColumnSpan="2"
-                             Grid.Row="3"
-                             Spacing="15"
-                             Orientation="Horizontal"
-                             HorizontalOptions="End"
-                             Padding="0,0,10,0">
+                <HorizontalStackLayout Grid.Column="1"
+                                       Grid.ColumnSpan="2"
+                                       Grid.Row="3"
+                                       Spacing="20"
+                                       HorizontalOptions="End"
+                                       Padding="0,0,10,0">
 
                     <Label FontFamily="FA6Brands"
                            TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
@@ -157,7 +156,6 @@
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
                            HeightRequest="100"
-                           WidthRequest="100"
                            BackgroundColor="Transparent">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
@@ -171,7 +169,6 @@
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HeightRequest="100"
-                           WidthRequest="100"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
                            BackgroundColor="Transparent">
@@ -187,7 +184,6 @@
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HeightRequest="100"
-                           WidthRequest="100"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
                            BackgroundColor="Transparent">
@@ -204,7 +200,6 @@
                            HorizontalOptions="End"
                            VerticalOptions="Center"
                            HeightRequest="100"
-                           WidthRequest="100"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
                            BackgroundColor="Transparent">
@@ -212,7 +207,7 @@
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PeopleCommand}"/>
                         </Label.GestureRecognizers>
                     </Label>
-                </StackLayout>
+                </HorizontalStackLayout>
 
             </Grid>
 
