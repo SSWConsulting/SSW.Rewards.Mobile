@@ -61,15 +61,32 @@
                                 </Image.Scale>-->
                             </Image>
 
-                            <lottie:SKLottieView x:Name="ResultAnimation"
-                                                  Source="{Binding Animation}"
-                                                  IsVisible="{Binding IsAnimation}"
-                                                  IsAnimationEnabled="True"
-                                                  VerticalOptions="CenterAndExpand"
-                                                  HorizontalOptions="CenterAndExpand"
-                                                  HeightRequest="200"
-                                                  WidthRequest="200"
-                                                  Scale="1"/>
+                            <VerticalStackLayout>
+                                <!--<Label Text=" "/>
+                                <Label Text=" "/>
+                                <Label Text="r "/>-->
+                                <lottie:SKLottieView Source="Sophie.json"
+                                                     IsVisible="{Binding IsAnimation}"
+                                                     RepeatCount="-1"
+                                                     WidthRequest="200"
+                                                     HeightRequest="400"
+                                                     HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <!--<VerticalStackLayout>
+                                <Label Text="{Binding IsAnimation}"
+                                   IsVisible="{Binding IsAnimation}"/>
+                                <Label Text="{Binding Animation}"
+                                   IsVisible="{Binding IsAnimation}"/>
+                                <Label Text="{Binding Image}"
+                                   IsVisible="{Binding IsAnimation}"/>
+                                <lottie:SKLottieView Source="Sophie.json"
+                                                     IsVisible="{Binding IsAnimation}"
+                                                     RepeatCount="-1"
+                                                     WidthRequest="200"
+                                                     HeightRequest="200"
+                                                     HorizontalOptions="Center"/>
+                            </VerticalStackLayout>-->
                         </Grid>
                     </DataTemplate>
 
@@ -103,6 +120,7 @@
 
             <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                            IndicatorColor="{StaticResource IndicatorColor}"
+                           HorizontalOptions="Center"
                            VerticalOptions="Start"
                            Grid.Row="4"
                            x:Name="RewardsIndicator"/>
