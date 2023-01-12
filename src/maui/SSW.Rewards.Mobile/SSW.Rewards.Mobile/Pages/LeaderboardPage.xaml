@@ -108,44 +108,46 @@
                 
             </Grid>
 
-            <Grid Grid.Row="1"
-                  ColumnDefinitions="*, 50"
-                  VerticalOptions="Center"
-                  HeightRequest="45"
-                  Padding="0,10">
-                <BoxView Grid.Column="0"
-                         Grid.ColumnSpan="2"
-                         BackgroundColor="{StaticResource TabBarBackground}"
-                         HorizontalOptions="FillAndExpand"
-                         VerticalOptions="CenterAndExpand"
-                         CornerRadius="10"/>
+            <Border StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    HeightRequest="45"
+                    VerticalOptions="Center"
+                    BackgroundColor="{StaticResource TabBarBackground}"
+                    Grid.Row="1">
+                <Grid ColumnDefinitions="*, 50"
+                      VerticalOptions="Center"
+                      Padding="0,10">
 
-                <controls:BorderlessEntry Grid.Column="0"
+                    <controls:BorderlessEntry Grid.Column="0"
                                           x:Name="SearchEntry"
+                                          BackgroundColor="{StaticResource TabBarBackground}"
+                                          HeightRequest="45"
                                           Margin="10,0,0,0"
                                           Text="{Binding SearchBarText}"
                                           TextColor="White">
-                    <controls:BorderlessEntry.Behaviors>
-                        
-                        <mct:EventToCommandBehavior Command="{Binding SearchTextChanged}" 
+                        <controls:BorderlessEntry.Behaviors>
+
+                            <mct:EventToCommandBehavior Command="{Binding SearchTextChanged}" 
                                                     CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}" 
                                                     EventName="TextChanged" />
-                    </controls:BorderlessEntry.Behaviors>
-                </controls:BorderlessEntry>
+                        </controls:BorderlessEntry.Behaviors>
+                    </controls:BorderlessEntry>
 
-                <Label Grid.Column="1"
+                    <Label Grid.Column="1"
                        FontFamily="FluentIcons"
                        Text="{Binding SearchBarIcon}"
+                       BackgroundColor="{StaticResource TabBarBackground}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        FontSize="20"
                        TextColor="White">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
 
+            </Border>
             <Label Grid.Row="2"
                    Text="Leaderboard"
                    TextColor="White"
