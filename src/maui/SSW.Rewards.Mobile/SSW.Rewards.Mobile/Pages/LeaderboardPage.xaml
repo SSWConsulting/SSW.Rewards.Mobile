@@ -10,7 +10,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="TabbedRadioTemplate">
-                <StackLayout>
+                <VerticalStackLayout>
                     <ContentPresenter />
                     <BoxView BackgroundColor="{StaticResource primary}"
                              HorizontalOptions="FillAndExpand"
@@ -33,7 +33,7 @@
                             </VisualStateGroup>
                         </VisualStateGroupList>
                     </VisualStateManager.VisualStateGroups>
-                </StackLayout>
+                </VerticalStackLayout>
             </ControlTemplate>
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
         </ResourceDictionary>
@@ -58,8 +58,7 @@
                              Aspect="AspectFill">
                 </ImageButton>
 
-                <StackLayout Grid.Column="1"
-                             Orientation="Horizontal"
+                <HorizontalStackLayout Grid.Column="1"
                              Padding="10,5,0,0"
                              VerticalOptions="End">
 
@@ -71,11 +70,10 @@
                            FontSize="Title"
                            TextColor="{StaticResource MutedText}"/>
 
-                </StackLayout>
+                </HorizontalStackLayout>
 
-                <StackLayout Grid.Column="1"
+                <HorizontalStackLayout Grid.Column="1"
                              Grid.Row="1"
-                             Orientation="Horizontal"
                              Padding="10,0,5,0"
                              VerticalOptions="Start"
                              Spacing="10">
@@ -86,7 +84,7 @@
                     <Label Text="{Binding MyPoints, StringFormat='⭐ {0:n0}'}"
                            TextColor="{StaticResource HighlightedText}"/>
 
-                </StackLayout>
+                </HorizontalStackLayout>
 
                 <ImageButton Grid.Row="0"
                              Grid.RowSpan="2"
@@ -94,9 +92,9 @@
                              BackgroundColor="{StaticResource primary}"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
-                             CornerRadius="20"
-                             WidthRequest="40"
-                             HeightRequest="40"
+                             CornerRadius="17"
+                             WidthRequest="45"
+                             HeightRequest="45"
                              Padding="5"
                              Command="{Binding ScrollToMeCommand}">
                     <ImageButton.Source>
@@ -249,7 +247,7 @@
                 </CollectionView>
             </RefreshView>
 
-            <StackLayout Grid.Row="0"
+            <VerticalStackLayout Grid.Row="0"
                          Grid.RowSpan="5"
                          HorizontalOptions="End"
                          VerticalOptions="End"
@@ -261,7 +259,7 @@
                 <ImageButton BackgroundColor="{StaticResource primary}"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
-                             CornerRadius="35"
+                             CornerRadius="25"
                              WidthRequest="70"
                              HeightRequest="70"
                              Padding="10"
@@ -276,7 +274,7 @@
                 <ImageButton BackgroundColor="{StaticResource primary}"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
-                             CornerRadius="35"
+                             CornerRadius="25"
                              WidthRequest="70"
                              HeightRequest="70"
                              Padding="10"
@@ -289,7 +287,7 @@
                 </ImageButton>
 
 
-            </StackLayout>
+            </VerticalStackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
