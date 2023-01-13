@@ -125,5 +125,11 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Controls\TabHeader.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 	
 </Project>
