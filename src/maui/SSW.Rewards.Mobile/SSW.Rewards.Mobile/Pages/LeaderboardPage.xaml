@@ -9,7 +9,7 @@
              x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <ControlTemplate x:Key="TabbedRadioTemplate">
+            <!--<ControlTemplate x:Key="TabbedRadioTemplate">
                 <VerticalStackLayout>
                     <ContentPresenter />
                     <BoxView BackgroundColor="{StaticResource primary}"
@@ -34,7 +34,7 @@
                         </VisualStateGroupList>
                     </VisualStateManager.VisualStateGroups>
                 </VerticalStackLayout>
-            </ControlTemplate>
+            </ControlTemplate>-->
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -154,7 +154,7 @@
                    VerticalOptions="Center"
                    HorizontalTextAlignment="Center"/>
 
-            <FlexLayout Grid.Row="3"
+            <!--<FlexLayout Grid.Row="3"
                         JustifyContent="SpaceBetween"
                         HeightRequest="35"
                         Margin="0,20"
@@ -205,7 +205,9 @@
                         </Label>
                     </RadioButton.Content>
                 </RadioButton>
-            </FlexLayout>
+            </FlexLayout>-->
+
+            <controls:TabHeader Grid.Row="3" FilterChanged="TabHeader_FilterChanged" />
 
             <RefreshView Grid.Row="4"
                          Command="{Binding RefreshCommand}"

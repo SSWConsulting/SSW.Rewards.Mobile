@@ -74,14 +74,14 @@
             if (!_isShowing)
             {
                 _isShowing = true;
-                MainLayout.InputTransparent = false;
-                MainLayout.FadeTo(1, 750);
-                MainLayout.TranslateTo(0, 0, 750);
+                GridBackground.InputTransparent = false;
+                GridBackground.FadeTo(1, 750);
+                GridBackground.TranslateTo(0, 0, 750);
 
                 await Task.Delay(5000);
-                MainLayout.FadeTo(0, 750);
-                MainLayout.TranslateTo(0, 50, 750);
-                MainLayout.InputTransparent = true;
+                GridBackground.FadeTo(0, 750);
+                GridBackground.TranslateTo(0, 50, 750);
+                GridBackground.InputTransparent = true;
                 _isShowing = false;
             }
         }

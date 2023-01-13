@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Rewards.Mobile.Controls.TabHeader">
+    <FlexLayout JustifyContent="SpaceBetween"
+                HeightRequest="35"
+                Margin="0,20">
+        <VerticalStackLayout>
+            <Label TextColor="{StaticResource MutedText}"
+                   FontSize="20"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   Text="This Month"
+                   ClassId="MonthRadio">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <BoxView BackgroundColor="{StaticResource primary}"
+                     HorizontalOptions="FillAndExpand"
+                     x:Name="MonthUnderline"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout>
+            <Label TextColor="{StaticResource MutedText}"
+                   FontSize="20"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   Text="This Year"
+                   ClassId="YearRadio">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <BoxView BackgroundColor="{StaticResource primary}"
+                     HorizontalOptions="FillAndExpand"
+                     x:Name="YearUnderline"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout>
+            <Label TextColor="{StaticResource MutedText}"
+                   FontSize="20"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   Text="All Time"
+                   ClassId="TimeRadio">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <BoxView BackgroundColor="{StaticResource primary}"
+                     HorizontalOptions="FillAndExpand"
+                     x:Name="AllUnderline"/>
+        </VerticalStackLayout>
+
+    </FlexLayout>
+</ContentView>
