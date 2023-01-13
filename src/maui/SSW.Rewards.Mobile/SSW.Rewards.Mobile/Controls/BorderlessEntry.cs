@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Controls;
+﻿using Microsoft.Maui.Platform;
+
+namespace SSW.Rewards.Mobile.Controls;
 
 public class BorderlessEntry : Entry    
 {
@@ -11,6 +13,7 @@ public class BorderlessEntry : Entry
 #if ANDROID
 				handler.PlatformView.Background = null;
 				handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                handler.PlatformView.TextCursorDrawable.SetTint(Colors.White.ToPlatform());
 #elif IOS || MACCATALYST
                 handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
                 handler.PlatformView.Layer.BorderWidth = 0;

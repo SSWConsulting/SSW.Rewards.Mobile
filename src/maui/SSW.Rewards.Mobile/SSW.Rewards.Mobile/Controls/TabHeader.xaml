@@ -12,6 +12,7 @@
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    Text="This Month"
+                   x:Name="MonthRadio"
                    ClassId="MonthRadio">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
@@ -29,6 +30,7 @@
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    Text="This Year"
+                   x:Name="YearRadio"
                    ClassId="YearRadio">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
@@ -46,6 +48,7 @@
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    Text="All Time"
+                   x:Name="AlltimeRadio"
                    ClassId="TimeRadio">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
