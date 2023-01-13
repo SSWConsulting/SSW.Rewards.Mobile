@@ -5,6 +5,8 @@ using CommunityToolkit.Maui;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
+using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Mobile.ViewModels;
 
 namespace SSW.Rewards.Mobile;
 public static class MauiProgram
@@ -45,6 +47,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IBrowser, AuthBrowser>();
         builder.Services.AddSingleton<AuthHandler>();
         builder.Services.AddSingleton(options);
+
+        builder.Services.AddSingleton<FlyoutHeader>();
+        builder.Services.AddSingleton<FlyoutHeaderViewModel>();
 
         builder.Services.AddHttpClient(AuthHandler.AuthenticatedClient)
             .AddHttpMessageHandler((s) => s.GetService<AuthHandler>());

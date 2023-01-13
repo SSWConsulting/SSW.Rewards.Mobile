@@ -113,7 +113,6 @@
 		<Folder Include="Models\" />
 		<Folder Include="Pages\" />
 		<Folder Include="PopupPages\" />
-		<Folder Include="ViewModels\" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
