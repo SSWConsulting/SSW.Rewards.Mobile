@@ -1,4 +1,6 @@
-﻿using IdentityModel.OidcClient;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using IdentityModel.OidcClient;
+using SSW.Rewards.Mobile.Messages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -208,7 +210,10 @@ public class UserService : BaseService, IUserService
             await UpdateMyDetailsAsync();
         }
 
-        MessagingCenter.Send(this, UserDetailsUpdatedMessage);
+        WeakReferenceMessenger.Default.Send(new ProfilePicUpdatedMessage
+        {
+            ProfilePic = MyProfilePic
+        });
         return response.PicUrl;
     }
 
@@ -256,7 +261,13 @@ public class UserService : BaseService, IUserService
             Preferences.Set(nameof(MyQrCode), user.QrCode);
         }
 
-        MessagingCenter.Send(this, UserService.UserDetailsUpdatedMessage);
+        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage
+        {
+            Email       = MyEmail,
+            ProfilePic  = MyProfilePic,
+            Name        = MyName,
+            IsStaff     = IsStaff
+        });
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()

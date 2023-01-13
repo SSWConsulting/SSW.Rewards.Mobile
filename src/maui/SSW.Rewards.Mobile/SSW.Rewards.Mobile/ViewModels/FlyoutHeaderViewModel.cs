@@ -1,35 +1,33 @@
-﻿namespace SSW.Rewards.Mobile.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
-public class FlyoutHeaderViewModel : BaseViewModel
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDetailsUpdatedMessage>
 {
-    private IUserService _userService;
+    [ObservableProperty]
+    private string profilePic;
 
-    public string ProfilePic{ get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
+    [ObservableProperty]
+    private string name;
 
-    public bool Staff { get; set; }
+    [ObservableProperty]
+    private string email;
 
-    public FlyoutHeaderViewModel(IUserService userService)
+    [ObservableProperty]
+    private bool isStaff;
+
+    public FlyoutHeaderViewModel()
     {
-        _userService = userService;
-        Initialise();
+        WeakReferenceMessenger.Default.Register<UserDetailsUpdatedMessage>(this);
     }
 
-    private void Initialise()
+    public void Receive(UserDetailsUpdatedMessage message)
     {
-        ProfilePic = _userService.MyProfilePic;
-        Name = _userService.MyName;
-        Email = _userService.MyEmail;
-        Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
-
-        // Tech Debt - https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/405
-        MessagingCenter.Subscribe<FlyoutHeaderViewModel, string>(this, UserService.UserDetailsUpdatedMessage, (vm, str) => Refresh(str));
-    }
-
-    private void Refresh(string pic)
-    {
-        ProfilePic = pic;
-        OnPropertyChanged(nameof(ProfilePic));
+        ProfilePic = message.ProfilePic;
+        Name = message.Name;
+        Email = message.Email;
+        IsStaff = message.IsStaff;
     }
 }

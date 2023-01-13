@@ -6,7 +6,7 @@
              HeightRequest="150"
              xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
              x:DataType="local:FlyoutHeader">
-    
+
     <Grid HeightRequest="100"
           ColumnDefinitions="90, *"
           RowDefinitions="*, *">
@@ -27,7 +27,7 @@
             </Image.Clip>
         </Image>
 
-        <StackLayout Orientation="Horizontal"
+        <HorizontalStackLayout
                      Grid.Column="1"
                      Grid.Row="0"
                      Margin="0,5,5,0"
@@ -45,7 +45,7 @@
                    TranslationY="1"
                    Text="&#xf3ca;"
                    IsVisible="{Binding Staff}"/>
-        </StackLayout>
+        </HorizontalStackLayout>
 
         <Label Grid.Column="1"
                Grid.Row="1"

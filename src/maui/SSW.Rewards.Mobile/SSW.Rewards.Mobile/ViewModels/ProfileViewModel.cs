@@ -1,12 +1,14 @@
-﻿using Mopups.Services;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace SSW.Rewards.ViewModels;
 
-public class ProfileViewModel : BaseViewModel
+public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessage>
 {
     private readonly IRewardService _rewardsService;
     private IUserService _userService;
@@ -46,6 +48,8 @@ public class ProfileViewModel : BaseViewModel
 
     public ProfileViewModel(IRewardService rewardsService, IUserService userService)
     {
+        WeakReferenceMessenger.Default.RegisterAll(this);
+
         IsLoading = true;
         RaisePropertyChanged("IsLoading");
         _rewardsService = rewardsService;
@@ -79,7 +83,6 @@ public class ProfileViewModel : BaseViewModel
 
     public async Task Initialise(bool me)
     {
-        MessagingCenter.Subscribe<UserService>(this, UserService.UserDetailsUpdatedMessage, (obj) => RefreshProfilePic());
         MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ProcessAchievement((ProfileAchievement)obj));
         MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
 
@@ -295,9 +298,9 @@ public class ProfileViewModel : BaseViewModel
         _loadingProfileSections = false;
     }
 
-    private void RefreshProfilePic()
+    public void Receive(ProfilePicUpdatedMessage message)
     {
-        ProfilePic = _userService.MyProfilePic;
+        ProfilePic = message.ProfilePic;
         RaisePropertyChanged(nameof(ProfilePic));
     }
 

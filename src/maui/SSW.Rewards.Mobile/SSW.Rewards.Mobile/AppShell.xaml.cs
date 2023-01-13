@@ -1,10 +1,13 @@
-﻿using Mopups.Services;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
+using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
 
 
-public partial class AppShell : Shell
+public partial class AppShell : Shell, IRecipient<UserDetailsUpdatedMessage>
 {
     private IUserService _userService { get; set; }
 
@@ -15,7 +18,7 @@ public partial class AppShell : Shell
     private string _email;
     private string _profilePic;
 
-    public AppShell(IUserService userService, bool isStaff)
+    public AppShell(IUserService userService, FlyoutHeader flyoutHeader, bool isStaff)
     {
         IsStaff = isStaff;
         BindingContext = this;
@@ -25,8 +28,10 @@ public partial class AppShell : Shell
         VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
 
+        this.FlyoutHeader = flyoutHeader;
+
         // Tech Debt - https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/405
-        MessagingCenter.Subscribe<AppShell>(this, UserService.UserDetailsUpdatedMessage, (sh) => Refresh());
+        //MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (sh) => Refresh());
     }
 
     public bool IsStaff
@@ -88,13 +93,22 @@ public partial class AppShell : Shell
         }
     }
 
-    private void Refresh()
-    {
-        ProfilePic = _userService.MyProfilePic;
-        Name = _userService.MyName;
-        Email = _userService.MyEmail;
+    //private void Refresh()
+    //{
+    //    ProfilePic = _userService.MyProfilePic;
+    //    Name = _userService.MyName;
+    //    Email = _userService.MyEmail;
 
-        IsStaff = _userService.IsStaff;
+    //    IsStaff = _userService.IsStaff;
+    //    ShowJoinMenuItem = !_isStaff;
+    //}
+
+    public void Receive(UserDetailsUpdatedMessage message)
+    {
+        ProfilePic = message.ProfilePic;
+        Name = message.Name;
+        Email = message.Email;
+        IsStaff = message.IsStaff;
         ShowJoinMenuItem = !_isStaff;
     }
 
