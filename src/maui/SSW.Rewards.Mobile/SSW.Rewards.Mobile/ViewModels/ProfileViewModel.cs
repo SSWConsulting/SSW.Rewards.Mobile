@@ -6,7 +6,7 @@ using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace SSW.Rewards.ViewModels;
+namespace SSW.Rewards.Mobile.ViewModels;
 
 public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessage>
 {

@@ -2,10 +2,15 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
+             xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
+             xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              HeightRequest="150"
              xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
-             x:DataType="local:FlyoutHeader">
+             x:DataType="vm:FlyoutHeaderViewModel">
+    <ContentView.BindingContext>
+        <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
+    </ContentView.BindingContext>
 
     <Grid HeightRequest="100"
           ColumnDefinitions="90, *"
@@ -16,6 +21,7 @@
                Grid.RowSpan="2"
                Aspect="AspectFill"
                Source="{Binding ProfilePic}"
+               x:Name="ProfileImage"
                HeightRequest="70"
                WidthRequest="7"
                VerticalOptions="Center"
@@ -34,6 +40,7 @@
                      VerticalOptions="End">
             <Label FontSize="16"
                    Text="{Binding Name}"
+                   x:Name="NameLabel"
                    TextColor="White"
                    FontAttributes="Bold"
                    
@@ -44,7 +51,8 @@
                    VerticalTextAlignment="Center"
                    TranslationY="1"
                    Text="&#xf3ca;"
-                   IsVisible="{Binding Staff}"/>
+                   IsVisible="{Binding IsStaff}"
+                   x:Name="IsStaffLabel"/>
         </HorizontalStackLayout>
 
         <Label Grid.Column="1"
@@ -52,6 +60,7 @@
                TextColor="White"
                VerticalOptions="Start"
                Text="{Binding Email}"
+               x:Name="EmailLabel"
                Margin="0,0,5,30" />
 
         <BoxView HorizontalOptions="FillAndExpand"

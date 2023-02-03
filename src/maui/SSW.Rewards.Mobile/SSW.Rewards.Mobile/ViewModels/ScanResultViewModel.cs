@@ -1,7 +1,7 @@
 ﻿using Mopups.Services;
 using System.Windows.Input;
 
-namespace SSW.Rewards.ViewModels;
+namespace SSW.Rewards.Mobile.ViewModels;
 
 public class ScanResultViewModel : BaseViewModel
 {

@@ -1,24 +1,21 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Mopups.Services;
-using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Mobile.Messages;
+﻿using Mopups.Services;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
 
 
-public partial class AppShell : Shell, IRecipient<UserDetailsUpdatedMessage>
+public partial class AppShell : Shell
 {
     private IUserService _userService { get; set; }
 
     bool _isStaff = false;
     bool _showJoinMenu = false;
 
-    private string _name;
-    private string _email;
-    private string _profilePic;
+    //private string _name;
+    //private string _email;
+    //private string _profilePic;
 
-    public AppShell(IUserService userService, FlyoutHeader flyoutHeader, bool isStaff)
+    public AppShell(IUserService userService, bool isStaff)
     {
         IsStaff = isStaff;
         BindingContext = this;
@@ -27,11 +24,6 @@ public partial class AppShell : Shell, IRecipient<UserDetailsUpdatedMessage>
         _userService = userService;
         VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
-
-        this.FlyoutHeader = flyoutHeader;
-
-        // Tech Debt - https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/405
-        //MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (sh) => Refresh());
     }
 
     public bool IsStaff
@@ -53,65 +45,6 @@ public partial class AppShell : Shell, IRecipient<UserDetailsUpdatedMessage>
             OnPropertyChanged();
         }
     }
-
-    public string Name
-    {
-        get => _name;
-        set
-        {
-            if (value == _name)
-                return;
-
-            _name = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string Email
-    {
-        get => _email;
-        set
-        {
-            if (value == _email)
-                return;
-
-            _email = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string ProfilePic
-    {
-        get => _profilePic;
-        set
-        {
-            if (value == _profilePic)
-                return;
-
-            _profilePic = value;
-            OnPropertyChanged();
-        }
-    }
-
-    //private void Refresh()
-    //{
-    //    ProfilePic = _userService.MyProfilePic;
-    //    Name = _userService.MyName;
-    //    Email = _userService.MyEmail;
-
-    //    IsStaff = _userService.IsStaff;
-    //    ShowJoinMenuItem = !_isStaff;
-    //}
-
-    public void Receive(UserDetailsUpdatedMessage message)
-    {
-        ProfilePic = message.ProfilePic;
-        Name = message.Name;
-        Email = message.Email;
-        IsStaff = message.IsStaff;
-        ShowJoinMenuItem = !_isStaff;
-    }
-
 
     public async void Handle_LogOutClicked(object sender, EventArgs e)
     {

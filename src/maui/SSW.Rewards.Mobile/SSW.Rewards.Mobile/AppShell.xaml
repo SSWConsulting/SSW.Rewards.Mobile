@@ -85,12 +85,9 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <!--<Shell.FlyoutHeader>
-        <controls:FlyoutHeader ProfilePic="{Binding ProfilePic, Mode=TwoWay}"
-                               Name="{Binding Name, Mode=TwoWay}" 
-                               Email="{Binding Email, Mode=TwoWay}" 
-                               Staff="{Binding IsStaff, Mode=TwoWay}" />
-    </Shell.FlyoutHeader>-->
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader />
+    </Shell.FlyoutHeader>
 
 
     <FlyoutItem Style="{StaticResource BaseStyle}">
