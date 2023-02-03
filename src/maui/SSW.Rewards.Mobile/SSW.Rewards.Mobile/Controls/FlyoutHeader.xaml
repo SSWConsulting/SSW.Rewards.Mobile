@@ -14,7 +14,7 @@
 
     <Grid HeightRequest="100"
           ColumnDefinitions="90, *"
-          RowDefinitions="*, *">
+          RowDefinitions="*, *, 5">
 
         <Image Grid.Column="0"
                Grid.Row="0"
@@ -23,7 +23,7 @@
                Source="{Binding ProfilePic}"
                x:Name="ProfileImage"
                HeightRequest="70"
-               WidthRequest="7"
+               WidthRequest="70"
                VerticalOptions="Center"
                Margin="15,5,5,0">
             <Image.Clip>
@@ -33,11 +33,11 @@
             </Image.Clip>
         </Image>
 
-        <HorizontalStackLayout
-                     Grid.Column="1"
-                     Grid.Row="0"
-                     Margin="0,5,5,0"
-                     VerticalOptions="End">
+        <HorizontalStackLayout Grid.Column="1"
+                               Grid.Row="0"
+                               Margin="0,5,5,0"
+                               Spacing="5"
+                               VerticalOptions="End">
             <Label FontSize="16"
                    Text="{Binding Name}"
                    x:Name="NameLabel"
@@ -68,8 +68,7 @@
                  Color="White"
                  Grid.Column="0"
                  Grid.ColumnSpan="2"
-                 Grid.Row="1"
-                 Margin="0,25,0,0"
+                 Grid.Row="2"
                  VerticalOptions="Center"/>
     </Grid>
 </ContentView>
