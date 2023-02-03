@@ -11,7 +11,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public class ProfileViewModel : BaseViewModel, 
     IRecipient<ProfilePicUpdatedMessage>, 
     IRecipient<PointsAwardedMessage>, 
-    IRecipient<AchievementTappedMessage>, 
+    //IRecipient<AchievementTappedMessage>, 
     IRecipient<SocialUsernameAddedMessage>
 {
     private readonly IRewardService _rewardsService;
@@ -87,6 +87,8 @@ public class ProfileViewModel : BaseViewModel,
 
     public async Task Initialise(bool me)
     {
+        MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ProcessAchievement((ProfileAchievement)obj));
+        
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
@@ -332,23 +334,23 @@ public class ProfileViewModel : BaseViewModel,
 
         IsBusy = true;
 
-        var result = await _userService.SaveSocialMediaId(message.Achievement.Id, message.Username);
+        var result = await _userService.SaveSocialMediaId(message.Value.Achievement.Id, message.Value.Username);
 
         var options = new SnackbarOptions
         {
             ActionCompleted = false,
-            Points = message.Achievement.Value,
-            GlyphIsBrand = message.Achievement.IconIsBranded,
-            Glyph = (string)typeof(Icon).GetField(message.Achievement.AchievementIcon.ToString()).GetValue(null)
+            Points = message.Value.Achievement.Value,
+            GlyphIsBrand = message.Value.Achievement.IconIsBranded,
+            Glyph = (string)typeof(Icon).GetField(message.Value.Achievement.AchievementIcon.ToString()).GetValue(null)
         };
 
         if (result)
         {
             options.ActionCompleted = true;
-            message.Achievement.Complete = true;
+            message.Value.Achievement.Complete = true;
         }
 
-        options.Message = $"{GetMessage(message.Achievement)}";
+        options.Message = $"{GetMessage(message.Value.Achievement)}";
 
         var args = new ShowSnackbarEventArgs { Options = options };
 
@@ -442,10 +444,10 @@ public class ProfileViewModel : BaseViewModel,
         await OnPointsAwarded();
     }
 
-    public void Receive(AchievementTappedMessage message)
-    {
-        ProcessAchievement(message.ProfileAchievement);
-    }
+    //public void Receive(AchievementTappedMessage message)
+    //{
+    //    ProcessAchievement(message.Value);
+    //}
 
     public void Receive(SocialUsernameAddedMessage message)
     {

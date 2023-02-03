@@ -1,8 +1,11 @@
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using SSW.Rewards.Mobile.Models;
+
 namespace SSW.Rewards.Mobile.Messages;
 
-public class SocialUsernameAddedMessage
+public class SocialUsernameAddedMessage : ValueChangedMessage<SocialAchievement>
 {
-    public Achievement Achievement { get; set; }
-
-    public string Username { get; set; }
+    public SocialUsernameAddedMessage(SocialAchievement value) : base(value)
+    {
+    }
 }
