@@ -1,4 +1,7 @@
-﻿namespace SSW.Rewards.Services;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
+
+namespace SSW.Rewards.Services;
 
 public class ScannerService : BaseService, IScannerService
 {
@@ -71,7 +74,7 @@ public class ScannerService : BaseService, IScannerService
             vm.result = ScanResult.Error;
         }
 
-        MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
 
         return vm;
     }
@@ -143,7 +146,8 @@ public class ScannerService : BaseService, IScannerService
         {
             vm.result = ScanResult.Error;
         }
-        MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+        
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
 
         return vm;
     }

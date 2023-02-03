@@ -8,8 +8,6 @@ namespace SSW.Rewards.Services;
 
 public class UserService : BaseService, IUserService
 {
-    public const string UserDetailsUpdatedMessage = "UserDetailsUpdated";
-
     private UserClient _userClient { get; set; }
 
     private readonly OidcClientOptions _options;
@@ -382,11 +380,9 @@ public class UserService : BaseService, IUserService
         {
             return false;
         }
-        else
-        {
-            MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
-            return true;
-        }
+        
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+        return true;
     }
 
     #endregion

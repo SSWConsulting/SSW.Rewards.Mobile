@@ -1,5 +1,7 @@
 ﻿using Mopups.Services;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -70,7 +72,7 @@ public class ScanResultViewModel : BaseViewModel
                 HeadingColour = (Color)Application.Current.Resources["PointsColour"];
                 AchievementHeading = result.Title;
                 _wonPrize = true;
-                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
                 break;
 
             case ScanResult.Duplicate:
@@ -116,7 +118,7 @@ public class ScanResultViewModel : BaseViewModel
         if (result.result == ScanResult.Added)
         {
             await _userService.UpdateMyDetailsAsync();
-            MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         }
     }
 
@@ -140,7 +142,7 @@ public class ScanResultViewModel : BaseViewModel
 
     private async Task DismissWithoutWon()
     {
-        MessagingCenter.Send<object>(this, Constants.EnableScannerMessage);
+        WeakReferenceMessenger.Default.Send(new EnableScannerMessage());
         await MopupService.Instance.PopAllAsync();
     }
 }

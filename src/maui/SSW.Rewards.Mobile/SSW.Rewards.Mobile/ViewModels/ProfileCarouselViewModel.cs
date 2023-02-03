@@ -1,4 +1,6 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
@@ -36,11 +38,10 @@ namespace SSW.Rewards.Mobile.ViewModels
     {
         public ICommand AchievementTappedCommand { get; set; }
 
-        public static string AchievementTappedMessage = "AchivementTapped";
-
         public ProfileAchievement()
         {
-            AchievementTappedCommand = new Command(() => MessagingCenter.Send<object>(this, AchievementTappedMessage));
+            AchievementTappedCommand = new Command(() =>
+                WeakReferenceMessenger.Default.Send(new AchievementTappedMessage { ProfileAchievement = this }));
         }
     }
 
