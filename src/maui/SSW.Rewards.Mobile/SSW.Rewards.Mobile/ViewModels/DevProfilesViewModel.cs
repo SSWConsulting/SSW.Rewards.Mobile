@@ -1,10 +1,12 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class DevProfilesViewModel : BaseViewModel
+    public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
     {
         private IDevService _devService;
 
@@ -78,10 +80,9 @@ namespace SSW.Rewards.Mobile.ViewModels
                 Points = 500,
                 ShowPoints = false
             };
-            OnSwipedUpdatePropertyList = new string[] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
+            OnSwipedUpdatePropertyList = new [] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
 
-            // TODO: Change all references to <object> to <string>
-            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (msg) => await LoadProfiles());
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public async Task Initialise()
@@ -250,6 +251,11 @@ namespace SSW.Rewards.Mobile.ViewModels
             var args = new ShowSnackbarEventArgs { Options = options };
 
             ShowSnackbar.Invoke(this, args);
+        }
+
+        public async void Receive(PointsAwardedMessage message)
+        {
+            await LoadProfiles();
         }
     }
 }

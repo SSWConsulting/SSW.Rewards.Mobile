@@ -8,7 +8,11 @@ using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessage>
+public class ProfileViewModel : BaseViewModel, 
+    IRecipient<ProfilePicUpdatedMessage>, 
+    IRecipient<PointsAwardedMessage>, 
+    IRecipient<AchievementTappedMessage>, 
+    IRecipient<SocialUsernameAddedMessage>
 {
     private readonly IRewardService _rewardsService;
     private IUserService _userService;
@@ -83,9 +87,6 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
 
     public async Task Initialise(bool me)
     {
-        MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ProcessAchievement((ProfileAchievement)obj));
-        MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await OnPointsAwarded());
-
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
@@ -314,8 +315,6 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
         {
             if (achievement.Type == AchievementType.Linked)
             {
-                MessagingCenter.Subscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage, async (obj, msg) => await AddSocialMediaId(msg));
-
                 var popup = new LinkSocial(achievement);
                 MopupService.Instance.PushAsync(popup);
                 //App.Current.MainPage.ShowPopup(popup);
@@ -327,9 +326,9 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
         }
     }
 
-    private async Task AddSocialMediaId(SocialUsernameMessage message)
+    private async Task AddSocialMediaId(SocialUsernameAddedMessage message)
     {
-        MessagingCenter.Unsubscribe<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage);
+        WeakReferenceMessenger.Default.Unregister<SocialUsernameAddedMessage>(this);
 
         IsBusy = true;
 
@@ -357,7 +356,7 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
 
         if (result)
         {
-            MessagingCenter.Send(this, Constants.PointsAwardedMessage);
+            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         }
 
         IsBusy = false;
@@ -436,5 +435,20 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
         IsBusy = false;
         IsLoading = false;
         ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+    }
+
+    public async void Receive(PointsAwardedMessage message)
+    {
+        await OnPointsAwarded();
+    }
+
+    public void Receive(AchievementTappedMessage message)
+    {
+        ProcessAchievement(message.ProfileAchievement);
+    }
+
+    public void Receive(SocialUsernameAddedMessage message)
+    {
+        AddSocialMediaId(message);
     }
 }

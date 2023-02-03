@@ -1,4 +1,6 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.Controls
 {
@@ -47,7 +49,7 @@ namespace SSW.Rewards.Mobile.Controls
         private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             //App.Current.MainPage.DisplayAlert("Title bar tapped", "I'd tap that", "OK");
-            MessagingCenter.Send<string>("ScrollToTop", "ScrollToTop");
+            WeakReferenceMessenger.Default.Send(new ScrollToTopMessage());
         }
     }
 }
