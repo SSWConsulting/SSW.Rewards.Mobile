@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class LeaderBoardViewModel : BaseViewModel
+    public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
     {
         public bool IsRunning { get; set; }
         public bool IsRefreshing { get; set; }
@@ -63,7 +65,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             MyBalance = _userService.MyBalance;
 
             Leaders = new ObservableCollection<LeaderViewModel>();
-            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await Refresh());
+            WeakReferenceMessenger.Default.Register(this);
 
             _sortFilter = "all";
         }
@@ -303,6 +305,11 @@ namespace SSW.Rewards.Mobile.ViewModels
                 await Shell.Current.GoToAsync("//main");
             else
                 await Shell.Current.Navigation.PushModalAsync<ProfilePage>(leader);
+        }
+
+        public async void Receive(PointsAwardedMessage message)
+        {
+            await Refresh();
         }
     }
 }

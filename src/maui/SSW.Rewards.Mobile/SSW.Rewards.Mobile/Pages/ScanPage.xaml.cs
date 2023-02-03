@@ -1,10 +1,12 @@
-﻿using Mopups.Services;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
+using SSW.Rewards.Mobile.Messages;
 using ZXing.Net.Maui;
 
 namespace SSW.Rewards.Mobile.Pages;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
-public partial class ScanPage : ContentPage
+public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
 
@@ -28,18 +30,23 @@ public partial class ScanPage : ContentPage
     {
         base.OnDisappearing();
         scannerView.IsDetecting = false;
-        MessagingCenter.Unsubscribe<object>(this, Constants.EnableScannerMessage);
+        WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        MessagingCenter.Subscribe<object>(this, Constants.EnableScannerMessage, (obj) => EnableScanner());
+        WeakReferenceMessenger.Default.Register(this);
         scannerView.IsDetecting = true;
     }
 
     private void EnableScanner()
     {
         scannerView.IsDetecting = true;
+    }
+
+    public void Receive(EnableScannerMessage message)
+    {
+        EnableScanner();
     }
 }

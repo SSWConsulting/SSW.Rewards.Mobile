@@ -1,6 +1,8 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
@@ -162,8 +164,8 @@ namespace SSW.Rewards.Mobile.ViewModels
                 var args = new ShowSnackbarEventArgs { Options = SnackOptions };
 
                 ShowSnackbar.Invoke(this, args);
-
-                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+                
+                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
             }
             else
             {
