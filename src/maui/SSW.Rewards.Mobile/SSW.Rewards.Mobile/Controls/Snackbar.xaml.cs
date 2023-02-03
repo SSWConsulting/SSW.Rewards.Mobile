@@ -34,31 +34,26 @@
             if (opt.ActionCompleted)
             {
                 snack.GridBackground.BackgroundColor = Color.FromArgb("cc4141");
-                snack.BrandIconLabel.BackgroundColor = Colors.White;
-                snack.BrandIconLabel.TextColor = Color.FromArgb("cc4141");
                 snack.GlyphIconLabel.BackgroundColor = Colors.White;
                 snack.GlyphIconLabel.TextColor = Color.FromArgb("cc4141");
             }
             else
             {
                 snack.GridBackground.BackgroundColor = Color.FromArgb("717171");
-                snack.BrandIconLabel.TextColor = Colors.White;
-                snack.BrandIconLabel.BackgroundColor = Color.FromArgb("414141");
                 snack.GlyphIconLabel.TextColor = Colors.White;
                 snack.GlyphIconLabel.BackgroundColor = Color.FromArgb("414141");
             }
+            
 
+            snack.GlyphIconLabel.Text = opt.Glyph;
+            
             if (opt.GlyphIsBrand)
             {
-                snack.BrandIconLabel.Text = opt.Glyph;
-                snack.BrandIconLabel.IsVisible = true;
-                snack.GlyphIconLabel.IsVisible = false;
+                snack.GlyphIconLabel.FontFamily = "FA6Brands";
             }
             else
             {
-                snack.GlyphIconLabel.Text = opt.Glyph;
-                snack.BrandIconLabel.IsVisible = false;
-                snack.GlyphIconLabel.IsVisible = true;
+                snack.GlyphIconLabel.FontFamily = "FluentIcons";
             }
 
             snack.MessageLabel.Text = opt.Message;
