@@ -2,6 +2,7 @@
 using Mopups.Pages;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.Models;
 
 namespace SSW.Rewards.PopupPages
 {
@@ -20,11 +21,11 @@ namespace SSW.Rewards.PopupPages
 
         private async void SaveButton_Clicked(object sender, System.EventArgs e)
         {
-            var msg = new SocialUsernameAddedMessage
+            var msg = new SocialUsernameAddedMessage(new SocialAchievement
             {
                 Achievement = _achievement,
-                Username    = UsernameEntry.Text
-            };
+                Username = UsernameEntry.Text
+            });
 
             WeakReferenceMessenger.Default.Send(msg);
 
