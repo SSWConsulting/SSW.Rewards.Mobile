@@ -32,7 +32,7 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
 
     public SnackbarOptions SnackOptions { get; set; }
 
-    public ICommand CameraCommand => new Command(async () => ShowCameraPageAsync());
+    public ICommand CameraCommand => new Command(async () => await ShowCameraPageAsync());
 
     public ICommand PopProfile => new Command(async () => await Navigation.PopModalAsync());
 
@@ -186,11 +186,11 @@ public class ProfileViewModel : BaseViewModel, IRecipient<ProfilePicUpdatedMessa
         return Task.CompletedTask;
     }
 
-    private void ShowCameraPageAsync()
+    private async Task ShowCameraPageAsync()
     {
         var popup = new CameraPage(new CameraPageViewModel(_userService));
         //App.Current.MainPage.ShowPopup(popup);
-        MopupService.Instance.PushAsync(popup);
+        await MopupService.Instance.PushAsync(popup);
     }
 
     private async Task LoadProfileSections()

@@ -57,6 +57,7 @@ public partial class ProfilePage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        //viewModel.ShowSnackbar -= ShowSnackbar;
         viewModel.OnDisappearing();
     }
 }
