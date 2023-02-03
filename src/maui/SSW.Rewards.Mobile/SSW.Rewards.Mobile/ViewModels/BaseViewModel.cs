@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Mopups.Services;
 
 namespace SSW.Rewards.Mobile;
 
@@ -15,8 +14,8 @@ public partial class App : Application
     //                  Shell at runtime. Instead, we load a version of Shell
     //                  constructed as required. If this bug has been resolved
     //                  we can do a fair bit of refactoring. 🤮🤮🤮
+    //                  NOTE: Issue still exists in .NET MAUI
     private static IServiceProvider _serviceProvider;
-    private readonly LoginPageViewModel loginPageViewModel;
 
     public static void SetScope(IServiceCollection services)
     {
@@ -31,7 +30,7 @@ public partial class App : Application
     }
     #endregion
 
-    public App(LoginPage page)//IUserService userService)
+    public App(LoginPage page)
     {
         InitializeComponent();
 
@@ -39,7 +38,7 @@ public partial class App : Application
             "ios=e33283b1-7326-447d-baae-e783ece0789b",
             typeof(Analytics), typeof(Crashes));
 
-        MainPage = page;//new AppShell(userService);
+        MainPage = page;
     }
 
     protected override async void OnStart()

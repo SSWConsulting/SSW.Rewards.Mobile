@@ -18,16 +18,21 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     [ObservableProperty]
     private bool isStaff;
 
-    public FlyoutHeaderViewModel()
+    public FlyoutHeaderViewModel(IUserService userService)
     {
         WeakReferenceMessenger.Default.Register<UserDetailsUpdatedMessage>(this);
+        ProfilePic = userService.MyProfilePic;
+        Name = userService.MyName;
+        Email = userService.MyEmail;
+        IsStaff = userService.IsStaff;
     }
 
     public void Receive(UserDetailsUpdatedMessage message)
     {
-        ProfilePic = message.ProfilePic;
-        Name = message.Name;
-        Email = message.Email;
-        IsStaff = message.IsStaff;
+        Console.WriteLine($"[FlyoutHeaderViewModel] Received new user details message: {message.Value.Name}");
+        ProfilePic = message.Value.ProfilePic;
+        Name = message.Value.Name;
+        Email = message.Value.Email;
+        IsStaff = message.Value.IsStaff;
     }
 }

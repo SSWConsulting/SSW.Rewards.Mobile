@@ -261,13 +261,13 @@ public class UserService : BaseService, IUserService
             Preferences.Set(nameof(MyQrCode), user.QrCode);
         }
 
-        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage
+        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
         {
             Email       = MyEmail,
             ProfilePic  = MyProfilePic,
             Name        = MyName,
             IsStaff     = IsStaff
-        });
+        }));
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()

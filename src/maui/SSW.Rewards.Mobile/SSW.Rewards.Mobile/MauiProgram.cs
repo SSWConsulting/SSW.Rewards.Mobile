@@ -30,6 +30,7 @@ public static class MauiProgram
 
         var options = new ApiOptions { BaseUrl = Constants.ApiBaseUrl };
 
+        // TODO: move this to a source genertor
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
             .Where(e => e.IsSubclassOf(typeof(Page)) || e.IsSubclassOf(typeof(BaseViewModel)));
 

@@ -1,12 +1,10 @@
-﻿namespace SSW.Rewards.Mobile.Messages;
+﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 
-public class UserDetailsUpdatedMessage
+namespace SSW.Rewards.Mobile.Messages;
+
+public class UserDetailsUpdatedMessage : ValueChangedMessage<UserContext>
 {
-    public string Name { get; set; }
-
-    public string Email { get; set; }
-
-    public string ProfilePic { get; set; }
-
-    public bool IsStaff { get; set; }
+    public UserDetailsUpdatedMessage(UserContext value) : base(value)
+    {
+    }
 }

@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Mopups.Services;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class RewardsViewModel : BaseViewModel
     {

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class DevProfilesViewModel : BaseViewModel
     {
