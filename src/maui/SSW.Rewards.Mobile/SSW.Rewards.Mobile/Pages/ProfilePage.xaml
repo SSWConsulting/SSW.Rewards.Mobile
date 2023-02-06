@@ -4,6 +4,8 @@
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:ProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.ProfilePage">
     <ContentPage.Resources>
         <DataTemplate x:Key="AchievementsTemplate">

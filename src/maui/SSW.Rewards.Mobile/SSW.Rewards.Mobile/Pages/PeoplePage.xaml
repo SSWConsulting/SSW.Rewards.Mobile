@@ -5,6 +5,9 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:cmp="clr-namespace:Microsoft.Maui.Controls.Compatibility;assembly=Microsoft.Maui.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:rewards="clr-namespace:SSW.Rewards"
+             x:DataType="viewModels:DevProfilesViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.PeoplePage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -80,7 +83,7 @@
                             Direction="Column"
                             BindableLayout.ItemsSource="{Binding Skills}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="rewards:StaffSkillDto">
                             <controls:SkillsBar Label="{Binding Name}"
                                                 Level="{Binding Level}"/>
                         </DataTemplate>

@@ -5,7 +5,6 @@ using ZXing.Net.Maui;
 
 namespace SSW.Rewards.Mobile.Pages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;

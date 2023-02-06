@@ -8,7 +8,9 @@ using ZXing.Net.Maui.Controls;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels;
 
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
+
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()

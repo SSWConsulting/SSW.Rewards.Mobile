@@ -2,8 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:rewards="using:SSW.Rewards"
              BackgroundColor="{StaticResource MainBackground}"
              x:Name="QuizList"
+             x:DataType="viewModels:QuizViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.QuizPage">
     <Shell.TitleView>
         <Label Text="Tech Trivia"
@@ -47,7 +50,7 @@
                                      VerticalItemSpacing="20"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="rewards:QuizDto">
                         <StackLayout>
                             <Frame CornerRadius="5"
                                    WidthRequest="100"

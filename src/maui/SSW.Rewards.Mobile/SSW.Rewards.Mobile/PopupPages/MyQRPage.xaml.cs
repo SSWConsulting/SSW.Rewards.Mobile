@@ -3,7 +3,6 @@ using Mopups.Services;
 
 namespace SSW.Rewards.PopupPages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class MyQRPage : PopupPage
 {
     public MyQRPage(string qrCode)

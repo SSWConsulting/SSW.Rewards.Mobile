@@ -2,7 +2,6 @@
 
 namespace SSW.Rewards.Mobile.Pages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class PeoplePage : ContentPage
 {
     private readonly DevProfilesViewModel _viewModel;

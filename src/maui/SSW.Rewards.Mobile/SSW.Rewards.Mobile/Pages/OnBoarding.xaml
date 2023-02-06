@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              NavigationPage.HasNavigationBar="False"
+             x:DataType="viewModels:OnBoardingViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -47,7 +49,7 @@
                           x:Name="RewardsCarousel">
 
                 <CarouselView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="viewModels:CarouselViewModel">
                         <Grid>
                             <Image Source="{Binding Image}"
                                    Margin="60"

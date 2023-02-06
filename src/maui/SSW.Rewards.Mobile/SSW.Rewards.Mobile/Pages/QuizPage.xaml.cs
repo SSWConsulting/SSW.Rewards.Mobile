@@ -1,6 +1,5 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class QuizPage : ContentPage
 {
     private readonly QuizViewModel _viewModel;

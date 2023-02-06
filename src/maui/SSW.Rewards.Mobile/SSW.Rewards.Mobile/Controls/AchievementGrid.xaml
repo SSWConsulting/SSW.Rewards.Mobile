@@ -2,6 +2,8 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:ProfileCarouselViewModel"
              x:Class="SSW.Rewards.Mobile.Controls.AchievementGrid">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -25,7 +27,7 @@
                         Grid.Row="1"
                     Margin="30,10">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="viewModels:ProfileAchievement">
                     <Grid HeightRequest="100"
                           WidthRequest="100">
                         <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
