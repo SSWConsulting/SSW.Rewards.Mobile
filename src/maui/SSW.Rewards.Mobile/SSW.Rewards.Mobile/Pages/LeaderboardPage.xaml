@@ -5,6 +5,8 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:LeaderBoardViewModel"
              x:Name="Leaderboard"
              x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
     <ContentPage.Resources>
@@ -222,7 +224,7 @@
                                            ItemSpacing="10"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="viewModels:LeaderViewModel">
                             <Grid BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
                                   HeightRequest="50"
                                   ColumnDefinitions="40, 40, *, 80"

@@ -2,7 +2,10 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
-             x:Class="SSW.Rewards.Mobile.Controls.RecentActivity">
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             x:Class="SSW.Rewards.Mobile.Controls.RecentActivity"
+             x:DataType="viewModels:ProfileCarouselViewModel">
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:ActivityTypeToIconConverter x:Key="TypeToIcon"/>
@@ -47,7 +50,7 @@
                     </ContentView>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Activity">
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
                               ColumnDefinitions="2*,10*,4*"
                               Padding="5">

@@ -2,7 +2,6 @@
 
 namespace SSW.Rewards.Mobile.Pages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 [QueryProperty(nameof(QuizId), nameof(QuizId))]
 [QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
 public partial class QuizDetailsPage : ContentPage

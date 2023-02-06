@@ -2,7 +2,6 @@
 
 namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DevImageView : ContentView
     {
         public static BindableProperty ProfileProperty = BindableProperty.Create(nameof(Profile), typeof(DevProfile), typeof(DevImageView), null, propertyChanged: ProfileChanged);

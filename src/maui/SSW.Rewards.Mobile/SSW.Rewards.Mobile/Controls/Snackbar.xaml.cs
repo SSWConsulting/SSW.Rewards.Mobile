@@ -1,6 +1,5 @@
 ﻿namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Snackbar : ContentView
     {
         public static readonly BindableProperty OptionsProperty = BindableProperty.Create(nameof(Options), typeof(SnackbarOptions), typeof(Snackbar), DefaultOptions, propertyChanged: OptionsChanged);

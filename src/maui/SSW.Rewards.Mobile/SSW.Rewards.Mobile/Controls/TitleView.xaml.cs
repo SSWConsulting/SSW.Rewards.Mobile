@@ -4,7 +4,6 @@ using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TitleView : ContentView
     {
         public static readonly BindableProperty TitleProperty = BindableProperty.Create(

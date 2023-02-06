@@ -2,7 +2,6 @@
 
 namespace SSW.Rewards.Mobile.Pages;
 
-[XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class ProfilePage : ContentPage
 {
     private bool _isMe;

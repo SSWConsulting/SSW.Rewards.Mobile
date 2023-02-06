@@ -2,6 +2,9 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             x:DataType="viewModels:ProfileCarouselViewModel"
              x:Class="SSW.Rewards.Mobile.Controls.Notifications">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -41,7 +44,7 @@
                     </ContentView>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Notification">
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
                               ColumnDefinitions="1*, 6*">
                             <Label TextColor="White"

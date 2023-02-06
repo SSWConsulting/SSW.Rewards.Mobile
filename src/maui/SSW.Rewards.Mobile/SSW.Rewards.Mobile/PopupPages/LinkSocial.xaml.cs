@@ -6,7 +6,6 @@ using SSW.Rewards.Mobile.Models;
 
 namespace SSW.Rewards.PopupPages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LinkSocial : PopupPage
     {
         private readonly Achievement _achievement;
