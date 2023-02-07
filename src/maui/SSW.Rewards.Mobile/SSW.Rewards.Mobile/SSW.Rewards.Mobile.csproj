@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>SSW.Rewards</ApplicationTitle>
+		<ApplicationTitle>SSW Rewards</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.ssw.consulting</ApplicationId>
@@ -32,10 +32,11 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" Color="#f5f5f5" ForegroundFile="Resources\AppIcon\icon.png" ForegroundScale="0.67" BaseSize="1024,1024" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#29282d" BaseSize="128,128" />
+		<None Include="Resources\AppIcon\icon.png" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
