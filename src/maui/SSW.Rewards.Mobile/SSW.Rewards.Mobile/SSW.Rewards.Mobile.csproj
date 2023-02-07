@@ -35,7 +35,7 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#29282d" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -90,7 +90,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="3.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.1.0" />
@@ -111,6 +111,7 @@
 	<ItemGroup>
 		<Folder Include="Converters\" />
 		<Folder Include="Pages\" />
+		<Folder Include="Platforms\Android\Resources\drawable-xxxhdpi" />
 		<Folder Include="PopupPages\" />
 	</ItemGroup>
 
