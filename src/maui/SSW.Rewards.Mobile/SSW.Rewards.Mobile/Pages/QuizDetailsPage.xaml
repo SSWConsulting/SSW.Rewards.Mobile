@@ -87,7 +87,7 @@
                                                              TextColor="White"
                                                              Content="{Binding Text}"
                                                              ControlTemplate="{StaticResource {x:Null}}"/>
-                                                <!-- The ControlTemplate="{StaticResource RadioButtonTemplate}" is missing in the project. Was it lost at some point or it was a stub? -->
+                                                <!-- TODO: MAUI. The ControlTemplate="{StaticResource RadioButtonTemplate}" is missing in the project. Was it lost at some point or it was a stub? -->
                                             </DataTemplate>
                                         </BindableLayout.ItemTemplate>
                                     </StackLayout>
