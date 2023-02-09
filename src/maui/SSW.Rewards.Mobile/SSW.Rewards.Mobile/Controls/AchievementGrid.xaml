@@ -30,23 +30,20 @@
             Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewModels:ProfileAchievement">
-                    <Grid HeightRequest="100"
-                          WidthRequest="100">
-                        <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
+                    <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
                                  Command="{Binding AchievementTappedCommand}"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center"
-                                 WidthRequest="100"
                                  HeightRequest="100"
-                                 Padding="20"
-                                 CornerRadius="30">
-                            <ImageButton.Source>
-                                <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
-                                             Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
-                                             Color="White"/>
-                            </ImageButton.Source>
-                        </ImageButton>
-                    </Grid>
+                                 WidthRequest="100"
+                                 Padding="15"
+                                 CornerRadius="35">
+                        <ImageButton.Source>
+                            <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                                         Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                                         Color="White"/>
+                        </ImageButton.Source>
+                    </ImageButton>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
