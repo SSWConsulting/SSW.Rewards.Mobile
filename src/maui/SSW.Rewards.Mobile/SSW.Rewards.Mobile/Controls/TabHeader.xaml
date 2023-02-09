@@ -5,7 +5,7 @@
     <FlexLayout JustifyContent="SpaceBetween"
                 HeightRequest="35"
                 Margin="0,20">
-        <VerticalStackLayout>
+        <VerticalStackLayout Spacing="6">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Center"
@@ -23,7 +23,7 @@
                      x:Name="MonthUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout>
+        <VerticalStackLayout Spacing="6">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Center"
@@ -41,7 +41,7 @@
                      x:Name="YearUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout>
+        <VerticalStackLayout Spacing="6">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Center"

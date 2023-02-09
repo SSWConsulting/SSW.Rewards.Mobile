@@ -32,9 +32,11 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.EmptyView>
                     <ContentView>
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             WidthRequest="200">
+                        <VerticalStackLayout 
+                            Spacing="6"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="200">
                             <Label Text="{Binding EmptyHeader}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"

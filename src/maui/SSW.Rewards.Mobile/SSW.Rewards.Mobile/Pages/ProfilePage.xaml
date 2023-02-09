@@ -41,6 +41,7 @@
                                       Progress="{Binding Progress}"/>
 
             <HorizontalStackLayout Grid.Row="1"
+                                   Spacing="6"
                                    IsVisible="{Binding ShowBalance}"
                                    HorizontalOptions="Center">
                 <Label HorizontalOptions="End"

@@ -68,7 +68,7 @@
                            FontSize="Title"
                            TextColor="White"/>
 
-                    <Label Text="{Binding TotalLeaders, StringFormat='of {0}'}"
+                    <Label Text="{Binding TotalLeaders, StringFormat=' of {0}'}"
                            FontSize="Title"
                            TextColor="{StaticResource MutedText}"/>
 
@@ -293,6 +293,7 @@
                          WidthRequest="80"
                          IsVisible="False"
                          TranslationX="20"
+                         Spacing="6"
                          x:Name="ScrollButtons">
                 
                 <ImageButton BackgroundColor="{StaticResource primary}"
