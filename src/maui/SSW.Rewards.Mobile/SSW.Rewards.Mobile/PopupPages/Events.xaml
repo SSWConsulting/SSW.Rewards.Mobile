@@ -23,7 +23,7 @@
            HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
         <Grid>
-            <VerticalStackLayout>
+            <VerticalStackLayout Spacing="6">
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
                        FontSize="Large"
