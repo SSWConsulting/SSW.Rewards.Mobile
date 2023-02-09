@@ -12,20 +12,22 @@
             <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
-    <Grid RowDefinitions="*,4*">
-        <Label Text="Achievements"
-                 TextColor="White"
-                 FontAttributes="Bold"
-                 HorizontalOptions="Center"
-                 HorizontalTextAlignment="Center"
-                 VerticalOptions="Start"
-                 FontSize="Title"
-               Grid.Row="0"
-                 Margin="10,30,10,10"/>
-        <CollectionView ItemsLayout="VerticalGrid, 3"
-                    ItemsSource="{Binding Achievements}"
-                        Grid.Row="1"
-                    Margin="30,10">
+    <Grid RowDefinitions="*,4*" 
+          Padding="20">
+        <Label
+            Text="Achievements"
+            TextColor="White"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            VerticalOptions="Start"
+            FontSize="Title"
+            Grid.Row="0"
+            Margin="10"/>
+        <CollectionView 
+            ItemsLayout="VerticalGrid, 3"
+            ItemsSource="{Binding Achievements}"
+            Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewModels:ProfileAchievement">
                     <Grid HeightRequest="100"
