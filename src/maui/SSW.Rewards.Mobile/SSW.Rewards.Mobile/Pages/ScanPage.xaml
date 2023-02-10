@@ -17,9 +17,7 @@
         </StackLayout>
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
-                                    IsDetecting="True"
-                                    WidthRequest="300"
-                                    HeightRequest="300"/>
+                                    IsDetecting="True"/>
 
         <Image Source="qr_reticle"/>
     </Grid>
