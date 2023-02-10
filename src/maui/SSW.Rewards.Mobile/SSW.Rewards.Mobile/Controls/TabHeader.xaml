@@ -2,13 +2,14 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SSW.Rewards.Mobile.Controls.TabHeader">
-    <FlexLayout JustifyContent="SpaceBetween"
-                HeightRequest="35"
-                Margin="0,20">
-        <VerticalStackLayout Spacing="6">
+    <Grid 
+        ColumnDefinitions="Auto, *, Auto"
+        HeightRequest="35"
+        Margin="0,20">
+        <VerticalStackLayout Spacing="6" Grid.Column="0">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
-                   HorizontalTextAlignment="Center"
+                   HorizontalTextAlignment="Start"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    Text="This Month"
@@ -18,12 +19,12 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
                 </Label.GestureRecognizers>
             </Label>
-            <BoxView BackgroundColor="{StaticResource primary}"
+            <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
                      x:Name="MonthUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout Spacing="6">
+        <VerticalStackLayout Spacing="6" Grid.Column="1">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Center"
@@ -36,15 +37,16 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
                 </Label.GestureRecognizers>
             </Label>
-            <BoxView BackgroundColor="{StaticResource primary}"
+            <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
+                     WidthRequest="95"
                      x:Name="YearUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout Spacing="6">
+        <VerticalStackLayout Spacing="6" Grid.Column="2">
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
-                   HorizontalTextAlignment="Center"
+                   HorizontalTextAlignment="End"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    Text="All Time"
@@ -54,10 +56,9 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
                 </Label.GestureRecognizers>
             </Label>
-            <BoxView BackgroundColor="{StaticResource primary}"
+            <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
                      x:Name="AllUnderline"/>
         </VerticalStackLayout>
-
-    </FlexLayout>
+    </Grid>
 </ContentView>

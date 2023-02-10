@@ -39,6 +39,7 @@
                        Text="In addition to our regular meetups, we run our Superpowers tours - one (free) and two (paid) day events bringing you the latest in popular dev technologies. We also run hands-on training courses and can deliver you a bespoke training course to meet your organisation's needs."
                        />
                 <Frame BackgroundColor="{StaticResource SSWRed}"
+                       CornerRadius="2"
                        HeightRequest="60">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1"

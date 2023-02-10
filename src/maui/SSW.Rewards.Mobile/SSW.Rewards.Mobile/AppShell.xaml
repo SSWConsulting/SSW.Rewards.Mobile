@@ -175,61 +175,67 @@
     </MenuItem>
 
     <Shell.FlyoutFooter>
-        <StackLayout Padding="0"
-                     Margin="0">
-            <StackLayout Orientation="Horizontal">
-                <StackLayout>
-                    <Grid ColumnDefinitions="30,*"
-                          Margin="0,30,30,0">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                  Tapped="Handle_LogOutClicked"/>
-                        </Grid.GestureRecognizers>
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="20,5" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
+        <VerticalStackLayout 
+            Spacing="0"
+            Padding="0"
+            Margin="0"
+            VerticalOptions="End">
+            <Grid ColumnDefinitions="Auto,*">
+                <Grid 
+                    Grid.Column="0"
+                    ColumnDefinitions="30,*">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="Handle_LogOutClicked"/>
+                    </Grid.GestureRecognizers>
+                    <Grid.Padding>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="5" />
+                            <On Platform="iOS" Value="0" />
+                        </OnPlatform>
+                    </Grid.Padding>
+                    <Grid.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="Android" Value="20,5" />
+                            <On Platform="iOS" Value="10,5,10,0" />
+                        </OnPlatform>
+                    </Grid.Margin>
 
-                        <Label Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="30"
-                               WidthRequest="30"
-                               FontSize="28"
-                               FontFamily="FluentIcons"
-                               TextColor="White"
-                               Text="&#xeafa;">
-                        </Label>
+                    <Label Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="5"
+                           HeightRequest="30"
+                           WidthRequest="30"
+                           FontSize="28"
+                           FontFamily="FluentIcons"
+                           TextColor="White"
+                           Text="&#xeafa;">
+                    </Label>
 
-                        <Label Grid.Column="1"
-                               TextColor="White"
-                               VerticalOptions="Center"
-                               Margin="20,0,0,0"
-                               FontSize="18"
-                               Text="Log Out" />
-                    </Grid>
-                </StackLayout>
+                    <Label Grid.Column="1"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="20,0,0,0"
+                           FontSize="18"
+                           Text="Log Out" />
+                </Grid>
 
-                <StackLayout HorizontalOptions="EndAndExpand">
+                <VerticalStackLayout 
+                    Grid.Column="1"
+                    Spacing="6" 
+                    HorizontalOptions="End">
                     <Image HorizontalOptions="End"
                            Margin="10,0,10,0"
+                           WidthRequest="50"
                            Source="ssw_white"/>
 
                     <Label HorizontalOptions="End"
                            x:Name="VersionLabel"
-                           Margin="10,0,10,0"
+                           Margin="10,0,10,10"
                            TextColor="White"/>
-                </StackLayout>
+                </VerticalStackLayout>
 
-            </StackLayout>
+            </Grid>
             <!-- workaround for iOS footer safe area-->
             <Label Text=" ">
                 <Label.IsVisible>
@@ -239,7 +245,7 @@
                     </OnPlatform>
                 </Label.IsVisible>
             </Label>
-        </StackLayout>
+        </VerticalStackLayout>
     </Shell.FlyoutFooter>
 
 </Shell>

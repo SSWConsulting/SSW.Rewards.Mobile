@@ -4,14 +4,15 @@ public partial class TabHeader : ContentView
 {
     private Color _selectedTextColor;
     private Color _unselectedTextColor;
+    private int _underlineThickness = 2;
 
     public TabHeader()
     {
         InitializeComponent();
 
-        //MonthUnderline.HeightRequest = 0;
-        //YearUnderline.HeightRequest = 5;
-        //AllUnderline.HeightRequest = 5;
+        MonthUnderline.HeightRequest = _underlineThickness;
+        YearUnderline.HeightRequest = 0;
+        AllUnderline.HeightRequest = 0;
 
         var dict = App.Current.Resources.MergedDictionaries.First();
 
@@ -33,18 +34,18 @@ public partial class TabHeader : ContentView
         {
             case "This Month":
                 range = FilterRange.Month;
-                //MonthUnderline.HeightRequest = 5;
-                //YearUnderline.HeightRequest = 0;
-                //AllUnderline.HeightRequest = 0;
+                MonthUnderline.HeightRequest = _underlineThickness;
+                YearUnderline.HeightRequest = 0;
+                AllUnderline.HeightRequest = 0;
                 YearRadio.TextColor = _unselectedTextColor;
                 MonthRadio.TextColor = _selectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
             case "This Year":
                 range = FilterRange.Year;
-                //MonthUnderline.HeightRequest = 0;
-                //YearUnderline.HeightRequest = 5;
-                //AllUnderline.HeightRequest = 0;
+                MonthUnderline.HeightRequest = 0;
+                YearUnderline.HeightRequest = _underlineThickness;
+                AllUnderline.HeightRequest = 0;
                 YearRadio.TextColor = _selectedTextColor;
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
@@ -52,9 +53,9 @@ public partial class TabHeader : ContentView
             case "All Time":
             default:
                 range = FilterRange.AllTime;
-                //MonthUnderline.HeightRequest = 0;
-                //YearUnderline.HeightRequest = 0;
-                //AllUnderline.HeightRequest = 5;
+                MonthUnderline.HeightRequest = 0;
+                YearUnderline.HeightRequest = 0;
+                AllUnderline.HeightRequest = _underlineThickness;
                 YearRadio.TextColor = _unselectedTextColor;
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _selectedTextColor;

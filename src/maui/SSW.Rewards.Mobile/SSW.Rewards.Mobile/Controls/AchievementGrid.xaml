@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <Grid RowDefinitions="*,4*" 
-          Padding="20">
+          Padding="25">
         <Label
             Text="Achievements"
             TextColor="White"
@@ -34,14 +34,15 @@
                                  Command="{Binding AchievementTappedCommand}"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center"
-                                 HeightRequest="100"
-                                 WidthRequest="100"
-                                 Padding="15"
-                                 CornerRadius="35">
+                                 HeightRequest="115"
+                                 WidthRequest="115"
+                                 Padding="20"
+                                 CornerRadius="37">
                         <ImageButton.Source>
-                            <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
-                                         Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
-                                         Color="White"/>
+                            <FontImageSource
+                                FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                                Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                                Color="White"/>
                         </ImageButton.Source>
                     </ImageButton>
                 </DataTemplate>

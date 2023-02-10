@@ -38,7 +38,7 @@
                        Margin="20"
                        Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."
                        />
-                <Frame BackgroundColor="{StaticResource SSWRed}" HeightRequest="60">
+                <Frame BackgroundColor="{StaticResource SSWRed}" HeightRequest="60" CornerRadius="2">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1"
                                               Tapped="FindoutMore_Tapped"/>
