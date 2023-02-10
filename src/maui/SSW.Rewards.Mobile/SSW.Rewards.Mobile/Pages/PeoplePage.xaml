@@ -17,13 +17,15 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid RowDefinitions="2*, 9*, 3*"
-              ColumnDefinitions="2*, 10*, 2*">
+              ColumnDefinitions="*, 5*, *"
+              RowSpacing="6"
+              ColumnSpacing="6">
 
             <ImageButton Grid.Row="0"
                          Grid.Column="0"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
-                         Margin="10"
+                         Margin="15"
                          Command="{Binding BackCommand}"
                          BackgroundColor="Transparent">
                 <ImageButton.Source>
@@ -37,8 +39,7 @@
                          Grid.Column="2"
                          HorizontalOptions="Center"
                          BackgroundColor="Transparent"
-                         WidthRequest="100"
-                         Margin="10"
+                         Margin="15"
                          Command="{Binding ForwardCommand}"
                          VerticalOptions="Center">
                 <ImageButton.Source>
@@ -74,6 +75,8 @@
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
                   RowDefinitions="25*, 7*, 2*, 5*"
+                  ColumnSpacing="6"
+                  RowSpacing="6"
                   x:Name="CentralGrid">
 
                 <FlexLayout Grid.Row="0"
