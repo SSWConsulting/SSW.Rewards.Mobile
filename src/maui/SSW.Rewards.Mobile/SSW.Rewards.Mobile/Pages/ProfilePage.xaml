@@ -31,10 +31,12 @@
     </ContentPage.Resources>
     
     <Grid RowDefinitions="*,*,10"
+          RowSpacing="6"
           Padding="20,20,20,5">
 
         <Grid x:Name="ProfileDisplay"
               Grid.Row="0"
+              RowSpacing="6"
               RowDefinitions="3*, 1*, 2*, 6*, 2*, 1*, 3*">
             
             <controls:RewardsProgress Grid.RowSpan="7"
@@ -115,7 +117,7 @@
                          WidthRequest="40"
                          HeightRequest="40"
                          Command="{Binding PopProfile}"
-                         Padding="3"
+                         Padding="1"
                          IsVisible="{Binding ShowPopButton}">
                 <ImageButton.Source>
                     <FontImageSource FontFamily="FluentIcons"

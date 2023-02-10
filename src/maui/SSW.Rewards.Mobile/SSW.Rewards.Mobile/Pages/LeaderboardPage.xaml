@@ -42,9 +42,11 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid Padding="30,5"
+              RowSpacing="6"
               RowDefinitions="80, 60, 40, 35, *">
 
             <Grid Grid.Row="0"
+                  RowSpacing="6"
                   RowDefinitions="3*, 2*"
                   ColumnDefinitions="80, *, 50">
 
@@ -110,7 +112,7 @@
 
             <Border StrokeShape="RoundRectangle 10"
                     StrokeThickness="0"
-                    HeightRequest="45"
+                    HeightRequest="40"
                     VerticalOptions="Center"
                     BackgroundColor="{StaticResource TabBarBackground}"
                     Grid.Row="1">
@@ -139,7 +141,7 @@
                        BackgroundColor="{StaticResource TabBarBackground}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       FontSize="26"
+                       FontSize="19"
                        TextColor="White">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
@@ -279,7 +281,6 @@
                                        VerticalOptions="Center"
                                        HorizontalOptions="End"
                                        InputTransparent="True"/>
-
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

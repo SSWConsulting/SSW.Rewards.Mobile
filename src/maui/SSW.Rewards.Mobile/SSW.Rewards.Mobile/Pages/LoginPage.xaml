@@ -21,19 +21,13 @@
                    HorizontalOptions="FillAndExpand"
                    VerticalOptions="FillAndExpand"/>
 
-            <FlexLayout VerticalOptions="Fill"
-                                 HorizontalOptions="FillAndExpand"
-                        Direction="Column"
-                        JustifyContent="End">
-
-                <Button Text="{Binding ButtonText}"
-                        Command="{Binding LoginTappedCommand}"
-                        TextColor="White"
-                        VerticalOptions="End"
-                        Margin="50,0,50,150"
-                        IsEnabled="{Binding LoginButtonEnabled}"
-                        BackgroundColor="{StaticResource SSWRed}"/>
-            </FlexLayout>
+            <Button Text="{Binding ButtonText}"
+                    Command="{Binding LoginTappedCommand}"
+                    TextColor="White"
+                    VerticalOptions="End"
+                    Margin="50,0,50,150"
+                    IsEnabled="{Binding LoginButtonEnabled}"
+                    BackgroundColor="{StaticResource SSWRed}"/>
 
             <ActivityIndicator HorizontalOptions="Center"
                                Color="Red"
