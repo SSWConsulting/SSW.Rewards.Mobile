@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.IdentityModel.Tokens;
 using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
@@ -73,7 +74,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         public ICommand SearchTextChanged => new Command(() =>
         {
             // TODO: check time filter, or switch to all time when searching
-            if (SearchBarText != null || SearchBarText != String.Empty)
+            if (!SearchBarText.IsNullOrEmpty())
             {
                 var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
                 SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
