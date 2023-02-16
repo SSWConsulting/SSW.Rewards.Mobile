@@ -59,6 +59,7 @@
 
     <!-- v2 -->
     <Color x:Key="MainBackground">#FF121212</Color>
+    <Color x:Key="SecondaryBackground">#29282d</Color>
     <Color x:Key="primary">#FFCC4141</Color>
     <!-- replaces SSWRes-->
     <Color x:Key="TabBarBackground">#FF333333</Color>

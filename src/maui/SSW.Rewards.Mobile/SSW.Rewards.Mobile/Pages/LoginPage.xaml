@@ -2,17 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             BackgroundColor="{StaticResource SecondaryBackground}"
              NavigationPage.HasNavigationBar="False"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewModels:LoginPageViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.LoginPage">
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <Color x:Key="SSWRed">#cc4141</Color>
-        </ResourceDictionary>
+        <!--TODO: Why do we need to import colors here again to access them? 
+        They are already referenced in App.xaml -->
+        <ResourceDictionary Source="../Resources/Styles/Colors.xaml" />
     </ContentPage.Resources>
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="#29282d" StatusBarStyle="LightContent"/>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource SecondaryBackground}" StatusBarStyle="LightContent"/>
     </ContentPage.Behaviors>
     <ContentPage.Content>
         <Grid VerticalOptions="Fill">
@@ -23,14 +24,14 @@
 
             <Button Text="{Binding ButtonText}"
                     Command="{Binding LoginTappedCommand}"
-                    TextColor="White"
+                    TextColor="{StaticResource White}"
                     VerticalOptions="End"
                     Margin="50,0,50,150"
                     IsEnabled="{Binding LoginButtonEnabled}"
                     BackgroundColor="{StaticResource SSWRed}"/>
 
             <ActivityIndicator HorizontalOptions="Center"
-                               Color="Red"
+                               Color="{StaticResource primary}"
                                VerticalOptions="Center"
                                IsVisible="{Binding isRunning}"
                                IsRunning="{Binding isRunning}"/>
