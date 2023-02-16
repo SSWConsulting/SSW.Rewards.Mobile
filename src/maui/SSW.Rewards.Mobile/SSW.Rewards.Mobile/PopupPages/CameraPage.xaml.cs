@@ -3,7 +3,7 @@ using Mopups.Services;
 
 namespace SSW.Rewards.PopupPages;
 
-public partial class CameraPage : PopupPage
+public partial class CameraPage
 {
     public async void Handle_Tapped(object sender, EventArgs e)
     {
