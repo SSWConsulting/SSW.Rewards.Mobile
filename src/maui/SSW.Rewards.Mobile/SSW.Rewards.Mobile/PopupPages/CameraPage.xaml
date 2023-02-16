@@ -3,9 +3,9 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-                 xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  x:DataType="viewModels:CameraPageViewModel"
+                 BackgroundColor="Transparent"
                  x:Class="SSW.Rewards.PopupPages.CameraPage">
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
@@ -39,7 +39,6 @@
                    Grid.Row="1"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   d:Source="icon_avatar"
                    HeightRequest="200"
                    WidthRequest="200"
                    Aspect="AspectFill"
@@ -55,18 +54,12 @@
                          Spacing="20"
                          VerticalOptions="Center">
                 <Button Text="Take a new photo"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding OnTakePhotoTapped}"/>
                 
                 <Button Text="Choose a new photo"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding OnChoosePhotoTapped}"/>
                 
                 <Button Text="Use this picture"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding UseButtonTapped}"
                         IsEnabled="{Binding UseButtonEnabled}"/>
             </StackLayout>
@@ -74,16 +67,12 @@
                          Opacity="0.5"
                          BackgroundColor="AliceBlue"
                          IsVisible="{Binding IsUploading}"
-                         d:IsVisible="True"
                          Grid.RowSpan="3">
                 <ActivityIndicator HorizontalOptions="CenterAndExpand"
                                HeightRequest="80"
                                WidthRequest="80"
                                VerticalOptions="CenterAndExpand"
                                IsEnabled="{Binding IsUploading}"
-                               d:IsEnabled="True"
-                               d:IsRunning="True"
-                               d:IsVisible="True"
                                IsRunning="{Binding IsUploading}"
                                IsVisible="{Binding IsUploading}"
                                Color="{StaticResource SSWRed}"/>
