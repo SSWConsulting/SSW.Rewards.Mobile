@@ -37,21 +37,20 @@
         <Grid x:Name="ProfileDisplay"
               Grid.Row="0"
               RowSpacing="6"
-              RowDefinitions="3*, 1*, 2*, 6*, 2*, 1*, 3*">
+              RowDefinitions="2*, Auto, Auto, 6*, 2*, 1*, 3*">
             
             <controls:RewardsProgress Grid.RowSpan="7"
                                       Progress="{Binding Progress}"/>
 
             <HorizontalStackLayout Grid.Row="1"
-                                   Spacing="6"
-                                   IsVisible="{Binding ShowBalance}"
-                                   HorizontalOptions="Center">
+                       Spacing="6"
+                       IsVisible="{Binding ShowBalance}"
+                       HorizontalOptions="Center">
                 <Label HorizontalOptions="End"
                        Text="⭐"
                        FontSize="Small"
                        TextColor="{StaticResource primary}" />
-                <Label HorizontalOptions="End"
-                       Text="{Binding Balance, StringFormat='{0:n0}'}"
+                <Label Text="{Binding Balance, StringFormat='{0:n0}'}"
                        FontSize="Small"
                        TextColor="{StaticResource primary}" />
                 <Label HorizontalOptions="End"
@@ -96,9 +95,9 @@
                          VerticalOptions="Center"
                          TranslationX="40"
                          TranslationY="-35"
-                         CornerRadius="12"
-                         WidthRequest="30"
-                         HeightRequest="30"
+                         CornerRadius="15"
+                         WidthRequest="35"
+                         HeightRequest="35"
                          Command="{Binding CameraCommand}"
                          Padding="3"
                          IsVisible="{Binding ShowCamera}">
