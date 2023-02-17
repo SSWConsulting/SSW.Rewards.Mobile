@@ -5,18 +5,16 @@
   <ContentView.Content>
         <Border StrokeShape="RoundRectangle 3"
                 StrokeThickness="0"
-                HeightRequest="70"
                 WidthRequest="300"
                 x:Name="GridBackground"
                 Opacity="0"
                 TranslationY="50">
             <Grid x:Name="MainLayout"
                   HorizontalOptions="CenterAndExpand"
-                  Margin="30"
+                  Margin="5"
                   Padding="5"
-                  HeightRequest="70"
                   WidthRequest="300"
-                  ColumnDefinitions="50, *, 40">
+                  ColumnDefinitions="50, *, Auto">
 
                 <!-- Glyph Icon-->
                 <Label Grid.Column="0"
