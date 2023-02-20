@@ -25,7 +25,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(HandleSwiped);
             Skip = new Command(async () => await SkipOnboarding());
-            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
+            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints) };
             Items = new ObservableCollection<CarouselViewModel>
             {
                 new CarouselViewModel
@@ -75,7 +75,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 new CarouselViewModel
                 {
                     Content = "SSW Architects will help you successfully implement your project.",
-                    Image = "v2consultation",
+                    Image = "v2consultation.JPG",
                     SubHeading = "Half Price Specification Review",
                     HasPoints = true,
                     Points = 3000,
