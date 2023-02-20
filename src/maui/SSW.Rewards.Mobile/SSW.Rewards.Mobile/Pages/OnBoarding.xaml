@@ -10,9 +10,7 @@
              x:DataType="viewModels:OnBoardingViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:InverseBoolConverter x:Key="InverseBool"/>
-        </ResourceDictionary>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
     </ContentPage.Resources>
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="{StaticResource SecondaryBackground}" StatusBarStyle="LightContent"/>
@@ -38,6 +36,7 @@
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Command="{Binding Skip}"/>
                 </Label.GestureRecognizers>
+                <!--TODO: Why did we move the label 30px down on iOS?-->
                 <Label.TranslationY>
                     <OnPlatform x:TypeArguments="x:Double">
                         <On Platform="iOS" Value="30"/>
@@ -45,10 +44,11 @@
                 </Label.TranslationY>
             </Label>
 
+            <!--TODO: MAUI, if Loop is set to False, then the animation is not displayed on the first slide-->
             <CarouselView Grid.Row="1"
                           ItemsSource="{Binding Items}"
                           CurrentItem="{Binding SelectedItem}"
-                          Loop="False"
+                          Loop="True" 
                           CurrentItemChangedCommand="{Binding Swiped}"
                           IndicatorView="RewardsIndicator"
                           x:Name="RewardsCarousel">
@@ -59,44 +59,21 @@
                             <Image Source="{Binding Image}"
                                    Margin="60"
                                    Aspect="AspectFit"
-                                   IsVisible="{Binding IsAnimation, Converter={StaticResource InverseBool}}">
+                                   IsVisible="{Binding IsAnimation, Converter={StaticResource InverseBool}}"/>
                                 <!--<Image.Scale>
                                     <OnPlatform x:TypeArguments="x:Double">
                                         <On Platform="iOS" Value="1"/>
                                         <On Platform="Android" Value="0.7"/>
                                     </OnPlatform>
                                 </Image.Scale>-->
-                            </Image>
-
-                            <VerticalStackLayout>
-                                <!--<Label Text=" "/>
-                                <Label Text=" "/>
-                                <Label Text="r "/>-->
-                                <lottie:SKLottieView Source="Sophie.json"
-                                                     IsVisible="{Binding IsAnimation}"
-                                                     RepeatCount="-1"
-                                                     WidthRequest="200"
-                                                     HeightRequest="400"
-                                                     HorizontalOptions="Center"/>
-                            </VerticalStackLayout>
-
-                            <!--<VerticalStackLayout>
-                                <Label Text="{Binding IsAnimation}"
-                                   IsVisible="{Binding IsAnimation}"/>
-                                <Label Text="{Binding Animation}"
-                                   IsVisible="{Binding IsAnimation}"/>
-                                <Label Text="{Binding Image}"
-                                   IsVisible="{Binding IsAnimation}"/>
-                                <lottie:SKLottieView Source="Sophie.json"
-                                                     IsVisible="{Binding IsAnimation}"
-                                                     RepeatCount="-1"
-                                                     WidthRequest="200"
-                                                     HeightRequest="200"
-                                                     HorizontalOptions="Center"/>
-                            </VerticalStackLayout>-->
+                            <lottie:SKLottieView Source="Sophie.json"
+                                                 IsVisible="{Binding IsAnimation}"
+                                                 RepeatCount="-1"
+                                                 WidthRequest="200"
+                                                 HeightRequest="400"
+                                                 HorizontalOptions="Center"/>
                         </Grid>
                     </DataTemplate>
-
                 </CarouselView.ItemTemplate>
             </CarouselView>
 
