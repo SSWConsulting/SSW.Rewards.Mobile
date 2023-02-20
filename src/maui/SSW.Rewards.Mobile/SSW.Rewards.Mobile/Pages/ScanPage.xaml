@@ -7,6 +7,9 @@
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:DataType="viewModels:ScanResultViewModel">
     <Grid>
+        <zx:CameraBarcodeReaderView x:Name="scannerView"
+                                    BarcodesDetected="Handle_OnScanResult"
+                                    IsDetecting="True"/>
         <StackLayout Padding="0,0,0,200">
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
@@ -15,10 +18,6 @@
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
         </StackLayout>
-        <zx:CameraBarcodeReaderView x:Name="scannerView"
-                                    BarcodesDetected="Handle_OnScanResult"
-                                    IsDetecting="True"/>
-
         <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>
