@@ -4,8 +4,8 @@
              xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
              xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:const="clr-namespace:SSW.Rewards"
              x:Class="SSW.Rewards.PopupPages.ScanResult"
              x:DataType="viewModels:ScanResultViewModel"
              BackgroundColor="Transparent">
@@ -28,34 +28,29 @@
            HorizontalOptions="Center"
            VerticalOptions="Center">
         <StackLayout>
-            <Label Text="{Binding ResultHeading}"
-                   d:Text="Achievement Unlocked"
+            <Label 
+                   Text="{Binding ResultHeading}"
                    FontSize="24"
                    Margin="10,10,10,0"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="Gold"
                    TextColor="{Binding HeadingColour}"/>
             <Label Text="{Binding AchievementHeading}"
-                   d:Text="Angular Superpowers Tour"
                    FontSize="18"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="Gold"
                    TextColor="{Binding HeadingColour}"/>
             <lottie:SKLottieView x:Name="ResultAnimation"
                                   Source="{Binding AnimationRef}"
                                   IsAnimationEnabled="True"
-                                  RepeatCount="{Binding AnimationLoop}"
+                                  RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
                                   VerticalOptions="CenterAndExpand"
                                   HorizontalOptions="CenterAndExpand"
                                   HeightRequest="200"
                                   WidthRequest="200"
                                   Scale="1"/>
             <Label Text="{Binding ResultBody}"
-                   d:Text="You have unlocked this achievement"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
                    Margin="10"/>
-
             <Button Text="OK"
                     HorizontalOptions="Center"
                     WidthRequest="250"

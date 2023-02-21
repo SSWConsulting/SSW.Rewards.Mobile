@@ -7,6 +7,13 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public class ScanResultViewModel : BaseViewModel
 {
+    private readonly IUserService _userService;
+
+    private readonly IScannerService _scannerService;
+    
+    private bool _wonPrize { get; set; }
+    private string data;
+
     public string AnimationRef { get; set; }
 
     public bool AnimationLoop { get; set; }
@@ -20,14 +27,6 @@ public class ScanResultViewModel : BaseViewModel
     public ICommand OnOkCommand { get; set; }
     
     public Color HeadingColour { get; set; }
-    
-    private IUserService _userService { get; set; }
-    
-    private IScannerService _scannerService { get; set; }
-
-    private bool _wonPrize { get; set; }
-
-    private string data;
 
     public ScanResultViewModel(IUserService userService, IScannerService scannerService)
     {
@@ -60,13 +59,13 @@ public class ScanResultViewModel : BaseViewModel
                 {
                     ResultHeading = "Achievement Added!";
                     AnimationRef = "star.json";
-                    ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
+                    ResultBody = $"You have earned ⭐ {result.Points.ToString()} points for this achievement";
                 }
                 else if(result.ScanType == ScanType.Reward)
                 {
                     ResultHeading = "Congratulations!";
                     AnimationRef = "trophy.json";
-                    ResultBody = string.Format("You have claimed this reward!");
+                    ResultBody = "You have claimed this reward!";
                 }
                 
                 HeadingColour = (Color)Application.Current.Resources["PointsColour"];
@@ -113,7 +112,7 @@ public class ScanResultViewModel : BaseViewModel
                 break;
         }
 
-        RaisePropertyChanged(new string[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
+        RaisePropertyChanged(new[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
 
         if (result.result == ScanResult.Added)
         {

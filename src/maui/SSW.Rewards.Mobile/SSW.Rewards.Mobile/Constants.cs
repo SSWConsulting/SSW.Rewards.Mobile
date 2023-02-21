@@ -26,4 +26,6 @@ public static class Constants
     public static string ClientId { get; } = "ssw-rewards-mobile-app";
 
     public static string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
+
+    public static int AnimationRepeatCount = 3;
 }
