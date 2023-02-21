@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.PopupPages;
 
-public partial class ScanResult : PopupPage
+public partial class ScanResult
 {
     ScanResultViewModel _viewModel;
 
