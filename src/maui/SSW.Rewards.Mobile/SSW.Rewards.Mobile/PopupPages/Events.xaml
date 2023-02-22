@@ -31,13 +31,11 @@
                 <Label HorizontalTextAlignment="Center"
                        Margin="20"
                        TextColor="White"
-                       Text="At SSW we run some of the most popular Microsoft events in Australia. We have the perfect training course for you."
-                       />
+                       Text="At SSW we run some of the most popular Microsoft events in Australia. We have the perfect training course for you."/>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="White"
                        Margin="20"
-                       Text="In addition to our regular meetups, we run our Superpowers tours - one (free) and two (paid) day events bringing you the latest in popular dev technologies. We also run hands-on training courses and can deliver you a bespoke training course to meet your organisation's needs."
-                       />
+                       Text="In addition to our regular meetups, we run our Superpowers tours - one (free) and two (paid) day events bringing you the latest in popular dev technologies. We also run hands-on training courses and can deliver you a bespoke training course to meet your organisation's needs."/>
                 <Frame BackgroundColor="{StaticResource SSWRed}"
                        CornerRadius="2"
                        HeightRequest="60">
@@ -53,11 +51,13 @@
                                VerticalTextAlignment="Center"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
+                               WidthRequest="24"
                                HorizontalOptions="End"
                                VerticalOptions="Center"/>
                     </Grid>
                 </Frame>
             </VerticalStackLayout>
+            <!-- TODO: This icon is not displayed neither after MAUI migration, nor before that in prod. Do we need it?-->
             <Image Source="icon_close"
                    VerticalOptions="Start"
                    HorizontalOptions="End">

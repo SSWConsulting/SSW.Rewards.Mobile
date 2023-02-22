@@ -50,6 +50,7 @@
                                TextColor="White"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
+                               WidthRequest="24"
                                InputTransparent="True"
                                HorizontalOptions="End"/>
                     </Grid>
