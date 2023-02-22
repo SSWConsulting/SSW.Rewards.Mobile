@@ -1,74 +1,71 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
-             xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
-             xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-             HeightRequest="150"
-             xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
-             x:DataType="vm:FlyoutHeaderViewModel">
-    <ContentView.BindingContext>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
+      xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
+      xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+      HeightRequest="{OnPlatform Android='120', iOS='170'}"
+      Margin="0"
+      xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
+      x:DataType="vm:FlyoutHeaderViewModel"
+      ColumnDefinitions="90, *"
+      RowDefinitions="2*, *, 5">
+    <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
-    </ContentView.BindingContext>
+    </Grid.BindingContext>
 
-    <Grid HeightRequest="100"
-          ColumnDefinitions="90, *"
-          RowDefinitions="*, *, 5">
-
-        <Image Grid.Column="0"
-               Grid.Row="0"
-               Grid.RowSpan="2"
-               Aspect="AspectFill"
-               Source="{Binding ProfilePic}"
-               x:Name="ProfileImage"
-               HeightRequest="70"
-               WidthRequest="70"
-               VerticalOptions="Center"
-               Margin="15,5,5,0">
+    <Image Grid.Column="0"
+           Grid.Row="0"
+           Grid.RowSpan="2"
+           Aspect="AspectFill"
+           Source="{Binding ProfilePic}"
+           x:Name="ProfileImage"
+           HeightRequest="70"
+           WidthRequest="70"
+           VerticalOptions="End"
+           Margin="15,5,5,10">
             <Image.Clip>
                 <EllipseGeometry Center="35,35"
                                  RadiusX="35"
                                  RadiusY="35"/>
             </Image.Clip>
-        </Image>
+    </Image>
 
-        <HorizontalStackLayout Grid.Column="1"
-                               Grid.Row="0"
-                               Margin="0,5,5,0"
-                               Spacing="5"
-                               VerticalOptions="End">
-            <Label FontSize="16"
-                   Text="{Binding Name}"
-                   x:Name="NameLabel"
-                   TextColor="White"
-                   FontAttributes="Bold"
-                   
-                   VerticalTextAlignment="End" />
-
-            <Label FontFamily="FA6Brands"
-                   TextColor="White"
-                   VerticalTextAlignment="Center"
-                   TranslationY="1"
-                   Text="&#xf3ca;"
-                   IsVisible="{Binding IsStaff}"
-                   x:Name="IsStaffLabel"/>
-        </HorizontalStackLayout>
-
-        <Label Grid.Column="1"
-               Grid.Row="1"
+    <HorizontalStackLayout Grid.Column="1"
+                           Grid.Row="0"
+                           Margin="0,0,5,0"
+                           Spacing="5"
+                           VerticalOptions="End">
+        <Label FontSize="16"
+               Text="{Binding Name}"
+               x:Name="NameLabel"
                TextColor="White"
-               VerticalOptions="Start"
-               Text="{Binding Email}"
-               x:Name="EmailLabel"
-               Margin="0,0,5,0" />
+               FontAttributes="Bold"
+               
+               VerticalTextAlignment="End" />
 
-        <BoxView HorizontalOptions="FillAndExpand"
-                 HeightRequest="1"
-                 Color="White"
-                 Grid.Column="0"
-                 Grid.ColumnSpan="2"
-                 Grid.Row="2"
-                 VerticalOptions="Center"/>
-    </Grid>
-</ContentView>
+        <Label FontFamily="FA6Brands"
+               TextColor="White"
+               VerticalTextAlignment="Center"
+               TranslationY="1"
+               Text="&#xf3ca;"
+               IsVisible="{Binding IsStaff}"
+               x:Name="IsStaffLabel"/>
+    </HorizontalStackLayout>
+
+    <Label Grid.Column="1"
+           Grid.Row="1"
+           TextColor="White"
+           VerticalOptions="Start"
+           Text="{Binding Email}"
+           x:Name="EmailLabel"
+           Margin="0,0,5,0" />
+
+    <BoxView HorizontalOptions="FillAndExpand"
+             HeightRequest="1"
+             Color="White"
+             Grid.Column="0"
+             Grid.ColumnSpan="2"
+             Grid.Row="2"
+             VerticalOptions="Center"/>
+</Grid>
