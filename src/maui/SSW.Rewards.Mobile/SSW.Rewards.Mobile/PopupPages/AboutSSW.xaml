@@ -31,13 +31,11 @@
                 <Label HorizontalTextAlignment="Center"
                        Margin="20"
                        TextColor="White"
-                       Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."
-                       />
+                       Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."/>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="White"
                        Margin="20"
-                       Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."
-                       />
+                       Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."/>
                 <Frame BackgroundColor="{StaticResource SSWRed}" HeightRequest="60" CornerRadius="2">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1"
