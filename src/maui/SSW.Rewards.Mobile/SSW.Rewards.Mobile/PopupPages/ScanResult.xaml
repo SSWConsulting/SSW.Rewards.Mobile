@@ -5,10 +5,14 @@
              xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:const="clr-namespace:SSW.Rewards"
              x:Class="SSW.Rewards.PopupPages.ScanResult"
              x:DataType="viewModels:ScanResultViewModel"
              BackgroundColor="Transparent">
+    <pages:PopupPage.Resources>
+        <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
+    </pages:PopupPage.Resources>
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
                                    PositionOut="Center"
@@ -39,7 +43,7 @@
                    HorizontalTextAlignment="Center"
                    TextColor="{Binding HeadingColour}"/>
             <lottie:SKLottieView x:Name="ResultAnimation"
-                                  Source="{Binding AnimationRef}"
+                                  Source="{Binding AnimationRef, Converter={StaticResource StringToSkLottieImageSourceConverter}}"
                                   IsAnimationEnabled="True"
                                   RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
                                   VerticalOptions="CenterAndExpand"

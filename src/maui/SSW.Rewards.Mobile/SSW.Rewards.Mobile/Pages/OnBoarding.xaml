@@ -12,6 +12,7 @@
              x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool"/>
+        <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
     </ContentPage.Resources>
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="{StaticResource SecondaryBackground}" StatusBarStyle="LightContent"/>
@@ -67,7 +68,7 @@
                                         <On Platform="Android" Value="0.7"/>
                                     </OnPlatform>
                                 </Image.Scale>-->
-                            <lottie:SKLottieView Source="Sophie.json"
+                            <lottie:SKLottieView Source="{Binding Animation, Converter={StaticResource StringToSkLottieImageSourceConverter}}"
                                                  IsVisible="{Binding IsAnimation}"
                                                  RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
                                                  WidthRequest="200"
