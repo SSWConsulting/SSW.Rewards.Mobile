@@ -9,7 +9,6 @@ public partial class AppShell : Shell
     private IUserService _userService { get; set; }
 
     bool _isStaff = false;
-    bool _showJoinMenu = false;
 
     //private string _name;
     //private string _email;
@@ -18,8 +17,8 @@ public partial class AppShell : Shell
     public AppShell(IUserService userService, bool isStaff)
     {
         IsStaff = isStaff;
-        BindingContext = this;
 
+        BindingContext = this;
         InitializeComponent();
         _userService = userService;
         VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
@@ -36,15 +35,6 @@ public partial class AppShell : Shell
         }
     }
 
-    public bool ShowJoinMenuItem
-    {
-        get => _showJoinMenu;
-        set
-        {
-            _showJoinMenu = value;
-            OnPropertyChanged();
-        }
-    }
 
     public async void Handle_LogOutClicked(object sender, EventArgs e)
     {

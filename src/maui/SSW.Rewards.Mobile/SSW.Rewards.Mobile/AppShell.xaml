@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:SSW.Rewards.Mobile"
     xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
     FlyoutIcon="icon_menu"
@@ -43,7 +44,7 @@
                             <DataTrigger TargetType="Grid"
                                      Binding="{Binding Text}"
                                      Value="Join SSW">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowJoinMenuItem}"/>
+                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
                             </DataTrigger>
                         </Grid.Triggers>
                         <Grid.Padding>
