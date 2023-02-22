@@ -52,6 +52,7 @@
                                TextColor="White"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
+                               WidthRequest="24"
                                HorizontalOptions="End"/>
                     </Grid>
                 </Frame>

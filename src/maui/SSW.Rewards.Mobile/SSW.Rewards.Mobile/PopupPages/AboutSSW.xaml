@@ -51,11 +51,13 @@
                                VerticalTextAlignment="Center"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
+                               WidthRequest="24"
                                VerticalOptions="Center"
                                HorizontalOptions="End"/>
                     </Grid>
                 </Frame>
             </VerticalStackLayout>
+            <!-- TODO: This icon is not displayed neither after MAUI migration, nor before that in prod. Do we need it?-->
             <Image Source="icon_close"
                    Margin="0"
                    VerticalOptions="Start"

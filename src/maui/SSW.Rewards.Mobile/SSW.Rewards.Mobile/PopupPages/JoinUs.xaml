@@ -49,10 +49,12 @@
                                TextColor="White"
                                HorizontalOptions="Center"/>
                         <Image Source="external"
-                               HorizontalOptions="End"/>
+                               HorizontalOptions="End"
+                               WidthRequest="24"/>
                     </Grid>
                 </Frame>
             </StackLayout>
+            <!-- TODO: This icon is not displayed neither after MAUI migration, nor before that in prod. Do we need it?-->
             <Image Source="icon_close"
                    VerticalOptions="Start"
                    HorizontalOptions="End">
