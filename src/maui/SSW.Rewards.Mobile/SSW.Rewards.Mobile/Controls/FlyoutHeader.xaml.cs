@@ -5,7 +5,7 @@ using SSW.Rewards.Mobile.ViewModels;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class FlyoutHeader : ContentView
+public partial class FlyoutHeader
 {    
     public FlyoutHeader()
     {

@@ -31,9 +31,10 @@
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
 
             <DataTemplate x:Key="SSWMenuTemplate">
-                <StackLayout>
-                    <Grid ColumnDefinitions="30,*"
-                      Margin="0,30,30,0">
+                    <Grid 
+                        ColumnDefinitions="30,*"
+                        Padding="{OnPlatform Android='5', iOS='0'}"
+                        Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
                         <Grid.Triggers>
                             <DataTrigger TargetType="Grid"
                                      Binding="{Binding Text}"
@@ -47,25 +48,13 @@
                                 <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
                             </DataTrigger>
                         </Grid.Triggers>
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="20,5" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
 
                         <Image Grid.Column="0"
-                           HorizontalOptions="Start"
-                           Margin="5"
-                           HeightRequest="30"
-                           WidthRequest="30"
-                           Source="{Binding Icon}">
+                               HorizontalOptions="Start"
+                               Margin="5"
+                               HeightRequest="30"
+                               WidthRequest="30"
+                               Source="{Binding Icon}">
                         </Image>
 
                         <Label Grid.Column="1"
@@ -81,7 +70,6 @@
                             </Label.FontSize>
                         </Label>
                     </Grid>
-                </StackLayout>
             </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
@@ -147,8 +135,7 @@
     </MenuItem>
 
     <MenuItem Text="Join SSW"
-              Clicked="Handle_JoinClicked"
-              x:Name="JoinMenuItem">
+              Clicked="Handle_JoinClicked">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf5c2;"
@@ -157,8 +144,7 @@
     </MenuItem>
 
     <MenuItem Text="My QRCode"
-              Clicked="Handle_QRClicked"
-              x:Name="QRMenuItem">
+              Clicked="Handle_QRClicked">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf635;"
@@ -176,77 +162,63 @@
     </MenuItem>
 
     <Shell.FlyoutFooter>
-        <VerticalStackLayout 
-            Spacing="0"
-            Padding="0"
-            Margin="0"
+        <Grid
+            RowDefinitions="Auto,Auto,5,Auto"
+            ColumnDefinitions="Auto,*" 
             VerticalOptions="End">
-            <Grid ColumnDefinitions="Auto,*">
-                <Grid 
-                    Grid.Column="0"
-                    ColumnDefinitions="30,*">
-                    <Grid.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1"
-                                              Tapped="Handle_LogOutClicked"/>
-                    </Grid.GestureRecognizers>
-                    <Grid.Padding>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="Android" Value="5" />
-                            <On Platform="iOS" Value="0" />
-                        </OnPlatform>
-                    </Grid.Padding>
-                    <Grid.Margin>
-                        <OnPlatform x:TypeArguments="Thickness">
-                            <On Platform="Android" Value="20,5" />
-                            <On Platform="iOS" Value="10,5,10,0" />
-                        </OnPlatform>
-                    </Grid.Margin>
+            <!-- Logout Button -->
+            <Grid 
+                VerticalOptions="End"
+                Grid.Column="0"
+                Grid.Row="1"
+                Padding="15,5"
+                ColumnDefinitions="Auto,*">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_LogOutClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0"
+                       Margin="0,0,25,0"
+                       HeightRequest="30"
+                       WidthRequest="30"
+                       FontSize="28"
+                       FontFamily="FluentIcons"
+                       TextColor="White"
+                       Text="&#xeafa;">
+                </Label>
 
-                    <Label Grid.Column="0"
-                           HorizontalOptions="Start"
-                           Margin="5"
-                           HeightRequest="30"
-                           WidthRequest="30"
-                           FontSize="28"
-                           FontFamily="FluentIcons"
-                           TextColor="White"
-                           Text="&#xeafa;">
-                    </Label>
-
-                    <Label Grid.Column="1"
-                           TextColor="White"
-                           VerticalOptions="Center"
-                           Margin="20,0,0,0"
-                           FontSize="18"
-                           Text="Log Out" />
-                </Grid>
-
-                <VerticalStackLayout 
-                    Grid.Column="1"
-                    Spacing="6" 
-                    HorizontalOptions="End">
-                    <Image HorizontalOptions="End"
-                           Margin="10,0,10,0"
-                           WidthRequest="50"
-                           Source="ssw_white"/>
-
-                    <Label HorizontalOptions="End"
-                           x:Name="VersionLabel"
-                           Margin="10,0,10,10"
-                           TextColor="White"/>
-                </VerticalStackLayout>
-
+                <Label Grid.Column="1"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       FontSize="18"
+                       Text="Log Out" />
             </Grid>
-            <!-- workaround for iOS footer safe area-->
-            <Label Text=" ">
-                <Label.IsVisible>
-                    <OnPlatform x:TypeArguments="x:Boolean">
-                        <On Platform="iOS" Value="True"/>
-                        <On Platform="Android" Value="False"/>
-                    </OnPlatform>
-                </Label.IsVisible>
-            </Label>
-        </VerticalStackLayout>
+
+            <!-- Version -->
+            <Image HorizontalOptions="End"
+                   Margin="0,0,10,0"
+                   Grid.Column="1"
+                   Grid.Row="0"
+                   HeightRequest="35"
+                   WidthRequest="50"
+                   VerticalOptions="End"
+                   Source="ssw_white"/>
+
+            <Label HorizontalOptions="End"
+                   VerticalTextAlignment="Center"
+                   Margin="0,0,10,0"
+                   x:Name="VersionLabel"
+                   Grid.Column="1"
+                   Grid.Row="1"
+                   TextColor="White"/>
+
+            <!-- workaround for iOS footer safe area -->
+            <Label 
+                Grid.ColumnSpan="2"
+                Grid.Row="3" 
+                Text=" " 
+                IsVisible="{OnPlatform Android='False', iOS='True'}"/>
+        </Grid>
     </Shell.FlyoutFooter>
 
 </Shell>
