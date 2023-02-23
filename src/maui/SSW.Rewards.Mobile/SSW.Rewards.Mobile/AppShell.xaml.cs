@@ -1,4 +1,5 @@
-﻿using Mopups.Services;
+﻿using System.Diagnostics;
+using Mopups.Services;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
@@ -6,9 +7,7 @@ namespace SSW.Rewards.Mobile;
 
 public partial class AppShell : Shell
 {
-    private IUserService _userService { get; set; }
-
-    bool _isStaff = false;
+    private readonly IUserService _userService;
 
     //private string _name;
     //private string _email;
@@ -21,10 +20,11 @@ public partial class AppShell : Shell
         BindingContext = this;
         InitializeComponent();
         _userService = userService;
-        VersionLabel.Text = string.Format("Version {0}", AppInfo.VersionString);
+        VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
     }
 
+    private bool _isStaff;
     public bool IsStaff
     {
         get => _isStaff;
@@ -35,6 +35,14 @@ public partial class AppShell : Shell
         }
     }
 
+    protected override void OnNavigated(ShellNavigatedEventArgs args)
+    {
+        base.OnNavigated(args);
+        if (args.Source is ShellNavigationSource.ShellSectionChanged or ShellNavigationSource.ShellItemChanged)
+        {
+            UpdateTabIconColorOniOS();
+        }
+    }
 
     public async void Handle_LogOutClicked(object sender, EventArgs e)
     {
@@ -87,10 +95,28 @@ public partial class AppShell : Shell
         {
             return base.OnBackButtonPressed();
         }
-        else
+        
+        Process.GetCurrentProcess().CloseMainWindow();
+        return true;
+    }
+
+    /// <summary>
+    /// TODO: MAUI TabbedPage bug on iOS https://github.com/dotnet/maui/issues/12250
+    /// Remove when the bug is fixed
+    /// </summary>
+    [Conditional("IOS")]
+    private void UpdateTabIconColorOniOS()
+    {
+        foreach (var shellSection in MyTabbar.Items)
         {
-            System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
-            return true;
+            var img = (FontImageSource)shellSection.Icon;
+            var isCurrentPage = MyTabbar.CurrentItem == shellSection;
+            shellSection.Icon = new FontImageSource
+            {
+                Color = isCurrentPage ? Color.FromRgba("#BE4b47") : Color.FromArgb("#95FFFFFF"),
+                Glyph = img.Glyph,
+                FontFamily = img.FontFamily,
+            };
         }
     }
 }
