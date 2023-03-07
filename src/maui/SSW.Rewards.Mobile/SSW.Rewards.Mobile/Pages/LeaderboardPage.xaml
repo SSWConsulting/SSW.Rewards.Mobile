@@ -102,9 +102,11 @@
                              Padding="5"
                              Command="{Binding ScrollToMeCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf151;"
-                                     Color="White"/>
+                        <FontImageSource
+                            FontFamily="FluentIcons"
+                            Size="1000"            
+                            Glyph="&#xf151;"
+                            Color="White"/>
                     </ImageButton.Source>
                 </ImageButton>
                 
@@ -306,9 +308,11 @@
                              Padding="10"
                              Command="{Binding ScrollToTopCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf1a5;"
-                                     Color="White"/>
+                        <FontImageSource
+                            FontFamily="FluentIcons"
+                            Size="1000" 
+                            Glyph="&#xf1a5;"
+                            Color="White"/>
                     </ImageButton.Source>
                 </ImageButton>
 
@@ -321,9 +325,11 @@
                              Padding="10"
                              Command="{Binding ScrollToEndCommand}">
                     <ImageButton.Source>
-                        <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf151;"
-                                     Color="White"/>
+                        <FontImageSource
+                            FontFamily="FluentIcons"
+                            Size="1000"
+                            Glyph="&#xf151;"
+                            Color="White"/>
                     </ImageButton.Source>
                 </ImageButton>
 

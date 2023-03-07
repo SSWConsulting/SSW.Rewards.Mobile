@@ -102,9 +102,11 @@
                          Padding="3"
                          IsVisible="{Binding ShowCamera}">
                 <ImageButton.Source>
-                    <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xe299;"
-                                     Color="White"/>
+                    <FontImageSource
+                        FontFamily="FluentIcons"
+                        Glyph="&#xe299;"
+                        Size="1000"
+                        Color="White"/>
                 </ImageButton.Source>
             </ImageButton>
 
@@ -119,9 +121,11 @@
                          Padding="1"
                          IsVisible="{Binding ShowPopButton}">
                 <ImageButton.Source>
-                    <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xe4c3;"
-                                     Color="{StaticResource primary}"/>
+                    <FontImageSource
+                        FontFamily="FluentIcons"
+                        Glyph="&#xe4c3;"
+                        Size="1000"
+                        Color="{StaticResource primary}"/>
                 </ImageButton.Source>
             </ImageButton>
         </Grid>
