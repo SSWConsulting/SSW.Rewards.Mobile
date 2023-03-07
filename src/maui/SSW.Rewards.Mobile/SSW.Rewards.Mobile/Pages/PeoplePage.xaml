@@ -21,33 +21,33 @@
               RowSpacing="6"
               ColumnSpacing="6">
 
-            <ImageButton Grid.Row="0"
-                         Grid.Column="0"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center"
-                         Margin="15"
-                         Command="{Binding BackCommand}"
-                         BackgroundColor="Transparent">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf2ad;"
-                                     Color="White"/>
-                </ImageButton.Source>
-            </ImageButton>
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="45"
+                FontFamily="FluentIcons"
+                Text="&#xf2ad;"
+                TextColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding BackCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
 
-            <ImageButton Grid.Row="0"
-                         Grid.Column="2"
-                         HorizontalOptions="Center"
-                         BackgroundColor="Transparent"
-                         Margin="15"
-                         Command="{Binding ForwardCommand}"
-                         VerticalOptions="Center">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="FluentIcons"
-                                     Glyph="&#xf2b3;"
-                                     Color="White"/>
-                </ImageButton.Source>
-            </ImageButton>
+            <Label
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="45"
+                FontFamily="FluentIcons"
+                Text="&#xf2b3;"
+                TextColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ForwardCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
 
             <VerticalStackLayout Grid.Row="0"
                                  Grid.Column="1"
