@@ -226,7 +226,7 @@
                        VerticalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
                        TextColor="White"
-                       Padding="22,16"
+                       Margin="22,16"
                        Text="{Binding DevBio}"/>
             </ScrollView>
 
