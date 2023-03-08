@@ -89,15 +89,16 @@
                 </Image.Clip>
             </Image>
 
-            <ImageButton Grid.Row="3"
+            <ImageButton Grid.Row="0"
+                         Grid.RowSpan="7"
                          BackgroundColor="{StaticResource primary}"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
                          TranslationX="40"
                          TranslationY="-35"
-                         CornerRadius="15"
-                         WidthRequest="35"
-                         HeightRequest="35"
+                         CornerRadius="{OnPlatform Android='20', iOS='23'}"
+                         WidthRequest="45"
+                         HeightRequest="45"
                          Command="{Binding CameraCommand}"
                          Padding="3"
                          IsVisible="{Binding ShowCamera}">
