@@ -9,11 +9,10 @@
                      HorizontalOptions="FillAndExpand"
                      TranslationX="400"
                      x:Name="Bar"
-                     BackgroundColor="{StaticResource primary}" />
+                     Color="{StaticResource primary}" />
 
             <Label HorizontalOptions="End"
                    HorizontalTextAlignment="End"
-                   TextColor="White"
                    FontAttributes="Bold"
                    VerticalOptions="Center"
                    x:Name="SkillLabel"/>
