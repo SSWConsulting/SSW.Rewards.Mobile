@@ -16,11 +16,14 @@
                                    EasingOut="SinIn"
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
-    <Frame CornerRadius="3"
+
+    <Border 
            HorizontalOptions="Center"
            Margin="10"
+           Padding="20"
+           StrokeShape="RoundRectangle 3"
+           StrokeThickness="0"
            VerticalOptions="Center"
-           HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
         <Grid>
             <VerticalStackLayout Spacing="6">
@@ -67,5 +70,5 @@
                 </Image.GestureRecognizers>
             </Image>
         </Grid>
-    </Frame>
+    </Border>
 </pages:PopupPage>

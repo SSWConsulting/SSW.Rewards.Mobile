@@ -16,11 +16,13 @@
                                EasingOut="SinIn"
                                HasBackgroundAnimation="True"/>
     </popup:PopupPage.Animation>
-    <Frame CornerRadius="3"
-           HorizontalOptions="Center"
+    <Border
            Margin="10"
+           Padding="20"
+           StrokeShape="RoundRectangle 3"
+           StrokeThickness="0"
+           HorizontalOptions="Center"
            VerticalOptions="Center"
-           HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
         <StackLayout>
             <zx:BarcodeGeneratorView x:Name="codeView"
@@ -36,5 +38,5 @@
                     Margin="0,0,0,20"
                     Clicked="Close_Clicked"/>
         </StackLayout>
-    </Frame>
+    </Border>
 </popup:PopupPage>
