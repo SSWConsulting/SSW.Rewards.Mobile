@@ -46,11 +46,10 @@
                 </Label.TranslationY>
             </Label>
 
-            <!--TODO: MAUI, if Loop is set to False, then the animation is not displayed on the first slide-->
             <CarouselView Grid.Row="1"
                           ItemsSource="{Binding Items}"
                           CurrentItem="{Binding SelectedItem}"
-                          Loop="True" 
+                          Loop="False" 
                           CurrentItemChangedCommand="{Binding Swiped}"
                           IndicatorView="RewardsIndicator"
                           x:Name="RewardsCarousel">
