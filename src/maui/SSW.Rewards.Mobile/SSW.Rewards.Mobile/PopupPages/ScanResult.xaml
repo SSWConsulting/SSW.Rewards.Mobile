@@ -44,7 +44,7 @@
                    TextColor="{Binding HeadingColour}"/>
             <lottie:SKLottieView x:Name="ResultAnimation"
                                   Source="{Binding AnimationRef, Converter={StaticResource StringToSkLottieImageSourceConverter}}"
-                                  IsAnimationEnabled="True"
+                                  IsAnimationEnabled="False"
                                   RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
                                   VerticalOptions="CenterAndExpand"
                                   HorizontalOptions="CenterAndExpand"

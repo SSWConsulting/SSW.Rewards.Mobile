@@ -31,10 +31,12 @@ namespace SSW.Rewards.Mobile.ViewModels
                 new CarouselViewModel
                 {
                     Content = "Talk to SSW people, attend their talks and scan their QR codes, and complete other fun achievements to earn points.",
-                    Animation = "Sophie.json",
+                    //Animation = "Sophie.json", TODO: MAUI, timing issue in SKLottieView https://github.com/mono/SkiaSharp.Extended/issues/142
                     SubHeading = "Welcome!",
                     ButtonText = "GET STARTED",
-                    IsAnimation = true
+                    //IsAnimation = true
+                    Image = "sophie_hello",
+                    IsAnimation = false,
                 },
                 new CarouselViewModel
                 {

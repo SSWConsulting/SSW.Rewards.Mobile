@@ -16,4 +16,11 @@ public partial class ScanResult
 
         _ = _viewModel.CheckScanData();
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await Task.Delay(100); // TODO: MAUI, timing issue in SKLottieView https://github.com/mono/SkiaSharp.Extended/issues/142
+        ResultAnimation.IsAnimationEnabled = true;
+    }
 }
