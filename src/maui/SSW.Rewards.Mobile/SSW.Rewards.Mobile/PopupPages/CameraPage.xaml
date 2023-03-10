@@ -19,15 +19,18 @@
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
 
-    <Frame WidthRequest="300"
-           HeightRequest="500"
-           HorizontalOptions="Center"
-           VerticalOptions="Center"
-           HasShadow="True"
-           BackgroundColor="{StaticResource LeaderCardBackground}"
-           CornerRadius="1">
+    <Border
+        StrokeShape="RoundRectangle 3"
+        StrokeThickness="0"
+        Padding="20,10,20,20"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        BackgroundColor="{StaticResource LeaderCardBackground}">
 
-        <Grid RowDefinitions="1*, 3*, 3*">
+        <Grid
+            RowDefinitions="1*, 3*, 3*"
+            WidthRequest="300"
+            HeightRequest="500">
             <Label Grid.Row="0"
                    Text="Edit Profile Picture"
                    FontSize="Medium"
@@ -83,5 +86,5 @@
                        VerticalOptions="End"/>
             </StackLayout>
         </Grid>
-    </Frame>
+    </Border>
 </pages:PopupPage>
