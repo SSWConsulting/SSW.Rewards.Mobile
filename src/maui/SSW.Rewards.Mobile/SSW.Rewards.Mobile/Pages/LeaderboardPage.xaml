@@ -215,78 +215,85 @@
 
             <controls:TabHeader Grid.Row="3" FilterChanged="TabHeader_FilterChanged" />
 
-            <RefreshView Grid.Row="4"
-                         Command="{Binding RefreshCommand}"
-                         IsRefreshing="{Binding IsRefreshing}">
+            <RefreshView
+                Grid.Row="4"
+                Command="{Binding RefreshCommand}"
+                IsRefreshing="{Binding IsRefreshing}">
+                <ContentView> <!--TODO: MAUI, remove when the issue is fixed on iOS https://github.com/dotnet/maui/issues/11363-->
+                    <CollectionView
+                        ItemsSource="{Binding SearchResults}"
+                        Scrolled="CollectionView_Scrolled"
+                        x:Name="LeadersCollection"
+                        Margin="0,10">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:LeaderViewModel">
 
-                <CollectionView ItemsSource="{Binding SearchResults}"
-                                Scrolled="CollectionView_Scrolled"
-                                x:Name="LeadersCollection"
-                                Margin="0,10">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical"
-                                           ItemSpacing="10"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="viewModels:LeaderViewModel">
-                            <Grid BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
-                                  HeightRequest="50"
-                                  ColumnDefinitions="40, 40, *, 80"
-                                  Padding="10,0">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                          Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
-                                                          CommandParameter="{Binding  .}"/>
-                                </Grid.GestureRecognizers>
+                                <Grid
+                                    BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                    HeightRequest="50"
+                                    ColumnDefinitions="40, 40, *, 80"
+                                    Padding="10,0">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            NumberOfTapsRequired="1"
+                                            Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
+                                            CommandParameter="{Binding  .}"/>
+                                    </Grid.GestureRecognizers>
 
-                                <Image Grid.Column="0"
-                                       Source="{Binding ProfilePic}"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Aspect="AspectFill"
-                                       WidthRequest="30"
-                                       HeightRequest="30"
-                                       InputTransparent="True">
-                                    <Image.Clip>
-                                        <EllipseGeometry Center="15,15"
-                                                     RadiusX="15"
-                                                     RadiusY="15" />
-                                    </Image.Clip>
-                                </Image>
+                                    <Image
+                                        Grid.Column="0"
+                                        Source="{Binding ProfilePic}"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        Aspect="AspectFill"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        InputTransparent="True">
+                                        <Image.Clip>
+                                            <EllipseGeometry
+                                                Center="15,15"
+                                                RadiusX="15"
+                                                RadiusY="15" />
+                                        </Image.Clip>
+                                    </Image>
 
-                                <Label Text="👑"
-                                       FontSize="Small"
-                                       Grid.Column="0"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       IsVisible="{Binding IsLeader}"
-                                       TranslationY="-20"
-                                       InputTransparent="True"/>
+                                    <Label Text="👑"
+                                           FontSize="Small"
+                                           Grid.Column="0"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           IsVisible="{Binding IsLeader}"
+                                           TranslationY="-20"
+                                           InputTransparent="True"/>
 
-                                <Label Grid.Column="1"
-                                       Text="{Binding Rank, StringFormat='&#35;{0}'}"
-                                       TextColor="White"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       InputTransparent="True"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Rank, StringFormat='&#35;{0}'}"
+                                           TextColor="White"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           InputTransparent="True"/>
 
-                                <Label Grid.Column="2"
-                                       Text="{Binding Name}"
-                                       TextColor="White"
-                                       FontAttributes="Bold"
-                                       VerticalOptions="Center"
-                                       InputTransparent="True"/>
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Name}"
+                                           TextColor="White"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           InputTransparent="True"/>
 
-                                <Label Grid.Column="3"
-                                       Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
-                                       TextColor="White"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="End"
-                                       InputTransparent="True"/>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                    <Label Grid.Column="3"
+                                           Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
+                                           TextColor="White"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           InputTransparent="True"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ContentView>
             </RefreshView>
 
             <VerticalStackLayout
@@ -332,7 +339,6 @@
                         Text="&#xf151;"
                         TextColor="White"/>
                 </Border>
-
             </VerticalStackLayout>
         </Grid>
     </ContentPage.Content>
