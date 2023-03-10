@@ -34,7 +34,6 @@
           RowSpacing="6"
           Padding="20,20,20,5">
 
-
         <Border
             Grid.Row="0"
             HorizontalOptions="End"
