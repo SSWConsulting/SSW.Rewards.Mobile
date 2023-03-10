@@ -234,7 +234,7 @@
                                 <Grid
                                     BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
                                     HeightRequest="50"
-                                    ColumnDefinitions="40, 40, *, 80"
+                                    ColumnDefinitions="40, 40, *, Auto"
                                     Padding="10,0">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer
@@ -283,12 +283,17 @@
                                            VerticalOptions="Center"
                                            InputTransparent="True"/>
 
-                                    <Label Grid.Column="3"
-                                           Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
-                                           TextColor="White"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="End"
-                                           InputTransparent="True"/>
+                                    <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
+                                    <Grid Grid.Column="3"> 
+                                        <Label 
+                                               Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
+                                               TextColor="White"
+                                               Padding="0"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="End"
+                                               InputTransparent="True"/>
+                                    </Grid>
+                                  
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
