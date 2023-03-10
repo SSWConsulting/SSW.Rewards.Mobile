@@ -89,46 +89,46 @@
                 </Image.Clip>
             </Image>
 
-            <ImageButton Grid.Row="0"
-                         Grid.RowSpan="7"
-                         BackgroundColor="{StaticResource primary}"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center"
-                         TranslationX="40"
-                         TranslationY="-35"
-                         CornerRadius="{OnPlatform Android='20', iOS='23'}"
-                         WidthRequest="45"
-                         HeightRequest="45"
-                         Command="{Binding CameraCommand}"
-                         Padding="3"
-                         IsVisible="{Binding ShowCamera}">
-                <ImageButton.Source>
-                    <FontImageSource
-                        FontFamily="FluentIcons"
-                        Glyph="&#xe299;"
-                        Size="1000"
-                        Color="White"/>
-                </ImageButton.Source>
-            </ImageButton>
+            <Border
+                Grid.Row="0"
+                Grid.RowSpan="7"
+                BackgroundColor="{StaticResource primary}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                TranslationX="40"
+                TranslationY="-35"
+                StrokeShape="Ellipse"
+                StrokeThickness="0"
+                IsVisible="{Binding ShowCamera}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CameraCommand}"/>
+                </Border.GestureRecognizers>
+                <Label
+                    FontFamily="FluentIcons"
+                    FontSize="25"
+                    Text="&#xe299;"
+                    Margin="3"
+                    TextColor="White"/>
+            </Border>
 
-            <ImageButton Grid.Row="0"
-                         HorizontalOptions="End"
-                         BackgroundColor="{StaticResource MainBackground}"
-                         VerticalOptions="End"
-                         CornerRadius="22"
-                         WidthRequest="40"
-                         HeightRequest="40"
-                         Command="{Binding PopProfile}"
-                         Padding="1"
-                         IsVisible="{Binding ShowPopButton}">
-                <ImageButton.Source>
-                    <FontImageSource
-                        FontFamily="FluentIcons"
-                        Glyph="&#xe4c3;"
-                        Size="1000"
-                        Color="{StaticResource primary}"/>
-                </ImageButton.Source>
-            </ImageButton>
+            <Border
+                Grid.Row="0"
+                HorizontalOptions="End"
+                BackgroundColor="{StaticResource MainBackground}"
+                VerticalOptions="End"
+                StrokeShape="Ellipse"
+                StrokeThickness="0"
+                Padding="0"
+                IsVisible="{Binding ShowPopButton}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PopProfile}"/>
+                </Border.GestureRecognizers>
+                <Label
+                    FontFamily="FluentIcons"
+                    Text="&#xe4c3;"
+                    FontSize="35"
+                    TextColor="{StaticResource primary}"/>
+            </Border>
         </Grid>
 
         <CarouselView Grid.Row="1"

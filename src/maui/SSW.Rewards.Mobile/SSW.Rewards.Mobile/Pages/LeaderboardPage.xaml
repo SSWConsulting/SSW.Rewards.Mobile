@@ -90,25 +90,25 @@
 
                 </HorizontalStackLayout>
 
-                <ImageButton Grid.Row="0"
-                             Grid.RowSpan="2"
-                             Grid.Column="2"
-                             BackgroundColor="{StaticResource primary}"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center"
-                             CornerRadius="{OnPlatform Android='17', iOS='22'}"
-                             WidthRequest="45"
-                             HeightRequest="45"
-                             Padding="5"
-                             Command="{Binding ScrollToMeCommand}">
-                    <ImageButton.Source>
-                        <FontImageSource
-                            FontFamily="FluentIcons"
-                            Size="1000"            
-                            Glyph="&#xf151;"
-                            Color="White"/>
-                    </ImageButton.Source>
-                </ImageButton>
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToMeCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="5"
+                        Text="&#xf151;"
+                        TextColor="White"/>
+                </Border>
                 
             </Grid>
 
@@ -289,50 +289,49 @@
                 </CollectionView>
             </RefreshView>
 
-            <VerticalStackLayout Grid.Row="0"
-                         Grid.RowSpan="5"
-                         HorizontalOptions="End"
-                         VerticalOptions="End"
-                         WidthRequest="80"
-                         IsVisible="False"
-                         TranslationX="20"
-                         Spacing="6"
-                         x:Name="ScrollButtons">
+            <VerticalStackLayout
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,-20,10"
+                IsVisible="False"
+                Spacing="6"
+                x:Name="ScrollButtons">
                 
-                <ImageButton BackgroundColor="{StaticResource primary}"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center"
-                             CornerRadius="{OnPlatform Android='25', iOS='35'}"
-                             WidthRequest="70"
-                             HeightRequest="70"
-                             Padding="10"
-                             Command="{Binding ScrollToTopCommand}">
-                    <ImageButton.Source>
-                        <FontImageSource
-                            FontFamily="FluentIcons"
-                            Size="1000" 
-                            Glyph="&#xf1a5;"
-                            Color="White"/>
-                    </ImageButton.Source>
-                </ImageButton>
+                <Border
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeThickness="0"
+                    StrokeShape="Ellipse">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToTopCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="10"
+                        Text="&#xf1a5;"
+                        TextColor="White"/>
+                </Border>
 
-                <ImageButton BackgroundColor="{StaticResource primary}"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center"
-                             CornerRadius="{OnPlatform Android='25', iOS='35'}"
-                             WidthRequest="70"
-                             HeightRequest="70"
-                             Padding="10"
-                             Command="{Binding ScrollToEndCommand}">
-                    <ImageButton.Source>
-                        <FontImageSource
-                            FontFamily="FluentIcons"
-                            Size="1000"
-                            Glyph="&#xf151;"
-                            Color="White"/>
-                    </ImageButton.Source>
-                </ImageButton>
-
+                <Border
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeThickness="0"
+                    StrokeShape="Ellipse">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToEndCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="10"
+                        Text="&#xf151;"
+                        TextColor="White"/>
+                </Border>
 
             </VerticalStackLayout>
         </Grid>
