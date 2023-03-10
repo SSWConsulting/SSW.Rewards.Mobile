@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SSW.Rewards.Mobile.Controls.ProfileStats"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    RowDefinitions="2*, Auto, Auto, 6*, 2*, 1*, 3*">
+              
+    <controls:RewardsProgress
+        Grid.RowSpan="7"
+        Progress="{Binding Progress}"/>
+
+    <HorizontalStackLayout
+        Grid.Row="1"
+        Spacing="6"
+        IsVisible="{Binding ShowBalance}"
+        HorizontalOptions="Center">
+        <Label
+            HorizontalOptions="End"
+            Text="⭐"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+        <Label
+            Text="{Binding Balance, StringFormat='{0:n0}'}"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+        <Label
+            HorizontalOptions="End"
+            Text="⭐"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+    </HorizontalStackLayout>
+
+    <Label
+        Grid.Row="2"
+        TextColor="{StaticResource HeadingColor}"
+        FontSize="Large"
+        Text="{Binding Points, StringFormat='{0:n0}'}"
+        HorizontalOptions="Center"
+        HorizontalTextAlignment="Center"/>
+
+    <Label
+        Grid.Row="4"
+        Grid.RowSpan="2"
+        VerticalOptions="Center"
+        Text="{Binding Name}"
+        HorizontalOptions="Center"
+        HorizontalTextAlignment="Center"
+        TextColor="White"/>
+
+    <Image
+        Grid.Row="0"
+        Grid.RowSpan="7"
+        Source="{Binding ProfilePic}"
+        WidthRequest="100"
+        HeightRequest="100"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Aspect="AspectFill">
+        <Image.Clip>
+            <EllipseGeometry Center="50,50"
+                                RadiusX="50"
+                                RadiusY="50"/>
+        </Image.Clip>
+    </Image>
+
+    <Border
+        Grid.Row="0"
+        Grid.RowSpan="7"
+        BackgroundColor="{StaticResource primary}"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        TranslationX="40"
+        TranslationY="-35"
+        StrokeShape="Ellipse"
+        StrokeThickness="0"
+        IsVisible="{Binding ShowCamera}">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding CameraCommand}"/>
+        </Border.GestureRecognizers>
+        <Label
+            FontFamily="FluentIcons"
+            FontSize="25"
+            Text="&#xe299;"
+            Margin="3"
+            TextColor="White"/>
+    </Border>
+</Grid>
+
