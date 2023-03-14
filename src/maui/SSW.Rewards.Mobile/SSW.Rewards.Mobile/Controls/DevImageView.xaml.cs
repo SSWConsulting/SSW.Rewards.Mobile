@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Controls
 {
-    public partial class DevImageView : ContentView
+    public partial class DevImageView
     {
         public static BindableProperty ProfileProperty = BindableProperty.Create(nameof(Profile), typeof(DevProfile), typeof(DevImageView), null, propertyChanged: ProfileChanged);
 

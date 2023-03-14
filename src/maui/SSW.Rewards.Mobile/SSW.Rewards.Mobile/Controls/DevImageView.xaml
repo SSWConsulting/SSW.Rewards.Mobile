@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SSW.Rewards.Mobile.Controls.DevImageView">
-  <ContentView.Content>
-        <Image Margin="0"
-               Aspect="AspectFit"
-               TranslationY="10"
-               HorizontalOptions="StartAndExpand"
-               VerticalOptions="End"
-               Source="dev_placeholder"
-               x:Name="DevImage"/>
-    </ContentView.Content>
-</ContentView>
+<Grid
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SSW.Rewards.Mobile.Controls.DevImageView"
+    RowDefinitions="*, 19*"
+    ColumnDefinitions="6*,4*">
+    <Image
+        Grid.Row="1"
+        Grid.Column="0"
+        Aspect="AspectFit"
+        Source="dev_placeholder"
+        x:Name="DevImage"/>
+</Grid>
