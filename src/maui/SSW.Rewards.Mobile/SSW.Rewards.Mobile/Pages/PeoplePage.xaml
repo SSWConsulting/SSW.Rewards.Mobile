@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:cmp="clr-namespace:Microsoft.Maui.Controls.Compatibility;assembly=Microsoft.Maui.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
              xmlns:rewards="clr-namespace:SSW.Rewards"
              x:DataType="viewModels:DevProfilesViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.PeoplePage">
@@ -75,8 +76,6 @@
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
                   RowDefinitions="25*, 7*, 2*, 5*"
-                  ColumnSpacing="6"
-                  RowSpacing="6"
                   x:Name="CentralGrid">
 
                 <FlexLayout Grid.Row="0"
@@ -97,20 +96,15 @@
                               Grid.Column="0"
                               Grid.RowSpan="4"
                               Grid.ColumnSpan="3"
-                              HorizontalOptions="StartAndExpand"
-                              VerticalOptions="FillAndExpand"
-                              Margin="0"
-                              TranslationY="10"
+                              Margin="0,0,0,-10"
                               x:Name="PicCarousel"
                               ItemsSource="{Binding Profiles}"
                               CurrentItemChangedCommand="{Binding OnCardSwiped}"
                               CurrentItem="{Binding SelectedProfile}"
                               IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
-                        <DataTemplate>
-                            <controls:DevImageView Profile="{Binding .}"
-                                                   cmp:RelativeLayout.WidthConstraint="{cmp:ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
-                                                   cmp:RelativeLayout.HeightConstraint="{cmp:ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
+                        <DataTemplate x:DataType="models:DevProfile">
+                            <controls:DevImageView Profile="{Binding .}"/>                            
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
@@ -151,7 +145,7 @@
                                        Grid.Row="3"
                                        Spacing="20"
                                        HorizontalOptions="End"
-                                       Padding="0,0,10,0">
+                                       Padding="0,0,10,0">                     
 
                     <Label FontFamily="FA6Brands"
                            TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
