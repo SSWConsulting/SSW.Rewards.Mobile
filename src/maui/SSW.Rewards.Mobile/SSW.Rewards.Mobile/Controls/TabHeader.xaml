@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
              x:Class="SSW.Rewards.Mobile.Controls.TabHeader">
     <Grid 
         ColumnDefinitions="Auto, *, Auto"
         HeightRequest="35"
         Margin="0,20">
         <VerticalStackLayout Spacing="6" Grid.Column="0">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Month}"/>
+            </VerticalStackLayout.GestureRecognizers>
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Start"
@@ -14,17 +18,16 @@
                    VerticalOptions="Center"
                    Text="This Month"
                    x:Name="MonthRadio"
-                   ClassId="MonthRadio">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                </Label.GestureRecognizers>
-            </Label>
+                   ClassId="MonthRadio"/>
             <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
                      x:Name="MonthUnderline"/>
         </VerticalStackLayout>
 
         <VerticalStackLayout Spacing="6" Grid.Column="1">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Year}"/>
+            </VerticalStackLayout.GestureRecognizers>
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="Center"
@@ -32,11 +35,7 @@
                    VerticalOptions="Center"
                    Text="This Year"
                    x:Name="YearRadio"
-                   ClassId="YearRadio">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                </Label.GestureRecognizers>
-            </Label>
+                   ClassId="YearRadio"/>
             <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
                      WidthRequest="95"
@@ -44,6 +43,9 @@
         </VerticalStackLayout>
 
         <VerticalStackLayout Spacing="6" Grid.Column="2">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.AllTime}"/>
+            </VerticalStackLayout.GestureRecognizers>
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
                    HorizontalTextAlignment="End"
@@ -51,11 +53,7 @@
                    VerticalOptions="Center"
                    Text="All Time"
                    x:Name="AlltimeRadio"
-                   ClassId="TimeRadio">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                </Label.GestureRecognizers>
-            </Label>
+                   ClassId="TimeRadio"/>
             <BoxView Color="{StaticResource primary}"
                      HorizontalOptions="FillAndExpand"
                      x:Name="AllUnderline"/>

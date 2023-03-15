@@ -1,10 +1,24 @@
+using System.ComponentModel;
+using System.Windows.Input;
+
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class TabHeader : ContentView
+public partial class TabHeader
 {
     private Color _selectedTextColor;
     private Color _unselectedTextColor;
     private int _underlineThickness = 2;
+    
+    public static readonly BindableProperty CurrentPeriodProperty = BindableProperty.Create(
+        nameof(CurrentPeriod),
+        typeof(PeriodFilter),
+        typeof(TabHeader),
+        PeriodFilter.Month);
+
+    public static readonly BindableProperty FilterChangedProperty = BindableProperty.Create(
+        nameof(FilterChanged),
+        typeof(ICommand),
+        typeof(TabHeader));
 
     public TabHeader()
     {
@@ -22,18 +36,30 @@ public partial class TabHeader : ContentView
         MonthRadio.TextColor = _selectedTextColor;
     }
 
-    public event EventHandler<FilterChangedEventArgs> FilterChanged;
-
-    private void Radio_Tapped(object sender, TappedEventArgs e)
+    public PeriodFilter CurrentPeriod
     {
-        var lblSender = (Label)sender;
+        get => (PeriodFilter)GetValue(CurrentPeriodProperty);
+        set => SetValue(CurrentPeriodProperty, value);
+    }
 
-        var range = FilterRange.AllTime;
-
-        switch (lblSender.Text)
+    public ICommand FilterChanged
+    {
+        get => (ICommand)GetValue(FilterChangedProperty);
+        set => SetValue(FilterChangedProperty, value);
+    }
+    
+    private void Item_Tapped(object sender, TappedEventArgs e)
+    {
+        var newPeriod = (PeriodFilter)e.Parameter;
+        if (newPeriod == CurrentPeriod)
         {
-            case "This Month":
-                range = FilterRange.Month;
+            return;
+        }
+
+        CurrentPeriod = newPeriod;
+        switch (CurrentPeriod)
+        {
+            case PeriodFilter.Month:
                 MonthUnderline.HeightRequest = _underlineThickness;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = 0;
@@ -41,8 +67,7 @@ public partial class TabHeader : ContentView
                 MonthRadio.TextColor = _selectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
-            case "This Year":
-                range = FilterRange.Year;
+            case PeriodFilter.Year:
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = _underlineThickness;
                 AllUnderline.HeightRequest = 0;
@@ -50,9 +75,8 @@ public partial class TabHeader : ContentView
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
-            case "All Time":
+            case PeriodFilter.AllTime:
             default:
-                range = FilterRange.AllTime;
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = _underlineThickness;
@@ -61,19 +85,14 @@ public partial class TabHeader : ContentView
                 AlltimeRadio.TextColor = _selectedTextColor;
                 break;
         }
-
-        FilterChanged.Invoke(this, new FilterChangedEventArgs { FilterRange = range });
+        OnPropertyChanged(nameof(CurrentPeriod));
+        FilterChanged?.Execute(null);
     }
 }
 
-public enum FilterRange
+public enum PeriodFilter
 {
     Month,
     Year,
     AllTime
-}
-
-public class FilterChangedEventArgs : EventArgs
-{
-    public FilterRange FilterRange;
 }

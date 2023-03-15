@@ -11,32 +11,6 @@
              x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <!--<ControlTemplate x:Key="TabbedRadioTemplate">
-                <VerticalStackLayout>
-                    <ContentPresenter />
-                    <BoxView BackgroundColor="{StaticResource primary}"
-                             HorizontalOptions="FillAndExpand"
-                             HeightRequest="2"
-                             x:Name="SelectedUnderline"/>
-
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroupList>
-                            <VisualStateGroup x:Name="CheckedStates">
-                                <VisualState x:Name="Checked">
-                                    <VisualState.Setters>
-                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="1" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Unchecked">
-                                    <VisualState.Setters>
-                                        <Setter TargetName="SelectedUnderline" Property="Opacity" Value="0" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateGroupList>
-                    </VisualStateManager.VisualStateGroups>
-                </VerticalStackLayout>
-            </ControlTemplate>-->
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -119,8 +93,7 @@
                     BackgroundColor="{StaticResource TabBarBackground}"
                     Grid.Row="1">
                 <Grid ColumnDefinitions="*, 50"
-                      VerticalOptions="Center"
-                      Padding="0,10">
+                      VerticalOptions="Center">
 
                     <controls:BorderlessEntry Grid.Column="0"
                                           x:Name="SearchEntry"
@@ -131,7 +104,7 @@
                                           TextColor="White">
                         <controls:BorderlessEntry.Behaviors>
 
-                            <mct:EventToCommandBehavior Command="{Binding SearchTextChanged}" 
+                            <mct:EventToCommandBehavior Command="{Binding SearchTextChangedCommand}" 
                                                     CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}" 
                                                     EventName="TextChanged" />
                         </controls:BorderlessEntry.Behaviors>
@@ -143,10 +116,10 @@
                        BackgroundColor="{StaticResource TabBarBackground}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       FontSize="19"
+                       FontSize="20"
                        TextColor="White">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchCommand}"/>
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
@@ -160,60 +133,10 @@
                    VerticalOptions="Center"
                    HorizontalTextAlignment="Center"/>
 
-            <!--<FlexLayout Grid.Row="3"
-                        JustifyContent="SpaceBetween"
-                        HeightRequest="35"
-                        Margin="0,20"
-                        RadioButtonGroup.GroupName="LeaderboardFilterGroup">
-                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}"
-                             IsChecked="True">
-                    <RadioButton.Content>
-                        <Label TextColor="{StaticResource MutedText}"
-                               FontSize="20"
-                               HorizontalTextAlignment="Center"
-                               VerticalTextAlignment="Center"
-                               VerticalOptions="Center"
-                               Text="This Month"
-                               ClassId="MonthRadio">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </RadioButton.Content>
-                </RadioButton>
-                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}">
-                    <RadioButton.Content>
-                        <Label TextColor="{StaticResource MutedText}"
-                               FontSize="20"
-                               HorizontalTextAlignment="Center"
-                               VerticalTextAlignment="Center"
-                               VerticalOptions="Center"
-                               Text="This Year"
-                               ClassId="YearRadio">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </RadioButton.Content>
-                </RadioButton>
-                <RadioButton ControlTemplate="{StaticResource TabbedRadioTemplate}">
-                    <RadioButton.Content>
-                        <Label TextColor="{StaticResource MutedText}"
-                               FontSize="20"
-                               HorizontalTextAlignment="Center"
-                               VerticalTextAlignment="Center"
-                               VerticalOptions="Center"
-                               Text="All Time"
-                               ClassId="AlltimeRadio">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Radio_Tapped"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </RadioButton.Content>
-                </RadioButton>
-            </FlexLayout>-->
-
-            <controls:TabHeader Grid.Row="3" FilterChanged="TabHeader_FilterChanged" />
+            <controls:TabHeader
+                Grid.Row="3"
+                FilterChanged="{Binding FilterByPeriodCommand}"
+                CurrentPeriod="{Binding CurrentPeriod, Mode=OneWayToSource}"/>
 
             <RefreshView
                 Grid.Row="4"
@@ -225,17 +148,13 @@
                         Scrolled="CollectionView_Scrolled"
                         x:Name="LeadersCollection"
                         Margin="0,10">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-                        </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:LeaderViewModel">
-
                                 <Grid
                                     BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
-                                    HeightRequest="50"
+                                    ColumnSpacing="6"
                                     ColumnDefinitions="40, 40, *, Auto"
-                                    Padding="10,0">
+                                    RowDefinitions="50, 10">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer
                                             NumberOfTapsRequired="1"
@@ -244,6 +163,7 @@
                                     </Grid.GestureRecognizers>
 
                                     <Image
+                                        Margin="10,0,0,0"
                                         Grid.Column="0"
                                         Source="{Binding ProfilePic}"
                                         VerticalOptions="Center"
@@ -261,12 +181,13 @@
                                     </Image>
 
                                     <Label Text="👑"
+                                           Margin="10,0,0,0"
                                            FontSize="Small"
                                            Grid.Column="0"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
-                                           IsVisible="{Binding IsLeader}"
                                            TranslationY="-20"
+                                           IsVisible="{Binding IsLeader}"
                                            InputTransparent="True"/>
 
                                     <Label Grid.Column="1"
@@ -286,14 +207,14 @@
                                     <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
                                     <Grid Grid.Column="3"> 
                                         <Label 
-                                               Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
-                                               TextColor="White"
-                                               Padding="0"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="End"
-                                               InputTransparent="True"/>
+                                            Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
+                                            TextColor="White"
+                                            Margin="0,0,10,0"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End"
+                                            InputTransparent="True"/>
                                     </Grid>
-                                  
+                                    <ContentView Grid.Row="1" Grid.ColumnSpan="4" BackgroundColor="{StaticResource MainBackground}"/>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
