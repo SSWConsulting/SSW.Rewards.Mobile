@@ -59,7 +59,6 @@ public partial class LeaderboardPage : ContentPage
     //    }
     //}
 
-
     private void ScrollTo(int i)
     {
         LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center);
@@ -76,38 +75,6 @@ public partial class LeaderboardPage : ContentPage
         {
             // hide the scrolling controls
             ScrollButtons.IsVisible = false;
-        }
-    }
-
-    //private void Radio_Tapped(object sender, TappedEventArgs e)
-    //{
-    //    RadioButton button = default;
-
-    //    button = ((Label)sender).Parent as RadioButton;
-
-    //    button.IsChecked = true;
-
-    //    var blah = (Label)sender;
-
-    //    FilterChanged(blah.Text);
-    //}
-
-    private void TabHeader_FilterChanged(object sender, FilterChangedEventArgs e)
-    {
-        var filter = e.FilterRange;
-
-        switch (filter)
-        {
-            case FilterRange.Month:
-                _viewModel.SortLeaders("month");
-                break;
-            case FilterRange.Year:
-                _viewModel.SortLeaders("year");
-                break;
-            case FilterRange.AllTime:
-            default:
-                _viewModel.SortLeaders("all");
-                break;
         }
     }
 }
