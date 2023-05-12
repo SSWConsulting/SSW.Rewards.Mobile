@@ -266,6 +266,15 @@
                         TextColor="White"/>
                 </Border>
             </VerticalStackLayout>
+
+            <ActivityIndicator Grid.Row="0"
+                               Grid.RowSpan="5"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource SSWRed}"
+                               IsEnabled="{Binding IsRunning}"
+                               IsRunning="{Binding IsRunning}"
+                               IsVisible="{Binding IsRunning}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
