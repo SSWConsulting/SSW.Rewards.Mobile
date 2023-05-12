@@ -16,6 +16,7 @@
 
 		<!-- App Identifier -->
 		<ApplicationId>com.ssw.consulting</ApplicationId>
+		<ApplicationId Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">com.SSW.SSW.Consulting</ApplicationId>
 		<ApplicationIdGuid>fb3c30ce-ab0c-4155-b244-e49513e45a94</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -32,9 +33,13 @@
 	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
+	  <CodesignProvision>Automatic</CodesignProvision>
+	  <CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
+	  <CodesignProvision>Automatic</CodesignProvision>
+	  <CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
