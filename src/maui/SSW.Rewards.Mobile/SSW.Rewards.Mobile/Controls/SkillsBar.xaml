@@ -15,6 +15,7 @@
                    HorizontalTextAlignment="End"
                    FontAttributes="Bold"
                    VerticalOptions="Center"
+                   Margin="{OnPlatform iOS=10}"
                    x:Name="SkillLabel"/>
         </Grid>
   </ContentView.Content>
