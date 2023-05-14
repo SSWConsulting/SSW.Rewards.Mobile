@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="SSW.Rewards.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -31,45 +31,45 @@
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
 
             <DataTemplate x:Key="SSWMenuTemplate">
-                    <Grid 
-                        ColumnDefinitions="30,*"
-                        Padding="{OnPlatform Android='5', iOS='0'}"
-                        Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
-                        <Grid.Triggers>
-                            <DataTrigger TargetType="Grid"
-                                     Binding="{Binding Text}"
-                                     Value="My QRCode">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
-                            </DataTrigger>
+                <Grid 
+                    ColumnDefinitions="30,*"
+                    Padding="{OnPlatform Android='5', iOS='0'}"
+                    Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="My QRCode">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
+                        </DataTrigger>
 
-                            <DataTrigger TargetType="Grid"
-                                     Binding="{Binding Text}"
-                                     Value="Join SSW">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
-                            </DataTrigger>
-                        </Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="Join SSW">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
+                        </DataTrigger>
+                    </Grid.Triggers>
 
-                        <Image Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="30"
-                               WidthRequest="30"
-                               Source="{Binding Icon}">
-                        </Image>
+                    <Image Grid.Column="0"
+                            HorizontalOptions="Start"
+                            Margin="5"
+                            HeightRequest="30"
+                            WidthRequest="30"
+                            Source="{Binding Icon}">
+                    </Image>
 
-                        <Label Grid.Column="1"
-                           TextColor="White"
-                           VerticalOptions="Center"
-                           Margin="20,0,0,0"
-                           Text="{Binding Text}">
-                            <Label.FontSize>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="iOS">18</On>
-                                    <On Platform="Android">18</On>
-                                </OnPlatform>
-                            </Label.FontSize>
-                        </Label>
-                    </Grid>
+                    <Label Grid.Column="1"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        Margin="20,0,0,0"
+                        Text="{Binding Text}">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">18</On>
+                                <On Platform="Android">18</On>
+                            </OnPlatform>
+                        </Label.FontSize>
+                    </Label>
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
@@ -86,33 +86,149 @@
                                      BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
+        <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
+                    See: https://github.com/dotnet/maui/issues/8244 -->
+
         <Tab Route="main">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xe70e;"/>
-            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
-        </Tab>
-        <Tab Route="leader">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xedba;"/>
+                                    Glyph="&#xe70e;"/>
+            </Tab.Icon>
+            <Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <OnPlatform>
+                                        <On Platform="iOS">
+                                            <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xe70e;"/>
+                                        </On>
+                                    </OnPlatform>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <OnPlatform>
+                                        <On Platform="iOS">
+                                            <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xe70e;"/>
+                                        </On>
+                                    </OnPlatform>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>
+        </Tab>
+
+        <Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
+            <Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xedba;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>
-        <Tab Route="people">
+
+        <Tab Route="leader" IsVisible="{Binding IsIosVisible}">
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+            <Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xedba;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xedba;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>
+        </Tab>
+
+
+        <Tab Route="people" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xf5a8;"/>
+                                    Glyph="&#xf5a8;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
         </Tab>
-        <Tab Route="scan">
+
+
+        <Tab Route="people" IsVisible="{Binding IsIosVisible}">
+            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+            <Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xf5a8;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xf5a8;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>
+        </Tab>
+
+        <Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xf636;"/>
+                                    Glyph="&#xf636;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+        </Tab>
+
+        <Tab Route="scan" IsVisible="{Binding IsIosVisible}">
+            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+            <Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xf636;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                        Glyph="&#xf636;"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>
         </Tab>
     </FlyoutItem>
 

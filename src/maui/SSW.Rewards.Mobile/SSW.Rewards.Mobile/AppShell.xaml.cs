@@ -13,6 +13,9 @@ public partial class AppShell : Shell
     //private string _email;
     //private string _profilePic;
 
+    public bool IsIosVisible { get; set; } = false;
+    public bool IsAndroidVisible { get; set; } = false;
+
     public AppShell(IUserService userService, bool isStaff)
     {
         IsStaff = isStaff;
@@ -22,6 +25,16 @@ public partial class AppShell : Shell
         _userService = userService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
+
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            IsAndroidVisible = true;
+        }
+
+        if (DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            IsIosVisible = true;
+        }
     }
 
     private bool _isStaff;
