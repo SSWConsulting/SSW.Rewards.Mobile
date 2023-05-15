@@ -13,9 +13,6 @@ public partial class AppShell : Shell
     //private string _email;
     //private string _profilePic;
 
-    public bool IsIosVisible { get; set; } = false;
-    public bool IsAndroidVisible { get; set; } = false;
-
     public AppShell(IUserService userService, bool isStaff)
     {
         IsStaff = isStaff;
@@ -26,15 +23,6 @@ public partial class AppShell : Shell
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
 
-        if (DeviceInfo.Platform == DevicePlatform.Android)
-        {
-            IsAndroidVisible = true;
-        }
-
-        if (DeviceInfo.Platform == DevicePlatform.iOS)
-        {
-            IsIosVisible = true;
-        }
     }
 
     private bool _isStaff;
@@ -45,15 +33,6 @@ public partial class AppShell : Shell
         {
             _isStaff = value;
             OnPropertyChanged();
-        }
-    }
-
-    protected override void OnNavigated(ShellNavigatedEventArgs args)
-    {
-        base.OnNavigated(args);
-        if (args.Source is ShellNavigationSource.ShellSectionChanged or ShellNavigationSource.ShellItemChanged)
-        {
-            UpdateTabIconColorOniOS();
         }
     }
 
@@ -111,25 +90,5 @@ public partial class AppShell : Shell
         
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
-    }
-
-    /// <summary>
-    /// TODO: MAUI TabbedPage bug on iOS https://github.com/dotnet/maui/issues/12250
-    /// Remove when the bug is fixed
-    /// </summary>
-    [Conditional("IOS")]
-    private void UpdateTabIconColorOniOS()
-    {
-        foreach (var shellSection in MyTabbar.Items)
-        {
-            var img = (FontImageSource)shellSection.Icon;
-            var isCurrentPage = MyTabbar.CurrentItem == shellSection;
-            shellSection.Icon = new FontImageSource
-            {
-                Color = isCurrentPage ? Color.FromRgba("#BE4b47") : Color.FromArgb("#95FFFFFF"),
-                Glyph = img.Glyph,
-                FontFamily = img.FontFamily,
-            };
-        }
     }
 }
