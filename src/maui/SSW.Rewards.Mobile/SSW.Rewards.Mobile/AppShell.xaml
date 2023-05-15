@@ -90,11 +90,12 @@
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
 
-        <Tab Route="main">
+        <Tab Route="main" Icon="icon_home">
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
-            <Tab.Icon>
+            <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
+
             </Tab.Icon>
             <Tab.Style>
                 <Style TargetType="Tab">
@@ -119,7 +120,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>
+            </Tab.Style>-->
         </Tab>
 
         <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
@@ -130,9 +131,9 @@
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
 
-        <Tab Route="leader">
+        <Tab Route="leader" Icon="icon_trophy">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-            <Tab.Icon>
+            <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xedba;"/>
             </Tab.Icon>
@@ -159,7 +160,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>
+            </Tab.Style>-->
         </Tab>
 
 
@@ -172,9 +173,9 @@
         </Tab>-->
 
 
-        <Tab Route="people" >
+        <Tab Route="people" Icon="icon_people">
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
-            <Tab.Icon>
+            <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
             </Tab.Icon>
@@ -201,7 +202,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>
+            </Tab.Style>-->
         </Tab>
 
         <!--<Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
@@ -212,9 +213,9 @@
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>-->
 
-        <Tab Route="scan">
+        <Tab Route="scan" Icon="icon_scanner">
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-            <Tab.Icon>
+            <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xf636;"/>
             </Tab.Icon>
@@ -241,7 +242,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>
+            </Tab.Style>-->
         </Tab>
     </FlyoutItem>
 
