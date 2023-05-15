@@ -244,7 +244,8 @@
                     <Label
                         FontFamily="FluentIcons"
                         FontSize="30"
-                        Margin="10"
+                        Margin="{OnPlatform iOS=2, Android=10}"
+                        Padding="{OnPlatform iOS=10, Android=0}"
                         Text="&#xf1a5;"
                         TextColor="White"/>
                 </Border>
@@ -261,7 +262,8 @@
                     <Label
                         FontFamily="FluentIcons"
                         FontSize="30"
-                        Margin="10"
+                        Margin="{OnPlatform iOS=2, Android=10}"
+                        Padding="{OnPlatform iOS=10, Android=0}"
                         Text="&#xf151;"
                         TextColor="White"/>
                 </Border>
