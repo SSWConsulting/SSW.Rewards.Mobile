@@ -90,18 +90,17 @@
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
 
-        <Tab Route="main" Icon="icon_home">
+        <Tab Route="main" Icon="icon_home" Title="Home">
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
-
-            </Tab.Icon>
-            <Tab.Style>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_home_selected">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xe70e;"
@@ -110,7 +109,7 @@
                             </Setter>
                         </Trigger>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_home">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xe70e;"
@@ -131,17 +130,17 @@
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
 
-        <Tab Route="leader" Icon="icon_trophy">
+        <Tab Route="leader" Icon="icon_trophy" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xedba;"/>
-            </Tab.Icon>
-            <Tab.Style>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_trophy_selected">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xedba;"
@@ -150,7 +149,7 @@
                             </Setter>
                         </Trigger>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_trophy">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xedba;"
@@ -173,17 +172,17 @@
         </Tab>-->
 
 
-        <Tab Route="people" Icon="icon_people">
+        <Tab Route="people" Icon="icon_people" Title="SSW People">
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
-            </Tab.Icon>
-            <Tab.Style>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_people_selected">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xf5a8;"
@@ -192,7 +191,7 @@
                             </Setter>
                         </Trigger>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_people">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xf5a8;"
@@ -213,17 +212,18 @@
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>-->
 
-        <Tab Route="scan" Icon="icon_scanner">
+        <Tab Route="scan" Icon="icon_scanner" Title="Scanner">
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xf636;"/>
-            </Tab.Icon>
-            <Tab.Style>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_scanner_selected">
+                                
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xf636;"
@@ -232,7 +232,7 @@
                             </Setter>
                         </Trigger>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon">
+                            <Setter Property="Icon" Value="icon_scanner">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xf636;"

@@ -22,7 +22,6 @@ public partial class AppShell : Shell
         _userService = userService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
-
     }
 
     private bool _isStaff;
