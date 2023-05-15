@@ -87,13 +87,14 @@
             </DataTemplate>
         </Shell.ItemTemplate>
         <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
+                    It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
 
         <Tab Route="main">
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
-                                    Glyph="&#xe70e;"/>
+                                 Glyph="&#xe70e;"/>
             </Tab.Icon>
             <Tab.Style>
                 <Style TargetType="Tab">
@@ -101,24 +102,18 @@
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
                             <Setter Property="Icon">
                                 <Setter.Value>
-                                    <OnPlatform>
-                                        <On Platform="iOS">
-                                            <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xe70e;"/>
-                                        </On>
-                                    </OnPlatform>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xe70e;"
+                                                     Color="#BE4b47"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="False">
                             <Setter Property="Icon">
                                 <Setter.Value>
-                                    <OnPlatform>
-                                        <On Platform="iOS">
-                                            <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xe70e;"/>
-                                        </On>
-                                    </OnPlatform>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xe70e;"
+                                                     Color="#95FFFFFF"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -127,16 +122,20 @@
             </Tab.Style>
         </Tab>
 
-        <Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
+        <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xedba;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-        </Tab>
+        </Tab>-->
 
-        <Tab Route="leader" IsVisible="{Binding IsIosVisible}">
+        <Tab Route="leader">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+            <Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>
             <Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
@@ -144,7 +143,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xedba;"/>
+                                                     Glyph="&#xedba;"
+                                                     Color="#BE4b47"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -152,7 +152,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xedba;"/>
+                                                     Glyph="&#xedba;"
+                                                     Color="#95FFFFFF"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -162,17 +163,21 @@
         </Tab>
 
 
-        <Tab Route="people" IsVisible="{Binding IsAndroidVisible}">
+        <!--<Tab Route="people" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xf5a8;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
-        </Tab>
+        </Tab>-->
 
 
-        <Tab Route="people" IsVisible="{Binding IsIosVisible}">
+        <Tab Route="people" >
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+            <Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xf5a8;"/>
+            </Tab.Icon>
             <Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
@@ -180,7 +185,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xf5a8;"/>
+                                                     Glyph="&#xf5a8;"
+                                                     Color="#BE4b47"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -188,7 +194,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xf5a8;"/>
+                                                     Glyph="&#xf5a8;"
+                                                     Color="#95FFFFFF"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -197,16 +204,20 @@
             </Tab.Style>
         </Tab>
 
-        <Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
+        <!--<Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xf636;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-        </Tab>
+        </Tab>-->
 
-        <Tab Route="scan" IsVisible="{Binding IsIosVisible}">
+        <Tab Route="scan">
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+            <Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xf636;"/>
+            </Tab.Icon>
             <Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
@@ -214,7 +225,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xf636;"/>
+                                                     Glyph="&#xf636;"
+                                                     Color="#BE4b47"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -222,7 +234,8 @@
                             <Setter Property="Icon">
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
-                                                        Glyph="&#xf636;"/>
+                                                     Glyph="&#xf636;"
+                                                     Color="#95FFFFFF"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
