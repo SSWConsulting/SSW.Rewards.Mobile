@@ -5,10 +5,10 @@ This is a Xamarin.Forms app with a .NET Core 3 Api backend.
 Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
 
 ## MAUI migration
-MAUI migration was put on hold until .NET 8 release in December 2023.
+MAUI migration was put on hold until .NET 8 release in November 2023.
 During that period we will maintain 2 active branches - `main` and `upgrade-to-maui-v2`.
 
-`main` is the release branch and all new features and fixes should be merged to `upgrade-to-maui-v2`.
+`main` is the release branch, but any new features and fixes should be added to both `main` and `upgrade-to-maui-v2`.
 
 ## Contributing to this repo
 
