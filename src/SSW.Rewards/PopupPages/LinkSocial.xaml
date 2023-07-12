@@ -36,7 +36,7 @@
             <Grid Grid.Row="1"
                   VerticalOptions="Center"
                   HorizontalOptions="Center"
-                  HeightRequest="45"
+                  RowDefinitions="45,Auto"
                   Padding="0,10">
                 <BoxView Grid.Column="0"
                          BackgroundColor="{StaticResource TabBarBackground}"
@@ -50,7 +50,16 @@
                                           WidthRequest="200"
                                           Margin="10,0,0,0"
                                           TextColor="White"/>
+                <Label
+                    Grid.Row="1"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    FontSize="Small"
+                    TextColor="White"
+                    Text="e.g. bob-northwind"/>
             </Grid>
+
+            
 
             <Button Grid.Row="2"
                     Text="Save"
