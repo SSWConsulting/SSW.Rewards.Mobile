@@ -4,15 +4,18 @@
              BackgroundColor="{StaticResource PeopleBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             x:Class="SSW.Rewards.Pages.PeoplePage">
+             x:Class="SSW.Rewards.Pages.PeoplePage"
+             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
             <converters:ScannedToColorConverter x:Key="ScannedToColor" />
+            <behaviors:EventToCommandBehavior x:Key="EventToCommand"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="2*, 9*, 3*"
+        <Grid RowDefinitions="2*, 9*, 65, 3*"
+              RowSpacing="0"
               ColumnDefinitions="2*, 10*, 2*">
 
             <ImageButton Grid.Row="0"
@@ -214,9 +217,47 @@
                 </StackLayout>
 
             </Grid>
+            <!--<Grid Grid.Row="2" Grid.ColumnSpan="3" BackgroundColor="Red"/>-->
+            <Grid Grid.Row="2"
+                  Grid.ColumnSpan="3"
+                  BackgroundColor="{StaticResource MainBackground}"
+                  ColumnDefinitions="*, 50"
+                  VerticalOptions="Center"
+                  HeightRequest="45"
+                  Padding="10,10">
+                <BoxView Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         BackgroundColor="{StaticResource TabBarBackground}"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="CenterAndExpand"
+                         CornerRadius="10"/>
 
+                <controls:BorderlessEntry Grid.Column="0"
+                                          x:Name="SearchEntry"
+                                          Margin="10,0,0,0"
+                                          Text="{Binding SearchBarText}"
+                                          TextColor="White">
+                    <controls:BorderlessEntry.Behaviors>
+                        <behaviors:EventToCommandBehavior Command="{Binding SearchTextChanged}"
+                                                          CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}"
+                                                          EventName="TextChanged" />
+                    </controls:BorderlessEntry.Behaviors>
+                </controls:BorderlessEntry>
 
-            <ScrollView Grid.Row="2"
+                <Label Grid.Column="1"
+                       FontFamily="{StaticResource FluentIcons}"
+                       Text="{Binding SearchBarIcon}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       TextColor="White">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <ScrollView Grid.Row="3"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         BackgroundColor="{StaticResource MainBackground}">
@@ -233,11 +274,11 @@
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                Grid.ColumnSpan="3"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                IsVisible="{Binding IsRunning}"/>
 
             <controls:Snackbar Grid.Row="0"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                Grid.Column="0"
                                Grid.ColumnSpan="3"
                                Options="{Binding SnackOptions}"
