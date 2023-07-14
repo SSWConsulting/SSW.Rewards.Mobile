@@ -42,6 +42,9 @@ app.UseSwaggerUi3(settings =>
 
 app.UseRouting();
 
+string _allowSpecificOrigins = "_AllowSpecificOrigins";
+app.UseCors(_allowSpecificOrigins);
+    
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -52,9 +55,5 @@ app.MapControllerRoute(
 //app.MapRazorPages();
 
 //app.MapFallbackToFile("index.html"); ;
-
-string _allowSpecificOrigins = "_AllowSpecificOrigins";
-
-app.UseCors(_allowSpecificOrigins);
 
 app.Run();
