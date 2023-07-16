@@ -8,20 +8,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using ZXing;
 
 namespace SSW.Rewards.ViewModels
 {
     public class PeoplePageViewModel : BaseViewModel
     {
         private IDevService _devService;
-
-        private const string DismissIcon = "\ue4c3";
-        private const string SearchIcon = "\uea7c";
-
-        public string SearchBarIcon { get; set; } = SearchIcon;
-
-        public string SearchBarText { get; set; }
 
         public ICommand OnCardSwiped => new Command(SetDevDetails);
 
@@ -32,9 +24,6 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
 
         public ICommand PeopleCommand => new Command(async () => await OpenPeople());
-
-        public ICommand CancelSearchCommand => new Command(CancelSearch);
-
         public ICommand ForwardCommand => new Command(NavigateForward);
         public ICommand BackCommand => new Command(NavigateBack);
 
@@ -100,29 +89,6 @@ namespace SSW.Rewards.ViewModels
             // TODO: Change all references to <object> to <string>
             MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (msg) => await LoadProfiles());
         }
-
-        public ICommand SearchTextChanged => new Command(() =>
-        {
-            if (SearchBarText != null && SearchBarText != String.Empty)
-            {
-                var searchResult = Profiles.FirstOrDefault(x =>
-                    x.FirstName?.ToLower().Contains(SearchBarText.ToLower()) == true ||
-                    x.LastName?.ToLower().Contains(SearchBarText.ToLower()) == true
-                );
-                if (searchResult != null)
-                {
-                    var args = new ScrollToEventArgs { Index = searchResult.Index, Animate = false };
-                    ScrollToRequested.Invoke(this, args);
-
-                    SearchBarIcon = DismissIcon;
-                    OnPropertyChanged(nameof(SearchBarIcon));
-                    return;
-                }
-            }
-
-            SearchBarIcon = SearchIcon;
-            OnPropertyChanged(nameof(SearchBarIcon));
-        });
 
         public async Task Initialise()
         {
@@ -297,13 +263,6 @@ namespace SSW.Rewards.ViewModels
             var args = new ShowSnackbarEventArgs { Options = options };
 
             ShowSnackbar.Invoke(this, args);
-        }
-
-        private void CancelSearch()
-        {
-            SearchBarText = string.Empty;
-            SearchBarIcon = SearchIcon;
-            RaisePropertyChanged(nameof(SearchBarText), nameof(SearchBarIcon));
         }
     }
 

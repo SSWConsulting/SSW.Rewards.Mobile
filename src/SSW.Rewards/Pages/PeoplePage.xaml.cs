@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SSW.Rewards.Controls;
 using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
@@ -46,6 +47,20 @@ namespace SSW.Rewards.Pages
         {
             PeoplePageSnackbar.Options = e.Options;
             await PeoplePageSnackbar.ShowSnackbar();
+        }
+
+        private void Search_OnSearchTextChanged(object sender, string e)
+        {
+            var searchText = e;
+            var searchResult = _viewModel.Profiles.FirstOrDefault(x =>
+            	x.FirstName?.ToLower().Contains(searchText.ToLower()) == true ||
+            	x.LastName?.ToLower().Contains(searchText.ToLower()) == true
+            );
+            if (searchResult != null)
+            {
+                var args = new ScrollToEventArgs { Index = searchResult.Index, Animate = false };
+                ScrollToIndex(this, args);
+            }
         }
     }
 }

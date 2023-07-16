@@ -1,0 +1,35 @@
+﻿<Grid
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+    x:Class="SSW.Rewards.Controls.Search"
+    x:DataType="controls:Search"
+    ColumnDefinitions="*, 50"
+    HeightRequest="45">
+    
+    <BoxView
+        x:Name="Border"
+        Grid.Column="0"
+        Grid.ColumnSpan="2"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="CenterAndExpand"
+        CornerRadius="10"/>
+
+    <controls:BorderlessEntry
+        Grid.Column="0"
+        x:Name="SearchEntry"
+        Margin="10,0,0,0"
+        TextChanged="SearchEntry_OnTextChanged"/>
+
+    <Label
+        x:Name="Icon"
+        Grid.Column="1"
+        FontFamily="{StaticResource FluentIcons}"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        FontSize="20">
+        <Label.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Icon_OnTapped" />
+        </Label.GestureRecognizers>
+    </Label>
+</Grid>

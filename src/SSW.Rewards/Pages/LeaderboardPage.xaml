@@ -5,6 +5,8 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.ViewModels;assembly=SSW.Rewards"
+             x:DataType="viewModels:LeaderBoardViewModel"
              x:Name="Leaderboard"
              x:Class="SSW.Rewards.Pages.LeaderboardPage">
     <ContentPage.Resources>
@@ -36,12 +38,11 @@
                 </StackLayout>
             </ControlTemplate>
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
-            <behaviors:EventToCommandBehavior x:Key="EventToCommand"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid Padding="30,5"
-              RowDefinitions="80, 60, 40, 25, *">
+              RowDefinitions="80, 55, 40, 25, *">
 
             <Grid Grid.Row="0"
                   RowDefinitions="3*, 2*"
@@ -108,43 +109,14 @@
                 </ImageButton>
                 
             </Grid>
-
-            <Grid Grid.Row="1"
-                  ColumnDefinitions="*, 50"
-                  VerticalOptions="Center"
-                  HeightRequest="45"
-                  Padding="0,10">
-                <BoxView Grid.Column="0"
-                         Grid.ColumnSpan="2"
-                         BackgroundColor="{StaticResource TabBarBackground}"
-                         HorizontalOptions="FillAndExpand"
-                         VerticalOptions="CenterAndExpand"
-                         CornerRadius="10"/>
-
-                <controls:BorderlessEntry Grid.Column="0"
-                                          x:Name="SearchEntry"
-                                          Margin="10,0,0,0"
-                                          Text="{Binding SearchBarText}"
-                                          TextColor="White">
-                    <controls:BorderlessEntry.Behaviors>
-                        <behaviors:EventToCommandBehavior Command="{Binding SearchTextChanged}"
-                                                          CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}"
-                                                          EventName="TextChanged" />
-                    </controls:BorderlessEntry.Behaviors>
-                </controls:BorderlessEntry>
-
-                <Label Grid.Column="1"
-                       FontFamily="{StaticResource FluentIcons}"
-                       Text="{Binding SearchBarIcon}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       FontSize="20"
-                       TextColor="White">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding CancelSearchCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
+            
+            <controls:Search
+                Grid.Row="1"
+                VerticalOptions="Center"
+                BorderColor="{StaticResource TabBarBackground}"
+                BackgroundColor="{StaticResource MainBackground}"
+                TextColor="White"
+                SearchTextChanged="Search_OnSearchTextChanged"/>
 
             <Label Grid.Row="2"
                    Text="Leaderboard"
@@ -185,7 +157,7 @@
                                            ItemSpacing="10"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="viewModels:LeaderViewModel">
                             <Grid BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
                                   HeightRequest="50"
                                   ColumnDefinitions="40, 40, *, 80"
