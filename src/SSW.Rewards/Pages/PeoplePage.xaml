@@ -7,7 +7,6 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
              xmlns:viewModels="clr-namespace:SSW.Rewards.ViewModels"
              xmlns:rewards="clr-namespace:SSW.Rewards"
-             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors;assembly=SSW.Rewards"
              xmlns:models="clr-namespace:SSW.Rewards.Models;assembly=SSW.Rewards"
              x:Class="SSW.Rewards.Pages.PeoplePage">
     <ContentPage.Resources>
@@ -30,7 +29,7 @@
                     VerticalOptions="Center"
                     BorderColor="{StaticResource TabBarBackground}"
                     TextColor="White"
-                    />
+                    Command="{Binding SearchTextCommand}"/>
             </ContentView>
             
             <ImageButton Grid.Row="1"

@@ -40,27 +40,13 @@ namespace SSW.Rewards.Pages
 
         private void ScrollToIndex(object sender, ScrollToEventArgs e)
         {
-            PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
+           PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
         }
 
         private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
         {
             PeoplePageSnackbar.Options = e.Options;
             await PeoplePageSnackbar.ShowSnackbar();
-        }
-
-        private void Search_OnSearchTextChanged(object sender, string e)
-        {
-            var searchText = e;
-            var searchResult = _viewModel.Profiles.FirstOrDefault(x =>
-            	x.FirstName?.ToLower().Contains(searchText.ToLower()) == true ||
-            	x.LastName?.ToLower().Contains(searchText.ToLower()) == true
-            );
-            if (searchResult != null)
-            {
-                var args = new ScrollToEventArgs { Index = searchResult.Index, Animate = false };
-                ScrollToIndex(this, args);
-            }
         }
     }
 }

@@ -26,6 +26,7 @@ namespace SSW.Rewards.ViewModels
         public ICommand PeopleCommand => new Command(async () => await OpenPeople());
         public ICommand ForwardCommand => new Command(NavigateForward);
         public ICommand BackCommand => new Command(NavigateBack);
+        public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
 
         public EventHandler<ScrollToEventArgs> ScrollToRequested;
 
@@ -263,6 +264,24 @@ namespace SSW.Rewards.ViewModels
             var args = new ShowSnackbarEventArgs { Options = options };
 
             ShowSnackbar.Invoke(this, args);
+        }
+        
+        private void SearchTextHandler(string searchBarText)
+        {
+            // UserStoppedTypingBehavior fires the command on a threadPool thread
+            // as internally it uses .ContinueWith
+            Device.InvokeOnMainThreadAsync(() =>
+            {
+                var searchResult = Profiles.FirstOrDefault(x =>
+                    x.FirstName?.ToLower().Contains(searchBarText.ToLower()) == true ||
+                    x.LastName?.ToLower().Contains(searchBarText.ToLower()) == true
+                );
+                if (searchResult != null)
+                {
+                    var args = new ScrollToEventArgs { Index = searchResult.Index, Animate = false };
+                    ScrollToRequested?.Invoke(this, args);
+                }
+            });
         }
     }
 

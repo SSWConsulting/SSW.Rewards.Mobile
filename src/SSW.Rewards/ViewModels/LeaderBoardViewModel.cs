@@ -34,7 +34,7 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand GoToMyProfileCommand => new Command(async () => await Shell.Current.GoToAsync("//main"));
 
-        public ICommand SearchTextCommand { get; }
+        public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
         
         public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
@@ -70,17 +70,6 @@ namespace SSW.Rewards.ViewModels
 
             Leaders = new ObservableCollection<LeaderViewModel>();
             MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await Refresh());
-            
-            SearchTextCommand = new Command<string>((SearchBarText) =>
-            {
-                // TODO: check time filter, or switch to all time when searching
-                if (SearchBarText != null)
-                {
-                    var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
-                    SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
-                    return;
-                }
-            });
 
             _sortFilter = "all";
         }
@@ -289,6 +278,21 @@ namespace SSW.Rewards.ViewModels
                 await Shell.Current.GoToAsync("//main");
             else
                 await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
+        }
+        
+        private void SearchTextHandler(string searchBarText)
+        {
+            // UserStoppedTypingBehavior fires the command on a threadPool thread
+            // as internally it uses .ContinueWith
+            Device.InvokeOnMainThreadAsync(() =>
+            {
+                // TODO: check time filter, or switch to all time when searching
+                if (searchBarText != null)
+                {
+                    var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
+                    SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                }
+            });
         }
     }
 }
