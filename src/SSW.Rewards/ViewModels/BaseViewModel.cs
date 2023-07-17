@@ -5,9 +5,6 @@ using System.Runtime.CompilerServices;
 
 using Xamarin.Forms;
 
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
-
 namespace SSW.Rewards.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged

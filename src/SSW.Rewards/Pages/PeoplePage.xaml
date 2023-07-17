@@ -30,7 +30,7 @@
                     VerticalOptions="Center"
                     BorderColor="{StaticResource TabBarBackground}"
                     TextColor="White"
-                    SearchTextChanged="Search_OnSearchTextChanged"/>
+                    />
             </ContentView>
             
             <ImageButton Grid.Row="1"

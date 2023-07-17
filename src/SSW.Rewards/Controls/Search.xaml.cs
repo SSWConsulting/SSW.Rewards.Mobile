@@ -3,8 +3,8 @@ using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Controls
-{	
-	public partial class Search
+{
+    public partial class Search
 	{
 		private const string DismissIcon = "\ue4c3";
 		private const string SearchIcon = "\uea7c";
@@ -34,27 +34,24 @@ namespace SSW.Rewards.Controls
 			nameof(Command),
 			typeof(ICommand),
             typeof(Search));
+		
         public ICommand Command
 		{
             get => (ICommand)GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
 
-        public event EventHandler<string> SearchTextChanged; 
-
 		public Search()
 		{
-			BindingContext = this;
 			InitializeComponent();
 			Icon.Text = SearchIcon;
 		}
-		
-		private void SearchEntry_OnTextChanged(object sender, TextChangedEventArgs e)
+
+        private void SearchEntry_OnTextChanged(object sender, TextChangedEventArgs e)
 		{
-			var searchText = SearchEntry.Text;
+			var searchText = e.NewTextValue;
 			Icon.Text = string.IsNullOrEmpty(searchText) ? SearchIcon : DismissIcon;
-			SearchTextChanged?.Invoke(this, searchText);
-		}
+        }
 		
 		private void Icon_OnTapped(object sender, EventArgs e)
 		{

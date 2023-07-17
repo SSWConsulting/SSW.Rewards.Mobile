@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using SSW.Rewards.ViewModels;
+﻿using SSW.Rewards.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -65,14 +63,6 @@ namespace SSW.Rewards.Pages
                 // hide the scrolling controls
                 ScrollButtons.IsVisible = false;
             }
-        }
-
-        private void Search_OnSearchTextChanged(object sender, string e)
-        {
-            // TODO: check time filter, or switch to all time when searching
-            var searchText = e.ToLower();
-            var filtered = _viewModel.Leaders.Where(l => l.Name.ToLower().Contains(searchText));
-            _viewModel.SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
         }
     }
 }

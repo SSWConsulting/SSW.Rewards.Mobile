@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             xmlns:behaviors="clr-namespace:SSW.Rewards.Behaviors"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.ViewModels;assembly=SSW.Rewards"
              x:DataType="viewModels:LeaderBoardViewModel"
