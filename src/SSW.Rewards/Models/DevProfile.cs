@@ -34,6 +34,8 @@ namespace SSW.Rewards.Models
 
         public int Points { get; set; }
 
+        public int Index { get; set; }
+
         public List<StaffSkillDto> Skills { get; set; }
     }
 }

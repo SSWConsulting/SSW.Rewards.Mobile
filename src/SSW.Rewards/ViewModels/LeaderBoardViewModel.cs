@@ -32,10 +32,10 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
 
-        public ICommand CancelSearchCommand => new Command(CancelSearch);
-
         public ICommand GoToMyProfileCommand => new Command(async () => await Shell.Current.GoToAsync("//main"));
 
+        public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
+        
         public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
         public Action<int> ScrollTo { get; set; }
@@ -74,36 +74,6 @@ namespace SSW.Rewards.ViewModels
             _sortFilter = "all";
         }
 
-        public ICommand SearchTextChanged => new Command(() =>
-        {
-            // TODO: check time filter, or switch to all time when searching
-            if (SearchBarText != null || SearchBarText != String.Empty)
-            {
-                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
-                SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
-                SearchBarIcon = DismissIcon;
-                OnPropertyChanged(nameof(SearchBarIcon));
-                return;
-            }
-
-            SearchBarIcon = SearchIcon;
-            OnPropertyChanged(nameof(SearchBarIcon));
-        });
-
-        private void CancelSearch()
-        {
-            SearchBarText = string.Empty;
-            SearchBarIcon = SearchIcon;
-            RaisePropertyChanged(nameof(SearchBarText), nameof(SearchBarIcon));
-        }
-
-        private const string DismissIcon = "\ue4c3";
-        private const string SearchIcon = "\uea7c";
-
-        public string SearchBarIcon { get; set; } = SearchIcon;
-
-        public string SearchBarText { get; set; }
-
         public ObservableCollection<LeaderViewModel> SearchResults
         {
             get
@@ -114,7 +84,6 @@ namespace SSW.Rewards.ViewModels
             {
                 searchResults = value;
                 RaisePropertyChanged("SearchResults");
-
             }
         }
 
@@ -309,6 +278,21 @@ namespace SSW.Rewards.ViewModels
                 await Shell.Current.GoToAsync("//main");
             else
                 await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
+        }
+        
+        private void SearchTextHandler(string searchBarText)
+        {
+            // UserStoppedTypingBehavior fires the command on a threadPool thread
+            // as internally it uses .ContinueWith
+            Device.InvokeOnMainThreadAsync(() =>
+            {
+                // TODO: check time filter, or switch to all time when searching
+                if (searchBarText != null)
+                {
+                    var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
+                    SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                }
+            });
         }
     }
 }

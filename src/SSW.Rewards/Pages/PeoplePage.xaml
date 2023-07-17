@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Controls"
+             x:DataType="viewModels:PeoplePageViewModel"
              xmlns:converters="clr-namespace:SSW.Rewards.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.ViewModels"
+             xmlns:rewards="clr-namespace:SSW.Rewards"
+             xmlns:models="clr-namespace:SSW.Rewards.Models;assembly=SSW.Rewards"
              x:Class="SSW.Rewards.Pages.PeoplePage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -12,10 +16,23 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="2*, 9*, 3*"
+        <Grid RowDefinitions="65, 2*, 9*, 3*"
+              RowSpacing="0"
               ColumnDefinitions="2*, 10*, 2*">
 
-            <ImageButton Grid.Row="0"
+            <ContentView
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                BackgroundColor="{StaticResource MainBackground}"
+                Padding="10,10">
+                <controls:Search
+                    VerticalOptions="Center"
+                    BorderColor="{StaticResource TabBarBackground}"
+                    TextColor="White"
+                    Command="{Binding SearchTextCommand}"/>
+            </ContentView>
+            
+            <ImageButton Grid.Row="1"
                          Grid.Column="0"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
@@ -29,7 +46,7 @@
                 </ImageButton.Source>
             </ImageButton>
 
-            <ImageButton Grid.Row="0"
+            <ImageButton Grid.Row="1"
                          Grid.Column="2"
                          HorizontalOptions="Center"
                          BackgroundColor="Transparent"
@@ -44,7 +61,7 @@
                 </ImageButton.Source>
             </ImageButton>
 
-            <StackLayout Grid.Row="0"
+            <StackLayout Grid.Row="1"
                          Grid.Column="1"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
@@ -64,8 +81,7 @@
                        HorizontalTextAlignment="Center"/>
             </StackLayout>
 
-
-            <Grid Grid.Row="1"
+            <Grid Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
@@ -79,7 +95,7 @@
                             Direction="Column"
                             BindableLayout.ItemsSource="{Binding Skills}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="rewards:StaffSkillDto">
                             <controls:SkillsBar Label="{Binding Name}"
                                                 Level="{Binding Level}"/>
                         </DataTemplate>
@@ -100,7 +116,7 @@
                               CurrentItem="{Binding SelectedProfile}"
                               IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:DevProfile">
                             <controls:DevImageView Profile="{Binding .}"
                                                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Width, Factor=0.66}"
                                                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToView, ElementName=CentralGrid, Property=Height, Factor=1}"/>
@@ -215,8 +231,7 @@
 
             </Grid>
 
-
-            <ScrollView Grid.Row="2"
+            <ScrollView Grid.Row="3"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         BackgroundColor="{StaticResource MainBackground}">
@@ -233,11 +248,11 @@
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                Grid.ColumnSpan="3"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                IsVisible="{Binding IsRunning}"/>
 
             <controls:Snackbar Grid.Row="0"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                Grid.Column="0"
                                Grid.ColumnSpan="3"
                                Options="{Binding SnackOptions}"

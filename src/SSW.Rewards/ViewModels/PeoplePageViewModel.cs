@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace SSW.Rewards.ViewModels
 {
-    public class DevProfilesViewModel : BaseViewModel
+    public class PeoplePageViewModel : BaseViewModel
     {
         private IDevService _devService;
 
@@ -24,11 +24,11 @@ namespace SSW.Rewards.ViewModels
         public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
 
         public ICommand PeopleCommand => new Command(async () => await OpenPeople());
-
         public ICommand ForwardCommand => new Command(NavigateForward);
         public ICommand BackCommand => new Command(NavigateBack);
+        public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
 
-        public EventHandler<int> ScrollToRequested;
+        public EventHandler<ScrollToEventArgs> ScrollToRequested;
 
         public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
@@ -71,7 +71,7 @@ namespace SSW.Rewards.ViewModels
 
         public string[] OnSwipedUpdatePropertyList { get; set; }
 
-        public DevProfilesViewModel(IDevService devService)
+        public PeoplePageViewModel(IDevService devService)
         {
             IsRunning = true;
             TwitterEnabled = true;
@@ -106,9 +106,12 @@ namespace SSW.Rewards.ViewModels
 
             if (profiles.Any())
             {
+                int i = 0;
                 foreach (var profile in profiles)
                 {
+                    profile.Index = i;
                     Profiles.Add(profile);
+                    i++;
                 }
 
                 IsRunning = false;
@@ -189,11 +192,13 @@ namespace SSW.Rewards.ViewModels
 
             if (selectedIndex < _lastProfileIndex)
             {
-                ScrollToRequested.Invoke(this, ++selectedIndex);
+                var args = new ScrollToEventArgs { Index = ++selectedIndex };
+                ScrollToRequested.Invoke(this, args);
             }
             else
             {
-                ScrollToRequested.Invoke(this, 0);
+                var args = new ScrollToEventArgs { Index = 0 };
+                ScrollToRequested.Invoke(this, args);
             }
         }
 
@@ -203,11 +208,13 @@ namespace SSW.Rewards.ViewModels
 
             if (selectedIndex > 0)
             {
-                ScrollToRequested.Invoke(this, --selectedIndex);
+                var args = new ScrollToEventArgs { Index = --selectedIndex };
+                ScrollToRequested.Invoke(this, args);
             }
             else
             {
-                ScrollToRequested.Invoke(this, _lastProfileIndex);
+                var args = new ScrollToEventArgs { Index = _lastProfileIndex };
+                ScrollToRequested.Invoke(this, args);
             }
         }
 
@@ -258,5 +265,30 @@ namespace SSW.Rewards.ViewModels
 
             ShowSnackbar.Invoke(this, args);
         }
+        
+        private void SearchTextHandler(string searchBarText)
+        {
+            // UserStoppedTypingBehavior fires the command on a threadPool thread
+            // as internally it uses .ContinueWith
+            Device.InvokeOnMainThreadAsync(() =>
+            {
+                var searchResult = Profiles.FirstOrDefault(x =>
+                    x.FirstName?.ToLower().Contains(searchBarText.ToLower()) == true ||
+                    x.LastName?.ToLower().Contains(searchBarText.ToLower()) == true
+                );
+                if (searchResult != null)
+                {
+                    var args = new ScrollToEventArgs { Index = searchResult.Index, Animate = false };
+                    ScrollToRequested?.Invoke(this, args);
+                }
+            });
+        }
+    }
+
+    public class ScrollToEventArgs : EventArgs
+    {
+        public int Index { get; set; }
+        public ScrollToPosition Position { get; set; } = ScrollToPosition.MakeVisible;
+        public bool Animate { get; set; } = true;
     }
 }
