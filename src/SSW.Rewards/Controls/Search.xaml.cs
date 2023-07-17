@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace SSW.Rewards.Controls
@@ -29,7 +30,17 @@ namespace SSW.Rewards.Controls
 			set => SetValue(TextColorProperty, value);
 		}
 
-		public event EventHandler<string> SearchTextChanged; 
+		public static readonly BindableProperty CommandProperty = BindableProperty.Create(
+			nameof(Command),
+			typeof(ICommand),
+            typeof(Search));
+        public ICommand Command
+		{
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
+        }
+
+        public event EventHandler<string> SearchTextChanged; 
 
 		public Search()
 		{

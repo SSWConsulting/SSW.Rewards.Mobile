@@ -34,6 +34,17 @@ namespace SSW.Rewards.ViewModels
 
         public ICommand GoToMyProfileCommand => new Command(async () => await Shell.Current.GoToAsync("//main"));
 
+        public ICommand SearchTextCommand => new Command<string>((SearchBarText) =>
+        {
+            // TODO: check time filter, or switch to all time when searching
+            if (SearchBarText != null)
+            {
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
+                SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                return;
+            }
+        });
+        
         public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
         public Action<int> ScrollTo { get; set; }

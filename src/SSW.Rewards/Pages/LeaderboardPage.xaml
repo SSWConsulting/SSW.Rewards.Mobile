@@ -116,7 +116,7 @@
                 BorderColor="{StaticResource TabBarBackground}"
                 BackgroundColor="{StaticResource MainBackground}"
                 TextColor="White"
-                SearchTextChanged="Search_OnSearchTextChanged"/>
+                Command="{Binding SearchTextCommand}"/>
 
             <Label Grid.Row="2"
                    Text="Leaderboard"
