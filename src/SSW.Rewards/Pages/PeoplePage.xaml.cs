@@ -40,7 +40,7 @@ namespace SSW.Rewards.Pages
 
         private void ScrollToIndex(object sender, ScrollToEventArgs e)
         {
-           PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
+            PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
         }
 
         private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
