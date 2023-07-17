@@ -5,7 +5,7 @@ using Microsoft.Maui.Controls;
 namespace SSW.Rewards.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LeaderboardPage : ContentPage
+    public partial class LeaderboardPage
     {
         private readonly LeaderBoardViewModel _viewModel;
 

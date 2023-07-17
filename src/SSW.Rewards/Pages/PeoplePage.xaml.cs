@@ -1,4 +1,6 @@
-﻿using SSW.Rewards.Controls;
+﻿using System;
+using System.Linq;
+using SSW.Rewards.Controls;
 using SSW.Rewards.ViewModels;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
@@ -8,11 +10,11 @@ namespace SSW.Rewards.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PeoplePage : ContentPage
     {
-        private readonly DevProfilesViewModel _viewModel;
+        private readonly PeoplePageViewModel _viewModel;
 
         public PeoplePage()
         {
-            _viewModel = Resolver.Resolve<DevProfilesViewModel>();
+            _viewModel = Resolver.Resolve<PeoplePageViewModel>();
             _viewModel.Navigation = Navigation;
             BindingContext = _viewModel;
             InitializeComponent();
@@ -36,9 +38,9 @@ namespace SSW.Rewards.Pages
             _viewModel.ShowSnackbar -= ShowSnackbar;
         }
 
-        private void ScrollToIndex(object sender, int index)
+        private void ScrollToIndex(object sender, ScrollToEventArgs e)
         {
-            PicCarousel.ScrollTo(index);
+            PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
         }
 
         private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
