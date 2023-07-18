@@ -32,8 +32,9 @@
                    HorizontalTextAlignment="Center"
                    VerticalOptions="Center"
                    TextColor="White"/>
-            
-            <Border Grid.Row="1"
+
+            <VerticalStackLayout Grid.Row="1">
+                <Border 
                     StrokeShape="RoundRectangle 10"
                     StrokeThickness="0"
                     BackgroundColor="{StaticResource TabBarBackground}"
@@ -41,22 +42,27 @@
                     HorizontalOptions="Center"
                     HeightRequest="45"
                     Padding="0,10">
-                <!--<BoxView Grid.Column="0"
-                         BackgroundColor="{StaticResource TabBarBackground}"
-                         HorizontalOptions="FillAndExpand"
-                         VerticalOptions="CenterAndExpand"
-                         CornerRadius="10"/>-->
 
-                <controls:BorderlessEntry Grid.Column="0"
-                                          x:Name="UsernameEntry"
-                                          TextChanged="UsernameEntry_TextChanged"
-                                          HeightRequest="40"
-                                          WidthRequest="200"
-                                          Margin="10,0,0,0"
-                                          TextColor="White"/>
-            </Border>
+                    <controls:BorderlessEntry
+                        Grid.Column="0"
+                        x:Name="UsernameEntry"
+                        TextChanged="UsernameEntry_TextChanged"
+                        HeightRequest="40"
+                        WidthRequest="200"
+                        Margin="10,0,0,0"
+                        TextColor="White"/>
+                </Border>
 
-            <Button Grid.Row="2"
+                <Label
+                    Grid.Row="2"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    FontSize="Small"
+                    TextColor="White"
+                    Text="e.g. bob-northwind"/>
+            </VerticalStackLayout>
+
+            <Button Grid.Row="3"
                     Text="Save"
                     TextColor="White"
                     BackgroundColor="{StaticResource SSWRed}"
