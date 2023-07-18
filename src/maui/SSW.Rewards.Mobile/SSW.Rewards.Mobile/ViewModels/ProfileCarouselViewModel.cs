@@ -45,7 +45,7 @@ public class ProfileAchievement : Achievement
         //AchievementTappedCommand = new Command(() =>
         //    WeakReferenceMessenger.Default.Send(new AchievementTappedMessage(this)));
 
-        AchievementTappedCommand = new Command(() => MessagingCenter.Send<object>(this, AchievementTappedMessage));
+        AchievementTappedCommand = new Command(() => WeakReferenceMessenger.Default.Send(new AchievementTappedMessage(this)));
     }
 }
 
