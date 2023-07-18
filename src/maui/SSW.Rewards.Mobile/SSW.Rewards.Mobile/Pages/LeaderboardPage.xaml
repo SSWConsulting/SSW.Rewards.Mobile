@@ -17,7 +17,7 @@
     <ContentPage.Content>
         <Grid Padding="30,5"
               RowSpacing="6"
-              RowDefinitions="80, 60, 40, 35, *">
+              RowDefinitions="80, 55, 40, 35, *">
 
             <Grid Grid.Row="0"
                   RowSpacing="6"
@@ -86,45 +86,13 @@
                 
             </Grid>
 
-            <Border StrokeShape="RoundRectangle 10"
-                    StrokeThickness="0"
-                    HeightRequest="40"
-                    VerticalOptions="Center"
-                    BackgroundColor="{StaticResource TabBarBackground}"
-                    Grid.Row="1">
-                <Grid ColumnDefinitions="*, 50"
-                      VerticalOptions="Center">
+            <controls:Search
+                Grid.Row="1"
+                VerticalOptions="Center"
+                BackgroundColor="{StaticResource TabBarBackground}"
+                TextColor="White"
+                Command="{Binding SearchTextCommand}"/>
 
-                    <controls:BorderlessEntry Grid.Column="0"
-                                          x:Name="SearchEntry"
-                                          BackgroundColor="{StaticResource TabBarBackground}"
-                                          HeightRequest="45"
-                                          Margin="10,0,0,0"
-                                          Text="{Binding SearchBarText}"
-                                          TextColor="White">
-                        <controls:BorderlessEntry.Behaviors>
-
-                            <mct:EventToCommandBehavior Command="{Binding SearchTextChangedCommand}" 
-                                                    CommandParameter="{Binding Text, Source={x:Reference SearchEntry}}" 
-                                                    EventName="TextChanged" />
-                        </controls:BorderlessEntry.Behaviors>
-                    </controls:BorderlessEntry>
-
-                    <Label Grid.Column="1"
-                       FontFamily="FluentIcons"
-                       Text="{Binding SearchBarIcon}"
-                       BackgroundColor="{StaticResource TabBarBackground}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       FontSize="20"
-                       TextColor="White">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchCommand}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                </Grid>
-
-            </Border>
             <Label Grid.Row="2"
                    Text="Leaderboard"
                    TextColor="White"

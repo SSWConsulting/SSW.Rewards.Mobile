@@ -38,8 +38,8 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
     public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
     public ICommand ClearSearchCommand => new Command(ClearSearch);
+    public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
     public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
-    public IAsyncRelayCommand SearchTextChangedCommand => new AsyncRelayCommand(SearchTextChanged);
     public IAsyncRelayCommand FilterByPeriodCommand => new AsyncRelayCommand(FilterByPeriod);
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
@@ -118,24 +118,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         OnPropertyChanged(nameof(TotalLeaders));
 
         ScrollTo?.Invoke(0);
-    }
-
-    private async Task SearchTextChanged()
-    {
-        bool keepRanks = false;
-        if (SearchBarText.IsNullOrEmpty())
-        {
-            SearchBarText = string.Empty;
-            SearchBarIcon = SearchIcon; SearchResults.Clear();
-        }
-        else
-        {
-            SearchBarIcon = DismissIcon;
-            keepRanks = true;
-        }
-        OnPropertyChanged(nameof(SearchBarIcon));
-        var filtered = Leaders.Where(l => l.Name.ToLower().Contains(SearchBarText.ToLower()));
-        await UpdateSearchResults(filtered);
     }
 
     private async Task UpdateSearchResults(IEnumerable<LeaderViewModel> sortedLeaders)
@@ -262,5 +244,20 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             MyRank = mySummary.Rank;
             OnPropertyChanged(nameof(MyRank));
         }
+    }
+
+    private void SearchTextHandler(string searchBarText)
+    {
+        // UserStoppedTypingBehavior fires the command on a threadPool thread
+        // as internally it uses .ContinueWith
+        App.Current.MainPage.Dispatcher.Dispatch(() =>
+        {
+            // TODO: check time filter, or switch to all time when searching
+            if (searchBarText != null)
+            {
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
+                SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+            }
+        });
     }
 }

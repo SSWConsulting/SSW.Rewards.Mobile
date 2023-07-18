@@ -17,13 +17,24 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="2*, 9*, 3*"
+        <Grid RowDefinitions="65, 2*, 9*, 3*"
               ColumnDefinitions="*, 5*, *"
-              RowSpacing="6"
               ColumnSpacing="6">
 
-            <Label
+            <ContentView
                 Grid.Row="0"
+                Grid.ColumnSpan="3"
+                BackgroundColor="{StaticResource MainBackground}"
+                Padding="10,10">
+                <controls:Search
+                    VerticalOptions="Center"
+                    BorderColor="{StaticResource TabBarBackground}"
+                    TextColor="White"
+                    Command="{Binding SearchTextCommand}"/>
+            </ContentView>
+
+            <Label
+                Grid.Row="1"
                 Grid.Column="0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -37,7 +48,7 @@
             </Label>
 
             <Label
-                Grid.Row="0"
+                Grid.Row="1"
                 Grid.Column="2"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -50,20 +61,21 @@
                 </Label.GestureRecognizers>
             </Label>
 
-            <VerticalStackLayout Grid.Row="0"
+            <VerticalStackLayout Grid.Row="1"
                                  Grid.Column="1"
                                  HorizontalOptions="Center"
                                  VerticalOptions="Center"
                                  Spacing="1">
                 <Label Text="{Binding DevName}"
-                       FontSize="Title"
+                       FontSize="Large"
                        TextColor="White"
                        HorizontalOptions="Center"
                        FontAttributes="Bold"
+                       FontFamily=""
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"/>
                 <Label Text="{Binding DevTitle}"
-                       FontSize="Subtitle"
+                       FontSize="Medium"
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
@@ -71,7 +83,7 @@
             </VerticalStackLayout>
 
 
-            <Grid Grid.Row="1"
+            <Grid Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
@@ -212,7 +224,7 @@
             </Grid>
 
 
-            <ScrollView Grid.Row="2"
+            <ScrollView Grid.Row="3"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         BackgroundColor="{StaticResource MainBackground}">
@@ -229,11 +241,11 @@
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                Grid.ColumnSpan="3"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                IsVisible="{Binding IsRunning}"/>
 
             <controls:Snackbar Grid.Row="0"
-                               Grid.RowSpan="3"
+                               Grid.RowSpan="4"
                                Grid.Column="0"
                                Grid.ColumnSpan="3"
                                Options="{Binding SnackOptions}"

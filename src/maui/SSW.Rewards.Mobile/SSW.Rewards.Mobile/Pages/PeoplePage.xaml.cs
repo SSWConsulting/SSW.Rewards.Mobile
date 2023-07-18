@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Mobile.Controls;
+﻿using Microsoft.Maui.Controls;
+using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.Pages;
 
@@ -32,9 +33,9 @@ public partial class PeoplePage : ContentPage
         _viewModel.ShowSnackbar -= ShowSnackbar;
     }
 
-    private void ScrollToIndex(object sender, int index)
+    private void ScrollToIndex(object sender, ScrollToEventArgs e)
     {
-        PicCarousel.ScrollTo(index);
+        PicCarousel.ScrollTo(e.Index, -1, e.Position, e.Animate);
     }
 
     private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
