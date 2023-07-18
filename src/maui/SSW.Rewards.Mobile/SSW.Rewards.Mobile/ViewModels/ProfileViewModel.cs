@@ -11,7 +11,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public class ProfileViewModel : BaseViewModel, 
     IRecipient<ProfilePicUpdatedMessage>, 
     IRecipient<PointsAwardedMessage>, 
-    //IRecipient<AchievementTappedMessage>, 
+    IRecipient<AchievementTappedMessage>, 
     IRecipient<SocialUsernameAddedMessage>
 {
     private readonly IRewardService _rewardsService;
@@ -86,9 +86,7 @@ public class ProfileViewModel : BaseViewModel,
     }
 
     public async Task Initialise(bool me)
-    {
-        MessagingCenter.Subscribe<object>(this, ProfileAchievement.AchievementTappedMessage, (obj) => ProcessAchievement((ProfileAchievement)obj));
-        
+    {        
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
@@ -444,10 +442,10 @@ public class ProfileViewModel : BaseViewModel,
         await OnPointsAwarded();
     }
 
-    //public void Receive(AchievementTappedMessage message)
-    //{
-    //    ProcessAchievement(message.Value);
-    //}
+    public void Receive(AchievementTappedMessage message)
+    {
+        ProcessAchievement(message.Value);
+    }
 
     public void Receive(SocialUsernameAddedMessage message)
     {
