@@ -23,4 +23,10 @@ public partial class ScanResult
         await Task.Delay(100); // TODO: MAUI, timing issue in SKLottieView https://github.com/mono/SkiaSharp.Extended/issues/142
         ResultAnimation.IsAnimationEnabled = true;
     }
+
+    protected override bool OnBackButtonPressed()
+    {
+        _viewModel.OnOkCommand.Execute(null);
+        return true;
+    }
 }
