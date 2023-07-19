@@ -9,6 +9,7 @@
              xmlns:const="clr-namespace:SSW.Rewards"
              x:Class="SSW.Rewards.PopupPages.ScanResult"
              x:DataType="viewModels:ScanResultViewModel"
+             BackgroundClickedCommand="{Binding OnOkCommand}"
              BackgroundColor="Transparent">
     <pages:PopupPage.Resources>
         <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
