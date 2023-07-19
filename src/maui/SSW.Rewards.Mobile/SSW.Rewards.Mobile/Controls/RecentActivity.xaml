@@ -53,9 +53,10 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Activity">
+                        <!-- TODO: Remove Height request. Without it CollectionView with uneven heights doesn't work properly on iOS -->
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
                               ColumnDefinitions="2*,10*,4*"
-                              Padding="5">
+                              HeightRequest="75">
                             <Label TextColor="White"
                                    Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
                                    FontFamily="FluentIcons"
