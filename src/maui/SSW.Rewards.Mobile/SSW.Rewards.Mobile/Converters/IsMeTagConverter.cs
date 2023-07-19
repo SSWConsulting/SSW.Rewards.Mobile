@@ -15,7 +15,8 @@ public class IsMeTagConverter: IValueConverter, IMarkupExtension
     {
         get
         {
-            return (Color)Application.Current.Resources["LeaderSummary"];
+            Application.Current.Resources.TryGetValue("LeaderSummary", out var color);
+            return (Color)color;
         }
     }
 
