@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
+using System.Diagnostics;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -67,8 +68,8 @@ public class ScanResultViewModel : BaseViewModel
                     AnimationRef = "trophy.json";
                     ResultBody = "You have claimed this reward!";
                 }
-                
-                HeadingColour = (Color)Application.Current.Resources["PointsColour"];
+                Application.Current.Resources.TryGetValue("PointsColour", out var color);
+                HeadingColour = (Color)color;
                 AchievementHeading = result.Title;
                 _wonPrize = true;
                 WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());

@@ -8,7 +8,8 @@ namespace SSW.Rewards.Mobile.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["PassedQuizIcon"];
+                Application.Current.Resources.TryGetValue("PassedQuizIcon", out var color);
+                return (Color)color;
             }
         }
 
@@ -16,7 +17,8 @@ namespace SSW.Rewards.Mobile.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["SSWRed"];
+                Application.Current.Resources.TryGetValue("SSWRed", out var color);
+                return (Color)color;
             }
         }
 
