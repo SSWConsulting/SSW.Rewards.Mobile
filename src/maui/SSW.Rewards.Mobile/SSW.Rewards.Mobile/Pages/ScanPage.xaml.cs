@@ -18,12 +18,17 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
 
     public void Handle_OnScanResult(object sender, BarcodeDetectionEventArgs e)
     {
-        ToggleScanner(false);
+        // the handler is called on a thread-pool thread
+        App.Current.Dispatcher.Dispatch(() =>
+        {
+            ToggleScanner(false);
 
-        var result = e.Results.FirstOrDefault().Value;
+            var result = e.Results.FirstOrDefault().Value;
 
-        var popup = new PopupPages.ScanResult(_viewModel, result);
-        MopupService.Instance.PushAsync(popup);
+            var popup = new PopupPages.ScanResult(_viewModel, result);
+            MopupService.Instance.PushAsync(popup);
+        });
+        
     }
 
     protected override void OnDisappearing()
