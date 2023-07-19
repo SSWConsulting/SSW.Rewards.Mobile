@@ -24,7 +24,7 @@
            HorizontalOptions="Center"
            VerticalOptions="Center"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
-        <StackLayout>
+        <VerticalStackLayout Spacing="24">
             <zx:BarcodeGeneratorView x:Name="codeView"
                                      Format="QrCode"
                                      WidthRequest="300"
@@ -37,6 +37,6 @@
                     TextColor="White"
                     Margin="0,0,0,20"
                     Clicked="Close_Clicked"/>
-        </StackLayout>
+        </VerticalStackLayout>
     </Border>
 </popup:PopupPage>
