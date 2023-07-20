@@ -1,10 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
-             xmlns:cmp="clr-namespace:Microsoft.Maui.Controls.Compatibility;assembly=Microsoft.Maui.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
              xmlns:rewards="clr-namespace:SSW.Rewards"
@@ -17,7 +15,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="65, 2*, 9*, 3*"
+        <Grid RowDefinitions="65, 2*, 12*, 3*"
               ColumnDefinitions="*, 5*, *"
               ColumnSpacing="6">
 
@@ -38,7 +36,7 @@
                 Grid.Column="0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
-                FontSize="45"
+                FontSize="30"
                 FontFamily="FluentIcons"
                 Text="&#xf2ad;"
                 TextColor="White">
@@ -52,7 +50,7 @@
                 Grid.Column="2"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
-                FontSize="45"
+                FontSize="30"
                 FontFamily="FluentIcons"
                 Text="&#xf2b3;"
                 TextColor="White">
@@ -61,13 +59,14 @@
                 </Label.GestureRecognizers>
             </Label>
 
-            <VerticalStackLayout Grid.Row="1"
-                                 Grid.Column="1"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center"
-                                 Spacing="1">
+            <VerticalStackLayout
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Spacing="1">
                 <Label Text="{Binding DevName}"
-                       FontSize="Large"
+                       FontSize="Title"
                        TextColor="White"
                        HorizontalOptions="Center"
                        FontAttributes="Bold"
@@ -75,7 +74,7 @@
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"/>
                 <Label Text="{Binding DevTitle}"
-                       FontSize="Medium"
+                       FontSize="Subtitle"
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
@@ -87,7 +86,7 @@
                   Grid.Column="0"
                   Grid.ColumnSpan="3"
                   ColumnDefinitions="6*, 4*, 2*"
-                  RowDefinitions="25*, 7*, 2*, 5*"
+                  RowDefinitions="2.5*, *"
                   x:Name="CentralGrid">
 
                 <FlexLayout Grid.Row="0"
@@ -106,7 +105,7 @@
 
                 <CarouselView Grid.Row="0"
                               Grid.Column="0"
-                              Grid.RowSpan="4"
+                              Grid.RowSpan="2"
                               Grid.ColumnSpan="3"
                               Margin="0,0,0,-10"
                               x:Name="PicCarousel"
@@ -121,106 +120,102 @@
                     </CarouselView.ItemTemplate>
                 </CarouselView>
 
-                <VerticalStackLayout Grid.Row="1"
-                                     Grid.Column="2"
-                                     Grid.RowSpan="2"
-                                     HorizontalOptions="End"
-                                     VerticalOptions="Start"
-                                     TranslationY="-30"
-                                     Spacing="2">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
-                    </VerticalStackLayout.GestureRecognizers>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Grid.RowSpan="2"
+                    Spacing="16"
+                    VerticalOptions="End">
+
+                    <!-- QR Code -->
+                    <VerticalStackLayout HorizontalOptions="End">
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
+                        </VerticalStackLayout.GestureRecognizers>
                     
-                    <Label FontFamily="FluentIcons"
-                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
-                           Text="&#xf636;"
-                           FontSize="56"
-                           HorizontalOptions="End"
-                           Margin="0,0,10,0"
-                           HorizontalTextAlignment="End"
-                           VerticalTextAlignment="End"
-                           VerticalOptions="Start"
-                           HeightRequest="100"
-                           WidthRequest="100"/>
+                        <Label FontFamily="FluentIcons"
+                               TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
+                               Text="&#xf636;"
+                               FontSize="56"
+                               HorizontalOptions="End"
+                               Margin="0,0,10,0"
+                               HorizontalTextAlignment="End"
+                               VerticalTextAlignment="End"
+                               VerticalOptions="Start"/>
 
-                    <Label Text="{Binding Points, StringFormat='⭐ {0}'}"
-                           TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
-                           HorizontalOptions="Center"
-                           FontSize="12"
-                           Margin="0,0,10,0"
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                        <Label Text="{Binding Points, StringFormat='⭐ {0}'}"
+                               TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
+                               HorizontalOptions="Center"
+                               FontSize="12"
+                               Margin="0,0,10,0"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
 
-                <HorizontalStackLayout Grid.Column="1"
-                                       Grid.ColumnSpan="2"
-                                       Grid.Row="3"
-                                       Spacing="20"
-                                       HorizontalOptions="End"
-                                       Padding="0,0,10,0">                     
+                    <!-- Social networks -->
+                    <HorizontalStackLayout
+                    
+                        Spacing="20"
+                        HorizontalOptions="End"
+                        Padding="10">                     
 
-                    <Label FontFamily="FA6Brands"
-                           TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
-                           Text="&#xf099;"
-                           FontSize="30"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           HeightRequest="100"
-                           BackgroundColor="Transparent">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
+                        <Label FontFamily="FA6Brands"
+                               TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
+                               Text="&#xf099;"
+                               FontSize="30"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="Transparent">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
 
-                    <Label FontFamily="FA6Brands"
-                           TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
-                           Text="&#xf09b;"
-                           FontSize="36"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center"
-                           HeightRequest="100"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           BackgroundColor="Transparent">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnGithubTapped}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
+                        <Label FontFamily="FA6Brands"
+                               TextColor="{Binding GitHubEnabled, Converter={StaticResource BoolToSocial}}"
+                               Text="&#xf09b;"
+                               FontSize="36"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="Transparent">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnGithubTapped}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
 
-                    <Label FontFamily="FA6Brands"
-                           TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
-                           Text="&#xf08c;"
-                           FontSize="30"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center"
-                           HeightRequest="100"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           BackgroundColor="Transparent">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                  Command="{Binding OnLinkedinTapped}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
+                        <Label FontFamily="FA6Brands"
+                               TextColor="{Binding LinkedinEnabled, Converter={StaticResource BoolToSocial}}"
+                               Text="&#xf08c;"
+                               FontSize="30"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="Transparent">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                      Command="{Binding OnLinkedinTapped}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
 
-                    <Label FontFamily="FA6Brands"
-                           TextColor="White"
-                           Text="&#xf3ca;"
-                           FontSize="30"
-                           HorizontalOptions="End"
-                           VerticalOptions="Center"
-                           HeightRequest="100"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           BackgroundColor="Transparent">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PeopleCommand}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                </HorizontalStackLayout>
-
+                        <Label FontFamily="FA6Brands"
+                               TextColor="White"
+                               Text="&#xf3ca;"
+                               FontSize="30"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="Transparent">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PeopleCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+                 </VerticalStackLayout>
             </Grid>
 
 
