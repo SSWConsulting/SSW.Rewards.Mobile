@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-              BackgroundColor="{StaticResource MainBackground}"
+             xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:DataType="viewModels:ScanResultViewModel">
     <Grid>

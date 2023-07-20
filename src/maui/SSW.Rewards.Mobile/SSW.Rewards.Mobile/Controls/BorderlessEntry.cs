@@ -13,6 +13,8 @@ public class BorderlessEntry : Entry
 #if ANDROID
 				handler.PlatformView.Background = null;
 				handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+                
 #elif IOS || MACCATALYST
                 handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
                 handler.PlatformView.Layer.BorderWidth = 0;
