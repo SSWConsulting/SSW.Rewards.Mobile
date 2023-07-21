@@ -1,4 +1,4 @@
-﻿//using FFImageLoading.Transformations;
+﻿using FFImageLoading.Transformations;
 
 namespace SSW.Rewards.Mobile.Controls
 {
@@ -22,7 +22,7 @@ namespace SSW.Rewards.Mobile.Controls
             var control = (DevImageView)prop;
 
             control.DevImage.Source = null;
-            //control.DevImage.Transformations.Clear();
+            control.DevImage.Transformations.Clear();
 
             var profile = (DevProfile)newVal;
 
@@ -31,10 +31,10 @@ namespace SSW.Rewards.Mobile.Controls
                 return;
             }
 
-            //if (!profile.Scanned)
-            //{
-            //    control.DevImage.Transformations.Add(new GrayscaleTransformation());
-            //}
+            if (!profile.Scanned)
+            {
+                control.DevImage.Transformations.Add(new GrayscaleTransformation());
+            }
 
             control.DevImage.Source = profile.Picture;
         }

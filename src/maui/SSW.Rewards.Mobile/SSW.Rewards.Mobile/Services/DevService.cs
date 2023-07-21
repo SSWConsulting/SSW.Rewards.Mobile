@@ -11,7 +11,7 @@ public class DevService : BaseService, IDevService
 
     public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
     {
-			List<DevProfile> profiles = new List<DevProfile>();
+		List<DevProfile> profiles = new List<DevProfile>();
         int id = 0;
 
         try
@@ -26,17 +26,19 @@ public class DevService : BaseService, IDevService
                     FirstName = profile.Name,
                     Bio = profile.Profile,
                     Email = profile.Email,
-                    Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "dev_placeholder" : profile.ProfilePhoto.ToString(),
-						Title = profile.Title,
+                    Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString())
+                        ? "dev_placeholder"
+                        : profile.ProfilePhoto.ToString(),
+					Title = profile.Title,
                     TwitterID = profile.TwitterUsername,
                     GitHubID = profile.GitHubUsername,
                     LinkedInId = profile.LinkedInUrl,
-						Skills = profile.Skills?.ToList(),
+					Skills = profile.Skills?.ToList(),
                     IsExternal = profile.IsExternal,
                     AchievementId = profile.StaffAchievement?.Id ?? 0,
                     Scanned = profile.Scanned,
                     Points = profile.StaffAchievement?.Value ?? 0
-					};
+				};
 
                 profiles.Add(dev);
                 id++;
