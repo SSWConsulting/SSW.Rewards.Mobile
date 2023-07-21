@@ -21,6 +21,8 @@ public partial class LoginPage : ContentPage
                 LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
                 LogoImage.ScaleTo(1, 1000, Easing.CubicIn)
             );
+        _viewModel.LoginButtonEnabled = true;
+        _viewModel.RaisePropertyChanged(nameof(_viewModel.LoginButtonEnabled));
 
         if (Preferences.Get("FirstRun", true))
         {
