@@ -7,6 +7,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels;
+using FFImageLoading.Maui;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -25,6 +26,7 @@ public static class MauiProgram
             fonts.AddFont("Helvetica-Bold-Font.ttf", "HelveticaBold");
         })
         .UseMauiCommunityToolkit()
+        .UseFFImageLoading()
         .ConfigureMopups()
         .UseSkiaSharp()
         .UsePageResolver()
