@@ -20,7 +20,6 @@ public class LoginPageViewModel : BaseViewModel
     {
         _userService = userService;
         LoginTappedCommand = new Command(SignIn);
-        LoginButtonEnabled = true;
         ButtonText = "Sign up / Log in";
         OnPropertyChanged("ButtonText");
     }
