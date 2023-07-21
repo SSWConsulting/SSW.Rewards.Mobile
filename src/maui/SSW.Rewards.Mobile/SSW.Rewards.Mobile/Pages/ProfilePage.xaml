@@ -55,6 +55,7 @@
         <controls:ProfileStats Grid.Row="1"/>
 
         <CarouselView Grid.Row="2"
+                      Margin="0,20,0,0"
                       IndicatorView="ProfileIndicator"
                       ItemsSource="{Binding ProfileSections}"
                       ItemTemplate="{StaticResource ProfileViewSelector}"/>
