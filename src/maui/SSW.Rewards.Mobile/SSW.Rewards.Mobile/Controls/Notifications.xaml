@@ -13,7 +13,7 @@
     </ContentView.Resources>
   <ContentView.Content>
       <Grid RowDefinitions="*,4*"
-            Padding="20">
+            Padding="20,0">
           <Label Text="Notifications"
                  TextColor="White"
                  FontAttributes="Bold"

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              x:DataType="viewModels:ProfileCarouselViewModel"
              x:Class="SSW.Rewards.Mobile.Controls.AchievementGrid">
     <ContentView.Resources>
@@ -14,7 +13,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <Grid RowDefinitions="*,4*" 
-          Padding="25">
+          Padding="20,0">
         <Label
             Text="Achievements"
             TextColor="White"
@@ -33,25 +32,19 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewModels:ProfileAchievement">
                     <Grid>
-                        <Frame
+                        <Button
                             BorderColor="Transparent"
                             BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"      
                             HorizontalOptions="Center"
                             VerticalOptions="Center"         
-                            Padding="0"
-                            Margin="15"
-                            CornerRadius="37"> 
-                            <Label
-                                Margin="20"
-                                HorizontalOptions="Center"
-                                FontSize="35"
-                                FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
-                                Text="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
-                                TextColor="White"/>
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding AchievementTappedCommand}"/>
-                            </Frame.GestureRecognizers>
-                        </Frame>
+                            HeightRequest="76"
+                            WidthRequest="76"
+                            FontSize="35"
+                            Margin="10"
+                            FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                            Text="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                            Command="{Binding AchievementTappedCommand}"
+                            CornerRadius="37"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -12,8 +12,8 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <Grid RowDefinitions="*,5*"
-              Padding="20">
+        <Grid RowDefinitions="*,4*"
+              Padding="20,0">
             <Label Text="Recent Activity"
                  TextColor="White"
                  FontAttributes="Bold"
