@@ -463,3 +463,5 @@ $RECYCLE.BIN/
 
 # Files generasted by the .NET Meteor VS Code extension
 .meteor/
+
+**/appsettings.json
