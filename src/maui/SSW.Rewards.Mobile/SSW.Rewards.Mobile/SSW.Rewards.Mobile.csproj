@@ -63,6 +63,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.6.23329.7" />
 		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
 		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,9 +73,9 @@
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
-		<PackageReference Include="Microsoft.AppCenter" Version="4.5.3" />
-		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.3" />
-		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.3" />
+		<PackageReference Include="Microsoft.AppCenter" Version="5.0.2" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Mopups" Version="1.1.1" />
@@ -97,5 +99,11 @@
 	  <MauiXaml Update="Controls\TabHeader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="appsettings.json" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.json" />
 	</ItemGroup>
 </Project>

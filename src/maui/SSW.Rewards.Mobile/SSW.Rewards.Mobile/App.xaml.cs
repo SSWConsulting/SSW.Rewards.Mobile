@@ -34,14 +34,6 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        // TODO: AppCenter currently causing crash in Release config too.
-//#if !DEBUG
-////TODO: HotRestart. Fails to load, might be a HotRestart limitation https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart#limitations
-//        AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
-//                        "ios=e33283b1-7326-447d-baae-e783ece0789b",
-//            typeof(Analytics), typeof(Crashes));
-//#endif
-
         MainPage = page;
     }
 

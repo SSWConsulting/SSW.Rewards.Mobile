@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Reflection;
+﻿using System.Reflection;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 using CommunityToolkit.Maui;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
 using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Mobile.ViewModels;
 using FFImageLoading.Maui;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -31,6 +34,17 @@ public static class MauiProgram
         .UseSkiaSharp()
         .UsePageResolver()
         .UseBarcodeReader();
+
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream("SSW.Rewards.Mobile.appsettings.json");
+        var config = new ConfigurationBuilder()
+                    .AddJsonStream(stream)
+                    .Build();
+        builder.Configuration.AddConfiguration(config);
+
+        AppCenter.Start($"android={config["AppCenter:AndroidId"]};" +
+                  $"ios={config["AppCenter:iOSId"]};",
+                  typeof(Analytics), typeof(Crashes));
 
         var options = new ApiOptions { BaseUrl = Constants.ApiBaseUrl };
 
