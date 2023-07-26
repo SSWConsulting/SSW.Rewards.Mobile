@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters
 {
-    public class InverseBoolConverter : IValueConverter, IMarkupExtension
+    public class InverseBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -14,11 +14,6 @@ namespace SSW.Rewards.Mobile.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

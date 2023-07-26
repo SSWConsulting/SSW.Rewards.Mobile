@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters;
 
-public class IsMeTagConverter: IValueConverter, IMarkupExtension
+public class IsMeTagConverter: IValueConverter
 {
     public Color Me
     {
@@ -31,10 +31,5 @@ public class IsMeTagConverter: IValueConverter, IMarkupExtension
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotSupportedException("One way bindings only on this converter");
-    }
-
-    public object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return this;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters
 {
-    class SkillToLabelConverter : IValueConverter, IMarkupExtension
+    class SkillToLabelConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
@@ -14,11 +14,6 @@ namespace SSW.Rewards.Mobile.Converters
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotSupportedException("Only one way bindings are supported for this converter");
-		}
-
-		public object ProvideValue(IServiceProvider serviceProvider)
-		{
-			return this;
 		}
 	}
 }

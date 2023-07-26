@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters;
 
-public class BoolToFontConverter : IValueConverter, IMarkupExtension
+public class BoolToFontConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -24,10 +24,5 @@ public class BoolToFontConverter : IValueConverter, IMarkupExtension
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
-    }
-
-    public object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return this;
     }
 }

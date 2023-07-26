@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters;
 
-public class AchievementCompletedColorConverter : IValueConverter, IMarkupExtension
+public class AchievementCompletedColorConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -21,10 +21,5 @@ public class AchievementCompletedColorConverter : IValueConverter, IMarkupExtens
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
-    }
-
-    public object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return this;
     }
 }
