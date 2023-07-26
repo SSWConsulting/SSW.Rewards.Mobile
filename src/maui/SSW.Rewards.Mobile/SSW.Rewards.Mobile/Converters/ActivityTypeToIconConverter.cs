@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Mobile.Converters
 {
-    public class ActivityTypeToIconConverter : IValueConverter, IMarkupExtension
+    public class ActivityTypeToIconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -27,11 +27,6 @@ namespace SSW.Rewards.Mobile.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }
