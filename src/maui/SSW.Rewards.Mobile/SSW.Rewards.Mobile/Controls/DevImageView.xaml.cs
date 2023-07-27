@@ -24,8 +24,7 @@ namespace SSW.Rewards.Mobile.Controls
             control.DevImage.Source = null;
             control.DevImage.Transformations.Clear();
 
-            var profile = (DevProfile)newVal;
-
+            var profile = newVal as DevProfile;
             if (profile is null)
             {
                 return;
