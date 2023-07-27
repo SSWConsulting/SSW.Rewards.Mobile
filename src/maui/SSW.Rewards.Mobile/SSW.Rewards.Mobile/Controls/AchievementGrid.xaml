@@ -32,19 +32,25 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewModels:ProfileAchievement">
                     <Grid>
-                        <Button
+                        <Frame
                             BorderColor="Transparent"
                             BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"      
                             HorizontalOptions="Center"
                             VerticalOptions="Center"         
-                            HeightRequest="76"
-                            WidthRequest="76"
-                            FontSize="35"
-                            Margin="10"
-                            FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
-                            Text="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
-                            Command="{Binding AchievementTappedCommand}"
-                            CornerRadius="37"/>
+                            Padding="0"
+                            Margin="15"
+                            CornerRadius="37"> 
+                            <Label
+                                Margin="20"
+                                HorizontalOptions="Center"
+                                FontSize="35"
+                                FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                                Text="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                                TextColor="White"/>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding AchievementTappedCommand}"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
