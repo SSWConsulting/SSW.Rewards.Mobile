@@ -25,7 +25,10 @@ public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchiv
         var userAchievementNames = userAchievements.UserAchievements.Select(u => u.AchievementName).ToList();
 
         var achievements = await _context.Achievements
-            .Where(a => (a.Type == AchievementType.Completed || a.Type == AchievementType.Linked) && !userAchievementNames.Contains(a.Name))
+            .Where(a =>
+                !a.IsDeleted &&
+                (a.Type == AchievementType.Completed || a.Type == AchievementType.Linked) &&
+                !userAchievementNames.Contains(a.Name))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
