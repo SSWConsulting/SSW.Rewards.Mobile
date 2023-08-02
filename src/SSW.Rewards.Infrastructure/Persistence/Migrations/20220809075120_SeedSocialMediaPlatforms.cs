@@ -17,13 +17,23 @@ namespace SSW.Rewards.Persistence.Migrations
         {
 
         }
-        private void UpsertSocialMediaPlatforms(MigrationBuilder migrationBuilder, string platformName, string achievementNameString)
+        private void UpsertSocialMediaPlatforms(MigrationBuilder migrationBuilder, string platformName, string achievementNameString, AchievementType type, Icons icon, bool branded, int value)
         {
+            string achievementName = $"{achievementNameString} {platformName}";
+
             migrationBuilder.Sql(@$"
+                -- First, ensure the Achievement exists
+                IF NOT EXISTS (SELECT 1 FROM dbo.Achievements WHERE Name = '{achievementName}')
+                BEGIN
+                    INSERT INTO dbo.Achievements (Name, Value, Type, Icon, IconIsBranded, IsDeleted)
+                    VALUES ('{achievementName}', {value}, {(int)type}, {(int)icon}, '{branded}', 'false')
+                END
+
+                -- Then, ensure the SocialMediaPlatform exists
                 IF NOT EXISTS (SELECT 1 FROM dbo.SocialMediaPlatforms WHERE Name = '{platformName}')
                 BEGIN
                     INSERT INTO dbo.SocialMediaPlatforms (Name, CreatedUtc, AchievementId) 
-                    values ('{platformName}', GETDATE(), (SELECT Id FROM Achievements WHERE Name = '{achievementNameString} {platformName}'))
+                    VALUES ('{platformName}', GETDATE(), (SELECT Id FROM dbo.Achievements WHERE Name = '{achievementName}'))
                 END
             ");
         }
