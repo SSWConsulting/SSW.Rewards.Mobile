@@ -35,15 +35,8 @@ public static class MauiProgram
         .UsePageResolver()
         .UseBarcodeReader();
 
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream("SSW.Rewards.Mobile.appsettings.json");
-        var config = new ConfigurationBuilder()
-                    .AddJsonStream(stream)
-                    .Build();
-        builder.Configuration.AddConfiguration(config);
-
-        AppCenter.Start($"android={config["AppCenter:AndroidId"]};" +
-                  $"ios={config["AppCenter:iOSId"]};",
+        AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
+                  $"ios={Constants.AppCenterIOSId};",
                   typeof(Analytics), typeof(Crashes));
 
         var options = new ApiOptions { BaseUrl = Constants.ApiBaseUrl };
