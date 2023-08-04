@@ -393,8 +393,6 @@ public class ProfileViewModel : BaseViewModel,
 
         string action = string.Empty;
 
-        activity = char.ToLower(activity[0]) + activity.Substring(1);
-
         switch (achievement.Type)
         {
             case AchievementType.Attended:
