@@ -100,4 +100,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
+
+	<!--https://github.com/dotnet/maui/issues/16514-->
+	<PropertyGroup>
+	   <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
+	</PropertyGroup>
 </Project>
