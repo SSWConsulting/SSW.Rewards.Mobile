@@ -50,14 +50,17 @@ public class RewardsProgress : ContentView
 
         canvas.Clear();
 
+        var strokeWidth = DeviceInfo.Platform == DevicePlatform.iOS ? 30 : 60;
         SKPaint paint = new SKPaint
         {
             Style = SKPaintStyle.Stroke,
             Color = new SKColor(52, 52, 52), // gray background, red part rgb(204, 65, 65)
-            StrokeWidth = 60
+            StrokeWidth = strokeWidth
         };
 
-        var radius = (info.Width * 0.75f) / 2; // this will make the circle take up 3/4 the width
+        
+        var shortestSide = Math.Min(info.Height, info.Width); // if W & H are different, we need to take the shortest one to prevent overflow
+        var radius = (shortestSide / 2) - strokeWidth / 2; // as the stroke is wide, the reference point is in the middle
 
         canvas.DrawCircle(info.Width / 2, info.Height / 2, radius, paint);
 

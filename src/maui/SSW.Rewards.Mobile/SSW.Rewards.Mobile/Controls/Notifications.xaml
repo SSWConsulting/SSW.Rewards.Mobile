@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
   <ContentView.Content>
-      <Grid RowDefinitions="*,4*"
+      <Grid RowDefinitions="Auto,*"
             Padding="20,0">
           <Label Text="Notifications"
                  TextColor="White"
@@ -21,6 +21,7 @@
                  HorizontalTextAlignment="Center"
                  VerticalOptions="Start"
                  FontSize="Title"
+                 LineBreakMode="TailTruncation"
                  Margin="10"
                  Grid.Row="0"/>
 

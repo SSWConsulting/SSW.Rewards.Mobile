@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <ContentView.Content>
-        <Grid RowDefinitions="*,4*"
+        <Grid RowDefinitions="Auto,*"
               Padding="20,0">
             <Label Text="Recent Activity"
                  TextColor="White"
@@ -21,8 +21,9 @@
                  HorizontalTextAlignment="Center"
                  VerticalOptions="Start"
                  FontSize="Title"
+                 LineBreakMode="TailTruncation"
                  Margin="10"
-                   Grid.Row="0"/>
+                 Grid.Row="0"/>
 
             <CollectionView ItemsSource="{Binding RecentActivity}"
                             Grid.Row="1">

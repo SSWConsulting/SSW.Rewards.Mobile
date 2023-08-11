@@ -30,7 +30,7 @@
                                          RecentActivity="{StaticResource ActivityTemplate}" />
     </ContentPage.Resources>
     
-    <Grid RowDefinitions="Auto,*,*,10"
+    <Grid RowDefinitions="Auto,Auto,*,10"
           RowSpacing="6"
           Padding="20,20,20,5">
 
