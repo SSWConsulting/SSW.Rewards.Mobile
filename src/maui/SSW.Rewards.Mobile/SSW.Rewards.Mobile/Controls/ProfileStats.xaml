@@ -8,8 +8,15 @@
     <controls:RewardsProgress
         Progress="{Binding Progress}"/>
 
+    <!--
+    RewardsPregress is not taken into account when the size of ProfileStats is calculates.
+    So we need this placeholder. The bottom padding is 80px where 60px is the width of the progress bar
+    and 20 is the actual padding-->
+    <Label Margin="0,0,0,280"/>
+
     <HorizontalStackLayout
         Spacing="6"
+        Padding="0,0,0,0"
         Margin="0,0,0,200"
         IsVisible="{Binding ShowBalance}"
         VerticalOptions="Center"
