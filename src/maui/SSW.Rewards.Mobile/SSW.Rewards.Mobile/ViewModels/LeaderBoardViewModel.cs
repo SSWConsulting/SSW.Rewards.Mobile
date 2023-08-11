@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.IdentityModel.Tokens;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 
@@ -15,8 +13,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     private IUserService _userService;
     private bool _loaded;
     private ObservableCollection<LeaderViewModel> searchResults = new ();
-    private const string DismissIcon = "\ue4c3";
-    private const string SearchIcon = "\uea7c";
     
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
     {
@@ -37,7 +33,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     public ICommand ScrollToEndCommand => new Command(ScrollToLastCard);
     public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
     public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
-    public ICommand ClearSearchCommand => new Command(ClearSearch);
     public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
     public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
     public IAsyncRelayCommand FilterByPeriodCommand => new AsyncRelayCommand(FilterByPeriod);
@@ -52,16 +47,10 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     public int MyRank { get; set; }
     public int MyPoints { get; set; }
     public int MyBalance { get; set; }
-    public string SearchBarIcon { get; set; } = SearchIcon;
-    public string SearchBarText { get; set; }
-    
-
-    private void ClearSearch()
-    {
-        SearchBarText = string.Empty;
-        SearchBarIcon = SearchIcon;
-        RaisePropertyChanged(nameof(SearchBarText), nameof(SearchBarIcon));
-    }
+    /// <summary>
+    /// Flip the value to clear search input field
+    /// </summary>
+    public bool ClearSearch { get; set; }
     
     public ObservableCollection<LeaderViewModel> SearchResults
     {
@@ -133,14 +122,9 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
 
     private async Task FilterByPeriod()
     {
-        // If Search is empty when we switch tabs, ClearSearchCommand won't update the list because
-        // PropertyChanged won't trigger SearchTextChanged, so we need to call it here.
-        var needToSort = SearchBarText.IsNullOrEmpty();
-        ClearSearchCommand.Execute(null);
-        if (needToSort)
-        {
-            await FilterAndSortLeaders(Leaders, CurrentPeriod);
-        }
+        ClearSearch = !ClearSearch;
+        RaisePropertyChanged(nameof(ClearSearch));
+        await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
     public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, PeriodFilter period, bool keepRank = false)
@@ -252,11 +236,11 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         // as internally it uses .ContinueWith
         App.Current.MainPage.Dispatcher.Dispatch(() =>
         {
-            // TODO: check time filter, or switch to all time when searching
             if (searchBarText != null)
             {
                 var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
-                SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                //SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                FilterAndSortLeaders(filtered, CurrentPeriod, true);
             }
         });
     }

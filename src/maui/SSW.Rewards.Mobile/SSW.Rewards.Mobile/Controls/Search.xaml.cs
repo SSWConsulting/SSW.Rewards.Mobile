@@ -40,6 +40,17 @@ public partial class Search
         set => SetValue(CommandProperty, value);
     }
 
+    public static readonly BindableProperty ClearSearchProperty = BindableProperty.Create(
+        nameof(ClearSearch),
+        typeof(bool),
+        typeof(Search));
+
+    public bool ClearSearch
+    {
+        get => (bool)GetValue(ClearSearchProperty);
+        set => SetValue(ClearSearchProperty, value);
+    }
+
     public Search()
     {
         InitializeComponent();
@@ -53,6 +64,11 @@ public partial class Search
     }
 
     private void Icon_OnTapped(object sender, EventArgs e)
+    {
+        Clear();
+    }
+
+    private void Clear()
     {
         SearchEntry.Text = string.Empty;
         Icon.Text = SearchIcon;
@@ -70,6 +86,10 @@ public partial class Search
         {
             SearchEntry.TextColor = TextColor;
             Icon.TextColor = TextColor;
+        }
+        else if (propertyName == nameof(ClearSearch))
+        {
+            Clear();
         }
     }
 }
