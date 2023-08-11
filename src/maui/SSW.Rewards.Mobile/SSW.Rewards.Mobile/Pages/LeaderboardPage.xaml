@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid Padding="30,5"
+        <Grid Margin="30,5"
               RowSpacing="6"
               RowDefinitions="80, 55, 40, 35, *">
 
