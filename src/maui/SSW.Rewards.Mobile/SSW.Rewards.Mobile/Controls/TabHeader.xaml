@@ -16,6 +16,8 @@
                    HorizontalTextAlignment="Start"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
+                   FontAutoScalingEnabled="False"
+                   LineBreakMode="TailTruncation"
                    Text="This Month"
                    x:Name="MonthRadio"
                    ClassId="MonthRadio"/>
@@ -33,6 +35,8 @@
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
+                   FontAutoScalingEnabled="False"
+                   LineBreakMode="TailTruncation"
                    Text="This Year"
                    x:Name="YearRadio"
                    ClassId="YearRadio"/>
@@ -51,6 +55,8 @@
                    HorizontalTextAlignment="End"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
+                   FontAutoScalingEnabled="False"
+                   LineBreakMode="TailTruncation"
                    Text="All Time"
                    x:Name="AlltimeRadio"
                    ClassId="TimeRadio"/>
