@@ -18,7 +18,7 @@
         <mct:StatusBarBehavior StatusBarColor="{StaticResource SecondaryBackground}" StatusBarStyle="LightContent"/>
     </ContentPage.Behaviors>
     <ContentPage.Content>
-        <Grid RowDefinitions="5*, 20*, 4*, 7*, 4*, 5*">
+        <Grid RowDefinitions="Auto, 20*, 11*, 20, 5*">
 
             <Image Source="rewardsbackground"
                    Aspect="AspectFill"
@@ -73,39 +73,42 @@
                 </CarouselView.ItemTemplate>
             </CarouselView>
 
-            <Label HorizontalOptions="FillAndExpand"
-                   HorizontalTextAlignment="Center"
-                   VerticalOptions="End"
-                   TextColor="White"
-                   FontSize="Large"
-                   Text="{Binding SubHeading}"
-                   Grid.Row="2"/>
-
-            <StackLayout Grid.Row="3">
-                <Label TextColor="{StaticResource SSWRed}"
-                       HorizontalOptions="Center"
+            <ScrollView Grid.Row="2">
+                <StackLayout Grid.Row="3">
+                    <Label HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
-                       Margin="30,10"
-                       IsVisible="{Binding HasPoints}"
-                       Text="{Binding Points, StringFormat='⭐ {0}'}"/>
-                
-                <Label HorizontalOptions="FillAndExpand"
-                       HorizontalTextAlignment="Center"
-                       VerticalOptions="Start"
+                       VerticalOptions="End"
                        TextColor="White"
-                       FontSize="Small"
-                       Margin="30,10"
-                       Text="{Binding Content}"/>
-            </StackLayout>
+                       FontSize="Large"
+                       Text="{Binding SubHeading}"
+                       Grid.Row="2"/>
+
+                    <Label TextColor="{StaticResource SSWRed}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="30,10"
+                           IsVisible="{Binding HasPoints}"
+                           Text="{Binding Points, StringFormat='⭐ {0}'}"/>
+                
+                    <Label HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Center"
+                           VerticalOptions="Start"
+                           TextColor="White"
+                           FontSize="Small"
+                           Margin="30,10"
+                           Text="{Binding Content}"/>
+                </StackLayout>
+            </ScrollView>
 
             <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                            IndicatorColor="{StaticResource IndicatorColor}"
                            HorizontalOptions="Center"
-                           VerticalOptions="Start"
-                           Grid.Row="4"
+                           VerticalOptions="Center"
+                           Padding="0,5,0,5"
+                           Grid.Row="3"
                            x:Name="RewardsIndicator"/>
 
-            <Button Grid.Row="5"
+            <Button Grid.Row="4"
                     Text="{Binding ButtonText}"
                     TextColor="White"
                     HorizontalOptions="Center"
