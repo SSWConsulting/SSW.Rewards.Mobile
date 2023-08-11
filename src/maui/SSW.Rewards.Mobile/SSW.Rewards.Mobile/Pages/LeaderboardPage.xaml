@@ -91,7 +91,9 @@
                 VerticalOptions="Center"
                 BackgroundColor="{StaticResource TabBarBackground}"
                 TextColor="White"
-                Command="{Binding SearchTextCommand}"/>
+                Command="{Binding SearchTextCommand}"
+                ClearSearch="{Binding ClearSearch, Mode=TwoWay}"/>
+            <!--TODO: Why OneWayToSource doesn't work here?-->
 
             <Label Grid.Row="2"
                    Text="Leaderboard"
