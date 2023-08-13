@@ -49,7 +49,7 @@
                                HorizontalTextAlignment="Center"
                                TextColor="White"
                                HorizontalOptions="Center"/>
-                        <Image Source="external"
+                        <Image Source="external_link.png"
                                WidthRequest="24"
                                InputTransparent="True"
                                HorizontalOptions="End"/>
