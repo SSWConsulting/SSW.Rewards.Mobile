@@ -40,7 +40,7 @@
                             VerticalOptions="Center"         
                             Padding="0"
                             Margin="0"
-                            StrokeShape="{OnPlatform Android='Ellipse', iOS='RoundRectangle 20'}"> 
+                            StrokeShape="{OnPlatform Android='RoundRectangle 21', iOS='RoundRectangle 7'}"> 
                             <Label
                                 Margin="20"
                                 HorizontalOptions="Center"
