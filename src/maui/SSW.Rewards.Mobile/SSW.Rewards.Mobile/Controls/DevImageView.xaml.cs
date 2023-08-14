@@ -27,6 +27,7 @@ namespace SSW.Rewards.Mobile.Controls
             var profile = newVal as DevProfile;
             if (profile is null)
             {
+                control.DevImage.Source = "dev_placeholder.png";
                 return;
             }
 
