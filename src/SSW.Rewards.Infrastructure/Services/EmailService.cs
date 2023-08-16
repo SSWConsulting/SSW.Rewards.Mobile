@@ -57,4 +57,9 @@ public class EmailService : IEmailService
             return false;
         }
     }
+
+    public async Task<bool> SendProfileDeletionRequest(string toMail, string toName, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
