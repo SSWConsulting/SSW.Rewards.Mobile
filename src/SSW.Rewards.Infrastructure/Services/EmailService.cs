@@ -61,9 +61,9 @@ public class EmailService : IEmailService
 
     public async Task<bool> SendProfileDeletionRequest(DeleteProfileEmail model, CancellationToken cancellationToken)
     {
-        var template = "<p>Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>Hi {{username}},<br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p></p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul>.</p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template = "<p>Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>Hi {{username}},<br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p></p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
-        var message = template.Replace("{{username", model.UserName);
+        var message = template.Replace("{{username}}", model.UserName);
 
         try
         {
