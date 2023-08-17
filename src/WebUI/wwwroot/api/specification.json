@@ -1826,6 +1826,32 @@
           }
         ]
       }
+    },
+    "/api/User/DeleteMyProfile": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "User_DeleteMyProfile",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
     }
   },
   "components": {

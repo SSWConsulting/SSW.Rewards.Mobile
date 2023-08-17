@@ -67,7 +67,7 @@ public class EmailService : IEmailService
             .To(model.RewardsTeamEmail)
             .CC(model.UserEmail)
             .Subject("Profile deletion request")
-            .UsingTemplate(template, model)
+            .UsingTemplate(template, model, true)
             .SendAsync(cancellationToken);
 
         if (result.Successful)

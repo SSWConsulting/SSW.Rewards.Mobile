@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using SSW.Rewards.Domain.Enums;
 
 #nullable disable
 
@@ -8,9 +9,9 @@ namespace SSW.Rewards.Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            UpsertSocialMediaPlatforms(migrationBuilder, "GitHub", "Follow SSW on");
-            UpsertSocialMediaPlatforms(migrationBuilder, "LinkedIn", "Follow SSW on");
-            UpsertSocialMediaPlatforms(migrationBuilder, "Twitter", "Follow SSW TV on");
+            UpsertSocialMediaPlatforms(migrationBuilder, "GitHub", "Follow SSW on", AchievementType.Linked, Icons.Github, true, 150);
+            UpsertSocialMediaPlatforms(migrationBuilder, "LinkedIn", "Follow SSW on", AchievementType.Linked, Icons.Linkedin, true, 150);
+            UpsertSocialMediaPlatforms(migrationBuilder, "Twitter", "Follow SSW TV on", AchievementType.Linked, Icons.Twitter, true, 150);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
