@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentEmail.Graph;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Interfaces;
@@ -51,11 +52,13 @@ public static class ConfigureServices
 
         configuration.Bind("SMTPSettings", smtpSettings);
 
-        string SendGridAPIKey = configuration.GetValue<string>(nameof(SendGridAPIKey));
+        GraphSenderOptions GraphSenderOptions = new GraphSenderOptions();
 
-        services.AddFluentEmail(smtpSettings.DefaultSender, smtpSettings.DefaultSenderName)
+        configuration.Bind(nameof(GraphSenderOptions), GraphSenderOptions);
+
+        services.AddFluentEmail("verify@ssw.com.au")
                     .AddRazorRenderer()
-                    .AddSendGridSender(SendGridAPIKey);
+                    .AddGraphSender(GraphSenderOptions);
 
         string signingAuthority = configuration.GetValue<string>(nameof(signingAuthority));
 
