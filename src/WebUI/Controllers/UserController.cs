@@ -84,6 +84,6 @@ public class UserController : ApiControllerBase
     {
         await Mediator.Send(new DeleteMyProfileCommand());
 
-        return Ok():
+        return Ok();
     }
 }

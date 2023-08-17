@@ -22,7 +22,16 @@ public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileComm
         var userName = _currentUserService.GetUserFullName();
         var userEmail = _currentUserService.GetUserEmail();
 
-        var sent = await _emailService.SendProfileDeletionRequest(userName, userEmail, cancellationToken);
+        var model = new DeleteProfileEmail
+        {
+            UserName = userName,
+            UserEmail = userEmail,
+            // TODO: Technical debt - needs to be switched to an appropriate
+            //       distribution group. See Zendesk ticket #12202.
+            RewardsTeamEmail = "mattgoldman@ssw.com.au",
+        };
+
+        var sent = await _emailService.SendProfileDeletionRequest(model, cancellationToken);
 
         if (sent)
         {

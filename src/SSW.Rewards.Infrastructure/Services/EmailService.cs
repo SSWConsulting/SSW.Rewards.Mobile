@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
+using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 
 namespace SSW.Rewards.Infrastructure;
 
@@ -58,8 +59,25 @@ public class EmailService : IEmailService
         }
     }
 
-    public async Task<bool> SendProfileDeletionRequest(string toMail, string toName, CancellationToken cancellationToken)
+    public async Task<bool> SendProfileDeletionRequest(DeleteProfileEmail model, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var template = "<p>Hi SSW Rewards</p><p>@Model.UserName has submitted a profile deletion request.</p></p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul>.</p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+
+        var result = await _fluentEmail
+            .To(model.RewardsTeamEmail)
+            .CC(model.UserEmail)
+            .Subject("Profile deletion request")
+            .UsingTemplate(template, model)
+            .SendAsync(cancellationToken);
+
+        if (result.Successful)
+        {
+            return true;
+        }
+        else
+        {
+            _logger.LogError("Error sending email", _fluentEmail);
+            return false;
+        }
     }
 }
