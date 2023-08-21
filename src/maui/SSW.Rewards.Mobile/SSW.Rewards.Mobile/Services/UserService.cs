@@ -35,6 +35,23 @@ public class UserService : BaseService, IUserService
 
     public bool IsLoggedIn { get => _loggedIn; }
 
+    public async Task<bool> DeleteProfileAsync()
+    {
+        try
+        {
+            var result = await _userClient.DeleteProfileAsync();
+
+            SignOut();
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+        
+    }
+
     #region AUTHENTICATION
 
     public async Task<ApiStatus> SignInAsync()
