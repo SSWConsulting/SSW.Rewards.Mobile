@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Mopups.Services;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
@@ -61,6 +62,12 @@ public partial class AppShell : Shell
     public void Handle_AboutClicked(object sender, EventArgs e)
     {
         var popup = new AboutSSW();
+        MopupService.Instance.PushAsync(popup);
+    }
+
+    public void Handle_DeleteClicked(object sender, EventArgs e)
+    {
+        var popup = new DeleteProfilePage(_userService);
         MopupService.Instance.PushAsync(popup);
     }
 
