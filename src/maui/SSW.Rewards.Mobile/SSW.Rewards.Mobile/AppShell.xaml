@@ -291,6 +291,15 @@
         </MenuItem.IconImageSource>
     </MenuItem>
 
+    <MenuItem Text="Delete Profile"
+              Clicked="Handle_DeleteClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="FluentIcons"
+                             Glyph="&#xf5d1;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
     <Shell.FlyoutFooter>
         <Grid
             RowDefinitions="Auto,Auto,5,Auto"
