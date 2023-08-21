@@ -5,15 +5,38 @@ param keyVaultName string
 param appServicePlanId string
 param adminPortalUrl string
 param idsUrl string
-param sendGridKey string
 param now string
 
-module sendGridSecrets 'create-secrets.bicep' = {
-  name: 'sendGridSecrets-${now}'
+param graphTenantId string
+param graphClientId string
+
+@secure()
+param graphClientSecret string
+
+module graphTenant 'create-secrets.bicep' = {
+  name: 'graphTenantId-${now}'
   params: {
     keyVaultName: keyVaultName
-    secretName: 'SendGridAPIKey'
-    secretValue: sendGridKey
+    secretName: 'GraphTenantId'
+    secretValue: graphTenantId
+  }
+}
+
+module graphClient 'create-secrets.bicep' = {
+  name: 'graphClientId-${now}'
+  params: {
+    keyVaultName: keyVaultName
+    secretName: 'GraphClientId'
+    secretValue: graphClientId
+  }
+}
+
+module graphSecret 'create-secrets.bicep' = {
+  name: 'graphClientSecret-${now}'
+  params: {
+    keyVaultName: keyVaultName
+    secretName: 'GraphClientSecret'
+    secretValue: graphClientSecret
   }
 }
 
@@ -45,9 +68,19 @@ resource contentStorageConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets
   name: 'ContentStorageConnectionString'
 }
 
-resource sendGridAPIKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+resource graphClientSecretSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
   parent: kv
-  name: 'SendGridAPIKey'
+  name: 'GraphClientSecret'
+}
+
+resource graphTenantSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'GraphTenantId'
+}
+
+resource graphClientIdSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'GraphClientId'
 }
 
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
@@ -127,8 +160,16 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
           value: '@Microsoft.KeyVault(SecretUri=${contentStorageConnectionStringSecret.properties.secretUri})'
         }
         {
-          name: 'SendGridAPIKey'
-          value: '@Microsoft.KeyVault(SecretUri=${sendGridAPIKeySecret.properties.secretUri})'
+          name: 'GraphSenderOptions__ClientId'
+          value: '@Microsoft.KeyVault(SecretUri=${graphClientIdSecret.properties.secretUri})'
+        }
+        {
+          name: 'GraphSenderOptions__Secret'
+          value: '@Microsoft.KeyVault(SecretUri=${graphClientSecretSecret.properties.secretUri})'
+        }
+        {
+          name: 'GraphSenderOptions__TenantId'
+          value: '@Microsoft.KeyVault(SecretUri=${graphTenantSecret.properties.secretUri})'
         }
         {
           name: 'SMTPSettings__DefaultSender'

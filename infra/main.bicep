@@ -18,7 +18,12 @@ param sqlAdministratorsObjectId string
 param adminPortalUrl string
 param idsUrl string
 
-param sendGridKey string
+@secure()
+param graphClientId string
+@secure()
+param graphClientSecret string
+@secure()
+param graphTenantId string
 
 @secure()
 @description('Specifies secrets to connect to apple https://docs.microsoft.com/en-us/azure/templates/microsoft.notificationhubs/namespaces/notificationhubs?tabs=bicep#apnscredentialproperties Sample: {"keyId":"key id","appName":"bundle id","appId":"team id","token":"token"}')
@@ -67,7 +72,9 @@ module appService 'modules/webapp.bicep' = {
     adminPortalUrl: adminPortalUrl
     idsUrl: idsUrl
     now: now
-    sendGridKey: sendGridKey
+    graphClientId: graphClientId
+    graphClientSecret: graphClientSecret
+    graphTenantId: graphTenantId
   }
 }
 
