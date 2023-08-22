@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
+using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 using SSW.Rewards.Application.Users.Commands.RegisterUser;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 using SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
@@ -76,5 +77,13 @@ public class UserController : ApiControllerBase
         }
 
         return Ok(retVal);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> DeleteMyProfile()
+    {
+        await Mediator.Send(new DeleteMyProfileCommand());
+
+        return Ok();
     }
 }
