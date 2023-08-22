@@ -29,11 +29,11 @@ on:
       SQL_ADMIN_GROUP_SID:
         required: true
       GRAPH_TENANT_ID:
-        required: true
+        required: false
       GRAPH_CLIENT_ID:
-        required: true
+        required: false
       GRAPH_CLIENT_SECRET:
-        required: true
+        required: false
 
 
 jobs:
@@ -60,9 +60,14 @@ jobs:
       env:
         sqlAdminGroup: ${{ secrets.SQL_ADMIN_GROUP }}
         sqlAdminSid: ${{ secrets.SQL_ADMIN_GROUP_SID }}
-        graphTenantId: ${{ secrets.GRAPH_TENANT_ID }}
-        graphClientId: ${{ secrets.GRAPH_CLIENT_ID }}
-        graphClientSecret: ${{ secrets.GRAPH_CLIENT_SECRET }}
+        # graphTenantId: ${{ secrets.GRAPH_TENANT_ID }}
+        # graphClientId: ${{ secrets.GRAPH_CLIENT_ID }}
+        # graphClientSecret: ${{ secrets.GRAPH_CLIENT_SECRET }}
+
+        # TODO: add these back in when moved to Keeper
+        # graphTenantId=$env:graphTenantId `
+        # graphClientId=$env:graphClientId `
+        # graphClientSecret=$env:graphClientSecret `
       run: | 
         $out = az deployment group create `
           --resource-group ${{ inputs.RESOURCE_GROUP }} `
@@ -72,9 +77,6 @@ jobs:
             appServicePlanResourceGroup=${{ inputs.APP_SERVICE_PLAN_RESOURCE_GROUP }} `
             sqlAdministratorsLoginName=$env:sqlAdminGroup `
             sqlAdministratorsObjectId=$env:sqlAdminSid `
-            graphTenantId=$env:graphTenantId `
-            graphClientId=$env:graphClientId `
-            graphClientSecret=$env:graphClientSecret `
             adminPortalUrl=${{ inputs.ADMIN_PORTAL_URL }} `
             idsUrl=${{ inputs.IDS_URL }} `
             | convertfrom-json | foreach properties | foreach outputs

@@ -7,38 +7,40 @@ param adminPortalUrl string
 param idsUrl string
 param now string
 
-param graphTenantId string
-param graphClientId string
 
-@secure()
-param graphClientSecret string
+// TODO: add these back in when Keeper secrets is set up
+// param graphTenantId string
+// param graphClientId string
 
-module graphTenant 'create-secrets.bicep' = {
-  name: 'graphTenantId-${now}'
-  params: {
-    keyVaultName: keyVaultName
-    secretName: 'GraphTenantId'
-    secretValue: graphTenantId
-  }
-}
+// @secure()
+// param graphClientSecret string
 
-module graphClient 'create-secrets.bicep' = {
-  name: 'graphClientId-${now}'
-  params: {
-    keyVaultName: keyVaultName
-    secretName: 'GraphClientId'
-    secretValue: graphClientId
-  }
-}
+// module graphTenant 'create-secrets.bicep' = {
+//   name: 'graphTenantId-${now}'
+//   params: {
+//     keyVaultName: keyVaultName
+//     secretName: 'GraphTenantId'
+//     secretValue: graphTenantId
+//   }
+// }
 
-module graphSecret 'create-secrets.bicep' = {
-  name: 'graphClientSecret-${now}'
-  params: {
-    keyVaultName: keyVaultName
-    secretName: 'GraphClientSecret'
-    secretValue: graphClientSecret
-  }
-}
+// module graphClient 'create-secrets.bicep' = {
+//   name: 'graphClientId-${now}'
+//   params: {
+//     keyVaultName: keyVaultName
+//     secretName: 'GraphClientId'
+//     secretValue: graphClientId
+//   }
+// }
+
+// module graphSecret 'create-secrets.bicep' = {
+//   name: 'graphClientSecret-${now}'
+//   params: {
+//     keyVaultName: keyVaultName
+//     secretName: 'GraphClientSecret'
+//     secretValue: graphClientSecret
+//   }
+// }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
