@@ -465,3 +465,4 @@ $RECYCLE.BIN/
 .meteor/
 
 **/appsettings.json
+/src/maui/SSW.Rewards.Mobile/SSW.Rewards.Mobile/.vscode

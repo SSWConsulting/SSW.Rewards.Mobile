@@ -1,8 +1,8 @@
 ﻿using Mopups.Pages;
 
-namespace SSW.Rewards.PopupPages;
+namespace SSW.Rewards.Mobile.PopupPages;
 
-public partial class ScanResult
+public partial class ScanResult : PopupPage
 {
     ScanResultViewModel _viewModel;
 

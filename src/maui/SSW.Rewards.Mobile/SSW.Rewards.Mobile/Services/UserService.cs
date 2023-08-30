@@ -39,7 +39,7 @@ public class UserService : BaseService, IUserService
     {
         try
         {
-            var result = await _userClient.DeleteProfileAsync();
+            var result = await _userClient.DeleteMyProfileAsync();
 
             SignOut();
 
