@@ -32,5 +32,7 @@ public interface IUserService
     Task<string> UploadImageAsync(Stream image);
 
     Task<bool> SaveSocialMediaId(int achievementId, string userId);
+
+    Task<bool> DeleteProfileAsync();
 }
 

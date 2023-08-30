@@ -7,7 +7,7 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:const="clr-namespace:SSW.Rewards"
-             x:Class="SSW.Rewards.PopupPages.ScanResult"
+             x:Class="SSW.Rewards.Mobile.PopupPages.ScanResult"
              x:DataType="viewModels:ScanResultViewModel"
              BackgroundClickedCommand="{Binding OnOkCommand}"
              BackgroundColor="Transparent">

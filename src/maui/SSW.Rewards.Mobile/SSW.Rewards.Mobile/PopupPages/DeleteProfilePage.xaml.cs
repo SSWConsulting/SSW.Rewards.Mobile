@@ -1,4 +1,7 @@
-﻿namespace SSW.Rewards.Mobile.PopupPages;
+﻿using Mopups.Pages;
+using Mopups.Services;
+
+namespace SSW.Rewards.PopupPages;
 
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class DeleteProfilePage : PopupPage
