@@ -9,6 +9,7 @@ param now string
 
 
 // TODO: add these back in when Keeper secrets is set up
+// see: https://github.com/orgs/SSWConsulting/discussions/24
 // param graphTenantId string
 // param graphClientId string
 
@@ -108,7 +109,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
           value: appInsights.properties.InstrumentationKey
-        } 
+        }
         {
           name: 'APPINSIGHTS_PROFILERFEATURE_VERSION'
           value: '1.0.0'
