@@ -236,3 +236,4 @@ _Pvt_Extensions
 /SSW.Rewards.ndproj
 /.mfractor
 src/WebUI/ClientApp/package-lock.json
+.vscode/settings.json
