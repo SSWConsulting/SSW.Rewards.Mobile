@@ -4,8 +4,8 @@ public static class Constants
 {
 #if DEBUG
     // public static string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
-     public static string ApiBaseUrl = "https://b126-46-208-179-6.ngrok-free.app";
-    //public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
+    //public static string ApiBaseUrl = "https://b126-46-208-179-6.ngrok-free.app";
+    public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
     public static string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public static string AppCenterIOSId = "71ea37dd-20c5-40ca-9d68-81b743d81337";
 
