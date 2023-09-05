@@ -88,7 +88,7 @@ public class ScanResultViewModel : BaseViewModel
             case ScanResult.NotFound:
                 AnimationRef = "empty-box.json";
                 ResultHeading = "Unrecognised";
-                ResultBody = "This doesn't look like an SSW code";
+                ResultBody = "Try scanning this with your phone camera instead.";
                 AchievementHeading = string.Empty;
                 _wonPrize = false;
                 HeadingColour = Colors.White;
