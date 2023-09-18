@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 
@@ -10,11 +11,18 @@ public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileComm
     private readonly ICurrentUserService _currentUserService;
     private readonly ILogger<DeleteMyProfileCommandHandler> _logger;
 
-    public DeleteMyProfileCommandHandler(IEmailService emailService, ICurrentUserService currentUserService, ILogger<DeleteMyProfileCommandHandler> logger)
+    private readonly DeleteProfileOptions _options;
+
+    public DeleteMyProfileCommandHandler(
+        IEmailService emailService,
+        ICurrentUserService currentUserService,
+        IOptions<DeleteProfileOptions> options,
+        ILogger<DeleteMyProfileCommandHandler> logger)
     {
         _emailService = emailService;
         _currentUserService = currentUserService;
         _logger = logger;
+        _options = options.Value;
     }
 
     public async Task<Unit> Handle(DeleteMyProfileCommand request, CancellationToken cancellationToken)
@@ -26,9 +34,7 @@ public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileComm
         {
             UserName = userName,
             UserEmail = userEmail,
-            // TODO: Technical debt - needs to be switched to an appropriate
-            //       distribution group. See Zendesk ticket #12202.
-            RewardsTeamEmail = "mattgoldman@ssw.com.au",
+            RewardsTeamEmail = _options.Recipient
         };
 
         var sent = await _emailService.SendProfileDeletionRequest(model, cancellationToken);

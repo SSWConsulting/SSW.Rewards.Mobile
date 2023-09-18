@@ -1,13 +1,12 @@
 ﻿using System.Net.Mail;
 using AutoMapper.QueryableExtensions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Services;
 
@@ -23,7 +22,7 @@ public class UserService : IUserService, IRolesService
         IApplicationDbContext dbContext, 
         ICurrentUserService currentUserService, 
         IMapper mapper, 
-        IConfiguration configuration,
+        IOptions<UserServiceOptions> options,
         ILogger<UserService> logger)
     {
         _dbContext = dbContext;
@@ -31,8 +30,7 @@ public class UserService : IUserService, IRolesService
         _mapper = mapper;
         _logger = logger;
 
-        // TODO: @william update this to IOptionsPattern when upgrading to .NET 6
-        StaffSMTPDomain = configuration.GetValue<string>(nameof(StaffSMTPDomain));
+        StaffSMTPDomain = options.Value.StaffSmtpDomain;
     }
 
     public int AddRole(Role role)

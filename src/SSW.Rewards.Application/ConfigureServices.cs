@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Behaviours;
 using SSW.Rewards.Application.Services;
+using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
         services.Configure<UserServiceOptions>(configuration.GetSection(nameof(UserServiceOptions)));
+        services.Configure<DeleteProfileOptions>(configuration.GetSection(nameof(DeleteProfileOptions)));
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRolesService, UserService>();
