@@ -4,8 +4,7 @@ public static class Constants
 {
 #if DEBUG
     // public static string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
-    public static string ApiBaseUrl = "https://kvvln8th-5001.aue.devtunnels.ms/";
-    //public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
+    public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
     public static string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public static string AppCenterIOSId = "71ea37dd-20c5-40ca-9d68-81b743d81337";
 
@@ -21,8 +20,7 @@ public static class Constants
     public static string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-    //public static string AuthorityUri { get; } = "https://identity.ssw.com.au"; // "https://sswidentity-stage.azurewebsites.net";
-    public static string AuthorityUri { get; } = "https://64048v9v-5003.aue.devtunnels.ms";
+    public static string AuthorityUri { get; } = "https://identity.ssw.com.au"; // "https://sswidentity-stage.azurewebsites.net";
 
 #else
     public static string AuthorityUri { get; } = "https://identity.ssw.com.au";

@@ -1,8 +1,4 @@
-﻿using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-
-namespace SSW.Rewards.Mobile;
+﻿namespace SSW.Rewards.Mobile;
 
 public partial class App : Application
 {
