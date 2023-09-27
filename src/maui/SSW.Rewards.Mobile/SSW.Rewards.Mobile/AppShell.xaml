@@ -9,7 +9,6 @@
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
-    FlyoutIcon="icon_menu"
     FlyoutBehavior="Flyout"
     MenuItemTemplate="{StaticResource SSWMenuTemplate}"
     x:Name="RewardsShell">
@@ -31,7 +30,7 @@
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
 
             <DataTemplate x:Key="SSWMenuTemplate">
-                <Grid 
+                <Grid
                     ColumnDefinitions="30,*"
                     Padding="{OnPlatform Android='5', iOS='0'}"
                     Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
@@ -223,7 +222,7 @@
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
                             <Setter Property="Icon" Value="icon_scanner_selected">
-                                
+
                                 <Setter.Value>
                                     <FontImageSource FontFamily="FluentIcons"
                                                      Glyph="&#xf636;"
@@ -303,10 +302,10 @@
     <Shell.FlyoutFooter>
         <Grid
             RowDefinitions="Auto,Auto,5,Auto"
-            ColumnDefinitions="Auto,*" 
+            ColumnDefinitions="Auto,*"
             VerticalOptions="End">
             <!-- Logout Button -->
-            <Grid 
+            <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
                 Grid.Row="1"
@@ -352,10 +351,10 @@
                    TextColor="White"/>
 
             <!-- workaround for iOS footer safe area -->
-            <Label 
+            <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="3" 
-                Text=" " 
+                Grid.Row="3"
+                Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>
     </Shell.FlyoutFooter>
