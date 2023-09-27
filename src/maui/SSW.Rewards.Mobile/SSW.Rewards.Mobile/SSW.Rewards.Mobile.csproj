@@ -44,7 +44,6 @@
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Include="Resources\AppIcon\icon_dark.png" Color="#f5f5f5" BaseSize="1024,1024" ForegroundScale="0.67" />
-		<MauiIcon Include="Resources\AppIcon\icon_dark.png" Color="#f5f5f5" BaseSize="1024,1024" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#29282d" BaseSize="228,128" />
