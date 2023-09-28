@@ -1,13 +1,14 @@
 ﻿using System.Windows.Input;
+using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public class LoginPageViewModel : BaseViewModel
 {
     public ICommand LoginTappedCommand { get; set; }
-    
+
     private IUserService _userService { get; set; }
-    
+
     public bool isRunning { get; set; }
 
     public bool LoginButtonEnabled { get; set; }
@@ -92,7 +93,7 @@ public class LoginPageViewModel : BaseViewModel
             catch (Exception e)
             {
                 // Everything else is fatal
-                //Crashes.TrackError(e);
+                Crashes.TrackError(e);
                 Console.WriteLine(e);
                 await Application.Current.MainPage.DisplayAlert("Login Failure",
                     "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
