@@ -1,299 +1,247 @@
-﻿using SSW.Rewards.Pages;
-using SSW.Rewards.Services;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
-    public class LeaderBoardViewModel : BaseViewModel
+    private ILeaderService _leaderService;
+    private IUserService _userService;
+    private bool _loaded;
+    private ObservableCollection<LeaderViewModel> searchResults = new ();
+    
+    public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
     {
-        public bool IsRunning { get; set; }
-        public bool IsRefreshing { get; set; }
+        Title = "Leaderboard";
+        OnRefreshCommand = new Command(async () => await Refresh());
+        _leaderService = leaderService;
+        _userService = userService;
+        ProfilePic = _userService.MyProfilePic;
+        MyPoints = _userService.MyPoints;
+        MyBalance = _userService.MyBalance;
+        Leaders = new ObservableCollection<LeaderViewModel>();
+        WeakReferenceMessenger.Default.Register(this);
+    }
+    
+    public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
+    public ICommand OnRefreshCommand { get; set; }
+    public ICommand ScrollToTopCommand => new Command(ScrollToFirstCard);
+    public ICommand ScrollToEndCommand => new Command(ScrollToLastCard);
+    public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
+    public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
+    public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
+    public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
+    public IAsyncRelayCommand FilterByPeriodCommand => new AsyncRelayCommand(FilterByPeriod);
 
-        public string ProfilePic { get; set; }
-
-        private ILeaderService _leaderService;
-        
-        private IUserService _userService;
-        
-        public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
-
-        public ICommand OnRefreshCommand { get; set; }
-
-        public ICommand ScrollToTopCommand => new Command(ScrollToFirstCard);
-
-        public ICommand ScrollToEndCommand => new Command(ScrollToLastCard);
-
-        public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
-
-        public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
-
-        public ICommand GoToMyProfileCommand => new Command(async () => await Shell.Current.GoToAsync("//main"));
-
-        public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
-        
-        public ObservableCollection<LeaderViewModel> Leaders { get; set; }
-
-        public Action<int> ScrollTo { get; set; }
-
-
-        private ObservableCollection<LeaderViewModel> searchResults = new ObservableCollection<LeaderViewModel>();
-
-        public int TotalLeaders { get; set; }
-
-        public int MyRank { get; set; }
-
-        public int MyPoints { get; set; }
-
-        public int MyBalance { get; set; }
-
-        bool _loaded = false;
-
-        private string _sortFilter;
-
-        public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
+    public ObservableCollection<LeaderViewModel> Leaders { get; set; }
+    public bool IsRunning { get; set; }
+    public bool IsRefreshing { get; set; }
+    public string ProfilePic { get; set; }
+    public Action<int> ScrollTo { get; set; }
+    public PeriodFilter CurrentPeriod { get; set; }
+    public int TotalLeaders { get; set; }
+    public int MyRank { get; set; }
+    public int MyPoints { get; set; }
+    public int MyBalance { get; set; }
+    /// <summary>
+    /// Flip the value to clear search input field
+    /// </summary>
+    public bool ClearSearch { get; set; }
+    
+    public ObservableCollection<LeaderViewModel> SearchResults
+    {
+        get => searchResults;
+        set
         {
-            Title = "Leaderboard";
-            OnRefreshCommand = new Command(async () => await Refresh());
-            _leaderService = leaderService;
-            _userService = userService;
-
-            ProfilePic = _userService.MyProfilePic;
-
-            MyPoints = _userService.MyPoints;
-
-            MyBalance = _userService.MyBalance;
-
-            Leaders = new ObservableCollection<LeaderViewModel>();
-            MessagingCenter.Subscribe<object>(this, Constants.PointsAwardedMessage, async (obj) => await Refresh());
-
-            _sortFilter = "all";
+            searchResults = value;
+            RaisePropertyChanged("SearchResults");
         }
+    }
 
-        public ObservableCollection<LeaderViewModel> SearchResults
+    public async Task Initialise()
+    {
+        if (!_loaded)
         {
-            get
-            {
-                return searchResults;
-            }
-            set
-            {
-                searchResults = value;
-                RaisePropertyChanged("SearchResults");
-            }
-        }
+            IsRunning = true;
+            RaisePropertyChanged(nameof(IsRunning));
 
-        public async Task Initialise()
-        {
-            if (!_loaded)
-            {
-                IsRunning = true;
-                RaisePropertyChanged(nameof(IsRunning));
-
-                await LoadLeaderboard();
-                _loaded = true;
-
-                SortByThisMonth();
-
-                IsRunning = false;
-                RaisePropertyChanged(nameof(IsRunning));
-            }
-        }
-
-        private async Task RefreshLeaderboard()
-        {
             await LoadLeaderboard();
+            _loaded = true;
 
-            IsRefreshing = false;
-            OnPropertyChanged(nameof(IsRefreshing));
+            await FilterAndSortLeaders(Leaders, PeriodFilter.Month);
+
+            IsRunning = false;
+            RaisePropertyChanged(nameof(IsRunning));
+        }
+    }
+
+    private async Task RefreshLeaderboard()
+    {
+        await LoadLeaderboard();
+        IsRefreshing = false;
+        OnPropertyChanged(nameof(IsRefreshing));
+    }
+
+    private async Task LoadLeaderboard()
+    {
+        var summaries = await _leaderService.GetLeadersAsync(false);
+
+        int myId = _userService.MyUserId;
+
+        Leaders.Clear();
+
+        foreach (var summary in summaries)
+        {
+            var isMe = myId == summary.UserId;
+            var vm = new LeaderViewModel(summary, isMe);
+
+            Leaders.Add(vm);
         }
 
-        private async Task LoadLeaderboard()
+        TotalLeaders = summaries.Count();
+
+        OnPropertyChanged(nameof(TotalLeaders));
+
+        ScrollTo?.Invoke(0);
+    }
+
+    private async Task UpdateSearchResults(IEnumerable<LeaderViewModel> sortedLeaders)
+    {
+        var newList = new ObservableCollection<LeaderViewModel>(sortedLeaders);
+        await App.Current.MainPage.Dispatcher.DispatchAsync(() =>
         {
-            var summaries = await _leaderService.GetLeadersAsync(false);
+            SearchResults = newList;
+            OnPropertyChanged(nameof(SearchResults));
+        });
+    }
 
-            int myId = _userService.MyUserId;
 
-            Leaders.Clear();
+    private async Task FilterByPeriod()
+    {
+        ClearSearch = !ClearSearch;
+        RaisePropertyChanged(nameof(ClearSearch));
+        await FilterAndSortLeaders(Leaders, CurrentPeriod);
+    }
 
-            foreach (var summary in summaries)
-            {
-                var isMe = myId == summary.UserId;
-                var vm = new LeaderViewModel(summary, isMe);
+    public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, PeriodFilter period, bool keepRank = false)
+    {
+        Func<LeaderViewModel, int> sortKeySelector;
 
-                Leaders.Add(vm);
-            }
-
-            TotalLeaders = summaries.Count();
-
-            OnPropertyChanged(nameof(TotalLeaders));
-
-            ScrollTo?.Invoke(0);
+        switch (period)
+        {
+            case PeriodFilter.Month:
+                sortKeySelector = l => l.PointsThisMonth;
+                break;
+            case PeriodFilter.Year:
+                sortKeySelector = l => l.PointsThisYear;
+                break;
+            case PeriodFilter.AllTime:
+            default:
+                sortKeySelector = l => l.TotalPoints;
+                break;
         }
 
-        public void SortLeaders(string filter)
+        await FilterAndSortBy(list, sortKeySelector, keepRank);
+    }
+
+    private async Task FilterAndSortBy(IEnumerable<LeaderViewModel> list, Func<LeaderViewModel, int> sortKeySelector, bool keepRank)
+    {
+        var leaders = list.OrderByDescending(sortKeySelector).ToList();
+        int rank = 1;
+
+        foreach (var leader in leaders)
         {
-            _sortFilter = filter;
-
-            switch(_sortFilter)
-            {
-                case "month":
-                    SortByThisMonth();
-                    break;
-                case "year":
-                    SortByThisYear();
-                    break;
-                case "all":
-                default:
-                    SortByAlltime();
-                    break;
-            }
-        }
-
-        private void SortByThisMonth()
-        {
-            SearchResults.Clear();
-
-            var leaders = Leaders.OrderByDescending(l => l.PointsThisMonth);
-
-            int rank = 1;
-
-            foreach (var leader in leaders)
+            if (!keepRank)
             {
                 leader.Rank = rank;
-
-                leader.DisplayPoints = leader.PointsThisMonth;
-
-                SearchResults.Add(leader);
-
                 rank++;
             }
 
-            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
-
-            MyRank = mysummary.Rank;
-
-            OnPropertyChanged(nameof(MyRank));
+            leader.DisplayPoints = sortKeySelector(leader);
         }
 
-        private void SortByThisYear()
-        {
-            SearchResults.Clear();
+        await UpdateSearchResults(leaders);
+        UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe == true));
+    }
 
-            var leaders = Leaders.OrderByDescending(l => l.PointsThisYear);
+    public async Task Refresh()
+    {
+        var summaries = await _leaderService.GetLeadersAsync(false);
+        int myId = _userService.MyUserId;
 
-            int rank = 1;
-
-            foreach (var leader in leaders)
-            {
-                leader.Rank = rank;
-
-                leader.DisplayPoints = leader.PointsThisYear;
-
-                SearchResults.Add(leader);
-
-                rank++;
-            }
-
-            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
-
-            MyRank = mysummary.Rank;
-
-            OnPropertyChanged(nameof(MyRank));
-        }
-
-        private void SortByAlltime()
-        {
-            SearchResults.Clear();
-
-            var leaders = Leaders.OrderByDescending(l => l.TotalPoints);
-
-            int rank = 1;
-
-            foreach (var leader in leaders)
-            {
-                leader.Rank = rank;
-
-                leader.DisplayPoints = leader.TotalPoints;
-
-                SearchResults.Add(leader);
-
-                rank++;
-            }
-
-            var mysummary = leaders.FirstOrDefault(l => l.IsMe == true);
-
-            MyRank = mysummary.Rank;
-
-            OnPropertyChanged(nameof(MyRank));
-        }
-
-        public async Task Refresh()
-        {
-            var summaries = await _leaderService.GetLeadersAsync(false);
-            int myId = _userService.MyUserId;
-
-            Leaders.Clear();
-            
-            foreach (var summary in summaries)
-            {
-                var isMe = myId == summary.UserId;
-                var vm = new LeaderViewModel(summary, isMe);
-
-                Leaders.Add(vm);
-            }
-
-            SortLeaders(_sortFilter);
-            
-            IsRefreshing = false;
-            
-            RaisePropertyChanged("IsRefreshing");
-        }
-
-        private void ScrollToMyCard()
-        {
-            var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
-            var myIndex = SearchResults.IndexOf(myCard);
-
-            ScrollTo.Invoke(myIndex);
-        }
-
-        private void ScrollToFirstCard()
-        {
-            ScrollTo.Invoke(0);
-        }
-
-        private void ScrollToLastCard()
-        {
-            ScrollTo.Invoke(SearchResults.Count() - 1);
-        }
-
-        private async Task HandleLeaderTapped(LeaderViewModel leader)
-        {
-            if (leader.IsMe)
-                await Shell.Current.GoToAsync("//main");
-            else
-                await Shell.Current.Navigation.PushModalAsync(new ProfilePage(leader));
-        }
+        Leaders.Clear();
         
-        private void SearchTextHandler(string searchBarText)
+        foreach (var summary in summaries)
         {
-            // UserStoppedTypingBehavior fires the command on a threadPool thread
-            // as internally it uses .ContinueWith
-            Device.InvokeOnMainThreadAsync(() =>
-            {
-                // TODO: check time filter, or switch to all time when searching
-                if (searchBarText != null)
-                {
-                    var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
-                    SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
-                }
-            });
+            var isMe = myId == summary.UserId;
+            var vm = new LeaderViewModel(summary, isMe);
+
+            Leaders.Add(vm);
         }
+
+        FilterAndSortLeaders(Leaders, CurrentPeriod);
+        
+        IsRefreshing = false;
+        
+        RaisePropertyChanged("IsRefreshing");
+    }
+
+    private void ScrollToMyCard()
+    {
+        var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
+        var myIndex = SearchResults.IndexOf(myCard);
+
+        ScrollTo.Invoke(myIndex);
+    }
+
+    private void ScrollToFirstCard()
+    {
+        ScrollTo.Invoke(0);
+    }
+
+    private void ScrollToLastCard()
+    {
+        ScrollTo.Invoke(SearchResults.Count() - 1);
+    }
+
+    private async Task HandleLeaderTapped(LeaderViewModel leader)
+    {
+        if (leader.IsMe)
+            await Shell.Current.GoToAsync("//main");
+        else
+            await Shell.Current.Navigation.PushModalAsync<ProfilePage>(leader);
+    }
+
+    public async void Receive(PointsAwardedMessage message)
+    {
+        await Refresh();
+    }
+
+    private void UpdateMyRankIfRequired(LeaderViewModel mySummary)
+    {
+        if (mySummary is not null)
+        {
+            MyRank = mySummary.Rank;
+            OnPropertyChanged(nameof(MyRank));
+        }
+    }
+
+    private void SearchTextHandler(string searchBarText)
+    {
+        // UserStoppedTypingBehavior fires the command on a threadPool thread
+        // as internally it uses .ContinueWith
+        App.Current.MainPage.Dispatcher.Dispatch(() =>
+        {
+            if (searchBarText != null)
+            {
+                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
+                //SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
+                FilterAndSortLeaders(filtered, CurrentPeriod, true);
+            }
+        });
     }
 }

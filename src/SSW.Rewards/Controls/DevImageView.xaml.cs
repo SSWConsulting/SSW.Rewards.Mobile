@@ -1,12 +1,8 @@
 ﻿using FFImageLoading.Transformations;
-using SSW.Rewards.Models;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
-namespace SSW.Rewards.Controls
+namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DevImageView : ContentView
+    public partial class DevImageView
     {
         public static BindableProperty ProfileProperty = BindableProperty.Create(nameof(Profile), typeof(DevProfile), typeof(DevImageView), null, propertyChanged: ProfileChanged);
 
@@ -28,10 +24,10 @@ namespace SSW.Rewards.Controls
             control.DevImage.Source = null;
             control.DevImage.Transformations.Clear();
 
-            var profile = (DevProfile)newVal;
-
+            var profile = newVal as DevProfile;
             if (profile is null)
             {
+                control.DevImage.Source = "dev_placeholder.png";
                 return;
             }
 

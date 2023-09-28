@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
-             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:rewards="clr-namespace:SSW.Rewards"
              BackgroundColor="{StaticResource MainBackground}"
-             x:Class="SSW.Rewards.Pages.QuizDetailsPage">
+             x:DataType="viewModels:QuizDetailsViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
     <Shell.TitleView>
         <Label Text="Tech Trivia"
                HorizontalOptions="Center"
@@ -43,7 +46,7 @@
                            TextColor="White"
                            FontSize="32"
                            Margin="20,0,0,0"
-                           FontFamily="{StaticResource FluentIcons}"
+                           FontFamily="FluentIcons"
                            Text="&#xf189;">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1"
@@ -69,7 +72,7 @@
                                   CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
                                   x:Name="QuestionsCarousel">
                         <CarouselView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
                                 <ScrollView HeightRequest="700">
                                     <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
                                                  RadioButtonGroup.GroupName="{Binding QuestionId}"
@@ -77,14 +80,14 @@
                                                  Padding="20"
                                                  Spacing="40">
                                         <BindableLayout.ItemTemplate>
-                                            <DataTemplate>
-                                                <RadioButton Value="{Binding QestionAnswerId}"
+                                            <DataTemplate x:DataType="viewModels:QuizAnswerViewModel">
+                                                <RadioButton Value="{Binding QuestionAnswerId}"
                                                              IsChecked="{Binding IsSelected}"
                                                              WidthRequest="300"
                                                              TextColor="White"
                                                              Content="{Binding Text}"
-                                                             ControlTemplate="{StaticResource RadioButtonTemplate}">
-                                                </RadioButton>
+                                                             ControlTemplate="{StaticResource {x:Null}}"/>
+                                                <!-- TODO: MAUI. The ControlTemplate="{StaticResource RadioButtonTemplate}" is missing in the project. Was it lost at some point or it was a stub? -->
                                             </DataTemplate>
                                         </BindableLayout.ItemTemplate>
                                     </StackLayout>
@@ -198,19 +201,17 @@
                                 IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
                                 BindableLayout.ItemsSource="{Binding Results}">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="rewards:QuestionResultDto">
                                 <Grid>
 
-                                    <lottie:AnimationView Animation="pass.json"
-                                                          AutoPlay="True"
-                                                          Loop="False"
+                                <lottie:SKLottieView Source="pass.json"
+                                                          IsAnimationEnabled="True"
                                                           WidthRequest="30"
                                                           HeightRequest="30"
                                                           IsVisible="{Binding Correct}"/>
 
-                                    <lottie:AnimationView Animation="fail.json"
-                                                          AutoPlay="True"
-                                                          Loop="False"
+                                <lottie:SKLottieView Source="fail.json"
+                                                          IsAnimationEnabled="True"
                                                           WidthRequest="30"
                                                           HeightRequest="30"
                                                           IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>

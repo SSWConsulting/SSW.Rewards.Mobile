@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Models;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public interface IUserService
 {
@@ -14,6 +12,7 @@ public interface IUserService
     string MyQrCode { get; }
     bool IsLoggedIn { get; }
     bool HasCachedAccount { get; }
+    bool IsStaff { get; }
 
     // auth methods
     Task<ApiStatus> SignInAsync();
@@ -33,5 +32,7 @@ public interface IUserService
     Task<string> UploadImageAsync(Stream image);
 
     Task<bool> SaveSocialMediaId(int achievementId, string userId);
+
+    Task<bool> DeleteProfileAsync();
 }
 

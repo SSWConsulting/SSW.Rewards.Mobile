@@ -1,7 +1,4 @@
-﻿using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-
-namespace SSW.Rewards.ViewModels
+﻿namespace SSW.Rewards.Mobile.ViewModels
 {
     public class LeaderViewModel : LeaderboardUserDto
     {        

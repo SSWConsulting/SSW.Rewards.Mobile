@@ -1,10 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              BackgroundColor="{StaticResource MainBackground}"
-             x:Class="SSW.Rewards.Pages.ScanPage">
+             x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
+             x:DataType="viewModels:ScanResultViewModel">
     <Grid>
+        <zx:CameraBarcodeReaderView x:Name="scannerView"
+                                    BarcodesDetected="Handle_OnScanResult"
+                                    IsDetecting="True"/>
         <StackLayout Padding="0,0,0,200">
             <Label Text="Scan a QR Code"
                    HorizontalTextAlignment="Center"
@@ -13,12 +18,6 @@
                    HorizontalTextAlignment="Center"
                    TextColor="White"/>
         </StackLayout>
-        <zxing:ZXingScannerView x:Name="scannerView"
-                                OnScanResult="Handle_OnScanResult"
-                                IsScanning="true"
-                                WidthRequest="300"
-                                HeightRequest="300"/>
-
         <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>

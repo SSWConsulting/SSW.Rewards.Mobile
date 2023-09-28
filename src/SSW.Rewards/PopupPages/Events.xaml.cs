@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Rg.Plugins.Popup.Pages;
-using Rg.Plugins.Popup.Services;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using Mopups.Pages;
+using Mopups.Services;
 
 namespace SSW.Rewards.PopupPages
 {
@@ -22,7 +18,7 @@ namespace SSW.Rewards.PopupPages
         public async void Handle_CloseTapped(object sender, EventArgs args)
         {
             //            DisplayAlert("Close Tapped", "Close", "OK");
-            await PopupNavigation.Instance.PopAllAsync();
+            await MopupService.Instance.PopAllAsync();
         }
     }
 }

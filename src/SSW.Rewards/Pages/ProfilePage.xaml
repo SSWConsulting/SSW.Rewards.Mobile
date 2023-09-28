@@ -2,9 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource MainBackground}"
-             xmlns:controls="clr-namespace:SSW.Rewards.Controls"
-             xmlns:helpers="clr-namespace:SSW.Rewards.Helpers"
-             x:Class="SSW.Rewards.Pages.ProfilePage">
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:ProfileViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.ProfilePage">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent"/>
+    </ContentPage.Behaviors>
     <ContentPage.Resources>
         <DataTemplate x:Key="AchievementsTemplate">
             <controls:AchievementGrid />
@@ -24,104 +30,32 @@
                                          RecentActivity="{StaticResource ActivityTemplate}" />
     </ContentPage.Resources>
     
-    <Grid RowDefinitions="Auto,*,*,10"
+    <Grid RowDefinitions="Auto,Auto,*,10"
+          RowSpacing="6"
           Padding="20,20,20,5">
 
-        <ImageButton
+        <Border
+            Grid.Row="0"
             HorizontalOptions="End"
             BackgroundColor="{StaticResource MainBackground}"
-            VerticalOptions="Start"
-            CornerRadius="20"
-            WidthRequest="40"
-            HeightRequest="40"
-            Command="{Binding PopProfile}"
-            Padding="3"
+            StrokeShape="Ellipse"
+            StrokeThickness="0"
+            Padding="0"
             IsVisible="{Binding ShowPopButton}">
-            <ImageButton.Source>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                    Glyph="&#xe4c3;"
-                                    Color="{StaticResource primary}"/>
-            </ImageButton.Source>
-        </ImageButton>
-
-        <Grid Grid.Row="1">
-            
-            <controls:RewardsProgress Progress="{Binding Progress}"/>
-            <StackLayout
-                Margin="0,0,0,200"
-                Orientation="Horizontal"
-                IsVisible="{Binding ShowBalance}"
-                VerticalOptions="Center"
-                HorizontalOptions="Center">
-                <Label
-                    HorizontalOptions="End"
-                    Text="⭐"
-                    FontSize="Small"
-                    TextColor="{StaticResource primary}" />
-                <Label
-                    Text="{Binding Balance, StringFormat='{0:n0}'}"
-                    FontSize="Small"
-                    TextColor="{StaticResource primary}" />
-                <Label
-                    HorizontalOptions="End"
-                    Text="⭐"
-                    FontSize="Small"
-                    TextColor="{StaticResource primary}" />
-            </StackLayout>
- 
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding PopProfile}"/>
+            </Border.GestureRecognizers>
             <Label
-                Margin="0,0,0,140"
-                TextColor="{StaticResource HeadingColor}"
-                FontSize="Large"
-                Text="{Binding Points, StringFormat='{0:n0}'}"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                HorizontalTextAlignment="Center"/>
- 
-            <Label
-                Margin="0,150,0,0"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                HorizontalTextAlignment="Center"
-                Text="{Binding Name}"
-                TextColor="White"/>
- 
-            <Image
-                Source="{Binding ProfilePic}"
-                WidthRequest="100"
-                HeightRequest="100"
-                VerticalOptions="Center"
-                HorizontalOptions="Center"
-                Aspect="AspectFill">
-                <Image.Clip>
-                    <EllipseGeometry
-                        Center="50,50"
-                        RadiusX="50"
-                        RadiusY="50"/>
-                </Image.Clip>
-            </Image>
+                FontFamily="FluentIcons"
+                Text="&#xe4c3;"
+                FontSize="35"
+                TextColor="{StaticResource primary}"/>
+        </Border>
 
-            <ImageButton
-                BackgroundColor="{StaticResource primary}"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                TranslationX="40"
-                TranslationY="-35"
-                CornerRadius="15"
-                WidthRequest="30"
-                HeightRequest="30"
-                Command="{Binding CameraCommand}"
-                Padding="3"
-                IsVisible="{Binding ShowCamera}">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                        Glyph="&#xe299;"
-                                        Color="White"/>
-                </ImageButton.Source>
-            </ImageButton>
-        </Grid>
+        <controls:ProfileStats Grid.Row="1"/>
 
         <CarouselView Grid.Row="2"
+                      Margin="0,20,0,0"
                       IndicatorView="ProfileIndicator"
                       ItemsSource="{Binding ProfileSections}"
                       ItemTemplate="{StaticResource ProfileViewSelector}"/>
@@ -129,10 +63,11 @@
         <IndicatorView Grid.Row="3"
                        SelectedIndicatorColor="{StaticResource primary}"
                        IndicatorColor="{StaticResource IndicatorColor}"
+                       HorizontalOptions="Center"
                        x:Name="ProfileIndicator"/>
 
         <ActivityIndicator Grid.Row="0"
-                           Grid.RowSpan="3"
+                           Grid.RowSpan="4"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            IsRunning="True"
@@ -140,7 +75,7 @@
                            IsVisible="{Binding IsLoading}"/>
 
         <controls:Snackbar Grid.Row="0"
-                           Grid.RowSpan="3"
+                           Grid.RowSpan="4"
                            Options="{Binding SnackOptions}"
                            InputTransparent="True"
                            VerticalOptions="End" 

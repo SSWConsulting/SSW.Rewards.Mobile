@@ -1,86 +1,79 @@
-﻿using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using SSW.Rewards.Helpers;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
-using SSW.Rewards.Pages;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿namespace SSW.Rewards.Mobile;
 
-namespace SSW.Rewards
+public partial class App : Application
 {
-    public partial class App : Application
+    public static object UIParent { get; set; }
+
+    #region TECHNICAL_DEBT
+    // TECHNICAL DEBT:  This section is here because of a bug in Xamarin.Forms.
+    //                  It is not possible to dynamically change menu items in
+    //                  Shell at runtime. Instead, we load a version of Shell
+    //                  constructed as required. If this bug has been resolved
+    //                  we can do a fair bit of refactoring. 🤮🤮🤮
+    //                  NOTE: Issue still exists in .NET MAUI
+    private static IServiceProvider _serviceProvider;
+
+    public static void SetScope(IServiceCollection services)
     {
-        public static Constants Constants = new Constants();
+        _serviceProvider = services.BuildServiceProvider();
+    }
 
-        public static object UIParent { get; set; }
+    public static AppShell ResolveShell(bool isStaff)
+    {
+        var resolvedShell = ActivatorUtilities.CreateInstance<AppShell>(_serviceProvider, isStaff);
 
-        public App()
+        return resolvedShell;
+    }
+    #endregion
+
+    public App(LoginPage page)
+    {
+        InitializeComponent();
+
+        MainPage = page;
+    }
+
+    protected override async void OnStart()
+    {
+        //await UpdateAccessTokenAsync();
+        await CheckApiCompatibilityAsync();
+
+        // HACK - Resource dictionary isn't available here :(
+        // See discussion: https://github.com/dotnet/maui/discussions/5263
+        //MainPage = new LoginPage(loginPageViewModel);
+
+        //await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
+    }
+
+    protected override void OnSleep()
+    {
+        // Handle when your app sleeps
+    }
+
+    protected override void OnResume()
+    {
+        // Handle when your app resumes
+    }
+
+    private async Task CheckApiCompatibilityAsync()
+    {
+        try
         {
-            InitializeComponent();
+            ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
 
-            Resolver.Initialize();
-            Resolver.Resolve<IPushNotificationActionService>()
-                .ActionTriggered += NotificationActionTriggered;
-            InitialiseApp();
-        }
+            bool compatible = await info.IsApiCompatibleAsync();
 
-        private void InitialiseApp()
-        {
-            AppCenter.Start("android=" + Constants.AppCenterAndroidId + ";" +
-                "ios=e33283b1-7326-447d-baae-e783ece0789b",
-                typeof(Analytics), typeof(Crashes));
-
-
-            MainPage = new LoginPage();
-        }
-
-        void NotificationActionTriggered(object sender, PushNotificationAction e) => ShowActionAlert(e);
-
-        void ShowActionAlert(PushNotificationAction action) => MainThread.BeginInvokeOnMainThread(()
-            => App.Current.MainPage?.DisplayAlert("App Test Push", $"{action} action received", "OK")
-                .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; })
-        );
-
-        protected override async void OnStart()
-        {
-            //await UpdateAccessTokenAsync();
-            await CheckApiCompatibilityAsync();
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
-        }
-
-        private async Task CheckApiCompatibilityAsync()
-        {
-            try
+            if (!compatible)
             {
-                ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
-
-                bool compatible = await info.IsApiCompatibleAsync();
-
-                if (!compatible)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
-                }
+                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
             }
-            catch (Exception ex)
-            {
-                // TODO: log these instead to AppCenter
-                Console.WriteLine("[App] ERROR checking API compat");
-                Console.WriteLine($"[App] {ex.Message}");
-                Console.WriteLine($"[App {ex.StackTrace}");
-            }
+        }
+        catch (Exception ex)
+        {
+            // TODO: log these instead to AppCenter
+            Console.WriteLine("[App] ERROR checking API compat");
+            Console.WriteLine($"[App] {ex.Message}");
+            Console.WriteLine($"[App {ex.StackTrace}");
         }
     }
 }

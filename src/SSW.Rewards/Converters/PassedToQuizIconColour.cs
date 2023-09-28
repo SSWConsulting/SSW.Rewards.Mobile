@@ -1,9 +1,6 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
     public class PassedToQuizIconColour : IValueConverter
     {
@@ -11,7 +8,8 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["PassedQuizIcon"];
+                Application.Current.Resources.TryGetValue("PassedQuizIcon", out var color);
+                return (Color)color;
             }
         }
 
@@ -19,7 +17,8 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["SSWRed"];
+                Application.Current.Resources.TryGetValue("SSWRed", out var color);
+                return (Color)color;
             }
         }
 

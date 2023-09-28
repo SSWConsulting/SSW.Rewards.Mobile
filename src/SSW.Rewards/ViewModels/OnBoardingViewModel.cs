@@ -1,12 +1,7 @@
-﻿using SSW.Rewards.Services;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class OnBoardingViewModel : BaseViewModel
     {
@@ -28,18 +23,20 @@ namespace SSW.Rewards.ViewModels
         public OnBoardingViewModel()
         {
             DoActionCommand = new Command(DoAction);
-            Swiped = new Command(SetDetails);
+            Swiped = new Command(HandleSwiped);
             Skip = new Command(async () => await SkipOnboarding());
-            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints)};
+            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints) };
             Items = new ObservableCollection<CarouselViewModel>
             {
                 new CarouselViewModel
                 {
                     Content = "Talk to SSW people, attend their talks and scan their QR codes, and complete other fun achievements to earn points.",
-                    Animation = "Sophie.json",
+                    //Animation = "Sophie.json", TODO: MAUI, timing issue in SKLottieView https://github.com/mono/SkiaSharp.Extended/issues/142
                     SubHeading = "Welcome!",
                     ButtonText = "GET STARTED",
-                    IsAnimation = true
+                    //IsAnimation = true
+                    Image = "sophie_hello",
+                    IsAnimation = false,
                 },
                 new CarouselViewModel
                 {
@@ -80,7 +77,7 @@ namespace SSW.Rewards.ViewModels
                 new CarouselViewModel
                 {
                     Content = "SSW Architects will help you successfully implement your project.",
-                    Image = "v2consultation",
+                    Image = "v2consultation.JPG",
                     SubHeading = "Half Price Specification Review",
                     HasPoints = true,
                     Points = 3000,
@@ -116,6 +113,14 @@ namespace SSW.Rewards.ViewModels
         private async Task SkipOnboarding()
         {
             await Navigation.PopModalAsync();
+        }
+
+        private void HandleSwiped()
+        {
+            // TECH DEBT: We don't know why tf this happens
+            if (SelectedItem is null)
+                return;
+            SetDetails();
         }
 
         private void SetDetails()

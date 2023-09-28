@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  BackgroundColor="Transparent"
                  x:Class="SSW.Rewards.PopupPages.AboutSSW">
     <pages:PopupPage.Animation>
@@ -16,14 +16,16 @@
                                    EasingOut="SinIn"
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
-    <Frame CornerRadius="3"
-           HorizontalOptions="Center"
+    <Border
            Margin="10"
+           Padding="20"
+           StrokeShape="RoundRectangle 3"
+           StrokeThickness="0"
+           HorizontalOptions="Center"
            VerticalOptions="Center"
-           HasShadow="True"
            BackgroundColor="{StaticResource ProfileBackgroundColour}">
         <Grid Padding="0">
-            <StackLayout>
+            <VerticalStackLayout Spacing="6">
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
                        FontSize="Large"
@@ -31,14 +33,12 @@
                 <Label HorizontalTextAlignment="Center"
                        Margin="20"
                        TextColor="White"
-                       Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."
-                       />
+                       Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."/>
                 <Label HorizontalTextAlignment="Center"
                        TextColor="White"
                        Margin="20"
-                       Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."
-                       />
-                <Frame BackgroundColor="{StaticResource SSWRed}">
+                       Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."/>
+                <Frame BackgroundColor="{StaticResource SSWRed}" HeightRequest="60" CornerRadius="2">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1"
                                               Tapped="FindoutMore_Tapped"/>
@@ -47,12 +47,17 @@
                         <Label Text="Find out more..."
                                HorizontalTextAlignment="Center"
                                TextColor="White"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
                                HorizontalOptions="Center"/>
-                        <Image Source="external"
+                        <Image Source="external_link.png"
+                               WidthRequest="24"
+                               VerticalOptions="Center"
                                HorizontalOptions="End"/>
                     </Grid>
                 </Frame>
-            </StackLayout>
+            </VerticalStackLayout>
+            <!-- TODO: This icon is not displayed neither after MAUI migration, nor before that in prod. Do we need it?-->
             <Image Source="icon_close"
                    Margin="0"
                    VerticalOptions="Start"
@@ -63,5 +68,5 @@
                 </Image.GestureRecognizers>
             </Image>
         </Grid>
-    </Frame>
+    </Border>
 </pages:PopupPage>

@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             x:Class="SSW.Rewards.Controls.AchievementGrid">
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:ProfileCarouselViewModel"
+             x:Class="SSW.Rewards.Mobile.Controls.AchievementGrid">
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:AchievementCompletedColorConverter x:Key="CompletedToColor"/>
@@ -10,39 +12,49 @@
             <converters:IconToGlyphConverter x:Key="IconTopGlyph"/>
         </ResourceDictionary>
     </ContentView.Resources>
-    <StackLayout>
-        <Label Text="Achievements"
-                 TextColor="White"
-                 FontAttributes="Bold"
-                 HorizontalOptions="Center"
-                 HorizontalTextAlignment="Center"
-                 VerticalOptions="Start"
-                 FontSize="Title"
-                 Margin="10"/>
-        <CollectionView ItemsLayout="VerticalGrid, 3"
-                    ItemsSource="{Binding Achievements}"
-                    Margin="30,10">
+    <Grid RowDefinitions="Auto,*">
+        <Label
+            Text="Achievements"
+            TextColor="White"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            VerticalOptions="Start"
+            FontSize="Title"
+            Grid.Row="0"
+            LineBreakMode="TailTruncation"
+            Margin="10"/>
+        <CollectionView
+            Margin="20,0"
+            ItemsLayout="VerticalGrid, 3"
+            ItemSizingStrategy="MeasureFirstItem"
+            ItemsSource="{Binding Achievements}"
+            Grid.Row="1">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout HeightRequest="100"
-                             WidthRequest="100">
-                        <ImageButton BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"
-                                 Command="{Binding AchievementTappedCommand}"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center"
-                                 WidthRequest="76"
-                                 HeightRequest="76"
-                                 Padding="20"
-                                 CornerRadius="38">
-                            <ImageButton.Source>
-                                <FontImageSource FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
-                                             Glyph="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
-                                             Color="White"/>
-                            </ImageButton.Source>
-                        </ImageButton>
-                    </StackLayout>
+                <DataTemplate x:DataType="viewModels:ProfileAchievement">
+                    <Grid Padding="0,0,0,15">
+                        <Border
+                            StrokeThickness="0"
+                            BackgroundColor="{Binding Complete, Converter={StaticResource CompletedToColor}}"      
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"         
+                            Padding="0"
+                            Margin="0"
+                            StrokeShape="{OnPlatform Android='RoundRectangle 21', iOS='RoundRectangle 7'}"> 
+                            <Label
+                                Margin="20"
+                                HorizontalOptions="Center"
+                                FontSize="35"
+                                FontFamily="{Binding IconIsBranded, Converter={StaticResource BoolToFont}}"
+                                Text="{Binding AchievementIcon, Converter={StaticResource IconTopGlyph}}"
+                                TextColor="White"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding AchievementTappedCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 </ContentView>

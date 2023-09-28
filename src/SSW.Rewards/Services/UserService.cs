@@ -1,12 +1,14 @@
-﻿using SSW.Rewards.Helpers;
-using SSW.Rewards.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using IdentityModel.OidcClient;
+using Microsoft.AppCenter.Crashes;
+using SSW.Rewards.Mobile.Messages;
+using System.IdentityModel.Tokens.Jwt;
+using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Services;
 
 public class UserService : BaseService, IUserService
 {
-    public const string UserDetailsUpdatedMessage = "UserDetailsUpdated";
-
     private UserClient _userClient { get; set; }
 
     private readonly OidcClientOptions _options;
@@ -17,14 +19,14 @@ public class UserService : BaseService, IUserService
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
-    public UserService(IBrowser browser)
+    public UserService(IBrowser browser, IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _options = new OidcClientOptions
         {
-            Authority = App.Constants.AuthorityUri,
-            ClientId = App.Constants.ClientId,
-            Scope = App.Constants.Scope,
-            RedirectUri = App.Constants.AuthRedirectUrl,
+            Authority = Constants.AuthorityUri,
+            ClientId = Constants.ClientId,
+            Scope = Constants.Scope,
+            RedirectUri = Constants.AuthRedirectUrl,
             Browser = browser,
 
         };
@@ -33,6 +35,23 @@ public class UserService : BaseService, IUserService
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
+
+    public async Task<bool> DeleteProfileAsync()
+    {
+        try
+        {
+            var result = await _userClient.DeleteMyProfileAsync();
+
+            SignOut();
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+
+    }
 
     #region AUTHENTICATION
 
@@ -74,7 +93,7 @@ public class UserService : BaseService, IUserService
                 return ApiStatus.LoginFailure;
             }
         }
-        catch(TaskCanceledException taskEx)
+        catch (TaskCanceledException taskEx)
         {
             return ApiStatus.LoginFailure;
         }
@@ -93,7 +112,7 @@ public class UserService : BaseService, IUserService
 
     private async Task SetLoggedInState(string accessToken, string idToken)
     {
-        AuthenticatedClientFactory.SetAccessToken(accessToken);
+        AuthHandler.SetAccessToken(accessToken);
 
         Preferences.Set(nameof(HasCachedAccount), true);
 
@@ -153,8 +172,12 @@ public class UserService : BaseService, IUserService
             if (!result.IsError)
             {
                 await SettRefreshToken(result.RefreshToken);
-                AuthenticatedClientFactory.SetAccessToken(result.AccessToken);
+                AuthHandler.SetAccessToken(result.AccessToken);
                 return true;
+            }
+            else
+            {
+                Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
             }
         }
 
@@ -190,9 +213,14 @@ public class UserService : BaseService, IUserService
         }
     }
 
+    public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
+
     public async Task<string> UploadImageAsync(Stream image)
     {
-        FileParameter parameter = new FileParameter(image);
+        var contentType = "image/png";
+        var fileName = $"{MyUserId}_{DateTime.UtcNow.Ticks}_profilepic.png";
+
+        FileParameter parameter = new FileParameter(image, fileName, contentType);
 
         var response = await _userClient.UploadProfilePicAsync(parameter);
         Preferences.Set(nameof(MyProfilePic), response.PicUrl);
@@ -202,7 +230,10 @@ public class UserService : BaseService, IUserService
             await UpdateMyDetailsAsync();
         }
 
-        MessagingCenter.Send<object>(this, UserDetailsUpdatedMessage);
+        WeakReferenceMessenger.Default.Send(new ProfilePicUpdatedMessage
+        {
+            ProfilePic = MyProfilePic
+        });
         return response.PicUrl;
     }
 
@@ -250,7 +281,13 @@ public class UserService : BaseService, IUserService
             Preferences.Set(nameof(MyQrCode), user.QrCode);
         }
 
-        MessagingCenter.Send(this, UserService.UserDetailsUpdatedMessage);
+        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
+        {
+            Email       = MyEmail,
+            ProfilePic  = MyProfilePic,
+            Name        = MyName,
+            IsStaff     = IsStaff
+        }));
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
@@ -365,11 +402,9 @@ public class UserService : BaseService, IUserService
         {
             return false;
         }
-        else
-        {
-            MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
-            return true;
-        }
+
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+        return true;
     }
 
     #endregion

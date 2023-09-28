@@ -1,15 +1,10 @@
-﻿using SSW.Rewards.Controls;
-using SSW.Rewards.Services;
-using System;
-using System.Collections.Generic;
+﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class QuizDetailsViewModel : BaseViewModel
     {
@@ -169,8 +164,8 @@ namespace SSW.Rewards.ViewModels
                 var args = new ShowSnackbarEventArgs { Options = SnackOptions };
 
                 ShowSnackbar.Invoke(this, args);
-
-                MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+                
+                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
             }
             else
             {

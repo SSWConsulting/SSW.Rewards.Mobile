@@ -1,7 +1,5 @@
-﻿using SSW.Rewards.Helpers;
-using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
-using SSW.Rewards.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Services;
 
@@ -10,7 +8,7 @@ public class ScannerService : BaseService, IScannerService
     private AchievementClient _achievementClient { get; set; }
     private RewardClient _rewardClient { get; set; }
 
-    public ScannerService()
+    public ScannerService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _achievementClient = new AchievementClient(BaseUrl, AuthenticatedClient);
         _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
@@ -64,7 +62,7 @@ public class ScannerService : BaseService, IScannerService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                Application.Current.MainPage = new LoginPage();
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {
@@ -76,7 +74,7 @@ public class ScannerService : BaseService, IScannerService
             vm.result = ScanResult.Error;
         }
 
-        MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
 
         return vm;
     }
@@ -137,7 +135,7 @@ public class ScannerService : BaseService, IScannerService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {
@@ -148,7 +146,8 @@ public class ScannerService : BaseService, IScannerService
         {
             vm.result = ScanResult.Error;
         }
-        MessagingCenter.Send<object>(this, Constants.PointsAwardedMessage);
+        
+        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
 
         return vm;
     }

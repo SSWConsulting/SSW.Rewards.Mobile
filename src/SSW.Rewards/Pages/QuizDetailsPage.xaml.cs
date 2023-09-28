@@ -1,74 +1,68 @@
-﻿using SSW.Rewards.Controls;
-using SSW.Rewards.Services;
-using SSW.Rewards.ViewModels;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using SSW.Rewards.Mobile.Controls;
 
-namespace SSW.Rewards.Pages
+namespace SSW.Rewards.Mobile.Pages;
+
+[QueryProperty(nameof(QuizId), nameof(QuizId))]
+[QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
+public partial class QuizDetailsPage : ContentPage
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    [QueryProperty(nameof(QuizId), nameof(QuizId))]
-    [QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
-    public partial class QuizDetailsPage : ContentPage
+    private QuizDetailsViewModel _viewModel;
+
+    public string QuizId { get; set; }
+
+    public string QuizIcon { get; set; }
+
+    public QuizDetailsPage(QuizDetailsViewModel viewModel)
     {
-        private QuizDetailsViewModel _viewModel;
+        InitializeComponent();
+        _viewModel = viewModel;
+        BindingContext = _viewModel;
+    }
 
-        public string QuizId { get; set; }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
 
-        public string QuizIcon { get; set; }
+        int quizId = int.Parse(QuizId);
 
-        public QuizDetailsPage()
-        {
-            InitializeComponent();
-            _viewModel = new QuizDetailsViewModel(Resolver.Resolve<IQuizService>());
-            BindingContext = _viewModel;
-        }
+        await _viewModel.Initialise(quizId, QuizIcon);
+        _viewModel.OnNextQuestionRequested += ScrollToIndex;
+        _viewModel.ShowSnackbar += ShowSnackbar;
+    }
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
+    private void ScrollToIndex(object sender, int index)
+    {
+        QuestionsCarousel.ScrollTo(index);
+    }
 
-            int quizId = int.Parse(QuizId);
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.OnNextQuestionRequested -= ScrollToIndex;
+    }
 
-            await _viewModel.Initialise(quizId, QuizIcon);
-            _viewModel.OnNextQuestionRequested += ScrollToIndex;
-            _viewModel.ShowSnackbar += ShowSnackbar;
-        }
+    private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
+    {
+        QuizResultsPageSnackbar.Options = e.Options;
+        await QuizResultsPageSnackbar.ShowSnackbar();
+    }
 
-        private void ScrollToIndex(object sender, int index)
-        {
-            QuestionsCarousel.ScrollTo(index);
-        }
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            _viewModel.OnNextQuestionRequested -= ScrollToIndex;
-        }
+        var titleWidth = TitleText.Width;
 
-        private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
-        {
-            QuizResultsPageSnackbar.Options = e.Options;
-            await QuizResultsPageSnackbar.ShowSnackbar();
-        }
+        var pageCenter = width / 2;
 
-        protected override void OnSizeAllocated(double width, double height)
-        {
-            base.OnSizeAllocated(width, height);
+        var titleCenter = titleWidth / 2;
 
-            var titleWidth = TitleText.Width;
+        var desiredStart = pageCenter - titleCenter;
 
-            var pageCenter = width / 2;
+        var titleX = TitleText.X;
 
-            var titleCenter = titleWidth / 2;
+        var desiredTranslation = titleX - desiredStart;
 
-            var desiredStart = pageCenter - titleCenter;
-
-            var titleX = TitleText.X;
-
-            var desiredTranslation = titleX - desiredStart;
-
-            TitleText.TranslationX = desiredTranslation;
-        }
+        TitleText.TranslationX = desiredTranslation;
     }
 }

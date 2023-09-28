@@ -1,12 +1,8 @@
-﻿using SSW.Rewards.Models;
-using System;
-using System.Globalization;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
-    public class ActivityTypeToIconConverter : IValueConverter, IMarkupExtension
+    public class ActivityTypeToIconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -31,11 +27,6 @@ namespace SSW.Rewards.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

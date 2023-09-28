@@ -1,137 +1,131 @@
-﻿using System;
-using System.Windows.Input;
-using SSW.Rewards.Services;
-using SSW.Rewards.Models;
-using System.Threading.Tasks;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Windows.Input;
+using Microsoft.AppCenter.Crashes;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public class LoginPageViewModel : BaseViewModel
 {
-    public class LoginPageViewModel : BaseViewModel
+    public ICommand LoginTappedCommand { get; set; }
+
+    private IUserService _userService { get; set; }
+
+    public bool isRunning { get; set; }
+
+    public bool LoginButtonEnabled { get; set; }
+
+    bool _isStaff = false;
+
+    public string ButtonText { get; set; }
+
+    public LoginPageViewModel(IUserService userService)
     {
-        public ICommand LoginTappedCommand { get; set; }
-        
-        private IUserService _userService { get; set; }
-        
-        public bool isRunning { get; set; }
+        _userService = userService;
+        LoginTappedCommand = new Command(SignIn);
+        ButtonText = "Sign up / Log in";
+        OnPropertyChanged("ButtonText");
+    }
 
-        public bool LoginButtonEnabled { get; set; }
+    private async void SignIn()
+    {
+        isRunning = true;
+        LoginButtonEnabled = false;
+        bool enablebuttonAfterLogin = true;
+        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
 
-        bool _isStaff = false;
-
-        public string ButtonText { get; set; }
-
-        public LoginPageViewModel(IUserService userService)
+        ApiStatus status;
+        try
         {
-            _userService = userService;
-            LoginTappedCommand = new Command(SignIn);
-            LoginButtonEnabled = true;
-            ButtonText = "Sign up / Log in";
-            OnPropertyChanged("ButtonText");
+            status = await _userService.SignInAsync();
+        }
+        catch (Exception exception)
+        {
+            status = ApiStatus.LoginFailure;
+            //Crashes.TrackError(exception);
+            await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
         }
 
-        private async void SignIn()
+        switch (status)
         {
-            isRunning = true;
-            LoginButtonEnabled = false;
-            bool enablebuttonAfterLogin = true;
-            RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
+            case ApiStatus.Success:
+                enablebuttonAfterLogin = false;
+                await OnAfterLogin();
+                break;
+            case ApiStatus.Unavailable:
+                await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
+                break;
+            case ApiStatus.LoginFailure:
+                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                break;
+            default:
+                await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
+                break;
+        }
 
-            ApiStatus status;
+        LoginButtonEnabled = enablebuttonAfterLogin;
+        isRunning = false;
+        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
+    }
+
+    public async Task Refresh()
+    {
+        bool enablebuttonAfterLogin = true;
+
+        if (_userService.HasCachedAccount)
+        {
+            LoginButtonEnabled = false;
+            isRunning = true;
+            ButtonText = "Logging you in...";
+            RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
+
             try
             {
-                status = await _userService.SignInAsync();
-            }
-            catch (Exception exception)
-            {
-                status = ApiStatus.LoginFailure;
-                //Crashes.TrackError(exception);
-                await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
-            }
+                if(await _userService.RefreshLoginAsync())
+                {
+                    // TODO: Do we need this in a refresh?
+                    await _userService.UpdateMyDetailsAsync();
 
-            switch (status)
-            {
-                case ApiStatus.Success:
-                    await OnAfterLogin();
                     enablebuttonAfterLogin = false;
-                    break;
-                case ApiStatus.Unavailable:
-                    await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
-                    break;
-                case ApiStatus.LoginFailure:
-                    await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
-                    break;
-                default:
-                    await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
-                    break;
-            }
 
-            LoginButtonEnabled = enablebuttonAfterLogin;
-            isRunning = false;
-            RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
-        }
+                    await OnAfterLogin();
 
-        public async Task Refresh()
-        {
-            bool enablebuttonAfterLogin = true;
-
-            if (_userService.HasCachedAccount)
-            {
-                LoginButtonEnabled = false;
-                isRunning = true;
-                ButtonText = "Logging you in...";
-                RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
-
-                try
-                {
-                    if(await _userService.RefreshLoginAsync())
-                    {
-                        // TODO: Do we need this in a refresh?
-                        await _userService.UpdateMyDetailsAsync();
-
-                        enablebuttonAfterLogin = false;
-
-                        await OnAfterLogin();
-
-                    }
-                }
-                catch (Exception e)
-                {
-                    // Everything else is fatal
-                    //Crashes.TrackError(e);
-                    await Application.Current.MainPage.DisplayAlert("Login Failure",
-                        "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
-                }
-                finally
-                {
-                    isRunning = false;
-                    LoginButtonEnabled = enablebuttonAfterLogin;
-                    ButtonText = "Sign up / Log in";
-                    RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
                 }
             }
-        }
-
-        private async Task OnAfterLogin()
-        {
-            var qr = _userService.MyQrCode;
-            if (!string.IsNullOrWhiteSpace(qr))
+            catch (Exception e)
             {
-                _isStaff = true;
+                // Everything else is fatal
+                Crashes.TrackError(e);
+                Console.WriteLine(e);
+                await Application.Current.MainPage.DisplayAlert("Login Failure",
+                    "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
             }
-            else
+            finally
             {
-                _isStaff = false;
+                isRunning = false;
+                LoginButtonEnabled = enablebuttonAfterLogin;
+                ButtonText = "Sign up / Log in";
+                RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
             }
-
-            Application.Current.MainPage = Resolver.ResolveShell(_isStaff);
-            await Shell.Current.GoToAsync("//main");
         }
+    }
 
-        async Task OnForgotPassword()
+    private async Task OnAfterLogin()
+    {
+        var qr = _userService.MyQrCode;
+        if (!string.IsNullOrWhiteSpace(qr))
         {
-            await _userService.ResetPassword();
+            _isStaff = true;
         }
+        else
+        {
+            _isStaff = false;
+        }
+
+        Application.Current.MainPage = App.ResolveShell(_isStaff);
+        await Shell.Current.GoToAsync("//main");
+    }
+
+    async Task OnForgotPassword()
+    {
+        await _userService.ResetPassword();
     }
 }

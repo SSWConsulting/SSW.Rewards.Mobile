@@ -1,9 +1,6 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
     public class PassedToResultColourConverter : IValueConverter
     {
@@ -11,7 +8,8 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["SSWRed"];
+                Application.Current.Resources.TryGetValue("SSWRed", out var color);
+                return (Color)color;
             }
         }
 
@@ -22,7 +20,7 @@ namespace SSW.Rewards.Converters
             if ((bool)value)
                     return Passed;
 
-            return Color.White;
+            return Colors.White;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

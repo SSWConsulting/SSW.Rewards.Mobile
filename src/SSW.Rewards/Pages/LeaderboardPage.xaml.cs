@@ -1,68 +1,80 @@
-﻿using SSW.Rewards.ViewModels;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using SSW.Rewards.Mobile.Controls;
 
-namespace SSW.Rewards.Pages
+namespace SSW.Rewards.Mobile.Pages;
+
+public partial class LeaderboardPage : ContentPage
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LeaderboardPage
+    private readonly LeaderBoardViewModel _viewModel;
+
+    public LeaderboardPage(LeaderBoardViewModel leaderBoardViewModel)
     {
-        private readonly LeaderBoardViewModel _viewModel;
+        _viewModel = leaderBoardViewModel;
+        _viewModel.Navigation = Navigation;
+        BindingContext = _viewModel;
+        InitializeComponent();
+    }
 
-        public LeaderboardPage()
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.Initialise();
+        _viewModel.ScrollTo += ScrollTo;
+    }
+
+    // TODO:    This method has been hacked a little and removed from teh CheckedChanged handler
+    //          of the RadioButtons, as well as the Radio_Tapped method added below. This is to
+    //          workaround a bug in .NET MAUI. see: https://github.com/dotnet/maui/issues/6938.
+    //          We can remove this when this issue gets resolved.
+    //private void FilterChanged(string value)
+    //{
+    //    //if (e.Value)
+    //    //{
+    //    //    var radio = (RadioButton)sender;
+
+    //    //    switch (radio. as string)
+    //    //    {
+    //    //        case "This Month":
+    //    //            _viewModel.SortLeaders("month");
+    //    //            break;
+    //    //        case "This Year":
+    //    //            _viewModel.SortLeaders("year");
+    //    //            break;
+    //    //        default:
+    //    //            _viewModel.SortLeaders("all");
+    //    //            break;
+    //    //    }
+    //    //}
+
+    //    switch (value)
+    //    {
+    //        case "This Month":
+    //            _viewModel.SortLeaders("month");
+    //            break;
+    //        case "This Year":
+    //            _viewModel.SortLeaders("year");
+    //            break;
+    //        default:
+    //            _viewModel.SortLeaders("all");
+    //            break;
+    //    }
+    //}
+
+    private void ScrollTo(int i)
+    {
+        LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center);
+    }
+
+    private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+    {
+        if (e.FirstVisibleItemIndex > 1)
         {
-            _viewModel = Resolver.Resolve<LeaderBoardViewModel>();
-            _viewModel.Navigation = Navigation;
-            BindingContext = _viewModel;
-            InitializeComponent();
+            // show the scrolling controls
+            ScrollButtons.IsVisible = true;
         }
-
-        protected override async void OnAppearing()
+        else
         {
-            base.OnAppearing();
-            await _viewModel.Initialise();
-            _viewModel.ScrollTo += ScrollTo;
-        }
-
-        private void FilterChanged(object sender, CheckedChangedEventArgs e)
-        {
-            if (e.Value)
-            {
-                var radio = (RadioButton)sender;
-
-                switch (radio.Content as string)
-                {
-                    case "This Month":
-                        _viewModel.SortLeaders("month");
-                        break;
-                    case "This Year":
-                        _viewModel.SortLeaders("year");
-                        break;
-                    default:
-                        _viewModel.SortLeaders("all");
-                        break;
-                }
-            }
-        }
-
-
-        private void ScrollTo(int i)
-        {
-            LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center);
-        }
-
-        private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
-        {
-            if (e.FirstVisibleItemIndex > 1)
-            {
-                // show the scrolling controls
-                ScrollButtons.IsVisible = true;
-            }
-            else
-            {
-                // hide the scrolling controls
-                ScrollButtons.IsVisible = false;
-            }
+            // hide the scrolling controls
+            ScrollButtons.IsVisible = false;
         }
     }
 }

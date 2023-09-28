@@ -1,13 +1,9 @@
-using SSW.Rewards.Models;
 using SSW.Rewards.PopupPages;
-using SSW.Rewards.Services;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+using Mopups.Services;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class RewardsViewModel : BaseViewModel
     {
@@ -55,7 +51,7 @@ namespace SSW.Rewards.ViewModels
 
         public async Task OpenRewardDetails(Reward reward)
         {
-            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new RewardDetailsPage(reward));
+            await MopupService.Instance.PushAsync(new RewardDetailsPage(reward));
         }
     }
 }
