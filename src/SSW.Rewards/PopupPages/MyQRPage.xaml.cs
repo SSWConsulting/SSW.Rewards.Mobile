@@ -1,23 +1,19 @@
-﻿using Rg.Plugins.Popup.Pages;
-using Rg.Plugins.Popup.Services;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using Mopups.Pages;
+using Mopups.Services;
 
-namespace SSW.Rewards.PopupPages
+namespace SSW.Rewards.PopupPages;
+
+public partial class MyQRPage : PopupPage
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MyQRPage : PopupPage
+    public MyQRPage(string qrCode)
     {
-        public MyQRPage(string qrCode)
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            codeView.BarcodeValue = qrCode;
-        }
+        codeView.Value = qrCode;
+    }
 
-        private async void Close_Clicked(object sender, System.EventArgs e)
-        {
-            await PopupNavigation.Instance.PopAllAsync();
-        }
+    private async void Close_Clicked(object sender, System.EventArgs e)
+    {
+        await MopupService.Instance.PopAllAsync();
     }
 }

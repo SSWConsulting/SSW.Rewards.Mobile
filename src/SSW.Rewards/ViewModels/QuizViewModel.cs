@@ -1,17 +1,12 @@
-﻿using SSW.Rewards.Services;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class QuizViewModel : BaseViewModel
+    public class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
     {
-        public const string QuizzesUpdatedMessage = "quizzesupdated";
-
         private readonly IQuizService _quizService;
 
         private string quizDetailsPageUrl = "quiz/details";
@@ -37,7 +32,7 @@ namespace SSW.Rewards.ViewModels
                     return Quizzes.FirstOrDefault(q => q.Id == id).Passed == false;
                 });
 
-            MessagingCenter.Subscribe<object>(this, QuizzesUpdatedMessage, async (obj) => await Initialise());
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public async Task Initialise()
@@ -63,6 +58,11 @@ namespace SSW.Rewards.ViewModels
         private async Task OpenQuiz(int quizId, Icons icon)
         {
             await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
+        }
+
+        public async void Receive(QuizzesUpdatedMessage message)
+        {
+            await Initialise();
         }
     }
 }

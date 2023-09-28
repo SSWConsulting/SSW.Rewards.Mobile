@@ -1,20 +1,17 @@
-﻿using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class DevService : BaseService, IDevService
 {
     private StaffClient _staffClient;
 
-    public DevService()
+    public DevService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _staffClient = new StaffClient(BaseUrl, AuthenticatedClient);
     }
 
     public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
     {
-			List<DevProfile> profiles = new List<DevProfile>();
+		List<DevProfile> profiles = new List<DevProfile>();
         int id = 0;
 
         try
@@ -29,17 +26,19 @@ public class DevService : BaseService, IDevService
                     FirstName = profile.Name,
                     Bio = profile.Profile,
                     Email = profile.Email,
-                    Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString()) ? "dev_placeholder" : profile.ProfilePhoto.ToString(),
-						Title = profile.Title,
+                    Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString())
+                        ? "dev_placeholder"
+                        : profile.ProfilePhoto.ToString(),
+					Title = profile.Title,
                     TwitterID = profile.TwitterUsername,
                     GitHubID = profile.GitHubUsername,
                     LinkedInId = profile.LinkedInUrl,
-						Skills = profile.Skills?.ToList(),
+					Skills = profile.Skills?.ToList(),
                     IsExternal = profile.IsExternal,
                     AchievementId = profile.StaffAchievement?.Id ?? 0,
                     Scanned = profile.Scanned,
                     Points = profile.StaffAchievement?.Value ?? 0
-					};
+				};
 
                 profiles.Add(dev);
                 id++;
@@ -50,7 +49,7 @@ public class DevService : BaseService, IDevService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
-    public class BoolToSocialColorConverter : IValueConverter, IMarkupExtension
+    public class BoolToSocialColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -13,7 +10,7 @@ namespace SSW.Rewards.Converters
 
             if (isEnabled)
             {
-                return Color.White;
+                return Colors.White;
             }
             else
             {
@@ -24,11 +21,6 @@ namespace SSW.Rewards.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

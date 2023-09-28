@@ -1,52 +1,37 @@
-﻿using SSW.Rewards.ViewModels;
-using System.Threading.Tasks;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
-namespace SSW.Rewards.Pages
+public partial class LoginPage : ContentPage
 {
-    public partial class LoginPage : ContentPage
+    private readonly LoginPageViewModel _viewModel;
+
+    public LoginPage(LoginPageViewModel viewModel)
     {
-        private readonly LoginPageViewModel _viewModel;
+        InitializeComponent();
+        _viewModel = viewModel;
+        _viewModel.Navigation = Navigation;
+        BindingContext = _viewModel;
+    }
 
-        public LoginPage(LoginPageViewModel viewModel)
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await Task.WhenAny<bool>
+            (
+                LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
+                LogoImage.ScaleTo(1, 1000, Easing.CubicIn)
+            );
+        _viewModel.LoginButtonEnabled = true;
+        _viewModel.RaisePropertyChanged(nameof(_viewModel.LoginButtonEnabled));
+
+        if (Preferences.Get("FirstRun", true))
         {
-            InitializeComponent();
-            _viewModel = viewModel;
-            _viewModel.Navigation = Navigation;
-            BindingContext = _viewModel;
+            Preferences.Set("FirstRun", false);
+            await Navigation.PushModalAsync<OnBoarding>();
         }
-
-        public LoginPage()
+        else
         {
-            InitializeComponent();
-
-            _viewModel = Resolver.Resolve<LoginPageViewModel>();
-
-            _viewModel.Navigation = Navigation;
-            BindingContext = _viewModel;
-        }
-
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-
-            await Task.WhenAny<bool>
-                (
-                    LogoImage.TranslateTo(0, -200, 1000, Easing.CubicIn),
-                    LogoImage.ScaleTo(3, 1000, Easing.CubicIn)
-
-                );
-
-            if (Preferences.Get("FirstRun", true))
-            {
-                Preferences.Set("FirstRun", false);
-                await Navigation.PushModalAsync(new OnBoarding());
-            }
-            else
-            {
-                await _viewModel.Refresh();
-            }
+            await _viewModel.Refresh();
         }
     }
 }

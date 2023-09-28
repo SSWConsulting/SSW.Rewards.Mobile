@@ -1,13 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:installLocation="auto" android:versionCode="27" android:versionName="2.1.7">
-	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="30" />
-	<application android:label="SSW Rewards" android:icon="@mipmap/icon" android:roundIcon="@mipmap/ic_launcher_round">
-		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
-		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification" />
-		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
-			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
-		</provider>
-	</application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionName="2.2.2" android:versionCode="32">
+	<application android:allowBackup="true" android:icon="@mipmap/icon_dark" android:supportsRtl="true" android:label="SSW Rewards"></application>
+	<!-- Setting Targeted sdk version to 32 instead of the latest 33 due to Android Permissions not correctly implemented yet
+		 See Issue: https://github.com/dotnet/maui/issues/11275 -->
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -16,6 +12,15 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<!-- Required only if your app targets Android 13. -->
+	<!-- Declare one or more the following permissions only if your app needs
+    to access data that's protected by them. -->
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+	<!-- Required to maintain app compatibility. -->
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
@@ -27,6 +32,9 @@
 		</intent>
 		<intent>
 			<action android:name="android.support.customtabs.action.CustomTabsService" />
+		</intent>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
 		</intent>
 	</queries>
 </manifest>

@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.ViewModels;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public interface IScannerService
 {

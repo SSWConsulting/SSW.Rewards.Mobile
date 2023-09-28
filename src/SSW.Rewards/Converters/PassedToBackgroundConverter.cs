@@ -1,9 +1,6 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
     public class PassedToBackgroundConverter : IValueConverter
     {
@@ -11,7 +8,8 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["PassedQuiz"];
+                Application.Current.Resources.TryGetValue("PassedQuiz", out var color);
+                return (Color)color;
             }
         }
 
@@ -19,7 +17,8 @@ namespace SSW.Rewards.Converters
         {
             get
             {
-                return (Color)Application.Current.Resources["Quiz"];
+                Application.Current.Resources.TryGetValue("Quiz", out var color);
+                return (Color)color;
             }
         }
 

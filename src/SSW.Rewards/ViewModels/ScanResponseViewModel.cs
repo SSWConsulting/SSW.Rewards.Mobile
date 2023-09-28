@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Models;
-
-namespace SSW.Rewards.ViewModels
+﻿namespace SSW.Rewards.Mobile.ViewModels
 {
     public class ScanResponseViewModel
     {

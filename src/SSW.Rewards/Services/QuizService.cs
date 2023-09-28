@@ -1,12 +1,10 @@
-﻿using SSW.Rewards.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class QuizService : BaseService, IQuizService
 {
     private QuizzesClient _quizClient;
 
-    public QuizService()
+    public QuizService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _quizClient = new QuizzesClient(BaseUrl, AuthenticatedClient);
     }
@@ -22,7 +20,7 @@ public class QuizService : BaseService, IQuizService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {
@@ -53,7 +51,7 @@ public class QuizService : BaseService, IQuizService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {
@@ -75,7 +73,7 @@ public class QuizService : BaseService, IQuizService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {

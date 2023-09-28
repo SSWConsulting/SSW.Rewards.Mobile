@@ -1,92 +1,71 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SSW.Rewards.Controls.Snackbar">
+             x:Class="SSW.Rewards.Mobile.Controls.Snackbar">
   <ContentView.Content>
-        <Grid x:Name="MainLayout"
-              HorizontalOptions="CenterAndExpand"
-              HeightRequest="60"
-              WidthRequest="450"
-              Margin="30"
-              Padding="5"
-              ColumnDefinitions="50, *, 40"
-              Opacity="0"
-              TranslationY="50">
+        <Border StrokeShape="RoundRectangle 3"
+                StrokeThickness="0"
+                WidthRequest="300"
+                x:Name="GridBackground"
+                Opacity="0"
+                TranslationY="50">
+            <Grid x:Name="MainLayout"
+                  HorizontalOptions="CenterAndExpand"
+                  Margin="5"
+                  Padding="5"
+                  WidthRequest="300"
+                  ColumnDefinitions="50, *, Auto">
 
-            <BoxView x:Name="GridBackground"
-                     Grid.ColumnSpan="3"
-                     VerticalOptions="FillAndExpand"
-                     HorizontalOptions="FillAndExpand"
-                     CornerRadius="3"/>
-            
-            <!-- Glyph Icon-->
-            <Label Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   x:Name="GlyphIconLabel"
-                   FontSize="30"
-                   FontFamily="{StaticResource FluentIcons}"
-                   HeightRequest="40"
-                   WidthRequest="40"
-                   Margin="10,0"
-                   HorizontalOptions="Start"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center">
-                <Label.Clip>
-                    <EllipseGeometry Center="20,20"
+                <!-- Glyph Icon-->
+                <Label Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       x:Name="GlyphIconLabel"
+                       FontSize="30"
+                       FontFamily="FluentIcons"
+                       HeightRequest="40"
+                       WidthRequest="40"
+                       Margin="10,0"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Center">
+                    <Label.Clip>
+                        <EllipseGeometry Center="20,20"
                                      RadiusX="20"
                                      RadiusY="20"/>
-                </Label.Clip>
-            </Label>
+                    </Label.Clip>
+                </Label>
 
-            <!-- Brand Icon-->
-            <Label Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   x:Name="BrandIconLabel"
-                   FontSize="28 "
-                   FontFamily="{StaticResource FA6Brands}"
-                   HeightRequest="40"
-                   WidthRequest="40"
-                   Margin="10,0"
-                   HorizontalOptions="Start"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center">
-                <Label.Clip>
-                    <EllipseGeometry Center="20,20"
-                                     RadiusX="20"
-                                     RadiusY="20"/>
-                </Label.Clip>
-            </Label>
+                <!-- Main message or action-->
+                <Label Grid.Column="1" 
+                       Margin="10,0"
+                       FontSize="Small"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       BackgroundColor="Transparent"
+                       TextColor="White"
+                       x:Name="MessageLabel"/>
 
-            <!-- Main message or action-->
-            <Label Grid.Column="1" 
-                   Margin="10,0"
-                   FontSize="Small"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Center"
-                   TextColor="White"
-                   x:Name="MessageLabel"/>
-            
-            <!-- End icon-->
-            <Label Grid.Column="2"
-                   TextColor="White"
-                   Text="&#xf293;"
-                   FontFamily="{StaticResource FluentIcons}"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   x:Name="TickLabel"/>
-            
-            <!--End points coint-->
-            <Label Grid.Column="1"
-                   Grid.ColumnSpan="2"
-                   x:Name="PointsLabel"
-                   FontSize="11"
-                   HorizontalOptions="End"
-                   VerticalOptions="Center"
-                   Margin="0,0,10,0"
-                   TextColor="White"/>
-        </Grid>
+                <!-- End icon-->
+                <Label Grid.Column="2"
+                       TextColor="White"
+                       Text="&#xf293;"
+                       FontFamily="FluentIcons"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       x:Name="TickLabel"/>
+
+                <!--End points coint-->
+                <Label Grid.Column="1"
+                       Grid.ColumnSpan="2"
+                       x:Name="PointsLabel"
+                       FontSize="11"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"
+                       Margin="0,0,10,0"
+                       TextColor="White"/>
+            </Grid>
+        </Border>
   </ContentView.Content>
 </ContentView>

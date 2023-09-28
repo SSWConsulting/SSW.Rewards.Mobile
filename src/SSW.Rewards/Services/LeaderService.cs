@@ -1,12 +1,10 @@
-﻿using SSW.Rewards.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class LeaderService : BaseService, ILeaderService
 {
     private LeaderboardClient _leaderBoardClient;
 
-    public LeaderService()
+    public LeaderService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
     }
@@ -34,7 +32,7 @@ public class LeaderService : BaseService, ILeaderService
             if(e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync(new LoginPage()) ;
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {

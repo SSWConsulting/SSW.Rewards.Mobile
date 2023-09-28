@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  BackgroundColor="Transparent"
                  x:Class="SSW.Rewards.PopupPages.TechQuiz">
     <pages:PopupPage.Animation>
@@ -49,7 +49,8 @@
                                HorizontalTextAlignment="Center"
                                TextColor="White"
                                HorizontalOptions="Center"/>
-                        <Image Source="external"
+                        <Image Source="external_link.png"
+                               WidthRequest="24"
                                InputTransparent="True"
                                HorizontalOptions="End"/>
                     </Grid>

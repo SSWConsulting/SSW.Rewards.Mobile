@@ -1,13 +1,10 @@
-﻿using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
-
-namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Services;
 
 public class RewardService : BaseService, IRewardService
 {
     private RewardClient _rewardClient;
 
-    public RewardService()
+    public RewardService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
         _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
     }
@@ -38,7 +35,7 @@ public class RewardService : BaseService, IRewardService
             if (e.StatusCode == 401)
             {
                 await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
             else
             {

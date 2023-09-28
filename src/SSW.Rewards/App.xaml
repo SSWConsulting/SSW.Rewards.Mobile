@@ -1,121 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="SSW.Rewards.App">
+             xmlns:local="clr-namespace:SSW.Rewards.Mobile"
+             x:Class="SSW.Rewards.Mobile.App">
     <Application.Resources>
-        <OnPlatform x:TypeArguments="x:String" x:Key="FluentIcons">
-            <On Platform="iOS" Value="FluentSystemIcons-Regular"/>
-            <On Platform="Android" Value="FluentSystemIcons-Regular.ttf#Regular"/>
-            <On Platform="UWP" Value="/Assets/Fonts/FluentSystemIcons-Regular.ttf#"/>
-        </OnPlatform>
-        <OnPlatform x:TypeArguments="x:String" x:Key="FA6Brands">
-            <On Platform="iOS" Value="FontAwesome6Brands-Regular"/>
-            <On Platform="Android" Value="Font Awesome 6 Brands-Regular-400.otf#Regular"/>
-            <On Platform="UWP" Value="/Assets/Fonts/Font Awesome 6 Brands-Regular-400.otf#Font Awesome 6 Brands"/>
-        </OnPlatform>
-        <OnPlatform x:TypeArguments="x:String" x:Key="HelveticaBold">
-            <On Platform="iOS" Value="Helvetica-Bold"/>
-            <On Platform="Android" Value="Helvetica-Bold-Font.ttf#Bold"/>
-            <On Platform="UWP" Value="/Assets/Fonts/Helvetica-Bold-Font.ttf#"/>
-        </OnPlatform>
-
-        <Color x:Key="LeaderSummary">#e7e7e7</Color>
-        <Color x:Key="LeaderSummarySelected">White</Color>
-        <Color x:Key="LeaderboardBackground">#d8d8d8</Color>
-        <Color x:Key="SkillsBadgeBackgroundColour">#373737</Color>
-        <Color x:Key="ProfileBorder">#979797</Color>
-        <Color x:Key="FlyoutBackgroundColour">#3b3b3b</Color>
-        <Color x:Key="PointsColour">#ffc700</Color>
-        <Color x:Key="TwitterBlue">#007aff</Color>
-        <Color x:Key="ContactButtonRed">#ff453a</Color>
-        <Color x:Key="ProfileBackgroundColour">#232323</Color>
-        <Color x:Key="DividerColour">#5d5d5d</Color>
-        <Color x:Key="SSWRed">#cc4141</Color>
-        <Color x:Key="ButtonBorder">#4d4d4d</Color>
-        <Color x:Key="IndicatorColor">#bcbcbc</Color>
-
-        <!-- v2 -->
-        <Color x:Key="MainBackground">#FF121212</Color>
-        <Color x:Key="primary">#FFCC4141</Color> <!-- replaces SSWRes-->
-        <Color x:Key="TabBarBackground">#FF333333</Color>
-        <Color x:Key="LeaderCardBackground">#FF505050</Color>
-        <Color x:Key="HeadingColor">#bcbcbc</Color>
-        <Color x:Key="PeopleBackground">#363636</Color>
-        <Color x:Key="MutedText">#a3a3a3</Color>
-        <Color x:Key="HighlightedText">#dbdbdb</Color>
-        <Color x:Key="PassedQuiz">#818181</Color>
-        <Color x:Key="Quiz">#f7f7f7</Color>
-        <Color x:Key="QuizCheckColor">#1d4c39</Color>
-        <Color x:Key="PassedQuizIcon">#181818</Color>
-        <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
-
-        <OnPlatform x:Key="LeaderboardFont" x:TypeArguments="x:String">
-            <On Platform="iOS" Value="SFProDisplay"/>
-        </OnPlatform>
-
-        <ControlTemplate x:Key="RadioButtonTemplate">
-            <Frame HasShadow="False"
-                   BackgroundColor="Transparent"
-                   HorizontalOptions="Start"
-                   VerticalOptions="Start"
-                   Padding="0">
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroupList>
-                        <VisualStateGroup x:Name="CheckedStates">
-                            <VisualState x:Name="Checked">
-                                <VisualState.Setters>
-                                    <Setter TargetName="check"
-                                            Property="Opacity"
-                                            Value="1" />
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="Unchecked">
-                                <VisualState.Setters>
-                                    <Setter TargetName="check"
-                                            Property="Opacity"
-                                            Value="0" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </VisualStateManager.VisualStateGroups>
-                <Grid Margin="4"
-                      ColumnDefinitions="60, *">
-                    <Grid WidthRequest="18"
-                          HeightRequest="18"
-                          HorizontalOptions="Center"
-                          VerticalOptions="Center">
-                        <Ellipse Stroke="{StaticResource SSWRed}"
-                                 Fill="White"
-                                 WidthRequest="20"
-                                 HeightRequest="20"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center" />
-                        <Ellipse x:Name="check"
-                                 Fill="{StaticResource SSWRed}"
-                                 WidthRequest="10"
-                                 HeightRequest="10"
-                                 HorizontalOptions="Center"
-                                 VerticalOptions="Center" />
-                    </Grid>
-                    <ContentPresenter Grid.Column="1"
-                                      VerticalOptions="Start"/>
-                </Grid>
-            </Frame>
-        </ControlTemplate>
-
-        <Style TargetType="RadioButton">
-            <Setter Property="ControlTemplate"
-                    Value="{StaticResource RadioButtonTemplate}" />
-        </Style>
-
-        <Style x:Key="Leaderboard" TargetType="Label">
-            <Setter Property="FontFamily" Value="{StaticResource LeaderboardFont}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="TextColor" Value="#999999"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
