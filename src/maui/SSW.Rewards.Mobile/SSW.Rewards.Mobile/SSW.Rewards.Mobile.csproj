@@ -30,7 +30,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <CreatePackage>false</CreatePackage>
 	  <CodesignProvision>Automatic</CodesignProvision>
@@ -107,6 +107,6 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 	  <CodesignKey>Apple Development: Matthew Goldman (9Y556HJK25)</CodesignKey>
-	  <CodesignProvision>VS: com.SSW.SSW.Consulting Development</CodesignProvision>
+	  <CodesignProvision>Rewards Dev (Matt + Anton)</CodesignProvision>
 	</PropertyGroup>
 </Project>

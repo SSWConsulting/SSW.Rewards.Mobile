@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using IdentityModel.OidcClient;
+using Microsoft.AppCenter.Crashes;
 using SSW.Rewards.Mobile.Messages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
@@ -49,7 +50,7 @@ public class UserService : BaseService, IUserService
         {
             return false;
         }
-        
+
     }
 
     #region AUTHENTICATION
@@ -174,6 +175,10 @@ public class UserService : BaseService, IUserService
                 AuthHandler.SetAccessToken(result.AccessToken);
                 return true;
             }
+            else
+            {
+                Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
+            }
         }
 
         return false;
@@ -214,7 +219,7 @@ public class UserService : BaseService, IUserService
     {
         var contentType = "image/png";
         var fileName = $"{MyUserId}_{DateTime.UtcNow.Ticks}_profilepic.png";
-        
+
         FileParameter parameter = new FileParameter(image, fileName, contentType);
 
         var response = await _userClient.UploadProfilePicAsync(parameter);
@@ -397,7 +402,7 @@ public class UserService : BaseService, IUserService
         {
             return false;
         }
-        
+
         WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         return true;
     }
