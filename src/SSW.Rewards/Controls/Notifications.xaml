@@ -1,15 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Converters"
-             x:Class="SSW.Rewards.Controls.Notifications">
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             x:DataType="viewModels:ProfileCarouselViewModel"
+             x:Class="SSW.Rewards.Mobile.Controls.Notifications">
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:NotificationTypeToIconConverter x:Key="TypeToIcon"/>
         </ResourceDictionary>
     </ContentView.Resources>
   <ContentView.Content>
-      <StackLayout Padding="20">
+      <Grid RowDefinitions="Auto,*"
+            Padding="20,0">
           <Label Text="Notifications"
                  TextColor="White"
                  FontAttributes="Bold"
@@ -17,9 +21,12 @@
                  HorizontalTextAlignment="Center"
                  VerticalOptions="Start"
                  FontSize="Title"
-                 Margin="10"/>
+                 LineBreakMode="TailTruncation"
+                 Margin="10"
+                 Grid.Row="0"/>
 
-            <CollectionView ItemsSource="{Binding Notifications}">
+            <CollectionView ItemsSource="{Binding Notifications}"
+                            Grid.Row="1">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="20" />
@@ -38,12 +45,14 @@
                     </ContentView>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Notification">
+                         <!-- TODO: Remove Height request. Without it CollectionView with uneven heights doesn't work properly on iOS -->
                         <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
-                              ColumnDefinitions="1*, 6*">
+                              ColumnDefinitions="1*, 6*"
+                              HeightRequest="75">
                             <Label TextColor="White"
                                    Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
-                                   FontFamily="{StaticResource FluentIcons}"
+                                   FontFamily="FluentIcons"
                                    FontSize="Title"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
@@ -58,6 +67,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-      </StackLayout>
+      </Grid>
   </ContentView.Content>
 </ContentView>

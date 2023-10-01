@@ -1,65 +1,62 @@
-﻿using SSW.Rewards.Controls;
-using SSW.Rewards.Services;
-using SSW.Rewards.ViewModels;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using SSW.Rewards.Mobile.Controls;
 
-namespace SSW.Rewards.Pages
+namespace SSW.Rewards.Mobile.Pages;
+
+public partial class ProfilePage : ContentPage
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProfilePage : ContentPage
+    private bool _isMe;
+
+    private bool _initialised;
+
+    private ProfileViewModel viewModel;
+
+
+    public ProfilePage(ProfileViewModel vm)//, bool isMe = true)
     {
-        private bool _isMe;
+        InitializeComponent();
+        viewModel = vm;
+        viewModel.Navigation = Navigation;
+        BindingContext = viewModel;
 
-        private bool _initialised;
+        _isMe = true;
+    }
 
-        private ProfileViewModel viewModel;
+    public ProfilePage(IRewardService rewardsService, IUserService userService, LeaderViewModel leader)
+    {
+        InitializeComponent();
+        // HACK: Need to find a better way to handle these two differnt constructors
+        viewModel = new ProfileViewModel(rewardsService, userService, leader);
+        viewModel.Navigation = Navigation;
+        BindingContext = viewModel;
 
-        public ProfilePage()
+        _isMe = false;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (_isMe && _initialised)
         {
-            InitializeComponent();
-            viewModel = new ProfileViewModel(Resolver.Resolve<IUserService>());
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
 
-            _isMe = true;
         }
-
-        public ProfilePage(LeaderViewModel vm)
+        else
         {
-            InitializeComponent();
-            viewModel = new ProfileViewModel(vm);
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
-
-            _isMe = false;
+            await viewModel.Initialise(_isMe);
         }
+        viewModel.ShowSnackbar += ShowSnackbar;
+        _initialised = true;
+    }
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            if (_isMe && _initialised)
-            {
+    private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
+    {
+        ProfilePageSnackbar.Options = e.Options;
+        await ProfilePageSnackbar.ShowSnackbar();
+    }
 
-            }
-            else
-            {
-                await viewModel.Initialise(_isMe);
-            }
-            viewModel.ShowSnackbar += ShowSnackbar;
-            _initialised = true;
-        }
-
-        private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
-        {
-            ProfilePageSnackbar.Options = e.Options;
-            await ProfilePageSnackbar.ShowSnackbar();
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            viewModel.OnDisappearing();
-        }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        //viewModel.ShowSnackbar -= ShowSnackbar;
+        viewModel.OnDisappearing();
     }
 }

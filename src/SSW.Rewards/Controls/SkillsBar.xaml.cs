@@ -1,9 +1,5 @@
-﻿using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
-namespace SSW.Rewards.Controls
+﻿namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SkillsBar : ContentView
     {
         public static readonly BindableProperty LabelProperty = BindableProperty.Create(nameof(Label), typeof(string), typeof(SkillsBar), null, propertyChanged: LabelChanged);

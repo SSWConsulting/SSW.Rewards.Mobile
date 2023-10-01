@@ -1,33 +1,33 @@
-﻿namespace SSW.Rewards
+﻿namespace SSW.Rewards;
+
+public static class Constants
 {
-    public class Constants
-    {
 #if DEBUG
-        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
-        public string AppCenterAndroidId = "bfe53aa1-a7df-499d-900f-725a5222fc23";
+    // public static string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
+    public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
+    public static string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
+    public static string AppCenterIOSId = "21efe682-dc49-4d39-8af8-ad05911be003";
 
 #elif QA
-        public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
+    public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
-        public string ApiBaseUrl = "https://api.rewards.ssw.com.au";
-        public string AppCenterAndroidId = "60b96e0a-c6dd-4320-855f-ed58e44ffd00";
+    public static string ApiBaseUrl = "https://api.rewards.ssw.com.au";
+    public static string AppCenterAndroidId = "d6f591ec-8cef-44d7-96c0-08f31f91fb74";
+    public static string AppCenterIOSId = "21efe682-dc49-4d39-8af8-ad05911be003";
 #endif
-        public string MaxApiSupportedVersion = "1.0";
+    public static string MaxApiSupportedVersion = "1.0";
 
-        public string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
+    public static string AuthRedirectUrl { get; } = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-        public string AuthorityUri { get; } = "https://sswidentity-stage.azurewebsites.net";
+    public static string AuthorityUri { get; } = "https://identity.ssw.com.au"; // "https://sswidentity-stage.azurewebsites.net";
+
 #else
-        public string AuthorityUri { get; } = "https://identity.ssw.com.au";
+    public static string AuthorityUri { get; } = "https://identity.ssw.com.au";
 #endif
-        public string ClientId { get; } = "ssw-rewards-mobile-app";
+    public static string ClientId { get; } = "ssw-rewards-mobile-app";
 
-        public string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
+    public static string Scope { get; } = "openid profile ssw-rewards-api email offline_access";
 
-        public const string PointsAwardedMessage = "PointsAwarded";
-
-        public const string EnableScannerMessage = "EnableScanner";
-
-    }
+    public static int AnimationRepeatCount = 3;
 }

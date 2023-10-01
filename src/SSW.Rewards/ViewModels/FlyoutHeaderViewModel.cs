@@ -1,37 +1,38 @@
-﻿using SSW.Rewards.Services;
-using Xamarin.Forms;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDetailsUpdatedMessage>
 {
-    public class FlyoutHeaderViewModel : BaseViewModel
+    [ObservableProperty]
+    private string profilePic;
+
+    [ObservableProperty]
+    private string name;
+
+    [ObservableProperty]
+    private string email;
+
+    [ObservableProperty]
+    private bool isStaff;
+
+    public FlyoutHeaderViewModel(IUserService userService)
     {
-        private IUserService _userService;
+        WeakReferenceMessenger.Default.Register<UserDetailsUpdatedMessage>(this);
+        ProfilePic = userService.MyProfilePic;
+        Name = userService.MyName;
+        Email = userService.MyEmail;
+        IsStaff = userService.IsStaff;
+    }
 
-        public string ProfilePic{ get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-
-        public bool Staff { get; set; }
-
-        public FlyoutHeaderViewModel(IUserService userService)
-        {
-            _userService = userService;
-            Initialise();
-        }
-
-        private void Initialise()
-        {
-            ProfilePic = _userService.MyProfilePic;
-            Name = _userService.MyName;
-            Email = _userService.MyEmail;
-            Staff = !string.IsNullOrWhiteSpace(_userService.MyQrCode);
-            MessagingCenter.Subscribe<object>(this, UserService.UserDetailsUpdatedMessage, (obj) => Refresh());
-        }
-
-        private void Refresh()
-        {
-            ProfilePic = _userService.MyProfilePic;
-            OnPropertyChanged(nameof(ProfilePic));
-        }
+    public void Receive(UserDetailsUpdatedMessage message)
+    {
+        Console.WriteLine($"[FlyoutHeaderViewModel] Received new user details message: {message.Value.Name}");
+        ProfilePic = message.Value.ProfilePic;
+        Name = message.Value.Name;
+        Email = message.Value.Email;
+        IsStaff = message.Value.IsStaff;
     }
 }

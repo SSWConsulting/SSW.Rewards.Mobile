@@ -1,11 +1,8 @@
-﻿using System;
-using System.Globalization;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using System.Globalization;
 
-namespace SSW.Rewards.Converters
+namespace SSW.Rewards.Mobile.Converters
 {
-    public class ScannedToColorConverter : IValueConverter, IMarkupExtension
+    public class ScannedToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -24,11 +21,6 @@ namespace SSW.Rewards.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
     }
 }

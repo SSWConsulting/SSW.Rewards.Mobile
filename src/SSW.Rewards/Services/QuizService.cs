@@ -1,91 +1,86 @@
-﻿using SSW.Rewards.Pages;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Services;
 
-namespace SSW.Rewards.Services
+public class QuizService : BaseService, IQuizService
 {
-    public class QuizService : BaseService, IQuizService
+    private QuizzesClient _quizClient;
+
+    public QuizService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
-        private QuizzesClient _quizClient;
+        _quizClient = new QuizzesClient(BaseUrl, AuthenticatedClient);
+    }
 
-        public QuizService()
+    public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
+    {
+        try
         {
-            _quizClient = new QuizzesClient(BaseUrl, AuthenticatedClient);
+            return await _quizClient.GetQuizDetailsAsync(quizID);
         }
-
-        public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
+        catch (ApiException e)
         {
-            try
+            if (e.StatusCode == 401)
             {
-                return await _quizClient.GetQuizDetailsAsync(quizID);
+                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
-            catch (ApiException e)
+            else
             {
-                if (e.StatusCode == 401)
-                {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
-                }
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
+            }
 
-                return null;
-            }
+            return null;
         }
+    }
 
-        public async Task<IEnumerable<QuizDto>> GetQuizzes()
+    public async Task<IEnumerable<QuizDto>> GetQuizzes()
+    {
+        try
         {
-            try
+            var quizzes = new List<QuizDto>();
+
+            var apiQuizzes = await _quizClient.GetQuizListForUserAsync();
+
+            foreach(var quiz in apiQuizzes)
             {
-                var quizzes = new List<QuizDto>();
-
-                var apiQuizzes = await _quizClient.GetQuizListForUserAsync();
-
-                foreach(var quiz in apiQuizzes)
-                {
-                    quizzes.Add(quiz);
-                }
-
-                return quizzes;
+                quizzes.Add(quiz);
             }
-            catch (ApiException e)
-            {
-                if (e.StatusCode == 401)
-                {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
-                }
 
-                return null;
-            }
+            return quizzes;
         }
-
-        public async Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command)
+        catch (ApiException e)
         {
-            try
+            if (e.StatusCode == 401)
             {
-                return await _quizClient.SubmitCompletedQuizAsync(command);
+                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
-            catch (ApiException e)
+            else
             {
-                if (e.StatusCode == 401)
-                {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    await App.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
-                }
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
+            }
 
-                return null;
+            return null;
+        }
+    }
+
+    public async Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command)
+    {
+        try
+        {
+            return await _quizClient.SubmitCompletedQuizAsync(command);
+        }
+        catch (ApiException e)
+        {
+            if (e.StatusCode == 401)
+            {
+                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
             }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
+            }
+
+            return null;
         }
     }
 }

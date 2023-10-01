@@ -1,13 +1,11 @@
-﻿using Rg.Plugins.Popup.Pages;
-using Rg.Plugins.Popup.Services;
-using SSW.Rewards.Models;
-using System.Linq;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Pages;
+using Mopups.Services;
+using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.Models;
 
 namespace SSW.Rewards.PopupPages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LinkSocial : PopupPage
     {
         private readonly Achievement _achievement;
@@ -22,15 +20,15 @@ namespace SSW.Rewards.PopupPages
 
         private async void SaveButton_Clicked(object sender, System.EventArgs e)
         {
-            var msg = new SocialUsernameMessage
+            var msg = new SocialUsernameAddedMessage(new SocialAchievement
             {
                 Achievement = _achievement,
-                Username    = UsernameEntry.Text
-            };
+                Username = UsernameEntry.Text
+            });
 
-            MessagingCenter.Send<object, SocialUsernameMessage>(this, SocialUsernameMessage.SocialUsernameAddedMessage, msg);
+            WeakReferenceMessenger.Default.Send(msg);
 
-            await PopupNavigation.Instance.PopAllAsync();
+            await MopupService.Instance.PopAllAsync();
         }
 
         private void UsernameEntry_TextChanged(object sender, TextChangedEventArgs e)

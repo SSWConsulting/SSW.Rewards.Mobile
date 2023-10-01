@@ -1,148 +1,148 @@
-﻿using Rg.Plugins.Popup.Services;
-using SSW.Rewards.Models;
-using SSW.Rewards.Services;
-using System.Threading.Tasks;
+﻿using Mopups.Services;
 using System.Windows.Input;
-using Xamarin.Forms;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
+using System.Diagnostics;
 
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public class ScanResultViewModel : BaseViewModel
 {
-    public class ScanResultViewModel : BaseViewModel
+    private readonly IUserService _userService;
+
+    private readonly IScannerService _scannerService;
+    
+    private bool _wonPrize { get; set; }
+    private string data;
+
+    public string AnimationRef { get; set; }
+
+    public bool AnimationLoop { get; set; }
+    
+    public string ResultHeading { get; set; }
+    
+    public string ResultBody { get; set; }
+    
+    public string AchievementHeading { get; set; }
+    
+    public ICommand OnOkCommand { get; set; }
+    
+    public Color HeadingColour { get; set; }
+
+    public ScanResultViewModel(IUserService userService, IScannerService scannerService)
     {
-        public string AnimationRef { get; set; }
+        OnOkCommand = new Command(async () => await DismissPopups());
 
-        public bool AnimationLoop { get; set; }
-        
-        public string ResultHeading { get; set; }
-        
-        public string ResultBody { get; set; }
-        
-        public string AchievementHeading { get; set; }
-        
-        public ICommand OnOkCommand { get; set; }
-        
-        public Color HeadingColour { get; set; }
-        
-        private IUserService _userService { get; set; }
-        
-        private IScannerService _scannerService { get; set; }
+        _userService = userService;
+        _scannerService = scannerService;
+    }
 
-        private bool _wonPrize { get; set; }
+    public void SetScanData(string data)
+    {
+        this.data = data;
+    }
 
-        private string data;
+    public async Task CheckScanData()
+    {
+        AnimationRef = "qr-code-scanner.json";
+        AnimationLoop = true;
+        ResultHeading = "Verifying your QR code...";
+        RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
 
-        public ScanResultViewModel(string scanData)
+        ScanResponseViewModel result = await _scannerService.ValidateQRCodeAsync(data);
+
+        AnimationLoop = false;
+
+        switch (result.result)
         {
-            OnOkCommand = new Command(async () => await DismissPopups());
+            case ScanResult.Added:
+                if(result.ScanType == ScanType.Achievement)
+                {
+                    ResultHeading = "Achievement Added!";
+                    AnimationRef = "star.json";
+                    ResultBody = $"You have earned ⭐ {result.Points.ToString()} points for this achievement";
+                }
+                else if(result.ScanType == ScanType.Reward)
+                {
+                    ResultHeading = "Congratulations!";
+                    AnimationRef = "trophy.json";
+                    ResultBody = "You have claimed this reward!";
+                }
+                Application.Current.Resources.TryGetValue("PointsColour", out var color);
+                HeadingColour = (Color)color;
+                AchievementHeading = result.Title;
+                _wonPrize = true;
+                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+                break;
 
-            _userService = Resolver.Resolve<IUserService>();
-            _scannerService = Resolver.Resolve<IScannerService>();
+            case ScanResult.Duplicate:
+                AnimationRef = "rapid-scan.json";
+                AnimationLoop = true;
+                ResultHeading = "Already Scanned!";
+                ResultBody = "Did you re-scan that accidentally?";
+                AchievementHeading = string.Empty;
+                HeadingColour = Colors.White;
+                _wonPrize = false;
+                break;
 
-            data = scanData;
+            case ScanResult.NotFound:
+                AnimationRef = "empty-box.json";
+                ResultHeading = "Unrecognised";
+                ResultBody = "Try scanning this with your phone camera instead.";
+                AchievementHeading = string.Empty;
+                _wonPrize = false;
+                HeadingColour = Colors.White;
+                break;
+
+            case ScanResult.InsufficientBalance:
+                AnimationRef = "coin.json";
+                ResultHeading = "Not Enough Points";
+                ResultBody = "You do not have enough points to claim this reward yet. Try again later.";
+                AchievementHeading = string.Empty;
+                _wonPrize = false;
+                HeadingColour = Colors.White;
+                break;
+
+            case ScanResult.Error:
+                AnimationRef = "empty-box.json";
+                ResultHeading = "It's not you it's me...";
+                ResultBody = "Something went wrong there. Please try again.";
+                AchievementHeading = string.Empty;
+                _wonPrize = false;
+                HeadingColour = Colors.White;
+                break;
         }
 
-        public async Task CheckScanData()
+        RaisePropertyChanged(new[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
+
+        if (result.result == ScanResult.Added)
         {
-            AnimationRef = "qr-code-scanner.json";
-            AnimationLoop = true;
-            ResultHeading = "Verifying your QR code...";
-            RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
-
-            ScanResponseViewModel result = await _scannerService.ValidateQRCodeAsync(data);
-
-            AnimationLoop = false;
-
-            switch (result.result)
-            {
-                case ScanResult.Added:
-                    if(result.ScanType == ScanType.Achievement)
-                    {
-                        ResultHeading = "Achievement Added!";
-                        AnimationRef = "star.json";
-                        ResultBody = string.Format("You have earned ⭐ {0} points for this achivement", result.Points.ToString());
-                    }
-                    else if(result.ScanType == ScanType.Reward)
-                    {
-                        ResultHeading = "Congratulations!";
-                        AnimationRef = "trophy.json";
-                        ResultBody = string.Format("You have claimed this reward!");
-                    }
-                    
-                    HeadingColour = (Color)Application.Current.Resources["PointsColour"];
-                    AchievementHeading = result.Title;
-                    _wonPrize = true;
-                    MessagingCenter.Send(this, Constants.PointsAwardedMessage);
-                    break;
-
-                case ScanResult.Duplicate:
-                    AnimationRef = "rapid-scan.json";
-                    AnimationLoop = true;
-                    ResultHeading = "Already Scanned!";
-                    ResultBody = "Did you re-scan that accidentally?";
-                    AchievementHeading = string.Empty;
-                    HeadingColour = Color.White;
-                    _wonPrize = false;
-                    break;
-
-                case ScanResult.NotFound:
-                    AnimationRef = "empty-box.json";
-                    ResultHeading = "Unrecognised";
-                    ResultBody = "This doesn't look like an SSW code";
-                    AchievementHeading = string.Empty;
-                    _wonPrize = false;
-                    HeadingColour = Color.White;
-                    break;
-
-                case ScanResult.InsufficientBalance:
-                    AnimationRef = "coin.json";
-                    ResultHeading = "Not Enough Points";
-                    ResultBody = "You do not have enough points to claim this reward yet. Try again later.";
-                    AchievementHeading = string.Empty;
-                    _wonPrize = false;
-                    HeadingColour = Color.White;
-                    break;
-
-                case ScanResult.Error:
-                    AnimationRef = "empty-box.json";
-                    ResultHeading = "It's not you it's me...";
-                    ResultBody = "Something went wrong there. Please try again.";
-                    AchievementHeading = string.Empty;
-                    _wonPrize = false;
-                    HeadingColour = Color.White;
-                    break;
-            }
-
-            RaisePropertyChanged(new string[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
-
-            if (result.result == ScanResult.Added)
-            {
-                await _userService.UpdateMyDetailsAsync();
-                MessagingCenter.Send(this, Constants.PointsAwardedMessage);
-            }
+            await _userService.UpdateMyDetailsAsync();
+            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         }
+    }
 
-        private async Task DismissPopups()
+    private async Task DismissPopups()
+    {
+        if(_wonPrize)
         {
-            if(_wonPrize)
-            {
-                await DismissWithWon();
-            }
-            else
-            {
-                await DismissWithoutWon();
-            }
+            await DismissWithWon();
         }
-
-        private async Task DismissWithWon()
+        else
         {
-            await Shell.Current.GoToAsync("//main");
-            await PopupNavigation.Instance.PopAllAsync();
+            await DismissWithoutWon();
         }
+    }
 
-        private async Task DismissWithoutWon()
-        {
-            MessagingCenter.Send<object>(this, Constants.EnableScannerMessage);
-            await PopupNavigation.Instance.PopAllAsync();
-        }
+    private async Task DismissWithWon()
+    {
+        await Shell.Current.GoToAsync("//main");
+        await MopupService.Instance.PopAllAsync();
+    }
+
+    private async Task DismissWithoutWon()
+    {
+        WeakReferenceMessenger.Default.Send(new EnableScannerMessage());
+        await MopupService.Instance.PopAllAsync();
     }
 }

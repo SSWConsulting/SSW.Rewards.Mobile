@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms;
-
-namespace SSW.Rewards.ViewModels
+﻿namespace SSW.Rewards.Mobile.ViewModels
 {
     public class LeaderViewModel : LeaderboardUserDto
     {        

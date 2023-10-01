@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
-                 xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 mc:Ignorable="d"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+                 x:DataType="viewModels:CameraPageViewModel"
+                 BackgroundColor="Transparent"
                  x:Class="SSW.Rewards.PopupPages.CameraPage">
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
@@ -19,15 +19,18 @@
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
 
-    <Frame WidthRequest="300"
-           HeightRequest="500"
-           HorizontalOptions="Center"
-           VerticalOptions="Center"
-           HasShadow="True"
-           BackgroundColor="{StaticResource LeaderCardBackground}"
-           CornerRadius="1">
+    <Border
+        StrokeShape="RoundRectangle 3"
+        StrokeThickness="0"
+        Padding="20,10,20,20"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        BackgroundColor="{StaticResource LeaderCardBackground}">
 
-        <Grid RowDefinitions="1*, 3*, 3*">
+        <Grid
+            RowDefinitions="1*, 3*, 3*"
+            WidthRequest="300"
+            HeightRequest="500">
             <Label Grid.Row="0"
                    Text="Edit Profile Picture"
                    FontSize="Medium"
@@ -39,7 +42,6 @@
                    Grid.Row="1"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
-                   d:Source="icon_avatar"
                    HeightRequest="200"
                    WidthRequest="200"
                    Aspect="AspectFill"
@@ -55,18 +57,12 @@
                          Spacing="20"
                          VerticalOptions="Center">
                 <Button Text="Take a new photo"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding OnTakePhotoTapped}"/>
                 
                 <Button Text="Choose a new photo"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding OnChoosePhotoTapped}"/>
                 
                 <Button Text="Use this picture"
-                        TextColor="White"
-                        BackgroundColor="{StaticResource SSWRed}"
                         Command="{Binding UseButtonTapped}"
                         IsEnabled="{Binding UseButtonEnabled}"/>
             </StackLayout>
@@ -74,16 +70,12 @@
                          Opacity="0.5"
                          BackgroundColor="AliceBlue"
                          IsVisible="{Binding IsUploading}"
-                         d:IsVisible="True"
                          Grid.RowSpan="3">
                 <ActivityIndicator HorizontalOptions="CenterAndExpand"
                                HeightRequest="80"
                                WidthRequest="80"
                                VerticalOptions="CenterAndExpand"
                                IsEnabled="{Binding IsUploading}"
-                               d:IsEnabled="True"
-                               d:IsRunning="True"
-                               d:IsVisible="True"
                                IsRunning="{Binding IsUploading}"
                                IsVisible="{Binding IsUploading}"
                                Color="{StaticResource SSWRed}"/>
@@ -94,5 +86,5 @@
                        VerticalOptions="End"/>
             </StackLayout>
         </Grid>
-    </Frame>
+    </Border>
 </pages:PopupPage>

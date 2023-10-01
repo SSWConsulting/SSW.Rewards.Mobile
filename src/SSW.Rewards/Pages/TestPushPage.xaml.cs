@@ -1,20 +1,13 @@
-﻿using System;
-
-using SSW.Rewards.Services;
-
-using Xamarin.Forms;
-using Xamarin.Essentials;
-
-namespace SSW.Rewards.Pages
+﻿namespace SSW.Rewards.Mobile.Pages
 {
     public partial class TestPushPage : ContentPage
     {
         readonly INotificationRegistrationService _notificationRegistrationService;
 
-        public TestPushPage()
+        public TestPushPage(INotificationRegistrationService notificationRegistrationService)
         {
             InitializeComponent();
-            _notificationRegistrationService = Resolver.Resolve<INotificationRegistrationService>();
+            _notificationRegistrationService = notificationRegistrationService;
         }
 
         //TODO: registrationGroupTag should be based on current user role (i.e. Admin, Staff, User, etc.)

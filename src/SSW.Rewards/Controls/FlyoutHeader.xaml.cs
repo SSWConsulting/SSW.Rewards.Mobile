@@ -1,23 +1,14 @@
-﻿using SSW.Rewards.ViewModels;
-using Xamarin.Forms;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Maui.BindableProperty.Generator.Core;
+using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.ViewModels;
 
-namespace SSW.Rewards.Controls
-{
-    public partial class FlyoutHeader : ContentView
+namespace SSW.Rewards.Mobile.Controls;
+
+public partial class FlyoutHeader
+{    
+    public FlyoutHeader()
     {
-        public FlyoutHeader(FlyoutHeaderViewModel viewModel)
-        {
-            InitializeComponent();
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
-        }
-
-        public FlyoutHeader()
-        {
-            InitializeComponent();
-            var viewModel = Resolver.Resolve<FlyoutHeaderViewModel>();
-            viewModel.Navigation = Navigation;
-            BindingContext = viewModel;
-        }
+        InitializeComponent();
     }
 }

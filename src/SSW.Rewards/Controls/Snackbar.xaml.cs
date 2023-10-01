@@ -1,11 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
-namespace SSW.Rewards.Controls
+﻿namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Snackbar : ContentView
     {
         public static readonly BindableProperty OptionsProperty = BindableProperty.Create(nameof(Options), typeof(SnackbarOptions), typeof(Snackbar), DefaultOptions, propertyChanged: OptionsChanged);
@@ -38,32 +32,27 @@ namespace SSW.Rewards.Controls
 
             if (opt.ActionCompleted)
             {
-                snack.GridBackground.BackgroundColor = Color.FromHex("cc4141");
-                snack.BrandIconLabel.BackgroundColor = Color.White;
-                snack.BrandIconLabel.TextColor = Color.FromHex("cc4141");
-                snack.GlyphIconLabel.BackgroundColor = Color.White;
-                snack.GlyphIconLabel.TextColor = Color.FromHex("cc4141");
+                snack.GridBackground.BackgroundColor = Color.FromArgb("cc4141");
+                snack.GlyphIconLabel.BackgroundColor = Colors.White;
+                snack.GlyphIconLabel.TextColor = Color.FromArgb("cc4141");
             }
             else
             {
-                snack.GridBackground.BackgroundColor = Color.FromHex("717171");
-                snack.BrandIconLabel.TextColor = Color.White;
-                snack.BrandIconLabel.BackgroundColor = Color.FromHex("414141");
-                snack.GlyphIconLabel.TextColor = Color.White;
-                snack.GlyphIconLabel.BackgroundColor = Color.FromHex("414141");
+                snack.GridBackground.BackgroundColor = Color.FromArgb("717171");
+                snack.GlyphIconLabel.TextColor = Colors.White;
+                snack.GlyphIconLabel.BackgroundColor = Color.FromArgb("414141");
             }
+            
 
+            snack.GlyphIconLabel.Text = opt.Glyph;
+            
             if (opt.GlyphIsBrand)
             {
-                snack.BrandIconLabel.Text = opt.Glyph;
-                snack.BrandIconLabel.IsVisible = true;
-                snack.GlyphIconLabel.IsVisible = false;
+                snack.GlyphIconLabel.FontFamily = "FA6Brands";
             }
             else
             {
-                snack.GlyphIconLabel.Text = opt.Glyph;
-                snack.BrandIconLabel.IsVisible = false;
-                snack.GlyphIconLabel.IsVisible = true;
+                snack.GlyphIconLabel.FontFamily = "FluentIcons";
             }
 
             snack.MessageLabel.Text = opt.Message;
@@ -79,14 +68,14 @@ namespace SSW.Rewards.Controls
             if (!_isShowing)
             {
                 _isShowing = true;
-                MainLayout.InputTransparent = false;
-                MainLayout.FadeTo(1, 750);
-                MainLayout.TranslateTo(0, 0, 750);
+                GridBackground.InputTransparent = false;
+                GridBackground.FadeTo(1, 750);
+                GridBackground.TranslateTo(0, 0, 750);
 
                 await Task.Delay(5000);
-                MainLayout.FadeTo(0, 750);
-                MainLayout.TranslateTo(0, 50, 750);
-                MainLayout.InputTransparent = true;
+                GridBackground.FadeTo(0, 750);
+                GridBackground.TranslateTo(0, 50, 750);
+                GridBackground.InputTransparent = true;
                 _isShowing = false;
             }
         }

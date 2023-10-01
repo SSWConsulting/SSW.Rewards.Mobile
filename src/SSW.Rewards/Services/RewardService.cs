@@ -1,66 +1,58 @@
-﻿using SSW.Rewards.Models;
-using SSW.Rewards.Pages;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿namespace SSW.Rewards.Services;
 
-namespace SSW.Rewards.Services
+public class RewardService : BaseService, IRewardService
 {
-    public class RewardService : BaseService, IRewardService
+    private RewardClient _rewardClient;
+
+    public RewardService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
     {
-        private RewardClient _rewardClient;
+        _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
+    }
 
-        public RewardService()
+    public async Task<List<Reward>> GetRewards()
+    {
+        var rewardList = new List<Reward>();
+
+        try
         {
-            _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
-        }
+            var rewards = await _rewardClient.ListAsync();
 
-        public async Task<List<Reward>> GetRewards()
-        {
-            var rewardList = new List<Reward>();
-
-            try
+            foreach (var reward in rewards.Rewards)
             {
-                var rewards = await _rewardClient.ListAsync();
-
-                foreach (var reward in rewards.Rewards)
+                rewardList.Add(new Reward
                 {
-                    rewardList.Add(new Reward
-                    {
-                        Cost = reward.Cost,
-                        Id = reward.Id,
-                        ImageUri = reward.ImageUri,
-                        Name = reward.Name
-                    });
-                }
-
-                return rewardList;
-            }
-            catch (ApiException e)
-            {
-                if (e.StatusCode == 401)
-                {
-                    await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                    await Application.Current.MainPage.Navigation.PushModalAsync(new LoginPage());
-                }
-                else
-                {
-                    await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
-                }
+                    Cost = reward.Cost,
+                    Id = reward.Id,
+                    ImageUri = reward.ImageUri,
+                    Name = reward.Name
+                });
             }
 
             return rewardList;
         }
-
-        public async Task<ClaimRewardResult> RedeemReward(Reward reward)
+        catch (ApiException e)
         {
-            throw new NotImplementedException();
+            if (e.StatusCode == 401)
+            {
+                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
+                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+            }
         }
 
-        public async Task<ClaimRewardResult> RewardRewardWithQRCode(string QRCode)
-        {
-            throw new NotImplementedException();
-        }
+        return rewardList;
+    }
+
+    public async Task<ClaimRewardResult> RedeemReward(Reward reward)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<ClaimRewardResult> RewardRewardWithQRCode(string QRCode)
+    {
+        throw new NotImplementedException();
     }
 }

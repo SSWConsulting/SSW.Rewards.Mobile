@@ -1,10 +1,9 @@
 ﻿using System.Windows.Input;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.Controls
+namespace SSW.Rewards.Mobile.Controls
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TitleView : ContentView
     {
         public static readonly BindableProperty TitleProperty = BindableProperty.Create(
@@ -49,7 +48,7 @@ namespace SSW.Rewards.Controls
         private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             //App.Current.MainPage.DisplayAlert("Title bar tapped", "I'd tap that", "OK");
-            MessagingCenter.Send<string>("ScrollToTop", "ScrollToTop");
+            WeakReferenceMessenger.Default.Send(new ScrollToTopMessage());
         }
     }
 }

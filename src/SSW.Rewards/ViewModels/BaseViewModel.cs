@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-using Xamarin.Forms;
-
-namespace SSW.Rewards.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

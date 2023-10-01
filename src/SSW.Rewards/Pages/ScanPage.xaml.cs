@@ -1,42 +1,84 @@
-﻿using Rg.Plugins.Popup.Services;
-using SSW.Rewards.PopupPages;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using ZXing;
+﻿using System.Diagnostics;
+using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
+using SSW.Rewards.Mobile.Messages;
+using ZXing.Net.Maui;
 
-namespace SSW.Rewards.Pages
+namespace SSW.Rewards.Mobile.Pages;
+
+public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ScanPage : ContentPage
+    private readonly ScanResultViewModel _viewModel;
+
+    public ScanPage(ScanResultViewModel viewModel)
     {
-        public ScanPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        _viewModel = viewModel;
+    }
 
-        public async void Handle_OnScanResult(Result result)
+    public void Handle_OnScanResult(object sender, BarcodeDetectionEventArgs e)
+    {
+        // the handler is called on a thread-pool thread
+        App.Current.Dispatcher.Dispatch(() =>
         {
-            scannerView.IsAnalyzing = false;
-            await PopupNavigation.Instance.PushAsync(new ScanResult(result.Text));
-        }
+            ToggleScanner(false);
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            scannerView.IsAnalyzing = false;
-            MessagingCenter.Unsubscribe<object>(this, Constants.EnableScannerMessage);
-        }
+            var result = e.Results.FirstOrDefault().Value;
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            MessagingCenter.Subscribe<object>(this, Constants.EnableScannerMessage, (obj) => EnableScanner());
-            scannerView.IsAnalyzing = true;
-        }
+            var popup = new PopupPages.ScanResult(_viewModel, result);
+            MopupService.Instance.PushAsync(popup);
+        });
+        
+    }
 
-        private void EnableScanner()
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        ToggleScanner(false);
+        WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        WeakReferenceMessenger.Default.Register(this);
+        ToggleScanner(true);
+    }
+
+
+    public void Receive(EnableScannerMessage message)
+    {
+        ToggleScanner(true);
+    }
+
+    private void ToggleScanner(bool toggleOn)
+    {
+        if (toggleOn)
         {
-            scannerView.IsAnalyzing = true;
+            scannerView.IsDetecting = true;
+            FlipCameras();
         }
+        else
+        {
+            scannerView.IsDetecting = false;
+        }
+    }
+
+    /// <summary>
+    /// There is a bug in ZXing.Net.Maui on Android
+    /// where the preview is displayed as black screen if the user navigates between tabs a few times
+    /// https://github.com/Redth/ZXing.Net.Maui/issues/67
+    /// There are 2 possible workarounds:
+    /// 1. Manually Add/Remove CameraBarcodeReaderView from the page every time we navigate to it
+    /// 2. Switch camera to Front and then back to Rear
+    ///
+    /// Decided to go with the latter as the bug is only on Android 
+    /// and it's inconvenient to build UI in code-behind.
+    /// </summary>
+    [Conditional("ANDROID")]
+    private void FlipCameras()
+    {
+        scannerView.CameraLocation = CameraLocation.Front;
+        scannerView.CameraLocation = CameraLocation.Rear;
     }
 }

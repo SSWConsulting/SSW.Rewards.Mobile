@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-       mc:Ignorable="d"
-       xmlns:pages="clr-namespace:SSW.Rewards.Pages"
-       xmlns:controls="clr-namespace:SSW.Rewards.Controls"
-       Title="SSW.Rewards"
-       FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
-       FlyoutIcon="icon_menu"
-       x:Class="SSW.Rewards.AppShell"
-       MenuItemTemplate="{StaticResource SSWMenuTemplate}"
-       x:Name="RewardsShell">
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SSW.Rewards.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SSW.Rewards.Mobile"
+    xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="SSW.Rewards"
+    FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
+    FlyoutBehavior="Flyout"
+    MenuItemTemplate="{StaticResource SSWMenuTemplate}"
+    x:Name="RewardsShell">
 
-    <!-- 
-        Styles and Resources 
-    -->
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">Black</Color>
@@ -33,118 +30,225 @@
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
 
             <DataTemplate x:Key="SSWMenuTemplate">
-                <StackLayout>
-                    <Grid ColumnDefinitions="30,*"
-                      Margin="0,30,30,0">
-                        <Grid.Triggers>
-                            <DataTrigger TargetType="Grid"
-                                     Binding="{Binding Text}"
-                                     Value="My QRCode">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowQRCodeMenuItem}"/>
-                            </DataTrigger>
+                <Grid
+                    ColumnDefinitions="30,*"
+                    Padding="{OnPlatform Android='5', iOS='0'}"
+                    Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="My QRCode">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
+                        </DataTrigger>
 
-                            <DataTrigger TargetType="Grid"
-                                     Binding="{Binding Text}"
-                                     Value="Join SSW">
-                                <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.ShowJoinMenuItem}"/>
-                            </DataTrigger>
-                        </Grid.Triggers>
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="Join SSW">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
+                        </DataTrigger>
+                    </Grid.Triggers>
+
+                    <Image Grid.Column="0"
+                            HorizontalOptions="Start"
+                            Margin="5"
+                            HeightRequest="30"
+                            WidthRequest="30"
+                            Source="{Binding Icon}">
+                    </Image>
+
+                    <Label Grid.Column="1"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        Margin="20,0,0,0"
+                        Text="{Binding Text}">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">18</On>
+                                <On Platform="Android">18</On>
                             </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="20,5" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
-
-                        <Image Grid.Column="0"
-                           HorizontalOptions="Start"
-                           Margin="5"
-                           HeightRequest="30"
-                           WidthRequest="30"
-                           Source="{Binding Icon}">
-                        </Image>
-
-                        <Label Grid.Column="1"
-                           TextColor="White"
-                           VerticalOptions="Center"
-                           Margin="20,0,0,0"
-                           Text="{Binding Text}">
-                            <Label.FontSize>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="iOS">18</On>
-                                    <On Platform="Android">18</On>
-                                </OnPlatform>
-                            </Label.FontSize>
-                        </Label>
-                    </Grid>
-                </StackLayout>
+                        </Label.FontSize>
+                    </Label>
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
 
     <Shell.FlyoutHeader>
-        <controls:FlyoutHeader/>
+        <controls:FlyoutHeader />
     </Shell.FlyoutHeader>
 
 
-    <FlyoutItem Style="{StaticResource BaseStyle}">
+    <FlyoutItem Style="{StaticResource BaseStyle}" x:Name="MyTabbar">
         <Shell.ItemTemplate>
             <DataTemplate>
-                <StackLayout HeightRequest="1"
-                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
+                <VerticalStackLayout HeightRequest="1"
+                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
             </DataTemplate>
         </Shell.ItemTemplate>
-        <Tab Route="main">
-            <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xe70e;"/>
-            </Tab.Icon>
+        <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
+                    It will need to be updated before we deploy to Android.
+                    See: https://github.com/dotnet/maui/issues/8244 -->
+
+        <Tab Route="main" Icon="icon_home" Title="Home">
             <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
+            <!--<Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xe70e;"/>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon" Value="icon_home_selected">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xe70e;"
+                                                     Color="#BE4b47"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon" Value="icon_home">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xe70e;"
+                                                     Color="#95FFFFFF"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>-->
         </Tab>
-        <Tab Route="leader">
+
+        <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xedba;"/>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xedba;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+        </Tab>-->
+
+        <Tab Route="leader" Icon="icon_trophy" Title="Leaderboard">
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+            <!--<Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon" Value="icon_trophy_selected">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xedba;"
+                                                     Color="#BE4b47"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon" Value="icon_trophy">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xedba;"
+                                                     Color="#95FFFFFF"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>-->
         </Tab>
-        <Tab Route="people">
+
+
+        <!--<Tab Route="people" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xf5a8;"/>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xf5a8;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
-        </Tab>
-        <!--TODO:   Commenting this as the full-stack quiz implementation is not completed,
-                    and requires quiz content to be developed and deployed as well. In the
-                    meantime we need to release a build that has some other interim fixes
-                    including the updated keepcup image.-->
-        <!--<Tab Route="quiz">
-            <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xf28a;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
         </Tab>-->
-        <Tab Route="scan">
+
+
+        <Tab Route="people" Icon="icon_people" Title="SSW People">
+            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+            <!--<Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xf5a8;"/>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon" Value="icon_people_selected">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xf5a8;"
+                                                     Color="#BE4b47"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon" Value="icon_people">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xf5a8;"
+                                                     Color="#95FFFFFF"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>-->
+        </Tab>
+
+        <!--<Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
-                <FontImageSource FontFamily="{StaticResource FluentIcons}"
-                                 Glyph="&#xf636;"/>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xf636;"/>
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+        </Tab>-->
+
+        <Tab Route="scan" Icon="icon_scanner" Title="Scanner">
+            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
+            <!--<Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                    Glyph="&#xf636;"/>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon" Value="icon_scanner_selected">
+
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xf636;"
+                                                     Color="#BE4b47"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon" Value="icon_scanner">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xf636;"
+                                                     Color="#95FFFFFF"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>-->
         </Tab>
     </FlyoutItem>
 
     <MenuItem Text="Rewards"
               Clicked="Handle_HowToPlayClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf455;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -153,27 +257,25 @@
     <MenuItem Text="SSW Events"
               Clicked="Handle_EventsClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf226;"
                              Color="White"/>
         </MenuItem.IconImageSource>
     </MenuItem>
 
     <MenuItem Text="Join SSW"
-              Clicked="Handle_JoinClicked"
-              x:Name="JoinMenuItem">
+              Clicked="Handle_JoinClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf5c2;"
                              Color="White"/>
         </MenuItem.IconImageSource>
     </MenuItem>
 
     <MenuItem Text="My QRCode"
-              Clicked="Handle_QRClicked"
-              x:Name="QRMenuItem">
+              Clicked="Handle_QRClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf635;"
                              Color="White"/>
         </MenuItem.IconImageSource>
@@ -182,79 +284,79 @@
     <MenuItem Text="About SSW"
               Clicked="Handle_AboutClicked">
         <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="{StaticResource FluentIcons}"
+            <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf4a3;"
                              Color="White"/>
         </MenuItem.IconImageSource>
     </MenuItem>
 
+    <MenuItem Text="Delete Profile"
+              Clicked="Handle_DeleteClicked">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="FluentIcons"
+                             Glyph="&#xf5d1;"
+                             Color="White"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
     <Shell.FlyoutFooter>
-        <StackLayout Padding="0"
-                     Margin="0">
-            <StackLayout Orientation="Horizontal">
-                <StackLayout>
-                    <Grid ColumnDefinitions="30,*"
-                          Margin="0,30,30,0">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                  Tapped="Handle_LogOutClicked"/>
-                        </Grid.GestureRecognizers>
-                        <Grid.Padding>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="5" />
-                                <On Platform="iOS" Value="0" />
-                            </OnPlatform>
-                        </Grid.Padding>
-                        <Grid.Margin>
-                            <OnPlatform x:TypeArguments="Thickness">
-                                <On Platform="Android" Value="20,5" />
-                                <On Platform="iOS" Value="10,5,10,0" />
-                            </OnPlatform>
-                        </Grid.Margin>
+        <Grid
+            RowDefinitions="Auto,Auto,5,Auto"
+            ColumnDefinitions="Auto,*"
+            VerticalOptions="End">
+            <!-- Logout Button -->
+            <Grid
+                VerticalOptions="End"
+                Grid.Column="0"
+                Grid.Row="1"
+                Padding="15,5"
+                ColumnDefinitions="Auto,*">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_LogOutClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0"
+                       Margin="0,0,25,0"
+                       HeightRequest="30"
+                       WidthRequest="30"
+                       FontSize="28"
+                       FontFamily="FluentIcons"
+                       TextColor="White"
+                       Text="&#xeafa;">
+                </Label>
 
-                        <Label Grid.Column="0"
-                               HorizontalOptions="Start"
-                               Margin="5"
-                               HeightRequest="30"
-                               WidthRequest="30"
-                               FontSize="28"
-                               FontFamily="{StaticResource FluentIcons}"
-                               TextColor="White"
-                               Text="&#xeafa;">
-                        </Label>
+                <Label Grid.Column="1"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       FontSize="18"
+                       Text="Log Out" />
+            </Grid>
 
-                        <Label Grid.Column="1"
-                               TextColor="White"
-                               VerticalOptions="Center"
-                               Margin="20,0,0,0"
-                               FontSize="18"
-                               Text="Log Out" />
-                    </Grid>
-                </StackLayout>
+            <!-- Version -->
+            <Image HorizontalOptions="End"
+                   Margin="0,0,10,0"
+                   Grid.Column="1"
+                   Grid.Row="0"
+                   HeightRequest="35"
+                   WidthRequest="50"
+                   VerticalOptions="End"
+                   Source="ssw_white"/>
 
-                <StackLayout HorizontalOptions="EndAndExpand">
-                    <Image HorizontalOptions="End"
-                           Margin="10,0,10,0"
-                           Source="SSWwhite"/>
+            <Label HorizontalOptions="End"
+                   VerticalTextAlignment="Center"
+                   Margin="0,0,10,0"
+                   x:Name="VersionLabel"
+                   Grid.Column="1"
+                   Grid.Row="1"
+                   TextColor="White"/>
 
-                    <Label HorizontalOptions="End"
-                           x:Name="VersionLabel"
-                           Margin="10,0,10,0"
-                           TextColor="White"
-                           d:Text="Version 1.1.0"/>
-                </StackLayout>
-            
-            </StackLayout>
-            <!-- workaround for iOS footer safe area-->
-            <Label Text=" ">
-                <Label.IsVisible>
-                    <OnPlatform x:TypeArguments="x:Boolean">
-                        <On Platform="iOS" Value="True"/>
-                        <On Platform="Android" Value="False"/>
-                    </OnPlatform>
-                </Label.IsVisible>
-            </Label>
-        </StackLayout>
+            <!-- workaround for iOS footer safe area -->
+            <Label
+                Grid.ColumnSpan="2"
+                Grid.Row="3"
+                Text=" "
+                IsVisible="{OnPlatform Android='False', iOS='True'}"/>
+        </Grid>
     </Shell.FlyoutFooter>
 
 </Shell>

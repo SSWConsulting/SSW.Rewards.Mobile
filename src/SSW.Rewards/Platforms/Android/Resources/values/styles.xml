@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="MyTheme.Splash" parent="Maui.SplashTheme">
+    <!-- This NavigationBarColor applies to the SplashScreen only and will be overwritten in the MainActivity-->
+    <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+  </style>
+</resources>

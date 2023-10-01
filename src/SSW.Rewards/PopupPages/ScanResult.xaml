@@ -1,14 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
-             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             x:Class="SSW.Rewards.PopupPages.ScanResult"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:const="clr-namespace:SSW.Rewards"
+             x:Class="SSW.Rewards.Mobile.PopupPages.ScanResult"
+             x:DataType="viewModels:ScanResultViewModel"
+             BackgroundClickedCommand="{Binding OnOkCommand}"
              BackgroundColor="Transparent">
+    <pages:PopupPage.Resources>
+        <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
+    </pages:PopupPage.Resources>
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
                                    PositionOut="Center"
@@ -28,34 +33,29 @@
            HorizontalOptions="Center"
            VerticalOptions="Center">
         <StackLayout>
-            <Label Text="{Binding ResultHeading}"
-                   d:Text="Achievement Unlocked"
+            <Label 
+                   Text="{Binding ResultHeading}"
                    FontSize="24"
                    Margin="10,10,10,0"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="Gold"
                    TextColor="{Binding HeadingColour}"/>
             <Label Text="{Binding AchievementHeading}"
-                   d:Text="Angular Superpowers Tour"
                    FontSize="18"
                    HorizontalTextAlignment="Center"
-                   d:TextColor="Gold"
                    TextColor="{Binding HeadingColour}"/>
-            <lottie:AnimationView x:Name="ResultAnimation"
-                                  Animation="{Binding AnimationRef}"
-                                  AutoPlay="True"
-                                  Loop="{Binding AnimationLoop}"
+            <lottie:SKLottieView x:Name="ResultAnimation"
+                                  Source="{Binding AnimationRef, Converter={StaticResource StringToSkLottieImageSourceConverter}}"
+                                  IsAnimationEnabled="False"
+                                  RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
                                   VerticalOptions="CenterAndExpand"
                                   HorizontalOptions="CenterAndExpand"
                                   HeightRequest="200"
                                   WidthRequest="200"
                                   Scale="1"/>
             <Label Text="{Binding ResultBody}"
-                   d:Text="You have unlocked this achievement"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
                    Margin="10"/>
-
             <Button Text="OK"
                     HorizontalOptions="Center"
                     WidthRequest="250"

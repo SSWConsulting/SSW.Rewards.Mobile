@@ -1,31 +1,27 @@
 ﻿using IdentityModel.OidcClient.Browser;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
+using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
-namespace SSW.Rewards.Helpers
+namespace SSW.Rewards.Mobile.Helpers;
+
+public class AuthBrowser : IBrowser
 {
-    public class AuthBrowser : IBrowser
+    public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
     {
-        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
+        WebAuthenticatorResult authResult = await WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(Constants.AuthRedirectUrl));
+
+        return new BrowserResult
         {
-            WebAuthenticatorResult authResult = await WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(App.Constants.AuthRedirectUrl));
+            Response = ParseAuthenticationResult(authResult)
+        };
+    }
 
-            return new BrowserResult
-            {
-                Response = ParseAuthenticationResult(authResult)
-            };
-        }
+    private string ParseAuthenticationResult(WebAuthenticatorResult result)
+    {
+        string code = result?.Properties["code"];
+        string state = result?.Properties["state"];
+        string scope = result?.Properties["scope"];
+        string sessionState = result?.Properties["session_state"];
 
-        private string ParseAuthenticationResult(WebAuthenticatorResult result)
-        {
-            string code = result?.Properties["code"];
-            string state = result?.Properties["state"];
-            string scope = result?.Properties["scope"];
-            string sessionState = result?.Properties["session_state"];
-
-            return $"{App.Constants.AuthRedirectUrl}#code={code}&scope={scope}&state={state}&session_state={sessionState}";
-        }
+        return $"{Constants.AuthRedirectUrl}#code={code}&scope={scope}&state={state}&session_state={sessionState}";
     }
 }

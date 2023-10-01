@@ -1,10 +1,6 @@
-﻿using SSW.Rewards.ViewModels;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Services;
 
-namespace SSW.Rewards.Services
+public interface IScannerService
 {
-    public interface IScannerService
-    {
-        Task<ScanResponseViewModel> ValidateQRCodeAsync(string achievementString);
-    }
+    Task<ScanResponseViewModel> ValidateQRCodeAsync(string achievementString);
 }

@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace SSW.Rewards.Services;
 
-namespace SSW.Rewards.Services
+public interface ILeaderService
 {
-    public interface ILeaderService
-    {
-        Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh);
-    }
+    Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh);
 }
