@@ -10,9 +10,5 @@ public class SnackBarService : ISnackbarService
         var snack = new Snackbar(options);
 
         await App.Current.MainPage.ShowPopupAsync(snack);
-
-        await Task.Delay(5000);
-
-        snack.Close();
     }
 }

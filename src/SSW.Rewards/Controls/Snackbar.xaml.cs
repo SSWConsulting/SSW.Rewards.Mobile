@@ -14,6 +14,8 @@ namespace SSW.Rewards.Mobile.Controls
             ShowPoints = false
         };
 
+        private bool _isDismissed = false;
+
         public Snackbar(SnackbarOptions? options = null)
         {
             InitializeComponent();
@@ -57,6 +59,24 @@ namespace SSW.Rewards.Mobile.Controls
             TickLabel.IsVisible = !options.ShowPoints && options.ActionCompleted;
             PointsLabel.IsVisible = options.ShowPoints;
             PointsLabel.Text = string.Format("⭐ {0:n0}", options.Points);
+
+            _ = SetDismissTimer();
+        }
+
+        private async Task SetDismissTimer()
+        {
+            await Task.Delay(5000);
+
+            if (!_isDismissed)
+            {
+                this.Close();
+            }
+        }
+
+        protected override Task OnDismissedByTappingOutsideOfPopup()
+        {
+            _isDismissed = true;
+            return base.OnDismissedByTappingOutsideOfPopup();
         }
     }
 
