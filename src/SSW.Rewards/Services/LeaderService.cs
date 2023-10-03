@@ -1,6 +1,6 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
-public class LeaderService : BaseService, ILeaderService
+public class LeaderService : ApiBaseService, ILeaderService
 {
     private LeaderboardClient _leaderBoardClient;
 

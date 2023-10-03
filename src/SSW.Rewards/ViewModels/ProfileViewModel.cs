@@ -16,6 +16,7 @@ public class ProfileViewModel : BaseViewModel,
 {
     private readonly IRewardService _rewardsService;
     private IUserService _userService;
+    private readonly ISnackbarService _snackbarService;
 
     public string ProfilePic { get; set; }
     public string Name { get; set; }
@@ -48,9 +49,7 @@ public class ProfileViewModel : BaseViewModel,
 
     private bool _loadingProfileSections;
 
-    public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
-
-    public ProfileViewModel(IRewardService rewardsService, IUserService userService)
+    public ProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
         WeakReferenceMessenger.Default.RegisterAll(this);
 
@@ -58,7 +57,7 @@ public class ProfileViewModel : BaseViewModel,
         RaisePropertyChanged("IsLoading");
         _rewardsService = rewardsService;
         _userService = userService;
-
+        _snackbarService = snackbarService;
         SnackOptions = new SnackbarOptions
         {
             ActionCompleted = true,
@@ -70,7 +69,7 @@ public class ProfileViewModel : BaseViewModel,
         };
     }
 
-    public ProfileViewModel(IRewardService rewardsService, IUserService userService, LeaderViewModel vm)
+    public ProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, LeaderViewModel vm)
     {
         IsLoading = true;
         RaisePropertyChanged("IsLoading");
@@ -80,6 +79,7 @@ public class ProfileViewModel : BaseViewModel,
         Points = vm.TotalPoints;
         _userService = userService;
         _rewardsService = rewardsService;
+        _snackbarService = snackbarService;
         Balance = vm.Balance;
         ShowBalance = false;
         ShowPopButton = true;
@@ -350,9 +350,7 @@ public class ProfileViewModel : BaseViewModel,
 
         options.Message = $"{GetMessage(message.Value.Achievement)}";
 
-        var args = new ShowSnackbarEventArgs { Options = options };
-
-        ShowSnackbar.Invoke(this, args);
+        await _snackbarService.ShowSnackbar(options);
 
         if (result)
         {
@@ -362,7 +360,7 @@ public class ProfileViewModel : BaseViewModel,
         IsBusy = false;
     }
 
-    private void ShowAchievementSnackbar(ProfileAchievement achievement)
+    private async void ShowAchievementSnackbar(ProfileAchievement achievement)
     {
         // TODO: set Glyph when given values
         var options = new SnackbarOptions
@@ -374,9 +372,7 @@ public class ProfileViewModel : BaseViewModel,
             Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
         };
 
-        var args = new ShowSnackbarEventArgs { Options = options };
-
-        ShowSnackbar.Invoke(this, args);
+        await _snackbarService.ShowSnackbar(options);
     }
 
     public string GetMessage(Achievement achievement, bool IsActivity = false)

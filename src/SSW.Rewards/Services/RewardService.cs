@@ -1,6 +1,6 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
-public class RewardService : BaseService, IRewardService
+public class RewardService : ApiBaseService, IRewardService
 {
     private RewardClient _rewardClient;
 

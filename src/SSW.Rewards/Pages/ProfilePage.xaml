@@ -74,12 +74,5 @@
                            Color="{StaticResource primary}"
                            IsVisible="{Binding IsLoading}"/>
 
-        <controls:Snackbar Grid.Row="0"
-                           Grid.RowSpan="4"
-                           Options="{Binding SnackOptions}"
-                           InputTransparent="True"
-                           VerticalOptions="End" 
-                           x:Name="ProfilePageSnackbar"/>
-
     </Grid>
 </ContentPage>

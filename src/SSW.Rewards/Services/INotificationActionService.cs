@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
 /// <summary>Centralize the handling of notification actions</summary>
 public interface INotificationActionService

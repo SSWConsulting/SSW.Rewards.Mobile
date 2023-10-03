@@ -1,6 +1,6 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
-public class DevService : BaseService, IDevService
+public class DevService : ApiBaseService, IDevService
 {
     private StaffClient _staffClient;
 

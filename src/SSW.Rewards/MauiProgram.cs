@@ -1,16 +1,15 @@
-﻿using System.Reflection;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
-using CommunityToolkit.Maui;
-using Mopups.Hosting;
-using SkiaSharp.Views.Maui.Controls.Hosting;
-using ZXing.Net.Maui.Controls;
-using SSW.Rewards.Mobile.Controls;
+﻿using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Mopups.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SSW.Rewards.Mobile.Controls;
+using System.Reflection;
+using ZXing.Net.Maui.Controls;
+using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -59,6 +58,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IBrowser, AuthBrowser>();
         builder.Services.AddSingleton<AuthHandler>();
         builder.Services.AddSingleton(options);
+        builder.Services.AddSingleton<ISnackbarService, SnackBarService>();
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();

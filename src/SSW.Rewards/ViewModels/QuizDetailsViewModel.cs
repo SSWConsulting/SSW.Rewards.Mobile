@@ -9,6 +9,7 @@ namespace SSW.Rewards.Mobile.ViewModels
     public class QuizDetailsViewModel : BaseViewModel
     {
         private readonly IQuizService _quizService;
+        private readonly ISnackbarService _snackbarService;
         private int _quizId;
 
         public ObservableCollection<QuizQuestionViewModel> Questions { get; set; } = new ObservableCollection<QuizQuestionViewModel>();
@@ -45,15 +46,14 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public EventHandler<int> OnNextQuestionRequested;
 
-        public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
-
         public QuizQuestionViewModel CurrentQuestion { get; set; }
 
         private string _quizIcon;
 
-        public QuizDetailsViewModel(IQuizService quizService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
             _quizService = quizService;
+            _snackbarService = snackbarService;
         }
 
         public async Task Initialise(int quizId, string icon)
@@ -161,9 +161,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                     ShowPoints = true
                 };
 
-                var args = new ShowSnackbarEventArgs { Options = SnackOptions };
-
-                ShowSnackbar.Invoke(this, args);
+                await _snackbarService.ShowSnackbar(SnackOptions);
                 
                 WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
             }
