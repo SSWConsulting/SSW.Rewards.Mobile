@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Mobile.Controls;
-
-namespace SSW.Rewards.Mobile.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 [QueryProperty(nameof(QuizId), nameof(QuizId))]
 [QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
@@ -27,7 +25,6 @@ public partial class QuizDetailsPage : ContentPage
 
         await _viewModel.Initialise(quizId, QuizIcon);
         _viewModel.OnNextQuestionRequested += ScrollToIndex;
-        _viewModel.ShowSnackbar += ShowSnackbar;
     }
 
     private void ScrollToIndex(object sender, int index)
@@ -39,12 +36,6 @@ public partial class QuizDetailsPage : ContentPage
     {
         base.OnDisappearing();
         _viewModel.OnNextQuestionRequested -= ScrollToIndex;
-    }
-
-    private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
-    {
-        QuizResultsPageSnackbar.Options = e.Options;
-        await QuizResultsPageSnackbar.ShowSnackbar();
     }
 
     protected override void OnSizeAllocated(double width, double height)

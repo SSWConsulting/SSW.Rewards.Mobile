@@ -5,9 +5,9 @@ using SSW.Rewards.Mobile.Messages;
 using System.IdentityModel.Tokens.Jwt;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
-namespace SSW.Rewards.Services;
+namespace SSW.Rewards.Mobile.Services;
 
-public class UserService : BaseService, IUserService
+public class UserService : ApiBaseService, IUserService
 {
     private UserClient _userClient { get; set; }
 

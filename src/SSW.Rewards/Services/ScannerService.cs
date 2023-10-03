@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 
-namespace SSW.Rewards.Services;
+namespace SSW.Rewards.Mobile.Services;
 
-public class ScannerService : BaseService, IScannerService
+public class ScannerService : ApiBaseService, IScannerService
 {
     private AchievementClient _achievementClient { get; set; }
     private RewardClient _rewardClient { get; set; }

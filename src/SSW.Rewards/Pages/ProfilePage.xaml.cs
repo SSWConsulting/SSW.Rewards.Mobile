@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Mobile.Controls;
-
-namespace SSW.Rewards.Mobile.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 public partial class ProfilePage : ContentPage
 {
@@ -21,11 +19,11 @@ public partial class ProfilePage : ContentPage
         _isMe = true;
     }
 
-    public ProfilePage(IRewardService rewardsService, IUserService userService, LeaderViewModel leader)
+    public ProfilePage(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, LeaderViewModel leader)
     {
         InitializeComponent();
-        // HACK: Need to find a better way to handle these two differnt constructors
-        viewModel = new ProfileViewModel(rewardsService, userService, leader);
+        // HACK: Need to find a better way to handle these two different constructors
+        viewModel = new ProfileViewModel(rewardsService, userService, snackbarService, leader);
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
 
@@ -43,20 +41,12 @@ public partial class ProfilePage : ContentPage
         {
             await viewModel.Initialise(_isMe);
         }
-        viewModel.ShowSnackbar += ShowSnackbar;
         _initialised = true;
-    }
-
-    private async void ShowSnackbar(object sender, ShowSnackbarEventArgs e)
-    {
-        ProfilePageSnackbar.Options = e.Options;
-        await ProfilePageSnackbar.ShowSnackbar();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        //viewModel.ShowSnackbar -= ShowSnackbar;
         viewModel.OnDisappearing();
     }
 }

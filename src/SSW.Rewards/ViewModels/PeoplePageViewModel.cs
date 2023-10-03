@@ -3,12 +3,14 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
+using CommunityToolkit.Maui.Views;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
     private IDevService _devService;
+    private readonly ISnackbarService _snackbarService;
 
     public ICommand OnCardSwiped => new Command(SetDevDetails);
     public ICommand StaffQRCommand => new Command(ShowScannedMessage);
@@ -21,8 +23,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
 
     public EventHandler<ScrollToEventArgs> ScrollToRequested;
-
-    public EventHandler<ShowSnackbarEventArgs> ShowSnackbar;
 
     public bool IsRunning { get; set; }
 
@@ -63,11 +63,12 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
 
     public string[] OnSwipedUpdatePropertyList { get; set; }
 
-    public DevProfilesViewModel(IDevService devService)
+    public DevProfilesViewModel(IDevService devService, ISnackbarService snackbarService)
     {
         IsRunning = true;
         TwitterEnabled = true;
         _devService = devService;
+        _snackbarService = snackbarService;
         SnackOptions = new SnackbarOptions
         {
             Glyph = "\uf636",
@@ -241,7 +242,7 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         await Launcher.OpenAsync(new Uri(_peopleUri));
     }
 
-    private void ShowScannedMessage()
+    private async void ShowScannedMessage()
     {
         var options = new SnackbarOptions
         {
@@ -252,9 +253,7 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             Glyph = "\uf636"
         };
 
-        var args = new ShowSnackbarEventArgs { Options = options };
-
-        ShowSnackbar.Invoke(this, args);
+        await _snackbarService.ShowSnackbar(options);
     }
 
     public async void Receive(PointsAwardedMessage message)

@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
-             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:rewards="clr-namespace:SSW.Rewards"
@@ -192,7 +191,7 @@
                                InputTransparent="True"/>
                     </Frame>
 
-                    <FlexLayout WidthRequest="400"
+                <FlexLayout WidthRequest="400"
                                 Direction="Row"
                                 JustifyContent="SpaceEvenly"
                                 HorizontalOptions="Center"
@@ -200,9 +199,9 @@
                                 Grid.Row="4"
                                 IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
                                 BindableLayout.ItemsSource="{Binding Results}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="rewards:QuestionResultDto">
-                                <Grid>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="rewards:QuestionResultDto">
+                            <Grid>
 
                                 <lottie:SKLottieView Source="pass.json"
                                                           IsAnimationEnabled="True"
@@ -217,17 +216,11 @@
                                                           IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}"/>
 
                             </Grid>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
 
-                    <controls:Snackbar Grid.Row="0"
-                                       Grid.RowSpan="5"
-                                       InputTransparent="True"
-                                       VerticalOptions="End" 
-                                       x:Name="QuizResultsPageSnackbar"/>
-                    
-                </Grid>
             </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

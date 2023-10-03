@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
 public interface IDevService
 {

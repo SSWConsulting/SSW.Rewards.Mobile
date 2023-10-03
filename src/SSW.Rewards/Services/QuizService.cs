@@ -1,6 +1,6 @@
-﻿namespace SSW.Rewards.Services;
+﻿namespace SSW.Rewards.Mobile.Services;
 
-public class QuizService : BaseService, IQuizService
+public class QuizService : ApiBaseService, IQuizService
 {
     private QuizzesClient _quizClient;
 

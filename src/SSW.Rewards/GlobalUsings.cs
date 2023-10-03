@@ -1,4 +1,4 @@
-﻿global using SSW.Rewards.Services;
+﻿global using SSW.Rewards.Mobile.Services;
 global using SSW.Rewards.Mobile.ViewModels;
 global using SSW.Rewards.Mobile;
 global using SSW.Rewards.Models;
