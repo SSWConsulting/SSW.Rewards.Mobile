@@ -29,7 +29,12 @@
                                          Achievements="{StaticResource AchievementsTemplate}"
                                          RecentActivity="{StaticResource ActivityTemplate}" />
     </ContentPage.Resources>
-    
+
+    <!-- TECH DEBT: The following workaround adds an extra row on iOS.
+                    This is necessary due to a bug in .NET MAUI Preview that 
+                    causes part of the page to be hidden behind the tab bar.
+                    See: https://github.com/dotnet/maui/issues/17817
+    -->
     <Grid RowDefinitions="{OnPlatform 'Auto,Auto,*,10', iOS='Auto,Auto,*,10,80'}"
           RowSpacing="6"
           Padding="20,20,20,5">
