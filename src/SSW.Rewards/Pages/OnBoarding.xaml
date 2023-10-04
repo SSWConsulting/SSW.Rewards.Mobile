@@ -18,7 +18,8 @@
         <mct:StatusBarBehavior StatusBarColor="{StaticResource SecondaryBackground}" StatusBarStyle="LightContent"/>
     </ContentPage.Behaviors>
     <ContentPage.Content>
-        <Grid RowDefinitions="Auto, 20*, 11*, 20, 5*">
+        <!-- Additional padding added for iOS as height calculations are different than on Android -->
+        <Grid RowDefinitions="{OnPlatform Android='Auto, 20*, 11*, 20, 5*', iOS='Auto, 20*, 11*, 20, 5*,50'}">
 
             <Image Source="rewardsbackground"
                    Aspect="AspectFill"
