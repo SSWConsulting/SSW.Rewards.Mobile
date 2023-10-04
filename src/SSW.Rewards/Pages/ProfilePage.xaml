@@ -29,7 +29,10 @@
                                          Achievements="{StaticResource AchievementsTemplate}"
                                          RecentActivity="{StaticResource ActivityTemplate}" />
     </ContentPage.Resources>
-    
+
+    <!-- TECH DEBT: The following workaround adds an extra row on iOS.
+                    see: https://github.com/dotnet/maui/issues/17817
+    -->
     <Grid RowDefinitions="{OnPlatform 'Auto,Auto,*,10', iOS='Auto,Auto,*,10,80'}"
           RowSpacing="6"
           Padding="20,20,20,5">
