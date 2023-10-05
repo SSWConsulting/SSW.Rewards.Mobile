@@ -124,21 +124,23 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
     private void ProcessAchievement(ProfileAchievement achievement)
     {
-        if (achievement.Complete)
+        if (achievement.IsMe == _isMe)
         {
-            ShowAchievementSnackbar(achievement);
-        }
-        else
-        {
-            if (achievement.Type == AchievementType.Linked)
+            if (achievement.Complete)
             {
-                var popup = new LinkSocial(achievement);
-                MopupService.Instance.PushAsync(popup);
-                //App.Current.MainPage.ShowPopup(popup);
+                ShowAchievementSnackbar(achievement);
             }
             else
             {
-                ShowAchievementSnackbar(achievement);
+                if (achievement.Type == AchievementType.Linked && _isMe)
+                {
+                    var popup = new LinkSocial(achievement);
+                    MopupService.Instance.PushAsync(popup);
+                }
+                else
+                {
+                    ShowAchievementSnackbar(achievement);
+                }
             }
         }
     }
@@ -181,7 +183,7 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
         foreach (var achievement in profileAchievements)
         {
-            achivementsSection.Achievements.Add(achievement.ToProfileAchievement());
+            achivementsSection.Achievements.Add(achievement.ToProfileAchievement(_isMe));
         }
 
         ProfileSections.Add(achivementsSection);
@@ -284,11 +286,11 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
         LogMeDetails("GetMessage");
 
-        string prefix = _isMe ? "You have " : $"{Name} has ";
+        string prefix = _isMe ? "You have" : $"{Name} has";
 
         if (!achievement.Complete)
         {
-            prefix += "not ";
+            prefix += " not";
         }
 
 
@@ -309,6 +311,7 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
             case AchievementType.Linked:
                 action = "followed";
                 activity = activity.Replace("follow", "");
+                activity = activity.Replace("Follow", "");
                 break;
 
             case AchievementType.Scanned:
