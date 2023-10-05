@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="65, 2.5*, 12*, 3*"
+        <Grid RowDefinitions="65, 2.5*, 12*, 150"
               ColumnDefinitions="*, 5*, *"
               ColumnSpacing="6">
 
