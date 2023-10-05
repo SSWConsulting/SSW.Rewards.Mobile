@@ -110,6 +110,8 @@ public class ProfileViewModel : BaseViewModel,
             userId = _userService.MyUserId;
         }
 
+        LogMeDetails("initialise");
+
         var rewards = await _rewardsService.GetRewards();
 
         // TODO: If there is an authentication failure, the RewardsService
@@ -383,6 +385,9 @@ public class ProfileViewModel : BaseViewModel,
 
     public string GetMessage(Achievement achievement, bool IsActivity = false)
     {
+
+        LogMeDetails("GetMessage");
+
         string prefix = _isMe ? "You have " : $"{Name} has ";
 
         if (!achievement.Complete)
@@ -450,5 +455,10 @@ public class ProfileViewModel : BaseViewModel,
     public void Receive(SocialUsernameAddedMessage message)
     {
         AddSocialMediaId(message);
+    }
+
+    private void LogMeDetails(string source)
+    {
+        Console.WriteLine($"[ProfileViewModel] {source} | Me: {_isMe}, name: {Name}");
     }
 }
