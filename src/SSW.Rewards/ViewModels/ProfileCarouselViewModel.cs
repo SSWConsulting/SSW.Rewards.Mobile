@@ -40,6 +40,8 @@ public class ProfileAchievement : Achievement
 
     public static string AchievementTappedMessage = "AchivementTapped";
 
+    public bool IsMe { get; set; }
+
     public ProfileAchievement()
     {
         //AchievementTappedCommand = new Command(() =>
@@ -51,7 +53,7 @@ public class ProfileAchievement : Achievement
 
 public static class AchievementHelpers
 {
-    public static ProfileAchievement ToProfileAchievement(this Achievement achievement)
+    public static ProfileAchievement ToProfileAchievement(this Achievement achievement, bool isMe)
     {
         return new ProfileAchievement
         {
@@ -62,7 +64,8 @@ public static class AchievementHelpers
             Value = achievement.Value,
             AchievementIcon = achievement.AchievementIcon,
             IconIsBranded = achievement.IconIsBranded,
-            Id = achievement.Id
+            Id = achievement.Id,
+            IsMe = isMe
         };
     }
 }

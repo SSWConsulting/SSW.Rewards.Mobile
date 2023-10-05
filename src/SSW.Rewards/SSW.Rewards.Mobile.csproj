@@ -94,6 +94,12 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
+	    <DependentUpon>MyProfilePage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 	<!-- TODO: Do we need this? -->
 	<ItemGroup>
 	  <MauiXaml Update="Controls\TabHeader.xaml">

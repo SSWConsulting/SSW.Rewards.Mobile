@@ -8,15 +8,11 @@ using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class ProfileViewModel : BaseViewModel, 
-    IRecipient<ProfilePicUpdatedMessage>, 
-    IRecipient<PointsAwardedMessage>, 
-    IRecipient<AchievementTappedMessage>, 
-    IRecipient<SocialUsernameAddedMessage>
+public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<AchievementTappedMessage>
 {
-    private readonly IRewardService _rewardsService;
-    private IUserService _userService;
-    private readonly ISnackbarService _snackbarService;
+    protected readonly IRewardService _rewardsService;
+    protected IUserService _userService;
+    protected readonly ISnackbarService _snackbarService;
 
     public string ProfilePic { get; set; }
     public string Name { get; set; }
@@ -27,7 +23,7 @@ public class ProfileViewModel : BaseViewModel,
 
     public double Progress { get; set; } = 0;
 
-    private int userId { get; set; }
+    protected int userId { get; set; }
 
     public bool IsLoading { get; set; }
 
@@ -43,13 +39,13 @@ public class ProfileViewModel : BaseViewModel,
 
     public bool ShowPopButton { get; set; } = false;
 
-    private bool _isMe;
+    protected bool _isMe;
 
-    private double _topRewardCost;
+    protected double _topRewardCost;
 
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
-    public ProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
+    public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
         WeakReferenceMessenger.Default.RegisterAll(this);
 
@@ -58,6 +54,8 @@ public class ProfileViewModel : BaseViewModel,
         _rewardsService = rewardsService;
         _userService = userService;
         _snackbarService = snackbarService;
+
+
         SnackOptions = new SnackbarOptions
         {
             ActionCompleted = true,
@@ -69,47 +67,15 @@ public class ProfileViewModel : BaseViewModel,
         };
     }
 
-    public ProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, LeaderViewModel vm)
+    public void Receive(AchievementTappedMessage message)
     {
-        IsLoading = true;
-        RaisePropertyChanged("IsLoading");
-        ProfilePic = vm.ProfilePic;
-        Name = vm.Name;
-        userId = vm.UserId;
-        Points = vm.TotalPoints;
-        _userService = userService;
-        _rewardsService = rewardsService;
-        _snackbarService = snackbarService;
-        Balance = vm.Balance;
-        ShowBalance = false;
-        ShowPopButton = true;
+        ProcessAchievement(message.Value);
     }
 
-    public async Task Initialise(bool me)
-    {        
-        if (DeviceInfo.Platform == DevicePlatform.iOS)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-                OnPropertyChanged(nameof(ProfileSections));
-            });
-        }
+    public abstract Task Initialise();
 
-        _isMe = me;
-
-        if (_isMe)
-        {
-            var profilePic = _userService.MyProfilePic;
-
-            //initialise me
-            ProfilePic = profilePic;
-            Name = _userService.MyName;
-            Points = _userService.MyPoints;
-            Balance = _userService.MyBalance;
-            userId = _userService.MyUserId;
-        }
-
+    protected async Task _initialise()
+    {
         var rewards = await _rewardsService.GetRewards();
 
         // TODO: If there is an authentication failure, the RewardsService
@@ -125,7 +91,6 @@ public class ProfileViewModel : BaseViewModel,
         _topRewardCost = (double)topReward.Cost;
 
         double progress = Balance / _topRewardCost;
-
 
         // TODO: we can get rid of this 0 condition if we award a 'sign up'
         // achievement. We could also potentially get the ring to render
@@ -155,39 +120,27 @@ public class ProfileViewModel : BaseViewModel,
         RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance), nameof(ShowCamera));
     }
 
-    private async Task OnPointsAwarded()
+    private void ProcessAchievement(ProfileAchievement achievement)
     {
-        await _userService.UpdateMyDetailsAsync();
-        await UpdatePoints();
-        await LoadProfileSections();
-    }
-
-    private Task UpdatePoints()
-    {
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
-
-        double progress = Balance / _topRewardCost;
-
-        // TODO: we can get rid of this 0 condition if we award a 'sign up'
-        // achievement. We could also potentially get the ring to render
-        // empty.
-        if (progress == 0)
+        if (achievement.IsMe == _isMe)
         {
-            Progress = 0.01;
+            if (achievement.Complete)
+            {
+                ShowAchievementSnackbar(achievement);
+            }
+            else
+            {
+                if (achievement.Type == AchievementType.Linked && _isMe)
+                {
+                    var popup = new LinkSocial(achievement);
+                    MopupService.Instance.PushAsync(popup);
+                }
+                else
+                {
+                    ShowAchievementSnackbar(achievement);
+                }
+            }
         }
-        else if (progress < 1)
-        {
-            Progress = progress;
-        }
-        else
-        {
-            Progress = 1;
-        }
-
-        RaisePropertyChanged(nameof(Balance), nameof(Points), nameof(Progress));
-
-        return Task.CompletedTask;
     }
 
     private async Task ShowCameraPageAsync()
@@ -197,7 +150,7 @@ public class ProfileViewModel : BaseViewModel,
         await MopupService.Instance.PushAsync(popup);
     }
 
-    private async Task LoadProfileSections()
+    protected async Task LoadProfileSections()
     {
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
@@ -228,7 +181,7 @@ public class ProfileViewModel : BaseViewModel,
 
         foreach (var achievement in profileAchievements)
         {
-            achivementsSection.Achievements.Add(achievement.ToProfileAchievement());
+            achivementsSection.Achievements.Add(achievement.ToProfileAchievement(_isMe));
         }
 
         ProfileSections.Add(achivementsSection);
@@ -311,61 +264,6 @@ public class ProfileViewModel : BaseViewModel,
         RaisePropertyChanged(nameof(ProfilePic));
     }
 
-    private void ProcessAchievement(ProfileAchievement achievement)
-    {
-        if (achievement.Complete)
-        {
-            ShowAchievementSnackbar(achievement);
-        }
-        else
-        {
-            if (achievement.Type == AchievementType.Linked)
-            {
-                var popup = new LinkSocial(achievement);
-                MopupService.Instance.PushAsync(popup);
-                //App.Current.MainPage.ShowPopup(popup);
-            }
-            else
-            {
-                ShowAchievementSnackbar(achievement);
-            }
-        }
-    }
-
-    private async Task AddSocialMediaId(SocialUsernameAddedMessage message)
-    {
-        WeakReferenceMessenger.Default.Unregister<SocialUsernameAddedMessage>(this);
-
-        IsBusy = true;
-
-        var result = await _userService.SaveSocialMediaId(message.Value.Achievement.Id, message.Value.Username);
-
-        var options = new SnackbarOptions
-        {
-            ActionCompleted = false,
-            Points = message.Value.Achievement.Value,
-            GlyphIsBrand = message.Value.Achievement.IconIsBranded,
-            Glyph = (string)typeof(Icon).GetField(message.Value.Achievement.AchievementIcon.ToString()).GetValue(null)
-        };
-
-        if (result)
-        {
-            options.ActionCompleted = true;
-            message.Value.Achievement.Complete = true;
-        }
-
-        options.Message = $"{GetMessage(message.Value.Achievement)}";
-
-        await _snackbarService.ShowSnackbar(options);
-
-        if (result)
-        {
-            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        }
-
-        IsBusy = false;
-    }
-
     private async void ShowAchievementSnackbar(ProfileAchievement achievement)
     {
         // TODO: set Glyph when given values
@@ -383,11 +281,11 @@ public class ProfileViewModel : BaseViewModel,
 
     public string GetMessage(Achievement achievement, bool IsActivity = false)
     {
-        string prefix = _isMe ? "You have " : $"{Name} has ";
+        string prefix = _isMe ? "You have" : $"{Name} has";
 
         if (!achievement.Complete)
         {
-            prefix += "not ";
+            prefix += " not";
         }
 
 
@@ -408,6 +306,7 @@ public class ProfileViewModel : BaseViewModel,
             case AchievementType.Linked:
                 action = "followed";
                 activity = activity.Replace("follow", "");
+                activity = activity.Replace("Follow", "");
                 break;
 
             case AchievementType.Scanned:
@@ -435,20 +334,6 @@ public class ProfileViewModel : BaseViewModel,
         IsBusy = false;
         IsLoading = false;
         ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-    }
-
-    public async void Receive(PointsAwardedMessage message)
-    {
-        await OnPointsAwarded();
-    }
-
-    public void Receive(AchievementTappedMessage message)
-    {
-        ProcessAchievement(message.Value);
-    }
-
-    public void Receive(SocialUsernameAddedMessage message)
-    {
-        AddSocialMediaId(message);
+        WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }

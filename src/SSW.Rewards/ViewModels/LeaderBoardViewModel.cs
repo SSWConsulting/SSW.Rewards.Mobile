@@ -213,7 +213,7 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         if (leader.IsMe)
             await Shell.Current.GoToAsync("//main");
         else
-            await Shell.Current.Navigation.PushModalAsync<ProfilePage>(leader);
+            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }
 
     public async void Receive(PointsAwardedMessage message)

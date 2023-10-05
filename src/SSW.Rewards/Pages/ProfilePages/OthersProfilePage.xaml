@@ -4,10 +4,10 @@
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
-             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:DataType="viewModels:ProfileViewModel"
-             x:Class="SSW.Rewards.Mobile.Pages.ProfilePage">
+             x:DataType="viewModels:OtherProfileViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.OthersProfilePage">
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent"/>
     </ContentPage.Behaviors>

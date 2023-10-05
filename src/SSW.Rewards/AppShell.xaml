@@ -90,7 +90,7 @@
                     See: https://github.com/dotnet/maui/issues/8244 -->
 
         <Tab Route="main" Icon="icon_home" Title="Home">
-            <ShellContent ContentTemplate="{DataTemplate pages:ProfilePage}" />
+            <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
