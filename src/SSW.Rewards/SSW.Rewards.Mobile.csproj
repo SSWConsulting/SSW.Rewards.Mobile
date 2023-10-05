@@ -95,7 +95,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Pages\MyProfilePage.xaml.cs">
+	  <Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
 	    <DependentUpon>MyProfilePage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>

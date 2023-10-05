@@ -76,8 +76,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
     protected async Task _initialise()
     {
-        LogMeDetails("initialise");
-
         var rewards = await _rewardsService.GetRewards();
 
         // TODO: If there is an authentication failure, the RewardsService
@@ -283,9 +281,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
     public string GetMessage(Achievement achievement, bool IsActivity = false)
     {
-
-        LogMeDetails("GetMessage");
-
         string prefix = _isMe ? "You have" : $"{Name} has";
 
         if (!achievement.Complete)
@@ -339,11 +334,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
         IsBusy = false;
         IsLoading = false;
         ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-    }
-
-
-    protected void LogMeDetails(string source)
-    {
-        Console.WriteLine($"[ProfileViewModel] {source} | Me: {_isMe}, name: {Name}");
+        WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }
