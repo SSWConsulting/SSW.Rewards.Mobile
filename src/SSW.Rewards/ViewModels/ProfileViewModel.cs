@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AppCenter.Crashes;
 using Mopups.Services;
-using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
@@ -47,7 +47,7 @@ public class ProfileViewModel : BaseViewModel,
 
     private double _topRewardCost;
 
-    private bool _loadingProfileSections;
+    private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
@@ -89,8 +89,11 @@ public class ProfileViewModel : BaseViewModel,
     {        
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
-            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-            OnPropertyChanged(nameof(ProfileSections));
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+                OnPropertyChanged(nameof(ProfileSections));
+            });
         }
 
         _isMe = me;
@@ -196,10 +199,8 @@ public class ProfileViewModel : BaseViewModel,
 
     private async Task LoadProfileSections()
     {
-        if (_loadingProfileSections)
+        if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
-
-        _loadingProfileSections = true;
 
         ProfileSections.Clear();
 
@@ -209,9 +210,16 @@ public class ProfileViewModel : BaseViewModel,
             OnPropertyChanged(nameof(ProfileSections));
         }
 
-        var rewardList = await _userService.GetRewardsAsync(userId);
-        var profileAchievements = await _userService.GetProfileAchievementsAsync(userId);
-        var achievementList = await _userService.GetAchievementsAsync(userId);
+        var rewardListTask = _userService.GetRewardsAsync(userId);
+        var profileAchievementsTask = _userService.GetProfileAchievementsAsync(userId);
+        var achievementListTask = _userService.GetAchievementsAsync(userId);
+
+        await Task.WhenAll(rewardListTask, profileAchievementsTask, achievementListTask);
+
+        var rewardList = rewardListTask.Result;
+        var profileAchievements = profileAchievementsTask.Result;
+        var achievementList = achievementListTask.Result;
+
 
         //===== Achievements =====
 
@@ -262,8 +270,6 @@ public class ProfileViewModel : BaseViewModel,
 
         activityList.OrderByDescending(a => a.OcurredAt).Take(10).ToList().ForEach(a => activitySection.RecentActivity.Add(a));
 
-        Console.WriteLine($"[ProfileViewModel] Recent activity count: {activityList.Count}");
-
         ProfileSections.Add(activitySection);
 
         // ===== Notifications =====
@@ -296,7 +302,7 @@ public class ProfileViewModel : BaseViewModel,
             ProfileSections.Add(notificationsSection);
         }
 
-        _loadingProfileSections = false;
+        _loadingProfileSectionsSemaphore.Release();
     }
 
     public void Receive(ProfilePicUpdatedMessage message)

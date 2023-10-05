@@ -9,7 +9,7 @@ public partial class ProfilePage : ContentPage
     private ProfileViewModel viewModel;
 
 
-    public ProfilePage(ProfileViewModel vm)//, bool isMe = true)
+    public ProfilePage(ProfileViewModel vm)
     {
         InitializeComponent();
         viewModel = vm;
@@ -33,11 +33,7 @@ public partial class ProfilePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (_isMe && _initialised)
-        {
-
-        }
-        else
+        if (!_isMe || !_initialised)
         {
             await viewModel.Initialise(_isMe);
         }
