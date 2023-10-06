@@ -47,8 +47,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
 
     public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
-        WeakReferenceMessenger.Default.RegisterAll(this);
-
         IsLoading = true;
         RaisePropertyChanged("IsLoading");
         _rewardsService = rewardsService;
@@ -65,6 +63,11 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
             Points = 1000,
             ShowPoints = true
         };
+    }
+
+    public void OnAppearing()
+    {
+        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
     public void Receive(AchievementTappedMessage message)
