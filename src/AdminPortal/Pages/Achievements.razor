@@ -1,0 +1,171 @@
+﻿@page "/achievements"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Achievements
+@using SSW.Rewards.Admin.UI.Models.Interfaces
+
+@attribute [Authorize]
+
+@inject IAchievementClient _client
+@inject IDialogService DialogService
+@inject ISnackbar SnackBar
+
+<MudText Typo="Typo.h2">Achievements</MudText>
+<MudText Typo="Typo.body1">All achievevements available for scanning</MudText>
+
+<Table TItem="AchievementAdminViewModel"
+       Items="FilteredAchievementList"
+       TableTitle="Profiles"
+       OnRowClick="OnRowClicked"
+       IsLoading="@_loading">
+    <ToolbarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search for an achievement"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0"/>
+        
+        <MudCheckBox @bind-Checked="ShowArchived" Label="Show archived"></MudCheckBox>
+    </ToolbarContent>
+    <HeadingTemplate>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
+                Code
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.Value)">
+                Value
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<AchievementAdminViewModel, object>(x => x.IsMultiScanEnabled ?? false)">
+                Multi-scan
+            </MudTableSortLabel>
+        </MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Code">
+            <AdminQRCode QRCodeString="@context.Code" Height="100" />
+        </MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Value">
+            @context.Value
+        </MudTd>
+        <MudTd DataLabel="Value">
+            @context.IsMultiScanEnabled
+        </MudTd>
+    </RowTemplate>
+</Table>
+
+<FabContainer>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+</FabContainer>
+
+@code {
+    private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private bool _loading = true;
+    private string _searchString = string.Empty;
+    private IEnumerable<AchievementAdminViewModel> _model = Enumerable.Empty<AchievementAdminViewModel>();
+
+    private IEnumerable<AchievementAdminViewModel> FilteredAchievementList => _model
+        .Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase) && (ShowArchived || !s.IsArchived.GetValueOrDefault(false)));
+
+    private bool ShowArchived { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetAchievements();
+    }
+
+    private async Task OnRowClicked(TableRowClickEventArgs<AchievementAdminViewModel> obj)
+    {
+        var item = _model.FirstOrDefault(x => x.Id == obj.Item.Id);
+
+        // TODO: Implement an upsert on the Api 
+        //! Note: This is a readonly Dialog, which only allows for viewing and deleting.
+        var parameters = new DialogParameters { ["Dto"] = item };
+        var dialog = DialogService.Show<AchievementEditDialog>("Edit an Achievement", parameters);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            if (result.Data is int id)
+            {
+                //! Note: This can error as the StaffMembers table has a reference to Achievements 
+                await _client.DeleteAsync(new(){ Id = id });
+                SnackBar.Add($"Achievement deleted", Severity.Success);
+            }
+            if (result.Data is AchievementAdminViewModel dto)
+            {
+                await _client.UpdateAchievementAsync(new UpdateAchievementCommand
+                {
+                    Id = dto.Id,
+                    Value = dto.Value,
+                    Type = dto.Type,
+                    IsMultiscanEnabled = dto.IsMultiScanEnabled ?? false
+                });
+                SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
+            }
+            if (result.Data is AssignReward usr)
+            {
+                if (usr?.Id == null) return;
+
+                // TODO: Add nice notification for returned status
+                await _client.ClaimForUserAsync(new ClaimAchievementForUserCommand
+                {
+                    Code = usr.Code,
+                    UserId = usr.Id
+                });
+                SnackBar.Add($"Achievement claimed", Severity.Success);
+            }
+            await GetAchievements();
+        }
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<AddAchievementsDialog>("Create an Achievement", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            if (result.Data is AchievementAdminViewModel dto)
+            {
+                Console.WriteLine($"Multiscan enabled: ${dto.IsMultiScanEnabled}");
+                await _client.CreateAsync(
+                    new CreateAchievementCommand
+                    {
+                        Name = dto.Name,
+                        Value = dto.Value,
+                        Type = dto.Type,
+                        IsMultiscanEnabled = dto.IsMultiScanEnabled??false
+                    });
+                SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
+            }
+            await GetAchievements();
+        }
+    }
+
+    private async Task GetAchievements()
+    {
+        try
+        {
+            _loading = true;
+            await Task.Delay(250);
+            _model = (await _client.AdminListAsync(true)).Achievements;
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

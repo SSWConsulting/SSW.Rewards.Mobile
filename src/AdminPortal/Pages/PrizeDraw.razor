@@ -1,0 +1,254 @@
+@page "/Prizedraw"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@attribute [Authorize]
+
+@inject ILeaderboardClient LeaderboardClient
+@inject IRewardClient RewardClient
+@inject ISnackbar SnackBar
+
+<MudText Typo="Typo.h2">Prize Draw</MudText>
+
+@if (_loading)
+{
+    <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
+}
+else
+{
+    <MudGrid Spacing="2">
+        <MudItem>
+            <MudSelect
+                T="RewardViewModel"
+                @bind-Value="@_selectedReward"
+                Label="Reward"
+                Variant="Variant.Filled"
+                AnchorOrigin="Origin.BottomCenter"
+                SelectedValuesChanged="@(async (e) => await LoadEligiblePlayers())">
+                @if (_rewards is not null)
+                {
+                    @foreach (var reward in _rewards)
+                    {
+                        <MudSelectItem Value="@reward">@($"{reward.Name} - {reward.Cost}pts ({reward.RewardType})")</MudSelectItem>
+                    }    
+                }
+            </MudSelect>
+        </MudItem>
+
+        <MudItem>
+            <MudSelect
+                Style="width: 250px;"
+                T="LeaderboardFilter"
+                @bind-Value="@_filter"
+                Label="Players with Points Since"
+                Variant="Variant.Filled"
+                AnchorOrigin="Origin.BottomCenter"
+                SelectedValuesChanged="@(async (e) => await LoadEligiblePlayers())">
+                @foreach (var when in Enum.GetValues<LeaderboardFilter>())
+                {
+                    <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem>
+            <MudCheckBox T="bool" 
+                         Checked="_balanceRequired"
+                         Label="+Points Balance Required"
+                         CheckedChanged="async (e) => { _balanceRequired = e; await LoadEligiblePlayers(); }"/>
+        </MudItem>
+                <MudItem>
+                    <MudCheckBox T="bool" 
+                                 Checked="_filterStaff"
+                                 Label="Filter staff"
+                                 CheckedChanged="async (e) => { _filterStaff = e; await LoadEligiblePlayers(); }"/>
+                </MudItem>
+    </MudGrid>
+    
+    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+    
+    <MudGrid Justify="Justify.Center">
+        <MudItem>
+            <MudText Align="Align.Left">Eligible Players: @(_players?.Count ?? 0)</MudText>
+        </MudItem>
+    </MudGrid>
+    
+    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+    
+    <MudGrid Spacing="2">
+        <MudItem>
+            <MudChipSet MultiSelection="false">
+                @if (_players != null)
+                {
+                    @foreach (var player in _players.Select((p, index) => new { p, index }))
+                    {
+                        <MudChip
+                            Size="@(IsWinner(player.p) ? Size.Large : Size.Small)"
+                            Variant="@(IsWinner(player.p) ? Variant.Filled : Variant.Text)"
+                            Icon="@(IsWinner(player.p) ? Icons.Filled.Celebration : null)"
+                            Color="@_colors[player.index % _colors.Length]">@(player.p.Name + (_balanceRequired ? $" ({player.p.Balance})" : string.Empty))</MudChip>
+                    }   
+                }
+            </MudChipSet>
+        </MudItem>
+    </MudGrid>
+    
+    <MudDivider DividerType="DividerType.Middle" Class="my-12"/>
+    
+    @if (_isDrawingPrize || _prizeWinner != null)
+    {
+        <MudGrid Justify="Justify.Center">
+            <MudItem>
+                @if (_isDrawingPrize)
+                {
+                    <MudText Align="Align.Center">
+                        Shuffling things around...
+                    </MudText>
+                    <MudText Align="Align.Center">
+                        <MudProgressCircular Color="Color.Success" Indeterminate="true"/>
+                    </MudText>
+                }
+                else if(_prizeWinner != null)
+                {
+                    <MudText Align="Align.Center">The Winner is:</MudText>
+                    <MudText Align="Align.Center" Typo="Typo.h3">
+                        <b>@(_prizeWinner.Name)</b>
+                    </MudText>    
+                }
+            </MudItem>
+        </MudGrid>    
+    }
+    
+    @if (_prizeWinner != null && !_isDrawingPrize)
+    {
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudButton
+                    OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))"
+                    Variant="Variant.Filled"
+                    StartIcon="@Icons.Material.Filled.Celebration"
+                    Color="Color.Info">
+                    Claim Prize
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    }
+    
+    @if (_players is {Count: > 0 } && !_isDrawingPrize)
+    {
+        <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+        
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudButton
+                    OnClick="DrawPrizeWinner"
+                    Variant="Variant.Filled"
+                    StartIcon="@Icons.Material.Filled.Celebration"
+                    Color="Color.Primary"
+                    Style="width: 400px; height: 60px;">
+                    Draw prize winner!
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    }
+}
+
+@code {
+    private readonly Color[] _colors = { Color.Primary, Color.Secondary, Color.Tertiary, Color.Info, Color.Warning, Color.Success, Color.Error };
+
+    private static int PrizeDrawSuspenseDelay => 2500;
+    
+    private bool _loading = true;
+    private bool _isDrawingPrize = false;
+    
+    private List<EligibleUserViewModel>? _players = new();
+    private IEnumerable<RewardViewModel>? _rewards = Enumerable.Empty<RewardViewModel>();
+    RewardViewModel? _selectedReward;
+    string? _selectedRewardCode;
+    private LeaderboardFilter _filter = LeaderboardFilter.Today;
+    private bool _balanceRequired;
+    private bool _filterStaff = true;
+    private EligibleUserViewModel? _prizeWinner;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadRewards();
+    }
+
+    private async Task LoadRewards()
+    {
+        try
+        {
+            _loading = true;
+            Reset();
+            _rewards = (await RewardClient.ListAsync(CancellationToken.None))?.Rewards ?? new List<RewardViewModel>();
+            _selectedReward ??= _rewards.FirstOrDefault();
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task LoadEligiblePlayers()
+    {
+        try
+        {
+            _loading = true;
+            Reset();
+            var eligibleUsersVm = await LeaderboardClient.GetEligibleUsersAsync(_selectedReward?.Id, _filter, _balanceRequired, _filterStaff, CancellationToken.None);
+            _selectedRewardCode = eligibleUsersVm?.RewardCode;
+            _players = eligibleUsersVm?.EligibleUsers?.ToList() ?? new List<EligibleUserViewModel>();
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+    
+    private async Task DrawPrizeWinner()
+    {
+        _isDrawingPrize = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(PrizeDrawSuspenseDelay);
+        Random rand = new();
+        _prizeWinner = _players?.ElementAt(rand.Next(_players.Count()));
+        _isDrawingPrize = false;
+    }
+
+    private bool IsWinner(EligibleUserViewModel? player) 
+    {
+        if (player == null || _prizeWinner == null)
+        {
+            return false;
+        }
+        return player.UserId == _prizeWinner.UserId;
+    }
+
+    private void Reset()
+    {
+        _prizeWinner = null;
+        _selectedRewardCode = null;
+    }
+
+    private async Task ClaimPrizeForWinner(EligibleUserViewModel winner)
+    {
+        var result = await RewardClient.ClaimForUserAsync(new ClaimRewardForUserCommand
+        {
+            Code = _selectedRewardCode,
+            UserId = winner.UserId ?? 0
+        });
+
+        if (result.Status == RewardStatus.Claimed)
+        {
+            SnackBar.Add($"Reward claimed", Severity.Success);
+        }
+        else
+        {
+            SnackBar.Add($"Could not claim reward!\n\n{result.Status}", Severity.Error);
+        }
+    }
+
+}
