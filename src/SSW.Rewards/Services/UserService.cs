@@ -178,6 +178,7 @@ public class UserService : ApiBaseService, IUserService
             else
             {
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
+                await SignInAsync();
             }
         }
 
