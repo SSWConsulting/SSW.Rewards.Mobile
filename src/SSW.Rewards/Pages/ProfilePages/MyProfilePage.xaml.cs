@@ -1,7 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using PdfKit;
-using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
-using static System.Net.WebRequestMethods;
+﻿using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 namespace SSW.Rewards.Mobile.Pages;
 

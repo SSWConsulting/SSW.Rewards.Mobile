@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using Microsoft.AppCenter.Crashes;
 using SSW.Rewards.Mobile.Messages;
@@ -178,6 +179,44 @@ public class UserService : ApiBaseService, IUserService
             else
             {
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
+
+                var fcep = new Parameters
+                {
+                    { "prompt", "none" }
+                };
+
+                var silentRequest = new LoginRequest
+                {
+                    FrontChannelExtraParameters = fcep
+                };
+
+                var silentResult = await oidcClient.LoginAsync(silentRequest);
+
+                if (!silentResult.IsError)
+                {
+                    string token = silentResult.AccessToken;
+                    string idToken = silentResult.IdentityToken;
+
+                    if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
+                    {
+
+                        try
+                        {
+                            await SetLoggedInState(token, idToken);
+                        }
+                        catch
+                        {
+
+                            return false;
+                        }
+
+                        await SettRefreshToken(result.RefreshToken);
+
+                        return true;
+                    }
+                }
+
+                await SignInAsync();
             }
         }
 
