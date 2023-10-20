@@ -8,5 +8,7 @@ public class AchievementConfiguration : IEntityTypeConfiguration<Achievement>
 {
     public void Configure(EntityTypeBuilder<Achievement> builder)
     {
+        builder.HasIndex(a => a.IntegrationId)
+            .IsUnique();
     }
 }

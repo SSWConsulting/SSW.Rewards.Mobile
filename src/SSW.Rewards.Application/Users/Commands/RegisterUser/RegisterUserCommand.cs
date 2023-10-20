@@ -21,7 +21,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
         {
             Email = _currentUserService.GetUserEmail(),
             FullName = _currentUserService.GetUserFullName(),
-            Avatar = _currentUserService.GetUserProfilePic() // Don't see how this could be here at this point? But I may have added it to the mapping profile for a reason. TODO: test removing
+            // TODO: test removing. Don't see how this could be here at this point? But I may have added it to the mapping profile for a reason. 
+            Avatar = _currentUserService.GetUserProfilePic()
         };
 
         await _userService.CreateUser(newUser, cancellationToken);

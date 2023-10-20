@@ -21,5 +21,6 @@ public interface IApplicationDbContext
     DbSet<UserSocialMediaId> UserSocialMediaIds { get; set; }
     DbSet<QuizAnswer> QuizAnswers { get; set; }
     DbSet<SubmittedQuizAnswer> SubmittedAnswers { get; set; }
+    DbSet<UnclaimedAchievement> UnclaimedAchievements { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

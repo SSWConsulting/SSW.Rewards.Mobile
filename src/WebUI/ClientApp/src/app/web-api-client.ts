@@ -23,6 +23,7 @@ export interface IAchievementClient {
     post(achievementCode: string | null | undefined): Observable<PostAchievementResult>;
     delete(command: DeleteAchievementCommand): Observable<FileResponse>;
     updateAchievement(command: UpdateAchievementCommand): Observable<FileResponse>;
+    claimFormCompleted(command: ClaimFormCompletedAchievementCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -373,6 +374,56 @@ export class AchievementClient implements IAchievementClient {
     }
 
     protected processUpdateAchievement(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    claimFormCompleted(command: ClaimFormCompletedAchievementCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Achievement/ClaimFormCompleted";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClaimFormCompleted(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClaimFormCompleted(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processClaimFormCompleted(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3105,6 +3156,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
     type?: AchievementType;
     isArchived?: boolean | undefined;
     isMultiScanEnabled?: boolean | undefined;
+    integrationId?: string | undefined;
 
     constructor(data?: IAchievementAdminViewModel) {
         if (data) {
@@ -3124,6 +3176,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
             this.type = _data["type"];
             this.isArchived = _data["isArchived"];
             this.isMultiScanEnabled = _data["isMultiScanEnabled"];
+            this.integrationId = _data["integrationId"];
         }
     }
 
@@ -3143,6 +3196,7 @@ export class AchievementAdminViewModel implements IAchievementAdminViewModel {
         data["type"] = this.type;
         data["isArchived"] = this.isArchived;
         data["isMultiScanEnabled"] = this.isMultiScanEnabled;
+        data["integrationId"] = this.integrationId;
         return data;
     }
 }
@@ -3155,6 +3209,7 @@ export interface IAchievementAdminViewModel {
     type?: AchievementType;
     isArchived?: boolean | undefined;
     isMultiScanEnabled?: boolean | undefined;
+    integrationId?: string | undefined;
 }
 
 export class CreateAchievementCommand implements ICreateAchievementCommand {
@@ -3418,6 +3473,46 @@ export interface IUpdateAchievementCommand {
     value?: number;
     type?: AchievementType;
     isMultiscanEnabled?: boolean;
+}
+
+export class ClaimFormCompletedAchievementCommand implements IClaimFormCompletedAchievementCommand {
+    email?: string;
+    integrationId?: string;
+
+    constructor(data?: IClaimFormCompletedAchievementCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.integrationId = _data["integrationId"];
+        }
+    }
+
+    static fromJS(data: any): ClaimFormCompletedAchievementCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimFormCompletedAchievementCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["integrationId"] = this.integrationId;
+        return data;
+    }
+}
+
+export interface IClaimFormCompletedAchievementCommand {
+    email?: string;
+    integrationId?: string;
 }
 
 export class LeaderboardListViewModel implements ILeaderboardListViewModel {

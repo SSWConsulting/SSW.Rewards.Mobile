@@ -1,5 +1,4 @@
-﻿using System.Text;
-using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
+﻿using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -15,42 +14,28 @@ public class CreateAchievementCommand : IRequest<AchievementAdminViewModel>
 public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminViewModel>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CreateAchievementCommandHandler(IApplicationDbContext context)
+    public CreateAchievementCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<AchievementAdminViewModel> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
     {
-        var existingAchievements = await _context.Achievements.ToListAsync(cancellationToken);
-
-        var achievement = existingAchievements
-            .FirstOrDefault(a => a.Name.Equals(request.Name, StringComparison.InvariantCulture))
-            ?? new Domain.Entities.Achievement();
-
-        achievement.Name = request.Name;
-        var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
-        achievement.Code = Convert.ToBase64String(codeData);
-        achievement.Value = request.Value;
-        achievement.Type = request.Type;
-        achievement.IsMultiscanEnabled = request.IsMultiscanEnabled;
-
-        if (achievement.Id == 0)
+        var achievement = new Achievement
         {
-            _context.Achievements.Add(achievement);
-            await _context.SaveChangesAsync(cancellationToken);
-            return new AchievementAdminViewModel()
-            {
-                Code = achievement.Code,
-                Name = achievement.Name,
-                Value = achievement.Value,
-                Type = achievement.Type,
-                IsMultiScanEnabled = achievement.IsMultiscanEnabled
-            };
+            Name                = request.Name,
+            Value               = request.Value,
+            Type                = request.Type,
+            IsMultiscanEnabled  = request.IsMultiscanEnabled
+        };
 
-        }
+        _context.Achievements.Add(achievement);
 
-        return null;
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<AchievementAdminViewModel>(achievement);
     }
 }

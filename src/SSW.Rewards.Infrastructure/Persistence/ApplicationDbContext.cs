@@ -10,16 +10,19 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     //private readonly IMediator _mediator;
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly AchievementIntegrationIdInterceptor _achievementIntegrationIdInterceptor;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         //IMediator mediator,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        AchievementIntegrationIdInterceptor achievementIntegrationIdInterceptor
         ) 
         : base(options)
     {
         //_mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        _achievementIntegrationIdInterceptor = achievementIntegrationIdInterceptor;
     }
 
     public DbSet<StaffMember> StaffMembers { get; set; }
@@ -41,6 +44,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<SocialMediaPlatform> SocialMediaPlatforms { get; set; }
     public DbSet<UserSocialMediaId> UserSocialMediaIds { get; set; }
     public DbSet<SubmittedQuizAnswer> SubmittedAnswers { get; set; }
+    public DbSet<UnclaimedAchievement> UnclaimedAchievements { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -52,7 +56,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(
+            _auditableEntitySaveChangesInterceptor,
+            _achievementIntegrationIdInterceptor);
     }
 
     //public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

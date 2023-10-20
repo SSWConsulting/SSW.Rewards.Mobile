@@ -16,6 +16,7 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        services.AddScoped<AchievementIntegrationIdInterceptor>();
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {

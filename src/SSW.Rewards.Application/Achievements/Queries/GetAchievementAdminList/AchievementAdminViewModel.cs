@@ -11,6 +11,7 @@ public class AchievementAdminViewModel : IMapFrom<Achievement>
     public AchievementType Type { get; set; }
     public bool? IsArchived { get; set; }
     public bool? IsMultiScanEnabled { get; set; }
+    public string? IntegrationId { get; set; }
 
     public void Mapping(Profile profile)
     {

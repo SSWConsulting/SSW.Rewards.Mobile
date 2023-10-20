@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
+using SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchievement;
 using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 using SSW.Rewards.Application.Achievements.Command.PostAchievement;
 using SSW.Rewards.Application.Achievements.Command.UpdateAchievement;
@@ -65,4 +66,11 @@ public class AchievementController : ApiControllerBase
         return Ok(await Mediator.Send(command));
     }
 
+    [HttpPost]
+    [AllowAnonymous]
+    // TODO: Check whether we can make this authenticated
+    public async Task<ActionResult> ClaimFormCompleted(ClaimFormCompletedAchievementCommand command)
+    {
+        return Ok(await Mediator.Send(command));
+    }
 }
