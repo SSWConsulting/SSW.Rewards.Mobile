@@ -1,14 +1,11 @@
 # SSW Rewards Mobile App!
 
-This is a Xamarin.Forms app with a .NET Core 3 Api backend.
+This is a .NET MAUI app with a .NET 6 backend (see: https://github.com/SSWConsulting/SSW.Rewards.API temporarily, will soon be merged into this repo and upgraded to .NET 8).
 
 Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
 
-## MAUI migration
-MAUI migration was put on hold until .NET 8 release in November 2023.
-During that period we will maintain 2 active branches - `main` and `upgrade-to-maui-v2`.
-
-`main` is the release branch, but any new features and fixes should be added to both `main` and `upgrade-to-maui-v2`.
+## .NET MAUI migration
+App was upgraded from Xamarin.Forms to .NET MAUI, using initially the .NET Migration assistant (using the .NET CLI) to produce a reference project, but then most of the work was done manually. You can see the resulting PR, which shows all the changes from the previous Xamarin.Forms version, to the .NET MAUI version here: https://github.com/SSWConsulting/SSW.Rewards.Mobile/pull/451.
 
 ## Contributing to this repo
 
