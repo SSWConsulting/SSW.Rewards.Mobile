@@ -26,7 +26,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout Spacing="30">
+        <VerticalStackLayout Spacing="30">
             <Label Text="Select a category and prove you know your stuff. Earn bonus points for each completed quiz!"
                    TextColor="White"
                    Margin="40,55,40,10"
@@ -51,7 +51,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="rewards:QuizDto">
-                        <StackLayout>
+                        <VerticalStackLayout>
                             <Frame CornerRadius="5"
                                    WidthRequest="100"
                                    HeightRequest="100"
@@ -68,7 +68,7 @@
                                     <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
                                            TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
                                            FontFamily="FA6Brands"
-                                           FontSize="92"
+                                           FontSize="60"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"
@@ -94,10 +94,10 @@
                                     </Label>
                                 </Grid>
                             </Frame>
-                        </StackLayout>
+                        </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </StackLayout>
+        </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

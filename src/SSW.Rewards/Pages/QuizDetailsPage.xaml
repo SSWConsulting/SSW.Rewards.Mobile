@@ -24,7 +24,7 @@
     </ContentPage.Resources>
     <ContentPage.Content>
             <Grid>
-                <Grid RowDefinitions="70, 100, *, 20, 60"
+                <Grid RowDefinitions="70, Auto, *, 20, 60"
                       IsVisible="{Binding QuestionsVisible}"
                       x:Name="QuestionsView">
 
@@ -54,6 +54,7 @@
                     </Label>
 
                     <Label Grid.Row="1"
+                           Padding="20"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand"
                            HorizontalTextAlignment="Center"
@@ -72,12 +73,12 @@
                                   x:Name="QuestionsCarousel">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
-                                <ScrollView HeightRequest="700">
-                                    <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
-                                                 RadioButtonGroup.GroupName="{Binding QuestionId}"
-                                                 HorizontalOptions="FillAndExpand"
-                                                 Padding="20"
-                                                 Spacing="40">
+                                <ScrollView>
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
+                                                         RadioButtonGroup.GroupName="{Binding QuestionId}"
+                                                         HorizontalOptions="FillAndExpand"
+                                                         Padding="20"
+                                                         Spacing="40">
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate x:DataType="viewModels:QuizAnswerViewModel">
                                                 <RadioButton Value="{Binding QuestionAnswerId}"
@@ -89,7 +90,7 @@
                                                 <!-- TODO: MAUI. The ControlTemplate="{StaticResource RadioButtonTemplate}" is missing in the project. Was it lost at some point or it was a stub? -->
                                             </DataTemplate>
                                         </BindableLayout.ItemTemplate>
-                                    </StackLayout>
+                                    </VerticalStackLayout>
                                 </ScrollView>
                             </DataTemplate>
                         </CarouselView.ItemTemplate>
@@ -98,6 +99,7 @@
 
                     <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
+                                   HorizontalOptions="Center"
                                    Grid.Row="3"
                                    x:Name="QuestionIndicator"/>
 
@@ -126,7 +128,7 @@
                       RowDefinitions="70, 100, 300, 100, 100"
                       IsVisible="{Binding ResultsVisible}">
 
-                <Label Text="{Binding ResultsTitle}"
+                    <Label Text="{Binding ResultsTitle}"
                            TextTransform="Uppercase"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
@@ -192,13 +194,13 @@
                     </Frame>
 
                 <FlexLayout WidthRequest="400"
-                                Direction="Row"
-                                JustifyContent="SpaceEvenly"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                Grid.Row="4"
-                                IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
-                                BindableLayout.ItemsSource="{Binding Results}">
+                            Direction="Row"
+                            JustifyContent="SpaceEvenly"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Grid.Row="4"
+                            IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
+                            BindableLayout.ItemsSource="{Binding Results}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="rewards:QuestionResultDto">
                             <Grid>
