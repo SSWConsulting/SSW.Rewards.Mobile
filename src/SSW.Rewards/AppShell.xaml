@@ -243,6 +243,10 @@
                 </Style>
             </Tab.Style>-->
         </Tab>
+
+        <Tab Route="quiz" Icon="icon_quiz" Title="Quizzes">
+            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}"/>
+        </Tab>
     </FlyoutItem>
 
     <MenuItem Text="Rewards"
