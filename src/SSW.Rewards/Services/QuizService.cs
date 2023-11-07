@@ -82,5 +82,10 @@ public class QuizService : ApiBaseService, IQuizService
 
             return null;
         }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return null;
+        }
     }
 }
