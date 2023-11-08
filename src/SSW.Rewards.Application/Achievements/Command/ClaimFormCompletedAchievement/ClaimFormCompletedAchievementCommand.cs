@@ -16,7 +16,7 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
         _dbContext = dbContext;
     }
     
-    public async Task<Unit> Handle(ClaimFormCompletedAchievementCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ClaimFormCompletedAchievementCommand request, CancellationToken cancellationToken)
     {
         var achievement = await _dbContext.Achievements.FirstOrDefaultAsync(a => a.IntegrationId == request.IntegrationId);
 
@@ -51,7 +51,5 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
 
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        return Unit.Value;
     }
 }

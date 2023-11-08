@@ -15,12 +15,10 @@ public class SeedV2DataCommandHandler : IRequestHandler<SeedV2DataCommand>
         _context = context;
     }
 
-    public async Task<Unit> Handle(SeedV2DataCommand request, CancellationToken cancellationToken)
+    public async Task Handle(SeedV2DataCommand request, CancellationToken cancellationToken)
     {
         var seeder = new SampleDataSeeder(_context);
 
         await seeder.SeedV2DataAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

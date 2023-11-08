@@ -29,7 +29,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                                     .Include(x => x.Questions)
                                         .ThenInclude(x => x.Answers)
                                     .Where(x => x.Id == request.QuizId)
-                                    //.AsNoTracking()
+                                    .AsNoTracking()
                                     .FirstOrDefaultAsync(cancellationToken);
 
             var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());

@@ -5,7 +5,7 @@ namespace SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 
 public class DeleteMyProfileCommand : IRequest { }
 
-public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileCommand, Unit>
+public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileCommand>
 {
     private readonly IEmailService _emailService;
     private readonly ICurrentUserService _currentUserService;
@@ -25,7 +25,7 @@ public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileComm
         _options = options.Value;
     }
 
-    public async Task<Unit> Handle(DeleteMyProfileCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteMyProfileCommand request, CancellationToken cancellationToken)
     {
         var userName = _currentUserService.GetUserFullName();
         var userEmail = _currentUserService.GetUserEmail();
@@ -39,11 +39,7 @@ public class DeleteMyProfileCommandHandler : IRequestHandler<DeleteMyProfileComm
 
         var sent = await _emailService.SendProfileDeletionRequest(model, cancellationToken);
 
-        if (sent)
-        {
-            return Unit.Value;
-        }
-        else
+        if (!sent)
         {
             _logger.LogError("Could not send profile delete request message for {userName}, {email}", userName, userEmail);
             throw new Exception($"Failed to send profile delete request message for {userName}, {userEmail}");

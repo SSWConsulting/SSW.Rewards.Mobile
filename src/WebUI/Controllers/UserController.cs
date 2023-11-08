@@ -61,7 +61,8 @@ public class UserController : ApiControllerBase
     [HttpPost]
     public async Task<ActionResult> Register()
     {
-        return Ok(await Mediator.Send(new RegisterUserCommand()));
+        await Mediator.Send(new RegisterUserCommand());
+        return Ok();
     }
 
     [HttpPost]
