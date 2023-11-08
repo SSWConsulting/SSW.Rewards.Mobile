@@ -48,6 +48,8 @@ public static class MauiProgram
             typeof(OtherProfileViewModel),
             typeof(OthersProfilePage),
             typeof(ProfileViewModelBase),
+            typeof(QuizDetailsPage),
+            typeof(QuizDetailsViewModel),
         };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
@@ -60,6 +62,8 @@ public static class MauiProgram
 
         builder.Services.AddTransient<OtherProfileViewModel>();
         builder.Services.AddTransient<OthersProfilePage>();
+        builder.Services.AddTransient<QuizDetailsPage>();
+        builder.Services.AddTransient<QuizDetailsViewModel>();
 
         builder.Services.AddSingleton<ILeaderService, LeaderService>();
         builder.Services.AddSingleton<IUserService, UserService>();

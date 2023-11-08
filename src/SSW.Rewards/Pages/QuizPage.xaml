@@ -52,12 +52,10 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="rewards:QuizDto">
                         <VerticalStackLayout>
-                            <Frame CornerRadius="5"
-                                   WidthRequest="100"
-                                   HeightRequest="100"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+                            <Border StrokeShape="RoundRectangle 5"
+                                    BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}"
+                                    WidthRequest="100"
+                                    HeightRequest="100">
                                 <Grid Padding="0"
                                       Margin="0">
                                     <Grid.GestureRecognizers>
@@ -77,23 +75,13 @@
                                     <Label Text="&#xe30b;"
                                            TextColor="Green"
                                            FontFamily="FluentIcons"
-                                           FontSize="28"
+                                           FontSize="24"
                                            HorizontalOptions="End"
                                            VerticalOptions="End"
-                                           IsVisible="{Binding Passed}">
-                                        <Label.TranslationX>
-                                            <OnPlatform x:TypeArguments="x:Double">
-                                                <On Platform="Android" Value="15"/>
-                                            </OnPlatform>
-                                        </Label.TranslationX>
-                                        <Label.TranslationY>
-                                            <OnPlatform x:TypeArguments="x:Double">
-                                                <On Platform="Android" Value="15"/>
-                                            </OnPlatform>
-                                        </Label.TranslationY>
-                                    </Label>
+                                           Margin="5"
+                                           IsVisible="{Binding Passed}"/>
                                 </Grid>
-                            </Frame>
+                            </Border>
                         </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
