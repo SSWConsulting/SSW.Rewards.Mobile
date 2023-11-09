@@ -37,7 +37,7 @@ public interface IUserService
     // Get user
     UserViewModel GetUser(int userId);
     Task<UserViewModel> GetUser(int userId, CancellationToken cancellationToken);
-    Task<int> GetUserId(string email);
+    Task<int> GetUserId(string email, CancellationToken cancellationToken);
 
     // Get user achievements
     UserAchievementsViewModel GetUserAchievements(int userId);

@@ -32,7 +32,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(cancellationToken);
 
-            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());
+            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
 
             // build return object
             QuizResultDto retVal = new QuizResultDto
@@ -110,7 +110,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 
         public async Task<bool> CanSubmit(int quizId, CancellationToken token)
         {
-            if (await _context.CompletedQuizzes.AnyAsync(c => c.QuizId == quizId && c.Passed))
+            if (await _context.CompletedQuizzes.AnyAsync(c => c.QuizId == quizId && c.Passed, token))
                 return false;
 
             return true;
