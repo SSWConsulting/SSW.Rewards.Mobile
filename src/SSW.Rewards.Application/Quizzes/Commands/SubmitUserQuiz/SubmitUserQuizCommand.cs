@@ -73,6 +73,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                 AwardedAt     = DateTime.UtcNow,
                 AchievementId = achievementId
             };
+            
             _context.UserAchievements.Add(quizCompletedAchievement);
         }
 
@@ -89,7 +90,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
             {
                 var dbAnswer = dbAnswers.First(q => q.Id == answer.SelectedAnswerId);
 
-                c.Answers.Add(new SubmittedQuizAnswer { Answer = dbAnswer });
+                c.Answers.Add(new SubmittedQuizAnswer { AnswerId = dbAnswer.Id });
             }
 
             _context.CompletedQuizzes.Add(c);

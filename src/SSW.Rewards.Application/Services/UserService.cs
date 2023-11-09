@@ -123,7 +123,7 @@ public class UserService : IUserService, IRolesService
         if (String.IsNullOrWhiteSpace(email))
             throw new ArgumentNullException("no email provided");
         email = email.Trim().ToLower();
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.ToLower() == email);
         if (user == null)
             throw new NotFoundException("No user found");
         return user.Id;
