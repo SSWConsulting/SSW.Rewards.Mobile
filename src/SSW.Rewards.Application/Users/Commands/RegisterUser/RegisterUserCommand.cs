@@ -15,7 +15,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
         _userService = userService;
     }
 
-    public async Task<Unit> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var newUser = new Domain.Entities.User
         {
@@ -26,7 +26,5 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
         };
 
         await _userService.CreateUser(newUser, cancellationToken);
-
-        return Unit.Value;
     }
 }

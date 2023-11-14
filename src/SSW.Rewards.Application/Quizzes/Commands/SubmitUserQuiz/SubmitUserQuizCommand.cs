@@ -1,6 +1,4 @@
-﻿using SSW.Rewards.Domain.Entities;
-
-namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
+﻿namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 
 public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 {
@@ -34,7 +32,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(cancellationToken);
 
-            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());
+            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
 
             // build return object
             QuizResultDto retVal = new QuizResultDto
@@ -58,7 +56,10 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                 retVal.Points = dbQuiz.Achievement.Value;
             }
 
-            AddCompletedQuiz(dbQuiz.Id, userId, request.Answers, retVal.Passed);
+            var dbAnswers = dbQuiz.Questions.SelectMany(q => q.Answers);
+
+            AddCompletedQuiz(dbQuiz.Id, userId, request.Answers, dbAnswers, retVal.Passed);
+            
             await _context.SaveChangesAsync(cancellationToken);
 
             return retVal;
@@ -72,10 +73,11 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                 AwardedAt     = DateTime.UtcNow,
                 AchievementId = achievementId
             };
+            
             _context.UserAchievements.Add(quizCompletedAchievement);
         }
 
-        private async Task AddCompletedQuiz(int quizId, int userId, List<QuizAnswerDto> answers, bool passed)
+        private void AddCompletedQuiz(int quizId, int userId, List<QuizAnswerDto> submittedAnswers, IEnumerable<QuizAnswer> dbAnswers, bool passed)
         {
             CompletedQuiz c = new CompletedQuiz
             {
@@ -84,11 +86,11 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
                 Passed = passed
             };
 
-            foreach (var answer in answers)
+            foreach (var answer in submittedAnswers)
             {
-                var dbAnswer = await _context.QuizAnswers.FirstAsync(q => q.Id == answer.SelectedAnswerId);
+                var dbAnswer = dbAnswers.First(q => q.Id == answer.SelectedAnswerId);
 
-                c.Answers.Add(new SubmittedQuizAnswer { Answer = dbAnswer });
+                c.Answers.Add(new SubmittedQuizAnswer { AnswerId = dbAnswer.Id });
             }
 
             _context.CompletedQuizzes.Add(c);
@@ -108,7 +110,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 
         public async Task<bool> CanSubmit(int quizId, CancellationToken token)
         {
-            if (await _context.CompletedQuizzes.AnyAsync(c => c.QuizId == quizId && c.Passed))
+            if (await _context.CompletedQuizzes.AnyAsync(c => c.QuizId == quizId && c.Passed, token))
                 return false;
 
             return true;

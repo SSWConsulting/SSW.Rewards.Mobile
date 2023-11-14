@@ -71,6 +71,7 @@ public class AchievementController : ApiControllerBase
     // TODO: Check whether we can make this authenticated
     public async Task<ActionResult> ClaimFormCompleted(ClaimFormCompletedAchievementCommand command)
     {
-        return Ok(await Mediator.Send(command));
+        await Mediator.Send(command);
+        return Ok();
     }
 }
