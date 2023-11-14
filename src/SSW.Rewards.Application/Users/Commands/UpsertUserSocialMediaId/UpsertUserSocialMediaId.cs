@@ -35,7 +35,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
         if (platform == null)
             throw new ArgumentException($"Social Media Platform not found");
 
-        int currentUserId = await this._userService.GetUserId(this._currentUserService.GetUserEmail());
+        int currentUserId = await this._userService.GetUserId(this._currentUserService.GetUserEmail(), cancellationToken);
         var record = await _context.UserSocialMediaIds
                                     .FirstOrDefaultAsync(x => 
                                                 x.UserId == currentUserId 

@@ -28,7 +28,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         {
             try
             {
-                userId = await _userService.GetUserId(userEmail);
+                userId = await _userService.GetUserId(userEmail, cancellationToken);
             }
             catch (Exception)
             {

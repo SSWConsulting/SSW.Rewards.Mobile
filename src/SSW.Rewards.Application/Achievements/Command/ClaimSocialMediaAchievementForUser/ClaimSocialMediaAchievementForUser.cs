@@ -28,7 +28,7 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
                                           .FirstOrDefaultAsync(cancellationToken);
         if (achievementId == null)
             return 0;
-        int currentUserId = await _userService.GetUserId(_currentUserService.GetUserEmail());
+        int currentUserId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
         var userAchievement = await _context.UserAchievements
                                             .Where(x => x.UserId == currentUserId && x.AchievementId == achievementId.Value)
                                             .FirstOrDefaultAsync(cancellationToken);
