@@ -30,7 +30,7 @@ public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
 
             // get the quiz Ids for the quizzes the user has completed so we can mark off 
             // the quizzes that they've already completed
-            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail());
+            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
             var userQuizzes = await _context.CompletedQuizzes
                                             .Where(q => q.UserId == userId)
                                             .Select(r => r.QuizId)

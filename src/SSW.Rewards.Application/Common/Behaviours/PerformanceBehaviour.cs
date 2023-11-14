@@ -44,7 +44,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
             {
                 try
                 {
-                    userId = await _userService.GetUserId(userEmail);
+                    userId = await _userService.GetUserId(userEmail, cancellationToken);
                 }
                 catch (Exception)
                 {
