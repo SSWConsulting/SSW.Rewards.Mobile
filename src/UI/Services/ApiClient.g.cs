@@ -6037,7 +6037,10 @@ namespace SSW.Rewards
         public bool? IsMultiScanEnabled { get; set; }
 
         [Newtonsoft.Json.JsonProperty("integrationId", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
         public string? IntegrationId { get; set; }
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
+
 
     }
 
@@ -6150,7 +6153,9 @@ namespace SSW.Rewards
         public string Email { get; set; }
 
         [Newtonsoft.Json.JsonProperty("integrationId", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
         public string? IntegrationId { get; set; }
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 
     }
 
