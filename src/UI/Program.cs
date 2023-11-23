@@ -74,7 +74,7 @@ public class Program
             config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
         });
 
-        string[] authScopes = builder.Configuration.GetSection("Local:Scopes").Get<string[]>();
+        string[] authScopes = builder.Configuration.GetSection("Local:Scopes").Get<string[]>() ?? Array.Empty<string>();
 
         builder.Services.AddOidcAuthentication(options =>
         {

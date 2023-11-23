@@ -15,6 +15,7 @@
         <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
         <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
         <MudTextField @bind-Value="@dto.Value" Label="Value" AutoFocus="true" />
+        <MudTextField @bind-Value="@dto.IntegrationId" Label="Integration ID" ReadOnly="true"/>
         <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
             @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
             {
@@ -83,7 +84,7 @@
                 "Deleting will prevent future users from claiming points for this achievement")
             ).Result;
 
-        if (!result.Cancelled && (bool) result.Data)
+        if (!result.Canceled && (bool) result.Data)
         {
             MudDialog?.Close(DialogResult.Ok(dto.Id));
         }

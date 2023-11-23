@@ -96,7 +96,7 @@
         var parameters = new DialogParameters { ["Dto"] = item };
         var dialog = DialogService.Show<AchievementEditDialog>("Edit an Achievement", parameters);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             if (result.Data is int id)
             {
@@ -135,7 +135,7 @@
     {
         var dialog = DialogService.Show<AddAchievementsDialog>("Create an Achievement", options);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             if (result.Data is AchievementAdminViewModel dto)
             {
@@ -159,7 +159,7 @@
         try
         {
             _loading = true;
-            await Task.Delay(250);
+            //await Task.Delay(250);
             _model = (await _client.AdminListAsync(true)).Achievements;
             _loading = false;
         }

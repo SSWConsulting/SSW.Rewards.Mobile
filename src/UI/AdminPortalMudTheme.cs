@@ -8,14 +8,14 @@ public static class AdminPortalMudTheme
     {
         Theme = new MudTheme()
         {
-            Palette = new Palette()
+            Palette = new PaletteLight()
             {
                 Primary = "#cc4141",
                 Secondary = "#333333",
                 AppbarBackground = "#cc4141",
                 Background = "#ffffffff",
             },
-            PaletteDark = new Palette()
+            PaletteDark = new PaletteDark()
             {
                 Primary = "#cc4141",
                 Black = "#27272f",

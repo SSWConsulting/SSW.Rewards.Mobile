@@ -54,13 +54,13 @@ else
             <MudCheckBox T="bool" 
                          Checked="_balanceRequired"
                          Label="+Points Balance Required"
-                         CheckedChanged="async (e) => { _balanceRequired = e; await LoadEligiblePlayers(); }"/>
+                         CheckedChanged="async (e) => { _balanceRequired = (bool)e!; await LoadEligiblePlayers(); }"/>
         </MudItem>
                 <MudItem>
                     <MudCheckBox T="bool" 
                                  Checked="_filterStaff"
                                  Label="Filter staff"
-                                 CheckedChanged="async (e) => { _filterStaff = e; await LoadEligiblePlayers(); }"/>
+                                 CheckedChanged="async (e) => { _filterStaff = (bool)e!; await LoadEligiblePlayers(); }"/>
                 </MudItem>
     </MudGrid>
     
@@ -84,7 +84,7 @@ else
                         <MudChip
                             Size="@(IsWinner(player.p) ? Size.Large : Size.Small)"
                             Variant="@(IsWinner(player.p) ? Variant.Filled : Variant.Text)"
-                            Icon="@(IsWinner(player.p) ? Icons.Filled.Celebration : null)"
+                            Icon="@(IsWinner(player.p) ? Icons.Material.Filled.Celebration : null)"
                             Color="@_colors[player.index % _colors.Length]">@(player.p.Name + (_balanceRequired ? $" ({player.p.Balance})" : string.Empty))</MudChip>
                     }   
                 }

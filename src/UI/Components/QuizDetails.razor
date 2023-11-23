@@ -45,7 +45,7 @@
                                     <MudText Style="display: inline-block; vertical-align: middle">@a.Text</MudText>
                                     @if (a.IsCorrect)
                                     {
-                                        <MudIcon Size="Size.Medium" Icon="@Icons.Filled.Check" Title="Correct" Class="ml-4" Style="vertical-align: middle" />
+                                        <MudIcon Size="Size.Medium" Icon="@Icons.Material.Filled.Check" Title="Correct" Class="ml-4" Style="vertical-align: middle" />
                                     }
                                 </MudListItem>
                                 <MudDivider />
@@ -73,7 +73,7 @@
         parameters.Add("Dto", q);
         var dialog = DialogService.Show<QuizQuestionDialog>("Create a quiz question", parameters, options);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             // Add the Reward
             if (result.Data is AdminQuizQuestionDto dto)

@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
-@using SSW.Rewards.Admin.UI.Components.Dialogs.Skills
 @using SSW.Rewards.Admin.UI.Components
 
 @attribute [Authorize]
@@ -79,7 +78,7 @@
     {
     var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
     var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             // Add the Skill
             if (result.Data is string skill)
@@ -123,7 +122,7 @@
                 "Deleting will remove this skill from all users")
             ).Result;
 
-        if (!result.Cancelled && (bool) result.Data)
+        if (!result.Canceled && (bool) result.Data)
         {
             await _client.DeleteSkillAsync(new DeleteSkillCommand
             {

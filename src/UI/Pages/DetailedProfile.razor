@@ -254,7 +254,7 @@
 
     private void ItemUpdated(MudItemDropInfo<StaffSkillDto> dropItem)
     {
-        if (!selected.Contains(dropItem.Item.Name))
+        if (dropItem.Item == null || !selected.Contains(dropItem.Item.Name))
         {
             return;
         }

@@ -93,7 +93,7 @@
     {
         var dialog = DialogService.Show<AddStaffProfileDialog>("Create a Staff Profile", options);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             // Add the Reward
             if (result.Data is StaffDto dto)

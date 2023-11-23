@@ -72,7 +72,7 @@
     {
         var dialog = DialogService.Show<NewNotificationDialog>("New Notification", options);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             // Add the Reward
             if (result.Data is RequestNotificationCommand dto)

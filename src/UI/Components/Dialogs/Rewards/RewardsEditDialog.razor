@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Components
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Models.Interfaces
+@using MudBlazor
 
 @inject ILeaderboardClient Client
 @inject IDialogService DialogService
@@ -67,7 +68,7 @@
                 "Deleting will prevent future users from claiming points for this reward")
             ).Result;
 
-        if (!result.Cancelled && (bool) result.Data)
+        if (!result.Canceled && (bool) result.Data)
         {
             MudDialog?.Close(DialogResult.Ok(Dto.Id));
         }
