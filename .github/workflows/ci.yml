@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: 
+    branches:
       - main
     paths-ignore:
       - .github/settings.yml
@@ -15,31 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-    
-    - name: Restore
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-    
-    - name: Test
-      run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
-    
-    - name: Check file existence
-      id: check_files
-      if: success() || failure()
-      uses: andstor/file-existence-action@v1
-      with:
-        files: "test-results.trx"
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
 
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: steps.check_files.outputs.files_exists == 'true'
-      with:
-        name: Tests Results
-        path: test-results.trx
-        reporter: dotnet-trx
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+      - name: Check file existence
+        id: check_files
+        if: success() || failure()
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "test-results.trx"
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: steps.check_files.outputs.files_exists == 'true'
+        with:
+          name: Tests Results
+          path: test-results.trx
+          reporter: dotnet-trx
