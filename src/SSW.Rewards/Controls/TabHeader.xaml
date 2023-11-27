@@ -4,9 +4,28 @@
              xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
              x:Class="SSW.Rewards.Mobile.Controls.TabHeader">
     <Grid 
-        ColumnDefinitions="Auto, *, Auto"
+        ColumnDefinitions="*, *, *, *"
         HeightRequest="35"
         Margin="0,20">
+        <VerticalStackLayout Spacing="6" Grid.Column="0">
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Week}"/>
+            </VerticalStackLayout.GestureRecognizers>
+            <Label TextColor="{StaticResource MutedText}"
+                   FontSize="20"
+                   HorizontalTextAlignment="Start"
+                   VerticalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   FontAutoScalingEnabled="False"
+                   LineBreakMode="TailTruncation"
+                   Text="Week"
+                   x:Name="WeekRadio"
+                   ClassId="WeekRadio"/>
+            <BoxView Color="{StaticResource primary}"
+                     HorizontalOptions="FillAndExpand"
+                     x:Name="WeekUnderline"/>
+        </VerticalStackLayout>
+
         <VerticalStackLayout Spacing="6" Grid.Column="0">
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Month}"/>
@@ -18,7 +37,7 @@
                    VerticalOptions="Center"
                    FontAutoScalingEnabled="False"
                    LineBreakMode="TailTruncation"
-                   Text="This Month"
+                   Text="Month"
                    x:Name="MonthRadio"
                    ClassId="MonthRadio"/>
             <BoxView Color="{StaticResource primary}"
@@ -37,7 +56,7 @@
                    VerticalOptions="Center"
                    FontAutoScalingEnabled="False"
                    LineBreakMode="TailTruncation"
-                   Text="This Year"
+                   Text="Year"
                    x:Name="YearRadio"
                    ClassId="YearRadio"/>
             <BoxView Color="{StaticResource primary}"

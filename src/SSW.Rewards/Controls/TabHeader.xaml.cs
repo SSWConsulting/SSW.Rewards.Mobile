@@ -60,6 +60,7 @@ public partial class TabHeader
         switch (CurrentPeriod)
         {
             case PeriodFilter.Month:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = _underlineThickness;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = 0;
@@ -68,6 +69,7 @@ public partial class TabHeader
                 AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
             case PeriodFilter.Year:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = _underlineThickness;
                 AllUnderline.HeightRequest = 0;
@@ -76,13 +78,23 @@ public partial class TabHeader
                 AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
             case PeriodFilter.AllTime:
-            default:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = _underlineThickness;
                 YearRadio.TextColor = _unselectedTextColor;
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _selectedTextColor;
+                break;
+            case PeriodFilter.Week:
+            default:
+                WeekUnderline.HeightRequest = _underlineThickness;
+                MonthUnderline.HeightRequest = 0;
+                YearUnderline.HeightRequest = 0;
+                AllUnderline.HeightRequest = 0;
+                YearRadio.TextColor = _unselectedTextColor;
+                MonthRadio.TextColor = _selectedTextColor;
+                AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
         }
         OnPropertyChanged(nameof(CurrentPeriod));
@@ -92,6 +104,7 @@ public partial class TabHeader
 
 public enum PeriodFilter
 {
+    Week,
     Month,
     Year,
     AllTime
