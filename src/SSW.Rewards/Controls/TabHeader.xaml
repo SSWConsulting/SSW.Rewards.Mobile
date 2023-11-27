@@ -13,7 +13,7 @@
             </VerticalStackLayout.GestureRecognizers>
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
-                   HorizontalTextAlignment="Start"
+                   HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    FontAutoScalingEnabled="False"
@@ -26,13 +26,13 @@
                      x:Name="WeekUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout Spacing="6" Grid.Column="0">
+        <VerticalStackLayout Spacing="6" Grid.Column="1">
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Month}"/>
             </VerticalStackLayout.GestureRecognizers>
             <Label TextColor="{StaticResource MutedText}"
                    FontSize="20"
-                   HorizontalTextAlignment="Start"
+                   HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center"
                    VerticalOptions="Center"
                    FontAutoScalingEnabled="False"
@@ -45,7 +45,7 @@
                      x:Name="MonthUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout Spacing="6" Grid.Column="1">
+        <VerticalStackLayout Spacing="6" Grid.Column="2">
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.Year}"/>
             </VerticalStackLayout.GestureRecognizers>
@@ -65,7 +65,7 @@
                      x:Name="YearUnderline"/>
         </VerticalStackLayout>
 
-        <VerticalStackLayout Spacing="6" Grid.Column="2">
+        <VerticalStackLayout Spacing="6" Grid.Column="3">
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Item_Tapped" CommandParameter="{x:Static local:PeriodFilter.AllTime}"/>
             </VerticalStackLayout.GestureRecognizers>
