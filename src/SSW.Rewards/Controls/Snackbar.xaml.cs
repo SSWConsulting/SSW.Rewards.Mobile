@@ -67,13 +67,13 @@ namespace SSW.Rewards.Mobile.Controls
         {
             await Task.Delay(5000);
 
-            if (!_isDismissed)
-            {
+            //if (!_isDismissed)
+            //{
                 this.Close();
-            }
+            //}
         }
 
-        protected override Task OnDismissedByTappingOutsideOfPopup()
+        protected override Task OnDismissedByTappingOutsideOfPopup(CancellationToken token = default)
         {
             _isDismissed = true;
 
@@ -87,7 +87,7 @@ namespace SSW.Rewards.Mobile.Controls
                 this.Close();
             });
 #else
-            return base.OnDismissedByTappingOutsideOfPopup();
+            return base.OnDismissedByTappingOutsideOfPopup(token);
 #endif
         }
     }

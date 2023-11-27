@@ -13,7 +13,7 @@ public partial class TabHeader
         nameof(CurrentPeriod),
         typeof(PeriodFilter),
         typeof(TabHeader),
-        PeriodFilter.Month);
+        PeriodFilter.Week);
 
     public static readonly BindableProperty FilterChangedProperty = BindableProperty.Create(
         nameof(FilterChanged),
@@ -24,7 +24,8 @@ public partial class TabHeader
     {
         InitializeComponent();
 
-        MonthUnderline.HeightRequest = _underlineThickness;
+        WeekUnderline.HeightRequest = _underlineThickness;
+        MonthUnderline.HeightRequest = 0;
         YearUnderline.HeightRequest = 0;
         AllUnderline.HeightRequest = 0;
 
@@ -33,7 +34,7 @@ public partial class TabHeader
         _selectedTextColor = (Color)dict["primary"];
         _unselectedTextColor = (Color)dict["MutedText"];
 
-        MonthRadio.TextColor = _selectedTextColor;
+        WeekRadio.TextColor = _selectedTextColor;
     }
 
     public PeriodFilter CurrentPeriod
@@ -60,29 +61,45 @@ public partial class TabHeader
         switch (CurrentPeriod)
         {
             case PeriodFilter.Month:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = _underlineThickness;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = 0;
                 YearRadio.TextColor = _unselectedTextColor;
                 MonthRadio.TextColor = _selectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
+                WeekRadio.TextColor = _unselectedTextColor;
                 break;
             case PeriodFilter.Year:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = _underlineThickness;
                 AllUnderline.HeightRequest = 0;
                 YearRadio.TextColor = _selectedTextColor;
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _unselectedTextColor;
+                WeekRadio.TextColor = _unselectedTextColor;
                 break;
             case PeriodFilter.AllTime:
-            default:
+                WeekUnderline.HeightRequest = 0;
                 MonthUnderline.HeightRequest = 0;
                 YearUnderline.HeightRequest = 0;
                 AllUnderline.HeightRequest = _underlineThickness;
                 YearRadio.TextColor = _unselectedTextColor;
                 MonthRadio.TextColor = _unselectedTextColor;
                 AlltimeRadio.TextColor = _selectedTextColor;
+                WeekRadio.TextColor = _unselectedTextColor;
+                break;
+            case PeriodFilter.Week:
+            default:
+                WeekUnderline.HeightRequest = _underlineThickness;
+                MonthUnderline.HeightRequest = 0;
+                YearUnderline.HeightRequest = 0;
+                AllUnderline.HeightRequest = 0;
+                YearRadio.TextColor = _unselectedTextColor;
+                WeekRadio.TextColor = _selectedTextColor;
+                MonthRadio.TextColor = _unselectedTextColor;
+                AlltimeRadio.TextColor = _unselectedTextColor;
                 break;
         }
         OnPropertyChanged(nameof(CurrentPeriod));
@@ -92,6 +109,7 @@ public partial class TabHeader
 
 public enum PeriodFilter
 {
+    Week,
     Month,
     Year,
     AllTime

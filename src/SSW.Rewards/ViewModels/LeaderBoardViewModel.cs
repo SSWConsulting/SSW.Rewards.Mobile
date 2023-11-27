@@ -72,7 +72,7 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             await LoadLeaderboard();
             _loaded = true;
 
-            await FilterAndSortLeaders(Leaders, PeriodFilter.Month);
+            await FilterAndSortLeaders(Leaders, PeriodFilter.Week);
 
             IsRunning = false;
             RaisePropertyChanged(nameof(IsRunning));
@@ -140,8 +140,11 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
                 sortKeySelector = l => l.PointsThisYear;
                 break;
             case PeriodFilter.AllTime:
-            default:
                 sortKeySelector = l => l.TotalPoints;
+                break;
+            case PeriodFilter.Week:
+            default:
+                sortKeySelector = l => l.PointsThisWeek;
                 break;
         }
 

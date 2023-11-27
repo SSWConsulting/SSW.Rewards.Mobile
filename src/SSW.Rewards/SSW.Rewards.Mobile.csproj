@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
@@ -32,14 +32,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignProvision>Automatic</CodesignProvision>
-	  <CodesignKey>iPhone Developer</CodesignKey>
+		<CreatePackage>false</CreatePackage>
+		<CodesignProvision>Automatic</CodesignProvision>
+		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignProvision>Automatic</CodesignProvision>
-	  <CodesignKey>iPhone Developer</CodesignKey>
+		<CreatePackage>false</CreatePackage>
+		<CodesignProvision>Automatic</CodesignProvision>
+		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
@@ -95,24 +95,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
-	    <DependentUpon>MyProfilePage.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
+			<DependentUpon>MyProfilePage.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
 	<ItemGroup>
-	  <MauiXaml Update="Controls\TabHeader.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Controls\TabHeader.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 	<!--https://github.com/dotnet/maui/issues/16514-->
 	<PropertyGroup>
-	   <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
+		<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-	  <CodesignKey>Apple Development: Matthew Goldman (9Y556HJK25)</CodesignKey>
-	  <CodesignProvision>Rewards Dev (Matt + Anton)</CodesignProvision>
+		<CodesignKey>Apple Development: Matthew Goldman (9Y556HJK25)</CodesignKey>
+		<CodesignProvision>Rewards Dev (Matt + Anton)</CodesignProvision>
 	</PropertyGroup>
 </Project>
