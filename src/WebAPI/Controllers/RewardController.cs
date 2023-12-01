@@ -9,6 +9,7 @@ using SSW.Rewards.Application.Rewards.Queries.Common;
 using SSW.Rewards.Application.Rewards.Queries.GetOnboardingRewards;
 using SSW.Rewards.Application.Rewards.Queries.GetRecentRewards;
 using SSW.Rewards.Application.Rewards.Queries.GetRewardAdminList;
+using SSW.Rewards.Application.Rewards.Queries.SearchRewards;
 using SSW.Rewards.WebAPI.Authorisation;
 
 namespace SSW.Rewards.WebAPI.Controllers;
@@ -26,6 +27,12 @@ public class RewardController : ApiControllerBase
     public async Task<ActionResult<RewardListViewModel>> List()
     {
         return Ok(await Mediator.Send(new GetRewardListQuery()));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<RewardListViewModel>> Search([FromQuery] string searchTerm)
+    {
+        return Ok(await Mediator.Send(new SearchRewardsQuery { SearchTerm = searchTerm }));
     }
 
     [HttpGet]

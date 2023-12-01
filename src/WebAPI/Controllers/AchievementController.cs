@@ -8,6 +8,7 @@ using SSW.Rewards.Application.Achievements.Command.UpdateAchievement;
 using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
+using SSW.Rewards.Application.Achievements.Queries.SearchAchievements;
 using SSW.Rewards.WebAPI.Authorisation;
 
 namespace SSW.Rewards.WebAPI.Controllers;
@@ -19,6 +20,12 @@ public class AchievementController : ApiControllerBase
     public async Task<ActionResult<AchievementListViewModel>> List()
     {
         return Ok(await Mediator.Send(new GetAchievementListQuery()));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<AchievementListViewModel>> Search([FromQuery] string searchTerm)
+    {
+        return Ok(await Mediator.Send(new SearchAchievementQuery { SearchTerm = searchTerm }));
     }
 
     [Authorize(Roles = AuthorizationRoles.Admin)]
