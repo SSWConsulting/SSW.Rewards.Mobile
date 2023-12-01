@@ -4,6 +4,7 @@
 
 @attribute [Authorize]
 
+@inject IAchievementClient AchievementClient
 @inject ILeaderboardClient LeaderboardClient
 @inject IRewardClient RewardClient
 @inject ISnackbar SnackBar
@@ -18,21 +19,16 @@ else
 {
     <MudGrid Spacing="2">
         <MudItem>
-            <MudSelect
-                T="RewardViewModel"
-                @bind-Value="@_selectedReward"
-                Label="Reward"
+            <MudAutocomplete
+                T="AchievementDto"
+                @bind-Value="@_selectedAchievement"
                 Variant="Variant.Filled"
+                Label="Required Achievement"
                 AnchorOrigin="Origin.BottomCenter"
-                SelectedValuesChanged="@(async (e) => await LoadEligiblePlayers())">
-                @if (_rewards is not null)
-                {
-                    @foreach (var reward in _rewards)
-                    {
-                        <MudSelectItem Value="@reward">@($"{reward.Name} - {reward.Cost}pts ({reward.RewardType})")</MudSelectItem>
-                    }    
-                }
-            </MudSelect>
+                SearchFuncWithCancel="@SearchAchivements"
+                ShowProgressIndicator="true"
+                ToStringFunc="@GetAchievementName"
+            />
         </MudItem>
 
         <MudItem>
@@ -42,8 +38,7 @@ else
                 @bind-Value="@_filter"
                 Label="Players with Points Since"
                 Variant="Variant.Filled"
-                AnchorOrigin="Origin.BottomCenter"
-                SelectedValuesChanged="@(async (e) => await LoadEligiblePlayers())">
+                AnchorOrigin="Origin.BottomCenter">
                 @foreach (var when in Enum.GetValues<LeaderboardFilter>())
                 {
                     <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
@@ -51,17 +46,20 @@ else
             </MudSelect>
         </MudItem>
         <MudItem>
-            <MudCheckBox T="bool" 
-                         Checked="_balanceRequired"
-                         Label="+Points Balance Required"
-                         CheckedChanged="async (e) => { _balanceRequired = (bool)e!; await LoadEligiblePlayers(); }"/>
+            <MudCheckBox T="bool"
+                         Checked="_filterStaff"
+                         Label="Filter staff"
+                         CheckedChanged="(e) => _filterStaff = (bool)e!"/>
         </MudItem>
-                <MudItem>
-                    <MudCheckBox T="bool" 
-                                 Checked="_filterStaff"
-                                 Label="Filter staff"
-                                 CheckedChanged="async (e) => { _filterStaff = (bool)e!; await LoadEligiblePlayers(); }"/>
-                </MudItem>
+        <MudItem>
+            <MudButton
+                OnClick="@(async () => await LoadEligiblePlayers())"
+                Variant="Variant.Filled"
+                StartIcon="@Icons.Material.Filled.Search"
+                Color="Color.Primary">
+                Get eligible winners
+            </MudButton>
+        </MudItem>
     </MudGrid>
     
     <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
@@ -85,7 +83,7 @@ else
                             Size="@(IsWinner(player.p) ? Size.Large : Size.Small)"
                             Variant="@(IsWinner(player.p) ? Variant.Filled : Variant.Text)"
                             Icon="@(IsWinner(player.p) ? Icons.Material.Filled.Celebration : null)"
-                            Color="@_colors[player.index % _colors.Length]">@(player.p.Name + (_balanceRequired ? $" ({player.p.Balance})" : string.Empty))</MudChip>
+                            Color="@_colors[player.index % _colors.Length]">@(player.p.Name)</MudChip>
                     }   
                 }
             </MudChipSet>
@@ -157,38 +155,28 @@ else
 
     private static int PrizeDrawSuspenseDelay => 2500;
     
-    private bool _loading = true;
+    private bool _loading = false;
     private bool _isDrawingPrize = false;
     
-    private List<EligibleUserViewModel>? _players = new();
+    private List<EligibleUserDto>? _players = new();
     private IEnumerable<RewardViewModel>? _rewards = Enumerable.Empty<RewardViewModel>();
-    RewardViewModel? _selectedReward;
+    private List<AchievementDto>? _achievements = new();
+    AchievementDto? _selectedAchievement;
     string? _selectedRewardCode;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
-    private bool _balanceRequired;
     private bool _filterStaff = true;
-    private EligibleUserViewModel? _prizeWinner;
+    private EligibleUserDto? _prizeWinner;
     
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await LoadRewards();
     }
 
-    private async Task LoadRewards()
+    private async Task<IEnumerable<AchievementDto>> SearchAchivements(string value, CancellationToken cancellationToken)
     {
-        try
-        {
-            _loading = true;
-            Reset();
-            _rewards = (await RewardClient.ListAsync(CancellationToken.None))?.Rewards ?? new List<RewardViewModel>();
-            _selectedReward ??= _rewards.FirstOrDefault();
-            _loading = false;
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
+        var achievements = await AchievementClient.SearchAsync(value, cancellationToken);
+
+        return achievements.Achievements;
     }
 
     private async Task LoadEligiblePlayers()
@@ -197,9 +185,9 @@ else
         {
             _loading = true;
             Reset();
-            var eligibleUsersVm = await LeaderboardClient.GetEligibleUsersAsync(_selectedReward?.Id, _filter, _balanceRequired, _filterStaff, CancellationToken.None);
-            _selectedRewardCode = eligibleUsersVm?.RewardCode;
-            _players = eligibleUsersVm?.EligibleUsers?.ToList() ?? new List<EligibleUserViewModel>();
+            var eligibleUsersVm = await LeaderboardClient.GetEligibleUsersAsync(_selectedAchievement?.Id, _filter, _filterStaff, CancellationToken.None);
+            
+            _players = eligibleUsersVm?.EligibleUsers?.ToList() ?? new List<EligibleUserDto>();
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -218,7 +206,7 @@ else
         _isDrawingPrize = false;
     }
 
-    private bool IsWinner(EligibleUserViewModel? player) 
+    private bool IsWinner(EligibleUserDto? player) 
     {
         if (player == null || _prizeWinner == null)
         {
@@ -233,7 +221,7 @@ else
         _selectedRewardCode = null;
     }
 
-    private async Task ClaimPrizeForWinner(EligibleUserViewModel winner)
+    private async Task ClaimPrizeForWinner(EligibleUserDto winner)
     {
         var result = await RewardClient.ClaimForUserAsync(new ClaimRewardForUserCommand
         {
@@ -249,6 +237,11 @@ else
         {
             SnackBar.Add($"Could not claim reward!\n\n{result.Status}", Severity.Error);
         }
+    }
+
+    private string GetAchievementName(AchievementDto? achievement)
+    {
+        return achievement?.Name ?? string.Empty;
     }
 
 }
