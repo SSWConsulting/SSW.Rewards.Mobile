@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
+﻿using System.Text;
+using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -24,12 +25,16 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
 
     public async Task<AchievementAdminViewModel> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
     {
+        var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
+        var code = Convert.ToBase64String(codeData);
+
         var achievement = new Achievement
         {
             Name                = request.Name,
             Value               = request.Value,
             Type                = request.Type,
-            IsMultiscanEnabled  = request.IsMultiscanEnabled
+            IsMultiscanEnabled  = request.IsMultiscanEnabled,
+            Code                = code
         };
 
         _context.Achievements.Add(achievement);
