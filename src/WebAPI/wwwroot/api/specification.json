@@ -66,6 +66,42 @@
         ]
       }
     },
+    "/api/Achievement/Users": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Users",
+        "parameters": [
+          {
+            "name": "achievementId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementUsersViewModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Achievement/AdminList": {
       "get": {
         "tags": [
@@ -1994,6 +2030,41 @@
           2,
           3
         ]
+      },
+      "AchievementUsersViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "achievementName": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementUserDto"
+            }
+          }
+        }
+      },
+      "AchievementUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "awardedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "AchievementAdminListViewModel": {
         "type": "object",

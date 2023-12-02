@@ -18,6 +18,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IAchievementClient {
     list(): Observable<AchievementListViewModel>;
     search(searchTerm: string | undefined): Observable<AchievementListViewModel>;
+    users(achievementId: number | undefined): Observable<AchievementUsersViewModel>;
     adminList(includeArchived: boolean | undefined): Observable<AchievementAdminListViewModel>;
     create(command: CreateAchievementCommand): Observable<AchievementAdminViewModel>;
     claimForUser(command: ClaimAchievementForUserCommand): Observable<ClaimAchievementResult>;
@@ -130,6 +131,58 @@ export class AchievementClient implements IAchievementClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = AchievementListViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    users(achievementId: number | undefined): Observable<AchievementUsersViewModel> {
+        let url_ = this.baseUrl + "/api/Achievement/Users?";
+        if (achievementId === null)
+            throw new Error("The parameter 'achievementId' cannot be null.");
+        else if (achievementId !== undefined)
+            url_ += "achievementId=" + encodeURIComponent("" + achievementId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AchievementUsersViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AchievementUsersViewModel>;
+        }));
+    }
+
+    protected processUsers(response: HttpResponseBase): Observable<AchievementUsersViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AchievementUsersViewModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3294,6 +3347,102 @@ export enum AchievementType {
     Attended = 1,
     Completed = 2,
     Linked = 3,
+}
+
+export class AchievementUsersViewModel implements IAchievementUsersViewModel {
+    achievementName?: string;
+    users?: AchievementUserDto[];
+
+    constructor(data?: IAchievementUsersViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.achievementName = _data["achievementName"];
+            if (Array.isArray(_data["users"])) {
+                this.users = [] as any;
+                for (let item of _data["users"])
+                    this.users!.push(AchievementUserDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AchievementUsersViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new AchievementUsersViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["achievementName"] = this.achievementName;
+        if (Array.isArray(this.users)) {
+            data["users"] = [];
+            for (let item of this.users)
+                data["users"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAchievementUsersViewModel {
+    achievementName?: string;
+    users?: AchievementUserDto[];
+}
+
+export class AchievementUserDto implements IAchievementUserDto {
+    userId?: number;
+    userName?: string;
+    userEmail?: string;
+    awardedAtUtc?: Date;
+
+    constructor(data?: IAchievementUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+            this.userEmail = _data["userEmail"];
+            this.awardedAtUtc = _data["awardedAtUtc"] ? new Date(_data["awardedAtUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AchievementUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AchievementUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        data["userEmail"] = this.userEmail;
+        data["awardedAtUtc"] = this.awardedAtUtc ? this.awardedAtUtc.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAchievementUserDto {
+    userId?: number;
+    userName?: string;
+    userEmail?: string;
+    awardedAtUtc?: Date;
 }
 
 export class AchievementAdminListViewModel implements IAchievementAdminListViewModel {
