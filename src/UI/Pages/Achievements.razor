@@ -11,6 +11,7 @@
 @inject IAchievementClient _client
 @inject IDialogService DialogService
 @inject ISnackbar SnackBar
+@inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h2">Achievements</MudText>
 <MudText Typo="Typo.body1">All achievevements available for scanning</MudText>
@@ -127,6 +128,10 @@
                 });
                 SnackBar.Add($"Achievement claimed", Severity.Success);
             }
+            else if (result.Data is ViewUsers view)
+            {
+                NavigationManager.NavigateTo($"/achivementusers/{view.AchievementId}");
+            }
             await GetAchievements();
         }
     }
@@ -135,6 +140,9 @@
     {
         var dialog = DialogService.Show<AddAchievementsDialog>("Create an Achievement", options);
         var result = await dialog.Result;
+        
+        Console.WriteLine("Got dialog data");
+        
         if (!result.Canceled)
         {
             if (result.Data is AchievementAdminViewModel dto)
@@ -151,6 +159,10 @@
                 SnackBar.Add($"Achievement: '{dto.Name}' saved", Severity.Success);
             }
             await GetAchievements();
+        }
+        else
+        {
+            Console.WriteLine("Dialog was cancelled");
         }
     }
 

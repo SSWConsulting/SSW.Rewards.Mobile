@@ -42,6 +42,7 @@
         <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton OnClick="ClaimAchievement" Color="Color.Info">Claim Achievement for User</MudButton>
+        <MudButton OnClick="ViewUsers">View users</MudButton>
         <MudButton 
             Variant="Variant.Filled"
             Color="Color.Primary"
@@ -101,6 +102,14 @@
         {
             Code = dto.Code,
             Id = _selectedValue.UserId
+        }));
+    }
+
+    private void ViewUsers()
+    {
+        MudDialog?.Close(DialogResult.Ok(new ViewUsers
+        {
+            AchievementId = dto.Id
         }));
     }
 }
