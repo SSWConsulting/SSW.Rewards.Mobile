@@ -16,7 +16,7 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
 
 - Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
-- [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos)
+- [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
 - [ngrok](https://ngrok.com/) (Api and Mobile communication)
 ****
 
