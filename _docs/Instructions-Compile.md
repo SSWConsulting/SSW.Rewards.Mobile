@@ -2,7 +2,6 @@
 
 **TODO** VS for Mac is EOL - Look into VS Code development method (C# + Maui Extensions)
 **TODO** Find Azurite seed data for the API (Tylah might be blind)
-**TODO** Update iOS instructions
 
 ### Required Tools
 
@@ -62,7 +61,7 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
       **Figure: ngrok https address**
 5. Run / press f5
 
-### Mobile App iOS (Mac Only)
+### Mobile App iOS (Mac Only, iOS Emulator)
 1. Get the source code
    1.  `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
 2. Set build target (either connected iOS device or emulator)
@@ -76,6 +75,9 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
 - these should be automatic by default but if you get an error you can manually set them.
 - if you don't have these, talk to another Team Member or Sys Admin and get them to add your appleID to the Superior Software for Windows Pty Ltd
   Apple Developer Program Team)
+
+### Setting up for Apple Development (on your own phone)
+If you want to set up to deploy to your own iPhone, talk to an App Manager (it's hard :))!
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
 
