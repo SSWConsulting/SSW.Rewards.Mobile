@@ -31,6 +31,77 @@
         ]
       }
     },
+    "/api/Achievement/Search": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Search",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementListViewModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Achievement/Users": {
+      "get": {
+        "tags": [
+          "Achievement"
+        ],
+        "operationId": "Achievement_Users",
+        "parameters": [
+          {
+            "name": "achievementId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementUsersViewModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Achievement/AdminList": {
       "get": {
         "tags": [
@@ -382,7 +453,7 @@
         "operationId": "Leaderboard_GetEligibleUsers",
         "parameters": [
           {
-            "name": "rewardId",
+            "name": "achievementId",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -399,20 +470,12 @@
             "x-position": 2
           },
           {
-            "name": "balanceRequired",
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            },
-            "x-position": 3
-          },
-          {
             "name": "filterStaff",
             "in": "query",
             "schema": {
               "type": "boolean"
             },
-            "x-position": 4
+            "x-position": 3
           }
         ],
         "responses": {
@@ -854,6 +917,41 @@
           "Reward"
         ],
         "operationId": "Reward_List",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardListViewModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Reward/Search": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "operationId": "Reward_Search",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1933,6 +2031,41 @@
           3
         ]
       },
+      "AchievementUsersViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "achievementName": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementUserDto"
+            }
+          }
+        }
+      },
+      "AchievementUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "awardedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "AchievementAdminListViewModel": {
         "type": "object",
         "additionalProperties": false,
@@ -2184,23 +2317,22 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "rewardId": {
+          "achievementId": {
             "type": "integer",
             "format": "int32"
           },
-          "rewardCode": {
-            "type": "string",
-            "nullable": true
+          "achievementName": {
+            "type": "string"
           },
           "eligibleUsers": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EligibleUserViewModel"
+              "$ref": "#/components/schemas/EligibleUserDto"
             }
           }
         }
       },
-      "EligibleUserViewModel": {
+      "EligibleUserDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

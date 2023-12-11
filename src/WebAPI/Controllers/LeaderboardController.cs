@@ -2,7 +2,6 @@
 using SSW.Rewards.Application.Leaderboard.Queries.Common;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.PrizeDraw.Queries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -15,14 +14,14 @@ public class LeaderboardController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers(int rewardId, LeaderboardFilter filter, bool balanceRequired, bool filterStaff)
+    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromQuery] int achievementId, LeaderboardFilter filter, bool filterStaff)
     {
-        return Ok(await Mediator.Send(new GetEligibleUsers() 
+        var getEligibleUsers = new GetEligibleUsers
         {
-            RewardId = rewardId, 
+            AchievementId = achievementId,
             Filter = filter,
-            BalanceRequired = balanceRequired,
             FilterStaff = filterStaff
-        }));
+        };
+        return Ok(await Mediator.Send(getEligibleUsers));
     }
 }

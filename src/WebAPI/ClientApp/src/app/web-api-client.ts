@@ -17,6 +17,8 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IAchievementClient {
     list(): Observable<AchievementListViewModel>;
+    search(searchTerm: string | undefined): Observable<AchievementListViewModel>;
+    users(achievementId: number | undefined): Observable<AchievementUsersViewModel>;
     adminList(includeArchived: boolean | undefined): Observable<AchievementAdminListViewModel>;
     create(command: CreateAchievementCommand): Observable<AchievementAdminViewModel>;
     claimForUser(command: ClaimAchievementForUserCommand): Observable<ClaimAchievementResult>;
@@ -77,6 +79,110 @@ export class AchievementClient implements IAchievementClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = AchievementListViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(searchTerm: string | undefined): Observable<AchievementListViewModel> {
+        let url_ = this.baseUrl + "/api/Achievement/Search?";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AchievementListViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AchievementListViewModel>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<AchievementListViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AchievementListViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    users(achievementId: number | undefined): Observable<AchievementUsersViewModel> {
+        let url_ = this.baseUrl + "/api/Achievement/Users?";
+        if (achievementId === null)
+            throw new Error("The parameter 'achievementId' cannot be null.");
+        else if (achievementId !== undefined)
+            url_ += "achievementId=" + encodeURIComponent("" + achievementId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUsers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUsers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AchievementUsersViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AchievementUsersViewModel>;
+        }));
+    }
+
+    protected processUsers(response: HttpResponseBase): Observable<AchievementUsersViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AchievementUsersViewModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -589,7 +695,7 @@ export class AdminTestClient implements IAdminTestClient {
 
 export interface ILeaderboardClient {
     get(): Observable<LeaderboardListViewModel>;
-    getEligibleUsers(rewardId: number | undefined, filter: LeaderboardFilter | undefined, balanceRequired: boolean | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel>;
+    getEligibleUsers(achievementId: number | undefined, filter: LeaderboardFilter | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel>;
 }
 
 @Injectable({
@@ -653,20 +759,16 @@ export class LeaderboardClient implements ILeaderboardClient {
         return _observableOf(null as any);
     }
 
-    getEligibleUsers(rewardId: number | undefined, filter: LeaderboardFilter | undefined, balanceRequired: boolean | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel> {
+    getEligibleUsers(achievementId: number | undefined, filter: LeaderboardFilter | undefined, filterStaff: boolean | undefined): Observable<EligibleUsersViewModel> {
         let url_ = this.baseUrl + "/api/Leaderboard/GetEligibleUsers?";
-        if (rewardId === null)
-            throw new Error("The parameter 'rewardId' cannot be null.");
-        else if (rewardId !== undefined)
-            url_ += "rewardId=" + encodeURIComponent("" + rewardId) + "&";
+        if (achievementId === null)
+            throw new Error("The parameter 'achievementId' cannot be null.");
+        else if (achievementId !== undefined)
+            url_ += "achievementId=" + encodeURIComponent("" + achievementId) + "&";
         if (filter === null)
             throw new Error("The parameter 'filter' cannot be null.");
         else if (filter !== undefined)
             url_ += "filter=" + encodeURIComponent("" + filter) + "&";
-        if (balanceRequired === null)
-            throw new Error("The parameter 'balanceRequired' cannot be null.");
-        else if (balanceRequired !== undefined)
-            url_ += "balanceRequired=" + encodeURIComponent("" + balanceRequired) + "&";
         if (filterStaff === null)
             throw new Error("The parameter 'filterStaff' cannot be null.");
         else if (filterStaff !== undefined)
@@ -1360,6 +1462,7 @@ export class QuizzesClient implements IQuizzesClient {
 export interface IRewardClient {
     getOnboardingRewards(): Observable<RewardListViewModel>;
     list(): Observable<RewardListViewModel>;
+    search(searchTerm: string | undefined): Observable<RewardListViewModel>;
     adminList(): Observable<RewardAdminListViewModel>;
     getRecent(query: GetRecentRewardsQuery): Observable<RecentRewardListViewModel>;
     add(addRewardCommand: AddRewardCommand): Observable<number>;
@@ -1457,6 +1560,58 @@ export class RewardClient implements IRewardClient {
     }
 
     protected processList(response: HttpResponseBase): Observable<RewardListViewModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RewardListViewModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(searchTerm: string | undefined): Observable<RewardListViewModel> {
+        let url_ = this.baseUrl + "/api/Reward/Search?";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<RewardListViewModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<RewardListViewModel>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<RewardListViewModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3194,6 +3349,102 @@ export enum AchievementType {
     Linked = 3,
 }
 
+export class AchievementUsersViewModel implements IAchievementUsersViewModel {
+    achievementName?: string;
+    users?: AchievementUserDto[];
+
+    constructor(data?: IAchievementUsersViewModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.achievementName = _data["achievementName"];
+            if (Array.isArray(_data["users"])) {
+                this.users = [] as any;
+                for (let item of _data["users"])
+                    this.users!.push(AchievementUserDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AchievementUsersViewModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new AchievementUsersViewModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["achievementName"] = this.achievementName;
+        if (Array.isArray(this.users)) {
+            data["users"] = [];
+            for (let item of this.users)
+                data["users"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAchievementUsersViewModel {
+    achievementName?: string;
+    users?: AchievementUserDto[];
+}
+
+export class AchievementUserDto implements IAchievementUserDto {
+    userId?: number;
+    userName?: string;
+    userEmail?: string;
+    awardedAtUtc?: Date;
+
+    constructor(data?: IAchievementUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+            this.userEmail = _data["userEmail"];
+            this.awardedAtUtc = _data["awardedAtUtc"] ? new Date(_data["awardedAtUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AchievementUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AchievementUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        data["userEmail"] = this.userEmail;
+        data["awardedAtUtc"] = this.awardedAtUtc ? this.awardedAtUtc.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAchievementUserDto {
+    userId?: number;
+    userName?: string;
+    userEmail?: string;
+    awardedAtUtc?: Date;
+}
+
 export class AchievementAdminListViewModel implements IAchievementAdminListViewModel {
     achievements?: AchievementAdminViewModel[];
 
@@ -3730,9 +3981,9 @@ export interface ILeaderboardUserDto {
 }
 
 export class EligibleUsersViewModel implements IEligibleUsersViewModel {
-    rewardId?: number;
-    rewardCode?: string | undefined;
-    eligibleUsers?: EligibleUserViewModel[];
+    achievementId?: number;
+    achievementName?: string;
+    eligibleUsers?: EligibleUserDto[];
 
     constructor(data?: IEligibleUsersViewModel) {
         if (data) {
@@ -3745,12 +3996,12 @@ export class EligibleUsersViewModel implements IEligibleUsersViewModel {
 
     init(_data?: any) {
         if (_data) {
-            this.rewardId = _data["rewardId"];
-            this.rewardCode = _data["rewardCode"];
+            this.achievementId = _data["achievementId"];
+            this.achievementName = _data["achievementName"];
             if (Array.isArray(_data["eligibleUsers"])) {
                 this.eligibleUsers = [] as any;
                 for (let item of _data["eligibleUsers"])
-                    this.eligibleUsers!.push(EligibleUserViewModel.fromJS(item));
+                    this.eligibleUsers!.push(EligibleUserDto.fromJS(item));
             }
         }
     }
@@ -3764,8 +4015,8 @@ export class EligibleUsersViewModel implements IEligibleUsersViewModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["rewardId"] = this.rewardId;
-        data["rewardCode"] = this.rewardCode;
+        data["achievementId"] = this.achievementId;
+        data["achievementName"] = this.achievementName;
         if (Array.isArray(this.eligibleUsers)) {
             data["eligibleUsers"] = [];
             for (let item of this.eligibleUsers)
@@ -3776,12 +4027,12 @@ export class EligibleUsersViewModel implements IEligibleUsersViewModel {
 }
 
 export interface IEligibleUsersViewModel {
-    rewardId?: number;
-    rewardCode?: string | undefined;
-    eligibleUsers?: EligibleUserViewModel[];
+    achievementId?: number;
+    achievementName?: string;
+    eligibleUsers?: EligibleUserDto[];
 }
 
-export class EligibleUserViewModel implements IEligibleUserViewModel {
+export class EligibleUserDto implements IEligibleUserDto {
     userId?: number | undefined;
     name?: string | undefined;
     email?: string | undefined;
@@ -3793,7 +4044,7 @@ export class EligibleUserViewModel implements IEligibleUserViewModel {
     pointsThisYear?: number;
     balance?: number;
 
-    constructor(data?: IEligibleUserViewModel) {
+    constructor(data?: IEligibleUserDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3817,9 +4068,9 @@ export class EligibleUserViewModel implements IEligibleUserViewModel {
         }
     }
 
-    static fromJS(data: any): EligibleUserViewModel {
+    static fromJS(data: any): EligibleUserDto {
         data = typeof data === 'object' ? data : {};
-        let result = new EligibleUserViewModel();
+        let result = new EligibleUserDto();
         result.init(data);
         return result;
     }
@@ -3840,7 +4091,7 @@ export class EligibleUserViewModel implements IEligibleUserViewModel {
     }
 }
 
-export interface IEligibleUserViewModel {
+export interface IEligibleUserDto {
     userId?: number | undefined;
     name?: string | undefined;
     email?: string | undefined;
