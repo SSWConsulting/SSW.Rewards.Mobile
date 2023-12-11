@@ -14,6 +14,9 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
 - iOS SDK setup/installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/)
 - [Azurite - Previously Azure Storage Emulator](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio,blob-storage) (Automatically part of Visual Studio 2022)
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
+
+- Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
+- [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos)
 - [ngrok](https://ngrok.com/) (Api and Mobile communication)
 ****
 
@@ -44,9 +47,11 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
 9.  Copy over all files in `SeedData/profiles` (images + .xlsx) into the newly created `profile` container
 10. Press f5
 11. Test that you can access the swagger docs @ `https://localhost:5001/swagger/`
-12. **(Optional)** - If you need to run the api and mobile app locally. Set up an [ngrok](https://ngrok.com/) account (This is free and signing up allows 24hour access instead of the 2hours without an account)
-   1. Once you have an account / installed ngrok
-      Run `ngrok http https://localhost:5001`
+
+**(Optional)** - If you need to run the api and mobile app locally. 
+1. Run dev tunnels `devtunnel host -p 5001`
+OR
+1. Run NGrok `ngrok http https://localhost:5001`
 
 ### Mobile App Android
 
@@ -54,7 +59,7 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
    1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
 2. Connect Android Device or Emulator (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/)
 3. Set build target as desired device.
-4. **(Optional)** - Using ngrok - If you need to connect to the Api locally
+4. **(Optional)** - Using dev tunnels OR Ngrok - If you need to connect to the Api locally
    1. Under SSW.Rewards | **Constants.cs**
    2. Update the `Constants.cs` `ApiBaseUrl` in The **#if DEBUG** region to use the custom ngrok **https** address (See Image below)
       ![ngrok Https Address](imgs/ngrok-https-example.png)
