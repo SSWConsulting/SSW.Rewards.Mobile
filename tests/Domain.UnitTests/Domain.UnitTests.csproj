@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <RootNamespace>SSW.Rewards.Domain.UnitTests</RootNamespace>
         <AssemblyName>SSW.Rewards.Domain.UnitTests</AssemblyName>
 
@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\SSW.Rewards.Domain\SSW.Rewards.Domain.csproj" />
+        <ProjectReference Include="..\..\src\Domain\SSW.Rewards.Domain.csproj" />
     </ItemGroup>
 
 </Project>
