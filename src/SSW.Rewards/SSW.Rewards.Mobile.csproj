@@ -111,8 +111,4 @@
 	<PropertyGroup>
 		<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-		<CodesignKey>Apple Development: Matthew Goldman (9Y556HJK25)</CodesignKey>
-		<CodesignProvision>Rewards Dev (Matt + Anton)</CodesignProvision>
-	</PropertyGroup>
 </Project>
