@@ -29,7 +29,7 @@
 		<InternalsVisibleTo Include="SSW.Rewards.Application.IntegrationTests" />
 		<InternalsVisibleTo Include="SSW.Rewards.Application.UnitTests" />
 		<InternalsVisibleTo Include="SSW.Rewards.Domain.UnitTests" />
-		<InternalsVisibleTo Include="SSW.Rewards.WebUI.AcceptanceTests" />
+		<InternalsVisibleTo Include="SSW.Rewards.WebAPI.AcceptanceTests" />
 	</ItemGroup>
 
     <PropertyGroup>
