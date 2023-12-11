@@ -6,6 +6,8 @@
 
 ### Required Tools
 
+Microsoft Learn has a great step-by-step process to get your first .NET MAUI project up and running, this will should allow you to run the UI with out much issue! https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
+
 - Ensure you have .NET 8 installed https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 - Visual Studio 2022
