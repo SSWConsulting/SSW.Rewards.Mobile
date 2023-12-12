@@ -207,7 +207,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../../../SSW.Rewards.Admin/src/UI/Services/ApiClient.g.cs",
+      "output": "../AdminUI/Services/ApiClient.g.cs",
       "newLineBehavior": "Auto"
     }
   }

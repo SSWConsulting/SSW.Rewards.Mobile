@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using MudBlazor;
 using MudBlazor.Services;
+using SSW.Rewards.Admin.UI;
+using UI;
 
-namespace SSW.Rewards.Admin.UI;
 
 public class Program
 {
