@@ -235,5 +235,5 @@ _Pvt_Extensions
 /NDependOut
 /SSW.Rewards.ndproj
 /.mfractor
-src/WebUI/ClientApp/package-lock.json
+src/WebAPI/ClientApp/package-lock.json
 .vscode/settings.json

@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Infrastructure.Persistence;
-using SSW.Rewards.WebUI.Filters;
-using SSW.Rewards.WebUI.Services;
+using SSW.Rewards.WebAPI.Filters;
+using SSW.Rewards.WebAPI.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebUIServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
 

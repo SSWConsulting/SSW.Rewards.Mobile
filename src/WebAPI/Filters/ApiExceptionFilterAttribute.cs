@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using SSW.Rewards.Application.Common.Exceptions;
 
-namespace SSW.Rewards.WebUI.Filters;
+namespace SSW.Rewards.WebAPI.Filters;
 
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {

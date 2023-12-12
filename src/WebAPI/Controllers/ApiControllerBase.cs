@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.WebUI.Filters;
+using SSW.Rewards.WebAPI.Filters;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 

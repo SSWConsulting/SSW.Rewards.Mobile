@@ -2,7 +2,7 @@
 
 using SSW.Rewards.Application.Common.Interfaces;
 
-namespace SSW.Rewards.WebUI.Services;
+namespace SSW.Rewards.WebAPI.Services;
 
 public class CurrentUserService : ICurrentUserService
 {
