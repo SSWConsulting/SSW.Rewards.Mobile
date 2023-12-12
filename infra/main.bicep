@@ -72,9 +72,7 @@ module appService 'modules/webapp.bicep' = {
     adminPortalUrl: adminPortalUrl
     idsUrl: idsUrl
     now: now
-    // graphClientId: graphClientId
-    // graphClientSecret: graphClientSecret
-    // graphTenantId: graphTenantId
+    sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
   }
 }
 

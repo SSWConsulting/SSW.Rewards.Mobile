@@ -6,6 +6,7 @@ param appServicePlanId string
 param adminPortalUrl string
 param idsUrl string
 param now string
+param sqlConnectionStringSecretUriWithVersion string
 
 
 // TODO: add these back in when Keeper secrets is set up
@@ -102,7 +103,8 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'DefaultConnection'
           type: 'SQLServer'
-          connectionString: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SqlConnectionString)'
+          //connectionString: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SqlConnectionString)'
+          connectionString: '@Microsoft.KeyVault(SecretUri=${sqlConnectionStringSecretUriWithVersion})'
         }
       ]
       appSettings: [
