@@ -207,7 +207,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../AdminUI/Services/ApiClient.g.cs",
+      "output": "../UI/AdminUI/Services/ApiClient.g.cs",
       "newLineBehavior": "Auto"
     }
   }

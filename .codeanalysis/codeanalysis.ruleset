@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="StyleCop and FxCop ruleset" Description="StyleCop and FxCop ruleset" ToolsVersion="15.0">
+	<IncludeAll Action="Error" />
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+		<Rule Id="SA1600" Action="None" />
+		<!-- Partial classes must be documented - project wide we dont document at class level -->
+		<Rule Id="SA1601" Action="None" />
+		<Rule Id="SA1602" Action="None" />
+		<Rule Id="SA1633" Action="None" />
+		<Rule Id="SA0001" Action="None" />
+		<Rule Id="SA1101" Action="None" />
+		<Rule Id="SA1200" Action="None" />
+		<Rule Id="SA1309" Action="None" />
+		<Rule Id="SA1413" Action="None" />
+		<Rule Id="SX1309" Action="Error" />
+		<Rule Id="SX1101" Action="Error" />
+		<!-- Do not directly await a task with configure await - this is irrelevant in .NET CORE -->
+		<Rule Id="CA2007" Action="None" />
+		<!-- Do not regions - OK to do so for making dividing code into logical sections. -->
+		<Rule Id="SA1124" Action="None" />
+		<!-- Static members should appear before non-static members - Alphabetical ordering is fine. -->
+		<Rule Id="SA1204" Action="None" />
+	</Rules>
+	<Rules AnalyzerId="Microsoft.ApiDesignGuidelines.Analyzers" RuleNamespace="Microsoft.ApiDesignGuidelines.Analyzers">
+	</Rules>
+</RuleSet>

@@ -8,6 +8,7 @@
         <IsPackable>true</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-SSW.Consulting-116EE6F2-C844-46F8-A58B-6C88A6F3588C</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,6 +33,12 @@
 		<InternalsVisibleTo Include="SSW.Rewards.Application.UnitTests" />
 		<InternalsVisibleTo Include="SSW.Rewards.Domain.UnitTests" />
 		<InternalsVisibleTo Include="SSW.Rewards.WebAPI.AcceptanceTests" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="..\..\..\.dockerignore">
+	    <Link>.dockerignore</Link>
+	  </Content>
 	</ItemGroup>
 
     <PropertyGroup>
