@@ -1,0 +1,44 @@
+name: Main (Build & Deploy)
+
+on:
+  push:
+    branches: 
+      - main
+    paths-ignore:
+      - .github/settings.yml
+
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    uses: ./.github/workflows-admin/build.yml
+    with:
+      publishProjectPath: src/Presentation/UI/AdminUI/AdminUI.csproj
+
+  deploy_dev:
+    name: Deploy
+    needs: build
+    uses: ./.github/workflows-admin/deploy.yml
+    with:
+      environment: dev
+      resourceGroupName: ssw.rewards.dev
+    secrets: inherit
+
+  deploy_staging:
+     name: Deploy Staging
+     needs: deploy_dev
+     uses: ./.github/workflows-admin/deploy.yml
+     with:
+       environment: staging
+       resourceGroupName: ssw.rewards.staging
+     secrets: inherit
+
+  deploy_prod:
+     name: Deploy Prod
+     needs: deploy_staging
+     uses: ./.github/workflows-admin/deploy.yml
+     with:
+       environment: prod
+       resourceGroupName: ssw.rewards.prod
+     secrets: inherit

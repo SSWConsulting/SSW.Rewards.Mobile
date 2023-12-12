@@ -1,0 +1,41 @@
+name: Build API
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+      - name: Publish
+        run: dotnet publish src/Presentation/WebAPI/WebAPI.csproj --configuration Release --no-build --output ./published
+      - name: Zip
+        shell: pwsh
+        run: Compress-Archive -Path ./published/* -DestinationPath ./api.zip
+      
+      # api 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: api
+          path: ./api.zip
+          retention-days: 2
+      # infra
+      - name: Upload Infra Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: infra
+          path: ./infra
+          retention-days: 2

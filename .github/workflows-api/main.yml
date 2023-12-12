@@ -1,0 +1,48 @@
+name: Build and deploy
+
+on:
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    name: Build and upload artifacts
+    uses: ./.github/workflows-api/build.yml
+  
+  deploy_staging:
+    needs: build
+    name: Deploy staging
+    uses: ./.github/workflows-api/az-deploy.yml
+    with:
+      ENVIRONMENT: staging
+      RESOURCE_GROUP: SSW.Rewards.Staging
+      APP_SERVICE_PLAN: plan-ssw-shared-dev
+      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+      ADMIN_PORTAL_URL: https://staging.rewards.ssw.com.au
+      IDS_URL: https://app-ssw-ident-staging-api.azurewebsites.net
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      # GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
+      # GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
+      # GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
+
+  deploy_prod:
+    needs: deploy_staging
+    name: Deploy prod
+    uses: ./.github/workflows-api/az-deploy.yml
+    with:
+      ENVIRONMENT: prod
+      RESOURCE_GROUP: SSW.Rewards.Prod
+      APP_SERVICE_PLAN: plan-ssw-shared-prod
+      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+      ADMIN_PORTAL_URL: https://rewards.ssw.com.au
+      IDS_URL: https://identity.ssw.com.au
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+      # GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
+      # GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
+      # GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
