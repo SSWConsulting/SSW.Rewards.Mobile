@@ -73,23 +73,23 @@ namespace SSW.Rewards.Mobile.Controls
             //}
         }
 
-        protected override Task OnDismissedByTappingOutsideOfPopup(CancellationToken token = default)
-        {
-            _isDismissed = true;
+//        protected override Task OnDismissedByTappingOutsideOfPopup(CancellationToken token = default)
+//        {
+//            _isDismissed = true;
 
-            // TECH DEBT: Due to this issue: https://github.com/CommunityToolkit/Maui/issues/1443
-            //            we need to dismiss the modal navigation stack on iOS, as it prevents
-            //            some knock on effects. See: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/465
-            //            Once this is resolved, we can get rid of these compiler directives and just use Close()
-#if IOS
-            return Task.FromResult(() =>
-            {
-                this.Close();
-            });
-#else
-            return base.OnDismissedByTappingOutsideOfPopup(token);
-#endif
-        }
+//            // TECH DEBT: Due to this issue: https://github.com/CommunityToolkit/Maui/issues/1443
+//            //            we need to dismiss the modal navigation stack on iOS, as it prevents
+//            //            some knock on effects. See: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/465
+//            //            Once this is resolved, we can get rid of these compiler directives and just use Close()
+//#if IOS
+//            return Task.FromResult(() =>
+//            {
+//                this.Close();
+//            });
+//#else
+//            return base.OnDismissedByTappingOutsideOfPopup(token);
+//#endif
+//        }
     }
 }
 
