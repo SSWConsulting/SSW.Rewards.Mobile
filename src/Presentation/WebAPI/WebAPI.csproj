@@ -24,8 +24,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Application\SSW.Rewards.Application.csproj" />
       <ProjectReference Include="..\..\Infrastructure\SSW.Rewards.Infrastructure.csproj" />
-      <ProjectReference Include="..\Application\SSW.Rewards.Application.csproj" />
-      <ProjectReference Include="..\Infrastructure\SSW.Rewards.Infrastructure.csproj" />
     </ItemGroup>
 
 	<ItemGroup>
