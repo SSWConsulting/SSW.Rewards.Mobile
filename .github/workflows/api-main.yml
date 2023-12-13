@@ -7,12 +7,12 @@ on:
 jobs:
   build:
     name: Build and upload artifacts
-    uses: ./.github/workflows-api/build.yml
+    uses: ./.github/workflows/api-build.yml
   
   deploy_staging:
     needs: build
     name: Deploy staging
-    uses: ./.github/workflows-api/az-deploy.yml
+    uses: ./.github/workflows/api-az-deploy.yml
     with:
       ENVIRONMENT: staging
       RESOURCE_GROUP: SSW.Rewards.Staging
@@ -28,7 +28,7 @@ jobs:
   deploy_prod:
     needs: deploy_staging
     name: Deploy prod
-    uses: ./.github/workflows-api/az-deploy.yml
+    uses: ./.github/workflows/api-az-deploy.yml
     with:
       ENVIRONMENT: prod
       RESOURCE_GROUP: SSW.Rewards.Prod

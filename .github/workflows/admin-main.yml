@@ -12,14 +12,14 @@ on:
 jobs:
 
   build:
-    uses: ./.github/workflows-admin/build.yml
+    uses: ./.github/workflows/admin-build.yml
     with:
       publishProjectPath: src/Presentation/UI/AdminUI/AdminUI.csproj
 
   deploy_dev:
     name: Admin - Deploy
     needs: build
-    uses: ./.github/workflows-admin/deploy.yml
+    uses: ./.github/workflows/admin-deploy.yml
     with:
       environment: dev
       resourceGroupName: ssw.rewards.dev
@@ -28,7 +28,7 @@ jobs:
   deploy_staging:
      name: Admin - Deploy Staging
      needs: deploy_dev
-     uses: ./.github/workflows-admin/deploy.yml
+     uses: ./.github/workflows/admin-deploy.yml
      with:
        environment: staging
        resourceGroupName: ssw.rewards.staging
@@ -37,7 +37,7 @@ jobs:
   deploy_prod:
      name: Admin - Deploy Prod
      needs: deploy_staging
-     uses: ./.github/workflows-admin/deploy.yml
+     uses: ./.github/workflows/admin-deploy.yml
      with:
        environment: prod
        resourceGroupName: ssw.rewards.prod
