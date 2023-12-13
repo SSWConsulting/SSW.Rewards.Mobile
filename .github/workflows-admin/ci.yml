@@ -1,4 +1,4 @@
-name: CI
+name: Admin - CI
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build_and_test:
-    name: Build & Test
+    name: Admin - Build & Test
     runs-on: ubuntu-latest
 
     steps:

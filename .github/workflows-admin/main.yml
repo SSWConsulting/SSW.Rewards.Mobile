@@ -1,4 +1,4 @@
-name: Main (Build & Deploy)
+name: Admin - Main (Build & Deploy)
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       publishProjectPath: src/Presentation/UI/AdminUI/AdminUI.csproj
 
   deploy_dev:
-    name: Deploy
+    name: Admin - Deploy
     needs: build
     uses: ./.github/workflows-admin/deploy.yml
     with:
@@ -26,7 +26,7 @@ jobs:
     secrets: inherit
 
   deploy_staging:
-     name: Deploy Staging
+     name: Admin - Deploy Staging
      needs: deploy_dev
      uses: ./.github/workflows-admin/deploy.yml
      with:
@@ -35,7 +35,7 @@ jobs:
      secrets: inherit
 
   deploy_prod:
-     name: Deploy Prod
+     name: Admin - Deploy Prod
      needs: deploy_staging
      uses: ./.github/workflows-admin/deploy.yml
      with:

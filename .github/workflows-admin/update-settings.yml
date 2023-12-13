@@ -1,4 +1,4 @@
-name: Update Repo Settings
+name: Admin - Update Repo Settings
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       # If this is a PR, dry-run the PR and watch for errors
-      - name: Dry-run settings in the PR
+      - name: Admin - Dry-run settings in the PR
         id: dryrun
         continue-on-error: true
         if: github.event_name == 'pull_request'
@@ -32,14 +32,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Explicitly checkout main branch to ensure production settings are reset
-      - name: Switch to main for production settings
+      - name: Admin - Switch to main for production settings
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v2
         with:
           ref: main
 
       # If this is a PR, dry-run the PR and watch for errors
-      - name: Apply production repo settings
+      - name: Admin - Apply production repo settings
         uses: GuacamoleResearch/actions-settings@v3-beta-updates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-name: Build and deploy
+name: API - Build and deploy
 
 on:
   workflow_dispatch:
@@ -24,9 +24,6 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
-      # GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
-      # GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
-      # GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
 
   deploy_prod:
     needs: deploy_staging
@@ -43,6 +40,3 @@ jobs:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
-      # GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
-      # GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
-      # GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}

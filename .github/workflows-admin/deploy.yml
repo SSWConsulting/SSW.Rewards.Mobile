@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   deploy:
-    name: ${{ inputs.environment }}
+    name: Admin - ${{ inputs.environment }}
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environment }}
