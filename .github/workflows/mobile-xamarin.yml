@@ -7,13 +7,13 @@ on:
       - master
     paths:
       - 'Xamarin/**'
-      - '.github/workflows/xamarin.yml'
+      - '.github/workflows/mobile-xamarin.yml'
   pull_request:
     branches:
       - master
     paths:
       - 'Xamarin/**'
-      - '.github/workflows/xamarin.yml'
+      - '.github/workflows/mobile-xamarin.yml'
 
 jobs:
   Android:
