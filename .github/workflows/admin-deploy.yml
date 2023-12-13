@@ -43,7 +43,7 @@ jobs:
         run: |
           $out = az deployment group create `
             --resource-group ${{ inputs.resourceGroupName }} `
-            --template-file .\infra\main-admin.bicep `
+            --template-file .\infra\admin-main.bicep `
             --parameters environment=${{ inputs.environment }} `
             | convertfrom-json | foreach properties | foreach outputs
 
