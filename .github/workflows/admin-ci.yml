@@ -21,15 +21,13 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Restore
-        run: |
-          dotnet workload restore  
-          dotnet restore
+        run: dotnet restore src/Presentation/UI/AdminUI/AdminUI.csproj  
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release src/Presentation/UI/AdminUI/AdminUI.csproj 
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" src/Presentation/UI/AdminUI/AdminUI.csproj 
 
       - name: Check file existence
         id: check_files
