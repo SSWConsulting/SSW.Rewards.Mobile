@@ -1,0 +1,12 @@
+@inject ISnackbar Snackbar
+
+@code {
+
+    public void CreateNotification(string text, Severity severity = Severity.Success)
+    {
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add(text,severity);
+    }
+    
+}

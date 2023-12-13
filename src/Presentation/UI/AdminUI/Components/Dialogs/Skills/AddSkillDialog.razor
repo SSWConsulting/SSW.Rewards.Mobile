@@ -1,0 +1,42 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Skill</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudForm  @ref="_form" Model="@dto" @bind-IsValid="@_valid">
+        <MudTextField
+            AutoFocus="true"
+            Class="d-inline" T="string" Label="Reward Name" @bind-Value="@dto" Required="true"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton 
+            Variant="Variant.Filled"
+            Color="Color.Primary" OnClick="Submit">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private MudForm? _form;
+    private bool _valid;
+    
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public string dto { get; set; } = string.Empty;
+    
+    private async Task Submit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
+        if (_valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(dto));
+        }
+    }
+    void Cancel() => MudDialog?.Cancel();
+}

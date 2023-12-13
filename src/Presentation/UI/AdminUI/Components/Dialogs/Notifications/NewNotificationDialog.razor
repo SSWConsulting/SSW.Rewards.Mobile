@@ -1,0 +1,41 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">New Notification</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid">
+            <MudTextField Class="d-inline" T="string" Label="Message" @bind-Value="@Dto.Text" AutoFocus="true" Required="true" />
+            <MudTextField Class="d-inline" T="string" Label="Action" @bind-Value="@Dto.Action" Required="true"/>
+            <MudCheckBox @bind-Checked="@Dto.Silent" Label="Silent" Color="Color.Primary"></MudCheckBox>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary" OnClick="Submit">Send</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+    
+    [Parameter]
+    public RequestNotificationCommand Dto { get; set; } = new();
+
+    private MudForm? _form;
+    private bool valid;
+    
+    private async Task Submit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
+        if (valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(Dto));
+        }
+    }
+    void Cancel() => MudDialog?.Cancel();
+}
