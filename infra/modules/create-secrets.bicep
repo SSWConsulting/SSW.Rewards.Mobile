@@ -16,3 +16,5 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2021-04-01-preview' = {
     value: secretValue
   }
 }
+
+output secretUriWithVersion string = secret.properties.secretUriWithVersion
