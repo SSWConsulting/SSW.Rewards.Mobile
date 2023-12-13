@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Install Workloads
-        uses: dotnet workload restore
+        run: dotnet workload restore
 
       - name: Restore
         run: dotnet restore
