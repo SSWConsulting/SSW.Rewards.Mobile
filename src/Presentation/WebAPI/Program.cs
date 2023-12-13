@@ -35,7 +35,8 @@ app.UseStaticFiles();
 
 app.UseSwaggerUI(settings =>
 {
-    settings.SwaggerEndpoint("/api", "v1");
+    settings.SwaggerEndpoint("/api/specification.json", "v1");
+    settings.RoutePrefix = string.Empty;
 });
 
 app.UseRouting();
