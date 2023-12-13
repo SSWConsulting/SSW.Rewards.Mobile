@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Application\SSW.Rewards.Application.csproj" />
         <ProjectReference Include="..\..\src\Core\Application\SSW.Rewards.Application.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure\SSW.Rewards.Infrastructure.csproj" />
     </ItemGroup>

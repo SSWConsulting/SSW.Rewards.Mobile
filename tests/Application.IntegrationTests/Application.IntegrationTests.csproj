@@ -36,7 +36,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Core\Application\SSW.Rewards.Application.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure\SSW.Rewards.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\src\WebAPI\WebAPI.csproj" />
+        <ProjectReference Include="..\..\src\Presentation\WebAPI\WebAPI.csproj" />
     </ItemGroup>
 
 </Project>
