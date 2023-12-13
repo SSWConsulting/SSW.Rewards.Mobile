@@ -5,43 +5,7 @@ param keyVaultName string
 param appServicePlanId string
 param adminPortalUrl string
 param idsUrl string
-param now string
-
-
-// TODO: add these back in when Keeper secrets is set up
-// see: https://github.com/orgs/SSWConsulting/discussions/24
-// param graphTenantId string
-// param graphClientId string
-
-// @secure()
-// param graphClientSecret string
-
-// module graphTenant 'create-secrets.bicep' = {
-//   name: 'graphTenantId-${now}'
-//   params: {
-//     keyVaultName: keyVaultName
-//     secretName: 'GraphTenantId'
-//     secretValue: graphTenantId
-//   }
-// }
-
-// module graphClient 'create-secrets.bicep' = {
-//   name: 'graphClientId-${now}'
-//   params: {
-//     keyVaultName: keyVaultName
-//     secretName: 'GraphClientId'
-//     secretValue: graphClientId
-//   }
-// }
-
-// module graphSecret 'create-secrets.bicep' = {
-//   name: 'graphClientSecret-${now}'
-//   params: {
-//     keyVaultName: keyVaultName
-//     secretName: 'GraphClientSecret'
-//     secretValue: graphClientSecret
-//   }
-// }
+param sqlConnectionStringSecretUriWithVersion string
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
@@ -102,7 +66,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'DefaultConnection'
           type: 'SQLServer'
-          connectionString: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=SqlConnectionString)'
+          connectionString: '@Microsoft.KeyVault(SecretUri=${sqlConnectionStringSecretUriWithVersion})'
         }
       ]
       appSettings: [

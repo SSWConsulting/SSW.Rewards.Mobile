@@ -66,3 +66,5 @@ module connectionStringSecret 'create-secrets.bicep' = {
     secretValue: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${databaseName};Persist Security Info=False;User ID=${sqlAdministratorLogin};Password=${sqlAdministratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
   }
 }
+
+output sqlConnectionStringSecretUriWithVersion string = connectionStringSecret.outputs.secretUriWithVersion

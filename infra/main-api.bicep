@@ -18,13 +18,6 @@ param sqlAdministratorsObjectId string
 param adminPortalUrl string
 param idsUrl string
 
-// @secure()
-// param graphClientId string
-// @secure()
-// param graphClientSecret string
-// @secure()
-// param graphTenantId string
-
 @secure()
 @description('Specifies secrets to connect to apple https://docs.microsoft.com/en-us/azure/templates/microsoft.notificationhubs/namespaces/notificationhubs?tabs=bicep#apnscredentialproperties Sample: {"keyId":"key id","appName":"bundle id","appId":"team id","token":"token"}')
 param notificationHubAppleCredential object = {}
@@ -71,10 +64,7 @@ module appService 'modules-api/webapp.bicep' = {
     keyVaultName: keyVault.outputs.keyVaultName
     adminPortalUrl: adminPortalUrl
     idsUrl: idsUrl
-    now: now
-    // graphClientId: graphClientId
-    // graphClientSecret: graphClientSecret
-    // graphTenantId: graphTenantId
+    sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
   }
 }
 
