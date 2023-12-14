@@ -464,5 +464,5 @@ $RECYCLE.BIN/
 # Files generasted by the .NET Meteor VS Code extension
 .meteor/
 
-**/appsettings.json
+/src/**/appsettings.json
 /src/maui/SSW.Rewards.Mobile/SSW.Rewards.Mobile/.vscode
