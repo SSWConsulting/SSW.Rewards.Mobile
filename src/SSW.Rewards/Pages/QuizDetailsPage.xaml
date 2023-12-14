@@ -8,52 +8,33 @@
              BackgroundColor="{StaticResource MainBackground}"
              x:DataType="viewModels:QuizDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
     <Shell.TitleView>
-        <Label Text="Tech Trivia"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
+        <Label Text="{Binding QuizTitle}"
                VerticalOptions="Center"
                FontSize="18"
-               Margin="0,15,0,0"
                x:Name="TitleText"
                TextColor="White"/>
     </Shell.TitleView>
+    <NavigationPage.TitleView>
+        <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="10">
+            <Image Source="logo.png">               
+            </Image>           
+        </StackLayout>
+    </NavigationPage.TitleView>
     <ContentPage.Resources>
         <converters:PassedToResultColourConverter x:Key="PassedToColor"/>
         <converters:InverseBoolConverter x:Key="InverseBool"/>
     </ContentPage.Resources>
     <ContentPage.Content>
             <Grid>
-                <Grid RowDefinitions="70, 100, *, 20, 60"
+                <Grid RowDefinitions="100, *, 20, 60"
                       IsVisible="{Binding QuestionsVisible}"
                       x:Name="QuestionsView">
 
                     <Label Grid.Row="0"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           VerticalTextAlignment="Center"
-                           TextColor="White"
-                           FontSize="Title"
-                           Text="{Binding QuizTitle}"/>
-
-                    <Label Grid.Row="0"
-                           HorizontalOptions="Start"
-                           VerticalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           TextColor="White"
-                           FontSize="32"
-                           Margin="20,0,0,0"
-                           FontFamily="FluentIcons"
-                           Text="&#xf189;">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                  Command="{Binding BackCommand}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-
-                    <Label Grid.Row="1"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand"
                            HorizontalTextAlignment="Center"
@@ -61,9 +42,10 @@
                            TextColor="White"
                            FontSize="Medium"
                            Text="{Binding QuizDescription}"
+                           Padding="20,0,20,0"
                            BackgroundColor="{StaticResource QuizDescriptionBackground}"/>
 
-                    <CarouselView Grid.Row="2"
+                    <CarouselView Grid.Row="1"
                                   IndicatorView="QuestionIndicator"
                                   Loop="False"
                                   ItemsSource="{Binding Questions}"
@@ -72,7 +54,7 @@
                                   x:Name="QuestionsCarousel">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
-                                <ScrollView HeightRequest="700">
+                                <ScrollView HeightRequest="400">
                                     <StackLayout BindableLayout.ItemsSource="{Binding MyAnswers}"
                                                  RadioButtonGroup.GroupName="{Binding QuestionId}"
                                                  HorizontalOptions="FillAndExpand"
@@ -98,10 +80,11 @@
 
                     <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
-                                   Grid.Row="3"
+                                   HorizontalOptions="Center"
+                                   Grid.Row="2"
                                    x:Name="QuestionIndicator"/>
 
-                    <Button Grid.Row="4"
+                    <Button Grid.Row="3"
                             Text="{Binding ButtonText}"
                             Command="{Binding ButtonCommand}"
                             TextColor="White"

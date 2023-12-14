@@ -50,6 +50,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private string _quizIcon;
 
+        private bool IsLoadingQuestions { get; set; } = false;
+
         public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
             _quizService = quizService;
@@ -68,14 +70,16 @@ namespace SSW.Rewards.Mobile.ViewModels
             var quiz = await _quizService.GetQuizDetails(_quizId);
 
             Questions.Clear();
+            IsLoadingQuestions = true;
 
             foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
             {
                 Questions.Add(new QuizQuestionViewModel(question));
             }
 
+            IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
-            QuizDescription = quiz.Description;
+            //QuizDescription = quiz.Description;
 
             IsBusy = false;
 
@@ -208,16 +212,22 @@ namespace SSW.Rewards.Mobile.ViewModels
             
 
             if (confirmed)
-            await Shell.Current.GoToAsync("..");
+            {
+                Clear();
+                await Shell.Current.GoToAsync("..");
+            }
         }
 
         private void CurrentQuestionChanged()
         {
+            if (CurrentQuestion == null)
+                return;
+
             var selectedIndex = Questions.IndexOf(CurrentQuestion);
 
             var isLastQuestion = selectedIndex == Questions.Count - 1;
 
-            if (isLastQuestion)
+            if (isLastQuestion && !IsLoadingQuestions)
             {
                 ButtonText = "Submit";
                 ButtonCommand = new Command(async () => await SubmitResponses());
@@ -235,6 +245,17 @@ namespace SSW.Rewards.Mobile.ViewModels
         private void MoveNext(int next)
         {
             OnNextQuestionRequested.Invoke(this, next);
+        }
+
+        private void Clear()
+        {
+            Questions.Clear();
+            Results.Clear();
+            QuizDescription = "";
+            ButtonText = "";
+            CurrentQuestion = null;
+            QuizTitle = "";
+            RaisePropertyChanged(nameof(QuizDescription), nameof(ButtonText), nameof(CurrentQuestion), nameof(QuizTitle));
         }
     }
 

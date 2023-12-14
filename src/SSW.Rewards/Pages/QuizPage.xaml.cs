@@ -16,23 +16,4 @@ public partial class QuizPage : ContentPage
         base.OnAppearing();
         await _viewModel.Initialise();
     }
-
-    protected override void OnSizeAllocated(double width, double height)
-    {
-        base.OnSizeAllocated(width, height);
-
-        var titleWidth = TitleText.Width;
-
-        var pageCenter = width / 2;
-
-        var titleCenter = titleWidth / 2;
-
-        var desiredStart = pageCenter - titleCenter;
-
-        var titleX = TitleText.X;
-
-        var desiredTranslation = titleX - desiredStart;
-
-        TitleText.TranslationX = desiredTranslation;
-    }
 }
