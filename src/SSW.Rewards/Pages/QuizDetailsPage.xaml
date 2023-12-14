@@ -27,6 +27,37 @@
     <ContentPage.Resources>
         <converters:PassedToResultColourConverter x:Key="PassedToColor"/>
         <converters:InverseBoolConverter x:Key="InverseBool"/>
+        <ControlTemplate x:Key="RadioButtonTemplate">
+            <Border Stroke="Transparent" BackgroundColor="Transparent">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid WidthRequest="20" HeightRequest="20" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center">
+                        <Ellipse x:Name="border_circle" StrokeThickness="0" Fill="White" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Ellipse x:Name="check" Fill="Black" WidthRequest="10" HeightRequest="10" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+                    <ContentPresenter Margin="10,0,0,0" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CheckedStates">
+                            <VisualState x:Name="Checked">
+                                <VisualState.Setters>
+                                    <Setter TargetName="check" Property="Opacity" Value="1" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Unchecked">
+                                <VisualState.Setters>
+                                    <Setter TargetName="check" Property="Opacity" Value="0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+            </Border>
+        </ControlTemplate>
     </ContentPage.Resources>
     <ContentPage.Content>
             <Grid>
@@ -67,8 +98,8 @@
                                                              WidthRequest="300"
                                                              TextColor="White"
                                                              Content="{Binding Text}"
-                                                             ControlTemplate="{StaticResource {x:Null}}"/>
-                                                <!-- TODO: MAUI. The ControlTemplate="{StaticResource RadioButtonTemplate}" is missing in the project. Was it lost at some point or it was a stub? -->
+                                                             ControlTemplate="{StaticResource RadioButtonTemplate}">
+                                                </RadioButton>
                                             </DataTemplate>
                                         </BindableLayout.ItemTemplate>
                                     </StackLayout>
