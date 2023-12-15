@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <Folder Include="PrizeDraw\Commands\" />
+      <Folder Include="Roles\Common\" />
     </ItemGroup>
 
 </Project>

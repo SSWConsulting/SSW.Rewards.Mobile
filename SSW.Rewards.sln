@@ -39,6 +39,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminUI", "src\Presentation
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileUI", "src\Presentation\UI\MobileUI\MobileUI.csproj", "{3C5E940C-4267-4CF8-9905-ED853CD26F39}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure Infrastructure", "Azure Infrastructure", "{8364E342-7A41-43D4-89C6-DEEF5CE83830}"
+	ProjectSection(SolutionItems) = preProject
+		infra\main.bicep = infra\main.bicep
+		infra\admin-main.bicep = infra\admin-main.bicep
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{485ADCA6-14B9-40C3-A563-9949A5805562}"
+	ProjectSection(SolutionItems) = preProject
+		infra\modules\add-kv-role-assignment.bicep = infra\modules\add-kv-role-assignment.bicep
+		infra\modules\create-kvAccessPolicy.bicep = infra\modules\create-kvAccessPolicy.bicep
+		infra\modules\create-secrets.bicep = infra\modules\create-secrets.bicep
+		infra\modules\keyvault.bicep = infra\modules\keyvault.bicep
+		infra\modules\notificationhub.bicep = infra\modules\notificationhub.bicep
+		infra\modules\sql.bicep = infra\modules\sql.bicep
+		infra\modules\storage.bicep = infra\modules\storage.bicep
+		infra\modules\webapp.bicep = infra\modules\webapp.bicep
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -331,5 +349,6 @@ Global
 		{AAAF0A93-F4EB-45FE-B0E4-DB3F0F18DB62} = {BB3EDDEF-6959-49C4-AA14-D1466CF0902C}
 		{03F1B3B8-37A0-401E-B265-34933E9702CC} = {FFF0B010-D58B-4338-BBBD-349C36667821}
 		{3C5E940C-4267-4CF8-9905-ED853CD26F39} = {FFF0B010-D58B-4338-BBBD-349C36667821}
+		{485ADCA6-14B9-40C3-A563-9949A5805562} = {8364E342-7A41-43D4-89C6-DEEF5CE83830}
 	EndGlobalSection
 EndGlobal
