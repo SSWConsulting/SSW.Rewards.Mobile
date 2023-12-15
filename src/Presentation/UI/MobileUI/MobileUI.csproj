@@ -36,6 +36,7 @@
 		<CodesignProvision>Automatic</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
 		<MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
