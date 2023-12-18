@@ -79,7 +79,6 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
-            //QuizDescription = quiz.Description;
 
             IsBusy = false;
 
