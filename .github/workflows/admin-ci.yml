@@ -9,6 +9,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  PROJECT_PATH: src/Presentation/UI/AdminUI/AdminUI.csproj
+
 jobs:
   build_and_test:
     name: Admin - Build & Test
@@ -21,13 +24,13 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Restore
-        run: dotnet restore src/Presentation/UI/AdminUI/AdminUI.csproj  
+        run: dotnet restore $PROJECT_PATH  
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release src/Presentation/UI/AdminUI/AdminUI.csproj 
+        run: dotnet build $PROJECT_PATH --no-restore --configuration Release 
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" src/Presentation/UI/AdminUI/AdminUI.csproj 
+        run: dotnet test $PROJECT_PATH --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
 
       - name: Check file existence
         id: check_files
