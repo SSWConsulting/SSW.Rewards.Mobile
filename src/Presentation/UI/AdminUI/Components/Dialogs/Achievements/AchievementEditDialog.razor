@@ -1,0 +1,115 @@
+@using Microsoft.AspNetCore.Components
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
+@using SSW.Rewards.Admin.UI.Models.Interfaces
+
+@inject ILeaderboardClient _client
+@inject IDialogService DialogService
+
+<MudDialog>
+    <TitleContent>
+        <div class="d-flex justify-center">
+            <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+        </div>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
+        <MudTextField @bind-Value="@dto.Value" Label="Value" AutoFocus="true" />
+        <MudTextField @bind-Value="@dto.IntegrationId" Label="Integration ID" ReadOnly="true"/>
+        <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
+            @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
+            {
+                <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect
+            T="@LeaderboardUserDto"
+            @bind-Value="_selectedValue"
+            Label="Assign to User"
+            AnchorOrigin="Origin.BottomCenter"
+            TransformOrigin="Origin.TopCenter"
+            Variant="Variant.Outlined"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            AdornmentColor="Color.Primary">
+            @foreach (var usr in _usersList.OrderBy(u => u.Name))
+            {
+                <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudCheckBox Label="Multi-scan enabled?" @bind-Checked="@dto.IsMultiScanEnabled" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="ClaimAchievement" Color="Color.Info">Claim Achievement for User</MudButton>
+        <MudButton OnClick="ViewUsers">View users</MudButton>
+        <MudButton 
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private LeaderboardUserDto? _selectedValue;
+    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public AchievementAdminViewModel dto { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _usersList = (await _client.GetAsync()).Users;
+    }
+
+    void Submit()
+    {
+        MudDialog?.Close(DialogResult.Ok(dto));
+    }
+
+    void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+
+    async Task Delete()
+    {
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{dto.Name}?\"",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Deleting will prevent future users from claiming points for this achievement")
+            ).Result;
+
+        if (!result.Canceled && (bool) result.Data)
+        {
+            MudDialog?.Close(DialogResult.Ok(dto.Id));
+        }
+    }
+
+    private void ClaimAchievement()
+    {
+        if (_selectedValue == null)
+        {
+            return;
+        }
+
+        MudDialog?.Close(DialogResult.Ok(new AssignReward
+        {
+            Code = dto.Code,
+            Id = _selectedValue.UserId
+        }));
+    }
+
+    private void ViewUsers()
+    {
+        MudDialog?.Close(DialogResult.Ok(new ViewUsers
+        {
+            AchievementId = dto.Id
+        }));
+    }
+}

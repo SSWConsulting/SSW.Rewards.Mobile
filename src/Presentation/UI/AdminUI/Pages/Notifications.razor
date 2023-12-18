@@ -1,0 +1,92 @@
+@page "/Notifications"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Notifications
+
+@attribute [Authorize]
+
+@inject INotificationsClient _client
+@inject IDialogService DialogService
+
+<MudText Typo="Typo.h2">Notifications</MudText>
+<MudText Typo="Typo.body1">Send and view notifications</MudText>
+<MudButton  OnClick="@((e) => OpenDialog(disableBackdropClick))" Variant="Variant.Filled" Color="Color.Primary">
+    New notification
+</MudButton>
+
+@if (_model != null)
+{
+    <MudTable Items="@_model.List"
+              Hover="true"
+              Breakpoint="Breakpoint.Sm"
+              Loading="@_isLoading"
+              LoadingProgressColor="Color.Info">
+        <HeaderContent>
+            <MudTh>Date</MudTh>
+            <MudTh>Message</MudTh>
+            <MudTh>Created by</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Date">@context.CreatedDate.ToLocalTime().ToString("dd/MM/yy hh:mm")</MudTd>
+            <MudTd DataLabel="Message">@context.Message</MudTd>
+            <MudTd DataLabel="Created by">@context.EmailAddress</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+    private readonly DialogOptions disableBackdropClick = new()
+    {
+            DisableBackdropClick = true,
+            MaxWidth = MaxWidth.Medium
+    };
+
+    private bool _isLoading = true;
+    private NotificationHistoryListViewModel? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            GetNotifications();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async void GetNotifications()
+    {
+        _isLoading = true;
+        _model = await _client.ListAsync();
+        _isLoading = false;
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<NewNotificationDialog>("New Notification", options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // Add the Reward
+            if (result.Data is RequestNotificationCommand dto)
+            {
+                await _client.RequestPushAsync(new RequestNotificationCommand
+                {
+                    Text    = dto.Text,
+                    Silent  = dto.Silent,
+                    Action  = dto.Action,
+                    Tags    = new List<string>()
+                });
+
+                GetNotifications();
+            }
+        }
+    }
+}

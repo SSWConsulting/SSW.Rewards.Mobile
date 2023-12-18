@@ -1,0 +1,96 @@
+﻿@using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
+@inject IDialogService DialogService
+
+<MudForm>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h4" Class="mb-4">@Model.Title</MudText>
+            <MudTextField T="string" Label="Title" Class="mb-10" Required="true" RequiredError="Required" @bind-Value="@Model.Title" />
+            <MudTextField T="string" Label="Description" Class="mb-4" Required="true" RequiredError="Required" @bind-Value="@Model.Description" Lines="5" />
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField T="int" Label="Points" Required="true" RequiredError="Required" @bind-Value="@Model.Points" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudSelect Class="d-inline" T="SSW.Rewards.Icons" Label="Icon" @bind-Value="Model.Icon">
+                        @foreach (var icon in Enum.GetValues<SSW.Rewards.Icons>())
+                        {
+                            <MudSelectItem Value="@icon">@icon.ToString()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            
+            <MudButton Variant="Variant.Filled" Class="mt-2" Color="Color.Primary" OnClick="@(() => OnSave())">Save quiz</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <div class="d-flex align-content-between mb-4">
+                <MudText Typo="Typo.h4" Class="d-flex flex-1">Questions</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@((e) => AddQuestionDialog(disableBackdropClick))">New question</MudButton>
+            </div>
+            
+            @if (Model.Questions != null)
+            {
+                @foreach (var q in Model.Questions)
+                {
+                    <MudPaper Class="pa-4 mb-4">
+                        <div class="d-flex align-content-between">
+                            <MudText Typo="Typo.h6" Class="d-flex flex-1">@q.Text</MudText>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@((e) => EditQuestionDialog(disableBackdropClick, q))">Edit question</MudButton>
+                        </div>
+                        <MudList>
+                            @foreach (var a in q.Answers)
+                            {
+                                <MudListItem>
+                                    <MudText Style="display: inline-block; vertical-align: middle">@a.Text</MudText>
+                                    @if (a.IsCorrect)
+                                    {
+                                        <MudIcon Size="Size.Medium" Icon="@Icons.Material.Filled.Check" Title="Correct" Class="ml-4" Style="vertical-align: middle" />
+                                    }
+                                </MudListItem>
+                                <MudDivider />
+                            }
+                        </MudList>
+                    </MudPaper>
+                }
+            }
+        </MudItem>
+    </MudGrid>
+
+</MudForm>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> OnSaveClicked { get; set; }
+
+    [Parameter]
+    public AdminQuizDetailsDto Model { get; set; } = new();
+    private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
+    private async Task AddQuestionDialog(DialogOptions options)
+    {
+        AdminQuizQuestionDto q = new AdminQuizQuestionDto { Answers = new List<AdminQuestionAnswerDto>() };
+        var parameters = new DialogParameters();
+        parameters.Add("Dto", q);
+        var dialog = DialogService.Show<QuizQuestionDialog>("Create a quiz question", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // Add the Reward
+            if (result.Data is AdminQuizQuestionDto dto)
+            {
+                Model.Questions.Add(dto);
+            }
+        }
+    }
+    private async Task OnSave()
+    {
+        await OnSaveClicked.InvokeAsync(true);
+    }
+    private async Task EditQuestionDialog(DialogOptions options, AdminQuizQuestionDto q)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Dto", q);
+        var dialog = DialogService.Show<QuizQuestionDialog>("Edit question", parameters, options);
+        var result = await dialog.Result;
+    }
+}
