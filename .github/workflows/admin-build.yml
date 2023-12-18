@@ -17,12 +17,11 @@ jobs:
 
       - name: Restore
         shell: pwsh
-        run: dotnet restore
-
+        run: |
+          dotnet restore ${{ inputs.publishProjectPath }}
       - name: Build
         shell: pwsh
-        run: dotnet build --no-restore --configuration Release
-
+        run: dotnet build ${{ inputs.publishProjectPath }} --no-restore --configuration Release
       - name: Publish
         shell: pwsh
         run: dotnet publish ${{ inputs.publishProjectPath }} --no-build --configuration Release --output out

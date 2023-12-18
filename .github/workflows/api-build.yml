@@ -3,6 +3,9 @@ name: API - Build
 on:
   workflow_call:
 
+env:
+  PROJECT_PATH: src/Presentation/WebAPI/WebAPI.csproj
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,13 +17,13 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore $PROJECT_PATH
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build $PROJECT_PATH  --configuration Release --no-restore
       - name: Test
-        run: dotnet test --configuration Release --no-build
+        run: dotnet test $PROJECT_PATH  --configuration Release --no-build
       - name: Publish
-        run: dotnet publish src/Presentation/WebAPI/WebAPI.csproj --configuration Release --no-build --output ./published
+        run: dotnet publish $PROJECT_PATH --configuration Release --no-build --output ./published
       - name: Zip
         shell: pwsh
         run: Compress-Archive -Path ./published/* -DestinationPath ./api.zip
