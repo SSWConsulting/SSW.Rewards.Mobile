@@ -1,0 +1,60 @@
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Add Reward</MudText>    
+    </TitleContent>
+    <DialogContent>
+        <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid">
+            <MudTextField Class="d-inline" T="string" Label="Reward Name" @bind-Value="@Dto.Name" AutoFocus="true" Required="true"/>
+            <MudTextField Class="d-inline" T="int" Label="Reward Cost" @bind-Value="@Dto.Cost" Required="true"/>
+            <MudTextField Class="d-inline" T="string" Label="Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
+            <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload a reward image"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="Submit">
+            Create
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public AddRewardCommand Dto { get; set; } = new();
+
+    private MudForm? _form;
+    private bool valid;
+
+    private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        var ms = new MemoryStream();
+
+        await imageFile.OpenReadStream().CopyToAsync(ms);
+
+        var bytes = ms.ToArray();
+
+        Dto.ImageBytesInBase64 = Convert.ToBase64String(bytes);
+        Dto.ImageFileName = imageFile.Name;
+    }
+    
+    private async Task Submit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
+        if (valid)
+        {
+            MudDialog?.Close(DialogResult.Ok(Dto));
+        }
+    }
+    
+    void Cancel() => MudDialog?.Cancel();
+}
