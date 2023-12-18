@@ -64,13 +64,14 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             _quizIcon = icon;
 
+            Questions.Clear();
+            QuizTitle = "";
+            QuizDescription = "";
+            IsLoadingQuestions = true;
             IsBusy = true;
-            OnPropertyChanged(nameof(IsBusy));
+            RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription));
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
-
-            Questions.Clear();
-            IsLoadingQuestions = true;
 
             foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
             {
@@ -211,10 +212,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             
 
             if (confirmed)
-            {
-                Clear();
                 await Shell.Current.GoToAsync("..");
-            }
         }
 
         private void CurrentQuestionChanged()
@@ -244,17 +242,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         private void MoveNext(int next)
         {
             OnNextQuestionRequested.Invoke(this, next);
-        }
-
-        private void Clear()
-        {
-            Questions.Clear();
-            Results.Clear();
-            QuizDescription = "";
-            ButtonText = "";
-            CurrentQuestion = null;
-            QuizTitle = "";
-            RaisePropertyChanged(nameof(QuizDescription), nameof(ButtonText), nameof(CurrentQuestion), nameof(QuizTitle));
         }
     }
 
