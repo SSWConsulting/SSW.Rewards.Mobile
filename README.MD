@@ -1,6 +1,6 @@
 # SSW Rewards Mobile App!
 
-This is a .NET MAUI app with a .NET 6 backend (see: https://github.com/SSWConsulting/SSW.Rewards.API temporarily, will soon be merged into this repo and upgraded to .NET 8).
+This is a .NET MAUI app with a .NET 8 backend.
 
 Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
 
@@ -18,10 +18,6 @@ Please ensure you are following the [Developer Guidelines](https://github.com/SS
 4. [Deployment Steps](_docs/Instructions-Deployment.md)
 5. [Overview](_docs/Business.md)
 6. [Technologies & Architecture](_docs/Technologies-and-Architecture.md)
-
-### Related projects
-[Admin portal](https://dev.azure.com/ssw/SSW.Rewards)
-
 
 ### Trends and Analytics
 
