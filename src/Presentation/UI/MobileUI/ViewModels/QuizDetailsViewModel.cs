@@ -64,12 +64,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             _quizIcon = icon;
 
-            Questions.Clear();
-            QuizTitle = "";
-            QuizDescription = "";
             IsLoadingQuestions = true;
-            IsBusy = true;
-            RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription));
+            Clear();
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
 
@@ -242,6 +238,18 @@ namespace SSW.Rewards.Mobile.ViewModels
         private void MoveNext(int next)
         {
             OnNextQuestionRequested.Invoke(this, next);
+        }
+
+        private void Clear()
+        {
+            Questions.Clear();
+            Results.Clear();
+            QuizTitle = "";
+            QuizDescription = "";
+            IsBusy = true;
+            QuestionsVisible = true;
+            ResultsVisible = false;
+            RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription), nameof(QuestionsVisible), nameof(ResultsVisible));
         }
     }
 
