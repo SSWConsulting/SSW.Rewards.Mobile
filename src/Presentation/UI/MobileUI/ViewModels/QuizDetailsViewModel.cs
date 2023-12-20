@@ -267,14 +267,17 @@ namespace SSW.Rewards.Mobile.ViewModels
             this.QuestionId = questionDto.QuestionId;
             this.Text = questionDto.Text;
 
+            var counter = 0;
             foreach (var answer in questionDto.Answers)
             {
+                var letter = (char)('A' + counter);
                 MyAnswers.Add(new QuizAnswerViewModel
                 {
                     QuestionAnswerId = answer.QuestionAnswerId,
-                    Text = answer.Text,
+                    Text = $"{letter}. {answer.Text}",
                     QuestionId = questionDto.QuestionId
                 });
+                counter++;
             }
         }
 
