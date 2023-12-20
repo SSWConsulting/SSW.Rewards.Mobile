@@ -17,8 +17,7 @@ jobs:
 
       - name: Restore
         shell: pwsh
-        run: |
-          dotnet restore ${{ inputs.publishProjectPath }}
+        run: dotnet restore ${{ inputs.publishProjectPath }}
       - name: Build
         shell: pwsh
         run: dotnet build ${{ inputs.publishProjectPath }} --no-restore --configuration Release
