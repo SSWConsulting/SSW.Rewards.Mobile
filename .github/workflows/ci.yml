@@ -30,10 +30,10 @@ jobs:
         run: dotnet restore ${{ inputs.project_path }} 
 
       - name: Build
-        run: dotnet build ${{ inputs.project_path }}--no-restore --configuration Release 
+        run: dotnet build ${{ inputs.project_path }} --no-restore --configuration Release 
 
       - name: Test
-        run: dotnet test ${{ inputs.project_path }}--no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
 
       - name: Check file existence
         id: check_files
