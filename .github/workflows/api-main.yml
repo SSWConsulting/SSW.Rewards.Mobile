@@ -8,6 +8,7 @@ jobs:
     uses: ./.github/workflows/build-artifact.yml
     with:
       project_path: src/Presentation/WebAPI/WebAPI.csproj
+      artifact_name: api
   
   deploy_staging:
     needs: api_build
