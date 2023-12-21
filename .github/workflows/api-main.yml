@@ -5,9 +5,10 @@ on:
     
 
 jobs:
-  build:
-    name: Build and upload artifacts
-    uses: ./.github/workflows/api-build.yml
+  api-build:
+    uses: ./.github/workflows/build-artifact.yml
+    with:
+      project_path: src/Presentation/WebAPI/WebAPI.csproj
   
   deploy_staging:
     needs: build

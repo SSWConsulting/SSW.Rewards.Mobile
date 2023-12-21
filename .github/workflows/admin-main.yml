@@ -10,11 +10,10 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  build:
-    uses: ./.github/workflows/admin-build.yml
+  admin-build:
+    uses: ./.github/workflows/build-artifact.yml
     with:
-      publishProjectPath: src/Presentation/UI/AdminUI/AdminUI.csproj
+      project_path: src/Presentation/UI/AdminUI/AdminUI.csproj
 
   deploy_dev:
     name: Admin - Deploy
