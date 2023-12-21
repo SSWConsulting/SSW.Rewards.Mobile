@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       artifact_name:
-        description: 'The path to the project to build'
+        description: 'The name of the .zip to build'
         required: true
         type: string
 
@@ -32,7 +32,7 @@ jobs:
         run: dotnet publish ${{ inputs.project_path }} --configuration Release --no-build --output ./published
       - name: Zip
         shell: pwsh
-        run: Compress-Archive -Path ./published/* -DestinationPath ./{{ inputs.artifact_name }}.zip
+        run: Compress-Archive -Path ./published/* -DestinationPath ./${{ inputs.artifact_name }}.zip
       
       # api 
       - name: Upload Artifacts
