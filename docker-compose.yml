@@ -33,7 +33,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5001
 
-  # TODO: Deploy WASM to docker using Nginx
+  # Admin UI
   adminui:
     depends_on:
       - sqlserver
