@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  # SQL Server
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      MSSQL_SA_PASSWORD: "Rewards.Docker"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+  # API
+  webapi:
+    depends_on:
+      - sqlserver
+    build:
+      dockerfile:  ./src/Presentation/WebAPI/Dockerfile
+      target: development
+      args:
+        - BUILD_CONFIGURATION=Debug
+    ports:
+      - 5001:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+
+  # TODO: Deploy WASM to docker using Nginx
+  adminui:
+    depends_on:
+      - sqlserver
+      - webapi
+    build:
+      dockerfile: ./src/Presentation/UI/AdminUI/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=DEBUG
+    ports:
+      - 8080:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:7137
+
+      
