@@ -9,6 +9,14 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+  
+  # Azurite
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
 
   # API
   webapi:
@@ -35,9 +43,6 @@ services:
       args:
         - BUILD_CONFIGURATION=DEBUG
     ports:
-      - 8080:80
+      - 7137:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:7137
-
-      
