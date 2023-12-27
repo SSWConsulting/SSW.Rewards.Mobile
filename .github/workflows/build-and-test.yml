@@ -1,0 +1,19 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  admin:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: src/Presentation/UI/AdminUI/AdminUI.csproj
+
+  api:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: src/Presentation/WebAPI/WebAPI.csproj

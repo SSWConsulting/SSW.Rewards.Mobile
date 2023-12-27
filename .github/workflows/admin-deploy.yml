@@ -8,11 +8,7 @@ on:
         required: true
         type: string
     secrets:
-      CLIENT_ID:
-        required: true
-      TENANT_ID:
-        required: true
-      SUBSCRIPTION_ID:
+      AZURE_CREDENTIALS:
         required: true
 
 permissions:
@@ -32,9 +28,7 @@ jobs:
 
       - uses: azure/login@v1
         with:
-          client-id: ${{ secrets.CLIENT_ID }}
-          tenant-id: ${{ secrets.TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
       - name: Deploy Bicep

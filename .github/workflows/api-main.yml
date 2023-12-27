@@ -2,15 +2,16 @@ name: API - Build and deploy
 
 on:
   workflow_dispatch:
-    
 
 jobs:
-  build:
-    name: Build and upload artifacts
-    uses: ./.github/workflows/api-build.yml
+  api_build:
+    uses: ./.github/workflows/build-artifact.yml
+    with:
+      project_path: src/Presentation/WebAPI/WebAPI.csproj
+      artifact_name: api
   
   deploy_staging:
-    needs: build
+    needs: api_build
     name: Deploy staging
     uses: ./.github/workflows/api-az-deploy.yml
     with:
