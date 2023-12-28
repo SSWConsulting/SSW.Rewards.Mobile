@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Rewards;
+using Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Mobile.Services;
 
