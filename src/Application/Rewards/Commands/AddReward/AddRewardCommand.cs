@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using SSW.Rewards.Application.Rewards.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands.AddReward;
 
