@@ -1,8 +1,10 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using Shared.DTOs.Rewards;
+
+namespace SSW.Rewards.Mobile.Services;
 
 public interface IRewardService
 {
-    Task<List<Reward>> GetRewards();
-    Task<ClaimRewardResult> RedeemReward(Reward reward);
+    Task<RewardListViewModel> GetRewards();
+    Task<ClaimRewardResult> RedeemReward(string code, bool inPerson);
     Task<ClaimRewardResult> RewardRewardWithQRCode(string QRCode);
 }
