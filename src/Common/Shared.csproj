@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="ApiServices\" />
+    <Folder Include="DTOs\Skills\" />
     <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Users\" />
   </ItemGroup>
