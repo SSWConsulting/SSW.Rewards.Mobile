@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <Folder Include="ApiServices\" />
+    <Folder Include="DTOs\Rewards\" />
+    <Folder Include="DTOs\Skills\" />
     <Folder Include="DTOs\Staff\" />
     <Folder Include="DTOs\Users\" />
   </ItemGroup>

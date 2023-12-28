@@ -10,35 +10,35 @@ public class AdminGetQuizDetails : IRequest<AdminQuizDetailsDto>
     {
         QuizId = id;
     }
-    public sealed class Handler : IRequestHandler<AdminGetQuizDetails, AdminQuizDetailsDto>
+}
+
+public sealed class Handler : IRequestHandler<AdminGetQuizDetails, AdminQuizDetailsDto>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
+    private readonly IMapper _mapper;
+    public Handler(
+        IApplicationDbContext context,
+        ICurrentUserService currentUserService,
+        IUserService userService,
+        IMapper mapper)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        public Handler(
-            IApplicationDbContext context,
-            ICurrentUserService currentUserService,
-            IUserService userService,
-            IMapper mapper)
-        {
-            _context = context;
-            _currentUserService = currentUserService;
-            _userService = userService;
-            _mapper = mapper;
-        }
-
-        public async Task<AdminQuizDetailsDto> Handle(AdminGetQuizDetails request, CancellationToken cancellationToken)
-        {
-            return await _context.Quizzes
-                                    .Include(q => q.Questions)
-                                        .ThenInclude(x => x.Answers)
-                                    .Where(x => x.Id == request.QuizId)
-                                    .ProjectTo<AdminQuizDetailsDto>(_mapper.ConfigurationProvider)
-                                    .FirstAsync(cancellationToken);
-
-
-        }
+        _context = context;
+        _currentUserService = currentUserService;
+        _userService = userService;
+        _mapper = mapper;
     }
 
+    public async Task<AdminQuizDetailsDto> Handle(AdminGetQuizDetails request, CancellationToken cancellationToken)
+    {
+        return await _context.Quizzes
+                                .Include(q => q.Questions)
+                                    .ThenInclude(x => x.Answers)
+                                .Where(x => x.Id == request.QuizId)
+                                .ProjectTo<AdminQuizDetailsDto>(_mapper.ConfigurationProvider)
+                                .FirstAsync(cancellationToken);
+
+
+    }
 }

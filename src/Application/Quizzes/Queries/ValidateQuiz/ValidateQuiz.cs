@@ -1,6 +1,7 @@
 ﻿using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.ValidateQuiz;
+
 public class ValidateQuiz : IRequest<QuizResultDto>
 {
     public int QuizId { get; set; }

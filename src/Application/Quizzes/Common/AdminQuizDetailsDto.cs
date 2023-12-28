@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SSW.Rewards.Application.Common.Mappings;
+﻿using SSW.Rewards.Application.Common.Mappings;
 using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Quizzes.Common;
