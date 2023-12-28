@@ -1,8 +1,4 @@
-﻿using AutoMapper.Configuration.Annotations;
-using SSW.Rewards.Application.Achievements.Common;
-using SSW.Rewards.Application.Quizzes.Common;
-using SSW.Rewards.Domain.Entities;
-using SSW.Rewards.Domain.Enums;
+﻿using SSW.Rewards.Application.Quizzes.Common;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
@@ -13,17 +9,10 @@ public class AdminUpdateQuiz : IRequest<int>
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUserService _userService;
 
-    public AdminUpdateQuizHandler(
-        IApplicationDbContext context,
-        ICurrentUserService currentUserService,
-        IUserService userService)
+    public AdminUpdateQuizHandler(IApplicationDbContext context)
     {
         _context = context;
-        _currentUserService = currentUserService;
-        _userService = userService;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)

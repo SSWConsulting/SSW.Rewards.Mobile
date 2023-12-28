@@ -1,8 +1,6 @@
-﻿using SSW.Rewards.Application.Achievements.Queries.Common;
+﻿namespace Shared.DTOs.Achievements;
 
-namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
-
-public class PostAchievementResult
+public class ClaimAchievementResult
 {
     public AchievementDto? viewModel { get; set; }
 

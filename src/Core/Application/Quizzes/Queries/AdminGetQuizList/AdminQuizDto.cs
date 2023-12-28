@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SSW.Rewards.Application.Quizzes.Queries.AdminGetQuizList;
+﻿namespace SSW.Rewards.Application.Quizzes.Queries.AdminGetQuizList;
 public class AdminQuizDto
 {
     public int Id { get; set; }

@@ -63,7 +63,7 @@ public class AchievementController : ApiControllerBase
     [HttpPost]
     public async Task<ActionResult<PostAchievementResult>> Post([FromQuery] string achievementCode)
     {
-        return Ok(await Mediator.Send(new PostAchievementCommand { Code = achievementCode }));
+        return Ok(await Mediator.Send(new ClaimAchievementCommand { Code = achievementCode }));
     }
 
     [HttpDelete]
