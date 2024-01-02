@@ -8,7 +8,7 @@ public class GetQuizDetails : IRequest<QuizDetailsDto>
 
     public GetQuizDetails(int id)
     {
-        this.QuizId = id;
+        QuizId = id;
     }
 }
 

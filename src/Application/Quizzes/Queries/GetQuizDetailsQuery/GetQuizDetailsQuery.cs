@@ -9,7 +9,7 @@ public class GetQuizDetailsQuery : IRequest<QuizDetailsDto>
 
     public GetQuizDetailsQuery(int id)
     {
-        this.QuizId = id;
+        QuizId = id;
     }
     
     public sealed class Handler : IRequestHandler<GetQuizDetailsQuery, QuizDetailsDto>

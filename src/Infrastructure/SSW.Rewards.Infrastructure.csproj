@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+        <PackageReference Include="FluentEmail.Graph" Version="2.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
@@ -30,7 +31,6 @@
         <ProjectReference Include="..\Application\SSW.Rewards.Application.csproj" />
 		
 		<!-- Note: The following project has been added. Library maintainer has not updated and there is a critical vulnerability. -->
-        <ProjectReference Include="..\FluentEmail.Graph\FluentEmail.Graph.csproj" />
     </ItemGroup>
 
 </Project>

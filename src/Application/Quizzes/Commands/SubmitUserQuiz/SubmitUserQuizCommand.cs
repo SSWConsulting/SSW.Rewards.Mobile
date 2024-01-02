@@ -103,7 +103,7 @@ public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 
         public SubmitUserQuizCommandValidator(IApplicationDbContext context)
         {
-            this._context = context;
+            _context = context;
             RuleFor(x => x.QuizId)
                 .MustAsync(CanSubmit);
         }

@@ -21,11 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-<<<<<<< HEAD
         <ProjectReference Include="..\..\src\Domain\SSW.Rewards.Domain.csproj" />
-=======
-        <ProjectReference Include="..\..\src\Core\Domain\SSW.Rewards.Domain.csproj" />
->>>>>>> main
     </ItemGroup>
 
 </Project>

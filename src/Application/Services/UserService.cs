@@ -16,7 +16,7 @@ public class UserService : IUserService, IRolesService
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
     private readonly ILogger<UserService> _logger;
-    private readonly string StaffSMTPDomain;
+    private readonly string _staffSMTPDomain;
 
     public UserService(
         IApplicationDbContext dbContext, 
@@ -30,7 +30,7 @@ public class UserService : IUserService, IRolesService
         _mapper = mapper;
         _logger = logger;
 
-        StaffSMTPDomain = options.Value.StaffSmtpDomain;
+        _staffSMTPDomain = options.Value.StaffSmtpDomain;
     }
 
     public int AddRole(Role role)
@@ -84,7 +84,7 @@ public class UserService : IUserService, IRolesService
 
         var userEmail = new MailAddress(newUser.Email);
 
-        if (userEmail.Host == StaffSMTPDomain)
+        if (userEmail.Host == _staffSMTPDomain)
         {
             var staffRole = await _dbContext.Roles
                 .FirstOrDefaultAsync(r => r.Name == "Staff");

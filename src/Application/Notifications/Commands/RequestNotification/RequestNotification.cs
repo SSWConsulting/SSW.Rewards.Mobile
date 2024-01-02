@@ -50,7 +50,7 @@ public class RequestNotificationHandler : IRequestHandler<RequestNotification, U
         await _notificationService
             .RequestNotificationAsync(notification, cancellationToken);
 
-        var user = await this._userService.GetCurrentUser(cancellationToken);
+        var user = await _userService.GetCurrentUser(cancellationToken);
 
         var notificationEntry = new Notification
         {

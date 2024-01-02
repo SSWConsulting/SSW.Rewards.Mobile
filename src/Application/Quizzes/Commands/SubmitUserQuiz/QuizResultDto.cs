@@ -9,7 +9,7 @@ public class QuizResultDto
 
     public QuizResultDto()
     {
-        this.Results = new List<QuestionResultDto>();
+        Results = new List<QuestionResultDto>();
     }
     
 }
