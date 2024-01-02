@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource MainBackground}"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:LeaderBoardViewModel"
+             x:Name="Leaderboard"
+             x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsMeToColorConverter x:Key="MeToColor"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid Margin="30,5"
+              RowSpacing="6"
+              RowDefinitions="80, 55, 40, 35, *">
+
+            <Grid Grid.Row="0"
+                  RowSpacing="6"
+                  RowDefinitions="3*, 2*"
+                  ColumnDefinitions="80, *, 50">
+
+                <ImageButton Grid.Row="0"
+                             Grid.RowSpan="2"
+                             Source="{Binding ProfilePic}"
+                             WidthRequest="74"
+                             HeightRequest="74"
+                             CornerRadius="37"
+                             Command="{Binding GoToMyProfileCommand}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Aspect="AspectFill">
+                </ImageButton>
+
+                <HorizontalStackLayout Grid.Column="1"
+                             Padding="10,5,0,0"
+                             VerticalOptions="End">
+
+                    <Label Text="{Binding MyRank, StringFormat='&#35;{0}'}"
+                           FontSize="Title"
+                           TextColor="White"/>
+
+                    <Label Text="{Binding TotalLeaders, StringFormat=' of {0}'}"
+                           FontSize="Title"
+                           TextColor="{StaticResource MutedText}"/>
+
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Column="1"
+                             Grid.Row="1"
+                             Padding="10,0,5,0"
+                             VerticalOptions="Start"
+                             Spacing="10">
+
+                    <Label Text="{Binding MyBalance, StringFormat='⭐ {0:n0}'}"
+                           TextColor="{StaticResource primary}"/>
+
+                    <Label Text="{Binding MyPoints, StringFormat='⭐ {0:n0}'}"
+                           TextColor="{StaticResource HighlightedText}"/>
+
+                </HorizontalStackLayout>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="2"
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToMeCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="5"
+                        Text="&#xf151;"
+                        TextColor="White"/>
+                </Border>
+                
+            </Grid>
+
+            <controls:Search
+                Grid.Row="1"
+                VerticalOptions="Center"
+                BackgroundColor="{StaticResource TabBarBackground}"
+                TextColor="White"
+                Command="{Binding SearchTextCommand}"
+                ClearSearch="{Binding ClearSearch, Mode=TwoWay}"/>
+            <!--TODO: Why OneWayToSource doesn't work here?-->
+
+            <Label Grid.Row="2"
+                   Text="Leaderboard"
+                   TextColor="White"
+                   FontSize="Title"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+
+            <controls:TabHeader
+                Grid.Row="3"
+                FilterChanged="{Binding FilterByPeriodCommand}"
+                CurrentPeriod="{Binding CurrentPeriod, Mode=OneWayToSource}"/>
+
+            <RefreshView
+                Grid.Row="4"
+                Command="{Binding RefreshCommand}"
+                IsRefreshing="{Binding IsRefreshing}">
+                <ContentView> <!--TODO: MAUI, remove when the issue is fixed on iOS https://github.com/dotnet/maui/issues/11363-->
+                    <CollectionView
+                        ItemsSource="{Binding SearchResults}"
+                        Scrolled="CollectionView_Scrolled"
+                        x:Name="LeadersCollection"
+                        Margin="0,10">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:LeaderViewModel">
+                                <Grid
+                                    BackgroundColor="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                    ColumnSpacing="6"
+                                    ColumnDefinitions="40, 40, *, Auto"
+                                    RowDefinitions="50, 10">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            NumberOfTapsRequired="1"
+                                            Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
+                                            CommandParameter="{Binding  .}"/>
+                                    </Grid.GestureRecognizers>
+
+                                    <Image
+                                        Margin="10,0,0,0"
+                                        Grid.Column="0"
+                                        Source="{Binding ProfilePic}"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        Aspect="AspectFill"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        InputTransparent="True">
+                                        <Image.Clip>
+                                            <EllipseGeometry
+                                                Center="15,15"
+                                                RadiusX="15"
+                                                RadiusY="15" />
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <Label Text="👑"
+                                           Margin="10,0,0,0"
+                                           FontSize="Small"
+                                           Grid.Column="0"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TranslationY="-20"
+                                           IsVisible="{Binding IsLeader}"
+                                           InputTransparent="True"/>
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Rank, StringFormat='&#35;{0}'}"
+                                           TextColor="White"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           InputTransparent="True"/>
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Name}"
+                                           TextColor="White"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           InputTransparent="True"/>
+
+                                    <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
+                                    <Grid Grid.Column="3"> 
+                                        <Label 
+                                            Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
+                                            TextColor="White"
+                                            Margin="0,0,10,0"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End"
+                                            InputTransparent="True"/>
+                                    </Grid>
+                                    <ContentView Grid.Row="1" Grid.ColumnSpan="4" BackgroundColor="{StaticResource MainBackground}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ContentView>
+            </RefreshView>
+
+            <VerticalStackLayout
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,-20,10"
+                IsVisible="False"
+                Spacing="6"
+                x:Name="ScrollButtons">
+                
+                <Border
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeThickness="0"
+                    StrokeShape="Ellipse">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToTopCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="{OnPlatform iOS=2, Android=10}"
+                        Padding="{OnPlatform iOS=10, Android=0}"
+                        Text="&#xf1a5;"
+                        TextColor="White"/>
+                </Border>
+
+                <Border
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    StrokeThickness="0"
+                    StrokeShape="Ellipse">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScrollToEndCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontSize="30"
+                        Margin="{OnPlatform iOS=2, Android=10}"
+                        Padding="{OnPlatform iOS=10, Android=0}"
+                        Text="&#xf151;"
+                        TextColor="White"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <ActivityIndicator Grid.Row="0"
+                               Grid.RowSpan="5"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="{StaticResource SSWRed}"
+                               IsEnabled="{Binding IsRunning}"
+                               IsRunning="{Binding IsRunning}"
+                               IsVisible="{Binding IsRunning}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

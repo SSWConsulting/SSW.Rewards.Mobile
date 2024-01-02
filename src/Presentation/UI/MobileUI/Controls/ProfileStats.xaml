@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SSW.Rewards.Mobile.Controls.ProfileStats"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls">
+              
+    <controls:RewardsProgress
+        Progress="{Binding Progress}"/>
+
+    <!--
+    RewardsPregress is not taken into account when the size of ProfileStats is calculates.
+    So we need this placeholder. The bottom padding is 80px where 60px is the width of the progress bar
+    and 20 is the actual padding-->
+    <Label Margin="0,0,0,280"/>
+
+    <HorizontalStackLayout
+        Spacing="6"
+        Padding="0,0,0,0"
+        Margin="0,0,0,200"
+        IsVisible="{Binding ShowBalance}"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+        <Label
+            HorizontalOptions="End"
+            Text="⭐"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+        <Label
+            Text="{Binding Balance, StringFormat='{0:n0}'}"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+        <Label
+            HorizontalOptions="End"
+            Text="⭐"
+            FontSize="Small"
+            TextColor="{StaticResource primary}" />
+    </HorizontalStackLayout>
+
+    <Label
+        Margin="0,0,0,140"
+        TextColor="{StaticResource HeadingColor}"
+        FontSize="Large"
+        Text="{Binding Points, StringFormat='{0:n0}'}"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        HorizontalTextAlignment="Center"/>
+
+    <Label
+        Margin="0,150,0,0"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        HorizontalTextAlignment="Center"
+        Text="{Binding Name}"
+        TextColor="White"/>
+
+    <Image
+        Source="{Binding ProfilePic}"
+        WidthRequest="100"
+        HeightRequest="100"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        Aspect="AspectFill">
+        <Image.Clip>
+            <EllipseGeometry
+                Center="50,50"
+                RadiusX="50"
+                RadiusY="50"/>
+        </Image.Clip>
+    </Image>
+
+    <Border
+        BackgroundColor="{StaticResource primary}"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        TranslationX="40"
+        TranslationY="-35"
+        StrokeShape="Ellipse"
+        StrokeThickness="0"
+        IsVisible="{Binding ShowCamera}">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding CameraCommand}"/>
+        </Border.GestureRecognizers>
+        <Label
+            FontFamily="FluentIcons"
+            FontSize="25"
+            Text="&#xe299;"
+            Margin="3"
+            TextColor="White"/>
+    </Border>
+</Grid>
+

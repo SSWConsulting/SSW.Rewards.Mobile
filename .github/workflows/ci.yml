@@ -1,13 +1,19 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - .github/settings.yml
+  workflow_call:
+      inputs:
+        project_path:
+          description: Path to .csproj to build
+          required: true
+          type: string
 
   workflow_dispatch:
+      inputs:
+        project_path:
+          description: Path to .csproj to build
+          required: true
+          type: string
 
 jobs:
   build_and_test:
@@ -21,13 +27,13 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ${{ inputs.project_path }} 
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build ${{ inputs.project_path }} --no-restore --configuration Release 
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
 
       - name: Check file existence
         id: check_files

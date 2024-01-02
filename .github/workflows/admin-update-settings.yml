@@ -1,0 +1,45 @@
+name: Admin - Update Repo Settings
+
+on:
+  push:
+    branches: 
+      - main
+    paths: 
+      - .github/settings.yml
+
+  pull_request:
+    branches: 
+      - main
+    paths: 
+      - .github/settings.yml
+
+  workflow_dispatch:
+
+jobs:
+  apply_settings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # If this is a PR, dry-run the PR and watch for errors
+      - name: Admin - Dry-run settings in the PR
+        id: dryrun
+        continue-on-error: true
+        if: github.event_name == 'pull_request'
+        uses: GuacamoleResearch/actions-settings@v3-beta-updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Explicitly checkout main branch to ensure production settings are reset
+      - name: Admin - Switch to main for production settings
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      # If this is a PR, dry-run the PR and watch for errors
+      - name: Admin - Apply production repo settings
+        uses: GuacamoleResearch/actions-settings@v3-beta-updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -34,19 +34,20 @@ Microsoft Learn has a great step-by-step process to get your first .NET MAUI pro
 ### Web API
 
 1. Clone the repository 
-   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.API.git`
+   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
 3. Grab connection strings from an existing dev to create local `secrets.json` file (https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows)
-4. Install / Run `Azure Storage Emulator` (Run the .exe or use the "start" command)
-5. Install / Run [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/#overview)
-6. Start Explorer (**On First Install** - See steps below)
+4. Update `WebAPI` `appsettings.json` and `appsettings.development.json` with the proper secrets
+5. Install / Run `Azure Storage Emulator` (Run the .exe or use the "start" command)
+6. Install / Run [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/#overview)
+7. Start Explorer (**On First Install** - See steps below)
    1. Sign in using the "Subscription" option
    2. Select the "Azure" option
    3. Next (Sign in with your account that has access to ssw1 DevOps)
-7. Inside the Explorer - **Local & Attached** | **Storage Accounts** | **Emulator** | **Blob Containers**
-8. Create a **new container** called `profile`
-9.  Copy over all files in `SeedData/profiles` (images + .xlsx) into the newly created `profile` container
-10. Press f5
-11. Test that you can access the swagger docs @ `https://localhost:5001/swagger/`
+8. Inside the Explorer - **Local & Attached** | **Storage Accounts** | **Emulator** | **Blob Containers**
+9. Create a **new container** called `profile`
+10. Copy over all files in `SeedData/profiles` (images + .xlsx) into the newly created `profile` container
+11. Press f5
+12. Test that you can access the swagger docs @ `https://localhost:5001/swagger/`
 
 **(Optional)** - If you need to run the api and mobile app locally. 
 1. Run dev tunnels `devtunnel host -p 5001`
@@ -83,6 +84,10 @@ OR
 
 ### Setting up for Apple Development (on your own phone)
 If you want to set up to deploy to your own iPhone, talk to an App Manager (it's hard :))!
+
+### Admin Portal
+1. Get the source code 
+   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
 

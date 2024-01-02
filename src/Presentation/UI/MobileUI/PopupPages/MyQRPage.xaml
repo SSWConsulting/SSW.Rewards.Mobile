@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<popup:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:popup="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+                 x:Class="SSW.Rewards.PopupPages.MyQRPage">
+    <popup:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                               PositionOut="Center"
+                               ScaleIn="1.2"
+                               ScaleOut="0.8"
+                               DurationIn="200"
+                               DurationOut="200"
+                               EasingIn="SinOut"
+                               EasingOut="SinIn"
+                               HasBackgroundAnimation="True"/>
+    </popup:PopupPage.Animation>
+    <Border
+           Margin="10"
+           Padding="20"
+           StrokeShape="RoundRectangle 3"
+           StrokeThickness="0"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}">
+        <VerticalStackLayout Spacing="24">
+            <zx:BarcodeGeneratorView x:Name="codeView"
+                                     Format="QrCode"
+                                     WidthRequest="300"
+                                     HeightRequest="300"/>
+
+            <Button Text="OK"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    TextColor="White"
+                    Margin="0,0,0,20"
+                    Clicked="Close_Clicked"/>
+        </VerticalStackLayout>
+    </Border>
+</popup:PopupPage>
