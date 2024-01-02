@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:const="clr-namespace:SSW.Rewards"
+             x:Class="SSW.Rewards.Mobile.PopupPages.ScanResult"
+             x:DataType="viewModels:ScanResultViewModel"
+             BackgroundClickedCommand="{Binding OnOkCommand}"
+             BackgroundColor="Transparent">
+    <pages:PopupPage.Resources>
+        <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
+    </pages:PopupPage.Resources>
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame WidthRequest="400"
+           HeightRequest="450"
+           Margin="10"
+           Padding="10"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}"
+           HorizontalOptions="Center"
+           VerticalOptions="Center">
+        <StackLayout>
+            <Label 
+                   Text="{Binding ResultHeading}"
+                   FontSize="24"
+                   Margin="10,10,10,0"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{Binding HeadingColour}"/>
+            <Label Text="{Binding AchievementHeading}"
+                   FontSize="18"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{Binding HeadingColour}"/>
+            <lottie:SKLottieView x:Name="ResultAnimation"
+                                  Source="{Binding AnimationRef, Converter={StaticResource StringToSkLottieImageSourceConverter}}"
+                                  IsAnimationEnabled="False"
+                                  RepeatCount="{x:Static const:Constants.AnimationRepeatCount}"
+                                  VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="CenterAndExpand"
+                                  HeightRequest="200"
+                                  WidthRequest="200"
+                                  Scale="1"/>
+            <Label Text="{Binding ResultBody}"
+                   TextColor="White"
+                   HorizontalTextAlignment="Center"
+                   Margin="10"/>
+            <Button Text="OK"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    TextColor="White"
+                    Margin="0,0,0,20"
+                    Command="{Binding OnOkCommand}"/>
+        </StackLayout>
+    </Frame>
+</pages:PopupPage>

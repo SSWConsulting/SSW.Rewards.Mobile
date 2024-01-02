@@ -1,0 +1,42 @@
+﻿<Border
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+    x:Name="SearchControl"
+    x:Class="SSW.Rewards.Mobile.Controls.Search"
+    x:DataType="controls:Search"
+    StrokeShape="RoundRectangle 10"
+    StrokeThickness="0"
+    HeightRequest="45">
+
+    <Grid ColumnDefinitions="*, 50">
+        <!-- 3px extra margin on Android because the control has a hidden underline -->
+        <controls:BorderlessEntry
+            Grid.Column="0"
+            x:Name="SearchEntry"
+            android:Entry.ImeOptions="Search"
+            Margin="{OnPlatform Android='10,3,0,0', iOS='10,0,0,0'}" 
+            TextChanged="SearchEntry_OnTextChanged">
+            <controls:BorderlessEntry.Behaviors>
+                <mct:UserStoppedTypingBehavior StoppedTypingTimeThreshold="500" 
+                                               ShouldDismissKeyboardAutomatically="False"
+                                               Command="{Binding Source={x:Reference SearchControl}, Path=Command}" 
+                                               CommandParameter="{Binding Path=Text, Source={x:Reference SearchEntry}}"/>
+            </controls:BorderlessEntry.Behaviors>
+        </controls:BorderlessEntry>
+
+        <Label
+            x:Name="Icon"
+            Grid.Column="1"
+            FontFamily="FluentIcons"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontSize="20">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Icon_OnTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+    </Grid>
+</Border>

@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      publishProjectPath:
+        required: true
+        type: string
+
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+      - name: Publish
+        run: dotnet publish src/WebAPI/WebAPI.csproj --configuration Release --no-build --output ./published
+      - name: Zip
+        shell: pwsh
+        run: Compress-Archive -Path ./published/* -DestinationPath ./api.zip
+      
+      # api 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: api
+          path: ./api.zip
+          retention-days: 2
+      # infra
+      - name: Upload Infra Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: infra
+          path: ./infra
+          retention-days: 2
+
+  build-admin-portal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+
+      - name: Restore
+        shell: pwsh
+        run: dotnet restore
+
+      - name: Build
+        shell: pwsh
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Publish
+        shell: pwsh
+        run: dotnet publish ${{ inputs.publishProjectPath }} --no-build --configuration Release --output out
+
+      - name: Upload a UI Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ui
+          path: out/wwwroot
+          if-no-files-found: error
+
+      - name: Upload a Infra Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: infra
+          path: infra
+          if-no-files-found: error

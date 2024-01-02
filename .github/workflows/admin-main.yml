@@ -13,7 +13,7 @@ jobs:
   admin_build:
     uses: ./.github/workflows/build-artifact.yml
     with:
-      project_path: src/Presentation/UI/AdminUI/AdminUI.csproj
+      project_path: src/AdminUI/AdminUI.csproj
       artifact_name: ui
 
   deploy_dev:

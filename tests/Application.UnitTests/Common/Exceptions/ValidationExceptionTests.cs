@@ -1,7 +1,14 @@
+<<<<<<< HEAD
+﻿using SSW.Rewards.Application.Common.Exceptions;
+using FluentAssertions;
+using FluentValidation.Results;
+using NUnit.Framework;
+=======
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using ValidationException = SSW.Rewards.Application.Common.Exceptions.ValidationException;
 using ValidationFailure = FluentValidation.Results.ValidationFailure;
+>>>>>>> main
 
 namespace SSW.Rewards.Application.UnitTests.Common.Exceptions;
 

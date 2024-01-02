@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 BackgroundColor="Transparent"
+                 x:Class="SSW.Rewards.PopupPages.TechQuiz">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation PositionIn="Center"
+                                   PositionOut="Center"
+                                   ScaleIn="1.2"
+                                   ScaleOut="0.8"
+                                   DurationIn="200"
+                                   DurationOut="200"
+                                   EasingIn="SinOut"
+                                   EasingOut="SinIn"
+                                   HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Frame CornerRadius="3"
+           HorizontalOptions="Center"
+           Margin="10"
+           VerticalOptions="Center"
+           HasShadow="True"
+           BackgroundColor="{StaticResource ProfileBackgroundColour}">
+        <Grid>
+            <StackLayout>
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource SSWRed}"
+                       FontSize="Large"
+                       Text="Take Our Tech Quiz"/>
+                <Label HorizontalTextAlignment="Center"
+                       Margin="20"
+                       TextColor="White"
+                       Text="Test your dev skills!"
+                       />
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="White"
+                       Margin="20"
+                       Text="Want to see how much you know about the latest tech and trends? Take our Tech Quiz and see how you fare."
+                       />
+                <Frame BackgroundColor="{StaticResource SSWRed}">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1"
+                                              Tapped="FindoutMore_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Grid InputTransparent="True">
+                        <Label Text="Take Quiz..."
+                               InputTransparent="True"
+                               HorizontalTextAlignment="Center"
+                               TextColor="White"
+                               HorizontalOptions="Center"/>
+                        <Image Source="external_link.png"
+                               WidthRequest="24"
+                               InputTransparent="True"
+                               HorizontalOptions="End"/>
+                    </Grid>
+                </Frame>
+            </StackLayout>
+            <Image Source="icon_close"
+                   VerticalOptions="Start"
+                   HorizontalOptions="End">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_CloseTapped"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </Grid>
+    </Frame>
+</pages:PopupPage>

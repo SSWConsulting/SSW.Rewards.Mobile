@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             x:DataType="viewModels:ProfileCarouselViewModel"
+             x:Class="SSW.Rewards.Mobile.Controls.Notifications">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:NotificationTypeToIconConverter x:Key="TypeToIcon"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+  <ContentView.Content>
+      <Grid RowDefinitions="Auto,*"
+            Padding="20,0">
+          <Label Text="Notifications"
+                 TextColor="White"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 HorizontalTextAlignment="Center"
+                 VerticalOptions="Start"
+                 FontSize="Title"
+                 LineBreakMode="TailTruncation"
+                 Margin="10"
+                 Grid.Row="0"/>
+
+            <CollectionView ItemsSource="{Binding Notifications}"
+                            Grid.Row="1">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     WidthRequest="200">
+                            <Label Text="You have no outstanding notifications."
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource LeaderCardBackground}"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Notification">
+                         <!-- TODO: Remove Height request. Without it CollectionView with uneven heights doesn't work properly on iOS -->
+                        <Grid BackgroundColor="{StaticResource LeaderCardBackground}"
+                              ColumnDefinitions="1*, 6*"
+                              HeightRequest="75">
+                            <Label TextColor="White"
+                                   Text="{Binding Type, Converter={StaticResource TypeToIcon}}"
+                                   FontFamily="FluentIcons"
+                                   FontSize="Title"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   Margin="0,10"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding Message}"
+                                   TextColor="White"
+                                   VerticalOptions="Center"
+                                   Padding="10,5,5,5"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+      </Grid>
+  </ContentView.Content>
+</ContentView>
