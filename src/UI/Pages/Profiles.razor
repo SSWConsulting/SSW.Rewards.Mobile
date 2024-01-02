@@ -1,0 +1,106 @@
+﻿@page "/profiles"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Profile
+@using SSW.Rewards.Admin.UI.Helpers
+
+@inject IDialogService DialogService
+@inject IStaffClient _client
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h2">Profiles</MudText>
+<MudText Typo="Typo.body1">All staff profiles available for editing</MudText>
+
+<MudPaper Class="pa-2" Elevation="0">
+    <MudCheckBox T="bool" @bind-Checked="@_showArchivedStaff" Label="Filter List for Archived Staff" />
+</MudPaper>
+
+<Table TItem="StaffDto"
+       Items="@(_model.Where(s => s.IsDeleted == _showArchivedStaff && s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)).OrderBy(i => i.Name).ToList())"
+       TableTitle="Profiles"
+       IsLoading="@_loading">
+    <ToolbarContent>
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search for a profile"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" />
+    </ToolbarContent>
+    <HeadingTemplate>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<StaffDto, object>(x => x.Name)" InitialDirection="SortDirection.Ascending">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<StaffDto, object>(x => x.StaffAchievement.Value)">
+                Points
+            </MudTableSortLabel>
+        </MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Name">
+            <MudLink Class="d-flex flex-nowrap gap-2 align-center" Href="@($"/profile/{context.Id}")">
+                <Avatar Url="@context.ProfilePhoto"/>
+                <MudText Typo="Typo.body1">@context.Name</MudText>
+            </MudLink>
+        </MudTd>
+        <MudTd DataLabel="Points">
+            @context.StaffAchievement?.Value
+        </MudTd>
+    </RowTemplate>
+</Table>
+
+<FabContainer>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(_disableBackdropClick))"/>
+</FabContainer>
+
+@* TODO: Move this to the code behind *@
+@code {
+    readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true,  MaxWidth = MaxWidth.Medium, FullWidth = true };
+    
+    private bool _loading = true;
+    private string _searchString = string.Empty;
+    private bool _showArchivedStaff;
+    private IEnumerable<StaffDto> _model = Enumerable.Empty<StaffDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await GetStaff();
+    }
+
+    private async Task<IEnumerable<StaffDto>> GetStaff()
+    {
+        var staff = Enumerable.Empty<StaffDto>();
+        try
+        {
+            _loading = true;
+            await Task.Delay(250);
+            staff = (await _client.GetAsync()).Staff;
+            _loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        return staff;
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+        var dialog = DialogService.Show<AddStaffProfileDialog>("Create a Staff Profile", options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // Add the Reward
+            if (result.Data is StaffDto dto)
+            {
+                await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(dto));
+            }
+            await GetStaff();
+        }
+    }
+}

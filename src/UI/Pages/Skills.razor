@@ -1,0 +1,137 @@
+@page "/Skills"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
+@using SSW.Rewards.Admin.UI.Components
+
+@attribute [Authorize]
+
+@inject ISkillClient _client
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+
+<MudText Typo="Typo.h2">Skills</MudText>
+<MudText Typo="Typo.body1">All Staff Skills</MudText>
+
+<MudTable Items="@_model.OrderBy(s => s.Name)"
+          T="AdminSkill"
+          CanCancelEdit="true"
+          Filter="new Func<AdminSkill, bool>(FilterItemsFunc)"
+          @bind-SelectedItem="@selectedItem"
+          CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="OnEditSubmit">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Staff Skills</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Delete"><MudButton OnClick="@(() => OnDeletedClicked(context))">Delete</MudButton></MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Name">
+            <MudTextField @bind-Value="@context.Name" Required/>
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+<FabContainer>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+</FabContainer>
+
+@* TODO: Implement Deleting Skills *@
+@code {
+    private DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private string searchString = string.Empty;
+    private AdminSkill? selectedItem;
+    private IEnumerable<AdminSkill> _model { get; set; } = Enumerable.Empty<AdminSkill>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        try
+        {
+            await GetSkills();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task GetSkills()
+    {
+        _model =  await _client.GetAdminAsync();
+    }
+
+    private async Task OpenDialog(DialogOptions options)
+    {
+    var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
+    var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            // Add the Skill
+            if (result.Data is string skill)
+            {
+                await _client.UpsertSkillAsync(new(){ Skill = skill });
+            }
+            await GetSkills();
+        }
+    }
+
+    private bool FilterItemsFunc(AdminSkill item) => FilterFunc(item, searchString);
+
+    //! Note: This is only filtering on the name
+    private bool FilterFunc(AdminSkill item, string searchString)
+    {
+        return string.IsNullOrWhiteSpace(searchString) || item.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private async Task OnEditSubmit()
+    {
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        
+        try
+        {
+            await _client.UpsertSkillAsync(new(){ Id = selectedItem!.Id, Skill = selectedItem!.Name });
+            Snackbar.Add("Updated Skill!", Severity.Success);
+        }
+        catch
+        {
+            Snackbar.Add("Error Saving", Severity.Error);
+        }
+    }
+
+    private async Task OnDeletedClicked(AdminSkill item)
+    {
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{item.Name}?\"",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Deleting will remove this skill from all users")
+            ).Result;
+
+        if (!result.Canceled && (bool) result.Data)
+        {
+            await _client.DeleteSkillAsync(new DeleteSkillCommand
+            {
+                Id = item.Id
+            });
+            await GetSkills();
+        }
+        
+    }
+    
+
+}

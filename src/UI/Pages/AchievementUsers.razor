@@ -1,0 +1,51 @@
+﻿@page "/achivementusers/{id:int}"
+
+@inject IAchievementClient _client
+@using SSW.Rewards.Admin.UI.Components
+
+<MudText Typo="Typo.h2">Users who have this achievement</MudText>
+
+<MudText Typo="Typo.h3">@_achievementName</MudText>
+    
+<Table TItem="AchievementUserDto"
+       Items="@_users"
+       TableTitle="Achievement Users"
+       IsLoading="@_loading">
+    <HeadingTemplate>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Awarded at</MudTh>
+    </HeadingTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.UserId</MudTd>
+        <MudTd DataLabel="Name">@context.UserName</MudTd>
+        <MudTd DataLabel="Email">@context.UserEmail</MudTd>
+        <MudTd DataLabel="Awarded at">@context.AwardedAtUtc.ToString("ddd MMM yyyy")</MudTd>
+    </RowTemplate>
+</Table>
+
+@code 
+{
+    [Parameter]
+    public int Id { get; set; }
+    
+    private bool _loading = true;
+    private string _achievementName = string.Empty;
+
+    private IEnumerable<AchievementUserDto> _users = Enumerable.Empty<AchievementUserDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _loading = true;
+
+        var achievementUsers = await _client.UsersAsync(Id, CancellationToken.None);
+
+        _achievementName = achievementUsers.AchievementName;
+
+        _users = achievementUsers.Users;
+
+        _loading = false;
+    }
+}

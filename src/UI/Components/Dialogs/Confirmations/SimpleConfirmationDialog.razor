@@ -1,0 +1,41 @@
+<MudDialog>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public string? ContentText { get; set; }
+
+    [Parameter] public string? ButtonText { get; set; }
+
+    [Parameter] public Color Color { get; set; }
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog?.Cancel();
+
+    public static DialogParameters CreateDialogParams(SimpleConfirmationDialogType dialogType, string contentText, string buttonText = "Delete")
+    {
+        Color color = dialogType switch
+        {
+            SimpleConfirmationDialogType.Danger => Color.Error,
+            SimpleConfirmationDialogType.Warning => Color.Warning,
+            SimpleConfirmationDialogType.Info => Color.Info,
+            _ => Color.Info,
+        };
+        
+        return new DialogParameters
+        {
+            {nameof(ContentText), contentText},
+            {nameof(ButtonText), buttonText},
+            {nameof(Color), color},
+        };
+    }
+}
