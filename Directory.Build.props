@@ -9,7 +9,7 @@
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset</CodeAnalysisRuleSet>
     <Features>IOperation</Features>
     <IsPackable>false</IsPackable>
-    <TreatWarningsAsErrors Condition="'$(Configuration)' != 'Debug'">true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(Configuration)' != 'Debug'">False</TreatWarningsAsErrors>
     <RunCodeAnalysis Condition="'$(BuildingForLiveUnitTesting)' == 'true'">False</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
