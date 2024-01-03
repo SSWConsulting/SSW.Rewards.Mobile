@@ -1,6 +1,8 @@
 on:
     workflow_call:
 
+env:
+    PROJECT: src/AdminUI/AdminUI.csproj
 jobs:
     build-admin-artifact:
       runs-on: ubuntu-latest
@@ -13,15 +15,15 @@ jobs:
   
         - name: Restore
           shell: pwsh
-          run: dotnet restore
+          run: dotnet $PROJECT restore
   
         - name: Build
           shell: pwsh
-          run: dotnet build --no-restore --configuration Release
+          run: dotnet build $PROJECT  --no-restore --configuration Release
   
         - name: Publish
           shell: pwsh
-          run: dotnet publish src/AdminUI/AdminUI.csproj --no-build --configuration Release --output out
+          run: dotnet publish $PROJECT --no-build --configuration Release --output out
   
         - name: Upload a UI Artifact
           uses: actions/upload-artifact@v3
