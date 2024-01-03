@@ -15,7 +15,7 @@ jobs:
   
         - name: Restore
           shell: pwsh
-          run: dotnet $PROJECT restore
+          run: dotnet restore $PROJECT
   
         - name: Build
           shell: pwsh
