@@ -14,15 +14,15 @@ jobs:
           uses: actions/setup-dotnet@v3
   
         - name: Restore
-          shell: pwsh
+          shell: bash
           run: dotnet restore $PROJECT
   
         - name: Build
-          shell: pwsh
+          shell: bash
           run: dotnet build $PROJECT  --no-restore --configuration Release
   
         - name: Publish
-          shell: pwsh
+          shell: bash
           run: dotnet publish $PROJECT --no-build --configuration Release --output out
   
         - name: Upload a UI Artifact
