@@ -34,6 +34,8 @@ jobs:
           name: api
           path: ./api.zip
           retention-days: 2
+          if-no-files-found: error
+
       # infra
       - name: Upload Infra Artifacts
         uses: actions/upload-artifact@v3
@@ -41,37 +43,4 @@ jobs:
           name: infra
           path: ./infra
           retention-days: 2
-
-  build-admin-portal:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-
-      - name: Restore
-        shell: pwsh
-        run: dotnet restore
-
-      - name: Build
-        shell: pwsh
-        run: dotnet build --no-restore --configuration Release
-
-      - name: Publish
-        shell: pwsh
-        run: dotnet publish ${{ inputs.publishProjectPath }} --no-build --configuration Release --output out
-
-      - name: Upload a UI Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ui
-          path: out/wwwroot
-          if-no-files-found: error
-
-      - name: Upload a Infra Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: infra
-          path: infra
           if-no-files-found: error

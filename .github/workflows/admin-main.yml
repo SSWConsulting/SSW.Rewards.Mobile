@@ -11,10 +11,7 @@ on:
 
 jobs:
   admin_build:
-    uses: ./.github/workflows/build-artifact.yml
-    with:
-      project_path: src/AdminUI/AdminUI.csproj
-      artifact_name: ui
+    uses: ./.github/workflows/admin-build.yml
 
   deploy_dev:
     name: Admin - Deploy
