@@ -1,19 +1,9 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
-<<<<<<< HEAD
-=======
-using Microsoft.Extensions.Configuration;
-using Microsoft.Graph.Models;
->>>>>>> main
 using NUnit.Framework;
 using SSW.Rewards.Application.Common.Mappings;
 using SSW.Rewards.Application.Leaderboard.Queries.Common;
 using SSW.Rewards.Domain.Entities;
-<<<<<<< HEAD
-=======
-using IConfigurationProvider = AutoMapper.IConfigurationProvider;
-using User = SSW.Rewards.Domain.Entities.User;
->>>>>>> main
 
 namespace SSW.Rewards.Application.UnitTests.Common.Mappings;
 
