@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Logging;
+using Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 
-public class GetCurrentUserQuery : IRequest<CurrentUserViewModel>
+public class GetCurrentUserQuery : IRequest<CurrentUserDto>
 {        
 }
 
-public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserViewModel>
+public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserDto>
 {
     private readonly ILogger<GetCurrentUserQueryHandler> _logger;
     private readonly IUserService _userService;
@@ -21,9 +22,9 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
         _currentUserService = currentUserService;
     }
 
-    public async Task<CurrentUserViewModel> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+    public async Task<CurrentUserDto> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
     {
-        CurrentUserViewModel user = await _userService.GetCurrentUser(cancellationToken);
+        var user = await _userService.GetCurrentUser(cancellationToken);
 
         if (user == null)
         {

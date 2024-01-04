@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Application.System.Commands.Common;
+﻿using Shared.DTOs.Users;
+using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 

@@ -1,8 +1,4 @@
-﻿using SSW.Rewards.Application.Users.Common;
-using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
-using SSW.Rewards.Application.Users.Queries.GetUser;
-using SSW.Rewards.Application.Users.Queries.GetUserRewards;
-using SSW.Rewards.Domain.Entities;
+﻿using Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Common.Interfaces;
 public interface IUserService
@@ -35,8 +31,8 @@ public interface IUserService
 
 
     // Get user
-    UserViewModel GetUser(int userId);
-    Task<UserViewModel> GetUser(int userId, CancellationToken cancellationToken);
+    UserProfileDto GetUser(int userId);
+    Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken);
     Task<int> GetUserId(string email, CancellationToken cancellationToken);
 
     // Get user achievements
@@ -48,8 +44,8 @@ public interface IUserService
     Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken);
 
     // Get current user
-    CurrentUserViewModel GetCurrentUser();
-    Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken);
+    CurrentUserDto GetCurrentUser();
+    Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken);
 
     // Get user's QR code
     string GetStaffQRCode(string emailAddress);
