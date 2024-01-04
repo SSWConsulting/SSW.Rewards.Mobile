@@ -15,6 +15,7 @@ public class OtherProfileViewModel : ProfileViewModelBase
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+                OnPropertyChanged(nameof(ProfileSections));
             });
         }
 
