@@ -22,6 +22,7 @@ public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
         {
             // get all quizzes
             var masterQuizList = await _context.Quizzes
+                                                .Where(q => !q.IsArchived)
                                                 .Include(q => q.Questions)
                                                     .ThenInclude(x => x.Answers)
                                                 .OrderBy(q => q.Title)
@@ -32,7 +33,7 @@ public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
             // the quizzes that they've already completed
             var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
             var userQuizzes = await _context.CompletedQuizzes
-                                            .Where(q => q.UserId == userId)
+                                            .Where(q => q.UserId == userId && q.Passed)
                                             .Select(r => r.QuizId)
                                             .ToListAsync(cancellationToken);
 

@@ -29,6 +29,7 @@ public partial class App : Application
     public App(LoginPage page)
     {
         InitializeComponent();
+        Current.UserAppTheme = AppTheme.Dark;
 
         MainPage = page;
     }
