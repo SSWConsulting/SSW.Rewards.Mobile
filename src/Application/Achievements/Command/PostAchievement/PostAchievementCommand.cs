@@ -1,15 +1,15 @@
-﻿using SSW.Rewards.Application.Achievements.Queries.Common;
+﻿using Shared.DTOs.Achievements;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.System.Commands.Common;
-using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
-public class PostAchievementCommand : IRequest<PostAchievementResult>
+public class PostAchievementCommand : IRequest<ClaimAchievementResult>
 {
     public string Code { get; set; }
 }
 
-public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
+public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, ClaimAchievementResult>
 {
     private readonly IUserService _userService;
     private readonly IApplicationDbContext _context;
@@ -25,7 +25,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         _mapper = mapper;
     }
 
-    public async Task<PostAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
+    public async Task<ClaimAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
     {
         var requestedAchievement = await _context
            .Achievements
@@ -34,9 +34,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         if (requestedAchievement == null)
         {
-            return new PostAchievementResult
+            return new ClaimAchievementResult
             {
-                status = AchievementStatus.NotFound
+                status = ClaimAchievementStatus.NotFound
             };
         }
 
@@ -49,9 +49,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
         {
-            return new PostAchievementResult
+            return new ClaimAchievementResult
             {
-                status = AchievementStatus.Duplicate
+                status = ClaimAchievementStatus.Duplicate
             };
         }
 
@@ -137,10 +137,10 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
-		return new PostAchievementResult
+		return new ClaimAchievementResult
 		{
 			viewModel = achievementModel,
-			status = AchievementStatus.Added
+			status = ClaimAchievementStatus.Claimed
 		};
 	}
 }

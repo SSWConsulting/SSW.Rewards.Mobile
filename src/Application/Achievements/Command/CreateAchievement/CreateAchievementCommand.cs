@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
+using Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
-public class CreateAchievementCommand : IRequest<AchievementAdminViewModel>
+public class CreateAchievementCommand : IRequest<AchievementAdminDto>
 {
     public string Name { get; set; }
     public int Value { get; set; }
@@ -12,7 +12,7 @@ public class CreateAchievementCommand : IRequest<AchievementAdminViewModel>
     public bool IsMultiscanEnabled { get; set; }
 }
 
-public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminViewModel>
+public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievementCommand, AchievementAdminDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
         _mapper = mapper;
     }
 
-    public async Task<AchievementAdminViewModel> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
+    public async Task<AchievementAdminDto> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
     {
         var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
         var code = Convert.ToBase64String(codeData);
@@ -41,6 +41,6 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<AchievementAdminViewModel>(achievement);
+        return _mapper.Map<AchievementAdminDto>(achievement);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 

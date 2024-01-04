@@ -1,4 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
+using Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
@@ -23,7 +24,7 @@ public class GetAchievementAdminListQuery : IRequest<AchievementAdminListViewMod
             var results = await _context
                 .Achievements
                 .Where(a => request.IncludeArchived || !a.IsDeleted)
-                .ProjectTo<AchievementAdminViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<AchievementAdminDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new AchievementAdminListViewModel
