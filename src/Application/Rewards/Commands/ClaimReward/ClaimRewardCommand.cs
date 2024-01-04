@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Rewards.Common;
+﻿using Shared.DTOs.Rewards;
 using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
@@ -85,11 +85,11 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
         await _rewardSender.SendRewardAsync(user, reward, cancellationToken);
 
-        var rewardModel = _mapper.Map<RewardViewModel>(reward);
+        var rewardModel = _mapper.Map<RewardDto>(reward);
 
         return new ClaimRewardResult
         {
-            viewModel = rewardModel,
+            Reward = rewardModel,
             status = RewardStatus.Claimed
         };
     }

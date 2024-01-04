@@ -1,11 +1,8 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Rewards.Common;
+using Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.GetRewardList;
-public class GetRewardList : IRequest<RewardListViewModel>
-{
-    
-}
+public class GetRewardList : IRequest<RewardListViewModel> { }
 
 public sealed class GetRewardListHandler : IRequestHandler<GetRewardList, RewardListViewModel>
 {
@@ -24,7 +21,7 @@ public sealed class GetRewardListHandler : IRequestHandler<GetRewardList, Reward
     {
         var rewards = await _context
                 .Rewards
-                .ProjectTo<RewardViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<RewardDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
         return new RewardListViewModel
