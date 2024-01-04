@@ -1,5 +1,5 @@
 ﻿using Shared.DTOs.Leaderboard;
-using Shared.Models;
+
 
 namespace Shared.Interfaces;
 

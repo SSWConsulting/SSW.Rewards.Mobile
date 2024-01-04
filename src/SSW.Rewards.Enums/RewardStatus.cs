@@ -1,4 +1,5 @@
-﻿public enum RewardStatus
+﻿namespace SSW.Rewards.Enums;
+public enum RewardStatus
 {
     Claimed,
     NotFound,

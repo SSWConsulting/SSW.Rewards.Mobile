@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Common\Shared.csproj" />
         <ProjectReference Include="..\Domain\SSW.Rewards.Domain.csproj" />
     </ItemGroup>
 
