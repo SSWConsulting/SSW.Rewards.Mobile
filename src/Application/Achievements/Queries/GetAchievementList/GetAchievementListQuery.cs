@@ -1,12 +1,9 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Achievements.Queries.Common;
+using Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 
-public class GetAchievementListQuery : IRequest<AchievementListViewModel>
-{
-    
-}
+public class GetAchievementListQuery : IRequest<AchievementListViewModel> { }
 
 public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievementListQuery, AchievementListViewModel>
 {
