@@ -4,13 +4,13 @@ namespace Shared.Interfaces;
 
 public interface IAchievementService
 {
-    Task<ClaimAchievementResult> ClaimAchievement(string code);
-    Task<ClaimAchievementResult> ClaimAchievementForUser(string code, int userId);
+    Task<ClaimAchievementResult> ClaimAchievement(string code, CancellationToken cancellationToken);
+    Task<ClaimAchievementResult> ClaimAchievementForUser(string code, int userId, CancellationToken cancellationToken);
 
     
-    Task<AchievementListViewModel> GetAchievementList();
+    Task<AchievementListViewModel> GetAchievementList(CancellationToken cancellationToken);
 
-    Task<AchievementUsersViewModel> GetAchievementUsers(int id);
+    Task<AchievementUsersViewModel> GetAchievementUsers(int id, CancellationToken cancellationToken);
 
-    Task<AchievementListViewModel> SearchAchievements(string searchTerm);
+    Task<AchievementListViewModel> SearchAchievements(string searchTerm, CancellationToken cancellationToken);
 }

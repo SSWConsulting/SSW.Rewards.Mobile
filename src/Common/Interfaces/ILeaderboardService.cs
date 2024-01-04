@@ -5,6 +5,6 @@ namespace Shared.Interfaces;
 
 public interface ILeaderboardService
 {
-    Task<LeaderboardViewModel> GetLeaderboard();
-    Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter);
+    Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken);
+    Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter, CancellationToken cancellationToken);
 }

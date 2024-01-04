@@ -4,7 +4,7 @@ namespace Shared.Interfaces;
 
 public interface ISkillsAdminService
 {
-    Task DeleteSkill(string skillId);
+    Task DeleteSkill(string skillId, CancellationToken cancellationToken);
 
-    Task<int> AddOrUpdateSkill(SkillDto skill);
+    Task<int> AddOrUpdateSkill(SkillDto skill, CancellationToken cancellationToken);
 }
