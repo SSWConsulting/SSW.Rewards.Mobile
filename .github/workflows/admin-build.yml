@@ -1,0 +1,40 @@
+on:
+    workflow_call:
+
+env:
+    PROJECT: src/AdminUI/AdminUI.csproj
+jobs:
+    build-admin-artifact:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - uses: actions/checkout@v2
+  
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+  
+        - name: Restore
+          shell: bash
+          run: dotnet restore $PROJECT
+  
+        - name: Build
+          shell: bash
+          run: dotnet build $PROJECT  --no-restore --configuration Release
+  
+        - name: Publish
+          shell: bash
+          run: dotnet publish $PROJECT --no-build --configuration Release --output out
+  
+        - name: Upload a UI Artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: ui
+            path: out/wwwroot
+            if-no-files-found: error
+  
+        - name: Upload a Infra Artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: infra
+            path: infra
+            if-no-files-found: error
