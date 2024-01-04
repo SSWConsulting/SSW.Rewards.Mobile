@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Domain.Enums;
+﻿namespace SSW.Rewards.Enums;
 public enum Icons
 {
 

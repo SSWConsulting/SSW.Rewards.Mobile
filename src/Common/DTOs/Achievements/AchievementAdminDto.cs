@@ -1,6 +1,4 @@
-﻿using Shared.Models;
-
-namespace Shared.DTOs.Achievements;
+﻿namespace Shared.DTOs.Achievements;
 
 public class AchievementAdminDto
 {

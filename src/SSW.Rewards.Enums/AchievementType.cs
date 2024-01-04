@@ -1,5 +1,4 @@
-﻿namespace Shared.Models;
-
+﻿namespace SSW.Rewards.Enums;
 public enum AchievementType
 {
     Scanned,

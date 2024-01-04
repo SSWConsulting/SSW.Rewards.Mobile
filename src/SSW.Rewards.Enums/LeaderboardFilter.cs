@@ -1,4 +1,5 @@
-﻿public enum LeaderboardFilter
+﻿namespace SSW.Rewards.Enums;
+public enum LeaderboardFilter
 {
     ThisMonth,
     ThisYear,
