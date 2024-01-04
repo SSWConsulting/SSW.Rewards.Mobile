@@ -8,11 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="ApiServices\**" />
-    <Compile Remove="DTOs\Users\**" />
     <EmbeddedResource Remove="ApiServices\**" />
-    <EmbeddedResource Remove="DTOs\Users\**" />
     <None Remove="ApiServices\**" />
-    <None Remove="DTOs\Users\**" />
   </ItemGroup>
 
   <ItemGroup>
