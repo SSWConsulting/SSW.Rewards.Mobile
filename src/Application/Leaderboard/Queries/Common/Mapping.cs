@@ -1,39 +1,15 @@
-﻿using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Common.Mappings;
+﻿using Shared.DTOs.Leaderboard;
+using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.Common;
-
-public class LeaderboardUserDto : IMapFrom<User>
+public class Mapping : Profile
 {
-    public int Rank { get; set; }
-
-    public int UserId { get; set; }
-
-    public string? Name { get; set; }
-    public string? Email { get; set; }
-
-    public string? ProfilePic { get; set; }
-
-    public int TotalPoints { get; set; }
-
-    public int PointsClaimed { get; set; }
-
-    public int PointsToday { get; set; }
-
-    public int PointsThisWeek { get; set; }
-
-    public int PointsThisMonth { get; set; }
-
-    public int PointsThisYear { get; set; }
-
-    public int Balance { get { return TotalPoints - PointsClaimed; } set { _ = value; } }
-
-    public void Mapping(Profile profile)
+    public Mapping()
     {
         var start = DateTime.Now.FirstDayOfWeek();
         var end = DateTime.Now.FirstDayOfWeek().AddDays(7);
 
-        profile.CreateMap<User, LeaderboardUserDto>()
+        CreateMap<User, LeaderboardUserDto>()
                 .ForMember(dst => dst.Balance, opt => opt.Ignore())
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
