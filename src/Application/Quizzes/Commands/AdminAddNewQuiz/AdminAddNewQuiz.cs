@@ -1,12 +1,10 @@
-﻿using MediatR;
+﻿using Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Achievements.Common;
-using SSW.Rewards.Application.Quizzes.Common;
-using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminAddNewQuiz : IRequest<int>
 {
-    public AdminQuizDetailsDto NewQuiz { get; set; } = new();
+    public QuizDetailsDto NewQuiz { get; set; } = new();
 }
 
 public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
@@ -55,7 +53,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return quiz.Id;
     }
 
-    private QuizQuestion CreateQuestion(AdminQuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
@@ -70,7 +68,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return dbQuestion;
     }
     
-    private Achievement CreateQuizAchievement(AdminQuizDetailsDto dto)
+    private Achievement CreateQuizAchievement(QuizDetailsDto dto)
     {
         return new Achievement
         {

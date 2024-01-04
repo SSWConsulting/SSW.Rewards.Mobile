@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Quizzes.Common;
+using Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
 public class GetQuizDetails : IRequest<QuizDetailsDto>

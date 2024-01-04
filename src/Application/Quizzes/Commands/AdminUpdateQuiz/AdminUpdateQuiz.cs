@@ -1,13 +1,9 @@
-﻿using AutoMapper.Configuration.Annotations;
-using SSW.Rewards.Application.Achievements.Common;
-using SSW.Rewards.Application.Quizzes.Common;
-using SSW.Rewards.Domain.Entities;
-using SSW.Rewards.Domain.Enums;
+﻿using Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
 {
-    public AdminQuizDetailsDto Quiz { get; set; } = new();
+    public QuizDetailsDto Quiz { get; set; } = new();
 }
 
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
@@ -59,7 +55,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         return dbQuiz.Id;
     }
 
-    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, AdminQuizQuestionDto dto)
+    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionDto dto)
     {
         existingQuestion.Text = dto.Text;
 
@@ -99,7 +95,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             existingQuestion.Answers.Remove(answerToBeDeleted);
         }
     }
-    private QuizQuestion CreateQuestion(AdminQuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
