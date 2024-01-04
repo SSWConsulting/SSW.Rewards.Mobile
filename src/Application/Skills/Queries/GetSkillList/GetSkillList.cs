@@ -1,10 +1,13 @@
-﻿namespace SSW.Rewards.Application.Skills.Queries.GetSkillList;
-public class GetSkillList : IRequest<SkillListViewModel>
+﻿using AutoMapper.QueryableExtensions;
+using Shared.DTOs.Skills;
+
+namespace SSW.Rewards.Application.Skills.Queries.GetSkillList;
+public class GetSkillList : IRequest<SkillsListViewModel>
 {
     
 }
 
-public sealed class GetSkillListHandler : IRequestHandler<GetSkillList, SkillListViewModel>
+public sealed class GetSkillListHandler : IRequestHandler<GetSkillList, SkillsListViewModel>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -15,13 +18,13 @@ public sealed class GetSkillListHandler : IRequestHandler<GetSkillList, SkillLis
         _mapper     = mapper;
     }
 
-    public async Task<SkillListViewModel> Handle(GetSkillList request, CancellationToken cancellationToken)
+    public async Task<SkillsListViewModel> Handle(GetSkillList request, CancellationToken cancellationToken)
     {
         var skills = await _dbContext.Skills
-                                     .Select(x => x.Name)
-                                     .ToListAsync();
+            .ProjectTo<SkillDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        return new SkillListViewModel
+        return new SkillsListViewModel
         {
             Skills = skills
         };
