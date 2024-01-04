@@ -1,4 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
+using Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList;
 
@@ -23,7 +24,7 @@ public sealed class Handler : IRequestHandler<GetStaffListQuery, StaffListViewMo
     public async Task<StaffListViewModel> Handle(GetStaffListQuery request, CancellationToken cancellationToken)
     {
         var staffDtos = await _dbContext.StaffMembers
-            .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         var user = await _userService.GetCurrentUser(cancellationToken);

@@ -1,9 +1,9 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Staff.Queries.GetStaffList;
+using Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile;
 
-public class GetStaffMemberProfileQuery: IRequest<StaffDto>
+public class GetStaffMemberProfileQuery: IRequest<StaffMemberDto>
 {
     public int Id { get; set; }
 
@@ -12,7 +12,7 @@ public class GetStaffMemberProfileQuery: IRequest<StaffDto>
     public bool GetByEmail { get; set; } = false;
 }
 
-public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffDto>
+public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffMemberDto>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
@@ -28,12 +28,12 @@ public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffD
         _storage = storage;
     }
 
-    public async Task<StaffDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
+    public async Task<StaffMemberDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
     {
         var staffMember = await _dbContext.StaffMembers
             .Include(s => s.StaffMemberSkills)
             .ThenInclude(sms => sms.Skill)
-            .ProjectTo<StaffDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
             .Where(member => member.Id == request.Id)
             .FirstOrDefaultAsync();
 
