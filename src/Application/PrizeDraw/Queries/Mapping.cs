@@ -1,35 +1,14 @@
 ﻿using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Common.Mappings;
 
 namespace SSW.Rewards.Application.PrizeDraw.Queries;
-
-public class EligibleUserDto : IMapFrom<User>
+public class Mapping : Profile
 {
-    public int? UserId { get; set; }
-
-    public string? Name { get; set; }
-
-    public string? Email { get; set; }
-
-    public int TotalPoints { get; set; }
-
-    public int PointsClaimed { get; set; }
-
-    public int PointsToday { get; set; }
-    public int PointsThisWeek { get; set; }
-
-    public int PointsThisMonth { get; set; }
-
-    public int PointsThisYear { get; set; }
-
-    public int Balance { get { return TotalPoints - PointsClaimed; } set { _ = value; } }
-
-    public void Mapping(Profile profile)
+    public Mapping()
     {
         var start = DateTime.Now.FirstDayOfWeek();
         var end = start.AddDays(7);
 
-        profile.CreateMap<User, EligibleUserDto>()
+        CreateMap<User, EligibleUserDto>()
                 .ForMember(dst => dst.Balance, opt => opt.Ignore())
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.FullName))
