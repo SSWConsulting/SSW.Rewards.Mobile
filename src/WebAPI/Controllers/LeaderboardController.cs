@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs.Leaderboard;
+using Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.PrizeDraw.Queries;
 using SSW.Rewards.Enums;

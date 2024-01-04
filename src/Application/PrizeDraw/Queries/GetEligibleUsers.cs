@@ -1,4 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
+using Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
 
