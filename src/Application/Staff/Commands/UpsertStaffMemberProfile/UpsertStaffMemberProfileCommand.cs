@@ -1,10 +1,5 @@
 ﻿using System.Text;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
-using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 
