@@ -4,5 +4,5 @@ namespace Shared.Interfaces;
 
 public interface ISkillsService
 {
-    Task<SkillsListViewModel> GetSkillsList();
+    Task<SkillsListViewModel> GetSkillsList(CancellationToken cancellationToken);
 }

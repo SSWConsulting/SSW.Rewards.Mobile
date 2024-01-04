@@ -4,9 +4,9 @@ namespace Shared.Interfaces;
 
 public interface IRewardAdminService
 {
-    Task<int> AddReward(RewardEditDto reward);
-    Task UpdateReward(RewardEditDto reward);
-    Task DeleteReward(int rewardId);
+    Task<int> AddReward(RewardEditDto reward, CancellationToken cancellationToken);
+    Task UpdateReward(RewardEditDto reward, CancellationToken cancellationToken);
+    Task DeleteReward(int rewardId, CancellationToken cancellationToken);
 
-    Task<ClaimRewardResult> ClaimForUser(string code, int userId);
+    Task<ClaimRewardResult> ClaimForUser(string code, int userId, CancellationToken cancellationToken);
 }

@@ -4,5 +4,5 @@ namespace Shared.Interfaces;
 
 public interface IPrizeDrawService
 {
-    Task<EligibleUsersViewModel> GetEligibleUsers(GetEligibleUsersFilter filter);
+    Task<EligibleUsersViewModel> GetEligibleUsers(GetEligibleUsersFilter filter, CancellationToken cancellationToken);
 }
