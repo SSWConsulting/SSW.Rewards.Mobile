@@ -338,7 +338,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         IsBusy = false;
         IsLoading = false;
-        ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }
