@@ -1,38 +1,20 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using Shared.DTOs.Users;
+
+namespace Shared.Interfaces;
 
 public interface IUserService
 {
-    // values
-    int MyUserId { get; }
-    string MyName { get; }
-    string MyEmail { get; }
-    string MyProfilePic { get; }
-    int MyPoints { get; }
-    int MyBalance { get; }
-    string MyQrCode { get; }
-    bool IsLoggedIn { get; }
-    bool HasCachedAccount { get; }
-    bool IsStaff { get; }
+    Task DeleteMyProfile(CancellationToken cancellationToken = default);
 
-    // auth methods
-    Task<ApiStatus> SignInAsync();
-    Task ResetPassword();
-    Task<bool> RefreshLoginAsync();
-    void SignOut();
+    Task<ProfilePicResponseDto> UploadProilePic(Stream file, CancellationToken cancellationToken = default);
 
-    // user details
-    Task UpdateMyDetailsAsync();
-    Task<IEnumerable<Achievement>> GetAchievementsAsync();
-    Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
-    Task<IEnumerable<Achievement>> GetProfileAchievementsAsync();
-    Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId);
-    Task<IEnumerable<Reward>> GetRewardsAsync();
-    Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
-    Task<ImageSource> GetAvatarAsync(string url);
-    Task<string> UploadImageAsync(Stream image);
+    Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken = default);
 
-    Task<bool> SaveSocialMediaId(int achievementId, string userId);
+    Task<UserAchievementsViewModel> GetProfileAchievements(int userId, CancellationToken cancellationToken = default);
 
-    Task<bool> DeleteProfileAsync();
+    Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken = default);
+
+    Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken = default);
+
+    Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default);
 }
-
