@@ -30,6 +30,7 @@ public class MyProfileViewModel : ProfileViewModelBase,
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+                OnPropertyChanged(nameof(ProfileSections));
             });
         }
 

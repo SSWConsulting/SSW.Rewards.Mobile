@@ -38,9 +38,8 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     private bool _isLoading;
 
     public bool ShowCamera => _isMe && !IsLoading;
-
-    [ObservableProperty]
-    private ObservableCollection<ProfileCarouselViewModel> _profileSections = new();
+    
+    public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
     public SnackbarOptions SnackOptions { get; set; }
 
@@ -163,10 +162,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             return;
 
         ProfileSections.Clear();
-
+        
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
+            OnPropertyChanged(nameof(ProfileSections));
         }
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
@@ -338,6 +338,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         IsBusy = false;
         IsLoading = false;
+        ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }

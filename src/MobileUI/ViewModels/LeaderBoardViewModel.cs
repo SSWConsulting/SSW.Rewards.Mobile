@@ -14,8 +14,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private IUserService _userService;
     private bool _loaded;
     
-    [ObservableProperty]
-    private ObservableCollection<LeaderViewModel> _searchResults = new ();
+    private ObservableCollection<LeaderViewModel> searchResults = new ();
     
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
     {
@@ -66,6 +65,16 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     /// </summary>
     [ObservableProperty]
     private bool _clearSearch;
+    
+    public ObservableCollection<LeaderViewModel> SearchResults
+    {
+        get => searchResults;
+        set
+        {
+            searchResults = value;
+            OnPropertyChanged();
+        }
+    }
 
     public async Task Initialise()
     {
