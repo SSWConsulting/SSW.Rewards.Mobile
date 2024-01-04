@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Users.Common;
+﻿using Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 

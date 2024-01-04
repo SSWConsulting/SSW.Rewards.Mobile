@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
+﻿using Shared.DTOs.Users;
+
+namespace SSW.Rewards.Application.Users.Queries.GetUserRewards;
 
 public class GetUserRewardsQuery : IRequest<UserRewardsViewModel>
 {

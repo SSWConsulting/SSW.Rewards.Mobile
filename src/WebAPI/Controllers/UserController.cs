@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.Users;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 using SSW.Rewards.Application.Users.Commands.RegisterUser;
 using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 using SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
-using SSW.Rewards.Application.Users.Common;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
 using SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
@@ -17,13 +17,13 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class UserController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<CurrentUserViewModel>> Get()
+    public async Task<ActionResult<CurrentUserDto>> Get()
     {
         return Ok(await Mediator.Send(new GetCurrentUserQuery()));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserViewModel>> GetUser(int id)
+    public async Task<ActionResult<UserProfileDto>> GetUser(int id)
     {
         return Ok(await Mediator.Send(new GetUserQuery() { Id = id }));
     }
