@@ -5,6 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>abaa8db5-c195-4a86-bd29-069a802aa8d5</UserSecretsId>
 		<RootNamespace>SSW.Rewards.Admin.UI</RootNamespace>
+        <AssemblyName>SSW.Rewards.Admin.$(MSBuildProjectName)</AssemblyName>
+        <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset</CodeAnalysisRuleSet>
+        <Features>IOperation</Features>
+        <IsPackable>false</IsPackable>
+        <TreatWarningsAsErrors Condition="'$(Configuration)' != 'Debug'">False</TreatWarningsAsErrors>
+        <RunCodeAnalysis Condition="'$(BuildingForLiveUnitTesting)' == 'true'">False</RunCodeAnalysis>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +24,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="QRCoder" Version="1.4.3" />
         <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.1.1" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
@@ -29,7 +36,16 @@
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Include=".codeanalysis\codeanalysis.ruleset" />
+        <Content Include=".codeanalysis\stylecop.json" />
         <None Include="Components\Dialogs\Quizzes\QuizQuestionDialog.razor" />
         <None Include="wwwroot\js\DetailedProfile.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\stylecop.json"
+                         Link="stylecop.json" />
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset"
+                         Link="codeanalysis.ruleset" />
     </ItemGroup>
 </Project>

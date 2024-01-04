@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="StyleCop and FxCop ruleset" Description="StyleCop and FxCop ruleset" ToolsVersion="17.0">
+  <IncludeAll Action="Error" />
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="CA2007" Action="None" />
+    <Rule Id="SA1305" Action="Warning" />
+    <Rule Id="SA1412" Action="Warning" />
+    <Rule Id="SA1609" Action="Warning" />
+    <Rule Id="SA1639" Action="Warning" />
+    <Rule Id="SX1101" Action="Warning" />
+    <Rule Id="SX1309" Action="Warning" />
+    <Rule Id="SX1309S" Action="Warning" />
+  </Rules>
+</RuleSet>
