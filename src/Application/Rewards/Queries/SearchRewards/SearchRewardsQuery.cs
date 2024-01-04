@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Rewards.Common;
+﻿using Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.SearchRewards;
 
@@ -26,7 +26,7 @@ public class SearchRewardsQueryHandler : IRequestHandler<SearchRewardsQuery, Rew
 
         return new RewardListViewModel
         {
-            Rewards = _mapper.Map<IEnumerable<RewardViewModel>>(rewards)
+            Rewards = _mapper.Map<IEnumerable<RewardDto>>(rewards)
         };
     }
 }
