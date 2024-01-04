@@ -1,12 +1,13 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class QuizDetailsViewModel : BaseViewModel
+    public partial class QuizDetailsViewModel : BaseViewModel
     {
         private readonly IQuizService _quizService;
         private readonly ISnackbarService _snackbarService;
@@ -16,31 +17,42 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ObservableCollection<QuestionResultDto> Results { get; set; } = new ObservableCollection<QuestionResultDto>();
 
-        public ICommand ButtonCommand { get; set; }
+        [ObservableProperty]
+        private ICommand _buttonCommand;
 
         public ICommand BackCommand => new Command(async () => await GoBack());
 
         public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
 
-        public ICommand ResultsButtonCommand { get; set; }
+        [ObservableProperty]
+        private ICommand _resultsButtonCommand;
+        
+        [ObservableProperty]
+        private string _quizTitle;
+        
+        [ObservableProperty]
+        private string _quizDescription;
+        
+        [ObservableProperty]
+        private string _buttonText = "Next";
+        
+        [ObservableProperty]
+        private string _score;
+        
+        [ObservableProperty]
+        private string _resultsTitle;
+        
+        [ObservableProperty]
+        private string _resultButtonText;
+        
+        [ObservableProperty]
+        private bool _questionsVisible = true;
+        
+        [ObservableProperty]
+        private bool _resultsVisible;
 
-        public string QuizTitle { get; set; }
-
-        public string QuizDescription { get; set; }
-
-        public string ButtonText { get; set; } = "Next";
-
-        public string Score { get; set; }
-
-        public string ResultsTitle { get; set; }
-
-        public string ResultButtonText { get; set; }
-
-        public bool QuestionsVisible { get; set; } = true;
-
-        public bool ResultsVisible { get; set; } = false;
-
-        public bool TestPassed { get; set; }
+        [ObservableProperty]
+        private bool _testPassed;
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -63,7 +75,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             _quizIcon = icon;
 
             IsBusy = true;
-            OnPropertyChanged(nameof(IsBusy));
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
 
@@ -78,8 +89,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             QuizDescription = quiz.Description;
 
             IsBusy = false;
-
-            RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription));
         }
 
         private async Task SubmitResponses()
@@ -115,12 +124,10 @@ namespace SSW.Rewards.Mobile.ViewModels
                 };
 
                 IsBusy = true;
-                OnPropertyChanged(nameof(IsBusy));
 
                 var result = await _quizService.SubmitQuiz(command);
 
                 IsBusy = false;
-                OnPropertyChanged(nameof(IsBusy));
 
                 await ProcessResult(result);
             }
@@ -177,20 +184,15 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     QuestionsVisible = true;
                     ResultsVisible = false;
-                    RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible));
                 });
 
                 Results.Clear();
-
-                RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
-
+                
                 foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
                 {
                     Results.Add(questionResult);
                 }
             }
-
-            RaisePropertyChanged(nameof(QuestionsVisible), nameof(ResultsVisible), nameof(Score), nameof(ResultButtonText), nameof(ResultsTitle), nameof(TestPassed), nameof(ResultsButtonCommand));
         }
 
         private async Task GoBack(bool askFirst = true)
@@ -229,7 +231,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
 
             QuizDescription = CurrentQuestion.Text;
-            RaisePropertyChanged(nameof(QuizDescription), nameof(ButtonText), nameof(ButtonCommand));
         }
 
         private void MoveNext(int next)

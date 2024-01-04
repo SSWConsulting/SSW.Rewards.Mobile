@@ -41,8 +41,6 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             IsBusy = true;
 
-            OnPropertyChanged(nameof(IsBusy));
-
             var quizzes = await _quizService.GetQuizzes();
 
             foreach (var quiz in quizzes)
@@ -51,8 +49,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
 
             IsBusy = false;
-
-            OnPropertyChanged(nameof(IsBusy));
         }
 
         private async Task OpenQuiz(int quizId, Icons icon)

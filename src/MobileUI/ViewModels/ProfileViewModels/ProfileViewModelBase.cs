@@ -5,31 +5,42 @@ using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<AchievementTappedMessage>
+public partial class ProfileViewModelBase : BaseViewModel, IRecipient<AchievementTappedMessage>
 {
     protected readonly IRewardService _rewardsService;
     protected IUserService _userService;
     protected readonly ISnackbarService _snackbarService;
 
-    public string ProfilePic { get; set; }
-    public string Name { get; set; }
-    public int Points { get; set; }
-    public int Balance { get; set; }
+    [ObservableProperty]
+    private string _profilePic;
+    
+    [ObservableProperty]
+    private string _name;
+    
+    [ObservableProperty]
+    private int _points;
+    
+    [ObservableProperty]
+    private int _balance;
 
     public bool ShowBalance { get; set; } = true;
 
-    public double Progress { get; set; } = 0;
+    [ObservableProperty]
+    private double _progress;
 
     protected int userId { get; set; }
 
-    public bool IsLoading { get; set; }
+    [ObservableProperty]
+    private bool _isLoading;
 
     public bool ShowCamera => _isMe && !IsLoading;
 
-    public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
+    [ObservableProperty]
+    private ObservableCollection<ProfileCarouselViewModel> _profileSections = new();
 
     public SnackbarOptions SnackOptions { get; set; }
 
@@ -48,7 +59,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
     public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
         IsLoading = true;
-        RaisePropertyChanged("IsLoading");
         _rewardsService = rewardsService;
         _userService = userService;
         _snackbarService = snackbarService;
@@ -74,8 +84,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
     {
         ProcessAchievement(message.Value);
     }
-
-    public abstract Task Initialise();
 
     protected async Task _initialise()
     {
@@ -111,16 +119,12 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
             Progress = 1;
         }
 
-        OnPropertyChanged(nameof(Progress));
-
         if (!ProfileSections.Any())
         {
             await LoadProfileSections();
         }
 
         IsLoading = false;
-
-        RaisePropertyChanged(nameof(IsLoading), nameof(Name), nameof(ProfilePic), nameof(Points), nameof(Balance), nameof(ShowCamera));
     }
 
     private void ProcessAchievement(ProfileAchievement achievement)
@@ -163,7 +167,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-            OnPropertyChanged(nameof(ProfileSections));
         }
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
@@ -264,7 +267,6 @@ public abstract class ProfileViewModelBase : BaseViewModel, IRecipient<Achieveme
     public void Receive(ProfilePicUpdatedMessage message)
     {
         ProfilePic = message.ProfilePic;
-        RaisePropertyChanged(nameof(ProfilePic));
     }
 
     private async void ShowAchievementSnackbar(ProfileAchievement achievement)

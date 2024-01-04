@@ -3,10 +3,11 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class ScanResultViewModel : BaseViewModel
+public partial class ScanResultViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
 
@@ -15,19 +16,25 @@ public class ScanResultViewModel : BaseViewModel
     private bool _wonPrize { get; set; }
     private string data;
 
-    public string AnimationRef { get; set; }
-
-    public bool AnimationLoop { get; set; }
+    [ObservableProperty]
+    private string _animationRef;
     
-    public string ResultHeading { get; set; }
+    [ObservableProperty]
+    private bool _animationLoop;
     
-    public string ResultBody { get; set; }
+    [ObservableProperty]
+    private string _resultHeading;
     
-    public string AchievementHeading { get; set; }
+    [ObservableProperty]
+    private string _resultBody;
+    
+    [ObservableProperty]
+    private string _achievementHeading;
     
     public ICommand OnOkCommand { get; set; }
-    
-    public Color HeadingColour { get; set; }
+
+    [ObservableProperty]
+    private Color _headingColour;
 
     public ScanResultViewModel(IUserService userService, IScannerService scannerService)
     {
@@ -47,7 +54,6 @@ public class ScanResultViewModel : BaseViewModel
         AnimationRef = "qr-code-scanner.json";
         AnimationLoop = true;
         ResultHeading = "Verifying your QR code...";
-        RaisePropertyChanged("AnimationRef", "ResultHeading", "AnimationLoop");
 
         ScanResponseViewModel result = await _scannerService.ValidateQRCodeAsync(data);
 
@@ -112,9 +118,7 @@ public class ScanResultViewModel : BaseViewModel
                 HeadingColour = Colors.White;
                 break;
         }
-
-        RaisePropertyChanged(new[] { "AnimationRef", "AnimationLoop", "ResultHeading", "ResultBody", "PointsColour", "HeadingColour", "AchievementHeading" });
-
+        
         if (result.result == ScanResult.Added)
         {
             await _userService.UpdateMyDetailsAsync();

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Controls;
@@ -7,12 +8,14 @@ using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
+public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
     private ILeaderService _leaderService;
     private IUserService _userService;
     private bool _loaded;
-    private ObservableCollection<LeaderViewModel> searchResults = new ();
+    
+    [ObservableProperty]
+    private ObservableCollection<LeaderViewModel> _searchResults = new ();
     
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
     {
@@ -38,36 +41,37 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     public IAsyncRelayCommand FilterByPeriodCommand => new AsyncRelayCommand(FilterByPeriod);
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
-    public bool IsRunning { get; set; }
-    public bool IsRefreshing { get; set; }
+    
+    [ObservableProperty]
+    private bool _isRunning;
+    
+    [ObservableProperty]
+    private bool _isRefreshing;
+    
     public string ProfilePic { get; set; }
     public Action<int> ScrollTo { get; set; }
     public PeriodFilter CurrentPeriod { get; set; }
-    public int TotalLeaders { get; set; }
-    public int MyRank { get; set; }
+    
+    [ObservableProperty]
+    private int _totalLeaders;
+    
+    [ObservableProperty]
+    private int _myRank;
+    
     public int MyPoints { get; set; }
     public int MyBalance { get; set; }
+
     /// <summary>
     /// Flip the value to clear search input field
     /// </summary>
-    public bool ClearSearch { get; set; }
-    
-    public ObservableCollection<LeaderViewModel> SearchResults
-    {
-        get => searchResults;
-        set
-        {
-            searchResults = value;
-            RaisePropertyChanged("SearchResults");
-        }
-    }
+    [ObservableProperty]
+    private bool _clearSearch;
 
     public async Task Initialise()
     {
         if (!_loaded)
         {
             IsRunning = true;
-            RaisePropertyChanged(nameof(IsRunning));
 
             await LoadLeaderboard();
             _loaded = true;
@@ -75,7 +79,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             await FilterAndSortLeaders(Leaders, PeriodFilter.Week);
 
             IsRunning = false;
-            RaisePropertyChanged(nameof(IsRunning));
         }
     }
 
@@ -83,7 +86,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     {
         await LoadLeaderboard();
         IsRefreshing = false;
-        OnPropertyChanged(nameof(IsRefreshing));
     }
 
     private async Task LoadLeaderboard()
@@ -104,8 +106,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
 
         TotalLeaders = summaries.Count();
 
-        OnPropertyChanged(nameof(TotalLeaders));
-
         ScrollTo?.Invoke(0);
     }
 
@@ -115,7 +115,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         await App.Current.MainPage.Dispatcher.DispatchAsync(() =>
         {
             SearchResults = newList;
-            OnPropertyChanged(nameof(SearchResults));
         });
     }
 
@@ -123,7 +122,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     private async Task FilterByPeriod()
     {
         ClearSearch = !ClearSearch;
-        RaisePropertyChanged(nameof(ClearSearch));
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
@@ -189,8 +187,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         FilterAndSortLeaders(Leaders, CurrentPeriod);
         
         IsRefreshing = false;
-        
-        RaisePropertyChanged("IsRefreshing");
     }
 
     private void ScrollToMyCard()
@@ -229,7 +225,6 @@ public class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
         if (mySummary is not null)
         {
             MyRank = mySummary.Rank;
-            OnPropertyChanged(nameof(MyRank));
         }
     }
 

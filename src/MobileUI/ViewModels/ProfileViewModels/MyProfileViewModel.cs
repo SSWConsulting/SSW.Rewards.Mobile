@@ -23,14 +23,13 @@ public class MyProfileViewModel : ProfileViewModelBase,
         AddSocialMediaId(message);
     }
 
-    public override async Task Initialise()
+    public async Task Initialise()
     {
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-                OnPropertyChanged(nameof(ProfileSections));
             });
         }
 
@@ -111,8 +110,6 @@ public class MyProfileViewModel : ProfileViewModelBase,
         {
             Progress = 1;
         }
-
-        RaisePropertyChanged(nameof(Balance), nameof(Points), nameof(Progress));
 
         return Task.CompletedTask;
     }
