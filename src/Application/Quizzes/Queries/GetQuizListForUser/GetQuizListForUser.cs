@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
+﻿using Shared.DTOs.Quizzes;
+
+namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
 
 public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
 {

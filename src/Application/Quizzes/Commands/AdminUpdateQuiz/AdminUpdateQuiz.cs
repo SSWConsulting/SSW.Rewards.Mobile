@@ -1,18 +1,25 @@
-﻿using SSW.Rewards.Application.Quizzes.Common;
+﻿using Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
 {
-    public AdminQuizDetailsDto Quiz { get; set; } = new();
+    public QuizDetailsDto Quiz { get; set; } = new();
 }
 
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
 
-    public AdminUpdateQuizHandler(IApplicationDbContext context)
+    public AdminUpdateQuizHandler(
+        IApplicationDbContext context,
+        ICurrentUserService currentUserService,
+        IUserService userService)
     {
         _context = context;
+        _currentUserService = currentUserService;
+        _userService = userService;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
@@ -48,7 +55,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         return dbQuiz.Id;
     }
 
-    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, AdminQuizQuestionDto dto)
+    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionDto dto)
     {
         existingQuestion.Text = dto.Text;
 
@@ -88,7 +95,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             existingQuestion.Answers.Remove(answerToBeDeleted);
         }
     }
-    private QuizQuestion CreateQuestion(AdminQuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionDto dto)
     {
         var dbQuestion = new QuizQuestion
         {

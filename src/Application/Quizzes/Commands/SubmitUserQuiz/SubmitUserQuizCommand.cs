@@ -1,9 +1,11 @@
-﻿namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
+﻿using Shared.DTOs.Quizzes;
+
+namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 
 public class SubmitUserQuizCommand : IRequest<QuizResultDto>
 {
     public int QuizId { get; set; }
-    public List<QuizAnswerDto> Answers { get; set; }
+    public List<SubmittedAnswerDto> Answers { get; set; }
 }
 
 public sealed class Handler : IRequestHandler<SubmitUserQuizCommand, QuizResultDto>
@@ -78,7 +80,7 @@ public sealed class Handler : IRequestHandler<SubmitUserQuizCommand, QuizResultD
         _context.UserAchievements.Add(quizCompletedAchievement);
     }
 
-    private void AddCompletedQuiz(int quizId, int userId, List<QuizAnswerDto> submittedAnswers, IEnumerable<QuizAnswer> dbAnswers, bool passed)
+    private void AddCompletedQuiz(int quizId, int userId, List<SubmittedAnswerDto> submittedAnswers, IEnumerable<QuizAnswer> dbAnswers, bool passed)
     {
         CompletedQuiz c = new CompletedQuiz
         {
@@ -97,12 +99,3 @@ public sealed class Handler : IRequestHandler<SubmitUserQuizCommand, QuizResultD
         _context.CompletedQuizzes.Add(c);
     }
 }
-
-
-
-public class QuizAnswerDto
-{
-    public int QuestionId { get; set; }
-    public int SelectedAnswerId { get; set; }
-}
-
