@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.Staff;
 using SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 using SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
@@ -18,22 +19,36 @@ public class StaffController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<StaffDto>> GetStaffMemberProfile(int id)
+    public async Task<ActionResult<StaffMemberDto>> GetStaffMemberProfile(int id)
     {
         return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { Id = id }));
     }
 
     [HttpGet]
-    public async Task<ActionResult<StaffDto>> GetStaffMemberByEmail(string email)
+    public async Task<ActionResult<StaffMemberDto>> GetStaffMemberByEmail(string email)
     {
         return Ok(await Mediator.Send(new GetStaffMemberProfileQuery() { email = email, GetByEmail = true }));
     }
 
     [HttpPost]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult<StaffDto>> UpsertStaffMemberProfile(UpsertStaffMemberProfileCommand staffMember)
+    public async Task<ActionResult<StaffMemberDto>> UpsertStaffMemberProfile(StaffMemberDto staffMember)
     {
-        return Ok(await Mediator.Send(staffMember));
+        var command = new UpsertStaffMemberProfileCommand
+        {
+            Id = staffMember.Id,
+            Name = staffMember.Name,
+            Email = staffMember.Email,
+            Profile = staffMember.Profile,
+            TwitterUsername = staffMember.TwitterUsername,
+            GitHubUsername = staffMember.GitHubUsername,
+            LinkedInUrl = staffMember.LinkedInUrl,
+            ProfilePhoto = staffMember.ProfilePhoto is not null ? new Uri(staffMember.ProfilePhoto) : null,
+            Points = staffMember.Points,
+            Skills = staffMember.Skills.ToList()
+        };
+
+        return Ok(await Mediator.Send(command));
     }
 
     [HttpPost]
@@ -45,8 +60,9 @@ public class StaffController : ApiControllerBase
 
     [HttpDelete]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> DeleteStaffMemberProfile(DeleteStaffMemberProfileCommand staffMember)
+    public async Task<ActionResult> DeleteStaffMemberProfile([FromQuery] int Id)
     {
-        return Ok(await Mediator.Send(staffMember));
+        var command = new DeleteStaffMemberProfileCommand { Id = Id };
+        return Ok(await Mediator.Send(command));
     }
 }
