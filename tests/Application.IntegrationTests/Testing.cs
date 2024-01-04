@@ -8,10 +8,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-<<<<<<< HEAD
-=======
-using Microsoft.VisualStudio.TestPlatform.TestHost;
->>>>>>> main
 using NUnit.Framework;
 using Respawn;
 
