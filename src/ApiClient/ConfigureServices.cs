@@ -21,8 +21,10 @@ public static class ConfigureServices
 
         if (includeAdminServices)
         {
-            services.AddScoped<IAchievementAdminService, AchievementAdminService>();
+            services.AddSingleton<IAchievementAdminService, AchievementAdminService>();
         }
+
+        services.AddSingleton<IAchievementService, AchievementService>();
 
         return services;
     }
