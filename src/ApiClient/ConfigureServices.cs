@@ -22,6 +22,7 @@ public static class ConfigureServices
         if (includeAdminServices)
         {
             services.AddSingleton<IAchievementAdminService, AchievementAdminService>();
+            services.AddSingleton<IPrizeDrawService, PrizeDrawService>();
         }
 
         services.AddSingleton<IAchievementService, AchievementService>();
