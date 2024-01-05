@@ -26,6 +26,7 @@ public static class ConfigureServices
             services.AddSingleton<IQuizAdminService, QuizAdminService>();
             services.AddSingleton<IRewardAdminService, RewardAdminService>();
             services.AddSingleton<ISkillsAdminService, SkillsAdminService>();
+            services.AddSingleton<IStaffAdminService, StaffAdminService>();
         }
 
         services.AddSingleton<IAchievementService, AchievementService>();
