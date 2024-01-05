@@ -1,5 +1,5 @@
 ﻿using System.Net.Mail;
-using Shared.DTOs.Users;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Common.Extensions;
 

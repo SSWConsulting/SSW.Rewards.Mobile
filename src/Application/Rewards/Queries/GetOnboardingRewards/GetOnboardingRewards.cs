@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Rewards;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.GetOnboardingRewards;
 public class GetOnboardingRewards : IRequest<RewardListViewModel>

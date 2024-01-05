@@ -1,7 +1,9 @@
 ﻿@page "/achivementusers/{id:int}"
 
-@inject IAchievementClient _client
+@inject IAchievementService achievementService
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Shared.DTOs.Achievements
+@using SSW.Rewards.Shared.Services
 
 <MudText Typo="Typo.h2">Users who have this achievement</MudText>
 
@@ -29,7 +31,7 @@
 {
     [Parameter]
     public int Id { get; set; }
-    
+
     private bool _loading = true;
     private string _achievementName = string.Empty;
 
@@ -40,7 +42,7 @@
         await base.OnInitializedAsync();
         _loading = true;
 
-        var achievementUsers = await _client.UsersAsync(Id, CancellationToken.None);
+        var achievementUsers = await achievementService.GetAchievementUsers(Id, CancellationToken.None);
 
         _achievementName = achievementUsers.AchievementName;
 

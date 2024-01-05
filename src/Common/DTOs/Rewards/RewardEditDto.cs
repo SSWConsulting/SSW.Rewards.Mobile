@@ -1,11 +1,10 @@
-﻿
-
-namespace Shared.DTOs.Rewards;
+﻿namespace SSW.Rewards.Shared.DTOs.Rewards;
 
 public class RewardEditDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Code { get; set; } = string.Empty;
     public int Cost { get; set; }
     public string ImageUri { get; set; }
     public RewardType RewardType { get; set; }

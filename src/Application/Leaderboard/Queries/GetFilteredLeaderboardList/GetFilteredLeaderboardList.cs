@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
@@ -38,7 +38,7 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
         {
             query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
         }
-        else if (request.Filter == LeaderboardFilter.ThisMonth) 
+        else if (request.Filter == LeaderboardFilter.ThisMonth)
         {
             query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month));
         }

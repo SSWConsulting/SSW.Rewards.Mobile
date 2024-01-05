@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.Staff;
+﻿using SSW.Rewards.Shared.DTOs.Staff;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IStaffAdminService
 {

@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Staff;
+﻿namespace SSW.Rewards.Shared.DTOs.Staff;
 public class StaffMemberQueryDto
 {
     public int? Id { get; set; }

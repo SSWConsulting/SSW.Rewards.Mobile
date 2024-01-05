@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.ValidateQuiz;
 
@@ -9,7 +9,7 @@ public class ValidateQuiz : IRequest<QuizResultDto>
 
     public ValidateQuiz(int quizId, List<SubmittedAnswerDto> answers)
     {
-        QuizId  = quizId;
+        QuizId = quizId;
         Answers = answers;
     }
 }
@@ -51,7 +51,7 @@ public class ValidateQuizHandler : IRequestHandler<ValidateQuiz, QuizResultDto>
 
         // passed?
         retVal.Passed = !retVal.Results.Any(x => !x.Correct);
-        
+
         return retVal;
     }
 }

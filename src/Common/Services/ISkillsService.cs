@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.Skills;
+﻿using SSW.Rewards.Shared.DTOs.Skills;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface ISkillsService
 {

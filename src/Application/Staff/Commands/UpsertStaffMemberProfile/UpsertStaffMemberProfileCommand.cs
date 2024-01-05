@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 

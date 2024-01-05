@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.Users;
+﻿using SSW.Rewards.Shared.DTOs.Users;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IUserService
 {

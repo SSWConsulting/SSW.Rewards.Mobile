@@ -1,4 +1,5 @@
-﻿<MudDialog>
+﻿@using SSW.Rewards.Shared.DTOs.Quizzes
+<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Question</MudText>    
     </TitleContent>
@@ -50,18 +51,20 @@
     MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public AdminQuizQuestionDto Dto { get; set; } = new();
+    public QuizQuestionDto Dto { get; set; } = new();
 
     private bool hasInvalidAnswers = false;
     private void AddAnswer()
     {
-        Dto.Answers.Add(new AdminQuestionAnswerDto());
+        Dto.Answers.Add(new QuestionAnswerDto());
     }
-    private void DeleteAnswer(AdminQuestionAnswerDto answer)
+    
+    private void DeleteAnswer(QuestionAnswerDto answer)
     {
         Dto.Answers.Remove(answer);
     }
-    private void OnCorrectAnswerSelected(AdminQuestionAnswerDto answer)
+
+    private void OnCorrectAnswerSelected(QuestionAnswerDto answer)
     {
         hasInvalidAnswers = false;
         foreach (var a in Dto.Answers)
@@ -69,6 +72,7 @@
             a.IsCorrect = false;
         }
     }
+
     private void Submit()
     {
         if (Dto.Answers.Where(x => x.IsCorrect).Count() != 1)
@@ -81,5 +85,6 @@
         }
         
     }
+
     void Cancel() => MudDialog?.Cancel();
 }

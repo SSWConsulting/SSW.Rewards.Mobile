@@ -1,11 +1,11 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 
 public class GetLeaderboardListQuery : IRequest<LeaderboardViewModel>
 {
-    
+
 }
 
 public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewModel>

@@ -1,10 +1,10 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Skills;
+using SSW.Rewards.Shared.DTOs.Skills;
 
 namespace SSW.Rewards.Application.Skills.Queries.GetSkillList;
 public class GetSkillList : IRequest<SkillsListViewModel>
 {
-    
+
 }
 
 public sealed class GetSkillListHandler : IRequestHandler<GetSkillList, SkillsListViewModel>
@@ -14,8 +14,8 @@ public sealed class GetSkillListHandler : IRequestHandler<GetSkillList, SkillsLi
 
     public GetSkillListHandler(IApplicationDbContext dbContext, IMapper mapper)
     {
-        _dbContext  = dbContext;
-        _mapper     = mapper;
+        _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<SkillsListViewModel> Handle(GetSkillList request, CancellationToken cancellationToken)

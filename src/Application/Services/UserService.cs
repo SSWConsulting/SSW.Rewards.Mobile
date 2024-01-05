@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shared.DTOs.Users;
+using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.Application.Services;
@@ -16,9 +16,9 @@ public class UserService : IUserService, IRolesService
     private readonly string _staffSMTPDomain;
 
     public UserService(
-        IApplicationDbContext dbContext, 
-        ICurrentUserService currentUserService, 
-        IMapper mapper, 
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService,
+        IMapper mapper,
         IOptions<UserServiceOptions> options,
         ILogger<UserService> logger)
     {

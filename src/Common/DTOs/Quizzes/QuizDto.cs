@@ -1,6 +1,6 @@
 ﻿
 
-namespace Shared.DTOs.Quizzes;
+namespace SSW.Rewards.Shared.DTOs.Quizzes;
 
 public class QuizDto
 {

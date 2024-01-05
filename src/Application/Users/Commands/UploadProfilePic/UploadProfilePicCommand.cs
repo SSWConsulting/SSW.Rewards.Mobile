@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Users;
+﻿using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Users.Commands.UploadProfilePic;
@@ -33,7 +33,7 @@ public class UploadProfilePicHandler : IRequestHandler<UploadProfilePicCommand, 
         await using var ms = new MemoryStream();
 
         Stream file = request.File;
-        
+
         await file.CopyToAsync(ms, cancellationToken);
 
         byte[] bytes = ms.ToArray();
@@ -41,13 +41,13 @@ public class UploadProfilePicHandler : IRequestHandler<UploadProfilePicCommand, 
         string filename = Guid.NewGuid().ToString();
 
         string url = await _storage.UploadProfilePic(bytes, filename);
-        
+
         var user = await _context.Users
             .Where(u => u.Email.ToLower() == _currentUserService.GetUserEmail())
             .Include(u => u.UserAchievements)
                 .ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(cancellationToken);
-        
+
         user.Avatar = url;
 
         if (!user.UserAchievements.Any(a => a.Achievement.Name == MilestoneAchievements.ProfilePic))
@@ -63,7 +63,7 @@ public class UploadProfilePicHandler : IRequestHandler<UploadProfilePicCommand, 
         }
 
         response.PicUrl = url;
-        
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return response;

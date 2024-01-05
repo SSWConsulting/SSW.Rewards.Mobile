@@ -4,13 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <RootNamespace>SSW.Rewards.Shared</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="ApiServices\**" />
-    <EmbeddedResource Remove="ApiServices\**" />
-    <None Remove="ApiServices\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />

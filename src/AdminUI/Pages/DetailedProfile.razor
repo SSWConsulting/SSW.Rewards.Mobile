@@ -4,11 +4,16 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Enums
+@using SSW.Rewards.Shared.DTOs.Staff
+@using SSW.Rewards.Shared.Services
 
 @inject IJSRuntime JSRuntime
-@inject ISkillClient _skillsClient
 @inject ISnackbar _snackbar
-@inject IStaffClient _client
+@inject IStaffService staffService
+@inject IStaffAdminService staffAdminService
+@inject ISkillsService skillsService
+
 
 @attribute [Authorize]
 
@@ -75,7 +80,7 @@
                            MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
                            Label="Skills"
                            Clearable="true"
-                           AdornmentIcon="@Icons.Material.Filled.Search"
+                           AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
                            Class="ml-9">
                     @foreach (var skill in selectionSkills.OrderBy(s => s.Name))
                     {
@@ -125,7 +130,7 @@
 
 @* TODO: Need to limit selected Skills to max 5 minimum of 3  *@
 
-    @code {
+@code {
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -137,7 +142,7 @@
 
     private int _staffAchievementValue;
 
-    private StaffDto _staff = new()
+    private StaffMemberDto _staff = new()
     {
         StaffAchievement = new()
     };
@@ -166,7 +171,7 @@
     {
         await base.OnInitializedAsync();
 
-        skills = (await _skillsClient.GetAsync()).Skills;
+        skills = (await skillsService.GetSkillsList(CancellationToken.None)).Skills.Select(s => s.Name).ToList();
         selectionSkills = skills.Select(x => new SelectionSkills{Name = x, IsDisabled = false}).ToList();
 
         await GetProfile();
@@ -238,7 +243,7 @@
         try
         {
             int.TryParse(Id, out int id);
-            _staff = await _client.GetStaffMemberProfileAsync(id);
+            _staff = await staffService.GetStaffMember(id, CancellationToken.None);
 
             _staffAchievementValue = _staff.StaffAchievement?.Value ?? 0;
 
@@ -287,25 +292,21 @@
     {
         if (!string.IsNullOrWhiteSpace(_currentBrowserFile?.Name))
         {
-            await _client.UploadStaffMemberProfilePictureAsync(_staff.Id,
-                new FileParameter(_currentBrowserFile.OpenReadStream(_currentBrowserFile.Size), 
-                    _currentBrowserFile.Name,
-                    _currentBrowserFile.ContentType));
+            await staffAdminService.UploadProfilePicture(_staff.Id,
+                _currentBrowserFile.OpenReadStream(_currentBrowserFile.Size), 
+                    CancellationToken.None);
         }
 
         _staff.StaffAchievement.Value = _staffAchievementValue;
 
-        await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(_staff));
+        await staffAdminService.UpsertStaffMemberProfile(StaffHelper.FromDto(_staff), CancellationToken.None);
 
         _snackbar.Add("User saved", Severity.Success);
     }
 
     private async Task OnArchiveClicked()
     {
-        await _client.DeleteStaffMemberProfileAsync(new DeleteStaffMemberProfileCommand
-        {
-            Id = _staff.Id
-        });
+        await staffAdminService.DeleteStaffMember(_staff.Id, CancellationToken.None);
         await GetProfile();
     }
 

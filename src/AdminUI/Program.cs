@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-
 using MudBlazor;
 using MudBlazor.Services;
+using SSW.Rewards.Shared;
 
 namespace SSW.Rewards.Admin.UI;
 
@@ -39,28 +39,7 @@ public class Program
             throw new NullReferenceException("No API base URL provided");
         }
 
-        // register services from nswag
-        const string generatedClientName = "generatedClient";
-        builder.Services.AddHttpClient(generatedClientName)
-            .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
-
-        var generatedClients = typeof(Program).Assembly
-            .GetTypes()
-            .Select(s => new
-            {
-                Implementation = s,
-                Interface = s.GetInterface($"I{s.Name}"), // nswag follows this convention
-            })
-            .Where(x => x.Interface != null);
-
-        foreach (var client in generatedClients)
-        {
-            builder.Services.AddScoped(client.Interface!, sp =>
-            {
-                var ctor = client.Implementation.GetConstructor(new[] { typeof(string), typeof(HttpClient) }) !;
-                return ctor.Invoke(new object?[] { apiBaseUrl, sp.GetService<IHttpClientFactory>() !.CreateClient(generatedClientName) });
-            });
-        }
+        builder.Services.AddApiClientServices<CustomAuthorizationMessageHandler>(apiBaseUrl);
 
         builder.Services.AddMudServices(config =>
         {

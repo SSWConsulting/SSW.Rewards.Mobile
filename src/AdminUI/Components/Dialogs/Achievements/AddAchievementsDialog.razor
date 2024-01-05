@@ -1,3 +1,5 @@
+@using SSW.Rewards.Enums
+@using SSW.Rewards.Shared.DTOs.Achievements
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Achievement</MudText>    
@@ -32,7 +34,7 @@
     MudDialogInstance? MudDialog { get; set; }
     
     [Parameter]
-    public AchievementAdminViewModel Dto { get; set; } = new();
+    public AchievementAdminDto Dto { get; set; } = new();
 
     private async Task Submit()
     {

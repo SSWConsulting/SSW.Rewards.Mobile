@@ -1,9 +1,10 @@
-﻿using Shared.DTOs.Rewards;
+﻿using SSW.Rewards.Shared.DTOs.Rewards;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IRewardAdminService
 {
+    Task<RewardsAdminViewModel> GetRewards(CancellationToken cancellationToken);
     Task<int> AddReward(RewardEditDto reward, CancellationToken cancellationToken);
     Task UpdateReward(RewardEditDto reward, CancellationToken cancellationToken);
     Task DeleteReward(int rewardId, CancellationToken cancellationToken);

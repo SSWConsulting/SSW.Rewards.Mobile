@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList;
 

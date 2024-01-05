@@ -5,17 +5,19 @@
 @using SSW.Rewards.Admin.UI.Components
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Rewards
 @using SSW.Rewards.Admin.UI.Models.Interfaces
+@using SSW.Rewards.Shared.DTOs.Rewards
+@using SSW.Rewards.Shared.Services
 
 @attribute [Authorize]
 
-@inject IRewardClient _client
+@inject IRewardAdminService rewardAdminService
 @inject IDialogService DialogService
 @inject ISnackbar SnackBar
 
 <MudText Typo="Typo.h2">Rewards</MudText>
 <MudText Typo="Typo.body1">All rewards available to be claimed</MudText>
 
-<Table TItem="RewardAdminViewModel"
+<Table TItem="RewardEditDto"
        Items="@(_model.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
        TableTitle="Profiles"
        OnRowClick="OnRowClicked"
@@ -28,17 +30,17 @@
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
+            <MudTableSortLabel SortBy="new Func<RewardEditDto,object>(x => x.Code)" InitialDirection="SortDirection.Ascending">
                 Code
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Name)">
+            <MudTableSortLabel SortBy="new Func<RewardEditDto,object>(x => x.Name)">
                 Name
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<RewardAdminViewModel,object>(x => x.Cost)">
+            <MudTableSortLabel SortBy="new Func<RewardEditDto,object>(x => x.Cost)">
                 Cost
             </MudTableSortLabel>
         </MudTh>
@@ -64,7 +66,7 @@
     private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
     private bool _loading = true;
     private string _searchString = string.Empty;
-    private IEnumerable<RewardAdminViewModel> _model = Enumerable.Empty<RewardAdminViewModel>();
+    private IEnumerable<RewardEditDto> _model = Enumerable.Empty<RewardEditDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,7 +80,7 @@
         {
             _loading = true;
             await Task.Delay(250);
-            _model = (await _client.AdminListAsync()).Rewards;
+            _model = (await rewardAdminService.GetRewards(CancellationToken.None)).Rewards;
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -86,8 +88,8 @@
             exception.Redirect();
         }
     }
-    
-    private async Task OnRowClicked(TableRowClickEventArgs<RewardAdminViewModel> obj)
+
+    private async Task OnRowClicked(TableRowClickEventArgs<RewardEditDto> obj)
     {
         var item = _model.FirstOrDefault(x => x.Id == obj.Item.Id);
 
@@ -101,26 +103,19 @@
             switch (result.Data)
             {
                 case int id:
-                    await _client.DeleteAsync(new(){ Id = id });
-                    SnackBar.Add($"Reward deleted", Severity.Success);
+                    await rewardAdminService.DeleteReward(id, CancellationToken.None);
+                SnackBar.Add($"Reward deleted", Severity.Success);
                     break;
-                case RewardAdminViewModel dto:
-                    await _client.UpdateRewardAsync(new UpdateRewardCommand
-                    {
-                        Id = dto.Id,
-                        Cost = dto.Cost
-                    });
+                case RewardEditDto dto:
+                    await rewardAdminService.UpdateReward(dto, CancellationToken.None);
                     SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
                     break;
                 case AssignReward usr:
                     if (usr?.Id == null) return;
-                    
+
+                    await rewardAdminService.ClaimForUser(usr.Code, usr.Id, CancellationToken.None);
                     // TODO: Add nice notification for returned status
-                    await _client.ClaimForUserAsync(new ClaimRewardForUserCommand
-                    {
-                        Code = usr.Code,
-                        UserId = usr.Id
-                    });
+                    
                     SnackBar.Add($"Reward claimed", Severity.Success);
                     break;
             }
@@ -135,9 +130,9 @@
         if (!result.Canceled)
         {
             // Add the Reward
-            if (result.Data is AddRewardCommand dto)
+            if (result.Data is RewardEditDto dto)
             {
-                await _client.AddAsync(dto);
+                await rewardAdminService.AddReward(dto, CancellationToken.None);
                 SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
             }
             await GetRewards();

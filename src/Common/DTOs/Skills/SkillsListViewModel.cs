@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Skills;
+﻿namespace SSW.Rewards.Shared.DTOs.Skills;
 
 public class SkillsListViewModel
 {

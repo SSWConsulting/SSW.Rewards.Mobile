@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Achievements;
+using SSW.Rewards.Shared.DTOs.Achievements;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 using SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchievement;
 using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
@@ -28,7 +28,7 @@ public class AchievementController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new SearchAchievementQuery { SearchTerm = searchTerm }));
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<AchievementUsersViewModel>> Users([FromQuery] int achievementId)
     {

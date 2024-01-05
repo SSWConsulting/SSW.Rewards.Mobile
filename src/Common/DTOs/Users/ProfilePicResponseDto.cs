@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Users;
+﻿namespace SSW.Rewards.Shared.DTOs.Users;
 public class ProfilePicResponseDto
 {
     public string PicUrl { get; set; } = string.Empty;

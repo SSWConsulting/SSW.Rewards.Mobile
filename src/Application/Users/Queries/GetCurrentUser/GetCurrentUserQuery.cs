@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
-using Shared.DTOs.Users;
+using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 
 public class GetCurrentUserQuery : IRequest<CurrentUserDto>
-{        
+{
 }
 
 public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, CurrentUserDto>

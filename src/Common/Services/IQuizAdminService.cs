@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IQuizAdminService
 {

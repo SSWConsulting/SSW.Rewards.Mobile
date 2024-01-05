@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Users;
+using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
 using SSW.Rewards.Application.Users.Commands.RegisterUser;
