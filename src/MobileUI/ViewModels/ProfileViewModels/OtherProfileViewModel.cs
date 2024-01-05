@@ -8,7 +8,7 @@ public class OtherProfileViewModel : ProfileViewModelBase
     {
     }
 
-    public override async Task Initialise()
+    public async Task Initialise()
     {
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
