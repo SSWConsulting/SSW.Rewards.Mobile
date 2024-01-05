@@ -35,6 +35,7 @@ public static class ConfigureServices
         services.AddSingleton<IRewardService, RewardService>();
         services.AddSingleton<ISkillsService, SkillsService>();
         services.AddSingleton<IStaffService, StaffService>();
+        services.AddSingleton<IUserService, UserService>();
 
         return services;
     }
