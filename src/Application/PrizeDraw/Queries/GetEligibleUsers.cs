@@ -5,6 +5,7 @@ using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.PrizeDraw.Queries;
 
+// TODO: something went wrong with this query. It should just be returning users based on the filter, nothing to do with staff or achievements
 public class GetEligibleUsers : IRequest<EligibleUsersViewModel>
 {
     public int AchievementId { get; set; }

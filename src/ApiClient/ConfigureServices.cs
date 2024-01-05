@@ -25,6 +25,7 @@ public static class ConfigureServices
         }
 
         services.AddSingleton<IAchievementService, AchievementService>();
+        services.AddSingleton<ILeaderboardService, LeaderboardService>();
 
         return services;
     }
