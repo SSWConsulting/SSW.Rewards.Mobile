@@ -23,6 +23,7 @@ public static class ConfigureServices
         {
             services.AddSingleton<IAchievementAdminService, AchievementAdminService>();
             services.AddSingleton<IPrizeDrawService, PrizeDrawService>();
+            services.AddSingleton<IQuizAdminService, QuizAdminService>();
         }
 
         services.AddSingleton<IAchievementService, AchievementService>();
