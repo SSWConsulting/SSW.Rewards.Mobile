@@ -1,23 +1,27 @@
 ﻿using Mopups.Services;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class CameraPageViewModel : BaseViewModel
+public partial class CameraPageViewModel : BaseViewModel
 {
     public ICommand OnTakePhotoTapped { get; set; }
     public ICommand OnChoosePhotoTapped { get; set; }
     public ICommand UseButtonTapped { get; set; }
 
-    public bool UseButtonEnabled { get; set; }
+    [ObservableProperty]
+    private bool _useButtonEnabled;
 
-    public ImageSource ProfilePicture { get; set; } = ImageSource.FromFile("");
+    [ObservableProperty]
+    private ImageSource _profilePicture = ImageSource.FromFile("");
     
     private FileResult _imageFile;
 
     private IUserService _userService { get; set; }
 
-    public bool IsUploading { get; set; } = false;
+    [ObservableProperty]
+    private bool _isUploading;
 
     public CameraPageViewModel(IUserService userService)
     {
@@ -89,8 +93,6 @@ public class CameraPageViewModel : BaseViewModel
         ProfilePicture = image;
 
         UseButtonEnabled = true;
-        RaisePropertyChanged("UseButtonEnabled");
-        RaisePropertyChanged("ProfilePicture", "UseButtonEnabled");
     }
 
     private async Task CapturePhoto()
@@ -136,7 +138,6 @@ public class CameraPageViewModel : BaseViewModel
     public async Task UploadProfilePic()
     {
         IsUploading = true;
-        RaisePropertyChanged("IsUploading");
         var imageStream = await _imageFile.OpenReadAsync();
         await _userService.UploadImageAsync(imageStream);
         await MopupService.Instance.PopAllAsync();

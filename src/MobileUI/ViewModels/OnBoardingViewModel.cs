@@ -1,22 +1,34 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class OnBoardingViewModel : BaseViewModel
+    public partial class OnBoardingViewModel : BaseViewModel
     {
         public ICommand DoActionCommand { get; set; }
 		public ICommand Swiped { get; set; }
         public ICommand Skip { get; set; }
         public ObservableCollection<CarouselViewModel> Items { get; set; }
         public CarouselViewModel SelectedItem { get; set; }
-        public string SubHeading { get; set; }
-        public string Content { get; set; }
-        public string ButtonText { get; set; }
-        public Color BackgroundColour { get; set; }
-        public int Points { get; set; }
-        public bool HasPoints { get; set; }
-        public string[] Properties { get; set; }
+
+        [ObservableProperty]
+        private string _subHeading;
+        
+        [ObservableProperty]
+        private string _content;
+        
+        [ObservableProperty]
+        private string _buttonText;
+        
+        [ObservableProperty]
+        private Color _backgroundColour;
+        
+        [ObservableProperty]
+        private int _points;
+        
+        [ObservableProperty]
+        private bool _hasPoints;
 
         public EventHandler<int> ScrollToRequested;
 
@@ -25,7 +37,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             DoActionCommand = new Command(DoAction);
             Swiped = new Command(HandleSwiped);
             Skip = new Command(async () => await SkipOnboarding());
-            Properties = new string[] { nameof(SubHeading), nameof(Content), nameof(BackgroundColour), nameof(ButtonText), nameof(Points), nameof(HasPoints) };
             Items = new ObservableCollection<CarouselViewModel>
             {
                 new CarouselViewModel
@@ -130,7 +141,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             ButtonText = SelectedItem.ButtonText;
             HasPoints = SelectedItem.HasPoints;
             Points = SelectedItem.Points;
-            RaisePropertyChanged(Properties);
         }
     }
 

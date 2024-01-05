@@ -1,36 +1,38 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class LoginPageViewModel : BaseViewModel
+public partial class LoginPageViewModel : BaseViewModel
 {
     public ICommand LoginTappedCommand { get; set; }
 
     private IUserService _userService { get; set; }
 
-    public bool isRunning { get; set; }
+    [ObservableProperty]
+    private bool _isRunning;
 
-    public bool LoginButtonEnabled { get; set; }
+    [ObservableProperty]
+    private bool _loginButtonEnabled;
 
     bool _isStaff = false;
 
-    public string ButtonText { get; set; }
+    [ObservableProperty]
+    private string _buttonText;
 
     public LoginPageViewModel(IUserService userService)
     {
         _userService = userService;
         LoginTappedCommand = new Command(SignIn);
         ButtonText = "Sign up / Log in";
-        OnPropertyChanged("ButtonText");
     }
 
     private async void SignIn()
     {
-        isRunning = true;
+        IsRunning = true;
         LoginButtonEnabled = false;
         bool enablebuttonAfterLogin = true;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
 
         ApiStatus status;
         try
@@ -62,8 +64,7 @@ public class LoginPageViewModel : BaseViewModel
         }
 
         LoginButtonEnabled = enablebuttonAfterLogin;
-        isRunning = false;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
+        IsRunning = false;
     }
 
     public async Task Refresh()
@@ -73,9 +74,8 @@ public class LoginPageViewModel : BaseViewModel
         if (_userService.HasCachedAccount)
         {
             LoginButtonEnabled = false;
-            isRunning = true;
+            IsRunning = true;
             ButtonText = "Logging you in...";
-            RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
 
             try
             {
@@ -100,10 +100,9 @@ public class LoginPageViewModel : BaseViewModel
             }
             finally
             {
-                isRunning = false;
+                IsRunning = false;
                 LoginButtonEnabled = enablebuttonAfterLogin;
                 ButtonText = "Sign up / Log in";
-                RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
             }
         }
     }
