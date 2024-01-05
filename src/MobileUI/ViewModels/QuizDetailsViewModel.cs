@@ -17,15 +17,13 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ObservableCollection<QuestionResultDto> Results { get; set; } = new ObservableCollection<QuestionResultDto>();
 
-        [ObservableProperty]
-        private ICommand _buttonCommand;
+        public ICommand ButtonCommand { get; set; }
 
         public ICommand BackCommand => new Command(async () => await GoBack());
 
         public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
 
-        [ObservableProperty]
-        private ICommand _resultsButtonCommand;
+        public ICommand ResultsButtonCommand { get; set; }
         
         [ObservableProperty]
         private string _quizTitle;
@@ -188,11 +186,15 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 Results.Clear();
                 
+                OnPropertyChanged(nameof(ResultsButtonCommand));
+                
                 foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
                 {
                     Results.Add(questionResult);
                 }
             }
+            
+            OnPropertyChanged(nameof(ResultsButtonCommand));
         }
 
         private async Task GoBack(bool askFirst = true)
@@ -231,6 +233,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
 
             QuizDescription = CurrentQuestion.Text;
+            OnPropertyChanged(nameof(ButtonCommand));
         }
 
         private void MoveNext(int next)
