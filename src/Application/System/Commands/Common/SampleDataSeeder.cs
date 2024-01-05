@@ -2,7 +2,6 @@
 using ExcelDataReader;
 using MoreLinq;
 using SSW.Rewards.Application.Achievements.Common;
-using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.System.Commands.Common;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using SSW.Rewards.Domain.Enums;
+using SSW.Rewards.Enums;
 
 #nullable disable
 
