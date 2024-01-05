@@ -254,7 +254,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             IsBusy = true;
             QuestionsVisible = true;
             ResultsVisible = false;
-            RaisePropertyChanged(nameof(IsBusy), nameof(QuizTitle), nameof(QuizDescription), nameof(QuestionsVisible), nameof(ResultsVisible));
         }
     }
 
