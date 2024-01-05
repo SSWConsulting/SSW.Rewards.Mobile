@@ -8,6 +8,7 @@ using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
+using SSW.Rewards.Shared;
 using System.Reflection;
 using ZXing.Net.Maui.Controls;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
@@ -41,7 +42,9 @@ public static class MauiProgram
 
         var options = new ApiOptions { BaseUrl = Constants.ApiBaseUrl };
 
-        // TODO: move this to a source genertor
+        // TODO: move this to a source generator
+        // We definitely shouldn't be using reflection at startup in a mobile app!!
+        // See: https://github.com/matt-goldman/Maui.Plugins.PageResolver/wiki/2-Using-the-dependency-registration-source-generator
 
         var excludedTypes = new Type[]
         {
@@ -75,8 +78,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
 
-        builder.Services.AddHttpClient(AuthHandler.AuthenticatedClient)
-            .AddHttpMessageHandler((s) => s.GetService<AuthHandler>());
+        builder.Services.AddApiClientServices<AuthHandler>(options.BaseUrl);
 
 #if DEBUG
         builder.Logging.AddDebug();

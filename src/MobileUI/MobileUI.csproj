@@ -97,6 +97,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Common\Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
 			<DependentUpon>MyProfilePage.xaml</DependentUpon>
 		</Compile>
