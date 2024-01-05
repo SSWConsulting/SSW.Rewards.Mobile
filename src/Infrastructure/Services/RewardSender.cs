@@ -2,6 +2,7 @@
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Domain.Entities;
+using SSW.Rewards.Enums;
 
 namespace SSW.Rewards.Infrastructure;
 

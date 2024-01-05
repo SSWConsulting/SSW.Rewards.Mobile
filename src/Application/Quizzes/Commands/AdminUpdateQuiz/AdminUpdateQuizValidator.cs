@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Quizzes.Common;
+﻿using Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
@@ -51,7 +51,7 @@ public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
             && q.Id != command.Quiz.QuizId, cancellationToken);
     }
 
-    private bool HaveOneCorrectAnswer(AdminQuizQuestionDto question)
+    private bool HaveOneCorrectAnswer(QuizQuestionDto question)
     {
         return question.Answers.Where(a => a.IsCorrect).Count() == 1;
     }

@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Application.Common.Extensions;
+﻿using Shared.DTOs.PrizeDraw;
+using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.PrizeDraw.Queries;
 public class Mapping : Profile

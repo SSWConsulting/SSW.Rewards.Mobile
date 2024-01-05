@@ -5,7 +5,7 @@ public class Mapping : Profile
 {
     public Mapping()
     {
-        .CreateMap<StaffMemberSkill, StaffSkillDto>()
+        CreateMap<StaffMemberSkill, StaffSkillDto>()
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Skill.Name))
                 .ForMember(dst => dst.Level, opt => opt.MapFrom(src => src.Level));
 
