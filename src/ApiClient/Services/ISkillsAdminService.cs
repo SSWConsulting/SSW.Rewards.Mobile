@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Shared.DTOs.Skills;
 
-namespace SSW.Rewards.Shared.Services;
+namespace SSW.Rewards.ApiClient.Services;
 
 public interface ISkillsAdminService
 {

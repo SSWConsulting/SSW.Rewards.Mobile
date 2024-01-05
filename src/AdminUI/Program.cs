@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
-using SSW.Rewards.Shared;
+using SSW.Rewards.ApiClient;
 
 namespace SSW.Rewards.Admin.UI;
 
