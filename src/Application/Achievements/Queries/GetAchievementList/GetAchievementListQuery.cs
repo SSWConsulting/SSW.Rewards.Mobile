@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Achievements;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 

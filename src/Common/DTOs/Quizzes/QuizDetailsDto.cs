@@ -1,6 +1,4 @@
-﻿
-
-namespace Shared.DTOs.Quizzes;
+﻿namespace SSW.Rewards.Shared.DTOs.Quizzes;
 
 public class QuizDetailsDto
 {
@@ -10,5 +8,6 @@ public class QuizDetailsDto
     public int Points { get; set; }
     public Icons Icon { get; set; }
     public bool IsArchived { get; set; }
+    public DateTime DateCreated { get; set; }
     public IList<QuizQuestionDto> Questions { get; set; } = new List<QuizQuestionDto>();
 }

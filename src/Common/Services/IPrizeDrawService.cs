@@ -1,6 +1,6 @@
-﻿using Shared.DTOs.PrizeDraw;
+﻿using SSW.Rewards.Shared.DTOs.PrizeDraw;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IPrizeDrawService
 {

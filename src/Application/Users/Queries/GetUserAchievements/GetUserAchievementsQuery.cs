@@ -1,10 +1,10 @@
-using Shared.DTOs.Users;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 
 public class GetUserAchievementsQuery : IRequest<UserAchievementsViewModel>
 {
-    public int UserId { get; set; }        
+    public int UserId { get; set; }
 }
 
 public class GetUserAchievementsQueryHandler : IRequestHandler<GetUserAchievementsQuery, UserAchievementsViewModel>

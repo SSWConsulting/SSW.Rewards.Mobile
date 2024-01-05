@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
 
@@ -15,9 +15,9 @@ public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
             ICurrentUserService currentUserService,
             IUserService userService)
         {
-            _context            = context;
+            _context = context;
             _currentUserService = currentUserService;
-            _userService        = userService;
+            _userService = userService;
         }
 
         public async Task<IEnumerable<QuizDto>> Handle(GetQuizListForUser request, CancellationToken cancellationToken)
@@ -39,15 +39,15 @@ public class GetQuizListForUser : IRequest<IEnumerable<QuizDto>>
                                             .ToListAsync(cancellationToken);
 
             List<QuizDto> retVal = new List<QuizDto>();
-            foreach(var quiz in masterQuizList)
+            foreach (var quiz in masterQuizList)
             {
                 retVal.Add(new QuizDto
                 {
-                    Id          = quiz.Id,
-                    Title       = quiz.Title,
+                    Id = quiz.Id,
+                    Title = quiz.Title,
                     Description = quiz.Description,
-                    Icon        = quiz.Icon,
-                    Passed      = userQuizzes.Contains(quiz.Id)
+                    Icon = quiz.Icon,
+                    Passed = userQuizzes.Contains(quiz.Id)
                 });
             }
 

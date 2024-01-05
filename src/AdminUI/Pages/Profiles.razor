@@ -5,9 +5,12 @@
 @using SSW.Rewards.Admin.UI.Components
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Profile
 @using SSW.Rewards.Admin.UI.Helpers
+@using SSW.Rewards.Shared.DTOs.Staff
+@using SSW.Rewards.Shared.Services
 
 @inject IDialogService DialogService
-@inject IStaffClient _client
+@inject IStaffService staffService
+@inject IStaffAdminService staffAdminService
 
 @attribute [Authorize]
 
@@ -18,7 +21,7 @@
     <MudCheckBox T="bool" @bind-Checked="@_showArchivedStaff" Label="Filter List for Archived Staff" />
 </MudPaper>
 
-<Table TItem="StaffDto"
+<Table TItem="StaffMemberDto"
        Items="@(_model.Where(s => s.IsDeleted == _showArchivedStaff && s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)).OrderBy(i => i.Name).ToList())"
        TableTitle="Profiles"
        IsLoading="@_loading">
@@ -30,12 +33,12 @@
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<StaffDto, object>(x => x.Name)" InitialDirection="SortDirection.Ascending">
+            <MudTableSortLabel SortBy="new Func<StaffMemberDto, object>(x => x.Name)" InitialDirection="SortDirection.Ascending">
                 Name
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<StaffDto, object>(x => x.StaffAchievement.Value)">
+            <MudTableSortLabel SortBy="new Func<StaffMemberDto, object>(x => x.StaffAchievement.Value)">
                 Points
             </MudTableSortLabel>
         </MudTh>
@@ -64,7 +67,7 @@
     private bool _loading = true;
     private string _searchString = string.Empty;
     private bool _showArchivedStaff;
-    private IEnumerable<StaffDto> _model = Enumerable.Empty<StaffDto>();
+    private IEnumerable<StaffMemberDto> _model = Enumerable.Empty<StaffMemberDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,14 +75,14 @@
         _model = await GetStaff();
     }
 
-    private async Task<IEnumerable<StaffDto>> GetStaff()
+    private async Task<IEnumerable<StaffMemberDto>> GetStaff()
     {
-        var staff = Enumerable.Empty<StaffDto>();
+        var staff = Enumerable.Empty<StaffMemberDto>();
         try
         {
             _loading = true;
             await Task.Delay(250);
-            staff = (await _client.GetAsync()).Staff;
+            staff = (await staffService.GetStaffList(CancellationToken.None)).Staff;
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -96,9 +99,9 @@
         if (!result.Canceled)
         {
             // Add the Reward
-            if (result.Data is StaffDto dto)
+            if (result.Data is StaffMemberDto dto)
             {
-                await _client.UpsertStaffMemberProfileAsync(StaffHelper.FromDto(dto));
+                await staffAdminService.UpsertStaffMemberProfile(StaffHelper.FromDto(dto), CancellationToken.None);
             }
             await GetStaff();
         }

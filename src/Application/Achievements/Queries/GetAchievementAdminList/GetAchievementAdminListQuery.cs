@@ -1,12 +1,12 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Achievements;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
 public class GetAchievementAdminListQuery : IRequest<AchievementAdminListViewModel>
 {
     public bool IncludeArchived { get; set; }
-    
+
     public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievementAdminListQuery, AchievementAdminListViewModel>
     {
         private readonly IMapper _mapper;

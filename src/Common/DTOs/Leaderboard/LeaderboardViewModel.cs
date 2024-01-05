@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Leaderboard;
+﻿namespace SSW.Rewards.Shared.DTOs.Leaderboard;
 
 public class LeaderboardViewModel
 {

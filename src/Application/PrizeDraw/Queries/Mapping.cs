@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.PrizeDraw;
+﻿using SSW.Rewards.Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.PrizeDraw.Queries;

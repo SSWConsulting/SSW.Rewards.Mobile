@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Rewards;
+﻿using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.SearchRewards;
 

@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Achievements;
+﻿namespace SSW.Rewards.Shared.DTOs.Achievements;
 
 public class AchievementAdminDto
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Rewards;
+using SSW.Rewards.Shared.DTOs.Rewards;
 using SSW.Rewards.Application.Rewards.Commands;
 using SSW.Rewards.Application.Rewards.Commands.AddReward;
 using SSW.Rewards.Application.Rewards.Commands.DeleteReward;

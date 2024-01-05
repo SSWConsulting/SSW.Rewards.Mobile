@@ -1,12 +1,10 @@
-﻿using Shared.DTOs.Achievements;
+﻿using SSW.Rewards.Shared.DTOs.Achievements;
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IAchievementService
 {
     Task<ClaimAchievementResult> ClaimAchievement(string code, CancellationToken cancellationToken);
-    Task<ClaimAchievementResult> ClaimAchievementForUser(string code, int userId, CancellationToken cancellationToken);
-
     
     Task<AchievementListViewModel> GetAchievementList(CancellationToken cancellationToken);
 

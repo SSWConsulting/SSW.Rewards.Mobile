@@ -1,4 +1,4 @@
-﻿namespace Shared;
+﻿namespace SSW.Rewards.Shared;
 
 public class Constants
 {

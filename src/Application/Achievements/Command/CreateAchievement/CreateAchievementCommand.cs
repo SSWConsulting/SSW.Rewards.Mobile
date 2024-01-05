@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Shared.DTOs.Achievements;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -30,11 +30,11 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
 
         var achievement = new Achievement
         {
-            Name                = request.Name,
-            Value               = request.Value,
-            Type                = request.Type,
-            IsMultiscanEnabled  = request.IsMultiscanEnabled,
-            Code                = code
+            Name = request.Name,
+            Value = request.Value,
+            Type = request.Type,
+            IsMultiscanEnabled = request.IsMultiscanEnabled,
+            Code = code
         };
 
         _context.Achievements.Add(achievement);

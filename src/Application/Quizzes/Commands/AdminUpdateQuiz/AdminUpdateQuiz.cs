@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
@@ -24,20 +24,20 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
     {
-        
+
         var dbQuiz = await _context.Quizzes
                                     .Include(q => q.Questions)
                                         .ThenInclude(r => r.Answers)
                                     .FirstAsync(x => x.Id == request.Quiz.QuizId, cancellationToken);
-        
-        dbQuiz.Title            = request.Quiz.Title;
-        dbQuiz.Description      = request.Quiz.Description;
-        dbQuiz.LastUpdatedUtc   = DateTime.UtcNow;
-        dbQuiz.IsArchived       = request.Quiz.IsArchived;
-        dbQuiz.Icon             = request.Quiz.Icon;
-        
+
+        dbQuiz.Title = request.Quiz.Title;
+        dbQuiz.Description = request.Quiz.Description;
+        dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
+        dbQuiz.IsArchived = request.Quiz.IsArchived;
+        dbQuiz.Icon = request.Quiz.Icon;
+
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
-        foreach(var q in request.Quiz.Questions)
+        foreach (var q in request.Quiz.Questions)
         {
             if (q.QuestionId > 0)
             {
@@ -71,20 +71,20 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             {
                 // existing answer. Update it
                 currentAnswerIds.Remove(a.QuestionAnswerId);
-                
+
                 var existingAnswer = existingQuestion.Answers.First(x => x.Id == a.QuestionAnswerId);
-                existingAnswer.Text         = a.Text;
-                existingAnswer.IsCorrect    = a.IsCorrect;
+                existingAnswer.Text = a.Text;
+                existingAnswer.IsCorrect = a.IsCorrect;
             }
             else
             {
                 // new answer. Add it.
                 QuizAnswer answer = new QuizAnswer
                 {
-                    QuestionId  = existingQuestion.Id,
-                    Text        = a.Text,
-                    CreatedUtc  = DateTime.UtcNow,
-                    IsCorrect   = a.IsCorrect
+                    QuestionId = existingQuestion.Id,
+                    Text = a.Text,
+                    CreatedUtc = DateTime.UtcNow,
+                    IsCorrect = a.IsCorrect
                 };
                 existingQuestion.Answers.Add(answer);
             }
@@ -99,12 +99,12 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
     {
         var dbQuestion = new QuizQuestion
         {
-            Text        = dto.Text,
-            CreatedUtc  = DateTime.UtcNow,
-            Answers     = dto.Answers.Select(a => new QuizAnswer
+            Text = dto.Text,
+            CreatedUtc = DateTime.UtcNow,
+            Answers = dto.Answers.Select(a => new QuizAnswer
             {
-                IsCorrect   = a.IsCorrect,
-                Text        = a.Text
+                IsCorrect = a.IsCorrect,
+                Text = a.Text
             }).ToList()
         };
         return dbQuestion;

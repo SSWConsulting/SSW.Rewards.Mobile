@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;

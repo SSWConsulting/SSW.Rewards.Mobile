@@ -1,10 +1,9 @@
 ﻿
-
-namespace Shared.DTOs.PrizeDraw;
+namespace SSW.Rewards.Shared.DTOs.PrizeDraw;
 
 public class GetEligibleUsersFilter
 {
-    public int AchievementId { get; set; }
-    public LeaderboardFilter Filter { get; set; }
-    public bool FilterStaff { get; set; }
+    public int? AchievementId { get; set; }
+    public LeaderboardFilter? Filter { get; set; }
+    public bool? FilterStaff { get; set; }
 }

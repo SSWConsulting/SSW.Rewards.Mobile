@@ -1,6 +1,6 @@
 ﻿
 
-namespace Shared.DTOs.Rewards;
+namespace SSW.Rewards.Shared.DTOs.Rewards;
 
 public class ClaimRewardResult
 {

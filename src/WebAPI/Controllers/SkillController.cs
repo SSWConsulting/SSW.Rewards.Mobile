@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Skills;
+using SSW.Rewards.Shared.DTOs.Skills;
 using SSW.Rewards.Application.Skills.Commands.DeleteSkill;
 using SSW.Rewards.Application.Skills.Commands.UpsertSkill;
 using SSW.Rewards.Application.Skills.Queries.GetSkillList;

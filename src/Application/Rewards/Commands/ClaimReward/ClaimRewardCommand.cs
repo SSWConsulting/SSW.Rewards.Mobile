@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Rewards;
+﻿using SSW.Rewards.Shared.DTOs.Rewards;
 using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands;

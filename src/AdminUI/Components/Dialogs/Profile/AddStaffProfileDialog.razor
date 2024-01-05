@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Components
 @using System.ComponentModel.DataAnnotations
+@using SSW.Rewards.Shared.DTOs.Staff
 
 <MudDialog>
     <TitleContent>
@@ -34,7 +35,7 @@
     MudDialogInstance? MudDialog { get; set; }
     
     [Parameter]
-    public StaffDto Dto { get; set; } = new();
+    public StaffMemberDto Dto { get; set; } = new();
     
 
     private MudForm? _form;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Quizzes;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetailsQuery;
 
@@ -11,7 +11,7 @@ public class GetQuizDetailsQuery : IRequest<QuizDetailsDto>
     {
         QuizId = id;
     }
-    
+
     public sealed class Handler : IRequestHandler<GetQuizDetailsQuery, QuizDetailsDto>
     {
         private readonly IMapper _mapper;

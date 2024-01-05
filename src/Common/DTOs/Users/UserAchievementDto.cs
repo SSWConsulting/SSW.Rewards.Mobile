@@ -1,6 +1,6 @@
 ﻿
 
-namespace Shared.DTOs.Users;
+namespace SSW.Rewards.Shared.DTOs.Users;
 
 public class UserAchievementDto
 {

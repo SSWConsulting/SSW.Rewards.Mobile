@@ -3,10 +3,13 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Shared.DTOs.Skills
+@using SSW.Rewards.Shared.Services
 
 @attribute [Authorize]
 
-@inject ISkillClient _client
+@inject ISkillsService skillsService
+@inject ISkillsAdminService skillsAdminService
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
@@ -15,9 +18,9 @@
 <MudText Typo="Typo.body1">All Staff Skills</MudText>
 
 <MudTable Items="@_model.OrderBy(s => s.Name)"
-          T="AdminSkill"
+          T="SkillDto"
           CanCancelEdit="true"
-          Filter="new Func<AdminSkill, bool>(FilterItemsFunc)"
+          Filter="new Func<SkillDto, bool>(FilterItemsFunc)"
           @bind-SelectedItem="@selectedItem"
           CommitEditTooltip="Commit Edit"
           OnCommitEditClick="OnEditSubmit">
@@ -52,8 +55,8 @@
 @code {
     private DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
     private string searchString = string.Empty;
-    private AdminSkill? selectedItem;
-    private IEnumerable<AdminSkill> _model { get; set; } = Enumerable.Empty<AdminSkill>();
+    private SkillDto? selectedItem;
+    private IEnumerable<SkillDto> _model { get; set; } = Enumerable.Empty<SkillDto>();
 
 
     protected override async Task OnInitializedAsync()
@@ -71,40 +74,40 @@
 
     private async Task GetSkills()
     {
-        _model =  await _client.GetAdminAsync();
+        _model = (await skillsService.GetSkillsList(CancellationToken.None)).Skills;
     }
 
     private async Task OpenDialog(DialogOptions options)
     {
-    var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
-    var result = await dialog.Result;
+        var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Skills.AddSkillDialog>("Create a Skill", options);
+        var result = await dialog.Result;
         if (!result.Canceled)
         {
             // Add the Skill
             if (result.Data is string skill)
             {
-                await _client.UpsertSkillAsync(new(){ Skill = skill });
+                await skillsAdminService.AddOrUpdateSkill(selectedItem, CancellationToken.None);
             }
             await GetSkills();
         }
     }
 
-    private bool FilterItemsFunc(AdminSkill item) => FilterFunc(item, searchString);
+    private bool FilterItemsFunc(SkillDto item) => FilterFunc(item, searchString);
 
     //! Note: This is only filtering on the name
-    private bool FilterFunc(AdminSkill item, string searchString)
+    private bool FilterFunc(SkillDto item, string searchString)
     {
         return string.IsNullOrWhiteSpace(searchString) || item.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
     }
-    
+
     private async Task OnEditSubmit()
     {
         Snackbar.Clear();
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-        
+
         try
         {
-            await _client.UpsertSkillAsync(new(){ Id = selectedItem!.Id, Skill = selectedItem!.Name });
+            await skillsAdminService.AddOrUpdateSkill(selectedItem, CancellationToken.None);
             Snackbar.Add("Updated Skill!", Severity.Success);
         }
         catch
@@ -113,7 +116,7 @@
         }
     }
 
-    private async Task OnDeletedClicked(AdminSkill item)
+    private async Task OnDeletedClicked(SkillDto item)
     {
         var result = await DialogService.Show<SimpleConfirmationDialog>(
             $"Delete \"{item.Name}?\"",
@@ -124,10 +127,7 @@
 
         if (!result.Canceled && (bool) result.Data)
         {
-            await _client.DeleteSkillAsync(new DeleteSkillCommand
-            {
-                Id = item.Id
-            });
+            await skillsAdminService.DeleteSkill(item.Id, CancellationToken.None);
             await GetSkills();
         }
         

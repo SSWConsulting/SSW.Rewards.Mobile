@@ -1,6 +1,6 @@
-using Shared.DTOs.Rewards;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
-namespace SSW.Rewards.Mobile.Services;
+namespace SSW.Rewards.Shared.Services;
 
 public interface IRewardService
 {

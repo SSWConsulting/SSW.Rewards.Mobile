@@ -1,7 +1,7 @@
-﻿using Shared.DTOs.Leaderboard;
+﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 
-namespace Shared.Interfaces;
+namespace SSW.Rewards.Shared.Services;
 
 public interface ILeaderboardService
 {

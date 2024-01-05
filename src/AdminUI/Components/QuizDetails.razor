@@ -1,4 +1,5 @@
 ﻿@using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
+@using SSW.Rewards.Shared.DTOs.Quizzes
 @inject IDialogService DialogService
 
 <MudForm>
@@ -12,8 +13,8 @@
                     <MudTextField T="int" Label="Points" Required="true" RequiredError="Required" @bind-Value="@Model.Points" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudSelect Class="d-inline" T="SSW.Rewards.Icons" Label="Icon" @bind-Value="Model.Icon">
-                        @foreach (var icon in Enum.GetValues<SSW.Rewards.Icons>())
+                    <MudSelect Class="d-inline" T="Enums.Icons" Label="Icon" @bind-Value="Model.Icon">
+                        @foreach (var icon in Enum.GetValues<Enums.Icons>())
                         {
                             <MudSelectItem Value="@icon">@icon.ToString()</MudSelectItem>
                         }
@@ -64,11 +65,11 @@
     public EventCallback<bool> OnSaveClicked { get; set; }
 
     [Parameter]
-    public AdminQuizDetailsDto Model { get; set; } = new();
+    public QuizDetailsDto Model { get; set; } = new();
     private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
     private async Task AddQuestionDialog(DialogOptions options)
     {
-        AdminQuizQuestionDto q = new AdminQuizQuestionDto { Answers = new List<AdminQuestionAnswerDto>() };
+        QuizQuestionDto q = new QuizQuestionDto { Answers = new List<QuestionAnswerDto>() };
         var parameters = new DialogParameters();
         parameters.Add("Dto", q);
         var dialog = DialogService.Show<QuizQuestionDialog>("Create a quiz question", parameters, options);
@@ -76,7 +77,7 @@
         if (!result.Canceled)
         {
             // Add the Reward
-            if (result.Data is AdminQuizQuestionDto dto)
+            if (result.Data is QuizQuestionDto dto)
             {
                 Model.Questions.Add(dto);
             }
@@ -86,7 +87,7 @@
     {
         await OnSaveClicked.InvokeAsync(true);
     }
-    private async Task EditQuestionDialog(DialogOptions options, AdminQuizQuestionDto q)
+    private async Task EditQuestionDialog(DialogOptions options, QuizQuestionDto q)
     {
         var parameters = new DialogParameters();
         parameters.Add("Dto", q);

@@ -3,10 +3,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.Shared.Services
 
 @attribute [Authorize]
 
-@inject ILeaderboardClient _client
+@inject ILeaderboardService leaderboardService
 
 <MudText Typo="Typo.h2">Leaderboard</MudText>
 <MudText Typo="Typo.body1">All users ranked by total points</MudText>
@@ -131,7 +133,7 @@
         try
         {
             _loading = true;
-            _model = (await _client.GetAsync()).Users;
+            _model = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)

@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.PrizeDraw;
+﻿namespace SSW.Rewards.Shared.DTOs.PrizeDraw;
 
 public class EligibleUsersViewModel
 {

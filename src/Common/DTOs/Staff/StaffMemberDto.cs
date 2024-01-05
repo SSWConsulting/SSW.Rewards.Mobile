@@ -1,11 +1,11 @@
-﻿using Shared.DTOs.Achievements;
+﻿using SSW.Rewards.Shared.DTOs.Achievements;
 
-namespace Shared.DTOs.Staff;
+namespace SSW.Rewards.Shared.DTOs.Staff;
 
 public class StaffMemberDto
 {
     public int Id { get; set; }
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public string Title { get; set; } = string.Empty;
 
@@ -21,7 +21,11 @@ public class StaffMemberDto
 
     public int Points { get; set; }
 
+    public bool IsDeleted { get; set; }
+
+    public bool IsExternal { get; set; }
+
     public AchievementDto? StaffAchievement { get; set; }
     public bool Scanned { get; set; } = false;
-    public IEnumerable<StaffSkillDto> Skills { get; set; } = Enumerable.Empty<StaffSkillDto>();
+    public ICollection<StaffSkillDto>? Skills { get; set; }
 }

@@ -43,9 +43,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\stylecop.json"
-                         Link="stylecop.json" />
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset"
-                         Link="codeanalysis.ruleset" />
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\stylecop.json" Link="stylecop.json" />
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset" Link="codeanalysis.ruleset" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Shared.csproj" />
     </ItemGroup>
 </Project>

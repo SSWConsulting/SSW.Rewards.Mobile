@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.PrizeDraw;
+using SSW.Rewards.Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
 
@@ -58,7 +58,7 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisWeek")
-                .Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end ));
+                .Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
         }
         else if (request.Filter == LeaderboardFilter.Forever)
         {

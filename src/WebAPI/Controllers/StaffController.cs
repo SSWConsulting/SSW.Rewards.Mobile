@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Staff;
 using SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 using SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;

@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 

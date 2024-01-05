@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using Shared.DTOs.Rewards;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.GetRewardList;
 public class GetRewardList : IRequest<RewardListViewModel> { }
@@ -13,8 +13,8 @@ public sealed class GetRewardListHandler : IRequestHandler<GetRewardList, Reward
         IMapper mapper,
         IApplicationDbContext context)
     {
-        _mapper     = mapper;
-        _context    = context;
+        _mapper = mapper;
+        _context = context;
     }
 
     public async Task<RewardListViewModel> Handle(GetRewardList request, CancellationToken cancellationToken)

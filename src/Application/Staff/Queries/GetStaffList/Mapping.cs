@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Staff;
+﻿using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffList;
 public class Mapping : Profile
