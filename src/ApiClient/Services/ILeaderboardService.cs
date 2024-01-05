@@ -1,7 +1,7 @@
 ﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 
-namespace SSW.Rewards.Shared.Services;
+namespace SSW.Rewards.ApiClient.Services;
 
 public interface ILeaderboardService
 {

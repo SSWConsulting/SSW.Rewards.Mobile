@@ -8,7 +8,7 @@ using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
-using SSW.Rewards.Shared;
+using SSW.Rewards.ApiClient;
 using System.Reflection;
 using ZXing.Net.Maui.Controls;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace SSW.Rewards.Shared;
+namespace SSW.Rewards.ApiClient;
 
 public static class ConfigureServices
 {

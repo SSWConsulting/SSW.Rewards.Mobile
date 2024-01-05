@@ -48,6 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Common\Shared.csproj" />
+      <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
     </ItemGroup>
 </Project>

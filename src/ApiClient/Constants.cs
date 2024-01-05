@@ -1,4 +1,4 @@
-﻿namespace SSW.Rewards.Shared;
+﻿namespace SSW.Rewards.ApiClient;
 
 public class Constants
 {

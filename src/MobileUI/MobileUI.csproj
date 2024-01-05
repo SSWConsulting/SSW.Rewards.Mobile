@@ -96,7 +96,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Common\Shared.csproj" />
+	  <ProjectReference Include="..\AdminUI\AdminUI.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
