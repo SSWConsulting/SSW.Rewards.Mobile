@@ -32,6 +32,7 @@ public static class ConfigureServices
         services.AddSingleton<ILeaderboardService, LeaderboardService>();
         services.AddSingleton<IQuizService, QuizService>();
         services.AddSingleton<IRewardService, RewardService>();
+        services.AddSingleton<ISkillsService, SkillsService>();
 
         return services;
     }
