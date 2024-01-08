@@ -15,10 +15,6 @@ public interface IUserService
     bool IsStaff { get; }
 
     // auth methods
-    Task<ApiStatus> SignInAsync();
-    Task ResetPassword();
-    Task<bool> RefreshLoginAsync();
-    void SignOut();
 
     // user details
     Task UpdateMyDetailsAsync();
