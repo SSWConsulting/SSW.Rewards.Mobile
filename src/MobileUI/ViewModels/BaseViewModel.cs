@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class BaseViewModel : INotifyPropertyChanged
+public class BaseViewModel : ObservableObject, INotifyPropertyChanged
 {
 
     bool isBusy = false;

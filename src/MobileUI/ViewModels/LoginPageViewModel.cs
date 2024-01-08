@@ -1,14 +1,16 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
+    [ObservableProperty]
+    private bool _isRunning;
 
-    public bool isRunning { get; set; }
-
-    public bool LoginButtonEnabled { get; set; }
+    [ObservableProperty]
+    private bool _loginButtonEnabled;
 
     bool _isStaff = false;
 
@@ -28,10 +30,9 @@ public partial class LoginPageViewModel : BaseViewModel
     [RelayCommand]
     private async Task LoginTapped()
     {
-        isRunning = true;
+        IsRunning = true;
         LoginButtonEnabled = false;
         bool enablebuttonAfterLogin = true;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
 
         ApiStatus status;
         try
@@ -63,8 +64,7 @@ public partial class LoginPageViewModel : BaseViewModel
         }
 
         LoginButtonEnabled = enablebuttonAfterLogin;
-        isRunning = false;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
+        IsRunning = false;
     }
 
     public async Task Refresh()
@@ -74,9 +74,8 @@ public partial class LoginPageViewModel : BaseViewModel
         if (_userService.HasCachedAccount)
         {
             LoginButtonEnabled = false;
-            isRunning = true;
+            IsRunning = true;
             ButtonText = "Logging you in...";
-            RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
 
             try
             {
@@ -98,10 +97,9 @@ public partial class LoginPageViewModel : BaseViewModel
             }
             finally
             {
-                isRunning = false;
+                IsRunning = false;
                 LoginButtonEnabled = enablebuttonAfterLogin;
                 ButtonText = "Sign up / Log in";
-                RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
             }
         }
     }
