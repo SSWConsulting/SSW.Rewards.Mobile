@@ -2,11 +2,11 @@ version: '3'
 
 services:
   # SQL Server
-  sqlserver:
-    image: mcr.microsoft.com/azure-sql-edge:latest
+  azuresqledge:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      MSSQL_SA_PASSWORD: Rewards.Docker
-      ACCEPT_EULA: Y
+      - MSSQL_SA_PASSWORD=Rewards.Docker1!
+      - ACCEPT_EULA=1
     ports:
       - 1433:1433
   
@@ -18,23 +18,35 @@ services:
       - 10001:10001
       - 10002:10002
 
-  # # API
-  # webapi:
-  #   depends_on:
-  #     - sqlserver
-  #   build:
-  #     dockerfile: src/WebAPI/Dockerfile
-  #     args:
-  #       - BUILD_CONFIGURATION=Debug
-  #   ports:
-  #     - 5001:5001
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=https://+:5001;http://+:80
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=webapipassword
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
-  #   volumes:
-  #     - ~/.aspnet/https:/https/
+  # API
+  webapi:
+    depends_on:
+      - azuresqledge
+    build:
+      dockerfile: src/WebAPI/Dockerfile
+    ports:
+      - 5001:5001
+      - 81:81
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5001;http://+:81
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
+    volumes:
+       - ~/.aspnet/https:/https:ro
+
+  webapp:
+    image: mcr.microsoft.com/dotnet/samples:aspnetapp
+    ports:
+      - 80
+      - 443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
 
   # # Admin UI
   # adminui:
