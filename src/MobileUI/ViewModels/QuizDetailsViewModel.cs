@@ -60,6 +60,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private string _quizIcon;
 
+        private bool IsLoadingQuestions { get; set; } = false;
+
         public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
             _quizService = quizService;
@@ -72,19 +74,18 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             _quizIcon = icon;
 
-            IsBusy = true;
+            IsLoadingQuestions = true;
+            Clear();
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
-
-            Questions.Clear();
 
             foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
             {
                 Questions.Add(new QuizQuestionViewModel(question));
             }
 
+            IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
-            QuizDescription = quiz.Description;
 
             IsBusy = false;
         }
@@ -212,16 +213,19 @@ namespace SSW.Rewards.Mobile.ViewModels
             
 
             if (confirmed)
-            await Shell.Current.GoToAsync("..");
+                await Shell.Current.GoToAsync("..");
         }
 
         private void CurrentQuestionChanged()
         {
+            if (CurrentQuestion == null)
+                return;
+
             var selectedIndex = Questions.IndexOf(CurrentQuestion);
 
             var isLastQuestion = selectedIndex == Questions.Count - 1;
 
-            if (isLastQuestion)
+            if (isLastQuestion && !IsLoadingQuestions)
             {
                 ButtonText = "Submit";
                 ButtonCommand = new Command(async () => await SubmitResponses());
@@ -240,6 +244,17 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             OnNextQuestionRequested.Invoke(this, next);
         }
+
+        private void Clear()
+        {
+            Questions.Clear();
+            Results.Clear();
+            QuizTitle = "";
+            QuizDescription = "";
+            IsBusy = true;
+            QuestionsVisible = true;
+            ResultsVisible = false;
+        }
     }
 
     public class QuizAnswerViewModel : QuestionAnswerDto
@@ -256,14 +271,17 @@ namespace SSW.Rewards.Mobile.ViewModels
             this.QuestionId = questionDto.QuestionId;
             this.Text = questionDto.Text;
 
+            var counter = 0;
             foreach (var answer in questionDto.Answers)
             {
+                var letter = (char)('A' + counter);
                 MyAnswers.Add(new QuizAnswerViewModel
                 {
                     QuestionAnswerId = answer.QuestionAnswerId,
-                    Text = answer.Text,
+                    Text = $"{letter}. {answer.Text}",
                     QuestionId = questionDto.QuestionId
                 });
+                counter++;
             }
         }
 
