@@ -1,14 +1,12 @@
-﻿using SSW.Rewards.Mobile.Controls;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
-using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
+public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
     private IDevService _devService;
     private readonly ISnackbarService _snackbarService;
@@ -25,26 +23,17 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     public EventHandler<ScrollToEventArgs> ScrollToRequested;
 
-    [ObservableProperty]
-    private bool _isRunning;
-    
-    [ObservableProperty]
-    private bool _twitterEnabled;
-    
-    [ObservableProperty]
-    private bool _gitHubEnabled;
-    
-    [ObservableProperty]
-    private bool _linkedinEnabled;
-    
-    [ObservableProperty]
-    private bool _showDevCards;
-    
-    [ObservableProperty]
-    private bool _scanned;
-    
-    [ObservableProperty]
-    private int _points;
+    public bool IsRunning { get; set; }
+
+    public bool TwitterEnabled { get; set; }
+    public bool GitHubEnabled { get; set; }
+    public bool LinkedinEnabled { get; set; }
+
+    public bool ShowDevCards { get; set; } = false;
+
+    public bool Scanned { get; set; } = false;
+
+    public int Points { get; set; }
 
     public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
 
@@ -52,15 +41,10 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     public DevProfile SelectedProfile { get; set; }
 
-    [ObservableProperty]
-    private string _devName;
-    
-    [ObservableProperty]
-    private string _devTitle;
-    
-    [ObservableProperty]
-    private string _devBio;
-    
+    public string DevName { get; set; }
+    public string DevTitle { get; set; }
+    public string DevBio { get; set; }
+
     public bool PageInView { get; set; } = false;
 
     public SnackbarOptions SnackOptions { get; set; }
@@ -75,6 +59,8 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
     private bool _initialised = false;
 
     private bool _firstRun = true;
+
+    public string[] OnSwipedUpdatePropertyList { get; set; }
 
     public DevProfilesViewModel(IDevService devService, ISnackbarService snackbarService)
     {
@@ -91,6 +77,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
             Points = 500,
             ShowPoints = false
         };
+        OnSwipedUpdatePropertyList = new [] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
 
         WeakReferenceMessenger.Default.Register(this);
     }
@@ -126,6 +113,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
             //OnPropertyChanged(nameof(SelectedProfile));
 
             ShowDevCards = true;
+            OnPropertyChanged(nameof(ShowDevCards));
 
             // Disabling the scrolling carousel effect because
             // it's janky and probably not needed for v2 (it was
@@ -145,6 +133,8 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
             _initialised = true;
 
             SetDevDetails();
+
+            RaisePropertyChanged(nameof(IsRunning));
         }
     }
 
@@ -175,6 +165,8 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
             Scanned = SelectedProfile.Scanned;
 
             Points = SelectedProfile.Points;
+
+            RaisePropertyChanged(OnSwipedUpdatePropertyList);
 
             Skills.Clear();
 
@@ -229,19 +221,19 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
     private async Task OpenTwitter()
     {
         if (TwitterEnabled)
-            await Launcher.OpenAsync(new Uri(_twitterURI));
+        await Launcher.OpenAsync(new Uri(_twitterURI));
     }
 
     private async Task OpenGithub()
     {
         if (GitHubEnabled)
-            await Launcher.OpenAsync(new Uri(_githubURI));
+        await Launcher.OpenAsync(new Uri(_githubURI));
     }
 
     private async Task OpenLinkedin()
     {
         if (LinkedinEnabled)
-            await Launcher.OpenAsync(new Uri(_linkedinUri));
+        await Launcher.OpenAsync(new Uri(_linkedinUri));
     }
 
     private async Task OpenPeople()

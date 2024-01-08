@@ -4,7 +4,7 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             xmlns:rewards="clr-namespace:SSW.Rewards"
+             xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              BackgroundColor="{StaticResource MainBackground}"
              x:DataType="viewModels:QuizDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
@@ -200,7 +200,7 @@
                                 IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
                                 BindableLayout.ItemsSource="{Binding Results}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="rewards:QuestionResultDto">
+                        <DataTemplate x:DataType="quizzes:QuestionResultDto">
                             <Grid>
 
                                 <lottie:SKLottieView Source="pass.json"

@@ -5,7 +5,7 @@
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
-             xmlns:rewards="clr-namespace:SSW.Rewards"
+             xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
              x:DataType="viewModels:DevProfilesViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.PeoplePage">
     <ContentPage.Resources>
@@ -98,7 +98,7 @@
                             Direction="Column"
                             BindableLayout.ItemsSource="{Binding Skills}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="rewards:StaffSkillDto">
+                        <DataTemplate x:DataType="staff:StaffSkillDto">
                             <controls:SkillsBar Label="{Binding Name}"
                                                 Level="{Binding Level}"/>
                         </DataTemplate>

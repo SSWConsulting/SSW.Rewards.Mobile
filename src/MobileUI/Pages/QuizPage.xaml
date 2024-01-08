@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             xmlns:rewards="using:SSW.Rewards"
+             xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              BackgroundColor="{StaticResource MainBackground}"
              x:Name="QuizList"
              x:DataType="viewModels:QuizViewModel"
@@ -50,7 +50,7 @@
                                      VerticalItemSpacing="20"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="rewards:QuizDto">
+                    <DataTemplate x:DataType="quizzes:QuizDto">
                         <StackLayout>
                             <Frame CornerRadius="5"
                                    WidthRequest="100"

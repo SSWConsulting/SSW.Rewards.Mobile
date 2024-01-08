@@ -48,38 +48,41 @@ public class MyProfileViewModel : ProfileViewModelBase,
         await _initialise();
     }
 
-    private async Task AddSocialMediaId(SocialUsernameAddedMessage message)
+    private void AddSocialMediaId(SocialUsernameAddedMessage message)
     {
-        WeakReferenceMessenger.Default.Unregister<SocialUsernameAddedMessage>(this);
+        // We will remove this. In v3 we're doing social media integration at the identity level.
+        return;
 
-        IsBusy = true;
+        //WeakReferenceMessenger.Default.Unregister<SocialUsernameAddedMessage>(this);
 
-        var result = await _userService.SaveSocialMediaId(message.Value.Achievement.Id, message.Value.Username);
+        //IsBusy = true;
 
-        var options = new SnackbarOptions
-        {
-            ActionCompleted = false,
-            Points = message.Value.Achievement.Value,
-            GlyphIsBrand = message.Value.Achievement.IconIsBranded,
-            Glyph = (string)typeof(Icon).GetField(message.Value.Achievement.AchievementIcon.ToString()).GetValue(null)
-        };
+        //var result = await _userService.SaveSocialMediaId(message.Value.Achievement.Id, message.Value.Username);
 
-        if (result)
-        {
-            options.ActionCompleted = true;
-            message.Value.Achievement.Complete = true;
-        }
+        //var options = new SnackbarOptions
+        //{
+        //    ActionCompleted = false,
+        //    Points = message.Value.Achievement.Value,
+        //    GlyphIsBrand = message.Value.Achievement.IconIsBranded,
+        //    Glyph = (string)typeof(Icon).GetField(message.Value.Achievement.AchievementIcon.ToString()).GetValue(null)
+        //};
 
-        options.Message = $"{GetMessage(message.Value.Achievement)}";
+        //if (result)
+        //{
+        //    options.ActionCompleted = true;
+        //    message.Value.Achievement.Complete = true;
+        //}
 
-        await _snackbarService.ShowSnackbar(options);
+        //options.Message = $"{GetMessage(message.Value.Achievement)}";
 
-        if (result)
-        {
-            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        }
+        //await _snackbarService.ShowSnackbar(options);
 
-        IsBusy = false;
+        //if (result)
+        //{
+        //    WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+        //}
+
+        //IsBusy = false;
     }
 
     private async Task OnPointsAwarded()

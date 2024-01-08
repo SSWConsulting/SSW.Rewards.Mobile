@@ -4,6 +4,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
@@ -93,7 +94,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             bool allQuestionsAnswered = true;
 
-            var answers = new List<QuizAnswerDto>();
+            var answers = new List<SubmittedAnswerDto>();
 
             foreach (var question in Questions)
             {
@@ -105,7 +106,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 }
                 else
                 {
-                    answers.Add(new QuizAnswerDto
+                    answers.Add(new SubmittedAnswerDto
                     {
                         SelectedAnswerId = answer.QuestionAnswerId,
                         QuestionId = answer.QuestionId
@@ -115,7 +116,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (allQuestionsAnswered)
             {
-                var command = new SubmitUserQuizCommand
+                var command = new QuizSubmissionDto
                 {
                     Answers = answers,
                     QuizId = _quizId
