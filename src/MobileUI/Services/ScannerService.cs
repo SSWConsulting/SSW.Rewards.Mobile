@@ -1,17 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
+using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
 namespace SSW.Rewards.Mobile.Services;
 
-public class ScannerService : ApiBaseService, IScannerService
+public class ScannerService : IScannerService
 {
-    private AchievementClient _achievementClient { get; set; }
-    private RewardClient _rewardClient { get; set; }
+    private readonly IAchievementService _achievementClient;
 
-    public ScannerService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    private readonly IApiRewardService _rewardClient;
+
+    public ScannerService(IApiRewardService rewardClient, IAchievementService achievementClient)
     {
-        _achievementClient = new AchievementClient(BaseUrl, AuthenticatedClient);
-        _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
+        _rewardClient = rewardClient;
+        _achievementClient = achievementClient;
     }
 
     private async Task<ScanResponseViewModel> PostAchievementAsync(string achievementString)
@@ -23,31 +27,31 @@ public class ScannerService : ApiBaseService, IScannerService
 
         try
         {
-            PostAchievementResult response = await _achievementClient.PostAsync(achievementString);
+            var response = await _achievementClient.ClaimAchievement(achievementString, CancellationToken.None);
 
             if (response != null)
             {
-                switch (response.Status)
+                switch (response.status)
                 {
-                    case AchievementStatus.Added:
+                    case Enums.ClaimAchievementStatus.Claimed:
                         vm.result = ScanResult.Added;
-                        vm.Title = response.ViewModel.Name;
-                        vm.Points = response.ViewModel.Value;
+                        vm.Title = response.viewModel.Name;
+                        vm.Points = response.viewModel.Value;
                         break;
 
-                    case AchievementStatus.Duplicate:
+                    case Enums.ClaimAchievementStatus.Duplicate:
                         vm.result = ScanResult.Duplicate;
                         vm.Title = "Duplicate";
                         vm.Points = 0;
                         break;
 
-                    case AchievementStatus.Error:
+                    case Enums.ClaimAchievementStatus.Error:
                         vm.result = ScanResult.Error;
                         vm.Title = "Error";
                         vm.Points = 0;
                         break;
 
-                    case AchievementStatus.NotFound:
+                    case Enums.ClaimAchievementStatus.NotFound:
                         vm.result = ScanResult.NotFound;
                         vm.Title = "Unrecognised";
                         vm.Points = 0;
@@ -57,14 +61,9 @@ public class ScannerService : ApiBaseService, IScannerService
             else
                 vm.result = ScanResult.Error;
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (! await ExceptionHandler.HandleApiException(e))
             {
                 vm.result = ScanResult.Error;
             }
@@ -88,15 +87,15 @@ public class ScannerService : ApiBaseService, IScannerService
 
         try
         {
-            ClaimRewardResult response = await _rewardClient.ClaimAsync(rewardString);
+            var response = await _rewardClient.RedeemReward(rewardString, true, CancellationToken.None);
 
             if (response != null)
             {
-                switch (response.Status)
+                switch (response.status)
                 {
                     case RewardStatus.Claimed:
                         vm.result = ScanResult.Added;
-                        vm.Title = response.ViewModel.Name;
+                        vm.Title = response.Reward.Name;
                         break;
 
                     case RewardStatus.Duplicate:
@@ -130,14 +129,9 @@ public class ScannerService : ApiBaseService, IScannerService
                 vm.result = ScanResult.Error;
             }
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (! await ExceptionHandler.HandleApiException(e))
             {
                 vm.result = ScanResult.Error;
             }

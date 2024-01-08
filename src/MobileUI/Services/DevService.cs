@@ -1,12 +1,14 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.ApiClient.Services;
 
-public class DevService : ApiBaseService, IDevService
+namespace SSW.Rewards.Mobile.Services;
+
+public class DevService : IDevService
 {
-    private StaffClient _staffClient;
+    private readonly IStaffService _staffClient;
 
-    public DevService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public DevService(IStaffService staffClient)
     {
-        _staffClient = new StaffClient(BaseUrl, AuthenticatedClient);
+        _staffClient = staffClient;
     }
 
     public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
@@ -16,9 +18,9 @@ public class DevService : ApiBaseService, IDevService
 
         try
         {
-            StaffListViewModel profileList = await _staffClient.GetAsync();
+            var profileList = await _staffClient.GetStaffList(CancellationToken.None);
 
-            foreach (StaffDto profile in profileList.Staff.Where(s => !s.IsDeleted))
+            foreach (var profile in profileList.Staff.Where(s => !s.IsDeleted))
             {
                 var dev = new DevProfile
                 {
@@ -44,16 +46,11 @@ public class DevService : ApiBaseService, IDevService
                 id++;
             }
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
-            {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the profiles. Please try again soon.", "OK");
+                throw;
             }
         }
 

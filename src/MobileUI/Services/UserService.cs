@@ -1,38 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using IdentityModel.Client;
 using IdentityModel.OidcClient;
-using Microsoft.AppCenter.Crashes;
 using SSW.Rewards.Mobile.Messages;
-using System.IdentityModel.Tokens.Jwt;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.Services;
 
-public class UserService : ApiBaseService, IUserService
+public class UserService : IUserService, IDisposable
 {
-    private UserClient _userClient { get; set; }
+    private IApiUserService _userClient { get; set; }
 
     private readonly OidcClientOptions _options;
-
+    private readonly IAuthenticationService _authService;
     private bool _loggedIn = false;
 
     private string RefreshToken;
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
-    public UserService(IBrowser browser, IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public UserService(IApiUserService userService, IAuthenticationService authService)
     {
-        _options = new OidcClientOptions
-        {
-            Authority = Constants.AuthorityUri,
-            ClientId = Constants.ClientId,
-            Scope = Constants.Scope,
-            RedirectUri = Constants.AuthRedirectUrl,
-            Browser = browser,
-
-        };
-
-        _userClient = new UserClient(BaseUrl, AuthenticatedClient);
+        _userClient = userService;
+        _authService = authService;
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
@@ -41,9 +29,9 @@ public class UserService : ApiBaseService, IUserService
     {
         try
         {
-            var result = await _userClient.DeleteMyProfileAsync();
+            await _userClient.DeleteMyProfile();
 
-            SignOut();
+            _authService.SignOut();
 
             return true;
         }
@@ -85,12 +73,8 @@ public class UserService : ApiBaseService, IUserService
 
     public async Task<string> UploadImageAsync(Stream image)
     {
-        var contentType = "image/png";
-        var fileName = $"{MyUserId}_{DateTime.UtcNow.Ticks}_profilepic.png";
+        var response = await _userClient.UploadProilePic(image);
 
-        FileParameter parameter = new FileParameter(image, fileName, contentType);
-
-        var response = await _userClient.UploadProfilePicAsync(parameter);
         Preferences.Set(nameof(MyProfilePic), response.PicUrl);
 
         if (response.AchievementAwarded)
@@ -107,7 +91,7 @@ public class UserService : ApiBaseService, IUserService
 
     public async Task UpdateMyDetailsAsync()
     {
-        var user = await _userClient.GetAsync();
+        var user = await _userClient.GetCurrentUser();
 
         if (user is null)
         {
@@ -144,9 +128,9 @@ public class UserService : ApiBaseService, IUserService
             Preferences.Set(nameof(MyBalance), user.Balance);
         }
 
-        if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
+        if (user.QRCode != null && !string.IsNullOrWhiteSpace(user.QRCode.ToString()))
         {
-            Preferences.Set(nameof(MyQrCode), user.QrCode);
+            Preferences.Set(nameof(MyQrCode), user.QRCode);
         }
 
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
@@ -177,9 +161,9 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Achievement> achievements = new List<Achievement>();
 
-        var achievementsList = await _userClient.ProfileAchievementsAsync(userId);
+        var achievementsList = await _userClient.GetProfileAchievements(userId);
 
-        foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
+        foreach (var achievement in achievementsList.UserAchievements)
         {
             achievements.Add(new Achievement
             {
@@ -187,7 +171,7 @@ public class UserService : ApiBaseService, IUserService
                 Name = achievement.AchievementName,
                 Value = achievement.AchievementValue,
                 Type = achievement.AchievementType,
-                AwardedAt = achievement.AwardedAt?.DateTime,
+                AwardedAt = achievement.AwardedAt,
                 AchievementIcon = achievement.AchievementIcon,
                 IconIsBranded = achievement.AchievementIconIsBranded,
                 Id = achievement.AchievementId
@@ -201,9 +185,9 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Achievement> achievements = new List<Achievement>();
 
-        var achievementsList = await _userClient.AchievementsAsync(userId);
+        var achievementsList = await _userClient.GetUserAchievements(userId);
 
-        foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
+        foreach (var achievement in achievementsList.UserAchievements)
         {
             achievements.Add(new Achievement
             {
@@ -211,7 +195,7 @@ public class UserService : ApiBaseService, IUserService
                 Name = achievement.AchievementName,
                 Value = achievement.AchievementValue,
                 Type = achievement.AchievementType,
-                AwardedAt = achievement.AwardedAt?.DateTime
+                AwardedAt = achievement.AwardedAt
             });
         }
 
@@ -232,7 +216,7 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Reward> rewards = new List<Reward>();
 
-        var rewardsList = await _userClient.RewardsAsync(userId);
+        var rewardsList = await _userClient.GetUserRewards(userId);
 
         foreach (var userReward in rewardsList.UserRewards)
         {
@@ -241,7 +225,7 @@ public class UserService : ApiBaseService, IUserService
                 Awarded = userReward.Awarded,
                 Name = userReward.RewardName,
                 Cost = userReward.RewardCost,
-                AwardedAt = userReward.AwardedAt?.DateTime
+                AwardedAt = userReward.AwardedAt
             });
         }
 
@@ -258,21 +242,9 @@ public class UserService : ApiBaseService, IUserService
         throw new NotImplementedException();
     }
 
-    public async Task<bool> SaveSocialMediaId(int achievementId, string userId)
+    public void Dispose()
     {
-        var achieved = await _userClient.UpsertUserSocialMediaIdAsync(new UpsertUserSocialMediaId
-        {
-            AchievementId = achievementId,
-            SocialMediaPlatformUserId = userId
-        });
-
-        if (achieved == 0)
-        {
-            return false;
-        }
-
-        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        return true;
+        throw new NotImplementedException();
     }
 
     #endregion

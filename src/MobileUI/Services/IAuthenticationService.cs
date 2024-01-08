@@ -12,6 +12,8 @@ public interface IAuthenticationService
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     void SignOut();
+
+    event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
 }
 
 public class AuthenticationService : IAuthenticationService
@@ -26,7 +28,9 @@ public class AuthenticationService : IAuthenticationService
     
     private DateTimeOffset _tokenExpiry;
     private DateTimeOffset _refreshTokenExpiry;
-    
+
+    public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
+
     private bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
     
     public AuthenticationService(IBrowser browser)
@@ -127,18 +131,17 @@ public class AuthenticationService : IAuthenticationService
                     Preferences.Set("MyEmail", email);
                 }
 
-                // TODO: need to fix this before we deploy.
-                // Adding an exception here to make sure it doesn't get lost
-                // await UpdateMyDetailsAsync();
-                throw new Exception("UpdateMyDetailsAsync() is not implemented");
+                DetailsUpdated?.Invoke(this, new DetailsUpdatedEventArgs
+                {
+                    Name = fullName,
+                    Email = email,
+                    Jobtitle = jobTitle
+                });
 
                 _loggedIn = true;
             }
             catch (Exception ex)
             {
-                if (ex.Message == "UpdateMyDetailsAsync() is not implemented")
-                    throw;
-
                 return ApiStatus.Unavailable;
             }
 
@@ -268,4 +271,11 @@ public class AuthenticationService : IAuthenticationService
         public DateTimeOffset AccessTokenExpiration { get; set; }
         public DateTimeOffset? RefreshTokenExpiration { get; set; }
     }
+}
+
+public class DetailsUpdatedEventArgs : EventArgs
+{
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Jobtitle { get; set; }
 }
