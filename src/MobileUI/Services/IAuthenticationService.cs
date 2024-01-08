@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Results;
 using Microsoft.AppCenter.Crashes;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -9,7 +10,7 @@ namespace SSW.Rewards.Mobile.Services;
 public interface IAuthenticationService
 {
     Task<ApiStatus> SignInAsync();
-    Task<string> GetAccesstoken();
+    Task<string> GetAccessToken();
     void SignOut();
 }
 
@@ -24,6 +25,7 @@ public class AuthenticationService : IAuthenticationService
     private string _accessToken;
     
     private DateTimeOffset _tokenExpiry;
+    private DateTimeOffset _refreshTokenExpiry;
     
     private bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
     
@@ -52,7 +54,11 @@ public class AuthenticationService : IAuthenticationService
                 return ApiStatus.Error;
             }
 
-            return await SetLoggedInState(result);
+            var authResult = GetAuthResult(result);
+
+            await SettRefreshToken(authResult);
+
+            return await SetLoggedInState(authResult);
         }
         catch (TaskCanceledException taskEx)
         {
@@ -64,9 +70,19 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public Task<string> GetAccesstoken()
+    public async Task<string> GetAccessToken()
     {
-        throw new NotImplementedException();
+        if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
+        {
+            return _accessToken;
+        }
+
+        if (await RefreshLoginAsync())
+        {
+            return _accessToken;
+        }
+
+        return string.Empty;
     }
 
     public void SignOut()
@@ -76,18 +92,13 @@ public class AuthenticationService : IAuthenticationService
         Preferences.Clear();
     }
 
-    private async Task<ApiStatus> SetLoggedInState(LoginResult loginResult)
+    private async Task<ApiStatus> SetLoggedInState(AuthResult loginResult)
     {
         if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
         {
 
             try
-            {
-                _accessToken = loginResult.AccessToken;
-                _tokenExpiry = loginResult.AccessTokenExpiration;
-                
-                await SettRefreshToken(loginResult.RefreshToken);
-                
+            {                
                 Preferences.Set(nameof(HasCachedAccount), true);
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -116,12 +127,17 @@ public class AuthenticationService : IAuthenticationService
                     Preferences.Set("MyEmail", email);
                 }
 
-                await UpdateMyDetailsAsync();
+                // TODO: need to fix this before we deploy.
+                // Adding an exception here to make sure it doesn't get lost
+                // await UpdateMyDetailsAsync();
+                throw new Exception("UpdateMyDetailsAsync() is not implemented");
 
                 _loggedIn = true;
             }
             catch (Exception ex)
             {
+                if (ex.Message == "UpdateMyDetailsAsync() is not implemented")
+                    throw;
 
                 return ApiStatus.Unavailable;
             }
@@ -134,18 +150,33 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    private async Task SettRefreshToken(string token)
+    private async Task SettRefreshToken(AuthResult result)
     {
-        RefreshToken = token;
+        if (!string.IsNullOrWhiteSpace(RefreshToken))
+        {
+            RefreshToken = result.RefreshToken;
+            await SecureStorage.SetAsync(nameof(RefreshToken), RefreshToken);
+        }
 
-        await SecureStorage.SetAsync(nameof(RefreshToken), token);
+        if (result.RefreshTokenExpiration.HasValue)
+        {
+            _refreshTokenExpiry = result.RefreshTokenExpiration.Value;
+            Preferences.Set(nameof(_refreshTokenExpiry), _refreshTokenExpiry.ToUnixTimeSeconds());
+        }
     }
 
     public async Task<bool> RefreshLoginAsync()
     {
         RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
-        if (!string.IsNullOrWhiteSpace(RefreshToken))
+        var refreshTokenExpiry = Preferences.Get(nameof(_refreshTokenExpiry), 0L);
+
+        if (refreshTokenExpiry > 0)
+        {
+            _refreshTokenExpiry = DateTimeOffset.FromUnixTimeSeconds(refreshTokenExpiry);
+        }
+
+        if (!string.IsNullOrWhiteSpace(RefreshToken) && _refreshTokenExpiry > DateTimeOffset.Now.AddMinutes(2))
         {
             var oidcClient = new OidcClient(_options);
 
@@ -153,8 +184,9 @@ public class AuthenticationService : IAuthenticationService
 
             if (!result.IsError)
             {
-                await SettRefreshToken(result.RefreshToken);
-                await SetLoggedInState(result);
+                var authResult = GetAuthResult(result);
+                await SettRefreshToken(authResult);
+                await SetLoggedInState(authResult);
                 return true;
             }
             else
@@ -175,25 +207,19 @@ public class AuthenticationService : IAuthenticationService
 
                 if (!silentResult.IsError)
                 {
-                    string token = silentResult.AccessToken;
-                    string idToken = silentResult.IdentityToken;
-
-                    if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
+                    try
                     {
+                        var authResult = GetAuthResult(silentResult);
+                        await SetLoggedInState(authResult);
 
-                        try
-                        {
-                            await SetLoggedInState(silentResult);
-                        }
-                        catch
-                        {
-
-                            return false;
-                        }
-
-                        await SettRefreshToken(result.RefreshToken);
+                        await SettRefreshToken(authResult);
 
                         return true;
+                    }
+                    catch
+                    {
+
+                        return false;
                     }
                 }
 
@@ -202,5 +228,44 @@ public class AuthenticationService : IAuthenticationService
         }
 
         return false;
+    }
+
+    private AuthResult GetAuthResult<TResult> (TResult result)
+    {
+        if (result is LoginResult loginResult)
+        {
+            return new AuthResult
+            {
+                AccessToken = loginResult.AccessToken,
+                RefreshToken = loginResult.RefreshToken,
+                AccessTokenExpiration = loginResult.AccessTokenExpiration,
+                IdentityToken = loginResult.IdentityToken,
+                RefreshTokenExpiration = null
+            };
+        }
+        else if (result is RefreshTokenResult refreshTokenResult)
+        {
+            return new AuthResult
+            {
+                AccessToken = refreshTokenResult.AccessToken,
+                RefreshToken = refreshTokenResult.RefreshToken,
+                IdentityToken = refreshTokenResult.IdentityToken,
+                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
+                RefreshTokenExpiration = DateTimeOffset.UtcNow.AddSeconds(refreshTokenResult.ExpiresIn)
+            };
+        }
+        else
+        {
+            throw new ArgumentException("Unexpected result type", nameof(result));
+        }
+    }
+
+    private class AuthResult
+    {
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
+        public string IdentityToken { get; set; }
+        public DateTimeOffset AccessTokenExpiration { get; set; }
+        public DateTimeOffset? RefreshTokenExpiration { get; set; }
     }
 }
