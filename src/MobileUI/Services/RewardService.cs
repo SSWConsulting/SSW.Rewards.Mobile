@@ -1,12 +1,15 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Rewards;
+using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
-public class RewardService : ApiBaseService, IRewardService
+namespace SSW.Rewards.Mobile.Services;
+
+public class RewardService : IRewardService
 {
-    private RewardClient _rewardClient;
+    private readonly IApiRewardService _rewardClient;
 
-    public RewardService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public RewardService(IApiRewardService rewardClient)
     {
-        _rewardClient = new RewardClient(BaseUrl, AuthenticatedClient);
+        _rewardClient = rewardClient;
     }
 
     public async Task<List<Reward>> GetRewards()
@@ -15,7 +18,7 @@ public class RewardService : ApiBaseService, IRewardService
 
         try
         {
-            var rewards = await _rewardClient.ListAsync();
+            var rewards = await _rewardClient.GetRewards(CancellationToken.None);
 
             foreach (var reward in rewards.Rewards)
             {
@@ -30,29 +33,14 @@ public class RewardService : ApiBaseService, IRewardService
 
             return rewardList;
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (!await ExceptionHandler.HandleApiException(e))
             {
                 await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
             }
         }
 
         return rewardList;
-    }
-
-    public async Task<ClaimRewardResult> RedeemReward(Reward reward)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<ClaimRewardResult> RewardRewardWithQRCode(string QRCode)
-    {
-        throw new NotImplementedException();
     }
 }

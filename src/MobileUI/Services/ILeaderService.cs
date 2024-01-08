@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
+
+namespace SSW.Rewards.Mobile.Services;
 
 public interface ILeaderService
 {

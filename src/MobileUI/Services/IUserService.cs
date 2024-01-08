@@ -2,6 +2,7 @@
 
 public interface IUserService
 {
+    // TODO: Replace all this with a GetMyProfile method
     // values
     int MyUserId { get; }
     string MyName { get; }
@@ -27,7 +28,6 @@ public interface IUserService
     Task<ImageSource> GetAvatarAsync(string url);
     Task<string> UploadImageAsync(Stream image);
 
-    Task<bool> SaveSocialMediaId(int achievementId, string userId);
 
     Task<bool> DeleteProfileAsync();
 }
