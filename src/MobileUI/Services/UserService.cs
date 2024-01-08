@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using IdentityModel.OidcClient;
 using SSW.Rewards.Mobile.Messages;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
@@ -9,11 +8,8 @@ public class UserService : IUserService, IDisposable
 {
     private IApiUserService _userClient { get; set; }
 
-    private readonly OidcClientOptions _options;
     private readonly IAuthenticationService _authService;
     private bool _loggedIn = false;
-
-    private string RefreshToken;
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
@@ -21,6 +17,8 @@ public class UserService : IUserService, IDisposable
     {
         _userClient = userService;
         _authService = authService;
+
+        _authService.DetailsUpdated += UpdateMyDtailsAsync;
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
@@ -87,6 +85,27 @@ public class UserService : IUserService, IDisposable
             ProfilePic = MyProfilePic
         });
         return response.PicUrl;
+    }
+
+    private void UpdateMyDtailsAsync(object sender, DetailsUpdatedEventArgs args)
+    {
+        if (!string.IsNullOrWhiteSpace(args.Name))
+        {
+            Preferences.Set(nameof(MyName), args.Name);
+        }
+
+        if (!string.IsNullOrWhiteSpace(args.Email))
+        {
+            Preferences.Set(nameof(MyEmail), args.Email);
+        }
+
+        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
+        {
+            Email = MyEmail,
+            ProfilePic = MyProfilePic,
+            Name = MyName,
+            IsStaff = IsStaff
+        }));
     }
 
     public async Task UpdateMyDetailsAsync()
@@ -244,7 +263,7 @@ public class UserService : IUserService, IDisposable
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _authService.DetailsUpdated -= UpdateMyDtailsAsync;
     }
 
     #endregion
