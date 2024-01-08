@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AppCenter.Crashes;
 using Mopups.Services;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;

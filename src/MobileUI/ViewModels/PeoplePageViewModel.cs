@@ -1,9 +1,8 @@
-﻿using SSW.Rewards.Mobile.Controls;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
-using CommunityToolkit.Maui.Views;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 

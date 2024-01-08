@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Models
+﻿using SSW.Rewards.Shared.DTOs.Staff;
+
+namespace SSW.Rewards.Models
 {
     public class DevProfile
     {
