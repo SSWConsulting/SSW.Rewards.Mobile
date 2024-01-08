@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  # SQL Server
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    environment:
+      MSSQL_SA_PASSWORD: Rewards.Docker
+      ACCEPT_EULA: Y
+    ports:
+      - 1433:1433
+  
+  # Azurite
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+
+  # # API
+  # webapi:
+  #   depends_on:
+  #     - sqlserver
+  #   build:
+  #     dockerfile: src/WebAPI/Dockerfile
+  #     args:
+  #       - BUILD_CONFIGURATION=Debug
+  #   ports:
+  #     - 5001:5001
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=https://+:5001;http://+:80
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=webapipassword
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
+  #   volumes:
+  #     - ~/.aspnet/https:/https/
+
+  # # Admin UI
+  # adminui:
+  #   depends_on:
+  #     - sqlserver
+  #   build:
+  #     dockerfile: src/AdminUI/Dockerfile
+  #     args:
+  #       - BUILD_CONFIGURATION=DEBUG
+  #   ports:
+  #     - 80:80
+  #   environment:
+  #     - DOCKER_BUILDKIT=1
+  #     - ASPNETCORE_ENVIRONMENT=Development
