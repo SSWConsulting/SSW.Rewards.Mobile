@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -55,6 +56,11 @@ public class QuizService : IQuizService
             {
                 return response;
             }
+        }
+
+        if (result.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnauthorizedAccessException();
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);

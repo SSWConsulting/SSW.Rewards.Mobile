@@ -96,7 +96,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AdminUI\AdminUI.csproj" />
+	  <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
