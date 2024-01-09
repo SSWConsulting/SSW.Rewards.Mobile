@@ -23,7 +23,7 @@ public class QuizAdminService : IQuizAdminService
 
     public async Task<int> AddNewQuiz(QuizDetailsDto quizDetailsDto, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}", quizDetailsDto, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}AddNewQuiz", quizDetailsDto, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -38,7 +38,7 @@ public class QuizAdminService : IQuizAdminService
 
     public async Task<int> UpdateQuiz(QuizDetailsDto quizDetailsDto, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}", quizDetailsDto, cancellationToken);
+        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpdateQuiz", quizDetailsDto, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

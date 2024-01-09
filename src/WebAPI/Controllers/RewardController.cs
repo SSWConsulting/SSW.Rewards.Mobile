@@ -70,10 +70,11 @@ public class RewardController : ApiControllerBase
         return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> Delete(DeleteRewardCommand command)
+    public async Task<ActionResult> Delete(int id)
     {
+        var command = new DeleteRewardCommand { Id = id };
         return Ok(await Mediator.Send(command));
     }
 

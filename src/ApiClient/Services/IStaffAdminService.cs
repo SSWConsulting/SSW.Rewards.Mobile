@@ -25,7 +25,7 @@ public class StaffAdminService : IStaffAdminService
 
     public async Task DeleteStaffMember(int id, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}{id}", cancellationToken);
+        var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteStaffMemberProfile?Id={id}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -41,7 +41,7 @@ public class StaffAdminService : IStaffAdminService
         var content = new MultipartFormDataContent();
         content.Add(new StreamContent(file), "file", "file");
 
-        var result = await _httpClient.PostAsync($"{_baseRoute}{id}/UploadProfilePicture", content, cancellationToken);
+        var result = await _httpClient.PostAsync($"{_baseRoute}{id}/UploadStaffMemberProfilePicture", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -54,7 +54,7 @@ public class StaffAdminService : IStaffAdminService
 
     public async Task<StaffMemberDto> UpsertStaffMemberProfile(StaffMemberDto dto, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}", dto, cancellationToken);
+        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpsertStaffMemberProfile", dto, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

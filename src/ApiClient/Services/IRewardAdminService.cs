@@ -26,7 +26,7 @@ public class RewardAdminService : IRewardAdminService
 
     public async Task<RewardsAdminViewModel> GetRewards(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}List", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -40,12 +40,12 @@ public class RewardAdminService : IRewardAdminService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
-        throw new Exception($"Failed to get rewards: {responseContent}");
+        throw new Exception($"Failed to get rewards: {result}");
     }
 
     public async Task<int> AddReward(RewardEditDto reward, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}", reward, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Add", reward, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -61,7 +61,7 @@ public class RewardAdminService : IRewardAdminService
 
     public async Task UpdateReward(RewardEditDto reward, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}", reward, cancellationToken);
+        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpdateReward", reward, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -75,7 +75,7 @@ public class RewardAdminService : IRewardAdminService
 
     public async Task DeleteReward(int rewardId, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}{rewardId}", cancellationToken);
+        var result = await _httpClient.DeleteAsync($"{_baseRoute}Delete/    {rewardId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

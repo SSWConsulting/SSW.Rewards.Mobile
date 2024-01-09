@@ -27,7 +27,7 @@ public class RewardService : IRewardService
 
     public async Task<RewardListViewModel> GetRewards(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}List", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -65,7 +65,7 @@ public class RewardService : IRewardService
 
     public async Task<RecentRewardListViewModel> GetRecentReward(DateTime? since, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}Recent?since={since}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetRecent?since={since}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -84,7 +84,7 @@ public class RewardService : IRewardService
 
     public async Task<RewardListViewModel> SearchRewards(string searchTerm, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}?searchTerm={searchTerm}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Search?searchTerm={searchTerm}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -103,7 +103,7 @@ public class RewardService : IRewardService
 
     public async Task<ClaimRewardResult> RedeemReward(string code, bool inPerson, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Redeem", new { code, inPerson }, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", new { code, inPerson }, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

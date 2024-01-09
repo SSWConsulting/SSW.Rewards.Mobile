@@ -48,7 +48,7 @@ public class AchievementAdminService : IAchievementAdminService
 
     public async Task<AchievementAdminDto> CreateAchievement(AchievementEditDto achievement, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}", achievement, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Create", achievement, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -92,7 +92,7 @@ public class AchievementAdminService : IAchievementAdminService
 
     public async Task UpdateAchievement(AchievementEditDto achievement, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PatchAsJsonAsync($"{_baseRoute}", achievement, cancellationToken);
+        var result = await _httpClient.PatchAsJsonAsync($"{_baseRoute}UpdateAchievement", achievement, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

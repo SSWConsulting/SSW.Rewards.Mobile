@@ -12,7 +12,7 @@ public class SkillsService : ISkillsService
 {
     private readonly HttpClient _httpClient;
 
-    private const string _baseRoute = "api/Skills/";
+    private const string _baseRoute = "api/Skill/";
 
     public SkillsService(IHttpClientFactory httpClientFactory)
     {
@@ -21,7 +21,7 @@ public class SkillsService : ISkillsService
 
     public async Task<SkillsListViewModel> GetSkillsList(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

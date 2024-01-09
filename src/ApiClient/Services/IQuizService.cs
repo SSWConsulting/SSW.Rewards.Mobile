@@ -28,7 +28,7 @@ public class QuizService : IQuizService
 
     public async Task<IEnumerable<QuizDto>> GetQuizzes(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}QuizListForUser", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -87,7 +87,7 @@ public class QuizService : IQuizService
 
     public async Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto submission, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Submit", submission, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}SubmitCompletedQuiz", submission, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

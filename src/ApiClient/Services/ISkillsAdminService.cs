@@ -14,7 +14,7 @@ public class SkillsAdminService : ISkillsAdminService
 {
     private readonly HttpClient _httpClient;
 
-    private const string _baseRoute = "api/Skills/";
+    private const string _baseRoute = "api/Skill/";
 
     public SkillsAdminService(IHttpClientFactory httpClientFactory)
     {
@@ -36,7 +36,7 @@ public class SkillsAdminService : ISkillsAdminService
 
     public async Task<int> AddOrUpdateSkill(SkillDto skill, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}", skill, cancellationToken);
+        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpsertSkill", skill, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

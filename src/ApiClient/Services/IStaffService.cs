@@ -25,7 +25,7 @@ public class StaffService : IStaffService
 
     public async Task<StaffListViewModel> GetStaffList(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -44,7 +44,7 @@ public class StaffService : IStaffService
 
     public async Task<StaffMemberDto> GetStaffMember(int id, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}{id}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetStaffMemberProfile?id={id}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -63,7 +63,7 @@ public class StaffService : IStaffService
 
     public async Task<StaffMemberDto> SearchStaffMember(StaffMemberQueryDto query, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Search", query, cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetStaffMemberByEmail?email={query.email}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

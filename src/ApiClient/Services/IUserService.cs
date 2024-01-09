@@ -33,7 +33,7 @@ public class UserService : IUserService
 
     public async Task DeleteMyProfile(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}", "", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -68,7 +68,7 @@ public class UserService : IUserService
 
     public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -106,7 +106,7 @@ public class UserService : IUserService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}/{userId}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetUser/{userId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
