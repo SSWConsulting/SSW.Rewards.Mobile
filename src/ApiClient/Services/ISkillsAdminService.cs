@@ -23,7 +23,7 @@ public class SkillsAdminService : ISkillsAdminService
 
     public async Task DeleteSkill(int skillId, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}{skillId}", cancellationToken);
+        var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteSkill?id={skillId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

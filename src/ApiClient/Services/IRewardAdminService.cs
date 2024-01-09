@@ -26,7 +26,7 @@ public class RewardAdminService : IRewardAdminService
 
     public async Task<RewardsAdminViewModel> GetRewards(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}List", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}AdminList", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -61,7 +61,7 @@ public class RewardAdminService : IRewardAdminService
 
     public async Task UpdateReward(RewardEditDto reward, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpdateReward", reward, cancellationToken);
+        var result = await _httpClient.PatchAsJsonAsync($"{_baseRoute}UpdateReward", reward, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

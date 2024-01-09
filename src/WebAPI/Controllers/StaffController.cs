@@ -34,6 +34,13 @@ public class StaffController : ApiControllerBase
     [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<ActionResult<StaffMemberDto>> UpsertStaffMemberProfile(StaffMemberDto staffMember)
     {
+        Uri? profilePhotoUri = null;
+
+        if (!string.IsNullOrWhiteSpace(staffMember.ProfilePhoto))
+        {
+            profilePhotoUri = new Uri(staffMember.ProfilePhoto);
+        }
+
         var command = new UpsertStaffMemberProfileCommand
         {
             Id = staffMember.Id,
@@ -43,7 +50,7 @@ public class StaffController : ApiControllerBase
             TwitterUsername = staffMember.TwitterUsername,
             GitHubUsername = staffMember.GitHubUsername,
             LinkedInUrl = staffMember.LinkedInUrl,
-            ProfilePhoto = staffMember.ProfilePhoto is not null ? new Uri(staffMember.ProfilePhoto) : null,
+            ProfilePhoto = profilePhotoUri,
             Points = staffMember.Points,
             Skills = staffMember.Skills.ToList()
         };
@@ -53,9 +60,18 @@ public class StaffController : ApiControllerBase
 
     [HttpPost]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(int id, Stream file)
+    public async Task<ActionResult<string>> UploadStaffMemberProfilePicture(int id)
     {
-        return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { Id = id, File = file }));
+        var file = HttpContext.Request.Form.Files["file"];
+        if (file != null && file.Length > 0)
+        {
+            // Process the file here
+            return Ok(await Mediator.Send(new UploadStaffMemberProfilePictureCommand { Id = id, File = file.OpenReadStream() }));
+        }
+        else
+        {
+            return BadRequest("No file received");
+        }
     }
 
     [HttpDelete]

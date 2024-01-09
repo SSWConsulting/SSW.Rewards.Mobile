@@ -19,7 +19,7 @@ public class SkillController : ApiControllerBase
 
     [HttpPut]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> UpsertSkill(SkillDto dto)
+    public async Task<ActionResult<int>> UpsertSkill(SkillDto dto)
     {
         var command = new UpsertSkillCommand
         {
@@ -32,8 +32,13 @@ public class SkillController : ApiControllerBase
 
     [HttpDelete]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> DeleteSkill(DeleteSkillCommand command)
+    public async Task<ActionResult> DeleteSkill(int id)
     {
+        var command = new DeleteSkillCommand
+        {
+            Id = id
+        };
+
         return Ok(await Mediator.Send(command));
     }
 

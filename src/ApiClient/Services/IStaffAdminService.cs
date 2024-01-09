@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -7,7 +8,7 @@ public interface IStaffAdminService
 {
     Task DeleteStaffMember(int id, CancellationToken cancellationToken);
 
-    Task UploadProfilePicture(int id, Stream file, CancellationToken cancellationToken);
+    Task UploadProfilePicture(int id, Stream file, string fileName, CancellationToken cancellationToken);
 
     Task<StaffMemberDto> UpsertStaffMemberProfile(StaffMemberDto dto, CancellationToken cancellationToken);
 }
@@ -36,12 +37,17 @@ public class StaffAdminService : IStaffAdminService
         throw new Exception($"Failed to delete staff member: {responseContent}");
     }
 
-    public async Task UploadProfilePicture(int id, Stream file, CancellationToken cancellationToken)
+    public async Task UploadProfilePicture(int id, Stream file, string fileName, CancellationToken cancellationToken)
     {
         var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(file), "file", "file");
+        var fileContent = new StreamContent(file);
 
-        var result = await _httpClient.PostAsync($"{_baseRoute}{id}/UploadStaffMemberProfilePicture", content, cancellationToken);
+        var mimeType = GetMimeType(fileName);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
+
+        content.Add(fileContent, "file", fileName);
+
+        var result = await _httpClient.PostAsync($"{_baseRoute}UploadStaffMemberProfilePicture?id={id}", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -54,7 +60,7 @@ public class StaffAdminService : IStaffAdminService
 
     public async Task<StaffMemberDto> UpsertStaffMemberProfile(StaffMemberDto dto, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpsertStaffMemberProfile", dto, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}UpsertStaffMemberProfile", dto, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -68,5 +74,18 @@ public class StaffAdminService : IStaffAdminService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to upsert staff member profile: {responseContent}");
+    }
+
+    private string GetMimeType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        return extension switch
+        {
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            // Add other extensions and MIME types as needed
+            _ => "application/octet-stream", // default MIME type
+        };
     }
 }

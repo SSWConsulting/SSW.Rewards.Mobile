@@ -17,7 +17,7 @@ public static class StaffHelper
             Title = dto.Title ?? string.Empty,
             Profile = dto.Profile ?? string.Empty,
             ProfilePhoto = dto.ProfilePhoto,
-            Skills = (ICollection<StaffSkillDto>)dto.Skills,
+            Skills = dto.Skills is not null ? (ICollection<StaffSkillDto>)dto.Skills : new List<StaffSkillDto>(),
             Points = dto.StaffAchievement?.Value ?? 0,
         };
     }

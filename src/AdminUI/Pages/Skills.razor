@@ -83,12 +83,21 @@
         var result = await dialog.Result;
         if (!result.Canceled)
         {
-            // Add the Skill
-            if (result.Data is string skill)
+            try
             {
-                await skillsAdminService.AddOrUpdateSkill(selectedItem, CancellationToken.None);
+                // Add the Skill
+                if (result.Data is string skill)
+                {
+                    var newSkill = new SkillDto { Name = skill };
+                    await skillsAdminService.AddOrUpdateSkill(newSkill, CancellationToken.None);
+                }
+                await GetSkills();
+                Snackbar.Add("Skill added", Severity.Success);
             }
-            await GetSkills();
+            catch (Exception)
+            {
+                Snackbar.Add("Failed to add skill", Severity.Error);
+            }
         }
     }
 
@@ -110,8 +119,9 @@
             await skillsAdminService.AddOrUpdateSkill(selectedItem, CancellationToken.None);
             Snackbar.Add("Updated Skill!", Severity.Success);
         }
-        catch
+        catch(Exception ex)
         {
+            Console.WriteLine(ex);
             Snackbar.Add("Error Saving", Severity.Error);
         }
     }
@@ -127,8 +137,16 @@
 
         if (!result.Canceled && (bool) result.Data)
         {
-            await skillsAdminService.DeleteSkill(item.Id, CancellationToken.None);
-            await GetSkills();
+            try
+            {
+                await skillsAdminService.DeleteSkill(item.Id, CancellationToken.None);
+                await GetSkills();
+                Snackbar.Add("Deleted", Severity.Success);
+            }
+            catch (Exception)
+            {
+                Snackbar.Add("Error Deleting", Severity.Error);
+            }
         }
         
     }

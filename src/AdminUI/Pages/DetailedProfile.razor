@@ -90,27 +90,30 @@
             </div>
     </div>
 
-    <MudDropContainer T="StaffSkillDto"
-                      Items="@_staff?.Skills"
-                      ItemDropped="ItemUpdated"
-                      ItemsSelector="ItemsSelector">
-        <ChildContent>
-            <div class="d-flex flex-wrap justify-space-between">
-                <MudDropZone T="StaffSkillDto" Identifier="Beginner" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
-                    <MudText Typo="Typo.h6" Class="mb-4">Keen to Learn</MudText>
-                </MudDropZone>
-                <MudDropZone T="StaffSkillDto" Identifier="Intermediate" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
-                    <MudText Typo="Typo.h6" Class="mb-4">Intermediate</MudText>
-                </MudDropZone>
-                <MudDropZone T="StaffSkillDto" Identifier="Advanced" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
-                    <MudText Typo="Typo.h6" Class="mb-4">Advanced</MudText>
-                </MudDropZone>
-            </div>
-        </ChildContent>
-        <ItemRenderer>
-            <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
-        </ItemRenderer>
-    </MudDropContainer>
+    @if (_staff?.Skills?.Any() ?? false)
+    {
+        <MudDropContainer T="StaffSkillDto"
+                          Items="@_staff?.Skills"
+                          ItemDropped="ItemUpdated"
+                          ItemsSelector="ItemsSelector">
+            <ChildContent>
+                <div class="d-flex flex-wrap justify-space-between">
+                    <MudDropZone T="StaffSkillDto" Identifier="Beginner" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+                        <MudText Typo="Typo.h6" Class="mb-4">Keen to Learn</MudText>
+                    </MudDropZone>
+                    <MudDropZone T="StaffSkillDto" Identifier="Intermediate" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+                        <MudText Typo="Typo.h6" Class="mb-4">Intermediate</MudText>
+                    </MudDropZone>
+                    <MudDropZone T="StaffSkillDto" Identifier="Advanced" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1">
+                        <MudText Typo="Typo.h6" Class="mb-4">Advanced</MudText>
+                    </MudDropZone>
+                </div>
+            </ChildContent>
+            <ItemRenderer>
+                <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
+            </ItemRenderer>
+        </MudDropContainer>
+    }
 </MudPaper>
 
 @* Button Section *@
@@ -293,7 +296,8 @@
         if (!string.IsNullOrWhiteSpace(_currentBrowserFile?.Name))
         {
             await staffAdminService.UploadProfilePicture(_staff.Id,
-                _currentBrowserFile.OpenReadStream(_currentBrowserFile.Size), 
+                _currentBrowserFile.OpenReadStream(_currentBrowserFile.Size),
+                _currentBrowserFile.Name,
                     CancellationToken.None);
         }
 
