@@ -41,7 +41,7 @@ public class LeaderboardService : ILeaderboardService
 
     public async Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}?filter={filter}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetEligibleUsers?filter={filter}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
