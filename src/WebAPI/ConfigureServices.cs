@@ -62,13 +62,19 @@ public static class ConfigureServices
         });
 
         string _allowSpecificOrigins = "_AllowSpecificOrigins";
+        string? AllowedOrigin = configuration[nameof(AllowedOrigin)];
+        
+        if (string.IsNullOrWhiteSpace(AllowedOrigin))
+        {
+            throw new Exception("AllowedOrigin is not configured");
+        }
 
         services.AddCors(options =>
         {
             options.AddPolicy(_allowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins(configuration["AllowedOrigin"])
+                    builder.WithOrigins(AllowedOrigin)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

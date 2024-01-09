@@ -23,11 +23,7 @@ public class LeaderboardService : ILeaderboardService
 
     public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken)
     {
-        var requestURi = $"{_httpClient.BaseAddress}{_baseRoute}";
-        
-        Console.WriteLine($"API Request: {requestURi}");
-        
-        var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
