@@ -18,9 +18,9 @@ public class StaffAdminService : IStaffAdminService
 
     private const string _baseRoute = "api/Staff/";
 
-    public StaffAdminService(HttpClient httpClient)
+    public StaffAdminService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task DeleteStaffMember(int id, CancellationToken cancellationToken)

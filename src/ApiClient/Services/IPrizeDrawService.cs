@@ -15,9 +15,9 @@ public class PrizeDrawService : IPrizeDrawService
     // TODO: implement this in a separate controller and change the leaderboard query back to just filtering by time
     private const string _baseRoute = "api/Leaderboard/";
 
-    public PrizeDrawService(HttpClient httpClient)
+    public PrizeDrawService(IHttpClientFactory clientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = clientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<EligibleUsersViewModel> GetEligibleUsers(GetEligibleUsersFilter filter, CancellationToken cancellationToken)

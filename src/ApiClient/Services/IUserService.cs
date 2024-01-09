@@ -26,9 +26,9 @@ public class UserService : IUserService
 
     private const string _baseRoute = "api/User/";
 
-    public UserService(HttpClient httpClient)
+    public UserService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task DeleteMyProfile(CancellationToken cancellationToken = default)

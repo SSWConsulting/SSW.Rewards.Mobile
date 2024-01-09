@@ -20,9 +20,9 @@ public class AchievementService : IAchievementService
 
     private const string _baseRoute = "api/Achievement/";
 
-    public AchievementService(HttpClient httpClient)
+    public AchievementService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<ClaimAchievementResult> ClaimAchievement(string code, CancellationToken cancellationToken)

@@ -16,9 +16,9 @@ public class QuizAdminService : IQuizAdminService
 
     private const string _baseRoute = "api/Quizzes/";
 
-    public QuizAdminService(HttpClient httpClient)
+    public QuizAdminService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<int> AddNewQuiz(QuizDetailsDto quizDetailsDto, CancellationToken cancellationToken)

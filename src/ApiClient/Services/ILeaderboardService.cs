@@ -16,13 +16,17 @@ public class LeaderboardService : ILeaderboardService
 
     private const string _baseRoute = "api/Leaderboard/";
 
-    public LeaderboardService(HttpClient httpClient)
+    public LeaderboardService(IHttpClientFactory clientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = clientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken)
     {
+        var requestURi = $"{_httpClient.BaseAddress}{_baseRoute}";
+        
+        Console.WriteLine($"API Request: {requestURi}");
+        
         var result = await _httpClient.GetAsync($"{_baseRoute}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)

@@ -18,9 +18,9 @@ public class StaffService : IStaffService
 
     private const string _baseRoute = "api/Staff/";
 
-    public StaffService(HttpClient httpClient)
+    public StaffService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<StaffListViewModel> GetStaffList(CancellationToken cancellationToken)

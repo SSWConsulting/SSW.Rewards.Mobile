@@ -39,7 +39,7 @@ public class Program
             throw new NullReferenceException("No API base URL provided");
         }
 
-        builder.Services.AddApiClientServices<CustomAuthorizationMessageHandler>(apiBaseUrl);
+        builder.Services.AddApiClientServices<CustomAuthorizationMessageHandler>(apiBaseUrl, true);
 
         builder.Services.AddMudServices(config =>
         {

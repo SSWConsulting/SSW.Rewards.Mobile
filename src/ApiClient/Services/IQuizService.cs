@@ -21,9 +21,9 @@ public class QuizService : IQuizService
 
     private const string _baseRoute = "api/Quizzes/";
 
-    public QuizService(HttpClient httpClient)
+    public QuizService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<IEnumerable<QuizDto>> GetQuizzes(CancellationToken cancellationToken)

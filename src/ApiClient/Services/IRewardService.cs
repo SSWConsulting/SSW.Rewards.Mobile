@@ -20,9 +20,9 @@ public class RewardService : IRewardService
 
     private const string _baseRoute = "api/Reward/";
 
-    public RewardService(HttpClient httpClient)
+    public RewardService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<RewardListViewModel> GetRewards(CancellationToken cancellationToken)

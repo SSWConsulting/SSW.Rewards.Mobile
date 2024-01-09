@@ -14,9 +14,9 @@ public class SkillsService : ISkillsService
 
     private const string _baseRoute = "api/Skills/";
 
-    public SkillsService(HttpClient httpClient)
+    public SkillsService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<SkillsListViewModel> GetSkillsList(CancellationToken cancellationToken)

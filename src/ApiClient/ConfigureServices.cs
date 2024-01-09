@@ -15,6 +15,7 @@ public static class ConfigureServices
     {
         services.AddHttpClient(Constants.AuthenticatedClient, client =>
         {
+            Console.WriteLine($"Configuring API client with base address: {baseAddress}");
             client.BaseAddress = new Uri(baseAddress);
         })
         .AddHttpMessageHandler<THandler>();

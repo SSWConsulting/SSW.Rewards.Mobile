@@ -16,9 +16,9 @@ public class SkillsAdminService : ISkillsAdminService
 
     private const string _baseRoute = "api/Skills/";
 
-    public SkillsAdminService(HttpClient httpClient)
+    public SkillsAdminService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task DeleteSkill(int skillId, CancellationToken cancellationToken)

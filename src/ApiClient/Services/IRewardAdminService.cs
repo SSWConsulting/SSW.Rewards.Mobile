@@ -19,9 +19,9 @@ public class RewardAdminService : IRewardAdminService
 
     private const string _baseRoute = "api/Reward/";
 
-    public RewardAdminService(HttpClient httpClient)
+    public RewardAdminService(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
     public async Task<RewardsAdminViewModel> GetRewards(CancellationToken cancellationToken)
