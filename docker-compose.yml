@@ -26,10 +26,9 @@ services:
       dockerfile: src/WebAPI/Dockerfile
     ports:
       - 5001:5001
-      - 81:81
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5001;http://+:81
+      - ASPNETCORE_URLS=https://+:5001
       - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisPassword
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
     volumes:
@@ -43,14 +42,11 @@ services:
       - azuresqledge
     build:
       dockerfile: src/AdminUI/Dockerfile
-      args:
-        - BUILD_CONFIGURATION=DEBUG
     ports:
-      - 80:80
       - 7137:7137
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:7137;http://+:80
+      - ASPNETCORE_URLS=https://+:7137
       - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisPassword
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
     volumes:

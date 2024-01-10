@@ -1,8 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["src/AdminUI.csproj", "src/AdminUI/"]
+COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/SSW.Rewards.Application.csproj", "src/Application/"]
 COPY ["src/Domain/SSW.Rewards.Domain.csproj", "src/Domain/"]
+COPY ["src/SSW.Rewards.Enums/SSW.Rewards.Enums.csproj", "src/SSW.Rewards.Enums/"]
+COPY ["src/Common/Shared.csproj", "src/Common/"]
 COPY ["src/Infrastructure/SSW.Rewards.Infrastructure.csproj", "src/Infrastructure/"]
 RUN dotnet restore "src/AdminUI/AdminUI.csproj"
 
