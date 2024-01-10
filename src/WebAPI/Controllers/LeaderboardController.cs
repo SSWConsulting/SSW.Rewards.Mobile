@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.Leaderboard.Queries.Common;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.PrizeDraw.Queries;
+using SSW.Rewards.Enums;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
 public class LeaderboardController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<LeaderboardListViewModel>> Get()
+    public async Task<ActionResult<LeaderboardViewModel>> Get()
     {
         return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
     }

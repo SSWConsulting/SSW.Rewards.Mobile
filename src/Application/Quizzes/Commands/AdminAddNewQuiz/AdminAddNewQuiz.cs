@@ -1,12 +1,10 @@
-﻿using MediatR;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Achievements.Common;
-using SSW.Rewards.Application.Quizzes.Common;
-using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminAddNewQuiz : IRequest<int>
 {
-    public AdminQuizDetailsDto NewQuiz { get; set; } = new();
+    public QuizEditDto NewQuiz { get; set; } = new();
 }
 
 public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
@@ -33,12 +31,12 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
 
         var quiz = new Quiz
         {
-            Title       = request.NewQuiz.Title,
+            Title = request.NewQuiz.Title,
             Description = request.NewQuiz.Description,
-            Icon        = request.NewQuiz.Icon,
-            IsArchived  = false,
-            CreatedBy   = dbUser,
-            CreatedUtc  = DateTime.UtcNow
+            Icon = request.NewQuiz.Icon,
+            IsArchived = false,
+            CreatedBy = dbUser,
+            CreatedUtc = DateTime.UtcNow
         };
 
         foreach (var question in request.NewQuiz.Questions)
@@ -55,31 +53,31 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return quiz.Id;
     }
 
-    private QuizQuestion CreateQuestion(AdminQuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
-            Text        = dto.Text,
-            CreatedUtc  = DateTime.UtcNow,
-            Answers     = dto.Answers.Select(a => new QuizAnswer
+            Text = dto.Text,
+            CreatedUtc = DateTime.UtcNow,
+            Answers = dto.Answers.Select(a => new QuizAnswer
             {
-                IsCorrect   = a.IsCorrect,
-                Text        = a.Text
+                IsCorrect = a.IsCorrect,
+                Text = a.Text
             }).ToList()
         };
         return dbQuestion;
     }
-    
-    private Achievement CreateQuizAchievement(AdminQuizDetailsDto dto)
+
+    private Achievement CreateQuizAchievement(QuizEditDto dto)
     {
         return new Achievement
         {
-            Icon            = dto.Icon,
-            IconIsBranded   = true,
-            Name            = $"Quiz: {dto.Title}",
-            Code            = AchievementHelpers.GenerateCode(dto.Title, false),
-            Value           = dto.Points,
-            CreatedUtc      = DateTime.UtcNow
+            Icon = dto.Icon,
+            IconIsBranded = true,
+            Name = $"Quiz: {dto.Title}",
+            Code = AchievementHelpers.GenerateCode(dto.Title, false),
+            Value = dto.Points,
+            CreatedUtc = DateTime.UtcNow
         };
     }
 }

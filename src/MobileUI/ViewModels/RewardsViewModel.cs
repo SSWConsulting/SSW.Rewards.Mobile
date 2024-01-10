@@ -1,11 +1,12 @@
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Mopups.Services;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public class RewardsViewModel : BaseViewModel
+    public partial class RewardsViewModel : BaseViewModel
     {
         private readonly IRewardService _rewardService;
 
@@ -14,7 +15,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ObservableCollection<Reward> Rewards { get; set; }
 
-        public bool NoRewards { get; set; } = true;
+        [ObservableProperty] private bool _noRewards = true;
 
         public RewardsViewModel(IRewardService rewardService)
         {
@@ -35,7 +36,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             if (Rewards.Count > 0)
             {
                 NoRewards = false;
-                RaisePropertyChanged("NoRewards");
             }
 
             RewardCardTappedCommand = new Command<Reward>(async (reward) =>

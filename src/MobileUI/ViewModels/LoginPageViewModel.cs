@@ -1,41 +1,43 @@
-﻿using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class LoginPageViewModel : BaseViewModel
+public partial class LoginPageViewModel : BaseViewModel
 {
-    public ICommand LoginTappedCommand { get; set; }
+    [ObservableProperty]
+    private bool _isRunning;
 
-    private IUserService _userService { get; set; }
-
-    public bool isRunning { get; set; }
-
-    public bool LoginButtonEnabled { get; set; }
+    [ObservableProperty]
+    private bool _loginButtonEnabled;
 
     bool _isStaff = false;
 
+    private readonly IUserService _userService;
+    private readonly IAuthenticationService _authService;
+
     public string ButtonText { get; set; }
 
-    public LoginPageViewModel(IUserService userService)
+    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
+        _authService = authService;
         _userService = userService;
-        LoginTappedCommand = new Command(SignIn);
         ButtonText = "Sign up / Log in";
         OnPropertyChanged("ButtonText");
     }
 
-    private async void SignIn()
+    [RelayCommand]
+    private async Task LoginTapped()
     {
-        isRunning = true;
+        IsRunning = true;
         LoginButtonEnabled = false;
         bool enablebuttonAfterLogin = true;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
 
         ApiStatus status;
         try
         {
-            status = await _userService.SignInAsync();
+            status = await _authService.SignInAsync();
         }
         catch (Exception exception)
         {
@@ -62,8 +64,7 @@ public class LoginPageViewModel : BaseViewModel
         }
 
         LoginButtonEnabled = enablebuttonAfterLogin;
-        isRunning = false;
-        RaisePropertyChanged(nameof(isRunning), nameof(LoginButtonEnabled));
+        IsRunning = false;
     }
 
     public async Task Refresh()
@@ -73,17 +74,13 @@ public class LoginPageViewModel : BaseViewModel
         if (_userService.HasCachedAccount)
         {
             LoginButtonEnabled = false;
-            isRunning = true;
+            IsRunning = true;
             ButtonText = "Logging you in...";
-            RaisePropertyChanged(nameof(isRunning), nameof(ButtonText), nameof(LoginButtonEnabled));
 
             try
             {
-                if(await _userService.RefreshLoginAsync())
+                if(!string.IsNullOrEmpty(await _authService.GetAccessToken()))
                 {
-                    // TODO: Do we need this in a refresh?
-                    await _userService.UpdateMyDetailsAsync();
-
                     enablebuttonAfterLogin = false;
 
                     await OnAfterLogin();
@@ -100,10 +97,9 @@ public class LoginPageViewModel : BaseViewModel
             }
             finally
             {
-                isRunning = false;
+                IsRunning = false;
                 LoginButtonEnabled = enablebuttonAfterLogin;
                 ButtonText = "Sign up / Log in";
-                RaisePropertyChanged(nameof(ButtonText), nameof(isRunning), nameof(LoginButtonEnabled));
             }
         }
     }
@@ -122,10 +118,5 @@ public class LoginPageViewModel : BaseViewModel
 
         Application.Current.MainPage = App.ResolveShell(_isStaff);
         await Shell.Current.GoToAsync("//main");
-    }
-
-    async Task OnForgotPassword()
-    {
-        await _userService.ResetPassword();
     }
 }

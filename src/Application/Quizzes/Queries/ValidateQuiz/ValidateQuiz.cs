@@ -1,14 +1,15 @@
-﻿using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.ValidateQuiz;
+
 public class ValidateQuiz : IRequest<QuizResultDto>
 {
     public int QuizId { get; set; }
-    public List<QuizAnswerDto> Answers { get; set; }
+    public List<SubmittedAnswerDto> Answers { get; set; }
 
-    public ValidateQuiz(int quizId, List<QuizAnswerDto> answers)
+    public ValidateQuiz(int quizId, List<SubmittedAnswerDto> answers)
     {
-        QuizId  = quizId;
+        QuizId = quizId;
         Answers = answers;
     }
 }
@@ -50,7 +51,7 @@ public class ValidateQuizHandler : IRequestHandler<ValidateQuiz, QuizResultDto>
 
         // passed?
         retVal.Passed = !retVal.Results.Any(x => !x.Correct);
-        
+
         return retVal;
     }
 }

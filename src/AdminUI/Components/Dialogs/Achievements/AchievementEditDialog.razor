@@ -1,8 +1,12 @@
 @using Microsoft.AspNetCore.Components
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Models.Interfaces
+@using SSW.Rewards.Enums
+@using SSW.Rewards.Shared.DTOs.Achievements
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.ApiClient.Services
 
-@inject ILeaderboardClient _client
+@inject ILeaderboardService leaderboardService
 @inject IDialogService DialogService
 
 <MudDialog>
@@ -29,7 +33,7 @@
             AnchorOrigin="Origin.BottomCenter"
             TransformOrigin="Origin.TopCenter"
             Variant="Variant.Outlined"
-            AdornmentIcon="@Icons.Material.Filled.Search"
+            AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
             AdornmentColor="Color.Primary">
             @foreach (var usr in _usersList.OrderBy(u => u.Name))
             {
@@ -58,12 +62,12 @@
     MudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter]
-    public AchievementAdminViewModel dto { get; set; } = new();
+    public AchievementAdminDto dto { get; set; } = new();
     
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _usersList = (await _client.GetAsync()).Users;
+        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
     }
 
     void Submit()

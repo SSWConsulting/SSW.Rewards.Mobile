@@ -2,8 +2,8 @@
 using AutoMapper;
 using NUnit.Framework;
 using SSW.Rewards.Application.Common.Mappings;
-using SSW.Rewards.Application.Leaderboard.Queries.Common;
 using SSW.Rewards.Domain.Entities;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Application.UnitTests.Common.Mappings;
 

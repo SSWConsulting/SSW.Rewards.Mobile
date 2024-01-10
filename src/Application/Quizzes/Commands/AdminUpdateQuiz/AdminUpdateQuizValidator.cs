@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Quizzes.Common;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
@@ -45,13 +45,13 @@ public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
     private async Task<bool> BeUniqueQuiz(AdminUpdateQuiz command, CancellationToken cancellationToken)
     {
         return !await _context.Quizzes
-            .AnyAsync(q => 
-            !q.IsArchived 
+            .AnyAsync(q =>
+            !q.IsArchived
             && q.Title.ToLower() == command.Quiz.Title.ToLower()
             && q.Id != command.Quiz.QuizId, cancellationToken);
     }
 
-    private bool HaveOneCorrectAnswer(AdminQuizQuestionDto question)
+    private bool HaveOneCorrectAnswer(QuizQuestionEditDto question)
     {
         return question.Answers.Where(a => a.IsCorrect).Count() == 1;
     }

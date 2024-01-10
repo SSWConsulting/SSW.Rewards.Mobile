@@ -1,9 +1,11 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.PrizeDraw.Queries;
 
+// TODO: something went wrong with this query. It should just be returning users based on the filter, nothing to do with staff or achievements
 public class GetEligibleUsers : IRequest<EligibleUsersViewModel>
 {
     public int AchievementId { get; set; }
@@ -57,7 +59,7 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisWeek")
-                .Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end ));
+                .Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
         }
         else if (request.Filter == LeaderboardFilter.Forever)
         {

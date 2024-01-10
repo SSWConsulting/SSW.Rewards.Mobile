@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Quizzes.Common;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
 public class GetQuizDetails : IRequest<QuizDetailsDto>
@@ -21,8 +21,8 @@ public class GetQuizDetailsHandler : IRequestHandler<GetQuizDetails, QuizDetails
         IMapper mapper,
         IApplicationDbContext context)
     {
-        _mapper     = mapper;
-        _context    = context;
+        _mapper = mapper;
+        _context = context;
     }
 
     public async Task<QuizDetailsDto> Handle(GetQuizDetails request, CancellationToken cancellationToken)

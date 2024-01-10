@@ -1,15 +1,15 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Leaderboard.Queries.Common;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
 
-public class GetFilteredLeaderboardListQuery : IRequest<LeaderboardListViewModel>
+public class GetFilteredLeaderboardListQuery : IRequest<LeaderboardViewModel>
 {
     public LeaderboardFilter Filter { get; set; }
 }
 
-public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFilteredLeaderboardListQuery, LeaderboardListViewModel>
+public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFilteredLeaderboardListQuery, LeaderboardViewModel>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFiltere
         _dateTime = dateTime;
     }
 
-    public async Task<LeaderboardListViewModel> Handle(GetFilteredLeaderboardListQuery request, CancellationToken cancellationToken)
+    public async Task<LeaderboardViewModel> Handle(GetFilteredLeaderboardListQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Users
             .Where(u => u.Activated == true);
@@ -55,7 +55,7 @@ public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFiltere
             .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var model = new LeaderboardListViewModel
+        var model = new LeaderboardViewModel
         {
             // need to set rank outside of AutoMapper
             Users = users

@@ -1,14 +1,14 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Leaderboard.Queries.Common;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 
-public class GetLeaderboardListQuery : IRequest<LeaderboardListViewModel>
+public class GetLeaderboardListQuery : IRequest<LeaderboardViewModel>
 {
-    
+
 }
 
-public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListViewModel>
+public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewModel>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
@@ -21,7 +21,7 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListV
         _context = context;
     }
 
-    public async Task<LeaderboardListViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
+    public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
     {
         var users = await _context.Users
             .Where(u => u.Activated)
@@ -30,7 +30,7 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardListV
             .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var model = new LeaderboardListViewModel
+        var model = new LeaderboardViewModel
         {
             // need to set rank outside of AutoMapper
             Users = users

@@ -7,16 +7,16 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDetailsUpdatedMessage>
 {
     [ObservableProperty]
-    private string profilePic;
+    private string _profilePic;
 
     [ObservableProperty]
-    private string name;
+    private string _name;
 
     [ObservableProperty]
-    private string email;
+    private string _email;
 
     [ObservableProperty]
-    private bool isStaff;
+    private bool _isStaff;
 
     public FlyoutHeaderViewModel(IUserService userService)
     {

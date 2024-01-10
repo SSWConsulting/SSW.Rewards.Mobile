@@ -1,5 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Application.Rewards.Common;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.GetOnboardingRewards;
 public class GetOnboardingRewards : IRequest<RewardListViewModel>
@@ -20,7 +20,7 @@ public class GetOnboardingRewardsHandler : IRequestHandler<GetOnboardingRewards,
     public async Task<RewardListViewModel> Handle(GetOnboardingRewards request, CancellationToken cancellationToken)
     {
         var rewards = await _dbContext.Rewards.Where(r => r.IsOnboardingReward)
-            .ProjectTo<RewardViewModel>(_mapper.ConfigurationProvider)
+            .ProjectTo<RewardDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new RewardListViewModel { Rewards = rewards };

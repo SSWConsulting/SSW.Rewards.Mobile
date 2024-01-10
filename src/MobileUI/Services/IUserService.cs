@@ -2,6 +2,7 @@
 
 public interface IUserService
 {
+    // TODO: Replace all this with a GetMyProfile method
     // values
     int MyUserId { get; }
     string MyName { get; }
@@ -15,10 +16,6 @@ public interface IUserService
     bool IsStaff { get; }
 
     // auth methods
-    Task<ApiStatus> SignInAsync();
-    Task ResetPassword();
-    Task<bool> RefreshLoginAsync();
-    void SignOut();
 
     // user details
     Task UpdateMyDetailsAsync();
@@ -31,7 +28,6 @@ public interface IUserService
     Task<ImageSource> GetAvatarAsync(string url);
     Task<string> UploadImageAsync(Stream image);
 
-    Task<bool> SaveSocialMediaId(int achievementId, string userId);
 
     Task<bool> DeleteProfileAsync();
 }

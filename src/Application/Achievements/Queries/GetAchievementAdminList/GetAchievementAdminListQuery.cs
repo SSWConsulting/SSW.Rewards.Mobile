@@ -1,11 +1,12 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 
 public class GetAchievementAdminListQuery : IRequest<AchievementAdminListViewModel>
 {
     public bool IncludeArchived { get; set; }
-    
+
     public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievementAdminListQuery, AchievementAdminListViewModel>
     {
         private readonly IMapper _mapper;
@@ -23,7 +24,7 @@ public class GetAchievementAdminListQuery : IRequest<AchievementAdminListViewMod
             var results = await _context
                 .Achievements
                 .Where(a => request.IncludeArchived || !a.IsDeleted)
-                .ProjectTo<AchievementAdminViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<AchievementAdminDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new AchievementAdminListViewModel

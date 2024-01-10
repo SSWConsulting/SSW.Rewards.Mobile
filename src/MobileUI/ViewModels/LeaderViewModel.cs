@@ -1,61 +1,62 @@
-﻿namespace SSW.Rewards.Mobile.ViewModels
-{
-    public class LeaderViewModel : LeaderboardUserDto
-    {        
-        public bool IsMe
+﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
+
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public class LeaderViewModel : LeaderboardUserDto
+{        
+    public bool IsMe
+    {
+        get
         {
-            get
-            {
-                return _isMe;
-            }
-            set
-            {
-                _isMe = value;
-            }
+            return _isMe;
         }
-
-        public bool IsLeader
+        set
         {
-            get
-            {
-                return Rank == 1;
-            }
+            _isMe = value;
         }
+    }
 
-        private bool _isMe;
-
-        public FontAttributes fontAttribute
+    public bool IsLeader
+    {
+        get
         {
-            get
-            {
-                if (_isMe)
-                    return FontAttributes.Bold;
-                else
-                    return FontAttributes.None;
-            }
+            return Rank == 1;
         }
+    }
 
-        public int DisplayPoints { get; set; }
+    private bool _isMe;
 
-        public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
+    public FontAttributes fontAttribute
+    {
+        get
         {
-            Rank = dto.Rank;
-
-            UserId = dto.UserId;
-
-            Name = dto.Name;
-
-            ProfilePic = dto.ProfilePic;
-
-            TotalPoints = dto.TotalPoints;
-
-            PointsThisMonth = dto.PointsThisMonth;
-
-            PointsThisYear = dto.PointsThisYear;
-
-            Balance = dto.Balance;
-
-            IsMe = isMe;
+            if (_isMe)
+                return FontAttributes.Bold;
+            else
+                return FontAttributes.None;
         }
+    }
+
+    public int DisplayPoints { get; set; }
+
+    public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
+    {
+        Rank = dto.Rank;
+
+        UserId = dto.UserId;
+
+        Name = dto.Name;
+
+        ProfilePic = dto.ProfilePic;
+
+        TotalPoints = dto.TotalPoints;
+
+        PointsThisMonth = dto.PointsThisMonth;
+
+        PointsThisYear = dto.PointsThisYear;
+
+        Balance = dto.Balance;
+
+        IsMe = isMe;
     }
 }

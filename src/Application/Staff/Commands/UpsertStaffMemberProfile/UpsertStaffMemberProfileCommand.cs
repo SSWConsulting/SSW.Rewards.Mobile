@@ -1,14 +1,9 @@
 ﻿using System.Text;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Staff.Queries.GetStaffList;
-using SSW.Rewards.Domain.Entities;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 
-public class UpsertStaffMemberProfileCommand : IRequest<StaffDto>
+public class UpsertStaffMemberProfileCommand : IRequest<StaffMemberDto>
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -23,14 +18,14 @@ public class UpsertStaffMemberProfileCommand : IRequest<StaffDto>
     public string GitHubUsername { get; set; }
     public string LinkedInUrl { get; set; }
 
-    public Uri ProfilePhoto { get; set; }
+    public Uri? ProfilePhoto { get; set; }
 
     public int Points { get; set; }
 
     public ICollection<StaffSkillDto> Skills { get; set; }
 }
 
-public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaffMemberProfileCommand, StaffDto>
+public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaffMemberProfileCommand, StaffMemberDto>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
@@ -43,7 +38,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         _context = context;
     }
 
-    public async Task<StaffDto> Handle(UpsertStaffMemberProfileCommand request, CancellationToken cancellationToken)
+    public async Task<StaffMemberDto> Handle(UpsertStaffMemberProfileCommand request, CancellationToken cancellationToken)
     {
         var staffMemberEntity = await _context.StaffMembers
             .Where(u => u.Id == request.Id)
@@ -78,7 +73,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         staffMemberEntity.StaffAchievement.Value = request.Points;
 
         await _context.SaveChangesAsync(cancellationToken);
-        return _mapper.Map<StaffDto>(staffMemberEntity);
+        return _mapper.Map<StaffMemberDto>(staffMemberEntity);
     }
 
     private async Task UpdateSkills(UpsertStaffMemberProfileCommand request,

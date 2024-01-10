@@ -6,9 +6,12 @@
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
 @using SSW.Rewards.Admin.UI.Models.Interfaces
 @using System.ComponentModel.DataAnnotations
+@using SSW.Rewards.Shared.DTOs.Quizzes
+@using SSW.Rewards.ApiClient.Services
 
 @attribute [Authorize]
-@inject IQuizzesClient _client
+@inject IQuizService quizService
+@inject IQuizAdminService quizAdminService
 
 @inject NavigationManager NavManager
 
@@ -28,7 +31,7 @@
     [Parameter]
     public int id { get; set; }
 
-    private AdminQuizDetailsDto _model = new();
+    private QuizEditDto _model = new();
     private bool HasQuiz = false;
     private async Task DoThing(bool b)
     {
@@ -41,14 +44,14 @@
     }
     private async Task GetQuizDetails()
     {
-        _model = await _client.GetQuizDetailsForEditAsync(id);
+        _model = await quizAdminService.GetAdminQuizEdit(id, CancellationToken.None);
         HasQuiz = true;
     }
     private async Task SaveQuiz()
     {
         try
         {
-            int quizId = await _client.UpdateQuizAsync(_model);
+            int quizId = await quizAdminService.UpdateQuiz(_model, CancellationToken.None);
             //redirect to quizzes page
             NavManager.NavigateTo("/quizzes");
         }

@@ -1,3 +1,4 @@
+using SSW.Rewards.Shared.DTOs.Achievements;
 using SSW.Rewards.Application.Common.Exceptions;
 
 namespace SSW.Rewards.Application.Achievements.Queries.GetAchievementUsers;

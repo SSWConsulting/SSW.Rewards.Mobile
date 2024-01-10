@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Mopups.Services;
-using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile;
@@ -9,18 +8,16 @@ namespace SSW.Rewards.Mobile;
 public partial class AppShell : Shell
 {
     private readonly IUserService _userService;
+    private readonly IAuthenticationService _authService;
 
-    //private string _name;
-    //private string _email;
-    //private string _profilePic;
-
-    public AppShell(IUserService userService, bool isStaff)
+    public AppShell(IUserService userService, IAuthenticationService authService, bool isStaff)
     {
         IsStaff = isStaff;
 
         BindingContext = this;
         InitializeComponent();
         _userService = userService;
+        _authService = authService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
     }
@@ -42,7 +39,7 @@ public partial class AppShell : Shell
 
         if (sure)
         {
-            _userService.SignOut();
+            _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
         }
     }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SSW.Rewards.Application.Rewards.Common;
+using SSW.Rewards.Shared.DTOs.Rewards;
 using SSW.Rewards.Application.System.Commands.Common;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
@@ -109,12 +109,12 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             };
         }
 
-        var rewardModel = _mapper.Map<RewardViewModel>(reward);
+        var rewardModel = _mapper.Map<RewardDto>(reward);
 
         return new ClaimRewardResult
         {
             status = RewardStatus.Claimed,
-            viewModel = rewardModel
+            Reward = rewardModel
         };
     }
 }

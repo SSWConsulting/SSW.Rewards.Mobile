@@ -2,11 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
-using SSW.Rewards.Application.Users.Common;
-using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
-using SSW.Rewards.Application.Users.Queries.GetUser;
-using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 
 namespace SSW.Rewards.Application.Services;
 
@@ -19,9 +16,9 @@ public class UserService : IUserService, IRolesService
     private readonly string _staffSMTPDomain;
 
     public UserService(
-        IApplicationDbContext dbContext, 
-        ICurrentUserService currentUserService, 
-        IMapper mapper, 
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService,
+        IMapper mapper,
         IOptions<UserServiceOptions> options,
         ILogger<UserService> logger)
     {
@@ -129,12 +126,12 @@ public class UserService : IUserService, IRolesService
         return user.Id;
     }
 
-    public CurrentUserViewModel GetCurrentUser()
+    public CurrentUserDto GetCurrentUser()
     {
         return GetCurrentUser(CancellationToken.None).Result;
     }
 
-    public async Task<CurrentUserViewModel> GetCurrentUser(CancellationToken cancellationToken)
+    public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken)
     {
         string currentUserEmail = _currentUserService.GetUserEmail();
 
@@ -157,7 +154,7 @@ public class UserService : IUserService, IRolesService
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        return _mapper.Map<CurrentUserViewModel>(user);
+        return _mapper.Map<CurrentUserDto>(user);
     }
 
     public IEnumerable<Role> GetCurrentUserRoles()
@@ -192,16 +189,16 @@ public class UserService : IUserService, IRolesService
         return code ?? string.Empty;
     }
 
-    public UserViewModel GetUser(int userId)
+    public UserProfileDto GetUser(int userId)
     {
         return GetUser(userId, CancellationToken.None).Result;
     }
 
-    public async Task<UserViewModel> GetUser(int userId, CancellationToken cancellationToken)
+    public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
         var vm = await _dbContext.Users
                 .Where(u => u.Id == userId)
-                .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
 
         if (vm == null)
