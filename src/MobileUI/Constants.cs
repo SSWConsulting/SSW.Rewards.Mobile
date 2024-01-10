@@ -3,8 +3,8 @@
 public static class Constants
 {
 #if DEBUG
-    // public const string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
-    public const string ApiBaseUrl = "https://api.rewards.ssw.com.au";
+    public const string ApiBaseUrl = "https://app-sswrewards-api-staging.azurewebsites.net";
+    //public const string ApiBaseUrl = "https://api.rewards.ssw.com.au";
     public const string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public const string AppCenterIOSId = "21efe682-dc49-4d39-8af8-ad05911be003";
 
@@ -20,7 +20,7 @@ public static class Constants
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-    public const string AuthorityUri = "https://identity.ssw.com.au"; // "https://sswidentity-stage.azurewebsites.net";
+    public const string AuthorityUri = /*"https://identity.ssw.com.au"; // */"https://app-ssw-ident-staging-api.azurewebsites.net";
 #else
     public const string AuthorityUri = "https://identity.ssw.com.au";
 #endif

@@ -69,7 +69,7 @@ public partial class LoginPageViewModel : BaseViewModel
 
     public async Task Refresh()
     {
-        bool enablebuttonAfterLogin = true;
+        bool enableButtonAfterLogin = true;
 
         if (_userService.HasCachedAccount)
         {
@@ -81,7 +81,7 @@ public partial class LoginPageViewModel : BaseViewModel
             {
                 if(!string.IsNullOrEmpty(await _authService.GetAccessToken()))
                 {
-                    enablebuttonAfterLogin = false;
+                    enableButtonAfterLogin = false;
 
                     await OnAfterLogin();
 
@@ -98,9 +98,13 @@ public partial class LoginPageViewModel : BaseViewModel
             finally
             {
                 IsRunning = false;
-                LoginButtonEnabled = enablebuttonAfterLogin;
+                LoginButtonEnabled = enableButtonAfterLogin;
                 ButtonText = "Sign up / Log in";
             }
+        }
+        else
+        {
+            LoginButtonEnabled = true;
         }
     }
 
