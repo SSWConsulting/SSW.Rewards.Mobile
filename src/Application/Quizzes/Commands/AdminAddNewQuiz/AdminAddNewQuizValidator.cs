@@ -48,7 +48,7 @@ public class AdminAddNewQuizValidator : AbstractValidator<AdminAddNewQuiz>
             .AnyAsync(q => !q.IsArchived && q.Title.ToLower() == command.NewQuiz.Title.ToLower(), cancellationToken);
     }
 
-    private bool HaveOneCorrectAnswer(QuizQuestionDto question)
+    private bool HaveOneCorrectAnswer(QuizQuestionEditDto question)
     {
         return question.Answers.Where(a => a.IsCorrect).Count() == 1;
     }

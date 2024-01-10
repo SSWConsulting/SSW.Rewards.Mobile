@@ -51,7 +51,7 @@ public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
             && q.Id != command.Quiz.QuizId, cancellationToken);
     }
 
-    private bool HaveOneCorrectAnswer(QuizQuestionDto question)
+    private bool HaveOneCorrectAnswer(QuizQuestionEditDto question)
     {
         return question.Answers.Where(a => a.IsCorrect).Count() == 1;
     }

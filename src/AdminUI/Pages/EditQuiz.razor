@@ -31,7 +31,7 @@
     [Parameter]
     public int id { get; set; }
 
-    private QuizDetailsDto _model = new();
+    private QuizEditDto _model = new();
     private bool HasQuiz = false;
     private async Task DoThing(bool b)
     {
@@ -44,7 +44,7 @@
     }
     private async Task GetQuizDetails()
     {
-        _model = await quizService.GetQuizDetails(id, CancellationToken.None);
+        _model = await quizAdminService.GetAdminQuizEdit(id, CancellationToken.None);
         HasQuiz = true;
     }
     private async Task SaveQuiz()

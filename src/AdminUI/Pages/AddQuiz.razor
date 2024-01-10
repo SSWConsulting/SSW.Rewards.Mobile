@@ -25,7 +25,7 @@
 @code {
 
     private MudForm form = new();
-    private QuizDetailsDto _model = new QuizDetailsDto { Questions = new List<QuizQuestionDto>() };
+    private QuizEditDto _model = new QuizEditDto { Questions = new List<QuizQuestionEditDto>() };
     private async Task DoThing(bool b)
     {
         await SaveQuiz();

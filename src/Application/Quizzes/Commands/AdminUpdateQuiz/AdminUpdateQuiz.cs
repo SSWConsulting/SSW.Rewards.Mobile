@@ -3,7 +3,7 @@
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
 {
-    public QuizDetailsDto Quiz { get; set; } = new();
+    public QuizEditDto Quiz { get; set; } = new();
 }
 
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
@@ -55,7 +55,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         return dbQuiz.Id;
     }
 
-    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionDto dto)
+    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
     {
         existingQuestion.Text = dto.Text;
 
@@ -95,7 +95,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             existingQuestion.Answers.Remove(answerToBeDeleted);
         }
     }
-    private QuizQuestion CreateQuestion(QuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {

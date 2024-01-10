@@ -51,20 +51,20 @@
     MudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public QuizQuestionDto Dto { get; set; } = new();
+    public QuizQuestionEditDto Dto { get; set; } = new();
 
     private bool hasInvalidAnswers = false;
     private void AddAnswer()
     {
-        Dto.Answers.Add(new QuestionAnswerDto());
+        Dto.Answers.Add(new QuestionAnswerEditDto());
     }
     
-    private void DeleteAnswer(QuestionAnswerDto answer)
+    private void DeleteAnswer(QuestionAnswerEditDto answer)
     {
         Dto.Answers.Remove(answer);
     }
 
-    private void OnCorrectAnswerSelected(QuestionAnswerDto answer)
+    private void OnCorrectAnswerSelected(QuestionAnswerEditDto answer)
     {
         hasInvalidAnswers = false;
         foreach (var a in Dto.Answers)

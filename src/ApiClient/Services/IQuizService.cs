@@ -8,8 +8,6 @@ public interface IQuizService
 {
     Task<IEnumerable<QuizDto>> GetQuizzes(CancellationToken cancellationToken);
 
-    Task<IEnumerable<QuizDetailsDto>> GetQuizDetails(CancellationToken cancellationToken);
-
     Task<QuizDetailsDto> GetQuizDetails(int quizID, CancellationToken cancellationToken);
 
     Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto submission, CancellationToken cancellationToken);
@@ -28,7 +26,7 @@ public class QuizService : IQuizService
 
     public async Task<IEnumerable<QuizDto>> GetQuizzes(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}QuizListForUser", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetQuizListForUser", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -44,32 +42,9 @@ public class QuizService : IQuizService
         throw new Exception($"Failed to get quizzes: {responseContent}");
     }
 
-    public async Task<IEnumerable<QuizDetailsDto>> GetQuizDetails(CancellationToken cancellationToken)
-    {
-        var result = await _httpClient.GetAsync($"{_baseRoute}Details", cancellationToken);
-
-        if  (result.IsSuccessStatusCode)
-        {
-            var response = await result.Content.ReadFromJsonAsync<IEnumerable<QuizDetailsDto>>(cancellationToken: cancellationToken);
-
-            if (response is not null)
-            {
-                return response;
-            }
-        }
-
-        if (result.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            throw new UnauthorizedAccessException();
-        }
-
-        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get quiz details: {responseContent}");
-    }
-
     public async Task<QuizDetailsDto> GetQuizDetails(int quizID, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}Details/{quizID}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetQuizDetails/{quizID}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

@@ -4,7 +4,7 @@ using SSW.Rewards.Application.Achievements.Common;
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminAddNewQuiz : IRequest<int>
 {
-    public QuizDetailsDto NewQuiz { get; set; } = new();
+    public QuizEditDto NewQuiz { get; set; } = new();
 }
 
 public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
@@ -53,7 +53,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return quiz.Id;
     }
 
-    private QuizQuestion CreateQuestion(QuizQuestionDto dto)
+    private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
@@ -68,7 +68,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return dbQuestion;
     }
 
-    private Achievement CreateQuizAchievement(QuizDetailsDto dto)
+    private Achievement CreateQuizAchievement(QuizEditDto dto)
     {
         return new Achievement
         {

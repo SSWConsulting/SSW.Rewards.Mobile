@@ -8,7 +8,7 @@
 @using SSW.Rewards.ApiClient.Services
 
 @attribute [Authorize]
-@inject IQuizService quizService
+@inject IQuizAdminService quizService
 
 @inject NavigationManager NavManager
 
@@ -89,7 +89,7 @@
         try
         {
             _loading = true;
-            _model = (await quizService.GetQuizDetails(CancellationToken.None));
+            _model = (await quizService.GetAdminQuizList(CancellationToken.None));
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
