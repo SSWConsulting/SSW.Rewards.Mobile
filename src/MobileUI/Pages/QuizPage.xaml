@@ -10,11 +10,8 @@
              x:Class="SSW.Rewards.Mobile.Pages.QuizPage">
     <Shell.TitleView>
         <Label Text="Tech Trivia"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
                VerticalOptions="Center"
                FontSize="18"
-               Margin="0,15,0,0"
                x:Name="TitleText"
                TextColor="White"/>
     </Shell.TitleView>
@@ -29,11 +26,9 @@
         <StackLayout Spacing="30">
             <Label Text="Select a category and prove you know your stuff. Earn bonus points for each completed quiz!"
                    TextColor="White"
-                   Margin="40,55,40,10"
+                   Margin="20"
                    LineBreakMode="WordWrap"
-                   HorizontalTextAlignment="Center"
-                   VerticalOptions="CenterAndExpand"
-                   HorizontalOptions="CenterAndExpand" />
+                   HorizontalTextAlignment="Center"/>
 
             <ActivityIndicator HorizontalOptions="Center"
                                VerticalOptions="Center"
@@ -42,7 +37,8 @@
                                IsRunning="{Binding IsBusy}"/>
 
             <CollectionView ItemsSource="{Binding Quizzes}"
-                            Margin="40,0">
+                            Margin="40,0"
+                            HeightRequest="600">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Span="2"
                                      Orientation="Vertical"
@@ -58,17 +54,16 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
                                    BackgroundColor="{Binding Passed, Converter={StaticResource PassedToColor}}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                                          CommandParameter="{Binding Id}" />
+                                </Frame.GestureRecognizers>
                                 <Grid Padding="0"
                                       Margin="0">
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
-                                                              CommandParameter="{Binding Id}" />
-                                    </Grid.GestureRecognizers>
-
                                     <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
                                            TextColor="{Binding Passed, Converter={StaticResource PassedToIconColor}}"
                                            FontFamily="FA6Brands"
-                                           FontSize="92"
+                                           FontSize="56"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            HorizontalTextAlignment="Center"
@@ -81,16 +76,6 @@
                                            HorizontalOptions="End"
                                            VerticalOptions="End"
                                            IsVisible="{Binding Passed}">
-                                        <Label.TranslationX>
-                                            <OnPlatform x:TypeArguments="x:Double">
-                                                <On Platform="Android" Value="15"/>
-                                            </OnPlatform>
-                                        </Label.TranslationX>
-                                        <Label.TranslationY>
-                                            <OnPlatform x:TypeArguments="x:Double">
-                                                <On Platform="Android" Value="15"/>
-                                            </OnPlatform>
-                                        </Label.TranslationY>
                                     </Label>
                                 </Grid>
                             </Frame>

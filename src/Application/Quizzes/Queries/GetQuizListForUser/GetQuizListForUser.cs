@@ -19,24 +19,24 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
         _userService = userService;
     }
 
-    public async Task<IEnumerable<QuizDto>> Handle(GetQuizListForUser request, CancellationToken cancellationToken)
-    {
-        // get all quizzes
-        var masterQuizList = await _context.Quizzes
-            .Where(q => !q.IsArchived)
-            .Include(q => q.Questions)
-                .ThenInclude(x => x.Answers)
-            .OrderBy(q => q.Title)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        public async Task<IEnumerable<QuizDto>> Handle(GetQuizListForUser request, CancellationToken cancellationToken)
+        {
+            // get all quizzes
+            var masterQuizList = await _context.Quizzes
+                                                .Where(q => !q.IsArchived)
+                                                .Include(q => q.Questions)
+                                                    .ThenInclude(x => x.Answers)
+                                                .OrderBy(q => q.Title)
+                                                .AsNoTracking()
+                                                .ToListAsync(cancellationToken);
 
-        // get the quiz Ids for the quizzes the user has completed so we can mark off 
-        // the quizzes that they've already completed
-        var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
-        var userQuizzes = await _context.CompletedQuizzes
-                                        .Where(q => q.UserId == userId)
-                                        .Select(r => r.QuizId)
-                                        .ToListAsync(cancellationToken);
+            // get the quiz Ids for the quizzes the user has completed so we can mark off 
+            // the quizzes that they've already completed
+            var userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
+            var userQuizzes = await _context.CompletedQuizzes
+                                            .Where(q => q.UserId == userId && q.Passed)
+                                            .Select(r => r.QuizId)
+                                            .ToListAsync(cancellationToken);
 
         List<QuizDto> retVal = new List<QuizDto>();
         foreach (var quiz in masterQuizList)
