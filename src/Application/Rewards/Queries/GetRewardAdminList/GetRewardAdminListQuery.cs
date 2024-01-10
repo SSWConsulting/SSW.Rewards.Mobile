@@ -1,32 +1,32 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Queries.GetRewardAdminList;
 
-public class GetRewardAdminListQuery : IRequest<RewardAdminListViewModel>
+public class GetRewardAdminListQuery : IRequest<RewardsAdminViewModel> { }
+
+public class GetRewardAdminListQueryHandler : IRequestHandler<GetRewardAdminListQuery, RewardsAdminViewModel>
 {
-    public sealed class GetRewardAdminListQueryHandler : IRequestHandler<GetRewardAdminListQuery, RewardAdminListViewModel>
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+
+    public GetRewardAdminListQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _context;
-
-        public GetRewardAdminListQueryHandler(
-            IMapper mapper,
-            IApplicationDbContext context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
-        public async Task<RewardAdminListViewModel> Handle(GetRewardAdminListQuery request, CancellationToken cancellationToken)
-        {
-            var result = await _context
-                .Rewards
-                .ProjectTo<RewardAdminViewModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            return new RewardAdminListViewModel
-            {
-                Rewards = result
-            };
-        }
+        _context = context;
+        _mapper = mapper;
     }
-}
+
+    public async Task<RewardsAdminViewModel> Handle(GetRewardAdminListQuery request, CancellationToken cancellationToken)
+    {
+        var rewards = await _context.Rewards
+            .ProjectTo<RewardEditDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+
+        var vm = new RewardsAdminViewModel
+        {
+            Rewards = rewards
+        };
+
+        return vm;
+    }
+}   

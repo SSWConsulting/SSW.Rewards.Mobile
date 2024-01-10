@@ -1,9 +1,9 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Application.Leaderboard.Queries.Common;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
-public class GetFilteredLeaderboardList : IRequest<LeaderboardListViewModel>
+public class GetFilteredLeaderboardList : IRequest<LeaderboardViewModel>
 {
     public LeaderboardFilter Filter { get; set; }
 
@@ -13,7 +13,7 @@ public class GetFilteredLeaderboardList : IRequest<LeaderboardListViewModel>
     }
 }
 
-public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLeaderboardList, LeaderboardListViewModel>
+public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLeaderboardList, LeaderboardViewModel>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
         _dateTime = dateTime;
     }
 
-    public async Task<LeaderboardListViewModel> Handle(GetFilteredLeaderboardList request, CancellationToken cancellationToken)
+    public async Task<LeaderboardViewModel> Handle(GetFilteredLeaderboardList request, CancellationToken cancellationToken)
     {
         var query = _context.Users
             .Where(u => u.Activated == true);
@@ -38,7 +38,7 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
         {
             query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
         }
-        else if (request.Filter == LeaderboardFilter.ThisMonth) 
+        else if (request.Filter == LeaderboardFilter.ThisMonth)
         {
             query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month));
         }
@@ -59,7 +59,7 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
             .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var model = new LeaderboardListViewModel
+        var model = new LeaderboardViewModel
         {
             // need to set rank outside of AutoMapper
             Users = users

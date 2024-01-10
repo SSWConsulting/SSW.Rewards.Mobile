@@ -1,23 +1,24 @@
-﻿namespace SSW.Rewards.Admin.UI.Helpers
+﻿using SSW.Rewards.Shared.DTOs.Staff;
+
+namespace SSW.Rewards.Admin.UI.Helpers;
+
+public static class StaffHelper
 {
-    public static class StaffHelper
+    public static StaffMemberDto FromDto(StaffMemberDto dto)
     {
-        public static UpsertStaffMemberProfileCommand FromDto(StaffDto dto)
+        return new StaffMemberDto
         {
-            return new UpsertStaffMemberProfileCommand
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Email = dto.Email ?? string.Empty,
-                GitHubUsername = dto.GitHubUsername ?? string.Empty,
-                LinkedInUrl = dto.LinkedInUrl ?? string.Empty,
-                TwitterUsername = dto.TwitterUsername ?? string.Empty,
-                Title = dto.Title ?? string.Empty,
-                Profile = dto.Profile ?? string.Empty,
-                ProfilePhoto = dto.ProfilePhoto != null ? new Uri(dto.ProfilePhoto) : null,
-                Skills = (ICollection<StaffSkillDto>)dto.Skills,
-                Points = dto.StaffAchievement?.Value ?? 0,
-            };
-        }
+            Id = dto.Id,
+            Name = dto.Name,
+            Email = dto.Email ?? string.Empty,
+            GitHubUsername = dto.GitHubUsername ?? string.Empty,
+            LinkedInUrl = dto.LinkedInUrl ?? string.Empty,
+            TwitterUsername = dto.TwitterUsername ?? string.Empty,
+            Title = dto.Title ?? string.Empty,
+            Profile = dto.Profile ?? string.Empty,
+            ProfilePhoto = dto.ProfilePhoto,
+            Skills = dto.Skills is not null ? (ICollection<StaffSkillDto>)dto.Skills : new List<StaffSkillDto>(),
+            Points = dto.StaffAchievement?.Value ?? 0,
+        };
     }
 }

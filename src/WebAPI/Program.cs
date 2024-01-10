@@ -33,10 +33,13 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSwaggerUI(settings =>
-{
-    settings.SwaggerEndpoint("/api", "v1");
-});
+app.UseSwagger();
+app.UseSwaggerUI();
+    
+//    settings =>
+//{
+//    settings.SwaggerEndpoint("/api", "v1");
+//});
 
 app.UseRouting();
 

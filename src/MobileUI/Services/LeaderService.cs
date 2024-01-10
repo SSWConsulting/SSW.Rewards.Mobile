@@ -1,12 +1,15 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
-public class LeaderService : ApiBaseService, ILeaderService
+namespace SSW.Rewards.Mobile.Services;
+
+public class LeaderService : ILeaderService
 {
-    private LeaderboardClient _leaderBoardClient;
+    private readonly ILeaderboardService _leaderBoardClient;
 
-    public LeaderService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public LeaderService(ILeaderboardService leaderBoardClient)
     {
-        _leaderBoardClient = new LeaderboardClient(BaseUrl, AuthenticatedClient);
+        _leaderBoardClient = leaderBoardClient;
     }
 
     public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh)
@@ -15,7 +18,7 @@ public class LeaderService : ApiBaseService, ILeaderService
 
         try
         {
-            var apiLeaderList = await _leaderBoardClient.GetAsync();
+            var apiLeaderList = await _leaderBoardClient.GetLeaderboard(CancellationToken.None);
 
             foreach (var leader in apiLeaderList.Users)
             {
@@ -27,16 +30,11 @@ public class LeaderService : ApiBaseService, ILeaderService
                 summaries.Add(leader);
             }
         }
-        catch(ApiException e)
+        catch(Exception e)
         {
-            if(e.StatusCode == 401)
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
-            {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                throw;
             }
         }
 

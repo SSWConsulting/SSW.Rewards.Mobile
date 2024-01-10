@@ -1,15 +1,11 @@
-﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
-    public ICommand LoginTappedCommand { get; set; }
-
-    private IUserService _userService { get; set; }
-
     [ObservableProperty]
     private bool _isRunning;
 
@@ -18,17 +14,21 @@ public partial class LoginPageViewModel : BaseViewModel
 
     bool _isStaff = false;
 
-    [ObservableProperty]
-    private string _buttonText;
+    private readonly IUserService _userService;
+    private readonly IAuthenticationService _authService;
 
-    public LoginPageViewModel(IUserService userService)
+    public string ButtonText { get; set; }
+
+    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
+        _authService = authService;
         _userService = userService;
-        LoginTappedCommand = new Command(SignIn);
         ButtonText = "Sign up / Log in";
+        OnPropertyChanged("ButtonText");
     }
 
-    private async void SignIn()
+    [RelayCommand]
+    private async Task LoginTapped()
     {
         IsRunning = true;
         LoginButtonEnabled = false;
@@ -37,7 +37,7 @@ public partial class LoginPageViewModel : BaseViewModel
         ApiStatus status;
         try
         {
-            status = await _userService.SignInAsync();
+            status = await _authService.SignInAsync();
         }
         catch (Exception exception)
         {
@@ -79,11 +79,8 @@ public partial class LoginPageViewModel : BaseViewModel
 
             try
             {
-                if(await _userService.RefreshLoginAsync())
+                if(!string.IsNullOrEmpty(await _authService.GetAccessToken()))
                 {
-                    // TODO: Do we need this in a refresh?
-                    await _userService.UpdateMyDetailsAsync();
-
                     enablebuttonAfterLogin = false;
 
                     await OnAfterLogin();
@@ -121,10 +118,5 @@ public partial class LoginPageViewModel : BaseViewModel
 
         Application.Current.MainPage = App.ResolveShell(_isStaff);
         await Shell.Current.GoToAsync("//main");
-    }
-
-    async Task OnForgotPassword()
-    {
-        await _userService.ResetPassword();
     }
 }

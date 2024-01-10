@@ -1,38 +1,24 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
-using Microsoft.AppCenter.Crashes;
 using SSW.Rewards.Mobile.Messages;
-using System.IdentityModel.Tokens.Jwt;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.Services;
 
-public class UserService : ApiBaseService, IUserService
+public class UserService : IUserService, IDisposable
 {
-    private UserClient _userClient { get; set; }
+    private IApiUserService _userClient { get; set; }
 
-    private readonly OidcClientOptions _options;
-
+    private readonly IAuthenticationService _authService;
     private bool _loggedIn = false;
-
-    private string RefreshToken;
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
-    public UserService(IBrowser browser, IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public UserService(IApiUserService userService, IAuthenticationService authService)
     {
-        _options = new OidcClientOptions
-        {
-            Authority = Constants.AuthorityUri,
-            ClientId = Constants.ClientId,
-            Scope = Constants.Scope,
-            RedirectUri = Constants.AuthRedirectUrl,
-            Browser = browser,
+        _userClient = userService;
+        _authService = authService;
 
-        };
-
-        _userClient = new UserClient(BaseUrl, AuthenticatedClient);
+        _authService.DetailsUpdated += UpdateMyDtailsAsync;
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
@@ -41,9 +27,9 @@ public class UserService : ApiBaseService, IUserService
     {
         try
         {
-            var result = await _userClient.DeleteMyProfileAsync();
+            await _userClient.DeleteMyProfile();
 
-            SignOut();
+            _authService.SignOut();
 
             return true;
         }
@@ -53,177 +39,6 @@ public class UserService : ApiBaseService, IUserService
         }
 
     }
-
-    #region AUTHENTICATION
-
-    public async Task<ApiStatus> SignInAsync()
-    {
-        try
-        {
-            var oidcClient = new OidcClient(_options);
-
-            var result = await oidcClient.LoginAsync(new LoginRequest());
-
-            if (result.IsError)
-            {
-                return ApiStatus.Error;
-            }
-
-            string token = result.AccessToken;
-            string idToken = result.IdentityToken;
-
-            if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
-            {
-
-                try
-                {
-                    await SetLoggedInState(token, idToken);
-                }
-                catch (Exception ex)
-                {
-
-                    return ApiStatus.Unavailable;
-                }
-
-                await SettRefreshToken(result.RefreshToken);
-
-                return ApiStatus.Success;
-            }
-            else
-            {
-                return ApiStatus.LoginFailure;
-            }
-        }
-        catch (TaskCanceledException taskEx)
-        {
-            return ApiStatus.LoginFailure;
-        }
-        catch (Exception ex)
-        {
-            return ApiStatus.Error;
-        }
-    }
-
-    public void SignOut()
-    {
-        // TODO: remove from auth client
-        SecureStorage.RemoveAll();
-        Preferences.Clear();
-    }
-
-    private async Task SetLoggedInState(string accessToken, string idToken)
-    {
-        AuthHandler.SetAccessToken(accessToken);
-
-        Preferences.Set(nameof(HasCachedAccount), true);
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        var jwToken = tokenHandler.ReadJwtToken(idToken);
-
-        var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-        var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-        var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-        var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
-
-        string fullName = firstName + " " + familyName;
-
-        if (!string.IsNullOrWhiteSpace(fullName))
-        {
-            Preferences.Set("MyName", fullName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(jobTitle))
-        {
-            Preferences.Set("JobTitle", jobTitle);
-        }
-
-        if (!string.IsNullOrWhiteSpace(email))
-        {
-            Preferences.Set("MyEmail", email);
-        }
-
-        await UpdateMyDetailsAsync();
-
-        _loggedIn = true;
-    }
-
-    private async Task SettRefreshToken(string token)
-    {
-        RefreshToken = token;
-
-        await SecureStorage.SetAsync(nameof(RefreshToken), token);
-    }
-
-    public Task ResetPassword()
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<bool> RefreshLoginAsync()
-    {
-        RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
-
-        if (!string.IsNullOrWhiteSpace(RefreshToken))
-        {
-            var oidcClient = new OidcClient(_options);
-
-            var result = await oidcClient.RefreshTokenAsync(RefreshToken);
-
-            if (!result.IsError)
-            {
-                await SettRefreshToken(result.RefreshToken);
-                AuthHandler.SetAccessToken(result.AccessToken);
-                return true;
-            }
-            else
-            {
-                Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
-
-                var fcep = new Parameters
-                {
-                    { "prompt", "none" }
-                };
-
-                var silentRequest = new LoginRequest
-                {
-                    FrontChannelExtraParameters = fcep
-                };
-
-                var silentResult = await oidcClient.LoginAsync(silentRequest);
-
-                if (!silentResult.IsError)
-                {
-                    string token = silentResult.AccessToken;
-                    string idToken = silentResult.IdentityToken;
-
-                    if (!string.IsNullOrWhiteSpace(idToken) && !string.IsNullOrWhiteSpace(token))
-                    {
-
-                        try
-                        {
-                            await SetLoggedInState(token, idToken);
-                        }
-                        catch
-                        {
-
-                            return false;
-                        }
-
-                        await SettRefreshToken(result.RefreshToken);
-
-                        return true;
-                    }
-                }
-
-                await SignInAsync();
-            }
-        }
-
-        return false;
-    }
-
-    #endregion
 
 
     #region USERDETAILS
@@ -256,12 +71,8 @@ public class UserService : ApiBaseService, IUserService
 
     public async Task<string> UploadImageAsync(Stream image)
     {
-        var contentType = "image/png";
-        var fileName = $"{MyUserId}_{DateTime.UtcNow.Ticks}_profilepic.png";
+        var response = await _userClient.UploadProilePic(image);
 
-        FileParameter parameter = new FileParameter(image, fileName, contentType);
-
-        var response = await _userClient.UploadProfilePicAsync(parameter);
         Preferences.Set(nameof(MyProfilePic), response.PicUrl);
 
         if (response.AchievementAwarded)
@@ -276,9 +87,30 @@ public class UserService : ApiBaseService, IUserService
         return response.PicUrl;
     }
 
+    private void UpdateMyDtailsAsync(object sender, DetailsUpdatedEventArgs args)
+    {
+        if (!string.IsNullOrWhiteSpace(args.Name))
+        {
+            Preferences.Set(nameof(MyName), args.Name);
+        }
+
+        if (!string.IsNullOrWhiteSpace(args.Email))
+        {
+            Preferences.Set(nameof(MyEmail), args.Email);
+        }
+
+        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
+        {
+            Email = MyEmail,
+            ProfilePic = MyProfilePic,
+            Name = MyName,
+            IsStaff = IsStaff
+        }));
+    }
+
     public async Task UpdateMyDetailsAsync()
     {
-        var user = await _userClient.GetAsync();
+        var user = await _userClient.GetCurrentUser();
 
         if (user is null)
         {
@@ -315,9 +147,9 @@ public class UserService : ApiBaseService, IUserService
             Preferences.Set(nameof(MyBalance), user.Balance);
         }
 
-        if (user.QrCode != null && !string.IsNullOrWhiteSpace(user.QrCode.ToString()))
+        if (user.QRCode != null && !string.IsNullOrWhiteSpace(user.QRCode.ToString()))
         {
-            Preferences.Set(nameof(MyQrCode), user.QrCode);
+            Preferences.Set(nameof(MyQrCode), user.QRCode);
         }
 
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
@@ -348,9 +180,9 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Achievement> achievements = new List<Achievement>();
 
-        var achievementsList = await _userClient.ProfileAchievementsAsync(userId);
+        var achievementsList = await _userClient.GetProfileAchievements(userId);
 
-        foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
+        foreach (var achievement in achievementsList.UserAchievements)
         {
             achievements.Add(new Achievement
             {
@@ -358,7 +190,7 @@ public class UserService : ApiBaseService, IUserService
                 Name = achievement.AchievementName,
                 Value = achievement.AchievementValue,
                 Type = achievement.AchievementType,
-                AwardedAt = achievement.AwardedAt?.DateTime,
+                AwardedAt = achievement.AwardedAt,
                 AchievementIcon = achievement.AchievementIcon,
                 IconIsBranded = achievement.AchievementIconIsBranded,
                 Id = achievement.AchievementId
@@ -372,9 +204,9 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Achievement> achievements = new List<Achievement>();
 
-        var achievementsList = await _userClient.AchievementsAsync(userId);
+        var achievementsList = await _userClient.GetUserAchievements(userId);
 
-        foreach (UserAchievementDto achievement in achievementsList.UserAchievements)
+        foreach (var achievement in achievementsList.UserAchievements)
         {
             achievements.Add(new Achievement
             {
@@ -382,7 +214,7 @@ public class UserService : ApiBaseService, IUserService
                 Name = achievement.AchievementName,
                 Value = achievement.AchievementValue,
                 Type = achievement.AchievementType,
-                AwardedAt = achievement.AwardedAt?.DateTime
+                AwardedAt = achievement.AwardedAt
             });
         }
 
@@ -403,7 +235,7 @@ public class UserService : ApiBaseService, IUserService
     {
         List<Reward> rewards = new List<Reward>();
 
-        var rewardsList = await _userClient.RewardsAsync(userId);
+        var rewardsList = await _userClient.GetUserRewards(userId);
 
         foreach (var userReward in rewardsList.UserRewards)
         {
@@ -412,7 +244,7 @@ public class UserService : ApiBaseService, IUserService
                 Awarded = userReward.Awarded,
                 Name = userReward.RewardName,
                 Cost = userReward.RewardCost,
-                AwardedAt = userReward.AwardedAt?.DateTime
+                AwardedAt = userReward.AwardedAt
             });
         }
 
@@ -429,21 +261,9 @@ public class UserService : ApiBaseService, IUserService
         throw new NotImplementedException();
     }
 
-    public async Task<bool> SaveSocialMediaId(int achievementId, string userId)
+    public void Dispose()
     {
-        var achieved = await _userClient.UpsertUserSocialMediaIdAsync(new UpsertUserSocialMediaId
-        {
-            AchievementId = achievementId,
-            SocialMediaPlatformUserId = userId
-        });
-
-        if (achieved == 0)
-        {
-            return false;
-        }
-
-        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        return true;
+        _authService.DetailsUpdated -= UpdateMyDtailsAsync;
     }
 
     #endregion

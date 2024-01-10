@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+
+namespace SSW.Rewards.Mobile.Services;
 
 public interface IQuizService
 {
@@ -6,5 +8,5 @@ public interface IQuizService
 
     Task<QuizDetailsDto> GetQuizDetails(int quizID);
 
-    Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command);
+    Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto dto);
 }

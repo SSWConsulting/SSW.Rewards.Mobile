@@ -1,15 +1,15 @@
-﻿using SSW.Rewards.Application.Achievements.Queries.Common;
+﻿using SSW.Rewards.Shared.DTOs.Achievements;
+using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.System.Commands.Common;
-using SSW.Rewards.Domain.Enums;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
-public class PostAchievementCommand : IRequest<PostAchievementResult>
+public class PostAchievementCommand : IRequest<ClaimAchievementResult>
 {
     public string Code { get; set; }
 }
 
-public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, PostAchievementResult>
+public class PostAchievementCommandHandler : IRequestHandler<PostAchievementCommand, ClaimAchievementResult>
 {
     private readonly IUserService _userService;
     private readonly IApplicationDbContext _context;
@@ -25,7 +25,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         _mapper = mapper;
     }
 
-    public async Task<PostAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
+    public async Task<ClaimAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
     {
         var requestedAchievement = await _context
            .Achievements
@@ -34,9 +34,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         if (requestedAchievement == null)
         {
-            return new PostAchievementResult
+            return new ClaimAchievementResult
             {
-                status = AchievementStatus.NotFound
+                status = ClaimAchievementStatus.NotFound
             };
         }
 
@@ -44,21 +44,21 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var userAchievements = await _context
             .UserAchievements
-            .Where(ua => ua.UserId == user.Id)                
+            .Where(ua => ua.UserId == user.Id)
             .ToListAsync(cancellationToken);
 
         if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
         {
-            return new PostAchievementResult
+            return new ClaimAchievementResult
             {
-                status = AchievementStatus.Duplicate
+                status = ClaimAchievementStatus.Duplicate
             };
         }
 
         var userAchievement = new UserAchievement
         {
-            UserId          = user.Id,
-            AchievementId   = requestedAchievement.Id
+            UserId = user.Id,
+            AchievementId = requestedAchievement.Id
         };
 
         _context.UserAchievements.Add(userAchievement);
@@ -73,7 +73,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                 var userMeetAchievement = new UserAchievement
                 {
                     UserId = user.Id,
-						Achievement = meetAchievement
+                    Achievement = meetAchievement
                 };
 
                 _context.UserAchievements.Add(userMeetAchievement);
@@ -92,8 +92,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG))
                     {
                         var ugAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
-							milestoneAchievement.Achievement = ugAchievement;
-						}
+                        milestoneAchievement.Achievement = ugAchievement;
+                    }
                     break;
 
                 case Icons.Lightbulb:
@@ -101,8 +101,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday))
                     {
                         var hdAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
-							milestoneAchievement.Achievement = hdAchievement;
-						}
+                        milestoneAchievement.Achievement = hdAchievement;
+                    }
                     break;
 
                 case Icons.Lightning:
@@ -110,8 +110,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers))
                     {
                         var spAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
-							milestoneAchievement.Achievement = spAchievement;
-						}
+                        milestoneAchievement.Achievement = spAchievement;
+                    }
                     break;
 
                 case Icons.Certificate:
@@ -119,7 +119,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop))
                     {
                         var wsAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
-							milestoneAchievement.Achievement = wsAchievement;
+                        milestoneAchievement.Achievement = wsAchievement;
                     }
                     break;
 
@@ -137,10 +137,10 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
-		return new PostAchievementResult
-		{
-			viewModel = achievementModel,
-			status = AchievementStatus.Added
-		};
-	}
+        return new ClaimAchievementResult
+        {
+            viewModel = achievementModel,
+            status = ClaimAchievementStatus.Claimed
+        };
+    }
 }

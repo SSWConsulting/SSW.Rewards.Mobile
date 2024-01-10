@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Achievements.Queries.Common;
+﻿using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.SearchAchievements;
 

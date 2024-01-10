@@ -1,28 +1,26 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+using IApiQuizService = SSW.Rewards.ApiClient.Services.IQuizService;
 
-public class QuizService : ApiBaseService, IQuizService
+namespace SSW.Rewards.Mobile.Services;
+
+public class QuizService : IQuizService
 {
-    private QuizzesClient _quizClient;
+    private readonly IApiQuizService _quizClient;
 
-    public QuizService(IHttpClientFactory clientFactory, ApiOptions options) : base(clientFactory, options)
+    public QuizService(IApiQuizService quizService)
     {
-        _quizClient = new QuizzesClient(BaseUrl, AuthenticatedClient);
+        _quizClient = quizService;
     }
 
     public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
     {
         try
         {
-            return await _quizClient.GetQuizDetailsAsync(quizID);
+            return await _quizClient.GetQuizDetails(quizID, CancellationToken.None);
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (! await ExceptionHandler.HandleApiException(e))
             {
                 await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
             }
@@ -37,7 +35,7 @@ public class QuizService : ApiBaseService, IQuizService
         {
             var quizzes = new List<QuizDto>();
 
-            var apiQuizzes = await _quizClient.GetQuizListForUserAsync();
+            var apiQuizzes = await _quizClient.GetQuizzes(CancellationToken.None);
 
             foreach(var quiz in apiQuizzes)
             {
@@ -46,14 +44,9 @@ public class QuizService : ApiBaseService, IQuizService
 
             return quizzes;
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (! await ExceptionHandler.HandleApiException(e))
             {
                 await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
             }
@@ -62,20 +55,15 @@ public class QuizService : ApiBaseService, IQuizService
         }
     }
 
-    public async Task<QuizResultDto> SubmitQuiz(SubmitUserQuizCommand command)
+    public async Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto dto)
     {
         try
         {
-            return await _quizClient.SubmitCompletedQuizAsync(command);
+            return await _quizClient.SubmitQuiz(dto, CancellationToken.None);
         }
-        catch (ApiException e)
+        catch (Exception e)
         {
-            if (e.StatusCode == 401)
-            {
-                await App.Current.MainPage.DisplayAlert("Authentication Failure", "Looks like your session has expired. Choose OK to go back to the login screen.", "OK");
-                await Application.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
-            }
-            else
+            if (! await ExceptionHandler.HandleApiException(e))
             {
                 await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
             }

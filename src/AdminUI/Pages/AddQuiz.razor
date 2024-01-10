@@ -6,9 +6,11 @@
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
 @using SSW.Rewards.Admin.UI.Models.Interfaces
 @using System.ComponentModel.DataAnnotations
+@using SSW.Rewards.Shared.DTOs.Quizzes
+@using SSW.Rewards.ApiClient.Services
 
 @attribute [Authorize]
-@inject IQuizzesClient _client
+@inject IQuizAdminService quizAdminService
 
 @inject NavigationManager NavManager
 
@@ -23,7 +25,7 @@
 @code {
 
     private MudForm form = new();
-    private AdminQuizDetailsDto _model = new AdminQuizDetailsDto { Questions = new List<AdminQuizQuestionDto>() };
+    private QuizEditDto _model = new QuizEditDto { Questions = new List<QuizQuestionEditDto>() };
     private async Task DoThing(bool b)
     {
         await SaveQuiz();
@@ -37,7 +39,7 @@
     {
         try
         {
-            int quizId = await _client.AddNewQuizAsync(_model);
+            int quizId = await quizAdminService.AddNewQuiz(_model, CancellationToken.None);
             //redirect to quizzes page
             NavManager.NavigateTo("/quizzes");
         }

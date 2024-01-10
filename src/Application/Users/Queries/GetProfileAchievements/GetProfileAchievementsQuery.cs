@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Application.Users.Common;
+﻿using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 
@@ -40,13 +40,13 @@ public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchiv
         {
             profileAchievements.Add(new UserAchievementDto
             {
-                AchievementName             = achievement.Name,
-                AchievementType             = achievement.Type,
-                AchievementValue            = achievement.Value,
-                AchievementIcon             = achievement.Icon,
-                AchievementIconIsBranded    = achievement.IconIsBranded,
-                Complete                    = false,
-                AchievementId               = achievement.Id,
+                AchievementName = achievement.Name,
+                AchievementType = achievement.Type,
+                AchievementValue = achievement.Value,
+                AchievementIcon = achievement.Icon,
+                AchievementIconIsBranded = achievement.IconIsBranded,
+                Complete = false,
+                AchievementId = achievement.Id,
             });
         }
 

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SSW.Rewards.Shared.DTOs.Achievements;
 using SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
 using SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchievement;
 using SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 using SSW.Rewards.Application.Achievements.Command.PostAchievement;
 using SSW.Rewards.Application.Achievements.Command.UpdateAchievement;
-using SSW.Rewards.Application.Achievements.Queries.Common;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementAdminList;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementList;
 using SSW.Rewards.Application.Achievements.Queries.GetAchievementUsers;
@@ -28,7 +28,7 @@ public class AchievementController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new SearchAchievementQuery { SearchTerm = searchTerm }));
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<AchievementUsersViewModel>> Users([FromQuery] int achievementId)
     {
@@ -47,36 +47,58 @@ public class AchievementController : ApiControllerBase
 
     [HttpPost]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult<AchievementAdminViewModel>> Create([FromBody] CreateAchievementCommand command)
+    public async Task<ActionResult<AchievementAdminDto>> Create([FromBody] AchievementEditDto dto)
     {
+        var command = new CreateAchievementCommand
+        {
+            Name = dto.Name,
+            Value = dto.Value,
+            Type = dto.Type,
+            IsMultiscanEnabled = dto.IsMultiscanEnabled,
+        };
+
         return Ok(await Mediator.Send(command));
     }
 
     [HttpPost]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult<ClaimAchievementResult>> ClaimForUser([FromBody] ClaimAchievementForUserCommand command)
+    public async Task<ActionResult<ClaimAchievementResult>> ClaimForUser([FromBody] ClaimAchievementForUserDto dto)
     {
+        var command = new ClaimAchievementForUserCommand
+        {
+            UserId = dto.UserId,
+            Code = dto.Code,
+        };
+
         return Ok(await Mediator.Send(command));
     }
 
 
     [HttpPost]
-    public async Task<ActionResult<PostAchievementResult>> Post([FromQuery] string achievementCode)
+    public async Task<ActionResult<ClaimAchievementResult>> Post([FromQuery] string achievementCode)
     {
         return Ok(await Mediator.Send(new PostAchievementCommand { Code = achievementCode }));
     }
 
     [HttpDelete]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> Delete(DeleteAchievementCommand command)
+    public async Task<ActionResult> Delete([FromQuery] int id)
     {
-        return Ok(await Mediator.Send(command));
+        return Ok(await Mediator.Send(new DeleteAchievementCommand { Id = id }));
     }
 
     [HttpPatch]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult> UpdateAchievement(UpdateAchievementCommand command)
+    public async Task<ActionResult> UpdateAchievement(AchievementEditDto dto)
     {
+        var command = new UpdateAchievementCommand
+        {
+            Id = dto.Id,
+            Value = dto.Value,
+            Type = dto.Type,
+            IsMultiscanEnabled = dto.IsMultiscanEnabled,
+        };
+
         return Ok(await Mediator.Send(command));
     }
 
