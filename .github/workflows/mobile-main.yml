@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate-build-number:
+  generate_build_number:
     runs-on: ubuntu-latest
     outputs:
       buildNumber: ${{ steps.set_build_number.outputs.buildNumber }}
@@ -37,18 +37,36 @@ jobs:
 
   android_build:
     name: Build Android app
-    needs: generate-build-number
+    needs: generate_build_number
     uses: ./.github/workflows/android-build.yml
     with:
       environment: prod
-      build_number: ${{ needs.generate-build-number.outputs.buildNumber }}
+      build_number: ${{ needs.generate_build_number.outputs.buildNumber }}
     secrets: inherit
 
   ios_build:
     name: Build iOS app
-    needs: generate-build-number
+    needs: generate_build_number
     uses: ./.github/workflows/ios-build.yml
     with:
       environment: prod
-      build_number: ${{ needs.generate-build-number.outputs.buildNumber }}
+      build_number: ${{ needs.generate_build_number.outputs.buildNumber }}
+    secrets: inherit
+
+  deploy_android:
+    name: Deploy Android app
+    needs: [generate_build_number, android_build]
+    uses: ./.github/workflows/android-deploy.yml
+    with:
+      environment: prod
+      build_number: ${{ needs.generate_build_number.outputs.buildNumber }}
+    secrets: inherit
+
+  deploy_ios:
+    name: Deploy iOS app
+    needs: [generate_build_number, android_build]
+    uses: ./.github/workflows/ios-deploy.yml
+    with:
+      environment: prod
+      build_number: ${{ needs.generate_build_number.outputs.buildNumber }}
     secrets: inherit
