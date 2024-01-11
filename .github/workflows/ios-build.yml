@@ -9,17 +9,6 @@ on:
       build_number:
         required: true
         type: string
-    # secrets:
-    #   ios_signing_certificate:
-    #     required: true
-    #   ios_signing_certificate_password:
-    #     required: true
-    #   apple_issuer_id:
-    #     required: true
-    #   apple_key_id:
-    #     required: true
-    #   apple_key:
-    #     required: true
 
 jobs:
   build:
@@ -54,17 +43,17 @@ jobs:
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.ios_signing_certificate }}
-          p12-password: ${{ secrets.ios_signing_certificate_password }}
+          p12-file-base64: ${{ secrets.IOS_SIGNING_CERTIFICATE }}
+          p12-password: ${{ secrets.IOS_SIGNING_CERTIFICATE_PASSWORD }}
 
       - name: Download Apple Provisioning Profiles
         uses: Apple-Actions/download-provisioning-profiles@v1
         with:
           bundle-id: "com.SSW.SSW.Consulting"
           profile-type: "IOS_APP_STORE"
-          issuer-id: ${{ secrets.apple_issuer_id }}
-          api-key-id: ${{ secrets.apple_key_id }}
-          api-private-key: ${{ secrets.apple_key }}
+          issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPLE_KEY_ID }}
+          api-private-key: ${{ secrets.APPLE_KEY }}
 
       - name: Build MAUI iOS
         run: dotnet publish src/MobileUI/MobileUI.csproj -c Release -f net8.0-ios -r ios-arm64 --self-contained /p:buildForSimulator=False /p:packageApp=True /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=true /p:PublishTrimmed=true
