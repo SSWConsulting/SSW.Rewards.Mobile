@@ -41,6 +41,7 @@ public partial class LoginPageViewModel : BaseViewModel
         }
         catch (Exception exception)
         {
+            await WaitForWindowClose();
             status = ApiStatus.LoginFailure;
             //Crashes.TrackError(exception);
             await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
@@ -53,18 +54,29 @@ public partial class LoginPageViewModel : BaseViewModel
                 await OnAfterLogin();
                 break;
             case ApiStatus.Unavailable:
+                await WaitForWindowClose();
                 await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
                 break;
             case ApiStatus.LoginFailure:
+                await WaitForWindowClose();
                 await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
                 break;
             default:
+                await WaitForWindowClose();
                 await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
                 break;
         }
 
         LoginButtonEnabled = enablebuttonAfterLogin;
         IsRunning = false;
+    }
+    
+    private async static Task WaitForWindowClose()
+    {
+        if (DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            await Task.Delay(1000);
+        }
     }
 
     public async Task Refresh()
