@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.AppCenter.Crashes;
-using Mopups.Services;
-using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Messages;
-using SSW.Rewards.PopupPages;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
+using SSW.Rewards.Enums;
+using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 

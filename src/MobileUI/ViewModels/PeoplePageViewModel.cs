@@ -1,12 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
+public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
     private IDevService _devService;
     private readonly ISnackbarService _snackbarService;
@@ -23,17 +25,26 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
 
     public EventHandler<ScrollToEventArgs> ScrollToRequested;
 
-    public bool IsRunning { get; set; }
+    [ObservableProperty]
+    bool isRunning;
 
-    public bool TwitterEnabled { get; set; }
-    public bool GitHubEnabled { get; set; }
-    public bool LinkedinEnabled { get; set; }
+    [ObservableProperty]
+    bool twitterEnabled;
 
-    public bool ShowDevCards { get; set; } = false;
+    [ObservableProperty]
+    bool gitHubEnabled;
 
-    public bool Scanned { get; set; } = false;
+    [ObservableProperty]
+    bool linkedinEnabled;
 
-    public int Points { get; set; }
+    [ObservableProperty]
+    bool showDevCards;
+
+    [ObservableProperty]
+    bool scanned;
+
+    [ObservableProperty]
+    int points;
 
     public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
 
@@ -41,11 +52,17 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
 
     public DevProfile SelectedProfile { get; set; }
 
-    public string DevName { get; set; }
-    public string DevTitle { get; set; }
-    public string DevBio { get; set; }
+    [ObservableProperty]
+    string devName;
 
-    public bool PageInView { get; set; } = false;
+    [ObservableProperty]
+    string devTitle;
+
+    [ObservableProperty]
+    string devBio;
+
+    [ObservableProperty]
+    bool pageInView;
 
     public SnackbarOptions SnackOptions { get; set; }
 
@@ -59,8 +76,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
     private bool _initialised = false;
 
     private bool _firstRun = true;
-
-    public string[] OnSwipedUpdatePropertyList { get; set; }
 
     public DevProfilesViewModel(IDevService devService, ISnackbarService snackbarService)
     {
@@ -77,7 +92,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             Points = 500,
             ShowPoints = false
         };
-        OnSwipedUpdatePropertyList = new [] { nameof(Title), nameof(DevName), nameof(DevTitle), nameof(DevBio), nameof(TwitterEnabled), nameof(GitHubEnabled), nameof(LinkedinEnabled), nameof(Scanned), nameof(Points) };
 
         WeakReferenceMessenger.Default.Register(this);
     }
@@ -113,7 +127,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             //OnPropertyChanged(nameof(SelectedProfile));
 
             ShowDevCards = true;
-            OnPropertyChanged(nameof(ShowDevCards));
 
             // Disabling the scrolling carousel effect because
             // it's janky and probably not needed for v2 (it was
@@ -133,8 +146,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             _initialised = true;
 
             SetDevDetails();
-
-            RaisePropertyChanged(nameof(IsRunning));
         }
     }
 
@@ -165,8 +176,6 @@ public class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwardedMessa
             Scanned = SelectedProfile.Scanned;
 
             Points = SelectedProfile.Points;
-
-            RaisePropertyChanged(OnSwipedUpdatePropertyList);
 
             Skills.Clear();
 
