@@ -6,29 +6,20 @@ on:
       environment:
         required: true
         type: string
-      configuration:
-        required: true
-        type: string
       build_number:
         required: true
         type: string
-      dotnet_version:
-        required: true
-        type: string
-      ios_provisioning_profile_type:
-        required: true
-        type: string
-    secrets:
-      ios_signing_certificate:
-        required: true
-      ios_signing_certificate_password:
-        required: true
-      apple_issuer_id:
-        required: true
-      apple_key_id:
-        required: true
-      apple_key:
-        required: true
+    # secrets:
+    #   ios_signing_certificate:
+    #     required: true
+    #   ios_signing_certificate_password:
+    #     required: true
+    #   apple_issuer_id:
+    #     required: true
+    #   apple_key_id:
+    #     required: true
+    #   apple_key:
+    #     required: true
 
 jobs:
   build:
@@ -42,15 +33,10 @@ jobs:
       - name: Update Build Number
         run: sed -i '' "s|<ApplicationVersion>.*</ApplicationVersion>|<ApplicationVersion>${{ inputs.build_number }}</ApplicationVersion>|g" src/MobileUI/MobileUI.csproj
 
-      - name: Setup DotNet ${{ inputs.dotnet_version }} Environment
+      - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ inputs.dotnet_version }}
-
-      - name: Setup DotNet ${{ inputs.dotnet_version }} Environment
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ inputs.dotnet_version }}
+          dotnet-version: "8.0.x"
 
       - name: Install MAUI Workload
         run: |
@@ -74,17 +60,17 @@ jobs:
       - name: Download Apple Provisioning Profiles
         uses: Apple-Actions/download-provisioning-profiles@v1
         with:
-          bundle-id: ${{ inputs.bundle_id }}
-          profile-type: ${{ inputs.ios_provisioning_profile_type }}
+          bundle-id: "com.SSW.SSW.Consulting"
+          profile-type: "IOS_APP_STORE"
           issuer-id: ${{ secrets.apple_issuer_id }}
           api-key-id: ${{ secrets.apple_key_id }}
           api-private-key: ${{ secrets.apple_key }}
 
       - name: Build MAUI iOS
-        run: dotnet publish src/MobileUI/MobileUI.csproj -c ${{ inputs.configuration }} -f net8.0-ios -r ios-arm64 --self-contained /p:buildForSimulator=False /p:packageApp=True /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=true /p:PublishTrimmed=true
+        run: dotnet publish src/MobileUI/MobileUI.csproj -c Release -f net8.0-ios -r ios-arm64 --self-contained /p:buildForSimulator=False /p:packageApp=True /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=true /p:PublishTrimmed=true
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: artifacts-ios-${{ inputs.build_number }}
-          path: MobileUI/bin/${{ inputs.configuration }}/net8.0-ios/ios-arm64/publish//*.ipa
+          path: MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa

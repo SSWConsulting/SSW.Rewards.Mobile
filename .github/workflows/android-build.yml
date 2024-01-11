@@ -6,20 +6,14 @@ on:
       environment:
         required: true
         type: string
-      configuration:
-        required: true
-        type: string
       build_number:
         required: true
         type: string
-      dotnet_version:
-        required: true
-        type: string
-    secrets:
-      android_keystore:
-        required: true
-      android_keystore_password:
-        required: true
+    # secrets:
+    #   android_keystore:
+    #     required: true
+    #   android_keystore_password:
+    #     required: true
 
 jobs:
   build:
@@ -43,15 +37,10 @@ jobs:
 
           Set-Content src/MobileUI/MobileUI.csproj -Value $newContent
 
-      - name: Setup DotNet ${{ inputs.dotnet_version }} Environment
+      - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ inputs.dotnet_version }}
-
-      - name: Setup DotNet ${{ inputs.dotnet_version }} Environment
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: ${{ inputs.dotnet_version }}
+          dotnet-version: "8.0.x"
 
       - name: Install MAUI Workload
         run: |
@@ -65,7 +54,7 @@ jobs:
 
       - name: Publish Android Mobile App
         run: |
-          dotnet publish src/MobileUI/MobileUI.csproj -c:${{ inputs.configuration }} -f:net8.0-android --no-restore /p:AndroidPackageFormat="aab"
+          dotnet publish src/MobileUI/MobileUI.csproj -c:Release -f:net8.0-android --no-restore /p:AndroidPackageFormat="aab"
 
       # Store Android Signing Keystore and password in Secrets using base64 encoding
       # https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil
@@ -82,10 +71,10 @@ jobs:
         shell: bash
         run: |
           cd src/MobileUI
-          jarsigner -keystore android/sswrewards.decrypted.jks -storepass "${{ secrets.android_keystore_password }}" -signedjar bin/${{ inputs.configuration }}/net8.0-android/publish/com.ssw.consulting-Signed.aab bin/${{ inputs.configuration }}/net8.0-android/publish/com.ssw.consulting.aab key
+          jarsigner -keystore android/sswrewards.decrypted.jks -storepass "${{ secrets.android_keystore_password }}" -signedjar bin/Release/net8.0-android/publish/com.ssw.consulting-Signed.aab bin/Release/net8.0-android/publish/com.ssw.consulting.aab key
 
       - uses: actions/upload-artifact@v3.1.2
         with:
           name: artifacts-android-${{ inputs.build_number }}
           path: |
-            src\MobileUI\bin\${{ inputs.configuration }}\net8.0-android\publish\*.aab
+            src\MobileUI\bin\Release\net8.0-android\publish\*.aab

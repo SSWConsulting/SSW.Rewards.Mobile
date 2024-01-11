@@ -1,0 +1,54 @@
+name: Mobile - Main (Build & Deploy)
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .github/settings.yml
+    paths:
+      - "src/MobileUI/**"
+
+  workflow_dispatch:
+
+jobs:
+  generate-build-number:
+    runs-on: ubuntu-latest
+    outputs:
+      buildNumber: ${{ steps.set_build_number.outputs.buildNumber }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Generate build number
+        id: set_build_number
+        run: |
+          commitHash=$(git rev-parse HEAD)
+          hexBuildNumber=${commitHash: -8}
+
+          # Convert hexadecimal to uppercase
+          hexBuildNumber=$(echo "$hexBuildNumber" | tr '[:lower:]' '[:upper:]')
+
+          # Convert from hexadecimal to decimal
+          buildNumber=$(echo "ibase=16; $hexBuildNumber" | bc)
+          echo "Decimal Build Number based on Commit ID: $buildNumber"
+
+          echo "buildNumber=$buildNumber" >> $GITHUB_ENV
+          echo "buildNumber=$buildNumber" >> $GITHUB_OUTPUT
+
+  android_build:
+    name: Build Android app
+    needs: generate-build-number
+    uses: ./.github/workflows/android-build.yml
+    with:
+      environment: prod
+      build_number: ${{ needs.generate-build-number.outputs.buildNumber }}
+    secrets: inherit
+
+  ios_build:
+    name: Build iOS app
+    needs: generate-build-number
+    uses: ./.github/workflows/ios-build.yml
+    with:
+      environment: prod
+      build_number: ${{ needs.generate-build-number.outputs.buildNumber }}
+    secrets: inherit
