@@ -64,14 +64,14 @@ jobs:
         run: |
           cd src/MobileUI
           mkdir android
-          echo "${{ secrets.android_keystore }}" > android/sswrewards.jks.base64
+          echo "${{ secrets.ANDROID_KEYSTORE }}" > android/sswrewards.jks.base64
           base64 -d android/sswrewards.jks.base64 > android/sswrewards.decrypted.jks
       # check android SDK paths etc in installed VM : https://github.com/actions/virtual-environments#available-environments
       - name: Sign dev build
         shell: bash
         run: |
           cd src/MobileUI
-          jarsigner -keystore android/sswrewards.decrypted.jks -storepass "${{ secrets.android_keystore_password }}" -signedjar bin/Release/net8.0-android/publish/com.ssw.consulting-Signed.aab bin/Release/net8.0-android/publish/com.ssw.consulting.aab key
+          jarsigner -keystore android/sswrewards.decrypted.jks -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" -signedjar bin/Release/net8.0-android/publish/com.ssw.consulting-Signed.aab bin/Release/net8.0-android/publish/com.ssw.consulting.aab key
 
       - uses: actions/upload-artifact@v3.1.2
         with:
