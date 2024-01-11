@@ -46,17 +46,30 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_SIGNING_CERTIFICATE }}
           p12-password: ${{ secrets.IOS_SIGNING_CERTIFICATE_PASSWORD }}
 
-      - name: Download Apple Provisioning Profiles
-        uses: Apple-Actions/download-provisioning-profiles@v1
-        with:
-          bundle-id: "com.SSW.SSW.Consulting"
-          profile-type: "IOS_APP_STORE"
-          issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
-          api-key-id: ${{ secrets.APPLE_KEY_ID }}
-          api-private-key: ${{ secrets.APPLE_KEY }}
+      - name: Import Distribution Certificate
+        run: |
+            echo ${{ secrets.APPLE_CERT }} | base64 --decode > DistributionCertificate.p12
+            security import DistributionCertificate.p12 -k ~/Library/Keychains/login.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }}
 
-      - name: Build MAUI iOS
-        run: dotnet publish src/MobileUI/MobileUI.csproj -c Release -f net8.0-ios -r ios-arm64 --self-contained /p:buildForSimulator=False /p:packageApp=True /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=true /p:PublishTrimmed=true
+      - name: Import Provisioning Profile
+        run: |
+            echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Build
+        run: dotnet publish src/MobileUI/MobileUI.csproj `
+          -v:diag -f:net8.0-ios -c:Release `
+          /p:ArchiveOnBuild=true `
+          /p:RuntimeIdentifier=ios-arm64 `
+          /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" `
+          /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: mauistocktake-ios-build
+          path: src/MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v3.1.2
