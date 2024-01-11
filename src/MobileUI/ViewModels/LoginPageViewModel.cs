@@ -72,6 +72,8 @@ public partial class LoginPageViewModel : BaseViewModel
     
     private async static Task WaitForWindowClose()
     {
+        // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
+        // the process of closing causes the alert to never appear and the await call never returns.
         if (DeviceInfo.Platform == DevicePlatform.iOS)
         {
             await Task.Delay(1000);
