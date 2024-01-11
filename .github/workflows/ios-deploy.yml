@@ -1,0 +1,32 @@
+name: Deploy iOS build to TestFlight
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      build_number:
+        required: true
+        type: string
+jobs:
+  deploy-ios:
+    name: Deploy iOS to TestFlight
+    runs-on: macos-13
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifacts-ios-${{ inputs.build_number }}
+
+      - name: Get ipa filename
+        run: echo "IPA_FILENAME=$(ls -R *.ipa)" > $GITHUB_ENV
+
+      - name: Upload signed IPA
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: ${{ env.IPA_FILENAME }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
