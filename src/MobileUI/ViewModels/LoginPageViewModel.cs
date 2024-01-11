@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 
@@ -32,7 +33,7 @@ public partial class LoginPageViewModel : BaseViewModel
     {
         IsRunning = true;
         LoginButtonEnabled = false;
-        bool enablebuttonAfterLogin = true;
+        bool enableButtonAfterLogin = true;
 
         ApiStatus status;
         try
@@ -41,30 +42,42 @@ public partial class LoginPageViewModel : BaseViewModel
         }
         catch (Exception exception)
         {
+            await WaitForWindowClose();
             status = ApiStatus.LoginFailure;
             //Crashes.TrackError(exception);
             await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
         }
 
-        switch (status)
+        var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {
-            case ApiStatus.Success:
-                enablebuttonAfterLogin = false;
-                await OnAfterLogin();
-                break;
-            case ApiStatus.Unavailable:
-                await App.Current.MainPage.DisplayAlert("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.", "OK");
-                break;
-            case ApiStatus.LoginFailure:
-                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
-                break;
-            default:
-                await App.Current.MainPage.DisplayAlert("Unexpected Error", "Something went wrong there, please try again later.", "OK");
-                break;
+            { ApiStatus.Unavailable, ("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.") },
+            { ApiStatus.LoginFailure, ("Login Failure", "There seems to have been a problem logging you in. Please try again.") },
+        };
+
+        if (status != ApiStatus.Success)
+        {
+            await WaitForWindowClose();
+            var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
+            await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+        }
+        else
+        {
+            enableButtonAfterLogin = false;
+            await OnAfterLogin();
         }
 
-        LoginButtonEnabled = enablebuttonAfterLogin;
+        LoginButtonEnabled = enableButtonAfterLogin;
         IsRunning = false;
+    }
+    
+    private async static Task WaitForWindowClose()
+    {
+        // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
+        // the process of closing causes the alert to never appear and the await call never returns.
+        if (DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            await Task.Delay(1000);
+        }
     }
 
     public async Task Refresh()
