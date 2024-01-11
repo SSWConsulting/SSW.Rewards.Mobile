@@ -51,10 +51,17 @@ public class AuthenticationService : IAuthenticationService
         {
             var oidcClient = new OidcClient(_options);
 
-            var result = await oidcClient.LoginAsync(new LoginRequest());
+            var result = await oidcClient.LoginAsync(new LoginRequest()
+            {
+                FrontChannelExtraParameters = HasCachedAccount ? null : new Parameters
+                {
+                    { "prompt", "login" }
+                }
+            });
 
             if (result.IsError)
             {
+                SignOut();
                 return ApiStatus.Error;
             }
 
@@ -70,6 +77,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
+            SignOut();
             return ApiStatus.Error;
         }
     }
