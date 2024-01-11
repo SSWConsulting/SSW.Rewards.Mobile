@@ -9,11 +9,6 @@ on:
       build_number:
         required: true
         type: string
-    # secrets:
-    #   android_keystore:
-    #     required: true
-    #   android_keystore_password:
-    #     required: true
 
 jobs:
   build:
@@ -52,26 +47,20 @@ jobs:
         run: |
           dotnet restore SSW.Rewards.sln
 
-      - name: Publish Android Mobile App
+      - name: Decode keystore file
         run: |
-          dotnet publish src/MobileUI/MobileUI.csproj -c:Release -f:net8.0-android --no-restore /p:AndroidPackageFormat="aab"
+          $keystorebase64 = "${{ secrets.ANDROID_KEYSTORE }}"
 
-      # Store Android Signing Keystore and password in Secrets using base64 encoding
-      # https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil
-      # command line util to encode to base64 on windows
-      - name: Extract Android signing key from env
-        shell: bash
-        run: |
-          cd src/MobileUI
-          mkdir android
-          echo "${{ secrets.ANDROID_KEYSTORE }}" > android/sswrewards.jks.base64
-          base64 -d android/sswrewards.jks.base64 > android/sswrewards.decrypted.jks
-      # check android SDK paths etc in installed VM : https://github.com/actions/virtual-environments#available-environments
-      - name: Sign dev build
-        shell: bash
-        run: |
-          cd src/MobileUI
-          jarsigner -keystore android/sswrewards.decrypted.jks -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" -signedjar bin/Release/net8.0-android/publish/com.ssw.consulting-Signed.aab bin/Release/net8.0-android/publish/com.ssw.consulting.aab key
+          $keystore = [System.Convert]::FromBase64String($keystorebase64)
+          Set-Content "${{ github.workspace }}/sswrewards.keystore" -Value $keystore -AsByteStream
+
+      - name: Build and sign
+        run: dotnet publish src/MobileUI/MobileUI.csproj `
+          -f:net8.0-android -c:Release /p:AndroidKeyStore=True `
+          /p:AndroidSigningKeyStore="${{ github.workspace }}/sswrewards.keystore" `
+          /p:AndroidSigningKeyPass=${{ secrets.ANDROID_KEYPASSWORD }} `
+          /p:AndroidSigningKeyAlias=${{ secrets.ANDROID_KEYSTOREALIAS }} `
+          /p:AndroidSigningStorePass=${{ secrets.ANDROID_KEYSTOREPASSWORD }}
 
       - uses: actions/upload-artifact@v3.1.2
         with:
