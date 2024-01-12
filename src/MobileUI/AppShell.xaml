@@ -245,7 +245,7 @@
         </Tab>
     </FlyoutItem>
 
-    <MenuItem Text="Rewards"
+    <!--<MenuItem Text="Rewards"
               Clicked="Handle_HowToPlayClicked">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FluentIcons"
@@ -297,7 +297,7 @@
                              Glyph="&#xf5d1;"
                              Color="White"/>
         </MenuItem.IconImageSource>
-    </MenuItem>
+    </MenuItem>-->
 
     <Shell.FlyoutFooter>
         <Grid

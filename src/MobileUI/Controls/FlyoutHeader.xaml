@@ -4,24 +4,23 @@
       x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
       xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
       xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-      HeightRequest="{OnPlatform Android='120', iOS='170'}"
+      HeightRequest="668"
       Margin="0"
       xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
+      xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      ColumnDefinitions="90, *"
-      RowDefinitions="2*, *, 5">
+      RowDefinitions="100,180,151,80,66,190,20">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
 
-    <Image Grid.Column="0"
-           Grid.Row="0"
-           Grid.RowSpan="2"
+    <!-- TODO: replace with AvatarView from the MAUI community toolkit, or an alternative UI library -->
+    <Image Grid.Row="0"
            Aspect="AspectFill"
            Source="{Binding ProfilePic}"
            x:Name="ProfileImage"
-           HeightRequest="70"
-           WidthRequest="70"
+           HeightRequest="80"
+           WidthRequest="80"
            VerticalOptions="End"
            Margin="15,5,5,10">
             <Image.Clip>
@@ -31,8 +30,7 @@
             </Image.Clip>
     </Image>
 
-    <HorizontalStackLayout Grid.Column="1"
-                           Grid.Row="0"
+    <HorizontalStackLayout Grid.Row="1"
                            Margin="0,0,5,0"
                            Spacing="5"
                            VerticalOptions="End">
@@ -53,19 +51,123 @@
                x:Name="IsStaffLabel"/>
     </HorizontalStackLayout>
 
-    <Label Grid.Column="1"
-           Grid.Row="1"
-           TextColor="White"
-           VerticalOptions="Start"
-           Text="{Binding Email}"
-           x:Name="EmailLabel"
-           Margin="0,0,5,0" />
+    <Grid Grid.Row="2"
+          RowSpacing="2"
+          RowDefinitions="33,33,33"
+          ColumnDefinitions="104,162">
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+            <Label HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   Text="🏆 Ranking"/>
+        </Border>
 
-    <BoxView HorizontalOptions="FillAndExpand"
-             HeightRequest="1"
-             Color="White"
-             Grid.Column="0"
-             Grid.ColumnSpan="2"
-             Grid.Row="2"
-             VerticalOptions="Center"/>
+        <Border Grid.Column="1"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="1"/>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+            <Label HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   Text="⭐ Points"/>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="130,000"/>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+            <Label HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   Text="🪙 Credits"/>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="30,000"/>
+            
+            <!-- TODO: Add redeem button -->
+        </Border>
+    </Grid>
+
+    <VerticalStackLayout Grid.Row="3"
+                         Padding="10">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="Black"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="White"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+
+    <VerticalStackLayout Grid.Row="4">
+        <Label TextColor="White"
+               VerticalOptions="Start"
+               Text="✉️ mattgoldman@ssw.com.au"
+               x:Name="EmailLabel" />
+
+        <Label TextColor="White"
+               VerticalOptions="Start"
+               Text="📍 Newcastle"
+               x:Name="LocationLabel" />
+    </VerticalStackLayout>
+
+    <zx:BarcodeGeneratorView Grid.Row="5"
+                             x:Name="codeView"
+                             Format="QrCode"
+                             Value="sdkfl;se90"
+                             WidthRequest="150"
+                             HeightRequest="150"/>
+
+
+    <VerticalStackLayout Grid.Row="6"
+                         Padding="10">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="Black"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="White"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
 </Grid>

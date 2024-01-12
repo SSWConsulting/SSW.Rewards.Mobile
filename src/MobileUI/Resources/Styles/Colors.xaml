@@ -75,4 +75,7 @@
     <Color x:Key="PassedQuizIcon">#181818</Color>
     <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
 
+    <Color x:Key="RankingTableHeader">#181818</Color>
+    <Color x:Key="RankingTableBody">#606060</Color>
+
 </ResourceDictionary>
