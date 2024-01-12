@@ -65,27 +65,27 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
 		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.58.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="2.0.1" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
-		<PackageReference Include="Microsoft.AppCenter" Version="5.0.2" />
-		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
-		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
-		<PackageReference Include="Mopups" Version="1.1.1" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+		<PackageReference Include="Mopups" Version="1.2.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.6" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.6" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.61" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.3.0-preview.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
