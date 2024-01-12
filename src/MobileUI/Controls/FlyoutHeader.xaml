@@ -4,37 +4,35 @@
       x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
       xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
       xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+      xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
       HeightRequest="668"
       Margin="0"
+      Padding="20"
       xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,180,151,80,66,190,20">
+      RowDefinitions="100,60,137,32,66,190,20">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
 
-    <!-- TODO: replace with AvatarView from the MAUI community toolkit, or an alternative UI library -->
-    <Image Grid.Row="0"
-           Aspect="AspectFill"
-           Source="{Binding ProfilePic}"
-           x:Name="ProfileImage"
-           HeightRequest="80"
-           WidthRequest="80"
-           VerticalOptions="End"
-           Margin="15,5,5,10">
-            <Image.Clip>
-                <EllipseGeometry Center="35,35"
-                                 RadiusX="35"
-                                 RadiusY="35"/>
-            </Image.Clip>
-    </Image>
+    <mct:AvatarView Grid.Row="0"
+                    VerticalOptions="End"
+                    HorizontalOptions="Start"
+                    ImageSource="{Binding ProfilePic}"
+                    HeightRequest="80"
+                    WidthRequest="80"
+                    CornerRadius="40"
+                    BorderColor="White"
+                    BorderWidth="2"
+                    x:Name="AvatarView"/>
+
 
     <HorizontalStackLayout Grid.Row="1"
                            Margin="0,0,5,0"
                            Spacing="5"
-                           VerticalOptions="End">
-        <Label FontSize="16"
+                           VerticalOptions="Center">
+        <Label FontSize="Large"
                Text="{Binding Name}"
                x:Name="NameLabel"
                TextColor="White"
@@ -54,15 +52,15 @@
     <Grid Grid.Row="2"
           RowSpacing="2"
           RowDefinitions="33,33,33"
-          ColumnDefinitions="104,162">
+          ColumnDefinitions="104,*">
         <Border Grid.Column="0"
                 Grid.Row="0"
                 BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label HorizontalOptions="Center"
-                   VerticalOptions="Center"
+            <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center"
+                   Margin="10,0,0,0"
                    TextColor="White"
                    Text="🏆 Ranking"/>
         </Border>
@@ -75,17 +73,18 @@
             <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
+                   FontAttributes="Bold"
                    Text="1"/>
         </Border>
 
         <Border Grid.Column="0"
                 Grid.Row="1"
                 BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label HorizontalOptions="Center"
-                   VerticalOptions="Center"
+            <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center"
+                   Margin="10,0,0,0"
                    TextColor="White"
                    Text="⭐ Points"/>
         </Border>
@@ -98,17 +97,18 @@
             <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
+                   FontAttributes="Bold"
                    Text="130,000"/>
         </Border>
 
         <Border Grid.Column="0"
                 Grid.Row="2"
                 BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label HorizontalOptions="Center"
-                   VerticalOptions="Center"
+            <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
-                   HorizontalTextAlignment="Center"
+                   Margin="10,0,0,0"
                    TextColor="White"
                    Text="🪙 Credits"/>
         </Border>
@@ -121,6 +121,7 @@
             <Label VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
+                   FontAttributes="Bold"
                    Text="30,000"/>
             
             <!-- TODO: Add redeem button -->
@@ -128,25 +129,29 @@
     </Grid>
 
     <VerticalStackLayout Grid.Row="3"
-                         Padding="10">
+                         VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
                  Color="Black"
                  VerticalOptions="End"/>
         <BoxView HorizontalOptions="FillAndExpand"
-                 HeightRequest="1"
-                 Color="White"
+                 HeightRequest="0.5"
+                 Color="Gray"
                  VerticalOptions="Start"/>
     </VerticalStackLayout>
 
     <VerticalStackLayout Grid.Row="4">
         <Label TextColor="White"
                VerticalOptions="Start"
+               FontAttributes="Bold"
+               FontSize="Medium"
                Text="✉️ mattgoldman@ssw.com.au"
                x:Name="EmailLabel" />
 
         <Label TextColor="White"
                VerticalOptions="Start"
+               FontAttributes="Bold"
+               FontSize="Medium"
                Text="📍 Newcastle"
                x:Name="LocationLabel" />
     </VerticalStackLayout>
@@ -155,6 +160,9 @@
                              x:Name="codeView"
                              Format="QrCode"
                              Value="sdkfl;se90"
+                             HorizontalOptions="Start"
+                             BackgroundColor="Transparent"
+                             ForegroundColor="#DDDDDD"
                              WidthRequest="150"
                              HeightRequest="150"/>
 
@@ -167,7 +175,7 @@
                  VerticalOptions="End"/>
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
-                 Color="White"
+                 Color="Gray"
                  VerticalOptions="Start"/>
     </VerticalStackLayout>
 </Grid>
