@@ -11,7 +11,7 @@
       xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,137,32,66,190,20">
+      RowDefinitions="100,60,158,32,50,182,32">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -51,7 +51,7 @@
 
     <Grid Grid.Row="2"
           RowSpacing="2"
-          RowDefinitions="33,33,33"
+          RowDefinitions="40,40,40"
           ColumnDefinitions="104,*">
         <Border Grid.Column="0"
                 Grid.Row="0"
@@ -123,8 +123,22 @@
                    TextColor="White"
                    FontAttributes="Bold"
                    Text="30,000"/>
-            
-            <!-- TODO: Add redeem button -->
+            </Border>
+        <Border Grid.Column="1"
+                Grid.Row="2"
+                Background="{StaticResource BrandBrush}"
+                StrokeShape="RoundRectangle 4"
+                Padding="5"
+                WidthRequest="80"
+                Margin="2"
+                HorizontalOptions="End">
+            <Label VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   Text="Redeem"/>
         </Border>
     </Grid>
 
@@ -132,11 +146,11 @@
                          VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
-                 Color="Black"
+                 Color="#171717"
                  VerticalOptions="End"/>
         <BoxView HorizontalOptions="FillAndExpand"
-                 HeightRequest="0.5"
-                 Color="Gray"
+                 HeightRequest="1"
+                 Color="#404040"
                  VerticalOptions="Start"/>
     </VerticalStackLayout>
 
@@ -164,18 +178,19 @@
                              BackgroundColor="Transparent"
                              ForegroundColor="#DDDDDD"
                              WidthRequest="150"
-                             HeightRequest="150"/>
-
-
+                             HeightRequest="150"
+                             VerticalOptions="Center"
+                             TranslationX="-10"/>
+    
     <VerticalStackLayout Grid.Row="6"
-                         Padding="10">
+                         VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
-                 Color="Black"
+                 Color="#171717"
                  VerticalOptions="End"/>
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
-                 Color="Gray"
+                 Color="#404040"
                  VerticalOptions="Start"/>
     </VerticalStackLayout>
 </Grid>
