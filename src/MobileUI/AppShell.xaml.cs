@@ -42,6 +42,11 @@ public partial class AppShell : Shell
             _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
         }
+    }    
+    
+    public async void Handle_SettingsClicked(object sender, EventArgs e)
+    {
+        //TODO: Perform SettingsClickedAction
     }
 
     public void Handle_EventsClicked(object sender, EventArgs e)
