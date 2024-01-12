@@ -8,7 +8,6 @@
       HeightRequest="668"
       Margin="0"
       Padding="20"
-      xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
       RowDefinitions="100,60,158,32,50,182,32">
@@ -24,8 +23,7 @@
                     WidthRequest="80"
                     CornerRadius="40"
                     BorderColor="White"
-                    BorderWidth="2"
-                    x:Name="AvatarView"/>
+                    BorderWidth="2"/>
 
 
     <HorizontalStackLayout Grid.Row="1"
@@ -34,7 +32,6 @@
                            VerticalOptions="Center">
         <Label FontSize="Large"
                Text="{Binding Name}"
-               x:Name="NameLabel"
                TextColor="White"
                FontAttributes="Bold"
                
@@ -45,8 +42,7 @@
                VerticalTextAlignment="Center"
                TranslationY="1"
                Text="&#xf3ca;"
-               IsVisible="{Binding IsStaff}"
-               x:Name="IsStaffLabel"/>
+               IsVisible="{Binding IsStaff}"/>
     </HorizontalStackLayout>
 
     <Grid Grid.Row="2"
@@ -58,11 +54,21 @@
                 BackgroundColor="{StaticResource RankingTableHeader}"
                 Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="10,0,0,0"
-                   TextColor="White"
-                   Text="🏆 Ranking"/>
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#xf091;"/>            
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       Text="Ranking"/>
+            </HorizontalStackLayout>
         </Border>
 
         <Border Grid.Column="1"
@@ -82,11 +88,22 @@
                 BackgroundColor="{StaticResource RankingTableHeader}"
                 Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="10,0,0,0"
-                   TextColor="White"
-                   Text="⭐ Points"/>
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#x2b50;"/>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       Text="Points"/>
+            </HorizontalStackLayout>
         </Border>
 
         <Border Grid.Column="1"
@@ -106,11 +123,22 @@
                 BackgroundColor="{StaticResource RankingTableHeader}"
                 Stroke="{StaticResource RankingTableHeader}"
                 StrokeShape="RoundRectangle 4,0,4,0">
-            <Label VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="10,0,0,0"
-                   TextColor="White"
-                   Text="🪙 Credits"/>
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#xf51e;"/>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       Text="Credits"/>
+            </HorizontalStackLayout>
         </Border>
 
         <Border Grid.Column="1"
@@ -154,21 +182,48 @@
                  VerticalOptions="Start"/>
     </VerticalStackLayout>
 
-    <VerticalStackLayout Grid.Row="4">
-        <Label TextColor="White"
+    <Grid
+        Grid.Row="4"
+        ColumnDefinitions="20,*"
+        RowDefinitions="*,*"
+        ColumnSpacing="5">
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               TextColor="{StaticResource SSWRed}"
+               HorizontalTextAlignment="Center"
                VerticalOptions="Start"
                FontAttributes="Bold"
                FontSize="Medium"
-               Text="✉️ mattgoldman@ssw.com.au"
-               x:Name="EmailLabel" />
-
-        <Label TextColor="White"
+               FontFamily="FA6Solid"
+               Text="&#x2709;"/>
+            
+        <Label Grid.Row="0"
+               Grid.Column="1"
+               TextColor="White"
                VerticalOptions="Start"
                FontAttributes="Bold"
                FontSize="Medium"
-               Text="📍 Newcastle"
-               x:Name="LocationLabel" />
-    </VerticalStackLayout>
+               Text="{Binding Email}"/>
+        
+        <Label Grid.Row="1"
+               Grid.Column="0"
+               TextColor="{StaticResource SSWRed}"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Start"
+               FontAttributes="Bold"
+               FontSize="Medium"
+               FontFamily="FA6Solid"
+               Text="&#xf041;"/>  
+            
+        <!-- TODO: Bind data -->
+        <Label Grid.Row="1"
+               Grid.Column="1"
+               TextColor="White"
+               VerticalOptions="Start"
+               FontAttributes="Bold"
+               FontSize="Medium"
+               Text="Brisbane"/>
+    </Grid>
 
     <zx:BarcodeGeneratorView Grid.Row="5"
                              x:Name="codeView"

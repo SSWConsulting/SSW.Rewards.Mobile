@@ -18,7 +18,7 @@ public class UserService : IUserService, IDisposable
         _userClient = userService;
         _authService = authService;
 
-        _authService.DetailsUpdated += UpdateMyDtailsAsync;
+        _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
@@ -87,7 +87,7 @@ public class UserService : IUserService, IDisposable
         return response.PicUrl;
     }
 
-    private void UpdateMyDtailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
     {
         if (!string.IsNullOrWhiteSpace(args.Name))
         {
@@ -263,7 +263,7 @@ public class UserService : IUserService, IDisposable
 
     public void Dispose()
     {
-        _authService.DetailsUpdated -= UpdateMyDtailsAsync;
+        _authService.DetailsUpdated -= UpdateMyDetailsAsync;
     }
 
     #endregion

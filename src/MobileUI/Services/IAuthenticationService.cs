@@ -120,7 +120,7 @@ public class AuthenticationService : IAuthenticationService
                 var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
                 var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
                 var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "email")?.Value;
 
                 string fullName = firstName + " " + familyName;
 

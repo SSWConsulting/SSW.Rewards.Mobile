@@ -301,7 +301,7 @@
 
     <Shell.FlyoutFooter>
         <Grid
-            Margin="0"
+            Margin="0,0,0,20"
             Padding="20,0"
             RowDefinitions="Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
@@ -321,12 +321,14 @@
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
-                       FontSize="28"
-                       FontFamily="FluentIcons"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="Medium"
+                       FontFamily="FA6Solid"
+                       FontAttributes="Bold"
                        TextColor="White"
-                       Text="&#xeafa;">
+                       Text="&#x2699;">
                 </Label>
-
                 <Label Grid.Column="1"
                        TextColor="White"
                        HorizontalOptions="Center"
@@ -350,10 +352,13 @@
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
-                       FontSize="28"
-                       FontFamily="FluentIcons"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="Medium"
+                       FontFamily="FA6Solid"
+                       FontAttributes="Bold"
                        TextColor="White"
-                       Text="&#xeafa;">
+                       Text="&#xf08b;">
                 </Label>
 
                 <Label Grid.Column="1"

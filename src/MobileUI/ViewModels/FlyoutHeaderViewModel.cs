@@ -24,6 +24,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         ProfilePic = userService.MyProfilePic;
         Name = userService.MyName;
         Email = userService.MyEmail;
+        Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
         IsStaff = userService.IsStaff;
     }
 
