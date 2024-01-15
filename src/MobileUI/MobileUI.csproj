@@ -108,6 +108,9 @@
 
 	<!-- TODO: Do we need this? -->
 	<ItemGroup>
+		<MauiXaml Update="Controls\SegmentedControl.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Controls\TabHeader.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
