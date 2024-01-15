@@ -84,7 +84,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
 
-        builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 
         builder.Services.AddApiClientServices<AuthHandler>(options.BaseUrl);
 
