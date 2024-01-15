@@ -2,18 +2,18 @@ name: CI
 
 on:
   workflow_call:
-      inputs:
-        project_path:
-          description: Path to .csproj to build
-          required: true
-          type: string
+    inputs:
+      project_path:
+        description: Path to .csproj to build
+        required: true
+        type: string
 
   workflow_dispatch:
-      inputs:
-        project_path:
-          description: Path to .csproj to build
-          required: true
-          type: string
+    inputs:
+      project_path:
+        description: Path to .csproj to build
+        required: true
+        type: string
 
 jobs:
   build_and_test:
@@ -27,10 +27,13 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Restore
-        run: dotnet restore ${{ inputs.project_path }} 
+        run: dotnet restore ${{ inputs.project_path }}
+
+      - name: Restore .NET workloads
+        run: dotnet workload restore
 
       - name: Build
-        run: dotnet build ${{ inputs.project_path }} --no-restore --configuration Release 
+        run: dotnet build ${{ inputs.project_path }} --no-restore --configuration Release
 
       - name: Test
         run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
