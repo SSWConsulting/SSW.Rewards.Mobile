@@ -1,0 +1,69 @@
+name: Build Android app
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      build_number:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+    environment: ${{ inputs.environment }}
+    name: Android Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use build number
+        run: |
+          $buildNumber=${{ inputs.build_number }}
+          echo "Build Number: $buildNumber"
+
+      - name: Update Build Number
+        run: |
+          $content = Get-Content src/MobileUI/MobileUI.csproj -Raw
+
+          $newContent = $content -replace '<ApplicationVersion>.*</ApplicationVersion>', "<ApplicationVersion>$buildNumber</ApplicationVersion>"
+
+          Set-Content src/MobileUI/MobileUI.csproj -Value $newContent
+
+      - name: Setup DotNet Environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install MAUI Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install maui --ignore-failed-sources
+          dotnet workload install android maui wasm-tools --source https://api.nuget.org/v3/index.json
+
+      - name: Restore Dependencies
+        run: |
+          dotnet restore SSW.Rewards.sln
+
+      - name: Decode keystore file
+        run: |
+          $keystorebase64 = "${{ secrets.ANDROID_KEYSTORE }}"
+
+          $keystore = [System.Convert]::FromBase64String($keystorebase64)
+          Set-Content "${{ github.workspace }}/sswrewards.keystore" -Value $keystore -AsByteStream
+
+      - name: Build and sign
+        run: dotnet publish src/MobileUI/MobileUI.csproj `
+          -f:net8.0-android -c:Release /p:AndroidKeyStore=True `
+          /p:AndroidSigningKeyStore="${{ github.workspace }}/sswrewards.keystore" `
+          /p:AndroidSigningKeyPass=${{ secrets.ANDROID_KEYPASSWORD }} `
+          /p:AndroidSigningKeyAlias=${{ secrets.ANDROID_KEYSTOREALIAS }} `
+          /p:AndroidSigningStorePass=${{ secrets.ANDROID_KEYSTOREPASSWORD }}
+
+      - uses: actions/upload-artifact@v3.1.2
+        with:
+          name: artifacts-android-${{ inputs.build_number }}
+          path: |
+            src\MobileUI\bin\Release\net8.0-android\publish\*.aab

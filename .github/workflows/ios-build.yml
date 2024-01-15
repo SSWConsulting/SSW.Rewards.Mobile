@@ -1,0 +1,78 @@
+name: Build iOS app
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      build_number:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: macos-13
+    environment: ${{ inputs.environment }}
+    name: iOS Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update Build Number
+        run: sed -i '' "s|<ApplicationVersion>.*</ApplicationVersion>|<ApplicationVersion>${{ inputs.build_number }}</ApplicationVersion>|g" src/MobileUI/MobileUI.csproj
+
+      - name: Setup DotNet Environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install MAUI Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install maui --ignore-failed-sources
+          dotnet workload install ios maui wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
+
+      - name: Set XCode Version
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_15.1.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.1.app" >> $GITHUB_ENV
+
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.IOS_SIGNING_CERTIFICATE }}
+          p12-password: ${{ secrets.IOS_SIGNING_CERTIFICATE_PASSWORD }}
+
+      - name: Import Distribution Certificate
+        run: |
+            echo ${{ secrets.APPLE_CERT }} | base64 --decode > DistributionCertificate.p12
+            security import DistributionCertificate.p12 -k ~/Library/Keychains/login.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }}
+
+      - name: Import Provisioning Profile
+        run: |
+            echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Build
+        run: dotnet publish src/MobileUI/MobileUI.csproj `
+          -v:diag -f:net8.0-ios -c:Release `
+          /p:ArchiveOnBuild=true `
+          /p:RuntimeIdentifier=ios-arm64 `
+          /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" `
+          /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: mauistocktake-ios-build
+          path: src/MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa
+
+      - name: Upload iOS Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: artifacts-ios-${{ inputs.build_number }}
+          path: MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa

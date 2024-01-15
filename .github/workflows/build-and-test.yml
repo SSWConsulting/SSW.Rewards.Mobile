@@ -17,3 +17,9 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       project_path: src/WebAPI/WebAPI.csproj
+
+  mobile:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: src/MobileUI/MobileUI.csproj
+      test_mobile: true
