@@ -21,6 +21,16 @@ on:
         type: string
 
 jobs:
+  report_mobile_condition:
+    name: Report Mobile Condition
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Write project path
+        run: echo "project_path - ${{ inputs.project_path }}"
+      - name: Write mobile state
+        run: echo "test_mobile - ${{ inputs.test_mobile }}"
+
   build_and_test:
     name: Build & Test
     runs-on: ubuntu-latest
