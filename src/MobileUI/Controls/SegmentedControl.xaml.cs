@@ -33,6 +33,25 @@ public partial class SegmentedControl : ContentView
 			SelectionChanged?.Invoke(this, _internalSegments[0]);
         }
 	}
+    
+    private void Segment_Tapped(object sender, TappedEventArgs e)
+    {
+        var segment = e.Parameter as Segment;
+        
+        if (segment == null)
+        {
+            return;
+        }
+        
+        foreach (var item in _internalSegments)
+        {
+            item.IsSelected = false;
+        }
+
+        segment.IsSelected = true;
+        SelectedSegment = segment;
+        SelectionChanged?.Invoke(this, segment);
+    }
 
 	private readonly ObservableCollection<Segment> _internalSegments = new();
 }
