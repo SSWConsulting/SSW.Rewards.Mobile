@@ -308,34 +308,35 @@
             VerticalOptions="End">
             
             <!-- Settings Button -->
-            <Grid
-                VerticalOptions="End"
-                Grid.Column="0"
-                Grid.Row="0"
-                ColumnDefinitions="Auto,*">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Tapped="Handle_SettingsClicked"/>
-                </Grid.GestureRecognizers>
-                <!-- Update to settings Icon -->
-                <Label Grid.Column="0"
-                       HeightRequest="30"
-                       WidthRequest="30"
-                       VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       FontSize="Medium"
-                       FontFamily="FA6Solid"
-                       TextColor="#DDDDDD"
-                       Text="&#x2699;">
-                </Label>
-                <Label Grid.Column="1"
-                       Style="{StaticResource FlyoutLabelBold}"
-                       TextColor="#DDDDDD"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       FontSize="Medium"
-                       Text="Settings" />
-            </Grid>
+            <!-- TODO: Bind when settings implemented -->
+            <!-- <Grid -->
+            <!--     VerticalOptions="End" -->
+            <!--     Grid.Column="0" -->
+            <!--     Grid.Row="0" -->
+            <!--     ColumnDefinitions="Auto,*"> -->
+            <!--     <Grid.GestureRecognizers> -->
+            <!--         <TapGestureRecognizer NumberOfTapsRequired="1" -->
+            <!--                               Tapped="Handle_SettingsClicked"/> -->
+            <!--     </Grid.GestureRecognizers> -->
+            <!--     ~1~ Update to settings Icon @1@ -->
+            <!--     <Label Grid.Column="0" -->
+            <!--            HeightRequest="30" -->
+            <!--            WidthRequest="30" -->
+            <!--            VerticalOptions="Center" -->
+            <!--            VerticalTextAlignment="Center" -->
+            <!--            FontSize="Medium" -->
+            <!--            FontFamily="FA6Solid" -->
+            <!--            TextColor="#DDDDDD" -->
+            <!--            Text="&#x2699;"> -->
+            <!--     </Label> -->
+            <!--     <Label Grid.Column="1" -->
+            <!--            Style="{StaticResource FlyoutLabelBold}" -->
+            <!--            TextColor="#DDDDDD" -->
+            <!--            HorizontalOptions="Center" -->
+            <!--            VerticalOptions="Center" -->
+            <!--            FontSize="Medium" -->
+            <!--            Text="Settings" /> -->
+            <!-- </Grid> -->
             
             <!-- Logout Button -->
             <Grid

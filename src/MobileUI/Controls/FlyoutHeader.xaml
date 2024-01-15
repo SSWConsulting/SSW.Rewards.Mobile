@@ -112,7 +112,7 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="{Binding Points}" />
+                   Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
         </Border>
 
         <Border Grid.Column="0"
@@ -146,24 +146,25 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="{Binding Credits}" />
+                   Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
             </Border>
-        <Border Grid.Column="1"
-                Grid.Row="2"
-                Background="{StaticResource BrandBrush}"
-                StrokeShape="RoundRectangle 4"
-                Padding="5"
-                WidthRequest="80"
-                Margin="2"
-                HorizontalOptions="End">
-            <Label Style="{StaticResource FlyoutLabelBold}"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"
-                   Text="Redeem"/>
-        </Border>
+        <!-- TODO: Bind Redeem button when implemented -->
+        <!-- <Border Grid.Column="1" -->
+        <!--         Grid.Row="2" -->
+        <!--         Background="{StaticResource BrandBrush}" -->
+        <!--         StrokeShape="RoundRectangle 4" -->
+        <!--         Padding="5" -->
+        <!--         WidthRequest="80" -->
+        <!--         Margin="2" -->
+        <!--         HorizontalOptions="End"> -->
+        <!--     <Label Style="{StaticResource FlyoutLabelBold}" -->
+        <!--            VerticalOptions="Center" -->
+        <!--            VerticalTextAlignment="Center" -->
+        <!--            HorizontalOptions="Center" -->
+        <!--            HorizontalTextAlignment="Center" -->
+        <!--            TextColor="White" -->
+        <!--            Text="Redeem"/> -->
+        <!-- </Border> -->
     </Grid>
 
     <VerticalStackLayout Grid.Row="3"
