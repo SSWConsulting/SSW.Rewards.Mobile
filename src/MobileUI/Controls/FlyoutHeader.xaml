@@ -112,7 +112,7 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="130,000"/>
+                   Text="{Binding Points}" />
         </Border>
 
         <Border Grid.Column="0"
@@ -146,7 +146,7 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="30,000"/>
+                   Text="{Binding Credits}" />
             </Border>
         <Border Grid.Column="1"
                 Grid.Row="2"
@@ -182,12 +182,13 @@
         Grid.Row="4"
         ColumnDefinitions="20,*"
         RowDefinitions="*,*"
-        ColumnSpacing="5">
+        ColumnSpacing="8"
+        RowSpacing="4" >
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
-               VerticalOptions="Start"
+               VerticalOptions="Center"
                FontSize="Medium"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
@@ -195,8 +196,8 @@
         <Label Grid.Row="0"
                Grid.Column="1"
                Style="{StaticResource FlyoutLabelBold}"
-               TextColor="White"
-               VerticalOptions="Start"
+               TextColor="#DDDDDD"
+               VerticalOptions="Center"
                FontSize="Medium"
                Text="{Binding Email}"/>
         
@@ -204,7 +205,7 @@
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
-               VerticalOptions="Start"
+               VerticalOptions="Center"
                FontSize="Medium"
                FontFamily="FA6Solid"
                Text="&#xf041;"/>  
@@ -213,8 +214,8 @@
         <Label Grid.Row="1"
                Grid.Column="1"
                Style="{StaticResource FlyoutLabelBold}"
-               TextColor="White"
-               VerticalOptions="Start"
+               TextColor="#DDDDDD"
+               VerticalOptions="Center"
                FontSize="Medium"
                Text="Brisbane"/>
     </Grid>
@@ -222,7 +223,7 @@
     <zx:BarcodeGeneratorView Grid.Row="5"
                              x:Name="codeView"
                              Format="QrCode"
-                             Value="sdkfl;se90"
+                             Value="{Binding QrCode}"
                              HorizontalOptions="Start"
                              BackgroundColor="Transparent"
                              ForegroundColor="#DDDDDD"

@@ -17,6 +17,15 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
 
     [ObservableProperty]
     private bool _isStaff;
+    
+    [ObservableProperty]
+    private string _qrCode;
+    
+    [ObservableProperty]
+    private int _points;
+    
+    [ObservableProperty]
+    private int _credits;
 
     public FlyoutHeaderViewModel(IUserService userService)
     {
@@ -26,6 +35,9 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         Email = userService.MyEmail;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
         IsStaff = userService.IsStaff;
+        QrCode = userService.MyQrCode;
+        Points = userService.MyPoints;
+        Credits = userService.MyBalance;
     }
 
     public void Receive(UserDetailsUpdatedMessage message)

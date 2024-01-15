@@ -325,15 +325,15 @@
                        VerticalTextAlignment="Center"
                        FontSize="Medium"
                        FontFamily="FA6Solid"
-                       TextColor="White"
+                       TextColor="#DDDDDD"
                        Text="&#x2699;">
                 </Label>
                 <Label Grid.Column="1"
                        Style="{StaticResource FlyoutLabelBold}"
-                       TextColor="White"
+                       TextColor="#DDDDDD"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       FontSize="Small"
+                       FontSize="Medium"
                        Text="Settings" />
             </Grid>
             
@@ -355,16 +355,16 @@
                        VerticalTextAlignment="Center"
                        FontSize="Medium"
                        FontFamily="FA6Solid"
-                       TextColor="White"
+                       TextColor="#DDDDDD"
                        Text="&#xf08b;">
                 </Label>
 
                 <Label Grid.Column="1"
                        Style="{StaticResource FlyoutLabelBold}"
-                       TextColor="White"
+                       TextColor="#DDDDDD"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       FontSize="Small"
+                       FontSize="Medium"
                        Text="Log Out" />
             </Grid>
             
@@ -374,7 +374,7 @@
                    x:Name="VersionLabel"
                    Grid.Column="2"
                    Grid.Row="1"
-                   TextColor="White"/>
+                   TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
             <Label
