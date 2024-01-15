@@ -87,25 +87,9 @@ public class UserService : IUserService, IDisposable
         return response.PicUrl;
     }
 
-    private void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private async void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
     {
-        if (!string.IsNullOrWhiteSpace(args.Name))
-        {
-            Preferences.Set(nameof(MyName), args.Name);
-        }
-
-        if (!string.IsNullOrWhiteSpace(args.Email))
-        {
-            Preferences.Set(nameof(MyEmail), args.Email);
-        }
-
-        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
-        {
-            Email = MyEmail,
-            ProfilePic = MyProfilePic,
-            Name = MyName,
-            IsStaff = IsStaff
-        }));
+        await UpdateMyDetailsAsync();
     }
 
     public async Task UpdateMyDetailsAsync()
