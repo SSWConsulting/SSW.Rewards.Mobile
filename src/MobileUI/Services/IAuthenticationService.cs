@@ -176,6 +176,10 @@ public class AuthenticationService : IAuthenticationService
             _refreshTokenExpiry = result.RefreshTokenExpiration.Value;
             Preferences.Set(nameof(_refreshTokenExpiry), _refreshTokenExpiry.ToUnixTimeSeconds());
         }
+        else
+        {
+            Preferences.Remove(nameof(_refreshTokenExpiry));
+        }
     }
 
     public async Task<bool> RefreshLoginAsync()
