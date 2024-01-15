@@ -7,6 +7,10 @@ on:
         description: Path to .csproj to build
         required: true
         type: string
+      test_mobile:
+        description: Test mobile projects
+        required: false
+        type: boolean
 
   workflow_dispatch:
     inputs:
@@ -19,6 +23,7 @@ jobs:
   build_and_test:
     name: Build & Test
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.test_mobile == 'false' || github.event.inputs.test_mobile == null }}
 
     steps:
       - uses: actions/checkout@v2
@@ -29,11 +34,52 @@ jobs:
       - name: Restore
         run: dotnet restore ${{ inputs.project_path }}
 
-      - name: Restore .NET workloads
-        run: dotnet workload restore
-
       - name: Build
         run: dotnet build ${{ inputs.project_path }} --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+      - name: Check file existence
+        id: check_files
+        if: success() || failure()
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "test-results.trx"
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: steps.check_files.outputs.files_exists == 'true'
+        with:
+          name: Tests Results
+          path: test-results.trx
+          reporter: dotnet-trx
+
+  build_and_test_mobile:
+    name: Build & Test Mobile
+    runs-on: windows-latest
+    if: ${{ github.event.inputs.test_mobile == 'true' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup DotNet Environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install MAUI Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install maui --ignore-failed-sources
+          dotnet workload install android maui wasm-tools --source https://api.nuget.org/v3/index.json
+
+      - name: Restore Dependencies
+        run: |
+          dotnet restore SSW.Rewards.sln
+
+      - name: Build and sign
+        run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
 
       - name: Test
         run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
