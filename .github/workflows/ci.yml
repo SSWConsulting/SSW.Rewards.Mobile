@@ -24,7 +24,7 @@ jobs:
   build_and_test:
     name: Build & Test
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.test_mobile == 'false' || github.event.inputs.test_mobile == null }}
+    if: ${{inputs.test_mobile == 'false' }}
 
     steps:
       - uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
   build_and_test_mobile:
     name: Build & Test Mobile
     runs-on: windows-latest
-    if: ${{ github.event.inputs.test_mobile == 'true' }}
+    if: ${{ inputs.test_mobile == 'true' }}
 
     steps:
       - uses: actions/checkout@v3
