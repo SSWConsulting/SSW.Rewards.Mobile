@@ -202,23 +202,23 @@
                FontSize="Medium"
                Text="{Binding Email}"/>
         
-        <Label Grid.Row="1"
-               Grid.Column="0"
-               TextColor="{StaticResource SSWRed}"
-               HorizontalTextAlignment="Center"
-               VerticalOptions="Center"
-               FontSize="Medium"
-               FontFamily="FA6Solid"
-               Text="&#xf041;"/>  
-            
-        <!-- TODO: Bind data -->
-        <Label Grid.Row="1"
-               Grid.Column="1"
-               Style="{StaticResource FlyoutLabelBold}"
-               TextColor="#DDDDDD"
-               VerticalOptions="Center"
-               FontSize="Medium"
-               Text="Brisbane"/>
+        <!-- TODO: Bind user location when implemented -->
+        <!-- <Label Grid.Row="1" -->
+        <!--        Grid.Column="0" -->
+        <!--        TextColor="{StaticResource SSWRed}" -->
+        <!--        HorizontalTextAlignment="Center" -->
+        <!--        VerticalOptions="Center" -->
+        <!--        FontSize="Medium" -->
+        <!--        FontFamily="FA6Solid" -->
+        <!--        Text="&#xf041;"/>   -->
+        <!--      -->
+        <!-- <Label Grid.Row="1" -->
+        <!--        Grid.Column="1" -->
+        <!--        Style="{StaticResource FlyoutLabelBold}" -->
+        <!--        TextColor="#DDDDDD" -->
+        <!--        VerticalOptions="Center" -->
+        <!--        FontSize="Medium" -->
+        <!--        Text="Brisbane"/> -->
     </Grid>
 
     <zx:BarcodeGeneratorView Grid.Row="5"
