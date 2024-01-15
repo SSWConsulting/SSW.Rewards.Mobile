@@ -69,7 +69,7 @@ jobs:
   build_and_test_mobile:
     name: Build & Test Mobile
     runs-on: windows-latest
-    if: ${{ inputs.test_mobile == 'true' }}
+    if: ${{ inputs.test_mobile != 'false' && inputs.test_mobile != '' }}
 
     steps:
       - uses: actions/checkout@v3
