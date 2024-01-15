@@ -325,16 +325,15 @@
                        VerticalTextAlignment="Center"
                        FontSize="Medium"
                        FontFamily="FA6Solid"
-                       FontAttributes="Bold"
                        TextColor="White"
                        Text="&#x2699;">
                 </Label>
                 <Label Grid.Column="1"
+                       Style="{StaticResource FlyoutLabelBold}"
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        FontSize="Small"
-                       FontAttributes="Bold"
                        Text="Settings" />
             </Grid>
             
@@ -356,17 +355,16 @@
                        VerticalTextAlignment="Center"
                        FontSize="Medium"
                        FontFamily="FA6Solid"
-                       FontAttributes="Bold"
                        TextColor="White"
                        Text="&#xf08b;">
                 </Label>
 
                 <Label Grid.Column="1"
+                       Style="{StaticResource FlyoutLabelBold}"
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
                        FontSize="Small"
-                       FontAttributes="Bold"
                        Text="Log Out" />
             </Grid>
             

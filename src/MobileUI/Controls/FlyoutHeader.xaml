@@ -30,11 +30,10 @@
                            Margin="0,0,5,0"
                            Spacing="5"
                            VerticalOptions="Center">
-        <Label FontSize="Large"
+        <Label Style="{StaticResource FlyoutLabelBold}"
+               FontSize="Large"
                Text="{Binding Name}"
                TextColor="White"
-               FontAttributes="Bold"
-               
                VerticalTextAlignment="End" />
 
         <Label FontFamily="FA6Brands"
@@ -59,14 +58,13 @@
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        FontFamily="FA6Solid"
-                       FontAttributes="Bold"
                        TextColor="{StaticResource Coin}"
                        Text="&#xf091;"/>            
-                <Label VerticalOptions="Center"
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        TextColor="White"
-                       FontAttributes="Bold"
                        Text="Ranking"/>
             </HorizontalStackLayout>
         </Border>
@@ -76,10 +74,10 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label VerticalOptions="Center"
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   FontAttributes="Bold"
                    Text="1"/>
         </Border>
 
@@ -94,14 +92,13 @@
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        FontFamily="FA6Solid"
-                       FontAttributes="Bold"
                        TextColor="{StaticResource Coin}"
                        Text="&#x2b50;"/>
-                <Label VerticalOptions="Center"
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        TextColor="White"
-                       FontAttributes="Bold"
                        Text="Points"/>
             </HorizontalStackLayout>
         </Border>
@@ -111,10 +108,10 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label VerticalOptions="Center"
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   FontAttributes="Bold"
                    Text="130,000"/>
         </Border>
 
@@ -129,14 +126,13 @@
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        FontFamily="FA6Solid"
-                       FontAttributes="Bold"
                        TextColor="{StaticResource Coin}"
                        Text="&#xf51e;"/>
-                <Label VerticalOptions="Center"
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
                        TextColor="White"
-                       FontAttributes="Bold"
                        Text="Credits"/>
             </HorizontalStackLayout>
         </Border>
@@ -146,10 +142,10 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label VerticalOptions="Center"
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   FontAttributes="Bold"
                    Text="30,000"/>
             </Border>
         <Border Grid.Column="1"
@@ -160,12 +156,12 @@
                 WidthRequest="80"
                 Margin="2"
                 HorizontalOptions="End">
-            <Label VerticalOptions="Center"
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
                    TextColor="White"
-                   FontAttributes="Bold"
                    Text="Redeem"/>
         </Border>
     </Grid>
@@ -192,16 +188,15 @@
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
                VerticalOptions="Start"
-               FontAttributes="Bold"
                FontSize="Medium"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
             
         <Label Grid.Row="0"
                Grid.Column="1"
+               Style="{StaticResource FlyoutLabelBold}"
                TextColor="White"
                VerticalOptions="Start"
-               FontAttributes="Bold"
                FontSize="Medium"
                Text="{Binding Email}"/>
         
@@ -210,7 +205,6 @@
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
                VerticalOptions="Start"
-               FontAttributes="Bold"
                FontSize="Medium"
                FontFamily="FA6Solid"
                Text="&#xf041;"/>  
@@ -218,9 +212,9 @@
         <!-- TODO: Bind data -->
         <Label Grid.Row="1"
                Grid.Column="1"
+               Style="{StaticResource FlyoutLabelBold}"
                TextColor="White"
                VerticalOptions="Start"
-               FontAttributes="Bold"
                FontSize="Medium"
                Text="Brisbane"/>
     </Grid>
