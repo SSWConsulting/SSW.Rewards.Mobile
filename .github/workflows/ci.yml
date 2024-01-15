@@ -24,7 +24,7 @@ jobs:
   build_and_test:
     name: Build & Test
     runs-on: ubuntu-latest
-    if: ${{inputs.test_mobile == 'false' }}
+    if: ${{ inputs.test_mobile == 'false' || inputs.test_mobile == null }}
 
     steps:
       - uses: actions/checkout@v2
