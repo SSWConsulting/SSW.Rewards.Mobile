@@ -30,7 +30,7 @@ public partial class Testing
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
         _configuration = _factory.Services.GetRequiredService<IConfiguration>();
 
-        _respawner = await Respawner.CreateAsync("DefaultConnection", new RespawnerOptions
+        _respawner = await Respawner.CreateAsync(_configuration.GetConnectionString("DefaultConnection"), new RespawnerOptions
         {
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
