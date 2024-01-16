@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Maui.BindableProperty.Generator.Core;
 
 namespace SSW.Rewards.Mobile.Controls;
@@ -8,7 +9,7 @@ public partial class SegmentedControl : ContentView
 	public SegmentedControl()
 	{
 		InitializeComponent();
-		BindableLayout.SetItemsSource(SegmentedControlFlexLayout, _internalSegments);
+        SegmentBorder.BindingContext = this;
 	}
 
 	public event EventHandler<Segment> SelectionChanged;
@@ -16,23 +17,24 @@ public partial class SegmentedControl : ContentView
 	[AutoBindable(DefaultBindingMode = "TwoWay")]
 	private Segment _selectedSegment;
 
-	[AutoBindable(OnChanged = nameof(SegmentsChanged))]
-	private List<Segment> _segments;
-	private void SegmentsChanged(List<Segment> segments)
-	{
-		_internalSegments.Clear();
-		foreach (var segment in segments)
-		{
-            _internalSegments.Add(segment);
+    [AutoBindable(OnChanged = nameof(SegmentsChanged))]
+    private List<Segment> _segments;
+    private void SegmentsChanged(List<Segment> segments)
+    {
+        if (Segments.Count > 0)
+        {
+            Segments[0].IsSelected = true;
+            SelectedSegment = Segments[0];
+            SelectionChanged?.Invoke(this, Segments[0]);
         }
 
-		if (_internalSegments.Count > 0)
-		{
-			_internalSegments[0].IsSelected = true;
-            SelectedSegment = _internalSegments[0];
-			SelectionChanged?.Invoke(this, _internalSegments[0]);
+        foreach (var segment in Segments)
+        {
+            InternalSegments.Add(segment);
         }
-	}
+    }
+
+    public ObservableCollection<Segment> InternalSegments { get; set; } = new ();
     
     private void Segment_Tapped(object sender, TappedEventArgs e)
     {
@@ -43,24 +45,30 @@ public partial class SegmentedControl : ContentView
             return;
         }
         
-        foreach (var item in _internalSegments)
+        foreach (var item in Segments)
         {
-            item.IsSelected = false;
+            if (item == segment)
+            {
+                item.IsSelected = true;
+            }
+            else
+            {
+                item.IsSelected = false;
+            }
         }
 
         segment.IsSelected = true;
         SelectedSegment = segment;
         SelectionChanged?.Invoke(this, segment);
     }
-
-	private readonly ObservableCollection<Segment> _internalSegments = new();
 }
 
-public class Segment
+public partial class Segment : ObservableObject
 {
 	public string Name { get; set; } = string.Empty;
 
     public object Value { get; set; }
 
-    public bool IsSelected { get; set; }
+    [ObservableProperty]
+    private bool _isSelected;
 }

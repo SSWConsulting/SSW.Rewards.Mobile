@@ -14,7 +14,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private ILeaderService _leaderService;
     private IUserService _userService;
     private bool _loaded;
-    
+
+    [ObservableProperty]
     private ObservableCollection<LeaderViewModel> searchResults = new ();
     
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
@@ -40,14 +41,9 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
-    
-    public ObservableCollection<Segment> Periods { get; set; } = new ObservableCollection<Segment>
-    {
-        new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
-        new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
-        new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
-        new Segment { Name = "All Time", Value = LeaderboardFilter.Forever }
-    };
+
+    [ObservableProperty]
+    private List<Segment> _periods;
     
     [ObservableProperty]
     private bool _isRunning;
@@ -74,16 +70,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     /// </summary>
     [ObservableProperty]
     private bool _clearSearch;
-    
-    public ObservableCollection<LeaderViewModel> SearchResults
-    {
-        get => searchResults;
-        set
-        {
-            searchResults = value;
-            OnPropertyChanged();
-        }
-    }
 
     public async Task Initialise()
     {
@@ -98,6 +84,16 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
             IsRunning = false;
         }
+
+        Periods = new List<Segment>
+        {
+            new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
+            new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
+            new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+            new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
+        };
+
+        Console.WriteLine($"Period count: {Periods.Count}");
     }
 
     private async Task RefreshLeaderboard()
