@@ -11,6 +11,7 @@
         <IsPackable>false</IsPackable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' != 'Debug'">False</TreatWarningsAsErrors>
         <RunCodeAnalysis Condition="'$(BuildingForLiveUnitTesting)' == 'true'">False</RunCodeAnalysis>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -35,6 +36,9 @@
         <Content Update="wwwroot/appsettings.Development.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\.dockerignore">
+          <Link>.dockerignore</Link>
         </Content>
         <Content Include=".codeanalysis\codeanalysis.ruleset" />
         <Content Include=".codeanalysis\stylecop.json" />

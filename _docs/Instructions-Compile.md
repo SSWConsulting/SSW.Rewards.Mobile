@@ -1,93 +1,96 @@
-## Getting Started
+# The F5 Experience
 
-**TODO** VS for Mac is EOL - Look into VS Code development method (C# + Maui Extensions)
+## Requirements 
 **TODO** Find Azurite seed data for the API (Tylah might be blind)
 
-### Required Tools
-
-Microsoft Learn has a great step-by-step process to get your first .NET MAUI project up and running, this will should allow you to run the UI with out much issue! https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
-
-- Ensure you have .NET 8 installed https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-
-- Visual Studio 2022
+- .NET 8 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+- IDE - Visual Studio Enterprise Latest // Jetbrains Rider // VS Code 
 - Android SDK setup/ installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-sdk)
 - iOS SDK setup/installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/)
-- [Azurite - Previously Azure Storage Emulator](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio,blob-storage) (Automatically part of Visual Studio 2022)
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
+- [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
 
 - Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
-- [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
-- [ngrok](https://ngrok.com/) (Api and Mobile communication)
-****
+  - [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
+  - [ngrok](https://ngrok.com/)
 
 ### Required Tools (for Mac)
 
 - XCode v15.0.1+
   - Check or set `Command Line Tools` location
   - **Preferences** | **Locations** | **Command Line Tools**
-- Visual Studio for Mac 2022 (EOL - April 2024)
-  - Enable .NET 8 SDK in **Preferences** | **Other** | **Preview Features**
-- [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio,blob-storage) (For Docker or Visual Studio Code)
 
-## The F5 Experience
+## Setting up the Repo for Development
+### To work on the API + Admin UI
+1. Pull this Repo
+2. Grab the Secrets from Keeper 
+   1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
+   2. Add them as .NET User Secrets for `WebAPI.csproj`
+   3. Update `appsettings.*.json` files accordingly
+3. Create a Developer Certificate https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates
+   1. Create `WebAPI.pfx` with a password of `ThisPassword` (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
-### Web API
+**Windows**
+```bash
+dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\WebAPI.pfx -p ThisPassword
+dotnet dev-certs https --trust
+```
 
-1. Clone the repository 
-   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
-3. Grab connection strings from an existing dev to create local `secrets.json` file (https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-3.0&tabs=windows)
-4. Update `WebAPI` `appsettings.json` and `appsettings.development.json` with the proper secrets
-5. Install / Run `Azure Storage Emulator` (Run the .exe or use the "start" command)
-6. Install / Run [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/#overview)
-7. Start Explorer (**On First Install** - See steps below)
-   1. Sign in using the "Subscription" option
-   2. Select the "Azure" option
-   3. Next (Sign in with your account that has access to ssw1 DevOps)
-8. Inside the Explorer - **Local & Attached** | **Storage Accounts** | **Emulator** | **Blob Containers**
-9. Create a **new container** called `profile`
-10. Copy over all files in `SeedData/profiles` (images + .xlsx) into the newly created `profile` container
-11. Press f5
-12. Test that you can access the swagger docs @ `https://localhost:5001/swagger/`
+**Mac**
+```bash
+   dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
+   dotnet dev-certs https --trust
+```
 
-**(Optional)** - If you need to run the api and mobile app locally. 
-1. Run dev tunnels `devtunnel host -p 5001`
+
+4. Cd into the Repo
+5. Run the Docker Containers
+ ```bash
+ docker compose build
+ docker compose --profile all up -d
+ ```   
+
+You should now be able to access the AdminUI hosted locally at https://localhost:7137  
+
+
+You should now be able to access the WebAPI Swagger docs at https://localhost:5001/swagger/index.html
+
+  
+**Note:** You can run only the WebAPI or AdminUI by running:
+```bash
+docker compose --profile webapi up -d
 OR
-1. Run NGrok `ngrok http https://localhost:5001`
+docker compose --profile admin up -d
+```
 
-### Mobile App Android
+## Mobile UI
 
-1. Get the source code 
-   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
-2. Connect Android Device or Emulator (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/)
-3. Set build target as desired device.
-4. **(Optional)** - Using dev tunnels OR Ngrok - If you need to connect to the Api locally
-   1. Under SSW.Rewards | **Constants.cs**
-   2. Update the `Constants.cs` `ApiBaseUrl` in The **#if DEBUG** region to use the custom ngrok **https** address (See Image below)
-      ![ngrok Https Address](imgs/ngrok-https-example.png)
-      **Figure: ngrok https address**
-5. Run / press f5
+Microsoft Learn has a great step-by-step process to get your first .NET MAUI project up and running, this will should allow you to run the Mobile UI with out much issue! https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
 
-### Mobile App iOS (Mac Only, iOS Emulator)
-1. Get the source code
-   1.  `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
-2. Set build target (either connected iOS device or emulator)
-3. Run / Press F5
+### To work on the Mobile UI (Android SDK)
+1. Run the Docker containers (Only WebApi required)
+2. Start a Dev Tunnel for the API
+```bash
+devtunnel host -p 5001
+```
+3. Update the `Constants.cs` `ApiBaseUrl` in the **#if DEBUG** block to use your DevTunnel address
+4. Run the MobileUI, targeting your Android Emulator
+
+### To work on the Mobile UI (iOS, MacOS Only)
+2. Complete steps 1-3 above
+3. Run the MobileUI, targeting your Android Emulator
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
 
 1. Open up the iOS project settings by right clicking on SSW.Consulting.iOS and selecting Options.
 1. go to 'iOS Bundle Signing' and select your signing identity and provisioning profile.
 
-- these should be automatic by default but if you get an error you can manually set them.
-- if you don't have these, talk to another Team Member or Sys Admin and get them to add your appleID to the Superior Software for Windows Pty Ltd
-  Apple Developer Program Team)
+- These should be automatic by default but if you get an error you can manually set them.
+- If you don't have these, talk to another Team Member or Sys Admin and get them to add your AppleID to the Superior Software for Windows Pty Ltd
+  Apple Developer Program Team
 
-### Setting up for Apple Development (on your own phone)
+### Setting up for Apple Development (on your own iPhone)
 If you want to set up to deploy to your own iPhone, talk to an App Manager (it's hard :))!
-
-### Admin Portal
-1. Get the source code 
-   1. `git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git`
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
 
