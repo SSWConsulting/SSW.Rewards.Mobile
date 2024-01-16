@@ -82,6 +82,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     public async Task<string> GetAccessToken()
     {
         if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
@@ -89,13 +90,29 @@ public class AuthenticationService : IAuthenticationService
             return _accessToken;
         }
 
-        if (await RefreshLoginAsync())
+        await _semaphore.WaitAsync();
+        try
         {
-            return _accessToken;
-        }
+            // Recheck the token after acquiring the lock to handle the case where
+            // the token was refreshed while waiting for the semaphore.
+            if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
+            {
+                return _accessToken;
+            }
 
-        return string.Empty;
+            if (await RefreshLoginAsync())
+            {
+                return _accessToken;
+            }
+
+            return string.Empty;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
+
 
     public void SignOut()
     {
