@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 
@@ -18,14 +17,14 @@ public partial class LoginPageViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
 
-    public string ButtonText { get; set; }
+    [ObservableProperty]
+    public string _buttonText;
 
     public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
         _authService = authService;
         _userService = userService;
         ButtonText = "Sign up / Log in";
-        OnPropertyChanged("ButtonText");
     }
 
     [RelayCommand]

@@ -108,6 +108,8 @@ public class AuthenticationService : IAuthenticationService
     {
         if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
         {
+            _accessToken = loginResult.AccessToken;
+            _tokenExpiry = loginResult.AccessTokenExpiration;
 
             try
             {                
@@ -120,7 +122,7 @@ public class AuthenticationService : IAuthenticationService
                 var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
                 var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
                 var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "emails")?.Value;
+                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "email")?.Value;
 
                 string fullName = firstName + " " + familyName;
 
@@ -174,6 +176,10 @@ public class AuthenticationService : IAuthenticationService
             _refreshTokenExpiry = result.RefreshTokenExpiration.Value;
             Preferences.Set(nameof(_refreshTokenExpiry), _refreshTokenExpiry.ToUnixTimeSeconds());
         }
+        else
+        {
+            Preferences.Remove(nameof(_refreshTokenExpiry));
+        }
     }
 
     public async Task<bool> RefreshLoginAsync()
@@ -182,12 +188,15 @@ public class AuthenticationService : IAuthenticationService
 
         var refreshTokenExpiry = Preferences.Get(nameof(_refreshTokenExpiry), 0L);
 
+        bool refreshTokenExpired = false;
+
         if (refreshTokenExpiry > 0)
         {
             _refreshTokenExpiry = DateTimeOffset.FromUnixTimeSeconds(refreshTokenExpiry);
+            refreshTokenExpired = _refreshTokenExpiry < DateTimeOffset.Now.AddMinutes(2);
         }
 
-        if (!string.IsNullOrWhiteSpace(RefreshToken) && _refreshTokenExpiry > DateTimeOffset.Now.AddMinutes(2))
+        if (!string.IsNullOrWhiteSpace(RefreshToken) && !refreshTokenExpired)
         {
             var oidcClient = new OidcClient(_options);
 

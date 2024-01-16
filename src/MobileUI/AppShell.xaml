@@ -245,7 +245,7 @@
         </Tab>
     </FlyoutItem>
 
-    <MenuItem Text="Rewards"
+    <!--<MenuItem Text="Rewards"
               Clicked="Handle_HowToPlayClicked">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FluentIcons"
@@ -297,63 +297,91 @@
                              Glyph="&#xf5d1;"
                              Color="White"/>
         </MenuItem.IconImageSource>
-    </MenuItem>
+    </MenuItem>-->
 
     <Shell.FlyoutFooter>
         <Grid
-            RowDefinitions="Auto,Auto,5,Auto"
-            ColumnDefinitions="Auto,*"
+            Margin="0,0,0,20"
+            Padding="20,0"
+            RowDefinitions="Auto,Auto,Auto"
+            ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End">
+            
+            <!-- Settings Button -->
+            <!-- TODO: Bind when settings implemented -->
+            <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/582 -->
+            <!-- <Grid -->
+            <!--     VerticalOptions="End" -->
+            <!--     Grid.Column="0" -->
+            <!--     Grid.Row="0" -->
+            <!--     ColumnDefinitions="Auto,*"> -->
+            <!--     <Grid.GestureRecognizers> -->
+            <!--         <TapGestureRecognizer NumberOfTapsRequired="1" -->
+            <!--                               Tapped="Handle_SettingsClicked"/> -->
+            <!--     </Grid.GestureRecognizers> -->
+            <!--     ~1~ Update to settings Icon @1@ -->
+            <!--     <Label Grid.Column="0" -->
+            <!--            HeightRequest="30" -->
+            <!--            WidthRequest="30" -->
+            <!--            VerticalOptions="Center" -->
+            <!--            VerticalTextAlignment="Center" -->
+            <!--            FontSize="Medium" -->
+            <!--            FontFamily="FA6Solid" -->
+            <!--            TextColor="#DDDDDD" -->
+            <!--            Text="&#x2699;"> -->
+            <!--     </Label> -->
+            <!--     <Label Grid.Column="1" -->
+            <!--            Style="{StaticResource FlyoutLabelBold}" -->
+            <!--            TextColor="#DDDDDD" -->
+            <!--            HorizontalOptions="Center" -->
+            <!--            VerticalOptions="Center" -->
+            <!--            FontSize="Medium" -->
+            <!--            Text="Settings" /> -->
+            <!-- </Grid> -->
+            
             <!-- Logout Button -->
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
                 Grid.Row="1"
-                Padding="15,5"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_LogOutClicked"/>
                 </Grid.GestureRecognizers>
+                <!-- Update to different Icon -->
                 <Label Grid.Column="0"
-                       Margin="0,0,25,0"
                        HeightRequest="30"
                        WidthRequest="30"
-                       FontSize="28"
-                       FontFamily="FluentIcons"
-                       TextColor="White"
-                       Text="&#xeafa;">
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="Medium"
+                       FontFamily="FA6Solid"
+                       TextColor="#DDDDDD"
+                       Text="&#xf08b;">
                 </Label>
 
                 <Label Grid.Column="1"
-                       TextColor="White"
+                       Style="{StaticResource FlyoutLabelBold}"
+                       TextColor="#DDDDDD"
                        HorizontalOptions="Center"
-                       FontSize="18"
+                       VerticalOptions="Center"
+                       FontSize="Medium"
                        Text="Log Out" />
             </Grid>
-
-            <!-- Version -->
-            <Image HorizontalOptions="End"
-                   Margin="0,0,10,0"
-                   Grid.Column="1"
-                   Grid.Row="0"
-                   HeightRequest="35"
-                   WidthRequest="50"
-                   VerticalOptions="End"
-                   Source="ssw_white"/>
-
+            
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
                    Margin="0,0,10,0"
                    x:Name="VersionLabel"
-                   Grid.Column="1"
+                   Grid.Column="2"
                    Grid.Row="1"
-                   TextColor="White"/>
+                   TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
             <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="3"
+                Grid.Row="2"
                 Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>

@@ -48,7 +48,7 @@
     <Color x:Key="LeaderboardBackground">#d8d8d8</Color>
     <Color x:Key="SkillsBadgeBackgroundColour">#373737</Color>
     <Color x:Key="ProfileBorder">#979797</Color>
-    <Color x:Key="FlyoutBackgroundColour">#3b3b3b</Color>
+    <Color x:Key="FlyoutBackgroundColour">#333333</Color>
     <Color x:Key="PointsColour">#ffc700</Color>
     <Color x:Key="TwitterBlue">#007aff</Color>
     <Color x:Key="ContactButtonRed">#ff453a</Color>
@@ -74,5 +74,18 @@
     <Color x:Key="QuizCheckColor">#1d4c39</Color>
     <Color x:Key="PassedQuizIcon">#181818</Color>
     <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
+
+    <Color x:Key="RankingTableHeader">#181818</Color>
+    <Color x:Key="RankingTableBody">#606060</Color>
+    
+    <Color x:Key="BrandEnd">#A93636</Color>
+    <Color x:Key="Background">#181818</Color>
+    <Color x:Key="BorderDefault">#373737</Color>
+    <Color x:Key="Coin">#FFC700</Color>
+    
+    <LinearGradientBrush x:Key="BrandBrush" EndPoint="0,1">
+        <GradientStop Offset="0.1" Color="{StaticResource SSWRed}"></GradientStop>
+        <GradientStop Offset="1.0" Color="{StaticResource BrandEnd}"></GradientStop>
+    </LinearGradientBrush>
 
 </ResourceDictionary>

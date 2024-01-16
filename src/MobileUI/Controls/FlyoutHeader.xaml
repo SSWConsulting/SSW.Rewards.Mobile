@@ -4,44 +4,36 @@
       x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
       xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
       xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-      HeightRequest="{OnPlatform Android='120', iOS='170'}"
+      xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+      HeightRequest="668"
       Margin="0"
-      xmlns:local="clr-namespace:SSW.Rewards.Mobile.Controls"
+      Padding="20"
+      xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      ColumnDefinitions="90, *"
-      RowDefinitions="2*, *, 5">
+      RowDefinitions="100,60,158,32,50,182,32">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
 
-    <Image Grid.Column="0"
-           Grid.Row="0"
-           Grid.RowSpan="2"
-           Aspect="AspectFill"
-           Source="{Binding ProfilePic}"
-           x:Name="ProfileImage"
-           HeightRequest="70"
-           WidthRequest="70"
-           VerticalOptions="End"
-           Margin="15,5,5,10">
-            <Image.Clip>
-                <EllipseGeometry Center="35,35"
-                                 RadiusX="35"
-                                 RadiusY="35"/>
-            </Image.Clip>
-    </Image>
+    <mct:AvatarView Grid.Row="0"
+                    VerticalOptions="End"
+                    HorizontalOptions="Start"
+                    ImageSource="{Binding ProfilePic}"
+                    HeightRequest="80"
+                    WidthRequest="80"
+                    CornerRadius="40"
+                    BorderColor="White"
+                    BorderWidth="2"/>
 
-    <HorizontalStackLayout Grid.Column="1"
-                           Grid.Row="0"
+
+    <HorizontalStackLayout Grid.Row="1"
                            Margin="0,0,5,0"
                            Spacing="5"
-                           VerticalOptions="End">
-        <Label FontSize="16"
+                           VerticalOptions="Center">
+        <Label Style="{StaticResource FlyoutLabelBold}"
+               FontSize="Large"
                Text="{Binding Name}"
-               x:Name="NameLabel"
                TextColor="White"
-               FontAttributes="Bold"
-               
                VerticalTextAlignment="End" />
 
         <Label FontFamily="FA6Brands"
@@ -49,23 +41,209 @@
                VerticalTextAlignment="Center"
                TranslationY="1"
                Text="&#xf3ca;"
-               IsVisible="{Binding IsStaff}"
-               x:Name="IsStaffLabel"/>
+               IsVisible="{Binding IsStaff}"/>
     </HorizontalStackLayout>
 
-    <Label Grid.Column="1"
-           Grid.Row="1"
-           TextColor="White"
-           VerticalOptions="Start"
-           Text="{Binding Email}"
-           x:Name="EmailLabel"
-           Margin="0,0,5,0" />
+    <Grid Grid.Row="2"
+          RowSpacing="2"
+          RowDefinitions="40,40,40"
+          ColumnDefinitions="104,*">
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#xf091;"/>            
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       Text="Ranking"/>
+            </HorizontalStackLayout>
+        </Border>
 
-    <BoxView HorizontalOptions="FillAndExpand"
-             HeightRequest="1"
-             Color="White"
-             Grid.Column="0"
-             Grid.ColumnSpan="2"
-             Grid.Row="2"
-             VerticalOptions="Center"/>
+        <Border Grid.Column="1"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Rank, StringFormat='{0:n0}'}"/>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#x2b50;"/>
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       Text="Points"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#xf51e;"/>
+                <Label Style="{StaticResource FlyoutLabelBold}"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       TextColor="White"
+                       Text="Credits"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource FlyoutLabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
+            </Border>
+        <!-- TODO: Bind Redeem button when implemented -->
+        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/560 -->
+        <!-- <Border Grid.Column="1" -->
+        <!--         Grid.Row="2" -->
+        <!--         Background="{StaticResource BrandBrush}" -->
+        <!--         StrokeShape="RoundRectangle 4" -->
+        <!--         Padding="5" -->
+        <!--         WidthRequest="80" -->
+        <!--         Margin="2" -->
+        <!--         HorizontalOptions="End"> -->
+        <!--     <Label Style="{StaticResource FlyoutLabelBold}" -->
+        <!--            VerticalOptions="Center" -->
+        <!--            VerticalTextAlignment="Center" -->
+        <!--            HorizontalOptions="Center" -->
+        <!--            HorizontalTextAlignment="Center" -->
+        <!--            TextColor="White" -->
+        <!--            Text="Redeem"/> -->
+        <!-- </Border> -->
+    </Grid>
+
+    <VerticalStackLayout Grid.Row="3"
+                         VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+
+    <Grid
+        Grid.Row="4"
+        ColumnDefinitions="20,*"
+        RowDefinitions="*,*"
+        ColumnSpacing="8"
+        RowSpacing="4" >
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               TextColor="{StaticResource SSWRed}"
+               HorizontalTextAlignment="Center"
+               VerticalOptions="Center"
+               FontSize="Medium"
+               FontFamily="FA6Solid"
+               Text="&#x2709;"/>
+            
+        <Label Grid.Row="0"
+               Grid.Column="1"
+               Style="{StaticResource FlyoutLabelBold}"
+               TextColor="#DDDDDD"
+               VerticalOptions="Center"
+               FontSize="Medium"
+               Text="{Binding Email}"/>
+        
+        <!-- TODO: Bind user location when implemented -->
+        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/581 -->
+        <!-- <Label Grid.Row="1" -->
+        <!--        Grid.Column="0" -->
+        <!--        TextColor="{StaticResource SSWRed}" -->
+        <!--        HorizontalTextAlignment="Center" -->
+        <!--        VerticalOptions="Center" -->
+        <!--        FontSize="Medium" -->
+        <!--        FontFamily="FA6Solid" -->
+        <!--        Text="&#xf041;"/>   -->
+        <!--      -->
+        <!-- <Label Grid.Row="1" -->
+        <!--        Grid.Column="1" -->
+        <!--        Style="{StaticResource FlyoutLabelBold}" -->
+        <!--        TextColor="#DDDDDD" -->
+        <!--        VerticalOptions="Center" -->
+        <!--        FontSize="Medium" -->
+        <!--        Text="Brisbane"/> -->
+    </Grid>
+
+    <zx:BarcodeGeneratorView Grid.Row="5"
+                             x:Name="codeView"
+                             Format="QrCode"
+                             Value="{Binding QrCode}"
+                             HorizontalOptions="Start"
+                             BackgroundColor="Transparent"
+                             ForegroundColor="#DDDDDD"
+                             WidthRequest="150"
+                             HeightRequest="150"
+                             VerticalOptions="Center"
+                             TranslationX="-10"/>
+    
+    <VerticalStackLayout Grid.Row="6"
+                         VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
 </Grid>

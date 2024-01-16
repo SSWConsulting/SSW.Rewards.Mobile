@@ -18,7 +18,7 @@ public class UserService : IUserService, IDisposable
         _userClient = userService;
         _authService = authService;
 
-        _authService.DetailsUpdated += UpdateMyDtailsAsync;
+        _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
 
     public bool IsLoggedIn { get => _loggedIn; }
@@ -87,25 +87,9 @@ public class UserService : IUserService, IDisposable
         return response.PicUrl;
     }
 
-    private void UpdateMyDtailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private async void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
     {
-        if (!string.IsNullOrWhiteSpace(args.Name))
-        {
-            Preferences.Set(nameof(MyName), args.Name);
-        }
-
-        if (!string.IsNullOrWhiteSpace(args.Email))
-        {
-            Preferences.Set(nameof(MyEmail), args.Email);
-        }
-
-        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
-        {
-            Email = MyEmail,
-            ProfilePic = MyProfilePic,
-            Name = MyName,
-            IsStaff = IsStaff
-        }));
+        await UpdateMyDetailsAsync();
     }
 
     public async Task UpdateMyDetailsAsync()
@@ -263,7 +247,7 @@ public class UserService : IUserService, IDisposable
 
     public void Dispose()
     {
-        _authService.DetailsUpdated -= UpdateMyDtailsAsync;
+        _authService.DetailsUpdated -= UpdateMyDetailsAsync;
     }
 
     #endregion
