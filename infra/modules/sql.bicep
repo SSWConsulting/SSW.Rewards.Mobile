@@ -16,7 +16,7 @@ param databaseProperties object = {
   maxSizeBytes: 2 * 1073741824 // 2GB
 }
 
-param now string 
+param now string
 
 var sqlserverName = 'sql-${projectName}-${environment}'
 var databaseName = 'db-${projectName}-${environment}'
@@ -29,15 +29,18 @@ resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
   properties: {
     administratorLogin: sqlAdministratorLogin
     administratorLoginPassword: sqlAdministratorLoginPassword
-    administrators: {
-      administratorType: 'ActiveDirectory'
-      login: sqlAdministratorsLoginName
-      sid: sqlAdministratorsObjectId
-      tenantId: tenant().tenantId
-      principalType: 'Group'
-      azureADOnlyAuthentication: false
-    }
     version: '12.0'
+  }
+}
+
+resource sqlServerAdmins 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
+  name: 'ActiveDirectory'
+  parent: sqlServer
+  properties: {
+    administratorType: 'ActiveDirectory'
+    login: sqlAdministratorsLoginName
+    sid: sqlAdministratorsObjectId
+    tenantId: tenant().tenantId
   }
 }
 
@@ -60,7 +63,7 @@ resource allowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2021-02-01
 
 module connectionStringSecret 'create-secrets.bicep' = {
   name: 'connectionStringSecret-${now}'
-  params:{
+  params: {
     keyVaultName: keyVaultName
     secretName: 'SqlConnectionString'
     secretValue: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${databaseName};Persist Security Info=False;User ID=${sqlAdministratorLogin};Password=${sqlAdministratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
