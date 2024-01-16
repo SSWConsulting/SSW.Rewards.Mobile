@@ -3,6 +3,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 
@@ -13,7 +14,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private ILeaderService _leaderService;
     private IUserService _userService;
     private bool _loaded;
-    
+
+    [ObservableProperty]
     private ObservableCollection<LeaderViewModel> searchResults = new ();
     
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
@@ -37,9 +39,11 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
     public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
     public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
-    public IAsyncRelayCommand FilterByPeriodCommand => new AsyncRelayCommand(FilterByPeriod);
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
+
+    [ObservableProperty]
+    private List<Segment> _periods;
     
     [ObservableProperty]
     private bool _isRunning;
@@ -49,7 +53,11 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     
     public string ProfilePic { get; set; }
     public Action<int> ScrollTo { get; set; }
-    public PeriodFilter CurrentPeriod { get; set; }
+
+    public LeaderboardFilter CurrentPeriod { get; set; }
+
+    [ObservableProperty]
+    private Segment _selectedPeriod;
     
     [ObservableProperty]
     private int _totalLeaders;
@@ -65,16 +73,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     /// </summary>
     [ObservableProperty]
     private bool _clearSearch;
-    
-    public ObservableCollection<LeaderViewModel> SearchResults
-    {
-        get => searchResults;
-        set
-        {
-            searchResults = value;
-            OnPropertyChanged();
-        }
-    }
 
     public async Task Initialise()
     {
@@ -85,10 +83,18 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
             await LoadLeaderboard();
             _loaded = true;
 
-            await FilterAndSortLeaders(Leaders, PeriodFilter.Week);
+            await FilterAndSortLeaders(Leaders, LeaderboardFilter.ThisWeek);
 
             IsRunning = false;
         }
+
+        Periods = new List<Segment>
+        {
+            new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
+            new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
+            new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+            new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
+        };
     }
 
     private async Task RefreshLeaderboard()
@@ -127,29 +133,30 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         });
     }
 
-
+    [RelayCommand]
     private async Task FilterByPeriod()
     {
+        CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
         ClearSearch = !ClearSearch;
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
-    public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, PeriodFilter period, bool keepRank = false)
+    public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, LeaderboardFilter period, bool keepRank = false)
     {
         Func<LeaderViewModel, int> sortKeySelector;
 
         switch (period)
         {
-            case PeriodFilter.Month:
+            case LeaderboardFilter.ThisMonth:
                 sortKeySelector = l => l.PointsThisMonth;
                 break;
-            case PeriodFilter.Year:
+            case LeaderboardFilter.ThisYear:
                 sortKeySelector = l => l.PointsThisYear;
                 break;
-            case PeriodFilter.AllTime:
+            case LeaderboardFilter.Forever:
                 sortKeySelector = l => l.TotalPoints;
                 break;
-            case PeriodFilter.Week:
+            case LeaderboardFilter.ThisWeek:
             default:
                 sortKeySelector = l => l.PointsThisWeek;
                 break;

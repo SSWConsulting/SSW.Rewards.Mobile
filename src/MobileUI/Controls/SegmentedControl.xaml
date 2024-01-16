@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             x:Name="SegmentedControlParent"
+             x:Class="SSW.Rewards.Mobile.Controls.SegmentedControl">
+    <ContentView.Resources>
+        <converters:IsSelectedToBackgroundConverter x:Key="SegmentSelectedConverter" />
+    </ContentView.Resources>
+    <Border StrokeShape="RoundRectangle 5"
+            Stroke="{StaticResource Background}"
+            BackgroundColor="{StaticResource Background}"
+            x:Name="SegmentBorder"
+            x:DataType="controls:SegmentedControl">
+        <FlexLayout Direction="Row"
+                    Wrap="NoWrap"
+                    JustifyContent="SpaceEvenly"
+                    x:Name="SegmentedControlFlexLayout"
+                    BindableLayout.ItemsSource="{Binding InternalSegments}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Border x:DataType="controls:Segment"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 2"
+                            Stroke="{Binding IsSelected, Converter={StaticResource SegmentSelectedConverter}}"
+                            Background="{Binding IsSelected, Converter={StaticResource SegmentSelectedConverter}}"
+                            HorizontalOptions="Fill"
+                            FlexLayout.Grow="1"
+                            Margin="1"
+                            Padding="5,1">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Tapped="Segment_Tapped"
+                                                  CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Label HorizontalOptions="Fill"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               Text="{Binding Name}" />
+                    </Border>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </FlexLayout>
+    </Border>
+</ContentView>

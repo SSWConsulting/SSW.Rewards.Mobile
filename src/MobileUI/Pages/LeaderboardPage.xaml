@@ -4,8 +4,8 @@
              BackgroundColor="{StaticResource MainBackground}"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewModels:LeaderBoardViewModel"
              x:Name="Leaderboard"
              x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage">
@@ -103,10 +103,15 @@
                    VerticalOptions="Center"
                    HorizontalTextAlignment="Center"/>
 
-            <controls:TabHeader
+            <controls:SegmentedControl
+                Segments="{Binding Periods}"
                 Grid.Row="3"
-                FilterChanged="{Binding FilterByPeriodCommand}"
-                CurrentPeriod="{Binding CurrentPeriod, Mode=OneWayToSource}"/>
+                SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior EventName="SelectionChanged"
+                                                Command="{Binding FilterByPeriodCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
 
             <RefreshView
                 Grid.Row="4"
