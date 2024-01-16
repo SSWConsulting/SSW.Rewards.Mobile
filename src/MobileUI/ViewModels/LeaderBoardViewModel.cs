@@ -55,6 +55,9 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     public Action<int> ScrollTo { get; set; }
 
     public LeaderboardFilter CurrentPeriod { get; set; }
+
+    [ObservableProperty]
+    private Segment _selectedPeriod;
     
     [ObservableProperty]
     private int _totalLeaders;
@@ -92,8 +95,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
             new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
             new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
         };
-
-        Console.WriteLine($"Period count: {Periods.Count}");
     }
 
     private async Task RefreshLeaderboard()
@@ -135,6 +136,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     [RelayCommand]
     private async Task FilterByPeriod()
     {
+        CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
         ClearSearch = !ClearSearch;
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }

@@ -106,7 +106,7 @@
             <controls:SegmentedControl
                 Segments="{Binding Periods}"
                 Grid.Row="3"
-                SelectedSegment="{Binding CurrentPeriod, Mode=OneWayToSource}">
+                SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
                 <controls:SegmentedControl.Behaviors>
                     <mct:EventToCommandBehavior EventName="SelectionChanged"
                                                 Command="{Binding FilterByPeriodCommand}" />
