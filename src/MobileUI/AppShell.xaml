@@ -309,6 +309,7 @@
             
             <!-- Settings Button -->
             <!-- TODO: Bind when settings implemented -->
+            <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/582 -->
             <!-- <Grid -->
             <!--     VerticalOptions="End" -->
             <!--     Grid.Column="0" -->

@@ -149,6 +149,7 @@
                    Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
             </Border>
         <!-- TODO: Bind Redeem button when implemented -->
+        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/560 -->
         <!-- <Border Grid.Column="1" -->
         <!--         Grid.Row="2" -->
         <!--         Background="{StaticResource BrandBrush}" -->
@@ -203,6 +204,7 @@
                Text="{Binding Email}"/>
         
         <!-- TODO: Bind user location when implemented -->
+        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/581 -->
         <!-- <Label Grid.Row="1" -->
         <!--        Grid.Column="0" -->
         <!--        TextColor="{StaticResource SSWRed}" -->
