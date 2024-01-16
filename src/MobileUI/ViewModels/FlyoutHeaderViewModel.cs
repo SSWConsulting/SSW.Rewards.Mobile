@@ -31,7 +31,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     private int _credits;
     
     [ObservableProperty]
-    private int _myRank;
+    private int _rank;
 
     public FlyoutHeaderViewModel(IUserService userService, ILeaderService leaderService)
     {
@@ -54,7 +54,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
         var myId = _userService.MyUserId;
-        MyRank = summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
+        Rank = summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }
 
     public void Receive(UserDetailsUpdatedMessage message)

@@ -78,7 +78,7 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="{Binding Path=MyRank, StringFormat='{0:n0}'}"/>
+                   Text="{Binding Path=Rank, StringFormat='{0:n0}'}"/>
         </Border>
 
         <Border Grid.Column="0"
