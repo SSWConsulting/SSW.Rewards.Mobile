@@ -26,7 +26,7 @@
 2. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
-   3. Replace keys in `appsettings.*.json` with placeholder keys with the values from the .NET User Secrets.
+   3. Replace placeholder keys in `appsettings.*.json` with the values from the .NET User Secrets.
 3. Create a Developer Certificate https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates
    1. Create `WebAPI.pfx` with a password of `ThisPassword` (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
