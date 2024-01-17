@@ -77,14 +77,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRewardService, RewardService>();
         builder.Services.AddSingleton<IQuizService, QuizService>();
         builder.Services.AddSingleton<IBrowser, AuthBrowser>();
-        builder.Services.AddSingleton<AuthHandler>();
+        builder.Services.AddTransient<AuthHandler>();
         builder.Services.AddSingleton(options);
         builder.Services.AddSingleton<ISnackbarService, SnackBarService>();
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
 
-        builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
         builder.Services.AddApiClientServices<AuthHandler>(options.BaseUrl);
 
