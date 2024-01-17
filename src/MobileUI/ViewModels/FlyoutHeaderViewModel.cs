@@ -38,14 +38,14 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         WeakReferenceMessenger.Default.Register<UserDetailsUpdatedMessage>(this);
         _userService = userService;
         _leaderService = leaderService;
-        ProfilePic = userService.MyProfilePic;
-        Name = userService.MyName;
-        Email = userService.MyEmail;
+
+        ProfilePic = _userService.MyProfilePic;
+        Name = _userService.MyName;
+        Email = _userService.MyEmail;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
-        IsStaff = userService.IsStaff;
-        QrCode = userService.MyQrCode;
-        Points = userService.MyPoints;
-        Credits = userService.MyBalance;
+        IsStaff = _userService.IsStaff;
+
+        UpdateUserValues();
 
         _ = LoadRank();
     }
@@ -64,5 +64,14 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         Name = message.Value.Name;
         Email = message.Value.Email;
         IsStaff = message.Value.IsStaff;
+
+        UpdateUserValues();
+    }
+
+    private void UpdateUserValues()
+    {
+        QrCode = _userService.MyQrCode;
+        Points = _userService.MyPoints;
+        Credits = _userService.MyBalance;
     }
 }

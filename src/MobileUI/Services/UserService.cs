@@ -87,9 +87,9 @@ public class UserService : IUserService, IDisposable
         return response.PicUrl;
     }
 
-    private async void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
     {
-        await UpdateMyDetailsAsync();
+        MainThread.BeginInvokeOnMainThread(async () => await UpdateMyDetailsAsync());
     }
 
     public async Task UpdateMyDetailsAsync()
@@ -247,7 +247,7 @@ public class UserService : IUserService, IDisposable
 
     public void Dispose()
     {
-        _authService.DetailsUpdated -= UpdateMyDetailsAsync;
+        //_authService.DetailsUpdated -= UpdateMyDetailsAsync;
     }
 
     #endregion

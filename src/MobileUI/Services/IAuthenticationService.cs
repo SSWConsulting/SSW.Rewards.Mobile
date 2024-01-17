@@ -181,7 +181,7 @@ public class AuthenticationService : IAuthenticationService
 
     private async Task SettRefreshToken(AuthResult result)
     {
-        if (!string.IsNullOrWhiteSpace(RefreshToken))
+        if (!string.IsNullOrWhiteSpace(result.RefreshToken))
         {
             RefreshToken = result.RefreshToken;
             await SecureStorage.SetAsync(nameof(RefreshToken), RefreshToken);
