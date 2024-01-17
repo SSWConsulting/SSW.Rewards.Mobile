@@ -8,7 +8,7 @@ namespace SSW.Rewards.Mobile.Converters
         {
             get
             {
-                if (Application.Current.Resources.TryGetValue("primary", out var color))
+                if (Application.Current.Resources.TryGetValue("SSWRed", out var color))
                 {
                     return (Color)color;
                 }
@@ -19,7 +19,7 @@ namespace SSW.Rewards.Mobile.Converters
         {
             get
             {
-                if (Application.Current.Resources.TryGetValue("LeaderCardBackground", out var color))
+                if (Application.Current.Resources.TryGetValue("FlyoutBackgroundColour", out var color))
                 {
                     return (Color)color;
                 }

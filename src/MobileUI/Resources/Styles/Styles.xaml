@@ -176,7 +176,7 @@
         </Setter>
     </Style>
     
-    <Style TargetType="Label" x:Key="FlyoutLabelBold">
+    <Style TargetType="Label" x:Key="LabelBold">
         <Setter Property="FontFamily" Value="LiberationSansBold"></Setter>
     </Style>
 

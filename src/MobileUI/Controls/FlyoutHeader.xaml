@@ -30,7 +30,7 @@
                            Margin="0,0,5,0"
                            Spacing="5"
                            VerticalOptions="Center">
-        <Label Style="{StaticResource FlyoutLabelBold}"
+        <Label Style="{StaticResource LabelBold}"
                FontSize="Large"
                Text="{Binding Name}"
                TextColor="White"
@@ -60,7 +60,7 @@
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
                        Text="&#xf091;"/>            
-                <Label Style="{StaticResource FlyoutLabelBold}"
+                <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
@@ -74,7 +74,7 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label Style="{StaticResource FlyoutLabelBold}"
+            <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
@@ -94,7 +94,7 @@
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
                        Text="&#x2b50;"/>
-                <Label Style="{StaticResource FlyoutLabelBold}"
+                <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
@@ -108,7 +108,7 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label Style="{StaticResource FlyoutLabelBold}"
+            <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
@@ -128,7 +128,7 @@
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
                        Text="&#xf51e;"/>
-                <Label Style="{StaticResource FlyoutLabelBold}"
+                <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
                        Margin="10,0,0,0"
@@ -142,7 +142,7 @@
                 BackgroundColor="{StaticResource RankingTableBody}"
                 StrokeShape="RoundRectangle 0,4,0,4"
                 Padding="5">
-            <Label Style="{StaticResource FlyoutLabelBold}"
+            <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
@@ -158,7 +158,7 @@
         <!--         WidthRequest="80" -->
         <!--         Margin="2" -->
         <!--         HorizontalOptions="End"> -->
-        <!--     <Label Style="{StaticResource FlyoutLabelBold}" -->
+        <!--     <Label Style="{StaticResource LabelBold}" -->
         <!--            VerticalOptions="Center" -->
         <!--            VerticalTextAlignment="Center" -->
         <!--            HorizontalOptions="Center" -->
@@ -197,7 +197,7 @@
             
         <Label Grid.Row="0"
                Grid.Column="1"
-               Style="{StaticResource FlyoutLabelBold}"
+               Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"
                VerticalOptions="Center"
                FontSize="Medium"
@@ -216,7 +216,7 @@
         <!--      -->
         <!-- <Label Grid.Row="1" -->
         <!--        Grid.Column="1" -->
-        <!--        Style="{StaticResource FlyoutLabelBold}" -->
+        <!--        Style="{StaticResource LabelBold}" -->
         <!--        TextColor="#DDDDDD" -->
         <!--        VerticalOptions="Center" -->
         <!--        FontSize="Medium" -->
