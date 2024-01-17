@@ -27,7 +27,7 @@ jobs:
       - uses: actions/download-artifact@v3
 
       - name: Set appsettings.json
-        if: ${{ inputs.environment != 'production' }}
+        if: ${{ inputs.environment == 'staging' }}
         run: |
           cd ui
           cp appsettings.json appsettings.json.bak
