@@ -26,11 +26,18 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
 
+      - name: Set appsettings.json
+        if: ${{ inputs.environment != 'production' }}
+        run: |
+          cd ui
+          cp appsettings.json appsettings.json.bak
+          cp appsettings.${{ inputs.environment }}.json appsettings.json
+
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
-          
+
       - name: Deploy Bicep
         id: bicep
         shell: pwsh
