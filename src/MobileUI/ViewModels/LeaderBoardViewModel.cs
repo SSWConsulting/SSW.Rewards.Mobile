@@ -33,12 +33,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     
     public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
     public ICommand OnRefreshCommand { get; set; }
-    public ICommand ScrollToTopCommand => new Command(ScrollToFirstCard);
-    public ICommand ScrollToEndCommand => new Command(ScrollToLastCard);
-    public ICommand ScrollToMeCommand => new Command(ScrollToMyCard);
     public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
-    public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
-    public IAsyncRelayCommand GoToMyProfileCommand => new AsyncRelayCommand(() => Shell.Current.GoToAsync("//main"));
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
@@ -205,24 +200,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         IsRefreshing = false;
     }
 
-    private void ScrollToMyCard()
-    {
-        var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
-        var myIndex = SearchResults.IndexOf(myCard);
-
-        ScrollTo.Invoke(myIndex);
-    }
-
-    private void ScrollToFirstCard()
-    {
-        ScrollTo.Invoke(0);
-    }
-
-    private void ScrollToLastCard()
-    {
-        ScrollTo.Invoke(SearchResults.Count() - 1);
-    }
-
     private async Task HandleLeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
@@ -242,20 +219,5 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         {
             MyRank = mySummary.Rank;
         }
-    }
-
-    private void SearchTextHandler(string searchBarText)
-    {
-        // UserStoppedTypingBehavior fires the command on a threadPool thread
-        // as internally it uses .ContinueWith
-        App.Current.MainPage.Dispatcher.Dispatch(() =>
-        {
-            if (searchBarText != null)
-            {
-                var filtered = Leaders.Where(l => l.Name.ToLower().Contains(searchBarText.ToLower()));
-                //SearchResults = new ObservableCollection<LeaderViewModel>(filtered);
-                FilterAndSortLeaders(filtered, CurrentPeriod, true);
-            }
-        });
     }
 }
