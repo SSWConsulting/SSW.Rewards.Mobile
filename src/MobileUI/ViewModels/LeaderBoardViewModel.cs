@@ -59,6 +59,15 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     
     [ObservableProperty]
     private int _myRank;
+
+    [ObservableProperty]
+    private LeaderViewModel _first;
+
+    [ObservableProperty]
+    private LeaderViewModel _second;
+
+    [ObservableProperty]
+    private LeaderViewModel _third;
     
     public int MyPoints { get; set; }
     public int MyBalance { get; set; }
@@ -178,6 +187,10 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
         await UpdateSearchResults(leaders);
         UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe == true));
+
+        First = leaders.FirstOrDefault();
+        Second = leaders.Skip(1).FirstOrDefault();
+        Third = leaders.Skip(2).FirstOrDefault();
     }
 
     public async Task Refresh()
