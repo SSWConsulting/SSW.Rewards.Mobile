@@ -92,13 +92,16 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
             IsRunning = false;
         }
 
-        Periods = new List<Segment>
+        if (Periods is null || !Periods.Any())
         {
-            new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
-            new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
-            new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
-            new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
-        };
+            Periods = new List<Segment>
+            {
+                new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
+                new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
+                new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+                new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
+            };
+        }
     }
 
     private async Task RefreshLeaderboard()
