@@ -30,6 +30,21 @@
                 </controls:SegmentedControl.Behaviors>
             </controls:SegmentedControl>
 
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="6*,14*,6*">
+                <!-- 3rd -->
+                <controls:Podium Leader="{Binding Second}"
+                                 Grid.Column="0"/>
+                
+                <!-- 1st -->
+                <controls:Podium Leader="{Binding First}"
+                                 Grid.Column="1"/>
+
+                <!-- 2nd -->
+                <controls:Podium Leader="{Binding Third}"
+                                 Grid.Column="2"/>
+            </Grid>
+
             <RefreshView
                 Grid.Row="2"
                 Command="{Binding RefreshCommand}"

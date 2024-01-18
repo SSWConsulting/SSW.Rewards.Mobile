@@ -59,6 +59,15 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     
     [ObservableProperty]
     private int _myRank;
+
+    [ObservableProperty]
+    private LeaderViewModel _first;
+
+    [ObservableProperty]
+    private LeaderViewModel _second;
+
+    [ObservableProperty]
+    private LeaderViewModel _third;
     
     public int MyPoints { get; set; }
     public int MyBalance { get; set; }
@@ -83,13 +92,16 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
             IsRunning = false;
         }
 
-        Periods = new List<Segment>
+        if (Periods is null || !Periods.Any())
         {
-            new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
-            new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
-            new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
-            new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
-        };
+            Periods = new List<Segment>
+            {
+                new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
+                new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
+                new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+                new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
+            };
+        }
     }
 
     private async Task RefreshLeaderboard()
@@ -178,6 +190,10 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
         await UpdateSearchResults(leaders);
         UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe == true));
+
+        First = leaders.FirstOrDefault();
+        Second = leaders.Skip(1).FirstOrDefault();
+        Third = leaders.Skip(2).FirstOrDefault();
     }
 
     public async Task Refresh()
