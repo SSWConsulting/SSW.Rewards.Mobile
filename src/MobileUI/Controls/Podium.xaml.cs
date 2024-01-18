@@ -12,7 +12,7 @@ public partial class Podium : ContentView
 	[AutoBindable(OnChanged = nameof(LeaderChanged))]
 	private LeaderViewModel _leader;
 
-	private void LeaderChanged(LeaderViewModel leader)
+	private async Task LeaderChanged(LeaderViewModel leader)
 	{
 		if (leader is null)
 		{
@@ -34,7 +34,7 @@ public partial class Podium : ContentView
 
 		SetAvatarSize(leader.Rank);
 
-		ParentLayout.IsVisible = true;
+		await RunAnimations(leader.Rank);
 	}
 
 	private string GetIcon(int rank)
@@ -43,6 +43,7 @@ public partial class Podium : ContentView
 		{
             1 => "👑",
             2 => "🥈",
+			3 => "🥉",
             _ => string.Empty,
         };
     }
@@ -74,17 +75,76 @@ public partial class Podium : ContentView
         switch (rank)
 		{
             case 1:
-                ProfilePic.WidthRequest = 120;
-                ProfilePic.HeightRequest = 120;
-				ProfilePic.CornerRadius = 60;
+                ProfilePic.WidthRequest = 130;
+                ProfilePic.HeightRequest = 130;
+				ProfilePic.CornerRadius = 65;
 				ProfilePic.BorderWidth = 5;
                 break;
             default:
-                ProfilePic.WidthRequest = 60;
-                ProfilePic.HeightRequest = 60;
-				ProfilePic.CornerRadius = 30;
+                ProfilePic.WidthRequest = 70;
+                ProfilePic.HeightRequest = 70;
+				ProfilePic.CornerRadius = 35;
                 ProfilePic.BorderWidth = 2;
                 break;
         }
+    }
+
+	private async Task RunAnimations(int rank)
+	{
+		// set initial conditions
+
+		ProfilePic.Opacity = 0;
+		ProfilePic.Scale = 0;
+		ProfilePic.TranslationY = 0;
+
+		Icon.Opacity = 0;
+		RankLabel.Opacity = 0;
+		Name.Opacity = 0;
+		Points.Opacity = 0;
+
+        ParentLayout.IsVisible = true;
+
+		// animate in
+
+		if (rank == 1)
+		{
+			await Task.Delay(300);
+		}
+		else
+		{
+			await Task.Delay(1000);
+		}
+
+		await Task.WhenAll<bool>
+		(
+            ProfilePic.FadeTo(1, 500, Easing.SinIn),
+			ProfilePic.ScaleTo(1, 500, Easing.SinIn)
+		);
+
+		var translationY = rank switch
+		{
+            1 => 30,
+            _ => 90,
+        };
+
+		await ProfilePic.TranslateTo(0, translationY, 500, Easing.SinIn);
+
+		Icon.TranslationY = translationY;
+		RankLabel.TranslationY = translationY;
+		Name.TranslationY = translationY;
+		Points.TranslationY = translationY;
+
+		if (rank != 1)
+		{
+			await Task.Delay(150);
+		}
+
+		await Task.WhenAll<bool>
+		(
+			Icon.FadeTo(1, 100, Easing.SinIn),
+			RankLabel.FadeTo(1, 100, Easing.SinIn),
+			Name.FadeTo(1, 100, Easing.SinIn),
+			Points.FadeTo(1, 100, Easing.SinIn)
+		);
     }
 }
