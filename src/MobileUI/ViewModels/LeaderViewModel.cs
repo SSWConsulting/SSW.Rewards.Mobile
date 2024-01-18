@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
+﻿using System.Net.Mail;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -13,6 +14,22 @@ public class LeaderViewModel : LeaderboardUserDto
         set
         {
             _isMe = value;
+        }
+    }
+
+    public bool IsStaff
+    {
+        get
+        {
+            try
+            {
+                var emailAddress = new MailAddress(Email);
+                return emailAddress.Host == "ssw.com.au";
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 
@@ -38,6 +55,19 @@ public class LeaderViewModel : LeaderboardUserDto
     }
 
     public int DisplayPoints { get; set; }
+    
+    public string DisplayPointsShort
+    {
+        get
+        {
+            if (DisplayPoints >= 1000)
+            {
+                return (DisplayPoints / 1000).ToString("0.#") + "k";
+            }
+            
+            return DisplayPoints.ToString("#,0");
+        }
+    }
 
     public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
     {
@@ -58,5 +88,7 @@ public class LeaderViewModel : LeaderboardUserDto
         Balance = dto.Balance;
 
         IsMe = isMe;
+
+        Email = dto.Email;
     }
 }

@@ -12,10 +12,11 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IsMeToColorConverter x:Key="MeToColor"/>
+            <converters:StaffToTextConverter x:Key="StaffToText"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid Margin="30,5"
+        <Grid Margin="15,5"
               RowSpacing="6"
               RowDefinitions="1*, 7*, 8*">
 
@@ -43,20 +44,22 @@
                         ItemSizingStrategy="MeasureFirstItem">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:LeaderViewModel">
-                                <Grid RowDefinitions="80, 8">
+                                <Grid RowDefinitions="84, 5">
                                     <Grid.GestureRecognizers>
                                         <TapGestureRecognizer
                                             NumberOfTapsRequired="1"
                                             Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
                                             CommandParameter="{Binding  .}"/>
                                     </Grid.GestureRecognizers>
-                                    <Border Grid.Row="0" Stroke="{Binding IsMe, Converter={StaticResource MeToColor}}">
+                                    <Border Grid.Row="0" 
+                                            Stroke="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                            StrokeThickness="2">
                                         <Border.StrokeShape>
                                             <RoundRectangle CornerRadius="8" />
                                         </Border.StrokeShape>
                                         <Grid ColumnSpacing="6"
                                               ColumnDefinitions="60, 60, *, Auto"
-                                              BackgroundColor="{StaticResource MainBackground}">
+                                              BackgroundColor="{StaticResource Background}">
                                             
                                             <Border Grid.Column="0"
                                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"
@@ -65,7 +68,7 @@
                                                     HorizontalOptions="End"
                                                     WidthRequest="50"
                                                     HeightRequest="50"
-                                                    StrokeThickness="2">
+                                                    StrokeThickness="1.5">
                                                 <Label Text="{Binding Rank}"
                                                        TextColor="White"
                                                        VerticalOptions="Center"
@@ -79,7 +82,7 @@
                                                     HorizontalOptions="Start"
                                                     WidthRequest="50"
                                                     HeightRequest="50"
-                                                    StrokeThickness="2">
+                                                    StrokeThickness="1.5">
                                                 <Image
                                                     Margin="0,0,0,0"
                                                     Source="{Binding ProfilePic}"
@@ -93,26 +96,52 @@
                                                     </Image.Clip>
                                                 </Image>
                                             </Border>
-                                           
-                                            <Label Grid.Column="2"
-                                                   Text="{Binding Name}"
-                                                   TextColor="White"
-                                                   FontAttributes="Bold"
-                                                   VerticalOptions="Center"
-                                                   InputTransparent="True"
-                                                   FontSize="Medium"
-                                                   Style="{StaticResource LabelBold}" />
+                                            
+                                            <Grid 
+                                                Grid.Column="2"
+                                                ColumnDefinitions="*"
+                                                RowDefinitions="*,*"
+                                                VerticalOptions="Center"
+                                                RowSpacing="2">
+                                                <Label Grid.Row="0"
+                                                       Text="{Binding Name}"
+                                                       TextColor="White"
+                                                       InputTransparent="True"
+                                                       VerticalTextAlignment="End"
+                                                       FontSize="20"
+                                                       Style="{StaticResource LabelBold}"
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Grid.Row="1"
+                                                       Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
+                                                       TextColor="White"
+                                                       VerticalTextAlignment="Start"
+                                                       InputTransparent="True"
+                                                       FontSize="12" />
+                                            </Grid>
                                             
                                             <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
-                                            <Grid Grid.Column="3">
+                                            <Grid Grid.Column="3"
+                                                  ColumnDefinitions="30,*"
+                                                  ColumnSpacing="4"
+                                                  Margin="0,0,15,0">
                                                 <Label 
-                                                    Text="{Binding DisplayPoints, StringFormat='{0:N0} ⭐'}"
-                                                    TextColor="White"
-                                                    Margin="0,0,10,0"
-                                                    VerticalOptions="Center"
+                                                    Grid.Column="0"
+                                                    Text="{Binding DisplayPointsShort}"
                                                     HorizontalOptions="End"
-                                                    InputTransparent="True"/>
+                                                    VerticalOptions="Center"
+                                                    FontSize="15"
+                                                    Style="{StaticResource LabelBold}" />
+                                                <Label 
+                                                    Grid.Column="1"
+                                                    TextColor="{StaticResource Coin}"
+                                                    Text="&#x2b50;"
+                                                    FontFamily="FA6Solid"
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Center"
+                                                    FontSize="11"
+                                                    Style="{StaticResource LabelBold}" />
                                             </Grid>
+                                            
                                         </Grid>
                                     </Border>
                                 </Grid>
