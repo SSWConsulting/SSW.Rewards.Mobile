@@ -38,7 +38,9 @@
                     <CollectionView
                         ItemsSource="{Binding SearchResults}"
                         x:Name="LeadersCollection"
-                        Margin="0,10">
+                        Margin="0,10"
+                        ItemsUpdatingScrollMode="KeepItemsInView"
+                        ItemSizingStrategy="MeasureFirstItem">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:LeaderViewModel">
                                 <Grid RowDefinitions="80, 8">
@@ -91,16 +93,15 @@
                                                     </Image.Clip>
                                                 </Image>
                                             </Border>
-                                            
-                                            <HorizontalStackLayout Grid.Column="2">
-                                                <Label Text="{Binding Name}"
-                                                       TextColor="White"
-                                                       FontAttributes="Bold"
-                                                       VerticalOptions="Center"
-                                                       InputTransparent="True"
-                                                       FontSize="Medium"
-                                                       Style="{StaticResource LabelBold}" />
-                                            </HorizontalStackLayout>
+                                           
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding Name}"
+                                                   TextColor="White"
+                                                   FontAttributes="Bold"
+                                                   VerticalOptions="Center"
+                                                   InputTransparent="True"
+                                                   FontSize="Medium"
+                                                   Style="{StaticResource LabelBold}" />
                                             
                                             <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
                                             <Grid Grid.Column="3">
