@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="SSW.Rewards.Mobile.Controls.Podium">
+    <VerticalStackLayout Spacing="2"
+                         IsVisible="False"
+                         x:Name="ParentLayout">
+        <Label HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               x:Name="Icon"/>
+        <Label HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               x:Name="RankLabel"/>
+        <mct:AvatarView WidthRequest="120"
+                        HeightRequest="120"
+                        CornerRadius="60"
+                        x:Name="ProfilePic"/>
+        <Label HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               x:Name="Name"/>
+        <Label HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               TextColor="Gold"
+               x:Name="Points"/>
+    </VerticalStackLayout>
+</ContentView>
