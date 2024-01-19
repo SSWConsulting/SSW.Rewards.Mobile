@@ -21,6 +21,9 @@ public partial class SegmentedControl : ContentView
     private List<Segment> _segments;
     private void SegmentsChanged(List<Segment> segments)
     {
+        if (Segments == null)
+            return;
+        
         if (Segments.Count > 0)
         {
             Segments[0].IsSelected = true;

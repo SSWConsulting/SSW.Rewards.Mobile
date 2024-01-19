@@ -331,7 +331,7 @@
             <!--            Text="&#x2699;"> -->
             <!--     </Label> -->
             <!--     <Label Grid.Column="1" -->
-            <!--            Style="{StaticResource FlyoutLabelBold}" -->
+            <!--            Style="{StaticResource LabelBold}" -->
             <!--            TextColor="#DDDDDD" -->
             <!--            HorizontalOptions="Center" -->
             <!--            VerticalOptions="Center" -->
@@ -362,7 +362,7 @@
                 </Label>
 
                 <Label Grid.Column="1"
-                       Style="{StaticResource FlyoutLabelBold}"
+                       Style="{StaticResource LabelBold}"
                        TextColor="#DDDDDD"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
