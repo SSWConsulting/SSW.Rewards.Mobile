@@ -29,7 +29,10 @@ public partial class LeaderboardPage : ContentPage
     private async Task Animate()
     {
         if (_isLoaded)
+        {
+            LeadersCollection.IsVisible = true;
             return;
+        }
         
         await Task.Delay(1000);
         LeadersCollection.Opacity = 0;

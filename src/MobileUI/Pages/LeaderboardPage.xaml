@@ -89,7 +89,9 @@
                                                        TextColor="White"
                                                        VerticalOptions="Center"
                                                        HorizontalOptions="Center"
-                                                       InputTransparent="True"/>
+                                                       HorizontalTextAlignment="Center"
+                                                       InputTransparent="True"
+                                                       WidthRequest="50" />
                                             </Border>
                                             
                                             <Border Grid.Column="1"
@@ -100,7 +102,6 @@
                                                     HeightRequest="50"
                                                     StrokeThickness="1.5">
                                                 <Image
-                                                    Margin="0,0,0,0"
                                                     Source="{Binding ProfilePic}"
                                                     Aspect="AspectFill"
                                                     InputTransparent="True">
@@ -146,7 +147,8 @@
                                                     HorizontalOptions="End"
                                                     VerticalOptions="Center"
                                                     FontSize="15"
-                                                    Style="{StaticResource LabelBold}" />
+                                                    Style="{StaticResource LabelBold}"
+                                                    InputTransparent="True" />
                                                 <Label 
                                                     Grid.Column="1"
                                                     TextColor="{StaticResource Coin}"
@@ -155,7 +157,8 @@
                                                     HorizontalOptions="End"
                                                     VerticalOptions="Center"
                                                     FontSize="11"
-                                                    Style="{StaticResource LabelBold}" />
+                                                    Style="{StaticResource LabelBold}"
+                                                    InputTransparent="True" />
                                             </Grid>
                                             
                                         </Grid>
