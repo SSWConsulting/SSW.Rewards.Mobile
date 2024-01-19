@@ -24,7 +24,7 @@ public partial class Podium : ContentView
 		Icon.Text = GetIcon(leader.Rank);
         RankLabel.Text = leader.Rank.ToString();
 		Name.Text = GetName(leader.Name);
-		Points.Text = $"⭐ {leader.DisplayPoints:N0}";
+		Points.Text = $"{leader.DisplayPoints:N0}";
 		ProfilePic.ImageSource = leader.ProfilePic;
 
 		Icon.FontSize = GetFontSize(leader.Rank);
@@ -41,9 +41,9 @@ public partial class Podium : ContentView
 	{
         return rank switch
 		{
-            1 => "👑",
-            2 => "🥈",
-			3 => "🥉",
+            1 => "\uf521",
+            2 => "\uf5a2",
+			3 => "\uf5a2",
             _ => string.Empty,
         };
     }
@@ -100,7 +100,7 @@ public partial class Podium : ContentView
 		Icon.Opacity = 0;
 		RankLabel.Opacity = 0;
 		Name.Opacity = 0;
-		Points.Opacity = 0;
+        PointStack.Opacity = 0;
 
         ParentLayout.IsVisible = true;
 
@@ -132,7 +132,7 @@ public partial class Podium : ContentView
 		Icon.TranslationY = translationY;
 		RankLabel.TranslationY = translationY;
 		Name.TranslationY = translationY;
-		Points.TranslationY = translationY;
+        PointStack.TranslationY = translationY;
 
 		if (rank != 1)
 		{
@@ -144,7 +144,7 @@ public partial class Podium : ContentView
 			Icon.FadeTo(1, 100, Easing.SinIn),
 			RankLabel.FadeTo(1, 100, Easing.SinIn),
 			Name.FadeTo(1, 100, Easing.SinIn),
-			Points.FadeTo(1, 100, Easing.SinIn)
+            PointStack.FadeTo(1, 100, Easing.SinIn)
 		);
     }
 }

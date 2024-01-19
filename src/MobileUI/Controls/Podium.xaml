@@ -8,6 +8,8 @@
                          x:Name="ParentLayout">
         <Label HorizontalOptions="Center"
                HorizontalTextAlignment="Center"
+               FontFamily="FA6Solid"
+               TextColor="{StaticResource Coin}"
                x:Name="Icon"/>
         <Label HorizontalOptions="Center"
                HorizontalTextAlignment="Center"
@@ -19,9 +21,17 @@
         <Label HorizontalOptions="Center"
                HorizontalTextAlignment="Center"
                x:Name="Name"/>
-        <Label HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               TextColor="Gold"
-               x:Name="Points"/>
+        <HorizontalStackLayout x:Name="PointStack"
+                               HorizontalOptions="Center"
+                               Spacing="4">
+            <Label VerticalTextAlignment="Center"
+                   FontFamily="FA6Solid"
+                   Text="&#x2b50;"
+                   TextColor="{StaticResource Coin}"/>
+            <Label TextColor="{StaticResource Coin}"
+                   Style="{StaticResource LabelBold}"
+                   x:Name="Points"/>
+        </HorizontalStackLayout>
+
     </VerticalStackLayout>
 </ContentView>
