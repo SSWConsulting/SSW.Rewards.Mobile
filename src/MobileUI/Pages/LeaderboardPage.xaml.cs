@@ -3,6 +3,7 @@
 public partial class LeaderboardPage : ContentPage
 {
     private readonly LeaderBoardViewModel _viewModel;
+    private bool _isLoaded;
 
     public LeaderboardPage(LeaderBoardViewModel leaderBoardViewModel)
     {
@@ -27,14 +28,20 @@ public partial class LeaderboardPage : ContentPage
 
     private async Task Animate()
     {
+        if (_isLoaded)
+            return;
+        
+        await Task.Delay(1000);
         LeadersCollection.Opacity = 0;
         LeadersCollection.TranslationY = 400;
+        LeadersCollection.IsVisible = true;
         
         await Task.WhenAll
         (
-            LeadersCollection.FadeTo(1, 1000, Easing.SinIn),
-        	LeadersCollection.TranslateTo(0, 0, 1000, Easing.SinIn)
+            LeadersCollection.FadeTo(1, 800, Easing.CubicIn),
+            LeadersCollection.TranslateTo(0, 0, 800, Easing.SinIn)
         );
-
+        
+        _isLoaded = true;
     }
 }

@@ -56,7 +56,8 @@
                         x:Name="LeadersCollection"
                         Margin="0,10"
                         ItemsUpdatingScrollMode="KeepItemsInView"
-                        ItemSizingStrategy="MeasureFirstItem">
+                        ItemSizingStrategy="MeasureFirstItem"
+                        IsVisible="False">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:LeaderViewModel">
                                 <Grid RowDefinitions="84, 5">
