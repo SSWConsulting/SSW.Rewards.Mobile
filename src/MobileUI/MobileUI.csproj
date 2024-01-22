@@ -104,6 +104,10 @@
 		<Compile Update="Pages\ProfilePages\MyProfilePage.xaml.cs">
 			<DependentUpon>MyProfilePage.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="Pages\EarnPage.xaml.cs">
+		  <DependentUpon>EarnPage.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -113,6 +117,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Controls\SegmentedControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\EarnPage.xaml">
+		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>
 

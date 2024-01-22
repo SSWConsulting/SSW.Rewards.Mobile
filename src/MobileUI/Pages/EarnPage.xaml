@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
+             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+             x:Name="QuizList"
+             x:DataType="viewModels:QuizViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
+    <Shell.TitleView>
+        <Label Text="Earn"
+               VerticalOptions="Center"
+               FontSize="18"
+               x:Name="TitleText"
+               TextColor="White"/>
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PassedToQuizIconColour x:Key="PassedToIconColor"/>
+            <converters:IconToGlyphConverter x:Key="IconToGlyph"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <CollectionView
+                        ItemsSource="{Binding Quizzes}"
+                        Margin="15,10"
+                        ItemsUpdatingScrollMode="KeepItemsInView"
+                        ItemSizingStrategy="MeasureFirstItem">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="quizzes:QuizDto">
+                                <Grid RowDefinitions="78, 6">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            NumberOfTapsRequired="1"
+                                            CommandParameter="{Binding  .}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Row="0" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Grid ColumnSpacing="6"
+                                              ColumnDefinitions="80, *, Auto"
+                                              BackgroundColor="{StaticResource Background}">
+                                            <Border Grid.Column="0"
+                                                    HeightRequest="64"
+                                                    WidthRequest="64"
+                                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                                    StrokeThickness="0">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="6" />
+                                                </Border.StrokeShape>
+                                                <Grid>
+                                                    <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
+                                                           TextColor="{StaticResource SSWRed}"
+                                                           FontFamily="FA6Brands"
+                                                           FontSize="56"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"
+                                                           HorizontalTextAlignment="Center"
+                                                           VerticalTextAlignment="Center"/>
+
+                                                    <Label Text="&#xe30b;"
+                                                           TextColor="Green"
+                                                           FontFamily="FluentIcons"
+                                                           FontSize="28"
+                                                           HorizontalOptions="End"
+                                                           VerticalOptions="End"
+                                                           IsVisible="{Binding Passed}">
+                                                    </Label>  
+                                                </Grid>
+                                            </Border>
+                                            
+                                            <Grid 
+                                                Grid.Column="1"
+                                                ColumnDefinitions="*"
+                                                RowDefinitions="*,*"
+                                                VerticalOptions="Center"
+                                                RowSpacing="2">
+                                                <Label Grid.Row="0"
+                                                       Text="{Binding Title}"
+                                                       TextColor="White"
+                                                       InputTransparent="True"
+                                                       VerticalTextAlignment="End"
+                                                       FontSize="18"
+                                                       Style="{StaticResource LabelBold}"
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Grid.Row="1"
+                                                       Text="{Binding Description}"
+                                                       TextColor="White"
+                                                       VerticalTextAlignment="Start"
+                                                       InputTransparent="True"
+                                                       FontSize="12" />
+                                            </Grid>
+                                            
+                                            <Border Grid.Column="2"
+                                                    StrokeThickness="0"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    HeightRequest="34"
+                                                    WidthRequest="110"
+                                                    Margin="10,0">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="6" />
+                                                </Border.StrokeShape>
+                                                <Grid ColumnDefinitions="25,*,36"
+                                                      Background="{StaticResource ButtonBrush}">
+                                                    <Label 
+                                                        Grid.Column="0"
+                                                        TextColor="{StaticResource Coin}"
+                                                        Text="&#xf51e;"
+                                                        FontFamily="FA6Solid"
+                                                        HorizontalOptions="Center"
+                                                        VerticalOptions="Center"
+                                                        FontSize="11"
+                                                        Style="{StaticResource LabelBold}"
+                                                        InputTransparent="True" />
+                                                    <Label 
+                                                        Grid.Column="1"
+                                                        Text="1300"
+                                                        HorizontalOptions="Start"
+                                                        VerticalOptions="Center"
+                                                        FontSize="18"
+                                                        InputTransparent="True" />
+                                                    <Border Grid.Column="2"
+                                                        HeightRequest="34"
+                                                        WidthRequest="36"
+                                                        Background="{StaticResource BrandBrush}"
+                                                        StrokeThickness="0">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="6" />
+                                                        </Border.StrokeShape>
+                                                        <Grid>
+                                                            <Label Text="GO"
+                                                                   TextColor="White"
+                                                                   FontSize="14"
+                                                                   HorizontalOptions="Center"
+                                                                   VerticalOptions="Center"
+                                                                   HorizontalTextAlignment="Center"
+                                                                   VerticalTextAlignment="Center"
+                                                                   Style="{StaticResource LabelBold}"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                            
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+    </ContentPage.Content>
+</ContentPage>

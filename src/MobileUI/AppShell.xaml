@@ -128,6 +128,10 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
+        
+        <Tab Route="earn" Icon="icon_trophy" Title="Earn">
+            <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
+        </Tab>
 
         <Tab Route="leader" Icon="icon_trophy" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
