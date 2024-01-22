@@ -2,15 +2,15 @@
 
 [QueryProperty(nameof(QuizId), nameof(QuizId))]
 [QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
-public partial class EarnDetailsPage : ContentPage
+public partial class QuizDetailsPage : ContentPage
 {
-    private EarnDetailsViewModel _viewModel;
+    private QuizDetailsViewModel _viewModel;
 
     public string QuizId { get; set; }
 
     public string QuizIcon { get; set; }
 
-    public EarnDetailsPage(EarnDetailsViewModel viewModel)
+    public QuizDetailsPage(QuizDetailsViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

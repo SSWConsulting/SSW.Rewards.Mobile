@@ -20,6 +20,7 @@ public partial class AppShell : Shell
         _authService = authService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
+        Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
     }
 
     private bool _isStaff;

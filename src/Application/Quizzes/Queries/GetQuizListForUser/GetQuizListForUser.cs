@@ -26,6 +26,7 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
                                                 .Where(q => !q.IsArchived)
                                                 .Include(q => q.Questions)
                                                     .ThenInclude(x => x.Answers)
+                                                .Include(q => q.Achievement)
                                                 .OrderBy(q => q.Title)
                                                 .AsNoTracking()
                                                 .ToListAsync(cancellationToken);
@@ -47,7 +48,8 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
                 Title = quiz.Title,
                 Description = quiz.Description,
                 Icon = quiz.Icon,
-                Passed = userQuizzes.Contains(quiz.Id)
+                Passed = userQuizzes.Contains(quiz.Id),
+                Points = quiz.Achievement.Value
             });
         }
 

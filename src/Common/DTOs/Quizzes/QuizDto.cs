@@ -7,4 +7,5 @@ public class QuizDto
     public string Description { get; set; } = string.Empty;
     public bool Passed { get; set; } = false;
     public Icons Icon { get; set; }
+    public int Points { get; set; }
 }

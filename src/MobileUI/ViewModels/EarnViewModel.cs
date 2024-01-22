@@ -11,7 +11,7 @@ public class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
 {
     private readonly IQuizService _quizService;
 
-    private string quizDetailsPageUrl = "quiz/details";
+    private string quizDetailsPageUrl = "earn/details";
 
     public ObservableCollection<QuizDto> Quizzes { get; set; } = new ObservableCollection<QuizDto>();
 
