@@ -8,6 +8,10 @@ using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizList;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizDetails;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
+using SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
+using SSW.Rewards.Application.Quizzes.Commands.BeginQuiz;
+using SSW.Rewards.Application.Quizzes.Queries.GetQuizQuestionsBySubmissionId;
+using SSW.Rewards.Application.Quizzes.Queries.GetQuizResults;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -69,6 +73,30 @@ public class QuizzesController : ApiControllerBase
         }));
     }
 
+    // New GPT quiz-related endpoints
+    [HttpPost]
+    public async Task<ActionResult<List<QuizQuestionDto>>> BeginQuiz(int quizId)
+    {
+        int submissionId = await Mediator.Send(new BeginQuizCommand { QuizId = quizId });
+        List<QuizQuestionDto> results = await Mediator.Send(new GetQuizQuestionsBySubmissionIdQuery { SubmissionId = submissionId });
+        return Ok(results);
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult> SubmitAnswer(SubmitQuizAnswerDto model)
+    {
+        await Mediator.Send(new SubmitAnswerCommand { SubmissionId = model.SubmissionId, QuestionId = model.QuestionId, AnswerText = model.AnswerText });
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
+    {
+        var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
+        return Ok(results);
+    }
+
     // TODO: Add endpoints for Admins to be able to add/update/delete quizzes and quiz questions.
     // See: https://github.com/SSWConsulting/SSW.Rewards.API/issues/5
 }
+
