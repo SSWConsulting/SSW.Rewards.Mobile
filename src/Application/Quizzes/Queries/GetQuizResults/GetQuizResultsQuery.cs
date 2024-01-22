@@ -61,8 +61,8 @@ public sealed class Handler : IRequestHandler<GetQuizResultsQuery, QuizResultDto
             Passed          = passed,
             Results         = dbQuiz.Answers.Select(a => new QuestionResultDto
             {
-                QuestionId      = a.QuizQuestionId,
-                QuestionText    = a.QuizQuestion.Text ?? string.Empty,
+                QuestionId      = a.QuizQuestionId ?? 0,
+                QuestionText    = a.QuizQuestion?.Text ?? string.Empty,
                 AnswerText      = a.AnswerText,
                 ExplanationText = a.GPTExplanation,
                 Correct         = a.Correct,

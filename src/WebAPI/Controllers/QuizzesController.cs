@@ -12,6 +12,7 @@ using SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
 using SSW.Rewards.Application.Quizzes.Commands.BeginQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizQuestionsBySubmissionId;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizResults;
+using SSW.Rewards.Application.Quizzes.Queries.CheckQuizCompletion;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -73,7 +74,7 @@ public class QuizzesController : ApiControllerBase
         }));
     }
 
-    // New GPT quiz-related endpoints
+    // GPT quiz-related endpoint 1/3
     [HttpPost]
     public async Task<ActionResult<List<QuizQuestionDto>>> BeginQuiz(int quizId)
     {
@@ -82,6 +83,7 @@ public class QuizzesController : ApiControllerBase
         return Ok(results);
     }
     
+    // GPT quiz-related endpoint 2/3
     [HttpPost]
     public async Task<ActionResult> SubmitAnswer(SubmitQuizAnswerDto model)
     {
@@ -89,6 +91,17 @@ public class QuizzesController : ApiControllerBase
         return Ok();
     }
 
+    [HttpGet]
+    public async Task<ActionResult> CheckQuizCompletion(int submissionId)
+    {
+        bool b = await Mediator.Send(new CheckQuizCompletionQuery { SubmissionId = submissionId });
+        if (b)
+            return Ok();
+        else
+            return StatusCode(202);
+    }
+    
+    // GPT quiz-related endpoint 3/3
     [HttpGet]
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
@@ -99,4 +112,3 @@ public class QuizzesController : ApiControllerBase
     // TODO: Add endpoints for Admins to be able to add/update/delete quizzes and quiz questions.
     // See: https://github.com/SSWConsulting/SSW.Rewards.API/issues/5
 }
-
