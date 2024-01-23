@@ -76,11 +76,17 @@ public class QuizzesController : ApiControllerBase
 
     // GPT quiz-related endpoint 1/3
     [HttpPost]
-    public async Task<ActionResult<List<QuizQuestionDto>>> BeginQuiz(int quizId)
+    public async Task<ActionResult<BeginQuizDto>> BeginQuiz([FromBody]int quizId)
     {
         int submissionId = await Mediator.Send(new BeginQuizCommand { QuizId = quizId });
         List<QuizQuestionDto> results = await Mediator.Send(new GetQuizQuestionsBySubmissionIdQuery { SubmissionId = submissionId });
-        return Ok(results);
+
+        BeginQuizDto model = new BeginQuizDto
+        {
+            SubmissionId = submissionId,
+            Questions = results
+        };
+        return Ok(model);
     }
     
     // GPT quiz-related endpoint 2/3

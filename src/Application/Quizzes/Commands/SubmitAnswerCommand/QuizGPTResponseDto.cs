@@ -1,9 +1,20 @@
-﻿namespace SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
+﻿using System.Text.Json.Serialization;
+
+namespace SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
 public class QuizGPTResponseDto
 {
-    public string QuestionText { get; set; } = string.Empty;
-    public string AnswerText { get; set; } = string.Empty;
+    [JsonPropertyName("question")]
+    public string Question { get; set; } = string.Empty;
+
+    [JsonPropertyName("answer")]
+    public string Answer { get; set; } = string.Empty;
+
+    [JsonPropertyName("correct")]
     public bool Correct { get; set; }
+
+    [JsonPropertyName("explanation")]
     public string Explanation { get; set; } = string.Empty;
+
+    [JsonPropertyName("confidence")]
     public int Confidence { get; set; }
 }
