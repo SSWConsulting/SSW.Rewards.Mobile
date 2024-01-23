@@ -108,7 +108,7 @@ public class QuizzesController : ApiControllerBase
             return StatusCode(202);
     }
     
-    // GPT quiz-related endpoint 4/3
+    // GPT quiz-related endpoint 4/4
     [HttpGet]
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
