@@ -18,8 +18,6 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
 
     public Handler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
-        IUserService userService,
         IQuizGPTService quizGptService,
         ILogger<SubmitAnswerCommand> logger
         )
@@ -31,40 +29,30 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
 
     public async Task<Unit> Handle(SubmitAnswerCommand request, CancellationToken cancellationToken)
     {
-        // This command has its own try/catch block because it's being used as a fire-and-forget
-        // action. If an exception is thrown, the usual pipeline won't catch it.
-        try
+        // get the question text
+        string questionText = await GetQuestionText(request.QuestionId);
+
+        // run the answer through GPT
+        QuizGPTRequestDto payload = new QuizGPTRequestDto
         {
-            // get the question text
-            string questionText = await GetQuestionText(request.QuestionId);
+            QuestionText = questionText,
+            AnswerText = request.AnswerText
+        };
 
-            // run the answer through GPT
-            QuizGPTRequestDto payload = new QuizGPTRequestDto
-            {
-                QuestionText = questionText,
-                AnswerText = request.AnswerText
-            };
+        QuizGPTResponseDto result = await _quizGptService.ValidateAnswer(payload, cancellationToken);
 
-            QuizGPTResponseDto result = await _quizGptService.ValidateAnswer(payload, cancellationToken);
-
-            // write the answer to the database
-            SubmittedQuizAnswer answer = new SubmittedQuizAnswer
-            {
-                SubmissionId    = request.SubmissionId,
-                QuizQuestionId  = request.QuestionId,
-                AnswerText      = request.AnswerText,
-                Correct         = result.Correct,
-                GPTConfidence   = result.Confidence,
-                GPTExplanation  = result.Explanation
-            };
-            await _context.SubmittedAnswers.AddAsync(answer, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception ex)
+        // write the answer to the database
+        SubmittedQuizAnswer answer = new SubmittedQuizAnswer
         {
-            // log and swallow
-            _logger.LogError(ex, nameof(SubmitAnswerCommand));
-        }
+            SubmissionId    = request.SubmissionId,
+            QuizQuestionId  = request.QuestionId,
+            AnswerText      = request.AnswerText,
+            Correct         = result.Correct,
+            GPTConfidence   = result.Confidence,
+            GPTExplanation  = result.Explanation
+        };
+        await _context.SubmittedAnswers.AddAsync(answer, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;
     }
 

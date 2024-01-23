@@ -74,7 +74,7 @@ public class QuizzesController : ApiControllerBase
         }));
     }
 
-    // GPT quiz-related endpoint 1/3
+    // GPT quiz-related endpoint 1/4
     [HttpPost]
     public async Task<ActionResult<BeginQuizDto>> BeginQuiz([FromBody]int quizId)
     {
@@ -89,7 +89,7 @@ public class QuizzesController : ApiControllerBase
         return Ok(model);
     }
     
-    // GPT quiz-related endpoint 2/3
+    // GPT quiz-related endpoint 2/4
     [HttpPost]
     public async Task<ActionResult> SubmitAnswer(SubmitQuizAnswerDto model)
     {
@@ -97,6 +97,7 @@ public class QuizzesController : ApiControllerBase
         return Ok();
     }
 
+    // GPT quiz-related endpoint 3/4
     [HttpGet]
     public async Task<ActionResult> CheckQuizCompletion(int submissionId)
     {
@@ -107,7 +108,7 @@ public class QuizzesController : ApiControllerBase
             return StatusCode(202);
     }
     
-    // GPT quiz-related endpoint 3/3
+    // GPT quiz-related endpoint 4/3
     [HttpGet]
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
