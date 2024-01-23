@@ -6,6 +6,7 @@
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="{StaticResource QuizDescriptionBackground}"
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
@@ -26,17 +27,17 @@
         </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.Resources>
-        <converters:PassedToResultColourConverter x:Key="PassedToColor" />
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <converters:IconToGlyphConverter x:Key="IconToGlyph" />
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Border StrokeThickness="0" Margin="15,15,15,100" BackgroundColor="{StaticResource Background}">
+        <Border StrokeThickness="0" Margin="15" BackgroundColor="{StaticResource Background}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid>
-                <Grid RowDefinitions="120, 30, 30, 20, *, 60"
+                <Grid RowDefinitions="120, 30, 30, 30, 40, *, 60"
                       IsVisible="{Binding QuestionsVisible}"
                       x:Name="QuestionsView">
                     
@@ -50,7 +51,7 @@
                         </Border.StrokeShape>
                         <Grid>
                             <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                   TextColor="{StaticResource Gray100}"
+                                   TextColor="White"
                                    FontFamily="FA6Brands"
                                    FontSize="56"
                                    HorizontalOptions="Center"
@@ -73,23 +74,51 @@
                            FontSize="18"
                            HorizontalOptions="Center"/>
                     
+                    <Border Grid.Row="3" 
+                            StrokeThickness="0" 
+                            WidthRequest="80" 
+                            BackgroundColor="{StaticResource FlyoutBackgroundColour}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="30,*">
+                            <Label
+                                Grid.Column="0"
+                                TextColor="{StaticResource Coin}"
+                                Text="&#xf51e;"
+                                FontFamily="FA6Solid"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                FontSize="11"
+                                Style="{StaticResource LabelBold}"
+                                InputTransparent="True" />
+                            <Label Grid.Column="1" Text="{Binding Points}"
+                                   TextColor="White"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Grid>
+
+                    </Border>
+                    
                     <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
                                    HorizontalOptions="Center"
-                                   Grid.Row="3"
+                                   VerticalOptions="End"
+                                   Grid.Row="4"
                                    x:Name="QuestionIndicator" />
 
-                    <CarouselView Grid.Row="4"
+                    <CarouselView Grid.Row="5"
                                   IndicatorView="QuestionIndicator"
                                   Loop="False"
                                   ItemsSource="{Binding Questions}"
                                   CurrentItem="{Binding CurrentQuestion}"
                                   CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
                                   x:Name="QuestionsCarousel"
-                                  Margin="30">
+                                  Margin="20">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
-                                <Grid RowDefinitions="140,*" RowSpacing="10">
+                                <Grid RowDefinitions="80,*" RowSpacing="40">
                                     <Label Grid.Row="0"
                                            HorizontalOptions="FillAndExpand"
                                            VerticalOptions="FillAndExpand"
@@ -104,26 +133,55 @@
                                             <RoundRectangle CornerRadius="8" />
                                         </Border.StrokeShape>
                                         <Editor x:Name="editor"
-                                                Placeholder="Enter your response here"
-                                                BackgroundColor="{StaticResource Gray100}"
+                                                BackgroundColor="White"
                                                 TextColor="Black" />
                                     </Border>
                                 </Grid>
                             </DataTemplate>
                         </CarouselView.ItemTemplate>
                     </CarouselView>
-
-                    <Button Grid.Row="5"
-                            Text="{Binding ButtonText}"
-                            Command="{Binding ButtonCommand}"
-                            TextColor="White"
-                            HeightRequest="40"
-                            Margin="30,0,30,10"
-                            VerticalOptions="Start"
-                            HorizontalOptions="End"
-                            Padding="0"
-                            BackgroundColor="{StaticResource SSWRed}"
-                            WidthRequest="40" />
+                    
+                    <Grid Grid.Row="6" ColumnDefinitions="*,*" Margin="20,0,20,10">
+                        <Button Grid.Column="0"
+                                IsVisible="{Binding IsFirstQuestion, Converter={StaticResource InvertedBoolConverter}}"
+                                Text="&#xf060;"
+                                Command="{Binding MoveBackCommand}"
+                                FontFamily="FA6Solid"
+                                TextColor="White"
+                                HeightRequest="40"
+                                VerticalOptions="Start"
+                                HorizontalOptions="Start"
+                                Padding="0"
+                                Background="{StaticResource BrandBrush}"
+                                WidthRequest="40" />
+                        
+                        <Button Grid.Column="1"
+                                IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
+                                Text="&#xf061;"
+                                Command="{Binding MoveNextCommand}"
+                                FontFamily="FA6Solid"
+                                TextColor="White"
+                                HeightRequest="40"
+                                VerticalOptions="Start"
+                                HorizontalOptions="End"
+                                Padding="0"
+                                Background="{StaticResource BrandBrush}"
+                                WidthRequest="40" />
+                        
+                        <Button Grid.Column="1"
+                                IsVisible="{Binding IsLastQuestion}"
+                                Text="Submit"
+                                Command="{Binding SubmitCommand}"
+                                Style="{StaticResource LabelBold}"
+                                FontSize="12"
+                                TextColor="White"
+                                HeightRequest="40"
+                                VerticalOptions="Start"
+                                HorizontalOptions="End"
+                                Padding="0"
+                                Background="{StaticResource BrandBrush}"
+                                WidthRequest="80" />
+                    </Grid>
 
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"

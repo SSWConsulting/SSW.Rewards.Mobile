@@ -19,9 +19,13 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ObservableCollection<QuestionResultDto> Results { get; set; } = new ObservableCollection<QuestionResultDto>();
 
-        public ICommand ButtonCommand { get; set; }
-
         public ICommand BackCommand => new Command(async () => await GoBack());
+        
+        public ICommand MoveBackCommand => new Command(() => MoveNext(Questions.IndexOf(CurrentQuestion) - 1));
+        
+        public ICommand MoveNextCommand => new Command(() => MoveNext(Questions.IndexOf(CurrentQuestion) + 1));
+
+        public ICommand SubmitCommand => new Command(async () => await SubmitResponses());
 
         public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
 
@@ -32,9 +36,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         
         [ObservableProperty]
         private string _quizDescription;
-        
-        [ObservableProperty]
-        private string _buttonText = "\uf521";
         
         [ObservableProperty]
         private string _score;
@@ -56,6 +57,15 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private Icons _icon;
+
+        [ObservableProperty]
+        private int _points;
+        
+        [ObservableProperty]
+        private bool _isFirstQuestion = true;
+
+        [ObservableProperty]
+        private bool _isLastQuestion;
 
         public SnackbarOptions SnackOptions { get; set; }
 
@@ -93,6 +103,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             QuizTitle = quiz.Title;
             Icon = quiz.Icon;
             QuizDescription = quiz.Description;
+            Points = quiz.Points;
 
             IsBusy = false;
         }
@@ -229,21 +240,10 @@ namespace SSW.Rewards.Mobile.ViewModels
                 return;
 
             var selectedIndex = Questions.IndexOf(CurrentQuestion);
-
             var isLastQuestion = selectedIndex == Questions.Count - 1;
-
-            if (isLastQuestion && !IsLoadingQuestions)
-            {
-                ButtonText = "Submit";
-                ButtonCommand = new Command(async () => await SubmitResponses());
-            }
-            else
-            {
-                ButtonText = "\u2192";
-                ButtonCommand = new Command(() => MoveNext(++selectedIndex));
-            }
-
-            OnPropertyChanged(nameof(ButtonCommand));
+            
+            IsFirstQuestion = selectedIndex == 0;
+            IsLastQuestion = isLastQuestion && !IsLoadingQuestions;
         }
 
         private void MoveNext(int next)

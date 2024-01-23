@@ -52,7 +52,7 @@
                                     </Border.StrokeShape>
                                     <Grid>
                                         <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                               TextColor="{StaticResource Gray100}"
+                                               TextColor="White"
                                                FontFamily="FA6Brands"
                                                FontSize="56"
                                                HorizontalOptions="Center"
