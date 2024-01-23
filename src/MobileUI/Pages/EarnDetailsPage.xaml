@@ -36,64 +36,94 @@
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid>
-                <Grid RowDefinitions="80, 100, *, 20, 60"
+                <Grid RowDefinitions="120, 30, 30, 20, *, 60"
                       IsVisible="{Binding QuestionsVisible}"
                       x:Name="QuestionsView">
                     
-                    <Label Grid.Row="0"
-                           Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                           TextColor="{StaticResource SSWRed}"
-                           FontFamily="FA6Brands"
-                           FontSize="56"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center" />
+                    <Border Grid.Row="0"
+                            HeightRequest="80"
+                            WidthRequest="80"
+                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                            StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6" />
+                        </Border.StrokeShape>
+                        <Grid>
+                            <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
+                                   TextColor="{StaticResource Gray100}"
+                                   FontFamily="FA6Brands"
+                                   FontSize="56"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Grid>
+                    </Border>
 
+                    
                     <Label Grid.Row="1"
-                           HorizontalOptions="FillAndExpand"
-                           VerticalOptions="FillAndExpand"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"
-                           TextColor="White"
-                           FontSize="Medium"
+                           Text="{Binding QuizTitle}"
+                           Style="{StaticResource LabelBold}"
+                           FontSize="24"
+                           HorizontalOptions="Center"/>
+                    
+                    <Label Grid.Row="2"
                            Text="{Binding QuizDescription}"
-                           Padding="20,0,20,0" />
-
-                    <CarouselView Grid.Row="2"
-                                  IndicatorView="QuestionIndicator"
-                                  Loop="False"
-                                  ItemsSource="{Binding Questions}"
-                                  CurrentItem="{Binding CurrentQuestion}"
-                                  CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
-                                  x:Name="QuestionsCarousel">
-                        <CarouselView.ItemTemplate>
-                            <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
-                                <ScrollView HeightRequest="400">
-
-                                </ScrollView>
-                            </DataTemplate>
-                        </CarouselView.ItemTemplate>
-
-                    </CarouselView>
-
+                           TextColor="{StaticResource Gray300}"
+                           FontSize="18"
+                           HorizontalOptions="Center"/>
+                    
                     <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
                                    HorizontalOptions="Center"
                                    Grid.Row="3"
                                    x:Name="QuestionIndicator" />
 
-                    <Button Grid.Row="4"
+                    <CarouselView Grid.Row="4"
+                                  IndicatorView="QuestionIndicator"
+                                  Loop="False"
+                                  ItemsSource="{Binding Questions}"
+                                  CurrentItem="{Binding CurrentQuestion}"
+                                  CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
+                                  x:Name="QuestionsCarousel"
+                                  Margin="30">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:QuizQuestionViewModel">
+                                <Grid RowDefinitions="140,*" RowSpacing="10">
+                                    <Label Grid.Row="0"
+                                           HorizontalOptions="FillAndExpand"
+                                           VerticalOptions="FillAndExpand"
+                                           HorizontalTextAlignment="Start"
+                                           VerticalTextAlignment="End"
+                                           Style="{StaticResource LabelBold}"
+                                           TextColor="White"
+                                           FontSize="Large"
+                                           Text="{Binding Text}" />
+                                    <Border Grid.Row="1" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Editor x:Name="editor"
+                                                Placeholder="Enter your response here"
+                                                BackgroundColor="{StaticResource Gray100}"
+                                                TextColor="Black" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+
+                    <Button Grid.Row="5"
                             Text="{Binding ButtonText}"
                             Command="{Binding ButtonCommand}"
                             TextColor="White"
                             HeightRequest="40"
                             Margin="30,0,30,10"
                             VerticalOptions="Start"
-                            HorizontalOptions="Center"
+                            HorizontalOptions="End"
                             Padding="0"
                             BackgroundColor="{StaticResource SSWRed}"
-                            WidthRequest="250" />
+                            WidthRequest="40" />
 
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"

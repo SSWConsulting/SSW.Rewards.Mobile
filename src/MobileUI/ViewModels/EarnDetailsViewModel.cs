@@ -92,6 +92,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
             Icon = quiz.Icon;
+            QuizDescription = quiz.Description;
 
             IsBusy = false;
         }
@@ -242,7 +243,6 @@ namespace SSW.Rewards.Mobile.ViewModels
                 ButtonCommand = new Command(() => MoveNext(++selectedIndex));
             }
 
-            QuizDescription = CurrentQuestion.Text;
             OnPropertyChanged(nameof(ButtonCommand));
         }
 
