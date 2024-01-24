@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -8,6 +9,8 @@ public interface IQuizAdminService
     Task<IEnumerable<QuizDetailsDto>> GetAdminQuizList(CancellationToken cancellationToken);
 
     Task<QuizEditDto> GetAdminQuizEdit(int quizId, CancellationToken cancellationToken);
+    
+    Task UploadCarouselImage(int id, Stream file, string fileName, CancellationToken cancellationToken);
 
     Task<int> AddNewQuiz(QuizEditDto quizDetailsDto, CancellationToken cancellationToken);
 
@@ -39,7 +42,7 @@ public class QuizAdminService : IQuizAdminService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to add new quiz: {responseContent}");
     }
-
+    
     public async Task<int> UpdateQuiz(QuizEditDto quizDetailsDto, CancellationToken cancellationToken)
     {
         var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpdateQuiz", quizDetailsDto, cancellationToken);
@@ -53,6 +56,21 @@ public class QuizAdminService : IQuizAdminService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to update quiz: {responseContent}");
+    }
+    
+    public async Task UploadCarouselImage(int id, Stream file, string fileName, CancellationToken cancellationToken)
+    {
+        var content = Helpers.ProcessImageContent(id, file, fileName);
+        
+        var result = await _httpClient.PostAsync($"{_baseRoute}UploadStaffMemberProfilePicture?id={id}", content, cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to upload profile picture: {responseContent}");
     }
 
     public async Task<IEnumerable<QuizDetailsDto>> GetAdminQuizList(CancellationToken cancellationToken)
