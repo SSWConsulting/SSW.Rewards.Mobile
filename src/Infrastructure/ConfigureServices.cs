@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Infrastructure;
+using SSW.Rewards.Infrastructure.Options;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.Infrastructure.Persistence.Interceptors;
 using SSW.Rewards.Infrastructure.Services;
@@ -16,8 +17,13 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHttpClient();
+        
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
         services.AddScoped<AchievementIntegrationIdInterceptor>();
+        services.AddOptions<GPTServiceOptions>()
+            .Configure(configuration.GetSection(nameof(GPTServiceOptions)).Bind);
+        services.AddScoped<IQuizGPTService, QuizGPTService>();
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -45,6 +51,7 @@ public static class ConfigureServices
         services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
         services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
+        services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
 
         services.AddScoped<IEmailService, EmailService>();
 

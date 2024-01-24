@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
@@ -8,6 +9,7 @@ public class AdminUpdateQuiz : IRequest<int>
 
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
+    private readonly IQuizImageStorageProvider _storage;
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
@@ -15,11 +17,13 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
     public AdminUpdateQuizHandler(
         IApplicationDbContext context,
         ICurrentUserService currentUserService,
-        IUserService userService)
+        IUserService userService,
+        IQuizImageStorageProvider storage)
     {
         _context = context;
         _currentUserService = currentUserService;
         _userService = userService;
+        _storage = storage;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
@@ -27,14 +31,20 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 
         var dbQuiz = await _context.Quizzes
                                     .Include(q => q.Questions)
-                                        .ThenInclude(r => r.Answers)
+                                    .ThenInclude(r => r.Answers)
                                     .FirstAsync(x => x.Id == request.Quiz.QuizId, cancellationToken);
-
+        
+        if (request.Quiz.IsCarousel && request.Quiz.CarouselImageFile != null)
+        {
+            dbQuiz.CarouselPhoto = await UploadQuizImage(request.Quiz.CarouselImageFile, cancellationToken);
+        }
+        
         dbQuiz.Title = request.Quiz.Title;
         dbQuiz.Description = request.Quiz.Description;
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
         dbQuiz.IsArchived = request.Quiz.IsArchived;
         dbQuiz.Icon = request.Quiz.Icon;
+        dbQuiz.IsCarousel = request.Quiz.IsCarousel;
 
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
         foreach (var q in request.Quiz.Questions)
@@ -110,4 +120,17 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         return dbQuestion;
     }
 
+    private async Task<string> UploadQuizImage(IBrowserFile file, CancellationToken cancellationToken)
+    {
+        var stream = file.OpenReadStream(file.Size);
+        
+        await using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms, cancellationToken);
+
+        byte[] bytes = ms.ToArray();
+
+        string filename = Guid.NewGuid().ToString();
+
+        return await _storage.UploadCarouselImage(bytes, filename);
+    }
 }

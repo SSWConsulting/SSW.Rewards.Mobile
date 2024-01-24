@@ -25,3 +25,27 @@ public class QuizAnswerConfiguration : IEntityTypeConfiguration<QuizAnswer>
             .HasForeignKey(x => x.QuestionId);
     }
 }
+
+public class QuizQuestionConfiguration : IEntityTypeConfiguration<QuizQuestion>
+{
+    public void Configure(EntityTypeBuilder<QuizQuestion> builder)
+    {
+        builder
+            .HasMany(x => x.UserAnswers)
+            .WithOne(x => x.QuizQuestion)
+            .HasForeignKey(x => x.QuizQuestionId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+public class SubmittedAnswerConfiguration : IEntityTypeConfiguration<SubmittedQuizAnswer>
+{
+    public void Configure(EntityTypeBuilder<SubmittedQuizAnswer> builder)
+    {
+        builder
+            .HasOne(x => x.QuizQuestion)
+            .WithMany(x => x.UserAnswers)
+            .HasForeignKey(x => x.QuizQuestionId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
+}

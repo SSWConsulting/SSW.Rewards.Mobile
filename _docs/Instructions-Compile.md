@@ -9,6 +9,7 @@
 - iOS SDK setup/installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/)
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
 - [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
+- [PowerShell Core](https://github.com/PowerShell/PowerShell)
 
 - Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
   - [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
@@ -26,7 +27,6 @@
 2. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
-   3. Replace keys in `appsettings.*.json` with placeholder keys with the values from the .NET User Secrets.
 3. Create a Developer Certificate https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates
    1. Create `WebAPI.pfx` with a password of `ThisPassword` (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
@@ -45,17 +45,19 @@ dotnet dev-certs https --trust
 
 4. Cd into the Repo
 5. Run the Docker Containers
+* On Windows, open PowerShell and run:
  ```bash
- docker compose build
- docker compose --profile all up -d
- ```   
-
+ ./up.ps1
+ ```
+* On macOS or Linux, open a terminal and run:
+```bash
+pwsh ./up
+```
+  
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
-
-
+  
 You should now be able to access the WebAPI Swagger docs at https://localhost:5001/swagger/index.html
 
-  
 **Note:** You can run only the WebAPI or AdminUI by running:
 ```bash
 docker compose --profile webapi up -d
