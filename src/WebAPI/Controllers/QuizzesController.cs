@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection.Quizzes.Commands.AdminUploadQuizCarouselImage;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
@@ -27,6 +28,22 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<int>> UpdateQuiz(QuizEditDto quiz)
     {
         return Ok(await Mediator.Send(new AdminUpdateQuiz { Quiz = quiz }));
+    }
+    
+    [HttpPost]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<ActionResult<string>> UploadQuizCarouselImageCommand(int id)
+    {
+        var file = HttpContext.Request.Form.Files["file"];
+        if (file != null && file.Length > 0)
+        {
+            // Process the file here
+            return Ok(await Mediator.Send(new UploadQuizCarouselImageCommand { Id = id, File = file.OpenReadStream() }));
+        }
+        else
+        {
+            return BadRequest("No file received");
+        }
     }
 
     [Authorize(Roles = AuthorizationRoles.Admin)]
