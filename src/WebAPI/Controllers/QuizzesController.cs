@@ -8,6 +8,11 @@ using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizList;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizDetails;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
+using SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
+using SSW.Rewards.Application.Quizzes.Commands.BeginQuiz;
+using SSW.Rewards.Application.Quizzes.Queries.GetQuizQuestionsBySubmissionId;
+using SSW.Rewards.Application.Quizzes.Queries.GetQuizResults;
+using SSW.Rewards.Application.Quizzes.Queries.CheckQuizCompletion;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -67,6 +72,48 @@ public class QuizzesController : ApiControllerBase
             QuizId = dto.QuizId,
             Answers = dto.Answers.ToList()
         }));
+    }
+
+    // GPT quiz-related endpoint 1/4
+    [HttpPost]
+    public async Task<ActionResult<BeginQuizDto>> BeginQuiz([FromBody]int quizId)
+    {
+        int submissionId = await Mediator.Send(new BeginQuizCommand { QuizId = quizId });
+        List<QuizQuestionDto> results = await Mediator.Send(new GetQuizQuestionsBySubmissionIdQuery { SubmissionId = submissionId });
+
+        BeginQuizDto model = new BeginQuizDto
+        {
+            SubmissionId = submissionId,
+            Questions = results
+        };
+        return Ok(model);
+    }
+    
+    // GPT quiz-related endpoint 2/4
+    [HttpPost]
+    public async Task<ActionResult> SubmitAnswer(SubmitQuizAnswerDto model)
+    {
+        await Mediator.Send(new SubmitAnswerCommand { SubmissionId = model.SubmissionId, QuestionId = model.QuestionId, AnswerText = model.AnswerText });
+        return Ok();
+    }
+
+    // GPT quiz-related endpoint 3/4
+    [HttpGet]
+    public async Task<ActionResult> CheckQuizCompletion(int submissionId)
+    {
+        bool b = await Mediator.Send(new CheckQuizCompletionQuery { SubmissionId = submissionId });
+        if (b)
+            return Ok();
+        else
+            return StatusCode(202);
+    }
+    
+    // GPT quiz-related endpoint 4/4
+    [HttpGet]
+    public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
+    {
+        var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
+        return Ok(results);
     }
 
     // TODO: Add endpoints for Admins to be able to add/update/delete quizzes and quiz questions.
