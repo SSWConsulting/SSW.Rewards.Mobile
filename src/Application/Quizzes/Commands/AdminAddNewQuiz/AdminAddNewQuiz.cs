@@ -32,11 +32,17 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         var user = _userService.GetCurrentUser();
 
         var dbUser = await _context.Users.FirstAsync(x => x.Id == user.Id, cancellationToken);
-        string imgUrl = string.Empty;
+        string carouselUrl = string.Empty;
+        string thumbUrl = string.Empty;
         
         if (request.NewQuiz.IsCarousel)
         {
-            imgUrl = await UploadQuizImage(request.NewQuiz.CarouselImageFile, cancellationToken);
+            carouselUrl = await UploadQuizImage(request.NewQuiz.CarouselImageFile, cancellationToken);
+        }
+
+        if (request.NewQuiz.ThumbnailImageFile != null)
+        {
+            thumbUrl = await UploadQuizImage(request.NewQuiz.ThumbnailImageFile, cancellationToken);
         }
         
         var quiz = new Quiz
@@ -45,7 +51,8 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
             Description = request.NewQuiz.Description,
             Icon = request.NewQuiz.Icon,
             IsCarousel = request.NewQuiz.IsCarousel,
-            CarouselPhoto = imgUrl,
+            CarouselPhoto = carouselUrl,
+            ThumbnailPhoto = thumbUrl,
             IsArchived = false,
             CreatedBy = dbUser,
             CreatedUtc = DateTime.UtcNow

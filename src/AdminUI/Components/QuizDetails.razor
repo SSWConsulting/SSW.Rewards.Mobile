@@ -24,7 +24,34 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            @if (!String.IsNullOrEmpty(@Model.CarouselImage))
+            <MudGrid>
+                <MudItem xs="6">
+                    @if (!String.IsNullOrEmpty(@Model.ThumbnailImage)) 
+                    {
+                        <MudImage id="profileImg" Src="@Model.ThumbnailImage" Height="50" Width="50" Elevation="1" Alt="Quiz Carousel image"/>
+                    }
+                    else
+                    {
+                        <MudPaper Height="50px" Width="50px" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave">
+                            <MudText Typo="Typo.body1">No Image</MudText>
+                        </MudPaper>
+                    }
+                </MudItem> 
+                <MudItem xs="6">
+                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Thumbnail Image
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                </MudItem>
+                <MudItem xs="6">
+                    @if (!String.IsNullOrEmpty(@Model.CarouselImage))
                     {
                         <MudImage id="profileImg" Src="@Model.CarouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
                     }
@@ -34,18 +61,23 @@
                             <MudText Typo="Typo.body1">No Image</MudText>
                         </MudPaper>
                     }
-            <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
-                <ButtonTemplate>
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context.Id">
-                        Upload Carousel Image
-                    </MudButton>
-                </ButtonTemplate>
-            </MudFileUpload>
-            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Carousel Image
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                </MudItem>
+            </MudGrid>
+            
             <MudButton Variant="Variant.Filled" Class="mt-2" Color="Color.Primary" OnClick="@(() => OnSave())">Save quiz</MudButton>
         </MudItem>
         <MudItem xs="12" md="6">
@@ -134,11 +166,22 @@
     
     private async Task SetCarouselImage(IBrowserFile file)
     {
+        Model.CarouselImageFile = file;
+        Model.CarouselImage = await GetData(file);
+    }    
+    
+    private async Task SetThumbnailImage(IBrowserFile file)
+    {
+        Model.ThumbnailImageFile = file;
+        Model.ThumbnailImage = await GetData(file);
+    }
+
+    private async Task<string> GetData (IBrowserFile file)
+    {
         var buffer = new byte[file.Size];
         await file.OpenReadStream().ReadAsync(buffer);
         var imageType = file.ContentType;
-
-        Model.CarouselImageFile = file;
-        Model.CarouselImage = $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
+        
+        return $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
     }
 }

@@ -39,6 +39,12 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             dbQuiz.CarouselPhoto = await UploadQuizImage(request.Quiz.CarouselImageFile, cancellationToken);
         }
         
+        
+        if (request.Quiz.ThumbnailImageFile != null)
+        {
+            dbQuiz.ThumbnailPhoto = await UploadQuizImage(request.Quiz.ThumbnailImageFile, cancellationToken);
+        }
+        
         dbQuiz.Title = request.Quiz.Title;
         dbQuiz.Description = request.Quiz.Description;
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
