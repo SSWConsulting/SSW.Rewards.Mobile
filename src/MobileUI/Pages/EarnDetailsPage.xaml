@@ -111,6 +111,7 @@
                     <CarouselView Grid.Row="5"
                                   IndicatorView="QuestionIndicator"
                                   Loop="False"
+                                  IsSwipeEnabled="False"
                                   ItemsSource="{Binding Questions}"
                                   CurrentItem="{Binding CurrentQuestion}"
                                   CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
@@ -152,7 +153,7 @@
                                 VerticalOptions="Start"
                                 HorizontalOptions="Start"
                                 Padding="0"
-                                Background="{StaticResource BrandBrush}"
+                                BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
                         
                         <Button Grid.Column="1"
@@ -165,7 +166,7 @@
                                 VerticalOptions="Start"
                                 HorizontalOptions="End"
                                 Padding="0"
-                                Background="{StaticResource BrandBrush}"
+                                BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
                         
                         <Button Grid.Column="1"
@@ -179,7 +180,7 @@
                                 VerticalOptions="Start"
                                 HorizontalOptions="End"
                                 Padding="0"
-                                Background="{StaticResource BrandBrush}"
+                                BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="80" />
                     </Grid>
 
