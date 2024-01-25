@@ -1,14 +1,17 @@
 ﻿@using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
+@using SSW.Rewards.ApiClient.Services
 @using SSW.Rewards.Shared.DTOs.Quizzes
+@using Microsoft.Extensions.Options
+
 @inject IDialogService DialogService
 
-<MudForm>
+<MudForm @bind-success="@_success" @bind-errors="@_errors">
     <MudGrid>
         <MudItem xs="12" md="6">
             <MudText Typo="Typo.h4" Class="mb-4">@Model.Title</MudText>
             <MudTextField T="string" Label="Title" Class="mb-10" Required="true" RequiredError="Required" @bind-Value="@Model.Title" />
             <MudTextField T="string" Label="Description" Class="mb-4" Required="true" RequiredError="Required" @bind-Value="@Model.Description" Lines="5" />
-            <MudGrid>
+            <MudGrid Class="mb-4">
                 <MudItem xs="6">
                     <MudTextField T="int" Label="Points" Required="true" RequiredError="Required" @bind-Value="@Model.Points" />
                 </MudItem>
@@ -21,13 +24,34 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            
+            @if (!String.IsNullOrEmpty(@Model.CarouselImage))
+                    {
+                        <MudImage id="profileImg" Src="@Model.CarouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
+                    }
+                    else
+                    {
+                        <MudPaper Height="250px" Width="250px" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave">
+                            <MudText Typo="Typo.body1">No Image</MudText>
+                        </MudPaper>
+                    }
+            <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload"
+                               for="@context.Id">
+                        Upload Carousel Image
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
             <MudButton Variant="Variant.Filled" Class="mt-2" Color="Color.Primary" OnClick="@(() => OnSave())">Save quiz</MudButton>
         </MudItem>
         <MudItem xs="12" md="6">
             <div class="d-flex align-content-between mb-4">
                 <MudText Typo="Typo.h4" Class="d-flex flex-1">Questions</MudText>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@((e) => AddQuestionDialog(disableBackdropClick))">New question</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@((e) => AddQuestionDialog(_disableBackdropClick))">New question</MudButton>
             </div>
             
             @if (Model.Questions != null)
@@ -37,7 +61,7 @@
                     <MudPaper Class="pa-4 mb-4">
                         <div class="d-flex align-content-between">
                             <MudText Typo="Typo.h6" Class="d-flex flex-1">@q.Text</MudText>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@((e) => EditQuestionDialog(disableBackdropClick, q))">Edit question</MudButton>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@((e) => EditQuestionDialog(_disableBackdropClick, q))">Edit question</MudButton>
                         </div>
                         <MudList>
                             @foreach (var a in q.Answers)
@@ -66,7 +90,10 @@
 
     [Parameter]
     public QuizEditDto Model { get; set; } = new();
-    private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
+
+    private bool _success;
+    private string[] _errors = { };
+    private readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
     private async Task AddQuestionDialog(DialogOptions options)
     {
         QuizQuestionEditDto q = new QuizQuestionEditDto { Answers = new List<QuestionAnswerEditDto>() };
@@ -93,5 +120,25 @@
         parameters.Add("Dto", q);
         var dialog = DialogService.Show<QuizQuestionDialog>("Edit question", parameters, options);
         var result = await dialog.Result;
+    }
+
+    private string IsCarouselImage(bool isCarousel)
+    {
+        if (isCarousel && (Model.CarouselImageFile == null || String.IsNullOrEmpty(Model.CarouselImage)))
+        {
+            return "Carousel image is required when displaying on carousel";
+        }
+
+        return null;
+    }
+    
+    private async Task SetCarouselImage(IBrowserFile file)
+    {
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+        var imageType = file.ContentType;
+
+        Model.CarouselImageFile = file;
+        Model.CarouselImage = $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
     }
 }

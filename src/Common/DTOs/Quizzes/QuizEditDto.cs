@@ -1,10 +1,15 @@
-﻿namespace SSW.Rewards.Shared.DTOs.Quizzes;
+﻿using Microsoft.AspNetCore.Components.Forms;
+
+namespace SSW.Rewards.Shared.DTOs.Quizzes;
 
 public class QuizEditDto
 {
     public int QuizId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string? CarouselImage { get; set; } = string.Empty;
+    public IBrowserFile? CarouselImageFile { get; set; } = null;
+    public bool IsCarousel { get; set; } = false;
     public int Points { get; set; }
     public Icons Icon { get; set; }
     public bool IsArchived { get; set; }
