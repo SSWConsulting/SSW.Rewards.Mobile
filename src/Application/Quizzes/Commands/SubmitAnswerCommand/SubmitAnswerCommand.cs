@@ -22,13 +22,15 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
         IApplicationDbContext context,
         IQuizGPTService quizGptService,
         ILogger<SubmitAnswerCommand> logger,
-        ICurrentUserService _currentUserService,
-        IUserService _userService
+        ICurrentUserService currentUserService,
+        IUserService userService
         )
     {
         _context            = context;
         _quizGptService     = quizGptService;
         _logger             = logger;
+        _currentUserService = currentUserService;
+        _userService        = userService;
     }
 
     public async Task<Unit> Handle(SubmitAnswerCommand request, CancellationToken cancellationToken)

@@ -84,7 +84,8 @@ public sealed class QuizGPTService : IQuizGPTService
         {
             UserId          = userId,
             AchievementId   = achievementId,
-            AwardedAt       = DateTime.Now,
+            AwardedAt       = DateTime.UtcNow,
+            CreatedUtc      = DateTime.UtcNow
         };
         await _context.UserAchievements.AddAsync(userAchievement);
         await _context.SaveChangesAsync(CancellationToken.None);
