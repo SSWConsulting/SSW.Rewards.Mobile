@@ -20,6 +20,7 @@ param now string
 
 var sqlserverName = 'sql-${projectName}-${environment}'
 var databaseName = 'db-${projectName}-${environment}'
+var hangfireDatabaseName = 'db-${projectName}-hangfire-${environment}'
 var sqlAdministratorLogin = '${projectName}-${environment}-admin'
 var sqlAdministratorLoginPassword = guid(sqlserverName, databaseName, now)
 
@@ -52,6 +53,14 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
   properties: databaseProperties
 }
 
+resource hangfireSqlDatabase 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
+  parent: sqlServer
+  name: hangfireDatabaseName
+  location: location
+  sku: databaseSku
+  properties: databaseProperties
+}
+
 resource allowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
   parent: sqlServer
   name: 'AllowAllWindowsAzureIps'
@@ -70,4 +79,14 @@ module connectionStringSecret 'create-secrets.bicep' = {
   }
 }
 
+module hangfireConnectionStringSecret 'create-secrets.bicep' = {
+  name: 'hangfireConnectionStringSecret-${now}'
+  params: {
+    keyVaultName: keyVaultName
+    secretName: 'HangfireSqlConnectionString'
+    secretValue: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${hangfireDatabaseName};Persist Security Info=False;User ID=${sqlAdministratorLogin};Password=${sqlAdministratorLoginPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+  }
+}
+
 output sqlConnectionStringSecretUriWithVersion string = connectionStringSecret.outputs.secretUriWithVersion
+output hangfireSqlConnectionStringSecretUriWithVersion string = hangfireConnectionStringSecret.outputs.secretUriWithVersion

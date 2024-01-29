@@ -15,16 +15,22 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
     private readonly IApplicationDbContext _context;
     private readonly IQuizGPTService _quizGptService;
     private readonly ILogger<SubmitAnswerCommand> _logger;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
 
     public Handler(
         IApplicationDbContext context,
         IQuizGPTService quizGptService,
-        ILogger<SubmitAnswerCommand> logger
+        ILogger<SubmitAnswerCommand> logger,
+        ICurrentUserService currentUserService,
+        IUserService userService
         )
     {
         _context            = context;
         _quizGptService     = quizGptService;
         _logger             = logger;
+        _currentUserService = currentUserService;
+        _userService        = userService;
     }
 
     public async Task<Unit> Handle(SubmitAnswerCommand request, CancellationToken cancellationToken)
@@ -32,30 +38,20 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
         // get the question text
         string questionText = await GetQuestionText(request.QuestionId);
 
-        // run the answer through GPT
+        // Build the object to send to GPT
         QuizGPTRequestDto payload = new QuizGPTRequestDto
         {
-            QuestionText = questionText,
-            AnswerText = request.AnswerText
+            QuestionText    = questionText,
+            AnswerText      = request.AnswerText
         };
 
-        QuizGPTResponseDto result = await _quizGptService.ValidateAnswer(payload, cancellationToken);
+        int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
 
-        // write the answer to the database
-        SubmittedQuizAnswer answer = new SubmittedQuizAnswer
-        {
-            SubmissionId    = request.SubmissionId,
-            QuizQuestionId  = request.QuestionId,
-            AnswerText      = request.AnswerText,
-            Correct         = result.Correct,
-            GPTConfidence   = result.Confidence,
-            GPTExplanation  = result.Explanation
-        };
-        await _context.SubmittedAnswers.AddAsync(answer, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        _quizGptService.ProcessAnswer(userId, payload, request);
+
         return Unit.Value;
     }
-
+    
     private async Task<string> GetQuestionText(int questionId)
     {
         QuizQuestion? dbQuestion = await _context.QuizQuestions

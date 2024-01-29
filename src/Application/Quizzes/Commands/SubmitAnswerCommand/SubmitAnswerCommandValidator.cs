@@ -48,7 +48,9 @@ public class SubmitAnswerCommandValidator : AbstractValidator<SubmitAnswerComman
     {
         int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
         bool submissionExists = await _context.CompletedQuizzes
-            .Where(s => s.Id == command.SubmissionId && s.UserId == userId)
+            .Where(s => 
+                    s.Id == command.SubmissionId 
+                &&  s.UserId == userId)
             .AnyAsync(cancellationToken);
         return submissionExists;
     }

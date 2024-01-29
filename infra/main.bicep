@@ -1,4 +1,3 @@
-
 param projectName string = 'sswrewards'
 param location string = resourceGroup().location
 
@@ -65,6 +64,7 @@ module appService 'modules/webapp.bicep' = {
     adminPortalUrl: adminPortalUrl
     idsUrl: idsUrl
     sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
+    hangfireSqlConnectionStringSecretUriWithVersion: sqlServer.outputs.hangfireSqlConnectionStringSecretUriWithVersion
   }
 }
 

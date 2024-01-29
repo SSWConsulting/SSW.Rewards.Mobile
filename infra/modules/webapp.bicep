@@ -6,6 +6,7 @@ param appServicePlanId string
 param adminPortalUrl string
 param idsUrl string
 param sqlConnectionStringSecretUriWithVersion string
+param hangfireSqlConnectionStringSecretUriWithVersion string
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
@@ -67,6 +68,11 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
           name: 'DefaultConnection'
           type: 'SQLServer'
           connectionString: '@Microsoft.KeyVault(SecretUri=${sqlConnectionStringSecretUriWithVersion})'
+        }
+        {
+          name: 'HangfireConnection'
+          type: 'SQLServer'
+          connectionString: '@Microsoft.KeyVault(SecretUri=${hangfireSqlConnectionStringSecretUriWithVersion})'
         }
       ]
       appSettings: [
