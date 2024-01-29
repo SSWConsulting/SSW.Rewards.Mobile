@@ -27,7 +27,7 @@
             </MudGrid>
             <MudGrid>
                 <MudItem xs="6">
-                    @if (!String.IsNullOrEmpty(_thumbnailImage)) 
+                    @if (!string.IsNullOrEmpty(_thumbnailImage)) 
                     {
                         <MudImage id="profileImg" Src="@_thumbnailImage" Height="50" Width="50" Elevation="1" Alt="Quiz Carousel image"/>
                     }
@@ -168,7 +168,7 @@
 
     private string IsCarouselImage(bool isCarousel)
     {
-        if (isCarousel && (Model.CarouselImage == null || String.IsNullOrEmpty(_carouselImage)))
+        if (isCarousel && (String.IsNullOrEmpty(Model.CarouselImage)))
         {
             return "Carousel image is required when displaying on carousel";
         }

@@ -24,8 +24,8 @@ public class AdminUploadQuizImageHandler : IRequestHandler<AdminUploadQuizImageC
         byte[] bytes = ms.ToArray();
 
         string filename = Guid.NewGuid().ToString();
-        await _storage.UploadCarouselImage(bytes, filename);
+        var imgUrl = await _storage.UploadCarouselImage(bytes, filename);
 
-        return filename;
+        return imgUrl;
     }
 }
