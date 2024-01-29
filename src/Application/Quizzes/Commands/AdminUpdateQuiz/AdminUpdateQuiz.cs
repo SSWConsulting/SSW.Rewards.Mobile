@@ -9,21 +9,11 @@ public class AdminUpdateQuiz : IRequest<int>
 
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
-    private readonly IQuizImageStorageProvider _storage;
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUserService _userService;
 
-    public AdminUpdateQuizHandler(
-        IApplicationDbContext context,
-        ICurrentUserService currentUserService,
-        IUserService userService,
-        IQuizImageStorageProvider storage)
+    public AdminUpdateQuizHandler(IApplicationDbContext context)
     {
         _context = context;
-        _currentUserService = currentUserService;
-        _userService = userService;
-        _storage = storage;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
@@ -34,22 +24,13 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                                     .ThenInclude(r => r.Answers)
                                     .FirstAsync(x => x.Id == request.Quiz.QuizId, cancellationToken);
         
-        if (request.Quiz.IsCarousel && request.Quiz.CarouselImageFile != null)
-        {
-            dbQuiz.CarouselPhoto = await UploadQuizImage(request.Quiz.CarouselImageFile, cancellationToken);
-        }
-        
-        
-        if (request.Quiz.ThumbnailImageFile != null)
-        {
-            dbQuiz.ThumbnailPhoto = await UploadQuizImage(request.Quiz.ThumbnailImageFile, cancellationToken);
-        }
-        
         dbQuiz.Title = request.Quiz.Title;
         dbQuiz.Description = request.Quiz.Description;
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
         dbQuiz.IsArchived = request.Quiz.IsArchived;
         dbQuiz.Icon = request.Quiz.Icon;
+        dbQuiz.CarouselPhoto = request.Quiz.CarouselImage;
+        dbQuiz.ThumbnailPhoto = request.Quiz.ThumbnailImage;
         dbQuiz.IsCarousel = request.Quiz.IsCarousel;
 
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
@@ -111,32 +92,15 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             existingQuestion.Answers.Remove(answerToBeDeleted);
         }
     }
+
     private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
             Text = dto.Text,
             CreatedUtc = DateTime.UtcNow,
-            Answers = dto.Answers.Select(a => new QuizAnswer
-            {
-                IsCorrect = a.IsCorrect,
-                Text = a.Text
-            }).ToList()
+            Answers = dto.Answers.Select(a => new QuizAnswer { IsCorrect = a.IsCorrect, Text = a.Text }).ToList()
         };
         return dbQuestion;
-    }
-
-    private async Task<string> UploadQuizImage(IBrowserFile file, CancellationToken cancellationToken)
-    {
-        var stream = file.OpenReadStream(file.Size);
-        
-        await using var ms = new MemoryStream();
-        await stream.CopyToAsync(ms, cancellationToken);
-
-        byte[] bytes = ms.ToArray();
-
-        string filename = Guid.NewGuid().ToString();
-
-        return await _storage.UploadCarouselImage(bytes, filename);
     }
 }

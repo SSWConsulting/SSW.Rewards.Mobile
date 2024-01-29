@@ -4,6 +4,7 @@
 @using Microsoft.Extensions.Options
 
 @inject IDialogService DialogService
+@inject IQuizAdminService QuizAdminService
 
 <MudForm @bind-success="@_success" @bind-errors="@_errors">
     <MudGrid>
@@ -125,6 +126,9 @@
 
     private bool _success;
     private string[] _errors = { };
+    private IBrowserFile _carouselImageFile;
+    private IBrowserFile _thumbnailImageFile;
+    
     private readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
     private async Task AddQuestionDialog(DialogOptions options)
     {
@@ -156,7 +160,7 @@
 
     private string IsCarouselImage(bool isCarousel)
     {
-        if (isCarousel && (Model.CarouselImageFile == null || String.IsNullOrEmpty(Model.CarouselImage)))
+        if (isCarousel && (_carouselImageFile == null || String.IsNullOrEmpty(Model.CarouselImage)))
         {
             return "Carousel image is required when displaying on carousel";
         }
@@ -166,22 +170,23 @@
     
     private async Task SetCarouselImage(IBrowserFile file)
     {
-        Model.CarouselImageFile = file;
-        Model.CarouselImage = await GetData(file);
+        Model.CarouselImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), CancellationToken.None);
     }    
     
     private async Task SetThumbnailImage(IBrowserFile file)
     {
-        Model.ThumbnailImageFile = file;
-        Model.ThumbnailImage = await GetData(file);
+        (var stream, Model.ThumbnailImage) = await GetData(file);
+        await QuizAdminService.UploadQuizImage(stream, CancellationToken.None);
     }
 
-    private async Task<string> GetData (IBrowserFile file)
+    private async Task<(Stream, string)> GetData (IBrowserFile file)
     {
         var buffer = new byte[file.Size];
-        await file.OpenReadStream().ReadAsync(buffer);
+        var stream = file.OpenReadStream(file.Size);
+        await stream.ReadAsync(buffer);
+        
         var imageType = file.ContentType;
         
-        return $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
+        return (stream, $"data:{imageType};base64,{Convert.ToBase64String(buffer)}");
     }
 }

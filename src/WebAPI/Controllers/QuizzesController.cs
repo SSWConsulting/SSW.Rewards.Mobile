@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+using SSW.Rewards.Application.Quizzes.Commands.AdminUploadQuizImage;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
 using SSW.Rewards.WebAPI.Authorisation;
@@ -39,6 +40,13 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<IEnumerable<QuizDetailsDto>>> GetAdminQuizList()
     {
         return Ok(await Mediator.Send(new GetAdminQuizListQuery()));
+    }
+    
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    [HttpPost]
+    public async Task<ActionResult<string>> UploadQuizImage(Stream file)
+    {
+        return await Mediator.Send(new AdminUploadQuizImageCommand { File = file });
     }
 
     [Authorize(Roles = AuthorizationRoles.Admin)]
