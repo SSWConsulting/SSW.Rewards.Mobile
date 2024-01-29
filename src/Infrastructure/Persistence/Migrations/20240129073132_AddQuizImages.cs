@@ -11,7 +11,7 @@ namespace SSW.Rewards.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "CarouselPhoto",
+                name: "CarouselImage",
                 table: "Quizzes",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -24,7 +24,7 @@ namespace SSW.Rewards.Persistence.Migrations
                 defaultValue: false);
 
             migrationBuilder.AddColumn<string>(
-                name: "ThumbnailPhoto",
+                name: "ThumbnailImage",
                 table: "Quizzes",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -34,7 +34,7 @@ namespace SSW.Rewards.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "CarouselPhoto",
+                name: "CarouselImage",
                 table: "Quizzes");
 
             migrationBuilder.DropColumn(
@@ -42,7 +42,7 @@ namespace SSW.Rewards.Persistence.Migrations
                 table: "Quizzes");
 
             migrationBuilder.DropColumn(
-                name: "ThumbnailPhoto",
+                name: "ThumbnailImage",
                 table: "Quizzes");
         }
     }

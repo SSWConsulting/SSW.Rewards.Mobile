@@ -12,7 +12,7 @@ using SSW.Rewards.Infrastructure.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240129004821_AddQuizImages")]
+    [Migration("20240129073132_AddQuizImages")]
     partial class AddQuizImages
     {
         /// <inheritdoc />
@@ -176,7 +176,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<int>("AchievementId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CarouselPhoto")
+                    b.Property<string>("CarouselImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedById")
@@ -200,7 +200,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<DateTime?>("LastUpdatedUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ThumbnailPhoto")
+                    b.Property<string>("ThumbnailImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
