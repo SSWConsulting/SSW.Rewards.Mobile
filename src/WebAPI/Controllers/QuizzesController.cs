@@ -13,6 +13,7 @@ using SSW.Rewards.Application.Quizzes.Commands.BeginQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizQuestionsBySubmissionId;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizResults;
 using SSW.Rewards.Application.Quizzes.Queries.CheckQuizCompletion;
+using SSW.Rewards.Application.Quizzes.Commands.ProcessQuizAchievement;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -113,6 +114,13 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
         var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
+        
+        // hacky business logic in Controller
+        if (results.Results.All(x => x.Correct))
+        {
+            await Mediator.Send(new ProcessQuizAchievementCommand { SubmissionId = submissionId });
+        }
+
         return Ok(results);
     }
 
