@@ -124,7 +124,8 @@ public sealed class QuizGPTService : IQuizGPTService
             AnswerText          = request.AnswerText,
             Correct             = result.Correct,
             GPTConfidence       = result.Confidence,
-            GPTExplanation      = result.Explanation
+            GPTExplanation      = result.Explanation,
+            CreatedUtc          = DateTime.UtcNow
         };
         await _context.SubmittedAnswers.AddAsync(answer);
         await _context.SaveChangesAsync(CancellationToken.None);
