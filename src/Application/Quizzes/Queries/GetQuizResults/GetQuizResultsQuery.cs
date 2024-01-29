@@ -30,7 +30,7 @@ public sealed class Handler : IRequestHandler<GetQuizResultsQuery, QuizResultDto
         QuizResultDto result = await _context.CompletedQuizzes
             .Where(q =>
                     q.UserId == userId
-                && q.Id == request.SubmissionId)
+                &&  q.Id == request.SubmissionId)
             .Select(MapQuizResultDto())
             .FirstAsync(cancellationToken);
 

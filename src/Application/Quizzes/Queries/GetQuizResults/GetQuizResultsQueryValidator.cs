@@ -32,9 +32,10 @@ public class GetQuizResultsQueryValidator : AbstractValidator<GetQuizResultsQuer
     {
         CompletedQuiz dbCompletedQuiz = await _context.CompletedQuizzes
                 .Include(cq => cq.Quiz)
-                    .ThenInclude(cq => cq.Questions)
+                    .ThenInclude(q => q.Questions)
                 .Include(cq => cq.Answers)
-                .FirstAsync(cq => cq.Id == query.SubmissionId, cancellationToken);
+                .Where(cq => cq.Id == query.SubmissionId)
+                .FirstAsync(cancellationToken);
 
         return dbCompletedQuiz.Answers.Count == dbCompletedQuiz.Quiz.Questions.Count;
     }
