@@ -38,6 +38,7 @@ public sealed class QuizGPTService : IQuizGPTService
         QuizGPTResponseDto result = await ValidateAnswer(payload);
         await SaveAnswerToDatabase(request, result);
 
+        // TODO [tech-debt]: This achievement-related business should not be in the QuizGPTService
         // check for quiz completion and assign achievement
         await AssignAchievementIfPassed(userId, request.SubmissionId);
     }
