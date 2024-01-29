@@ -35,27 +35,14 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
         // run the answer through GPT
         QuizGPTRequestDto payload = new QuizGPTRequestDto
         {
-            QuestionText = questionText,
-            AnswerText = request.AnswerText
+            QuestionText    = questionText,
+            AnswerText      = request.AnswerText
         };
+        _quizGptService.ProcessAnswer(payload, request);
 
-        QuizGPTResponseDto result = await _quizGptService.ValidateAnswer(payload, cancellationToken);
-
-        // write the answer to the database
-        SubmittedQuizAnswer answer = new SubmittedQuizAnswer
-        {
-            SubmissionId    = request.SubmissionId,
-            QuizQuestionId  = request.QuestionId,
-            AnswerText      = request.AnswerText,
-            Correct         = result.Correct,
-            GPTConfidence   = result.Confidence,
-            GPTExplanation  = result.Explanation
-        };
-        await _context.SubmittedAnswers.AddAsync(answer, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;
     }
-
+    
     private async Task<string> GetQuestionText(int questionId)
     {
         QuizQuestion? dbQuestion = await _context.QuizQuestions

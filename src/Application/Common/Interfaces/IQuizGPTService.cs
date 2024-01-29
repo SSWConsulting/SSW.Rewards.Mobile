@@ -5,5 +5,5 @@ namespace SSW.Rewards.Application.Common.Interfaces;
 
 public interface IQuizGPTService
 {
-    Task<QuizGPTResponseDto> ValidateAnswer(QuizGPTRequestDto model, CancellationToken ct);
+    void ProcessAnswer(QuizGPTRequestDto payload, SubmitAnswerCommand request);
 }
