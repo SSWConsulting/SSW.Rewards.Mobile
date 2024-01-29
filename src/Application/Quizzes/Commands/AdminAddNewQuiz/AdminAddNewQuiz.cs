@@ -36,8 +36,8 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
             Description = request.NewQuiz.Description,
             Icon = request.NewQuiz.Icon,
             IsCarousel = request.NewQuiz.IsCarousel,
-            CarouselPhoto = request.NewQuiz.CarouselImage,
-            ThumbnailPhoto = request.NewQuiz.ThumbnailImage,
+            CarouselImage = request.NewQuiz.CarouselImage,
+            ThumbnailImage = request.NewQuiz.ThumbnailImage,
             IsArchived = false,
             CreatedBy = dbUser,
             CreatedUtc = DateTime.UtcNow

@@ -29,8 +29,8 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
         dbQuiz.IsArchived = request.Quiz.IsArchived;
         dbQuiz.Icon = request.Quiz.Icon;
-        dbQuiz.CarouselPhoto = request.Quiz.CarouselImage;
-        dbQuiz.ThumbnailPhoto = request.Quiz.ThumbnailImage;
+        dbQuiz.CarouselImage = request.Quiz.CarouselImage;
+        dbQuiz.ThumbnailImage = request.Quiz.ThumbnailImage;
         dbQuiz.IsCarousel = request.Quiz.IsCarousel;
 
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
