@@ -18,7 +18,8 @@ public class AdminUploadQuizImageHandler : IRequestHandler<AdminUploadQuizImageC
     {
 
         await using var ms = new MemoryStream();
-        await request.File.CopyToAsync(ms, cancellationToken);
+        var file = request.File;
+        await file.CopyToAsync(ms, cancellationToken);
 
         byte[] bytes = ms.ToArray();
 

@@ -39,7 +39,7 @@ public class StaffAdminService : IStaffAdminService
 
     public async Task UploadProfilePicture(int id, Stream file, string fileName, CancellationToken cancellationToken)
     {
-        var content = Helpers.ProcessImageContent(id, file, fileName);
+        var content = Helpers.ProcessImageContent(file, fileName);
 
         var result = await _httpClient.PostAsync($"{_baseRoute}UploadStaffMemberProfilePicture?id={id}", content, cancellationToken);
 

@@ -10,7 +10,7 @@ public interface IQuizAdminService
 
     Task<QuizEditDto> GetAdminQuizEdit(int quizId, CancellationToken cancellationToken);
     
-    Task<string> UploadQuizImage(Stream file, CancellationToken cancellationToken);
+    Task<string> UploadQuizImage(Stream file, string fileName, CancellationToken cancellationToken);
 
     Task<int> AddNewQuiz(QuizEditDto quizDetailsDto, CancellationToken cancellationToken);
 
@@ -58,18 +58,17 @@ public class QuizAdminService : IQuizAdminService
         throw new Exception($"Failed to update quiz: {responseContent}");
     }
     
-    public async Task<string> UploadQuizImage(Stream file, CancellationToken cancellationToken)
+    public async Task<string> UploadQuizImage(Stream file, string fileName, CancellationToken cancellationToken)
     {
-        var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(file), "file", "file");
+        var content = Helpers.ProcessImageContent(file, fileName);
         
         var result = await _httpClient.PostAsync($"{_baseRoute}UploadQuizImage", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
-            var response = await result.Content.ReadFromJsonAsync<string>(cancellationToken: cancellationToken);
+            var response = await result.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
 
-            if (response is not null)
+            if (!string.IsNullOrEmpty(response))
             {
                 return response;
             }

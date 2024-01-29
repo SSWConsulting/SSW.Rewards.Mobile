@@ -4,7 +4,7 @@ namespace SSW.Rewards.ApiClient;
 
 public static class Helpers
 {
-    public static MultipartFormDataContent ProcessImageContent(int id, Stream file, string fileName)
+    public static MultipartFormDataContent ProcessImageContent(Stream file, string fileName)
     {
         var content = new MultipartFormDataContent();
         var fileContent = new StreamContent(file);
