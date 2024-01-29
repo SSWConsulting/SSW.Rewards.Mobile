@@ -173,6 +173,9 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<int>("AchievementId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CarouselPhoto")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("CreatedById")
                         .HasColumnType("int");
 
@@ -188,8 +191,14 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsCarousel")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastUpdatedUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ThumbnailPhoto")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
