@@ -11,18 +11,15 @@ public class AdminAddNewQuiz : IRequest<int>
 public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
     private readonly IQuizImageStorageProvider _storage;
 
     public AddNewQuizCommandHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
         IUserService userService,
         IQuizImageStorageProvider storage)
     {
         _context = context;
-        _currentUserService = currentUserService;
         _userService = userService;
         _storage = storage;
     }
@@ -32,20 +29,15 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         var user = _userService.GetCurrentUser();
 
         var dbUser = await _context.Users.FirstAsync(x => x.Id == user.Id, cancellationToken);
-        string imgUrl = string.Empty;
-        
-        if (request.NewQuiz.IsCarousel)
-        {
-            imgUrl = await UploadQuizImage(request.NewQuiz.CarouselImageFile, cancellationToken);
-        }
-        
+
         var quiz = new Quiz
         {
             Title = request.NewQuiz.Title,
             Description = request.NewQuiz.Description,
             Icon = request.NewQuiz.Icon,
             IsCarousel = request.NewQuiz.IsCarousel,
-            CarouselPhoto = imgUrl,
+            CarouselImage = request.NewQuiz.CarouselImage,
+            ThumbnailImage = request.NewQuiz.ThumbnailImage,
             IsArchived = false,
             CreatedBy = dbUser,
             CreatedUtc = DateTime.UtcNow
@@ -91,19 +83,5 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
             Value = dto.Points,
             CreatedUtc = DateTime.UtcNow
         };
-    }
-
-    private async Task<string> UploadQuizImage(IBrowserFile file, CancellationToken cancellationToken)
-    {
-        var stream = file.OpenReadStream(file.Size);
-        
-        await using var ms = new MemoryStream();
-        await stream.CopyToAsync(ms, cancellationToken);
-
-        byte[] bytes = ms.ToArray();
-
-        string filename = Guid.NewGuid().ToString();
-
-        return await _storage.UploadCarouselImage(bytes, filename);
     }
 }

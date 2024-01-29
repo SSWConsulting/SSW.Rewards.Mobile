@@ -49,6 +49,9 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
                 Description = quiz.Description,
                 Icon = quiz.Icon,
                 Passed = userQuizzes.Contains(quiz.Id),
+                ThumbnailImage = quiz.ThumbnailImage,
+                CarouselImage = quiz.CarouselImage,
+                IsCarousel = quiz.IsCarousel,
                 Points = quiz.Achievement.Value
             });
         }

@@ -8,7 +8,7 @@ public class QuizEditDto
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string? CarouselImage { get; set; } = string.Empty;
-    public IBrowserFile? CarouselImageFile { get; set; } = null;
+    public string? ThumbnailImage { get; set; } = string.Empty;
     public bool IsCarousel { get; set; } = false;
     public int Points { get; set; }
     public Icons Icon { get; set; }

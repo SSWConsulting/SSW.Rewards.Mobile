@@ -10,7 +10,7 @@ public interface IQuizAdminService
 
     Task<QuizEditDto> GetAdminQuizEdit(int quizId, CancellationToken cancellationToken);
     
-    Task UploadCarouselImage(int id, Stream file, string fileName, CancellationToken cancellationToken);
+    Task<string> UploadQuizImage(Stream file, string fileName, CancellationToken cancellationToken);
 
     Task<int> AddNewQuiz(QuizEditDto quizDetailsDto, CancellationToken cancellationToken);
 
@@ -58,19 +58,24 @@ public class QuizAdminService : IQuizAdminService
         throw new Exception($"Failed to update quiz: {responseContent}");
     }
     
-    public async Task UploadCarouselImage(int id, Stream file, string fileName, CancellationToken cancellationToken)
+    public async Task<string> UploadQuizImage(Stream file, string fileName, CancellationToken cancellationToken)
     {
-        var content = Helpers.ProcessImageContent(id, file, fileName);
+        var content = Helpers.ProcessImageContent(file, fileName);
         
-        var result = await _httpClient.PostAsync($"{_baseRoute}UploadStaffMemberProfilePicture?id={id}", content, cancellationToken);
+        var result = await _httpClient.PostAsync($"{_baseRoute}UploadQuizImage", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
-            return;
+            var response = await result.Content.ReadAsStringAsync(cancellationToken: cancellationToken);
+
+            if (!string.IsNullOrEmpty(response))
+            {
+                return response;
+            }
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to upload profile picture: {responseContent}");
+        throw new Exception($"Failed to upload carousel picture: {responseContent}");
     }
 
     public async Task<IEnumerable<QuizDetailsDto>> GetAdminQuizList(CancellationToken cancellationToken)

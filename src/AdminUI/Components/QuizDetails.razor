@@ -4,6 +4,7 @@
 @using Microsoft.Extensions.Options
 
 @inject IDialogService DialogService
+@inject IQuizAdminService QuizAdminService
 
 <MudForm @bind-success="@_success" @bind-errors="@_errors">
     <MudGrid>
@@ -24,9 +25,36 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
-            @if (!String.IsNullOrEmpty(@Model.CarouselImage))
+            <MudGrid>
+                <MudItem xs="6">
+                    @if (!string.IsNullOrEmpty(_thumbnailImage)) 
                     {
-                        <MudImage id="profileImg" Src="@Model.CarouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
+                        <MudImage id="profileImg" Src="@_thumbnailImage" Height="50" Width="50" Elevation="1" Alt="Quiz Carousel image"/>
+                    }
+                    else
+                    {
+                        <MudPaper Height="50px" Width="50px" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave">
+                            <MudText Typo="Typo.body1">No Image</MudText>
+                        </MudPaper>
+                    }
+                </MudItem> 
+                <MudItem xs="6">
+                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Thumbnail Image
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                </MudItem>
+                <MudItem xs="6">
+                    @if (!String.IsNullOrEmpty(_carouselImage))
+                    {
+                        <MudImage id="profileImg" Src="@_carouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
                     }
                     else
                     {
@@ -34,18 +62,23 @@
                             <MudText Typo="Typo.body1">No Image</MudText>
                         </MudPaper>
                     }
-            <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
-                <ButtonTemplate>
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context.Id">
-                        Upload Carousel Image
-                    </MudButton>
-                </ButtonTemplate>
-            </MudFileUpload>
-            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Carousel Image
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                </MudItem>
+            </MudGrid>
+            
             <MudButton Variant="Variant.Filled" Class="mt-2" Color="Color.Primary" OnClick="@(() => OnSave())">Save quiz</MudButton>
         </MudItem>
         <MudItem xs="12" md="6">
@@ -93,7 +126,18 @@
 
     private bool _success;
     private string[] _errors = { };
+    private string _carouselImage;
+    private string _thumbnailImage;
     private readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        _carouselImage = Model.CarouselImage;
+        _thumbnailImage = Model.ThumbnailImage;
+    }
+    
     private async Task AddQuestionDialog(DialogOptions options)
     {
         QuizQuestionEditDto q = new QuizQuestionEditDto { Answers = new List<QuestionAnswerEditDto>() };
@@ -124,7 +168,7 @@
 
     private string IsCarouselImage(bool isCarousel)
     {
-        if (isCarousel && (Model.CarouselImageFile == null || String.IsNullOrEmpty(Model.CarouselImage)))
+        if (isCarousel && (String.IsNullOrEmpty(Model.CarouselImage)))
         {
             return "Carousel image is required when displaying on carousel";
         }
@@ -134,11 +178,24 @@
     
     private async Task SetCarouselImage(IBrowserFile file)
     {
-        var buffer = new byte[file.Size];
-        await file.OpenReadStream().ReadAsync(buffer);
-        var imageType = file.ContentType;
+        _carouselImage = await GetData(file);
+        Model.CarouselImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), file.Name, CancellationToken.None);
+    }    
+    
+    private async Task SetThumbnailImage(IBrowserFile file)
+    {
+        _thumbnailImage = await GetData(file);
+        Model.ThumbnailImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), file.Name, CancellationToken.None);
+    }
 
-        Model.CarouselImageFile = file;
-        Model.CarouselImage = $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
+    private async Task<string> GetData (IBrowserFile file)
+    {
+        var buffer = new byte[file.Size];
+        var stream = file.OpenReadStream(file.Size);
+        await stream.ReadAsync(buffer);
+        
+        var imageType = file.ContentType;
+        
+        return $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
     }
 }
