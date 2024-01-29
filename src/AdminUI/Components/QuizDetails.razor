@@ -27,9 +27,9 @@
             </MudGrid>
             <MudGrid>
                 <MudItem xs="6">
-                    @if (!String.IsNullOrEmpty(@Model.ThumbnailImage)) 
+                    @if (!String.IsNullOrEmpty(_thumbnailImage)) 
                     {
-                        <MudImage id="profileImg" Src="@Model.ThumbnailImage" Height="50" Width="50" Elevation="1" Alt="Quiz Carousel image"/>
+                        <MudImage id="profileImg" Src="@_thumbnailImage" Height="50" Width="50" Elevation="1" Alt="Quiz Carousel image"/>
                     }
                     else
                     {
@@ -52,9 +52,9 @@
                     </MudFileUpload>
                 </MudItem>
                 <MudItem xs="6">
-                    @if (!String.IsNullOrEmpty(@Model.CarouselImage))
+                    @if (!String.IsNullOrEmpty(_carouselImage))
                     {
-                        <MudImage id="profileImg" Src="@Model.CarouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
+                        <MudImage id="profileImg" Src="@_carouselImage" Height="250" Width="250" Elevation="1" Alt="Quiz Carousel image"/>
                     }
                     else
                     {
@@ -126,10 +126,18 @@
 
     private bool _success;
     private string[] _errors = { };
-    private IBrowserFile _carouselImageFile;
-    private IBrowserFile _thumbnailImageFile;
-    
+    private string _carouselImage;
+    private string _thumbnailImage;
     private readonly DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true, FullWidth = true, MaxWidth = MaxWidth.Large };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        _carouselImage = Model.CarouselImage;
+        _thumbnailImage = Model.ThumbnailImage;
+    }
+    
     private async Task AddQuestionDialog(DialogOptions options)
     {
         QuizQuestionEditDto q = new QuizQuestionEditDto { Answers = new List<QuestionAnswerEditDto>() };
@@ -160,7 +168,7 @@
 
     private string IsCarouselImage(bool isCarousel)
     {
-        if (isCarousel && (_carouselImageFile == null || String.IsNullOrEmpty(Model.CarouselImage)))
+        if (isCarousel && (Model.CarouselImage == null || String.IsNullOrEmpty(_carouselImage)))
         {
             return "Carousel image is required when displaying on carousel";
         }
@@ -170,16 +178,17 @@
     
     private async Task SetCarouselImage(IBrowserFile file)
     {
-        Model.CarouselImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), CancellationToken.None);
+        _carouselImage = await GetData(file);
+        Model.CarouselImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), file.Name, CancellationToken.None);
     }    
     
     private async Task SetThumbnailImage(IBrowserFile file)
     {
-        (var stream, Model.ThumbnailImage) = await GetData(file);
-        await QuizAdminService.UploadQuizImage(stream, CancellationToken.None);
+        _thumbnailImage = await GetData(file);
+        Model.ThumbnailImage = await QuizAdminService.UploadQuizImage(file.OpenReadStream(file.Size), file.Name, CancellationToken.None);
     }
 
-    private async Task<(Stream, string)> GetData (IBrowserFile file)
+    private async Task<string> GetData (IBrowserFile file)
     {
         var buffer = new byte[file.Size];
         var stream = file.OpenReadStream(file.Size);
@@ -187,6 +196,6 @@
         
         var imageType = file.ContentType;
         
-        return (stream, $"data:{imageType};base64,{Convert.ToBase64String(buffer)}");
+        return $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
     }
 }
