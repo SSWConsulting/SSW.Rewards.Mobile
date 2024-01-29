@@ -69,17 +69,4 @@ public class StaffAdminService : IStaffAdminService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to upsert staff member profile: {responseContent}");
     }
-
-    private string GetMimeType(string fileName)
-    {
-        var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        return extension switch
-        {
-            ".jpg" => "image/jpeg",
-            ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            // Add other extensions and MIME types as needed
-            _ => "application/octet-stream", // default MIME type
-        };
-    }
 }
