@@ -127,6 +127,7 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
         var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
+
         return Ok(results);
     }
 
