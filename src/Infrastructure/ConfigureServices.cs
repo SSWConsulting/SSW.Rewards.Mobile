@@ -1,4 +1,5 @@
 ﻿using FluentEmail.Graph;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
@@ -24,6 +25,15 @@ public static class ConfigureServices
         services.AddOptions<GPTServiceOptions>()
             .Configure(configuration.GetSection(nameof(GPTServiceOptions)).Bind);
         services.AddScoped<IQuizGPTService, QuizGPTService>();
+
+        // HangFire config
+        services.AddHangfire(options => options
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        services.AddHangfireServer();
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -51,7 +61,6 @@ public static class ConfigureServices
         services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
         services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
-        services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
 
         services.AddScoped<IEmailService, EmailService>();
 

@@ -25,6 +25,12 @@
 		<PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        
+        <!-- Hangfire packages -->
+        <PackageReference Include="Hangfire.Core" Version="1.8.*" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.*" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.*" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="*" />
     </ItemGroup>
 
     <ItemGroup>
