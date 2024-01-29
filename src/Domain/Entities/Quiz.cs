@@ -3,6 +3,9 @@ public class Quiz : BaseEntity
 {
     public string? Title { get; set; }
     public string? Description { get; set; }
+    public string? CarouselImage { get; set; } = string.Empty;    
+    public string? ThumbnailImage { get; set; } = string.Empty;
+    public bool IsCarousel { get; set; } = false;
     public Icons Icon { get; set; }
     public DateTime? LastUpdatedUtc { get; set; }
     public bool IsArchived { get; set; }

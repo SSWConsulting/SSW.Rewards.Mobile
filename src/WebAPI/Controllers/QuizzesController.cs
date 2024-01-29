@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+using SSW.Rewards.Application.Quizzes.Commands.AdminUploadQuizImage;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
-using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizList;
 using SSW.Rewards.Application.Quizzes.Queries.GetAdminQuizDetails;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizDetails;
@@ -13,6 +13,7 @@ using SSW.Rewards.Application.Quizzes.Commands.BeginQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizQuestionsBySubmissionId;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizResults;
 using SSW.Rewards.Application.Quizzes.Queries.CheckQuizCompletion;
+using SSW.Rewards.WebAPI.Authorisation;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -39,6 +40,19 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<IEnumerable<QuizDetailsDto>>> GetAdminQuizList()
     {
         return Ok(await Mediator.Send(new GetAdminQuizListQuery()));
+    }
+    
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    [HttpPost]
+    public async Task<ActionResult<string>> UploadQuizImage()
+    {
+        var file = HttpContext.Request.Form.Files["file"];
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file received");
+        }
+
+        return Ok(await Mediator.Send(new AdminUploadQuizImageCommand { File = file.OpenReadStream() }));
     }
 
     [Authorize(Roles = AuthorizationRoles.Admin)]

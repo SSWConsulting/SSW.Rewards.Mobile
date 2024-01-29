@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Achievements.Common;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
@@ -10,17 +11,17 @@ public class AdminAddNewQuiz : IRequest<int>
 public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
+    private readonly IQuizImageStorageProvider _storage;
 
     public AddNewQuizCommandHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
-        IUserService userService)
+        IUserService userService,
+        IQuizImageStorageProvider storage)
     {
         _context = context;
-        _currentUserService = currentUserService;
         _userService = userService;
+        _storage = storage;
     }
 
     public async Task<int> Handle(AdminAddNewQuiz request, CancellationToken cancellationToken)
@@ -34,6 +35,9 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
             Title = request.NewQuiz.Title,
             Description = request.NewQuiz.Description,
             Icon = request.NewQuiz.Icon,
+            IsCarousel = request.NewQuiz.IsCarousel,
+            CarouselImage = request.NewQuiz.CarouselImage,
+            ThumbnailImage = request.NewQuiz.ThumbnailImage,
             IsArchived = false,
             CreatedBy = dbUser,
             CreatedUtc = DateTime.UtcNow

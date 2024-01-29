@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
 public class AdminUpdateQuiz : IRequest<int>
@@ -9,17 +10,10 @@ public class AdminUpdateQuiz : IRequest<int>
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IUserService _userService;
 
-    public AdminUpdateQuizHandler(
-        IApplicationDbContext context,
-        ICurrentUserService currentUserService,
-        IUserService userService)
+    public AdminUpdateQuizHandler(IApplicationDbContext context)
     {
         _context = context;
-        _currentUserService = currentUserService;
-        _userService = userService;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
@@ -27,14 +21,17 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 
         var dbQuiz = await _context.Quizzes
                                     .Include(q => q.Questions)
-                                        .ThenInclude(r => r.Answers)
+                                    .ThenInclude(r => r.Answers)
                                     .FirstAsync(x => x.Id == request.Quiz.QuizId, cancellationToken);
-
+        
         dbQuiz.Title = request.Quiz.Title;
         dbQuiz.Description = request.Quiz.Description;
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
         dbQuiz.IsArchived = request.Quiz.IsArchived;
         dbQuiz.Icon = request.Quiz.Icon;
+        dbQuiz.CarouselImage = request.Quiz.CarouselImage;
+        dbQuiz.ThumbnailImage = request.Quiz.ThumbnailImage;
+        dbQuiz.IsCarousel = request.Quiz.IsCarousel;
 
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
         foreach (var q in request.Quiz.Questions)
@@ -95,19 +92,15 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             existingQuestion.Answers.Remove(answerToBeDeleted);
         }
     }
+
     private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
             Text = dto.Text,
             CreatedUtc = DateTime.UtcNow,
-            Answers = dto.Answers.Select(a => new QuizAnswer
-            {
-                IsCorrect = a.IsCorrect,
-                Text = a.Text
-            }).ToList()
+            Answers = dto.Answers.Select(a => new QuizAnswer { IsCorrect = a.IsCorrect, Text = a.Text }).ToList()
         };
         return dbQuestion;
     }
-
 }
