@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitAnswerCommand;
@@ -28,15 +28,88 @@ public sealed class QuizGPTService : IQuizGPTService
         this._context               = context;
     }
 
-    public void ProcessAnswer(QuizGPTRequestDto payload, SubmitAnswerCommand request)
+    public void ProcessAnswer(int userId, QuizGPTRequestDto payload, SubmitAnswerCommand request)
     {
-        _backgroundJobClient.Enqueue(() => QueueQuizAnswer(payload, request));
+        _backgroundJobClient.Enqueue(() => QueueQuizAnswer(userId, payload, request));
     }
     
-    public async Task QueueQuizAnswer(QuizGPTRequestDto payload, SubmitAnswerCommand request)
+    public async Task QueueQuizAnswer(int userId, QuizGPTRequestDto payload, SubmitAnswerCommand request)
     {
         QuizGPTResponseDto result = await ValidateAnswer(payload);
         await SaveAnswerToDatabase(request, result);
+
+        // check for quiz completion and assign achievement
+        await AssignAchievementIfPassed(userId, request.SubmissionId);
+    }
+
+    private async Task AssignAchievementIfPassed(int userId, int submissionId)
+    {
+        if (
+                // order of these is important
+                await UserHasCompletedQuiz(userId, submissionId) 
+            &&  await AllAnswersCorrect(submissionId))
+        {
+            await PassQuiz(submissionId);
+            await AssignAchievement(userId, submissionId);
+        }
+    }
+
+    private async Task<bool> UserHasAchievement(int userId, int achievementId)
+    {
+        return await _context.UserAchievements
+            .Where(ua => ua.UserId == userId && ua.AchievementId == achievementId)
+            .AnyAsync();
+    }
+    private async Task PassQuiz(int submissionId)
+    {
+        CompletedQuiz dbCompletedQuiz = await _context.CompletedQuizzes
+            .FirstAsync(cq => cq.Id == submissionId);
+
+        dbCompletedQuiz.Passed = true;
+
+        _context.CompletedQuizzes.Update(dbCompletedQuiz);
+        await _context.SaveChangesAsync(CancellationToken.None);
+    }
+    private async Task AssignAchievement(int userId, int submissionId)
+    {
+        int achievementId = await _context.CompletedQuizzes
+            .Where(cq => cq.Id == submissionId && cq.UserId == userId)
+            .Select(cq => cq.Quiz.AchievementId)
+            .FirstAsync(CancellationToken.None);
+
+        if (await UserHasAchievement(userId, achievementId))
+            return;
+        
+        UserAchievement userAchievement = new UserAchievement
+        {
+            UserId          = userId,
+            AchievementId   = achievementId,
+            AwardedAt       = DateTime.Now,
+        };
+        await _context.UserAchievements.AddAsync(userAchievement);
+        await _context.SaveChangesAsync(CancellationToken.None);
+    }
+    private async Task<bool> AllAnswersCorrect(int submissionId)
+    {
+        CompletedQuiz dbUserQuiz = await _context.CompletedQuizzes
+            .Where(cq => cq.Id == submissionId)
+            .Include(cq => cq.Answers)
+            .FirstAsync(CancellationToken.None);
+
+        return dbUserQuiz.Answers.All(a => a.Correct);
+    }
+    private async Task<bool> UserHasCompletedQuiz(int userId, int submissionId)
+    {
+        var quizSubmission = await _context.CompletedQuizzes
+                .Where(cq => 
+                        cq.UserId == userId 
+                    &&  cq.Id == submissionId)
+                .Include(cq => cq.Quiz)
+                    .ThenInclude(q => q.Questions)
+                .Include(cq => cq.Answers)
+            .FirstAsync(CancellationToken.None);
+
+        return quizSubmission.Answers.Count == quizSubmission.Quiz.Questions.Count;
     }
 
     private async Task SaveAnswerToDatabase(SubmitAnswerCommand request, QuizGPTResponseDto result)

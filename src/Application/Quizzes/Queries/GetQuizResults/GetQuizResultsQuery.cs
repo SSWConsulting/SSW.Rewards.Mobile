@@ -26,40 +26,28 @@ public sealed class Handler : IRequestHandler<GetQuizResultsQuery, QuizResultDto
     {
         int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
 
-        // Ugly query because we need all this data to figure stuff out
-        var dbQuiz = await _context.CompletedQuizzes
-            .Include(q => q.Quiz)
-                .ThenInclude(qu => qu.Questions)
+        CompletedQuiz dbCompletedQuiz = await _context.CompletedQuizzes
             .Include(q => q.Answers)
                 .ThenInclude(a => a.QuizQuestion)
             .Where(q => 
                     q.UserId == userId 
                 &&  q.Id == request.SubmissionId)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstAsync(cancellationToken);
 
-        if (dbQuiz == null)
-            throw new ArgumentNullException($"No quiz found for submission id {request.SubmissionId}");
+        //// all correct?
+        //bool passed = dbQuiz.Answers.All(a => a.Correct);
 
-        // have all questions been answered?
-        int questionCount = dbQuiz.Quiz.Questions.Count;
-        int answerCount = dbQuiz.Answers.Count;
-        if (questionCount != answerCount) // TODO: Figure out how we want this scenario to be handled
-            throw new ArgumentException($"Not all questions have been answered for submission id {request.SubmissionId}");
-
-        // all correct?
-        bool passed = dbQuiz.Answers.All(a => a.Correct);
-
-        // update the db record
-        dbQuiz.Passed = passed;
-        _context.CompletedQuizzes.Update(dbQuiz);
-        await _context.SaveChangesAsync(cancellationToken);
+        //// update the db record
+        //dbQuiz.Passed = passed;
+        //_context.CompletedQuizzes.Update(dbQuiz);
+        //await _context.SaveChangesAsync(cancellationToken);
 
         QuizResultDto result = new QuizResultDto
         {
-            SubmissionId    = dbQuiz.Id,
-            QuizId          = dbQuiz.QuizId,
-            Passed          = passed,
-            Results         = dbQuiz.Answers.Select(a => new QuestionResultDto
+            SubmissionId    = dbCompletedQuiz.Id,
+            QuizId          = dbCompletedQuiz.QuizId,
+            Passed          = dbCompletedQuiz.Passed,
+            Results         = dbCompletedQuiz.Answers.Select(a => new QuestionResultDto
             {
                 QuestionId      = a.QuizQuestionId ?? 0,
                 QuestionText    = a.QuizQuestion?.Text ?? string.Empty,

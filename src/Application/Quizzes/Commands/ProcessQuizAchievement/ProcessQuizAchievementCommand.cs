@@ -1,9 +1,9 @@
 ﻿namespace SSW.Rewards.Application.Quizzes.Commands.ProcessQuizAchievement;
+
 public class ProcessQuizAchievementCommand : IRequest<Unit>
 {
     public int SubmissionId { get; set; }
 }
-
 
 public sealed class Handler : IRequestHandler<ProcessQuizAchievementCommand, Unit>
 {
@@ -17,9 +17,9 @@ public sealed class Handler : IRequestHandler<ProcessQuizAchievementCommand, Uni
         IUserService userService
         )
     {
-        _context = context;
+        _context            = context;
         _currentUserService = currentUserService;
-        _userService = userService;
+        _userService        = userService;
     }
 
     public async Task<Unit> Handle(ProcessQuizAchievementCommand request, CancellationToken cancellationToken)
@@ -32,8 +32,8 @@ public sealed class Handler : IRequestHandler<ProcessQuizAchievementCommand, Uni
             .FirstAsync(cancellationToken);
 
         // see if the user already has the achievement for this quiz
-        // NOTE: This exists here (rather than in a Validator) because we don't want to
-        // throw an exception if the user already has the achievement
+        // NOTE: This exists here (rather than in a Validator) because
+        // we don't want to throw an exception if the user already has the achievement
         int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
         bool hasAchievement = await _context.UserAchievements
             .Where(x =>

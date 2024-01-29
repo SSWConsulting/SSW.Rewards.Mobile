@@ -114,12 +114,6 @@ public class QuizzesController : ApiControllerBase
     public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
     {
         var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
-        
-        // hacky business logic in Controller
-        if (results.Results.All(x => x.Correct))
-        {
-            await Mediator.Send(new ProcessQuizAchievementCommand { SubmissionId = submissionId });
-        }
 
         return Ok(results);
     }

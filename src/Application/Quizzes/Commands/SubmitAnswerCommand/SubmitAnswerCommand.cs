@@ -15,11 +15,15 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
     private readonly IApplicationDbContext _context;
     private readonly IQuizGPTService _quizGptService;
     private readonly ILogger<SubmitAnswerCommand> _logger;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
 
     public Handler(
         IApplicationDbContext context,
         IQuizGPTService quizGptService,
-        ILogger<SubmitAnswerCommand> logger
+        ILogger<SubmitAnswerCommand> logger,
+        ICurrentUserService _currentUserService,
+        IUserService _userService
         )
     {
         _context            = context;
@@ -32,13 +36,16 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
         // get the question text
         string questionText = await GetQuestionText(request.QuestionId);
 
-        // run the answer through GPT
+        // Build the object to send to GPT
         QuizGPTRequestDto payload = new QuizGPTRequestDto
         {
             QuestionText    = questionText,
             AnswerText      = request.AnswerText
         };
-        _quizGptService.ProcessAnswer(payload, request);
+
+        int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
+
+        _quizGptService.ProcessAnswer(userId, payload, request);
 
         return Unit.Value;
     }
