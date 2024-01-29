@@ -82,6 +82,7 @@
     <Color x:Key="Background">#181818</Color>
     <Color x:Key="BorderDefault">#373737</Color>
     <Color x:Key="Coin">#FFC700</Color>
+    <Color x:Key="CorrectColor">#52B5AA</Color>
     
     <LinearGradientBrush x:Key="BrandBrush" EndPoint="0,1">
         <GradientStop Offset="0.1" Color="{StaticResource SSWRed}"></GradientStop>
