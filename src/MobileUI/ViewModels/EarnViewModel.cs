@@ -45,6 +45,11 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async Task Initialise()
     {
+        Quizzes = new ObservableCollection<QuizDto>();
+        OnPropertyChanged(nameof(Quizzes));
+        CarouselQuizzes = new ObservableCollection<QuizDto>();
+        OnPropertyChanged(nameof(CarouselQuizzes));
+        
         IsBusy = true;
 
         var quizzes = await _quizService.GetQuizzes();

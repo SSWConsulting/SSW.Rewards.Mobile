@@ -44,8 +44,8 @@
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            Aspect="AspectFill" />
-                                    <Grid Grid.Row="0" 
-                                          RowDefinitions="Auto" 
+                                    <Grid Grid.Row="0"
+                                          RowDefinitions="Auto"
                                           VerticalOptions="End"
                                           Margin="20,0,20,40">
                                         <Border Grid.Row="0"
@@ -57,10 +57,11 @@
                                             <Grid ColumnDefinitions="*, Auto" Padding="15">
                                                 <Label Grid.Column="0"
                                                        Text="{Binding Description}"
-                                                       Style="{StaticResource LabelBold}"/>
-                                                <controls:GoButton Grid.Column="1"
-                                                                   Points="{Binding Points}"
-                                                                   HorizontalOptions="End"/>
+                                                       Style="{StaticResource LabelBold}" />
+                                                <controls:PointsButton Grid.Column="1"
+                                                                       ButtonText="GO"
+                                                                       Points="{Binding Points}"
+                                                                       HorizontalOptions="End" />
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -69,7 +70,7 @@
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
-                
+
                 <IndicatorView Grid.Row="0"
                                SelectedIndicatorColor="{StaticResource SSWRed}"
                                IndicatorColor="{StaticResource IndicatorColor}"
@@ -146,10 +147,10 @@
                                                    FontSize="12" />
                                         </Grid>
 
-                                        <controls:GoButton Grid.Column="2"
-                                                           Points="{Binding Points}"
-                                                           Margin="10,0"
-                                                           IsVisible="{Binding Passed}"/>
+                                        <controls:PointsButton Grid.Column="2"
+                                                               ButtonText="GO"
+                                                               Points="{Binding Points}"
+                                                               Margin="10,0" />
 
                                     </Grid>
                                 </Border>

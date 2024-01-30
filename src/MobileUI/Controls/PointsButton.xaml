@@ -2,8 +2,12 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SSW.Rewards.Mobile.Controls.GoButton"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="SSW.Rewards.Mobile.Controls.PointsButton"
              BindingContext="{Binding Source={RelativeSource Self}}">
+    <ContentView.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentView.Resources>
     <Border StrokeThickness="0"
             HorizontalOptions="Center"
             VerticalOptions="Center"
@@ -40,7 +44,7 @@
                     <RoundRectangle CornerRadius="6" />
                 </Border.StrokeShape>
                 <Grid>
-                    <Label Text="GO"
+                    <Label Text="{Binding ButtonText}"
                            TextColor="White"
                            FontSize="14"
                            HorizontalOptions="Center"
