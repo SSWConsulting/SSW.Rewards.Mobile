@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSW.Rewards.Mobile.Controls.GoButton"
+             BindingContext="{Binding Source={RelativeSource Self}}">
+    <Border StrokeThickness="0"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            HeightRequest="34"
+            WidthRequest="110">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="6" />
+        </Border.StrokeShape>
+        <Grid ColumnDefinitions="25,*,36"
+              Background="{StaticResource ButtonBrush}">
+            <Label
+                Grid.Column="0"
+                TextColor="{StaticResource Coin}"
+                Text="&#xf51e;"
+                FontFamily="FA6Solid"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="11"
+                Style="{StaticResource LabelBold}"
+                InputTransparent="True" />
+            <Label
+                Grid.Column="1"
+                Text="{Binding Points}"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="18"
+                InputTransparent="True" />
+            <Border Grid.Column="2"
+                    HeightRequest="34"
+                    WidthRequest="36"
+                    Background="{StaticResource BrandBrush}"
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="6" />
+                </Border.StrokeShape>
+                <Grid>
+                    <Label Text="GO"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</ContentView>

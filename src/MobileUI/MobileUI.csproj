@@ -112,6 +112,10 @@
 		  <DependentUpon>EarnDetailsPage.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Controls\GoButton.xaml.cs">
+		  <DependentUpon>GoButton.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -127,6 +131,10 @@
 		</MauiXaml>
 		<MauiXaml Update="Pages\EarnDetailsPage.xaml">
 		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\GoButton.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 

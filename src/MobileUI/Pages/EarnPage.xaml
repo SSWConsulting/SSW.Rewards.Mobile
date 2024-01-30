@@ -2,12 +2,12 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="QuizList"
-             x:DataType="viewModels:QuizViewModel"
+             x:DataType="viewModels:EarnViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
     <Shell.TitleView>
         <Label Text="Earn"
@@ -16,140 +16,150 @@
                x:Name="TitleText"
                TextColor="White" />
     </Shell.TitleView>
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:PassedToQuizIconColour x:Key="PassedToIconColor" />
-            <converters:IconToGlyphConverter x:Key="IconToGlyph" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
     <ContentPage.Content>
-        <CollectionView
-            ItemsSource="{Binding Quizzes}"
-            Margin="15,10"
-            ItemsUpdatingScrollMode="KeepItemsInView"
-            ItemSizingStrategy="MeasureFirstItem">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="quizzes:QuizDto">
-                    <Grid RowDefinitions="78, 6">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
-                                                  CommandParameter="{Binding Id}" />
-                        </Grid.GestureRecognizers>
-                        <Border Grid.Row="0" StrokeThickness="0">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
-                            <Grid ColumnSpacing="6"
-                                  ColumnDefinitions="80, *, Auto"
-                                  BackgroundColor="{StaticResource Background}">
-                                <Border Grid.Column="0"
-                                        HeightRequest="64"
-                                        WidthRequest="64"
-                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                        StrokeThickness="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="6" />
-                                    </Border.StrokeShape>
-                                    <Grid>
-                                        <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                               TextColor="White"
-                                               FontFamily="FA6Brands"
-                                               FontSize="56"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"
-                                               HorizontalTextAlignment="Center"
-                                               VerticalTextAlignment="Center" />
-
-                                        <Label Text="&#xe30b;"
-                                               TextColor="Green"
-                                               FontFamily="FluentIcons"
-                                               FontSize="28"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="End"
-                                               IsVisible="{Binding Passed}">
-                                        </Label>
+        <ScrollView>
+            <Grid RowDefinitions="Auto, *">
+                <CarouselView Grid.Row="0"
+                              IsVisible="{Binding IsCarouselVisible}"
+                              HeightRequest="450"
+                              Loop="True"
+                              ItemsSource="{Binding CarouselQuizzes}"
+                              HorizontalScrollBarVisibility="Never"
+                              Margin="20"
+                              IndicatorView="QuizIndicator">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate x:DataType="quizzes:QuizDto">
+                            <Border StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                        CommandParameter="{Binding Id}" />
+                                </Border.GestureRecognizers>
+                                <Grid>
+                                    <Image Grid.Row="0"
+                                           Source="{Binding CarouselImage}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Aspect="AspectFill" />
+                                    <Grid Grid.Row="0" 
+                                          RowDefinitions="Auto" 
+                                          VerticalOptions="End"
+                                          Margin="20,0,20,40">
+                                        <Border Grid.Row="0"
+                                                BackgroundColor="#BF000000"
+                                                StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="6" />
+                                            </Border.StrokeShape>
+                                            <Grid ColumnDefinitions="*, Auto" Padding="15">
+                                                <Label Grid.Column="0"
+                                                       Text="{Binding Description}"
+                                                       Style="{StaticResource LabelBold}"/>
+                                                <controls:GoButton Grid.Column="1"
+                                                                   Points="{Binding Points}"
+                                                                   HorizontalOptions="End"/>
+                                            </Grid>
+                                        </Border>
                                     </Grid>
-                                </Border>
-
-                                <Grid
-                                    Grid.Column="1"
-                                    ColumnDefinitions="*"
-                                    RowDefinitions="*,*"
-                                    VerticalOptions="Center"
-                                    RowSpacing="2">
-                                    <Label Grid.Row="0"
-                                           Text="{Binding Title}"
-                                           TextColor="White"
-                                           InputTransparent="True"
-                                           VerticalTextAlignment="End"
-                                           FontSize="18"
-                                           Style="{StaticResource LabelBold}"
-                                           LineBreakMode="TailTruncation" />
-                                    <Label Grid.Row="1"
-                                           Text="{Binding Description}"
-                                           TextColor="White"
-                                           VerticalTextAlignment="Start"
-                                           InputTransparent="True"
-                                           FontSize="12" />
                                 </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                
+                <IndicatorView Grid.Row="0"
+                               SelectedIndicatorColor="{StaticResource SSWRed}"
+                               IndicatorColor="{StaticResource IndicatorColor}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="End"
+                               Margin="0,0,0,30"
+                               x:Name="QuizIndicator" />
 
-                                <Border Grid.Column="2"
-                                        StrokeThickness="0"
-                                        HorizontalOptions="Center"
-                                        VerticalOptions="Center"
-                                        HeightRequest="34"
-                                        WidthRequest="110"
-                                        Margin="10,0">
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding Quizzes}"
+                    Margin="15,10"
+                    ItemsUpdatingScrollMode="KeepItemsInView"
+                    ItemSizingStrategy="MeasureFirstItem">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="quizzes:QuizDto">
+                            <Grid RowDefinitions="78, 6">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                        CommandParameter="{Binding Id}" />
+                                </Grid.GestureRecognizers>
+                                <Border Grid.Row="0" StrokeThickness="0">
                                     <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="6" />
+                                        <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
-                                    <Grid ColumnDefinitions="25,*,36"
-                                          Background="{StaticResource ButtonBrush}">
-                                        <Label
-                                            Grid.Column="0"
-                                            TextColor="{StaticResource Coin}"
-                                            Text="&#xf51e;"
-                                            FontFamily="FA6Solid"
-                                            HorizontalOptions="Center"
-                                            VerticalOptions="Center"
-                                            FontSize="11"
-                                            Style="{StaticResource LabelBold}"
-                                            InputTransparent="True" />
-                                        <Label
-                                            Grid.Column="1"
-                                            Text="{Binding Points}"
-                                            HorizontalOptions="Start"
-                                            VerticalOptions="Center"
-                                            FontSize="18"
-                                            InputTransparent="True" />
-                                        <Border Grid.Column="2"
-                                                HeightRequest="34"
-                                                WidthRequest="36"
-                                                Background="{StaticResource BrandBrush}"
+                                    <Grid ColumnSpacing="6"
+                                          ColumnDefinitions="80, *, Auto"
+                                          BackgroundColor="{StaticResource Background}">
+                                        <Border Grid.Column="0"
+                                                HeightRequest="64"
+                                                WidthRequest="64"
+                                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                                 StrokeThickness="0">
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="6" />
                                             </Border.StrokeShape>
                                             <Grid>
-                                                <Label Text="GO"
-                                                       TextColor="White"
-                                                       FontSize="14"
+                                                <Image Source="{Binding ThumbnailImage}"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"
-                                                       HorizontalTextAlignment="Center"
-                                                       VerticalTextAlignment="Center"
-                                                       Style="{StaticResource LabelBold}" />
+                                                       Aspect="AspectFill" />
+
+                                                <Label Text="&#xe30b;"
+                                                       TextColor="Green"
+                                                       FontFamily="FluentIcons"
+                                                       FontSize="28"
+                                                       HorizontalOptions="End"
+                                                       VerticalOptions="End"
+                                                       IsVisible="{Binding Passed}">
+                                                </Label>
                                             </Grid>
                                         </Border>
+
+                                        <Grid
+                                            Grid.Column="1"
+                                            ColumnDefinitions="*"
+                                            RowDefinitions="*,*"
+                                            VerticalOptions="Center"
+                                            RowSpacing="2">
+                                            <Label Grid.Row="0"
+                                                   Text="{Binding Title}"
+                                                   TextColor="White"
+                                                   InputTransparent="True"
+                                                   VerticalTextAlignment="End"
+                                                   FontSize="18"
+                                                   Style="{StaticResource LabelBold}"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding Description}"
+                                                   TextColor="White"
+                                                   VerticalTextAlignment="Start"
+                                                   InputTransparent="True"
+                                                   FontSize="12" />
+                                        </Grid>
+
+                                        <controls:GoButton Grid.Column="2"
+                                                           Points="{Binding Points}"
+                                                           Margin="10,0"
+                                                           IsVisible="{Binding Passed}"/>
+
                                     </Grid>
                                 </Border>
-
                             </Grid>
-                        </Border>
-                    </Grid>
 
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </ScrollView>
+
     </ContentPage.Content>
 </ContentPage>

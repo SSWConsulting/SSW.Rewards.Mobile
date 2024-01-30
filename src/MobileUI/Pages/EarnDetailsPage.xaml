@@ -61,8 +61,7 @@
                                    VerticalTextAlignment="Center" />
                         </Grid>
                     </Border>
-
-
+                    
                     <Label Grid.Row="1"
                            Text="{Binding QuizTitle}"
                            Style="{StaticResource LabelBold}"
