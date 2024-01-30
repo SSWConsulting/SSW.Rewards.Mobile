@@ -129,7 +129,7 @@
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
         
-        <Tab Route="earn" Icon="icon_trophy" Title="Earn">
+        <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
         </Tab>
 
