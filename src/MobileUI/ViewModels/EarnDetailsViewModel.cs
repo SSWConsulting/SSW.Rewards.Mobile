@@ -200,6 +200,13 @@ namespace SSW.Rewards.Mobile.ViewModels
             var correct = result.Results.Count(r => r.Correct);
 
             Score = $"{correct}/{total}";
+            
+            Results.Clear();
+            
+            foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
+            {
+                Results.Add(questionResult);
+            }
 
             if (result.Passed)
             {
@@ -238,15 +245,6 @@ namespace SSW.Rewards.Mobile.ViewModels
                     QuestionsVisible = true;
                     ResultsVisible = false;
                 });
-
-                Results.Clear();
-                
-                OnPropertyChanged(nameof(ResultsButtonCommand));
-                
-                foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
-                {
-                    Results.Add(questionResult);
-                }
             }
             
             OnPropertyChanged(nameof(ResultsButtonCommand));

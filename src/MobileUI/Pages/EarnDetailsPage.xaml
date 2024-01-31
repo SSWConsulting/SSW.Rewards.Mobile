@@ -227,8 +227,7 @@
                     </Border>
 
                     <ScrollView Grid.Row="2">
-                        <VerticalStackLayout IsVisible="{Binding TestPassed, Converter={StaticResource InverseBool}}"
-                                             BindableLayout.ItemsSource="{Binding Results}"
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
                                              Margin="10"
                                              Spacing="8">
                             <BindableLayout.ItemTemplate>
