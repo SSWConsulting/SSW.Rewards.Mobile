@@ -21,6 +21,11 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
+            if (!scannerView.IsDetecting)
+            {
+                return;
+            }
+
             ToggleScanner(false);
 
             var result = e.Results.FirstOrDefault().Value;
@@ -28,7 +33,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
             var popup = new PopupPages.ScanResult(_viewModel, result);
             MopupService.Instance.PushAsync(popup);
         });
-        
     }
 
     protected override void OnDisappearing()

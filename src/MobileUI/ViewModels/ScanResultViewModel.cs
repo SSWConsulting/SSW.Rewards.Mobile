@@ -146,7 +146,10 @@ public partial class ScanResultViewModel : BaseViewModel
 
     private async Task DismissWithoutWon()
     {
-        WeakReferenceMessenger.Default.Send(new EnableScannerMessage());
+        // Important! We should pop the page before enabling scanner;
+        // otherwise PopAllAsync in some cases might also close the next opening popup
+        // together with the current one disabling the scanner. https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/543
         await MopupService.Instance.PopAllAsync();
+        WeakReferenceMessenger.Default.Send(new EnableScannerMessage());
     }
 }
