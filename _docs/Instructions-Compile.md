@@ -10,6 +10,7 @@
 - [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
 - [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
 - [PowerShell Core](https://github.com/PowerShell/PowerShell)
+- [Docker Desktop](https://docs.docker.com/desktop/)
 
 - Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
   - [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
@@ -51,7 +52,7 @@ dotnet dev-certs https --trust
  ```
 * On macOS or Linux, open a terminal and run:
 ```bash
-pwsh ./up
+pwsh ./up.ps1
 ```
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
@@ -61,7 +62,9 @@ You should now be able to access the WebAPI Swagger docs at https://localhost:50
 **Note:** You can run only the WebAPI or AdminUI by running:
 ```bash
 docker compose --profile webapi up -d
+```
 OR
+```bash
 docker compose --profile admin up -d
 ```
 
@@ -78,7 +81,7 @@ devtunnel host -p 5001
 3. Update the `Constants.cs` `ApiBaseUrl` in the **#if DEBUG** block to use your DevTunnel address
 4. Run the MobileUI, targeting your Android Emulator
 
-### To work on the Mobile UI (iOS, MacOS Only)
+#****## To work on the Mobile UI (iOS, MacOS Only)
 2. Complete steps 1-3 above
 3. Run the MobileUI, targeting your Android Emulator
 
@@ -91,8 +94,20 @@ devtunnel host -p 5001
 - If you don't have these, talk to another Team Member or Sys Admin and get them to add your AppleID to the Superior Software for Windows Pty Ltd
   Apple Developer Program Team
 
-### Setting up for Apple Development (on your own iPhone)
-If you want to set up to deploy to your own iPhone, talk to an App Manager (it's hard :))!
+### Setting up your own iPhone for testing
+If you want to set up to deploy to your own iPhone, talk to an App Manager, it's hard! :)
+Or you can give it a go yourself. For that you will be using 2 portals - App Store Connect and Apple Developer Portal:
+1. Talk to a team member who has either Admin or App Manager role in App Store Connect. Give them your Apple ID (you can provide your personal one) and they will send you an invite to the Apple Developer team. If you've never used Apple products before, you will need to [create an Apple ID](https://support.apple.com/en-au/108647). You need to be granted **at least the App Manager role** to be able to perform some of the steps below; otherwise ask someone with the App Manager Role or higher to assist you.
+2. On your mac create a Certificate Signing Request (CSR) using Keychain. Go to Keychain Access -> Certificate Assistant -> Request a certificate from a certificate authority. Fill the fields and save generated CSR somewhere.
+3. Go to https://developer.apple.com, scroll down and click "Certificates, IDs, & Profiles".
+4. Select the Certificates tab. Add a new Certificate of type Apple Development. For that you will need to upload the CSR. Once the certificate is created, the CSR is no longer needed and can be deleted.
+5. Download the certificate on your mac and double click it to install.
+6. Go back to the developer portal and select the Devices tab.
+7. Add a device you are gonna be using for testing. To get your device's UDID connect it to your mac and open the Music app. Select your device on the left and then click a couple of times on the subtitle which displays your iPhone model, storage and battery level.
+8. Once your device is added to the developer portal, select the Profiles tab. Add a new provisioning profile for iOS App Development. Select App Id, certificate you've previously created and your device(s). Give provisioning profile a reasonable name.
+9. Download the provisioning profile on your mac and double click to install it. **Tip:** provisioning profiles are installed to _~/Library/MobileDevice/Provisioning Profiles/_
+
+After that you should be able to deploy and debug the application on your iPhone.
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
 
