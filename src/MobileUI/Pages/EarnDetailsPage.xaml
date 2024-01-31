@@ -33,7 +33,7 @@
         <converters:PassedToColorConverter x:Key="PassedToColorConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Border StrokeThickness="0" Margin="15" BackgroundColor="{StaticResource Background}">
+        <Border StrokeThickness="0" Margin="{OnPlatform '15', iOS='15,15,15,95'}" BackgroundColor="{StaticResource Background}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
