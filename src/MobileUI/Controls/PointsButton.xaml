@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SSW.Rewards.Mobile.Controls.PointsButton"
-             BindingContext="{Binding Source={RelativeSource Self}}">
+             x:Name="this">
     <ContentView.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </ContentView.Resources>
@@ -30,7 +30,7 @@
                 InputTransparent="True" />
             <Label
                 Grid.Column="1"
-                Text="{Binding Points}"
+                Text="{Binding Points, Source={x:Reference this}}"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
                 FontSize="18"
@@ -44,7 +44,7 @@
                     <RoundRectangle CornerRadius="6" />
                 </Border.StrokeShape>
                 <Grid>
-                    <Label Text="{Binding ButtonText}"
+                    <Label Text="{Binding ButtonText, Source={x:Reference this}}"
                            TextColor="White"
                            FontSize="14"
                            HorizontalOptions="Center"

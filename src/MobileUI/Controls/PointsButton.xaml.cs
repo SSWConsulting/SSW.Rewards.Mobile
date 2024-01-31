@@ -5,14 +5,36 @@ namespace SSW.Rewards.Mobile.Controls;
 
 public partial class PointsButton : ContentView
 {
-    [AutoBindable]
-    private string _buttonText;
+    public int Points
+    {
+        get => (int)GetValue(PointsProperty);
+        set => SetValue(PointsProperty, value);
+    }
+
+    public static readonly BindableProperty PointsProperty =
+        BindableProperty.Create(
+            nameof(Points),
+            typeof(int),
+            typeof(PointsButton),
+            0
+        );
+
+    public string ButtonText
+    {
+        get => (string)GetValue(ButtonTextProperty);
+        set => SetValue(ButtonTextProperty, value);
+    }
+
+    public static readonly BindableProperty ButtonTextProperty =
+        BindableProperty.Create(
+            nameof(ButtonText),
+            typeof(string),
+            typeof(PointsButton),
+            string.Empty
+        );
     
-    [AutoBindable]
-    private int _points;
-    
-	public PointsButton()
-	{
-		InitializeComponent();
-	}
+    public PointsButton()
+    {
+        InitializeComponent();
+    }
 }

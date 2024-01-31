@@ -104,7 +104,7 @@ public class QuizService : IQuizService
         }
     }
     
-    public async Task<bool> CheckQuizCompletion(int submissionId)
+    public async Task<bool?> CheckQuizCompletion(int submissionId)
     {
         try
         {
@@ -117,7 +117,7 @@ public class QuizService : IQuizService
                 await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
             }
 
-            return false;
+            return null;
         }
     }
     

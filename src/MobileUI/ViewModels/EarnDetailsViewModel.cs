@@ -57,7 +57,10 @@ namespace SSW.Rewards.Mobile.ViewModels
         private bool _testPassed;
 
         [ObservableProperty]
-        private Icons _icon;
+        private string _icon;
+        
+        [ObservableProperty]
+        private string _thumbnailImage;
 
         [ObservableProperty]
         private int _points;
@@ -107,7 +110,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
-            Icon = quiz.Icon;
+            ThumbnailImage = quiz.ThumbnailImage;
             QuizDescription = quiz.Description;
             Points = quiz.Points;
 
@@ -166,18 +169,22 @@ namespace SSW.Rewards.Mobile.ViewModels
         
         private async Task<bool> AwaitQuizCompletion()
         {
-            var maxAttempts = 15;
+            var maxAttempts = 30;
+            var delay = 5000;
+            bool isComplete = false;
             
-            while (await _quizService.CheckQuizCompletion(_submissionId) == false)
+            while (!isComplete)
             {
                 maxAttempts--;
-                
-                if (maxAttempts == 0)
+                var completion = await _quizService.CheckQuizCompletion(_submissionId);
+
+                if (completion == null || maxAttempts == 0)
                 {
                     return false;
                 }
                 
-                await Task.Delay(10000);
+                isComplete = completion.Value;
+                await Task.Delay(delay);
             }
 
             return true;

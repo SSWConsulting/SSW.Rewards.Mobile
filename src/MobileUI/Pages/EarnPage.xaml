@@ -21,7 +21,7 @@
             <Grid RowDefinitions="Auto, *">
                 <CarouselView Grid.Row="0"
                               IsVisible="{Binding IsCarouselVisible}"
-                              HeightRequest="450"
+                              HeightRequest="400"
                               Loop="True"
                               ItemsSource="{Binding CarouselQuizzes}"
                               HorizontalScrollBarVisibility="Never"
@@ -38,12 +38,13 @@
                                         Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
                                         CommandParameter="{Binding Id}" />
                                 </Border.GestureRecognizers>
-                                <Grid>
+                                <Grid HeightRequest="400">
                                     <Image Grid.Row="0"
                                            Source="{Binding CarouselImage}"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
-                                           Aspect="AspectFill" />
+                                           HeightRequest="400"
+                                           Aspect="AspectFill"/>
                                     <Grid Grid.Row="0"
                                           RowDefinitions="Auto"
                                           VerticalOptions="End"
@@ -112,6 +113,8 @@
                                                 <Image Source="{Binding ThumbnailImage}"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"
+                                                       HeightRequest="64"
+                                                       WidthRequest="64"
                                                        Aspect="AspectFill" />
 
                                                 <Label Text="&#xe30b;"

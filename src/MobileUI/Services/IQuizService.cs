@@ -14,7 +14,7 @@ public interface IQuizService
 
     Task SubmitAnswer(SubmitQuizAnswerDto dto);
 
-    Task<bool> CheckQuizCompletion(int submissionId);
+    Task<bool?> CheckQuizCompletion(int submissionId);
 
     Task<QuizResultDto> GetQuizResults(int submissionId);
 }

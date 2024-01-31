@@ -28,7 +28,6 @@
     </NavigationPage.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
-        <converters:IconToGlyphConverter x:Key="IconToGlyph" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:PassedToColorConverter x:Key="PassedToColorConverter" />
     </ContentPage.Resources>
@@ -50,16 +49,12 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="6" />
                         </Border.StrokeShape>
-                        <Grid>
-                            <Label Text="{Binding Icon, Converter={StaticResource IconToGlyph}}"
-                                   TextColor="White"
-                                   FontFamily="FA6Brands"
-                                   FontSize="56"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center" />
-                        </Grid>
+                        <Image Source="{Binding ThumbnailImage}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HeightRequest="80"
+                               WidthRequest="80"
+                               Aspect="AspectFill" />
                     </Border>
                     
                     <Label Grid.Row="1"
