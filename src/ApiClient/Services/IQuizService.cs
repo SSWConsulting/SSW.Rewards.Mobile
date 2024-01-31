@@ -88,7 +88,7 @@ public class QuizService : IQuizService
     
     public async Task<BeginQuizDto> BeginQuiz(int quizId, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}BeginQuiz", new { quizId }, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}BeginQuiz", quizId, cancellationToken);
 
         if (result.IsSuccessStatusCode)
         {
