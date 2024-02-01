@@ -20,6 +20,7 @@
         <ScrollView>
             <Grid RowDefinitions="Auto, *">
                 <CarouselView Grid.Row="0"
+                              x:Name="Carousel"
                               IsVisible="{Binding IsCarouselVisible}"
                               HeightRequest="400"
                               Loop="True"
