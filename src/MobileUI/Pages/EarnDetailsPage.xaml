@@ -115,7 +115,7 @@
                                   Margin="20">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:EarnQuestionViewModel">
-                                <Grid RowDefinitions="80,*" RowSpacing="40">
+                                <Grid RowDefinitions="80,Auto" RowSpacing="40">
                                     <Label Grid.Row="0"
                                            HorizontalOptions="FillAndExpand"
                                            VerticalOptions="FillAndExpand"
@@ -131,7 +131,8 @@
                                         <Border.StrokeShape>
                                             <RoundRectangle CornerRadius="8" />
                                         </Border.StrokeShape>
-                                        <Editor Text="{Binding Answer}"
+                                        <Entry Text="{Binding Answer}"
+                                                Placeholder="Enter your answer here"
                                                 BackgroundColor="White"
                                                 TextColor="Black" />
                                     </Border>
