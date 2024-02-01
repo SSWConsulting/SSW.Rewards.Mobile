@@ -33,6 +33,20 @@ public partial class PointsButton : ContentView
             string.Empty
         );
     
+    public bool IsDisabled
+    {
+        get => (bool)GetValue(IsDisabledProperty);
+        set => SetValue(IsDisabledProperty, value);
+    }
+
+    public static readonly BindableProperty IsDisabledProperty =
+        BindableProperty.Create(
+            nameof(IsDisabled),
+            typeof(bool),
+            typeof(PointsButton),
+            false
+        );
+    
     public PointsButton()
     {
         InitializeComponent();

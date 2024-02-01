@@ -63,7 +63,8 @@
                                                 <controls:PointsButton Grid.Column="1"
                                                                        ButtonText="GO"
                                                                        Points="{Binding Points}"
-                                                                       HorizontalOptions="End" />
+                                                                       HorizontalOptions="End"
+                                                                       IsDisabled="{Binding Passed}"/>
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -155,7 +156,8 @@
                                         <controls:PointsButton Grid.Column="2"
                                                                ButtonText="GO"
                                                                Points="{Binding Points}"
-                                                               Margin="10,0" />
+                                                               Margin="10,0"
+                                                               IsDisabled="{Binding Passed}"/>
 
                                     </Grid>
                                 </Border>

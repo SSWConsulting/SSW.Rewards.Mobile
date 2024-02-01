@@ -38,8 +38,15 @@
             <Border Grid.Column="2"
                     HeightRequest="34"
                     WidthRequest="36"
-                    Background="{StaticResource BrandBrush}"
+                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                     StrokeThickness="0">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border"
+                                 Binding="{Binding IsDisabled, Source={x:Reference this}}"
+                                 Value="false">
+                        <Setter Property="Background" Value="{StaticResource BrandBrush}"/>
+                    </DataTrigger>
+                </Border.Triggers>
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="6" />
                 </Border.StrokeShape>
@@ -51,7 +58,15 @@
                            VerticalOptions="Center"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
-                           Style="{StaticResource LabelBold}" />
+                           Style="{StaticResource LabelBold}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding IsDisabled, Source={x:Reference this}}"
+                                         Value="true">
+                                <Setter Property="TextColor" Value="{StaticResource Gray400}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                 </Grid>
             </Border>
         </Grid>
