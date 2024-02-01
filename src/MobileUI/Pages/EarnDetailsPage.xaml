@@ -99,6 +99,7 @@
                     <IndicatorView Grid.Row="4"
                                    SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
+                                   IndicatorSize="4.5"
                                    HorizontalOptions="Center"
                                    VerticalOptions="End"
                                    x:Name="QuestionIndicator" />

@@ -76,6 +76,7 @@
                 <IndicatorView Grid.Row="0"
                                SelectedIndicatorColor="{StaticResource SSWRed}"
                                IndicatorColor="{StaticResource IndicatorColor}"
+                               IndicatorSize="4.5"
                                HorizontalOptions="Center"
                                VerticalOptions="End"
                                Margin="0,0,0,25"

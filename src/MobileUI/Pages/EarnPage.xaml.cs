@@ -39,7 +39,9 @@ public partial class EarnPage : ContentPage
         MainThread.BeginInvokeOnMainThread(() =>
         {
             var count = _viewModel.CarouselQuizzes.Count;
-            Carousel.Position = (Carousel.Position + 1) % count;
+            
+            if (count > 0)
+                Carousel.Position = (Carousel.Position + 1) % count;
         });
     }
 }
