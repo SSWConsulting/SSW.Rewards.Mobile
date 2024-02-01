@@ -26,7 +26,7 @@
                               Loop="True"
                               ItemsSource="{Binding CarouselQuizzes}"
                               HorizontalScrollBarVisibility="Never"
-                              Margin="20"
+                              Margin="15"
                               IndicatorView="QuizIndicator">
                     <CarouselView.ItemTemplate>
                         <DataTemplate x:DataType="quizzes:QuizDto">
@@ -78,13 +78,13 @@
                                IndicatorColor="{StaticResource IndicatorColor}"
                                HorizontalOptions="Center"
                                VerticalOptions="End"
-                               Margin="0,0,0,30"
+                               Margin="0,0,0,25"
                                x:Name="QuizIndicator" />
 
                 <CollectionView
                     Grid.Row="1"
                     ItemsSource="{Binding Quizzes}"
-                    Margin="15,10"
+                    Margin="15,0,15,10"
                     ItemsUpdatingScrollMode="KeepItemsInView"
                     ItemSizingStrategy="MeasureFirstItem">
                     <CollectionView.ItemTemplate>
