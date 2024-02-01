@@ -59,7 +59,8 @@
                                             <Grid ColumnDefinitions="*, Auto" Padding="15">
                                                 <Label Grid.Column="0"
                                                        Text="{Binding Description}"
-                                                       Style="{StaticResource LabelBold}" />
+                                                       Style="{StaticResource LabelBold}"
+                                                       VerticalTextAlignment="Center"/>
                                                 <controls:PointsButton Grid.Column="1"
                                                                        ButtonText="GO"
                                                                        Points="{Binding Points}"
