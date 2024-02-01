@@ -24,6 +24,7 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
         // get all quizzes
         var masterQuizList = await _context.Quizzes
                                             .Where(q => !q.IsArchived)
+                                            .Include(q => q.Achievement)
                                             .Include(q => q.Questions)
                                                 .ThenInclude(x => x.Answers)
                                             .OrderBy(q => q.Title)
@@ -50,7 +51,8 @@ public sealed class Handler : IRequestHandler<GetQuizListForUser, IEnumerable<Qu
                 Passed = userQuizzes.Contains(quiz.Id),
                 ThumbnailImage = quiz.ThumbnailImage,
                 CarouselImage = quiz.CarouselImage,
-                IsCarousel = quiz.IsCarousel
+                IsCarousel = quiz.IsCarousel,
+                Points = quiz.Achievement.Value
             });
         }
 

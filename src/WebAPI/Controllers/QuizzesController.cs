@@ -112,10 +112,12 @@ public class QuizzesController : ApiControllerBase
     }
 
     // GPT quiz-related endpoint 3/4
-    [HttpGet]
-    public async Task<ActionResult> CheckQuizCompletion(int submissionId)
+#pragma warning disable ASP0023 // Route conflict detected between controller actions - base controller uses the action as the route
+    [HttpGet("{id}")]
+#pragma warning restore ASP0023 // Route conflict detected between controller actions
+    public async Task<ActionResult> CheckQuizCompletion(int id)
     {
-        bool b = await Mediator.Send(new CheckQuizCompletionQuery { SubmissionId = submissionId });
+        bool b = await Mediator.Send(new CheckQuizCompletionQuery { SubmissionId = id });
         if (b)
             return Ok();
         else
@@ -123,10 +125,12 @@ public class QuizzesController : ApiControllerBase
     }
     
     // GPT quiz-related endpoint 4/4
-    [HttpGet]
-    public async Task<ActionResult<QuizResultDto>> GetQuizResults(int submissionId)
+#pragma warning disable ASP0023 // Route conflict detected between controller actions - base controller uses the action as the route
+    [HttpGet("{id}")]
+#pragma warning restore ASP0023 // Route conflict detected between controller actions
+    public async Task<ActionResult<QuizResultDto>> GetQuizResults(int id)
     {
-        var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = submissionId });
+        var results = await Mediator.Send(new GetQuizResultsQuery { SubmissionId = id });
 
         return Ok(results);
     }

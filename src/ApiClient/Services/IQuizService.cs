@@ -11,6 +11,14 @@ public interface IQuizService
     Task<QuizDetailsDto> GetQuizDetails(int quizID, CancellationToken cancellationToken);
 
     Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto submission, CancellationToken cancellationToken);
+
+    Task<BeginQuizDto> BeginQuiz(int quizId, CancellationToken cancellationToken);
+
+    Task SubmitAnswer(SubmitQuizAnswerDto answer, CancellationToken cancellationToken);
+
+    Task<bool> CheckQuizCompletion(int submissionId, CancellationToken cancellationToken);
+
+    Task<QuizResultDto> GetQuizResults(int submissionId, CancellationToken cancellationToken);
 }
 
 public class QuizService : IQuizService
@@ -76,5 +84,67 @@ public class QuizService : IQuizService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to submit quiz: {responseContent}");
+    }
+    
+    public async Task<BeginQuizDto> BeginQuiz(int quizId, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}BeginQuiz", quizId, cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<BeginQuizDto>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to start quiz: {responseContent}");
+    }
+    
+    public async Task SubmitAnswer(SubmitQuizAnswerDto answer, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}SubmitAnswer", answer, cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to submit answer: {responseContent}");
+    }
+    
+    public async Task<bool> CheckQuizCompletion(int submissionId, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}CheckQuizCompletion/{submissionId}", cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to check quiz completion: {responseContent}");
+    }
+    
+    public async Task<QuizResultDto> GetQuizResults(int submissionId, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetQuizResults/{submissionId}", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<QuizResultDto>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to get quiz results: {responseContent}");
     }
 }

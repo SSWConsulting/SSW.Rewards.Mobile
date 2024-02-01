@@ -12,4 +12,5 @@ public class QuizDto
     
     // TODO: Remove once the ThumbnailImages are working
     public Icons Icon { get; set; }
+    public int Points { get; set; }
 }

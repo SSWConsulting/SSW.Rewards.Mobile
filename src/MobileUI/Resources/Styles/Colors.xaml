@@ -82,10 +82,16 @@
     <Color x:Key="Background">#181818</Color>
     <Color x:Key="BorderDefault">#373737</Color>
     <Color x:Key="Coin">#FFC700</Color>
+    <Color x:Key="CorrectColor">#52B5AA</Color>
     
     <LinearGradientBrush x:Key="BrandBrush" EndPoint="0,1">
         <GradientStop Offset="0.1" Color="{StaticResource SSWRed}"></GradientStop>
         <GradientStop Offset="1.0" Color="{StaticResource BrandEnd}"></GradientStop>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonBrush" EndPoint="0,1">
+        <GradientStop Offset="0.1" Color="{StaticResource ButtonBorder}"></GradientStop>
+        <GradientStop Offset="1.0" Color="{StaticResource FlyoutBackgroundColour}"></GradientStop>
     </LinearGradientBrush>
 
 </ResourceDictionary>
