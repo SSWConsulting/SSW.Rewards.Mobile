@@ -49,7 +49,7 @@
                                     <Grid Grid.Row="0"
                                           RowDefinitions="Auto"
                                           VerticalOptions="End"
-                                          Margin="20,0,20,40">
+                                          Margin="20,0,20,30">
                                         <Border Grid.Row="0"
                                                 BackgroundColor="#BF000000"
                                                 StrokeThickness="0">
