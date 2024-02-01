@@ -20,9 +20,6 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public ICommand OpenQuizCommand { get; set; }
 
-    [ObservableProperty]
-    private bool _isCarouselVisible;
-
     public EarnViewModel(IQuizService quizService)
     {
         _quizService = quizService;
@@ -60,7 +57,6 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
             
             if (quiz.IsCarousel)
             {
-                IsCarouselVisible = true;
                 CarouselQuizzes.Add(quiz);
             }
         }
