@@ -54,8 +54,8 @@
                             HeightRequest="30"
                             WidthRequest="30"
                             Source="{Binding Icon}">
-                    </Image>
-
+                    </Image> 
+                    
                     <Label Grid.Column="1"
                         TextColor="White"
                         VerticalOptions="Center"
@@ -341,7 +341,35 @@
             <!--            VerticalOptions="Center" -->
             <!--            FontSize="Medium" -->
             <!--            Text="Settings" /> -->
-            <!-- </Grid> -->
+            <!-- </Grid> -->            
+            <Grid
+                VerticalOptions="End"
+                Grid.Column="0"
+                Grid.Row="0"
+                ColumnDefinitions="Auto,*">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_DeleteClicked"/>
+                </Grid.GestureRecognizers>
+                <!-- Update to settings Icon -->
+                <Label Grid.Column="0"
+                       HeightRequest="30"
+                       WidthRequest="30"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="Medium"
+                       FontFamily="FA6Solid"
+                       TextColor="#DDDDDD"
+                       Text="&#xf235;">
+                </Label>
+                <Label Grid.Column="1"
+                       Style="{StaticResource LabelBold}"
+                       TextColor="#DDDDDD"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontSize="Medium"
+                       Text="Delete Profile" />
+            </Grid>
             
             <!-- Logout Button -->
             <Grid
@@ -368,7 +396,7 @@
                 <Label Grid.Column="1"
                        Style="{StaticResource LabelBold}"
                        TextColor="#DDDDDD"
-                       HorizontalOptions="Center"
+                       HorizontalOptions="Start"
                        VerticalOptions="Center"
                        FontSize="Medium"
                        Text="Log Out" />
