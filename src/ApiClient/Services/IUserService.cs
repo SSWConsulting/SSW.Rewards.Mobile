@@ -33,7 +33,7 @@ public class UserService : IUserService
 
     public async Task DeleteMyProfile(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}", "", cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}/DeleteMyProfile", "", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
