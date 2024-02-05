@@ -192,6 +192,10 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         await UpdateSearchResults(leaders);
         UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe == true));
 
+        // setting to null to trigger PropertyChanged event
+        First = null!;
+        Second = null!;
+        Third = null!;
         First = leaders.FirstOrDefault();
         Second = leaders.Skip(1).FirstOrDefault();
         Third = leaders.Skip(2).FirstOrDefault();
