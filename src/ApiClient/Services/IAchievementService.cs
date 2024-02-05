@@ -27,7 +27,7 @@ public class AchievementService : IAchievementService
 
     public async Task<ClaimAchievementResult> ClaimAchievement(string code, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", new { code }, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", code, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
