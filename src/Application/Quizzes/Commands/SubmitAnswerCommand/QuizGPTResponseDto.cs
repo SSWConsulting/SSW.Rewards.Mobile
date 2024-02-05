@@ -17,4 +17,7 @@ public class QuizGPTResponseDto
 
     [JsonPropertyName("confidence")]
     public int Confidence { get; set; }
+
+    [JsonPropertyName("usedBenchmarkAnswer")]
+    public bool UsedBenchmarkAnswer { get; set; }
 }
