@@ -1,10 +1,8 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿namespace SSW.Rewards.Mobile.Controls;
 
-namespace SSW.Rewards.Mobile.Controls;
-
-public partial class Snackbar : Popup
+public partial class Snackbar
 {
-    private static SnackbarOptions DefaultOptions = new SnackbarOptions
+    private static SnackbarOptions defaultOptions = new()
     {
         ActionCompleted = true,
         Glyph = "\uf3ca",
@@ -17,16 +15,12 @@ public partial class Snackbar : Popup
     public Snackbar(SnackbarOptions? options = null)
     {
         InitializeComponent();
-
         SetOptions(options);
     }
 
     private void SetOptions(SnackbarOptions options)
     {
-        if (options == null)
-        {
-            options = DefaultOptions;
-        }
+        options ??= defaultOptions;
 
         if (options.ActionCompleted)
         {
@@ -41,17 +35,8 @@ public partial class Snackbar : Popup
             GlyphIconLabel.BackgroundColor = Color.FromArgb("414141");
         }
 
-
         GlyphIconLabel.Text = options.Glyph;
-
-        if (options.GlyphIsBrand)
-        {
-            GlyphIconLabel.FontFamily = "FA6Brands";
-        }
-        else
-        {
-            GlyphIconLabel.FontFamily = "FluentIcons";
-        }
+        GlyphIconLabel.FontFamily = options.GlyphIsBrand ? "FA6Brands" : "FluentIcons";
 
         MessageLabel.Text = options.Message;
         TickLabel.IsVisible = !options.ShowPoints && options.ActionCompleted;
@@ -64,22 +49,16 @@ public partial class Snackbar : Popup
     private async Task SetDismissTimer()
     {
         await Task.Delay(5000);
-
-        Close();
+        await CloseAsync();
     }
 }
 
 public class SnackbarOptions
 {
-public bool ActionCompleted { get; set; }
-
-public string Glyph { get; set; }
-
-public string Message { get; set; }
-
-public bool GlyphIsBrand { get; set; }
-
-public int Points { get; set; }
-
-public bool ShowPoints { get; set; }
+    public bool ActionCompleted { get; set; }
+    public string Glyph { get; set; }
+    public string Message { get; set; }
+    public bool GlyphIsBrand { get; set; }
+    public int Points { get; set; }
+    public bool ShowPoints { get; set; }
 }
