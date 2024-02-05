@@ -6,9 +6,9 @@ public partial class OthersProfilePage : ContentPage
 {
     private bool _initialised;
 
-    private OtherProfileViewModel viewModel;
+    private OthersProfileViewModel viewModel;
 
-    public OthersProfilePage(OtherProfileViewModel vm, LeaderViewModel leader)
+    public OthersProfilePage(OthersProfileViewModel vm, LeaderViewModel leader)
     {
         InitializeComponent();
         viewModel = vm;

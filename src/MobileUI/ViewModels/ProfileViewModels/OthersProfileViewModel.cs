@@ -2,9 +2,10 @@
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
-public class OtherProfileViewModel : ProfileViewModelBase
+public class OthersProfileViewModel : ProfileViewModelBase
 {
-    public OtherProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService) : base(rewardsService, userService, snackbarService)
+    public OthersProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
+        : base(rewardsService, userService, snackbarService)
     {
     }
 
