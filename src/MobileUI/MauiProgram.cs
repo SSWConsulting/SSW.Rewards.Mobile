@@ -52,9 +52,9 @@ public static class MauiProgram
         // We definitely shouldn't be using reflection at startup in a mobile app!!
         // See: https://github.com/matt-goldman/Maui.Plugins.PageResolver/wiki/2-Using-the-dependency-registration-source-generator
 
-        var excludedTypes = new Type[]
+        var excludedTypes = new []
         {
-            typeof(OtherProfileViewModel),
+            typeof(OthersProfileViewModel),
             typeof(OthersProfilePage),
             typeof(ProfileViewModelBase),
         };
@@ -67,7 +67,7 @@ public static class MauiProgram
             builder.Services.AddSingleton(type.AsType());
         }
 
-        builder.Services.AddTransient<OtherProfileViewModel>();
+        builder.Services.AddTransient<OthersProfileViewModel>();
         builder.Services.AddTransient<OthersProfilePage>();
 
         builder.Services.AddSingleton<ILeaderService, LeaderService>();

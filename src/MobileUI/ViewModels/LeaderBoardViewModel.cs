@@ -121,7 +121,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         foreach (var summary in summaries)
         {
             var isMe = myId == summary.UserId;
-            var vm = new LeaderViewModel(summary, isMe);
+            var vm = new LeaderViewModel();
+            vm.MapFrom(summary, isMe);
 
             Leaders.Add(vm);
         }
@@ -206,7 +207,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         foreach (var summary in summaries)
         {
             var isMe = myId == summary.UserId;
-            var vm = new LeaderViewModel(summary, isMe);
+            var vm = new LeaderViewModel();
+            vm.MapFrom(summary, isMe);
 
             Leaders.Add(vm);
         }
