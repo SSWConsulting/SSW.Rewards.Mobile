@@ -10,8 +10,7 @@
             StrokeThickness="0"
             WidthRequest="300"
             x:Name="GridBackground">
-        <Grid x:Name="MainLayout"
-              HorizontalOptions="CenterAndExpand"
+        <Grid HorizontalOptions="CenterAndExpand"
               Margin="5"
               Padding="5"
               WidthRequest="300"
@@ -26,6 +25,7 @@
                    HeightRequest="40"
                    WidthRequest="40"
                    Margin="10,0"
+                   Padding="{OnPlatform Android='0,5,0,0', iOS='0'}"
                    HorizontalOptions="Start"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
@@ -57,7 +57,7 @@
                    HorizontalTextAlignment="Center"
                    x:Name="TickLabel"/>
 
-            <!--End points coint-->
+            <!-- End points coin -->
             <Label Grid.Column="1"
                    Grid.ColumnSpan="2"
                    x:Name="PointsLabel"
