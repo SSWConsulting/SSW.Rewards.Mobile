@@ -42,7 +42,8 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
         QuizGPTRequestDto payload = new QuizGPTRequestDto
         {
             QuestionText    = questionText,
-            AnswerText      = request.AnswerText
+            AnswerText      = request.AnswerText,
+            BenchmarkAnswer = await GetCorrectAnswer(request.QuestionId, cancellationToken)
         };
 
         int userId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
@@ -51,7 +52,21 @@ public sealed class Handler : IRequestHandler<SubmitAnswerCommand, Unit>
 
         return Unit.Value;
     }
-    
+
+    private async Task<string?> GetCorrectAnswer(int questionId, CancellationToken cancellationToken)
+    {
+        QuizAnswer? answer = await _context.QuizAnswers
+            .Where(x => 
+                    x.QuestionId == questionId 
+                &&  x.IsCorrect)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (answer is null)
+            return null;
+
+        return answer.Text;
+    }
+
     private async Task<string> GetQuestionText(int questionId)
     {
         QuizQuestion? dbQuestion = await _context.QuizQuestions
