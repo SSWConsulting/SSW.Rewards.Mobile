@@ -96,45 +96,13 @@ public class UserService : IUserService, IDisposable
     {
         var user = await _userClient.GetCurrentUser();
 
-        if (user is null)
-        {
-            return;
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.FullName))
-        {
-            Preferences.Set(nameof(MyName), user.FullName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.Email))
-        {
-            Preferences.Set(nameof(MyEmail), user.Email);
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.Id.ToString()))
-        {
-            Preferences.Set(nameof(MyUserId), user.Id);
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.ProfilePic))
-        {
-            Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.Points.ToString()))
-        {
-            Preferences.Set(nameof(MyPoints), user.Points);
-        }
-
-        if (!string.IsNullOrWhiteSpace(user.Balance.ToString()))
-        {
-            Preferences.Set(nameof(MyBalance), user.Balance);
-        }
-
-        if (user.QRCode != null && !string.IsNullOrWhiteSpace(user.QRCode.ToString()))
-        {
-            Preferences.Set(nameof(MyQrCode), user.QRCode);
-        }
+        Preferences.Set(nameof(MyName), user.FullName);
+        Preferences.Set(nameof(MyEmail), user.Email);
+        Preferences.Set(nameof(MyUserId), user.Id);
+        Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
+        Preferences.Set(nameof(MyPoints), user.Points);
+        Preferences.Set(nameof(MyBalance), user.Balance);
+        Preferences.Set(nameof(MyQrCode), user.QRCode);
 
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
         {
