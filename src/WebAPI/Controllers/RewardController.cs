@@ -73,9 +73,9 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ClaimRewardResult>> Claim([FromBody]string code)
+    public async Task<ActionResult<ClaimRewardResult>> Claim([FromQuery] string rewardCode)
     {
-        return Ok(await Mediator.Send(new ClaimRewardCommand { Code = code }));
+        return Ok(await Mediator.Send(new ClaimRewardCommand { Code = rewardCode }));
     }
 
     [HttpDelete("{id}")]
