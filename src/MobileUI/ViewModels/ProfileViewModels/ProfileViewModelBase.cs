@@ -75,8 +75,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         };
     }
     
-    public void OnAppearing() { }
-    
     public void Receive(AchievementTappedMessage message)
     {
         ProcessAchievement(message.Value);

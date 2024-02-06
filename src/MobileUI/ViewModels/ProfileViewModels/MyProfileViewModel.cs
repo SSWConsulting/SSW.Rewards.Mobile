@@ -24,10 +24,9 @@ public class MyProfileViewModel : ProfileViewModelBase,
         AddSocialMediaId(message);
     }
     
-    public void Receive(UserDetailsUpdatedMessage message)
+    public async void Receive(UserDetailsUpdatedMessage message)
     {
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
+        await UpdateUserData();
     }
 
     public async Task Initialise()
@@ -43,22 +42,12 @@ public class MyProfileViewModel : ProfileViewModelBase,
 
         _isMe = true;
 
-        var profilePic = _userService.MyProfilePic;
-
-        //initialise me
-        ProfilePic = profilePic;
-        Name = _userService.MyName;
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
-        userId = _userService.MyUserId;
-
         await _initialise();
     }
     
-    public new void OnAppearing()
+    public new async Task OnAppearing()
     {
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
+        await UpdateUserData();
     }
 
     private void AddSocialMediaId(SocialUsernameAddedMessage message)
@@ -96,6 +85,17 @@ public class MyProfileViewModel : ProfileViewModelBase,
         //}
 
         //IsBusy = false;
+    }
+
+    private async Task UpdateUserData()
+    {
+        ProfilePic = _userService.MyProfilePic;
+        Name = _userService.MyName;
+        Points = _userService.MyPoints;
+        Balance = _userService.MyBalance;
+        userId = _userService.MyUserId;
+
+        await UpdatePoints();
     }
 
     private async Task OnPointsAwarded()
