@@ -54,6 +54,12 @@ public class MyProfileViewModel : ProfileViewModelBase,
 
         await _initialise();
     }
+    
+    public new void OnAppearing()
+    {
+        Points = _userService.MyPoints;
+        Balance = _userService.MyBalance;
+    }
 
     private void AddSocialMediaId(SocialUsernameAddedMessage message)
     {
