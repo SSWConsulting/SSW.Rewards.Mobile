@@ -58,11 +58,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
     {
+        WeakReferenceMessenger.Default.RegisterAll(this);
         IsLoading = true;
         _rewardsService = rewardsService;
         _userService = userService;
         _snackbarService = snackbarService;
-
 
         SnackOptions = new SnackbarOptions
         {
@@ -74,12 +74,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             ShowPoints = true
         };
     }
-
-    public void OnAppearing()
-    {
-        WeakReferenceMessenger.Default.RegisterAll(this);
-    }
-
+    
     public void Receive(AchievementTappedMessage message)
     {
         ProcessAchievement(message.Value);

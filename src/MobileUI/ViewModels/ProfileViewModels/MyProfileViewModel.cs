@@ -7,7 +7,8 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public class MyProfileViewModel : ProfileViewModelBase, 
     IRecipient<ProfilePicUpdatedMessage>, 
     IRecipient<PointsAwardedMessage>,
-    IRecipient<SocialUsernameAddedMessage>
+    IRecipient<SocialUsernameAddedMessage>,
+    IRecipient<UserDetailsUpdatedMessage>
 {
     public MyProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService) : base(rewardsService, userService, snackbarService)
     {
@@ -21,6 +22,12 @@ public class MyProfileViewModel : ProfileViewModelBase,
     public void Receive(SocialUsernameAddedMessage message)
     {
         AddSocialMediaId(message);
+    }
+    
+    public void Receive(UserDetailsUpdatedMessage message)
+    {
+        Points = _userService.MyPoints;
+        Balance = _userService.MyBalance;
     }
 
     public async Task Initialise()
