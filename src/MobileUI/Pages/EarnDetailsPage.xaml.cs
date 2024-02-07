@@ -36,5 +36,6 @@ public partial class EarnDetailsPage : ContentPage
     {
         base.OnDisappearing();
         _viewModel.OnNextQuestionRequested -= ScrollToIndex;
+        _viewModel.Clear();
     }
 }

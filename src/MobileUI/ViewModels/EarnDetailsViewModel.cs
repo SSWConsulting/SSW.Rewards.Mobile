@@ -92,12 +92,12 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public async Task Initialise(int quizId, string icon)
         {
+            IsBusy = true;
+            
             _quizId = quizId;
-
             _quizIcon = icon;
 
             IsLoadingQuestions = true;
-            Clear();
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
             var beginQuiz = await _quizService.BeginQuiz(_quizId);
@@ -285,13 +285,14 @@ namespace SSW.Rewards.Mobile.ViewModels
             OnNextQuestionRequested.Invoke(this, next);
         }
 
-        private void Clear()
+        public void Clear()
         {
             Questions.Clear();
             Results.Clear();
             QuizTitle = "";
             QuizDescription = "";
-            IsBusy = true;
+            ThumbnailImage = "";
+            Points = 0;
             QuestionsVisible = true;
             ResultsVisible = false;
         }
