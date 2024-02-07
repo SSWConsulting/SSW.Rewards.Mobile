@@ -118,9 +118,9 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             var question = Questions.FirstOrDefault(q => q.QuestionId == CurrentQuestion.QuestionId);
 
-            if (!string.IsNullOrEmpty(CurrentQuestion.Answer))
+            if (!string.IsNullOrEmpty(CurrentQuestion.Answer) && !CurrentQuestion.IsSubmitted)
             {
-                await _quizService.SubmitAnswer(new SubmitQuizAnswerDto()
+                await _quizService.SubmitAnswer(new SubmitQuizAnswerDto
                 {
                     AnswerText = CurrentQuestion.Answer, QuestionId = CurrentQuestion.QuestionId, SubmissionId = _submissionId
                 });

@@ -119,7 +119,7 @@
                                Text="{Binding CurrentQuestion.Text}" />
                         <Border Grid.Row="1"
                                 StrokeThickness="0"
-                                IsVisible="{Binding IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
+                                IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="8" />
                             </Border.StrokeShape>
@@ -129,7 +129,7 @@
                                     TextColor="Black" />
                         </Border>
                         <Label Grid.Row="1"
-                               IsVisible="{Binding IsSubmitted}"
+                               IsVisible="{Binding CurrentQuestion.IsSubmitted}"
                                Text="{Binding CurrentQuestion.Answer}"
                                TextColor="White" />
                     </Grid>
