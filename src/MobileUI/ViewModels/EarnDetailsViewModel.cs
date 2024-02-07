@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
@@ -47,7 +46,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private string _resultButtonText;
 
         [ObservableProperty]
-        private bool _questionsVisible = true;
+        private bool _questionsVisible;
 
         [ObservableProperty]
         private bool _resultsVisible;
@@ -81,7 +80,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        private bool IsLoadingQuestions { get; set; } = false;
+        private bool IsLoadingQuestions { get; set; }
 
         public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
@@ -92,11 +91,11 @@ namespace SSW.Rewards.Mobile.ViewModels
         public async Task Initialise(int quizId, string icon)
         {
             IsBusy = true;
-            
             _quizId = quizId;
             _quizIcon = icon;
 
             IsLoadingQuestions = true;
+            QuestionsVisible = false;
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
             var beginQuiz = await _quizService.BeginQuiz(_quizId);
@@ -113,6 +112,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             ThumbnailImage = quiz.ThumbnailImage;
             QuizDescription = quiz.Description;
             Points = quiz.Points;
+            QuestionsVisible = true;
 
             IsBusy = false;
         }
@@ -286,18 +286,6 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             CurrentQuestion = Questions[next];
             CurrentQuestionChanged();
-        }
-
-        public void Clear()
-        {
-            Questions.Clear();
-            Results.Clear();
-            QuizTitle = "";
-            QuizDescription = "";
-            ThumbnailImage = "";
-            Points = 0;
-            QuestionsVisible = true;
-            ResultsVisible = false;
         }
     }
 
