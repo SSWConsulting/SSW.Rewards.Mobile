@@ -78,9 +78,10 @@ namespace SSW.Rewards.Mobile.ViewModels
         [ObservableProperty]
         private int _currentQuestionIndex;
 
-        public SnackbarOptions SnackOptions { get; set; }
+        [ObservableProperty]
+        private bool _isLoadingQuestions;
 
-        private bool IsLoadingQuestions { get; set; }
+        public SnackbarOptions SnackOptions { get; set; }
 
         public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
@@ -93,9 +94,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             IsBusy = true;
             _quizId = quizId;
             _quizIcon = icon;
-
             IsLoadingQuestions = true;
-            QuestionsVisible = false;
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
             var beginQuiz = await _quizService.BeginQuiz(_quizId);
@@ -106,13 +105,11 @@ namespace SSW.Rewards.Mobile.ViewModels
                 Questions.Add(new EarnQuestionViewModel(question));
             }
             CurrentQuestion = Questions.First();
-
             IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
             ThumbnailImage = quiz.ThumbnailImage;
             QuizDescription = quiz.Description;
             Points = quiz.Points;
-            QuestionsVisible = true;
 
             IsBusy = false;
         }

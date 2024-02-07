@@ -36,7 +36,7 @@
             </Border.StrokeShape>
             <Grid>
                 <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60"
-                      IsVisible="{Binding QuestionsVisible}">
+                      IsVisible="{Binding IsLoadingQuestions, Converter={StaticResource InvertedBoolConverter}}">
 
                     <Border Grid.Row="0"
                             HeightRequest="80"
@@ -269,6 +269,15 @@
                         </VerticalStackLayout>
                     </ScrollView>
                 </Grid>
+                
+                <ActivityIndicator Grid.Row="0"
+                                   Grid.RowSpan="7"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Color="{StaticResource SSWRed}"
+                                   IsEnabled="{Binding IsLoadingQuestions}"
+                                   IsRunning="{Binding IsLoadingQuestions}"
+                                   IsVisible="{Binding IsLoadingQuestions}"/>
             </Grid>
         </Border>
     </ScrollView>
