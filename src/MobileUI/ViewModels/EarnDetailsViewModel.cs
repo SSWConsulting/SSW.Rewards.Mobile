@@ -46,7 +46,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private string _resultButtonText;
 
         [ObservableProperty]
-        private bool _questionsVisible;
+        private bool _questionsVisible = true;
 
         [ObservableProperty]
         private bool _resultsVisible;

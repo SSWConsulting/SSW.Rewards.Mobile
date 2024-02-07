@@ -28,6 +28,7 @@
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:PassedToColorConverter x:Key="PassedToColorConverter" />
+        <converters:AllTrueConverter x:Key="AllTrueConverter"/>
     </ContentPage.Resources>
     <ScrollView>
         <Border StrokeThickness="0" Margin="{OnPlatform '15', iOS='15,15,15,95'}" BackgroundColor="{StaticResource Background}">
@@ -35,8 +36,13 @@
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid>
-                <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60"
-                      IsVisible="{Binding IsLoadingQuestions, Converter={StaticResource InvertedBoolConverter}}">
+                <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
+                    <Grid.IsVisible>
+                        <MultiBinding Converter="{StaticResource AllTrueConverter}">
+                            <Binding Path="QuestionsVisible"/>
+                            <Binding Path="IsLoadingQuestions" Converter="{StaticResource InvertedBoolConverter}"/>
+                        </MultiBinding>
+                    </Grid.IsVisible>
 
                     <Border Grid.Row="0"
                             HeightRequest="80"
@@ -219,56 +225,56 @@
                                VerticalTextAlignment="Center" />
                     </Border>
 
-                    <ScrollView Grid.Row="2">
-                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
-                                             Margin="10"
-                                             Spacing="8">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="quizzes:QuestionResultDto">
-                                    <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                            StrokeThickness="2"
-                                            Stroke="{Binding Correct, Converter={StaticResource PassedToColorConverter}}"
-                                            Padding="4">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="6" />
-                                        </Border.StrokeShape>
-                                        <toolkit:Expander
-                                            IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
-                                            <toolkit:Expander.Header>
-                                                <Grid ColumnDefinitions="38, *" RowDefinitions="Auto">
-                                                    <lottie:SKLottieView Grid.Column="0"
-                                                                         Source="pass.json"
-                                                                         IsAnimationEnabled="True"
-                                                                         WidthRequest="30"
-                                                                         HeightRequest="30"
-                                                                         IsVisible="{Binding Correct}" />
-                                                    <lottie:SKLottieView Grid.Column="0"
-                                                                         Source="fail.json"
-                                                                         IsAnimationEnabled="True"
-                                                                         WidthRequest="30"
-                                                                         HeightRequest="30"
-                                                                         IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}" />
-                                                    <Label Grid.Column="1"
-                                                           VerticalTextAlignment="Center"
-                                                           Text="{Binding QuestionText}"
-                                                           FontAttributes="Bold" />
-                                                </Grid>
-                                            </toolkit:Expander.Header>
-                                            <VerticalStackLayout Padding="10">
-                                                <Label Text="Your response:"
-                                                       Style="{StaticResource LabelBold}"/>
-                                                <Label Text="{Binding AnswerText}"/>
-                                                <Label Text="Explanation:"
-                                                       Margin="0,8,0,0"
-                                                       Style="{StaticResource LabelBold}"/>
-                                                <Label Text="{Binding ExplanationText}"/>
-                                            </VerticalStackLayout>
-                                        </toolkit:Expander>
-                                    </Border>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </VerticalStackLayout>
-                    </ScrollView>
+                    
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
+                                         Margin="10"
+                                         Grid.Row="2"
+                                         Spacing="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="quizzes:QuestionResultDto">
+                                <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        StrokeThickness="2"
+                                        Stroke="{Binding Correct, Converter={StaticResource PassedToColorConverter}}"
+                                        Padding="4">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="6" />
+                                    </Border.StrokeShape>
+                                    <toolkit:Expander
+                                        IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
+                                        <toolkit:Expander.Header>
+                                            <Grid ColumnDefinitions="38, *" RowDefinitions="Auto">
+                                                <lottie:SKLottieView Grid.Column="0"
+                                                                     Source="pass.json"
+                                                                     IsAnimationEnabled="True"
+                                                                     WidthRequest="30"
+                                                                     HeightRequest="30"
+                                                                     IsVisible="{Binding Correct}" />
+                                                <lottie:SKLottieView Grid.Column="0"
+                                                                     Source="fail.json"
+                                                                     IsAnimationEnabled="True"
+                                                                     WidthRequest="30"
+                                                                     HeightRequest="30"
+                                                                     IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}" />
+                                                <Label Grid.Column="1"
+                                                       VerticalTextAlignment="Center"
+                                                       Text="{Binding QuestionText}"
+                                                       FontAttributes="Bold" />
+                                            </Grid>
+                                        </toolkit:Expander.Header>
+                                        <VerticalStackLayout Padding="10">
+                                            <Label Text="Your response:"
+                                                   Style="{StaticResource LabelBold}"/>
+                                            <Label Text="{Binding AnswerText}"/>
+                                            <Label Text="Explanation:"
+                                                   Margin="0,8,0,0"
+                                                   Style="{StaticResource LabelBold}"/>
+                                            <Label Text="{Binding ExplanationText}"/>
+                                        </VerticalStackLayout>
+                                    </toolkit:Expander>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                 </Grid>
                 
                 <ActivityIndicator Grid.Row="0"
