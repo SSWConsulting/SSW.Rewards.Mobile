@@ -15,8 +15,8 @@ public class LeaderboardController : ApiControllerBase
         return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
     }
 
-    [HttpPost]
-    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromBody] int achievementId, LeaderboardFilter filter, bool filterStaff)
+    [HttpGet]
+    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromQuery] int achievementId, LeaderboardFilter filter, bool filterStaff)
     {
         var getEligibleUsers = new GetEligibleUsers
         {
