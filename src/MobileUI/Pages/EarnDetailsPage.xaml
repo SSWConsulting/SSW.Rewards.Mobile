@@ -17,29 +17,32 @@
         <Label Text="{Binding QuizTitle}"
                VerticalOptions="Center"
                FontSize="18"
-               x:Name="TitleText"
                TextColor="White" />
     </Shell.TitleView>
     <NavigationPage.TitleView>
         <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="10">
-            <Image Source="logo.png">
-            </Image>
+            <Image Source="logo.png"/>
         </StackLayout>
     </NavigationPage.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:PassedToColorConverter x:Key="PassedToColorConverter" />
+        <converters:AllTrueConverter x:Key="AllTrueConverter"/>
     </ContentPage.Resources>
-    <ContentPage.Content>
+    <ScrollView>
         <Border StrokeThickness="0" Margin="{OnPlatform '15', iOS='15,15,15,95'}" BackgroundColor="{StaticResource Background}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid>
-                <Grid RowDefinitions="120, 30, 30, 30, 40, *, 60"
-                      IsVisible="{Binding QuestionsVisible}"
-                      x:Name="QuestionsView">
+                <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
+                    <Grid.IsVisible>
+                        <MultiBinding Converter="{StaticResource AllTrueConverter}">
+                            <Binding Path="QuestionsVisible"/>
+                            <Binding Path="IsLoadingQuestions" Converter="{StaticResource InvertedBoolConverter}"/>
+                        </MultiBinding>
+                    </Grid.IsVisible>
 
                     <Border Grid.Row="0"
                             HeightRequest="80"
@@ -60,18 +63,22 @@
                     <Label Grid.Row="1"
                            Text="{Binding QuizTitle}"
                            Style="{StaticResource LabelBold}"
+                           Margin="10,0"
                            FontSize="24"
-                           HorizontalOptions="Center" />
+                           HorizontalTextAlignment="Center" />
 
                     <Label Grid.Row="2"
                            Text="{Binding QuizDescription}"
                            TextColor="{StaticResource Gray300}"
+                           Margin="10,0"
                            FontSize="18"
-                           HorizontalOptions="Center" />
+                           HorizontalTextAlignment="Center" />
 
+                    <!-- Reward amount -->
                     <Border Grid.Row="3"
                             StrokeThickness="0"
                             WidthRequest="80"
+                            Margin="0,10,0,0"
                             BackgroundColor="{StaticResource FlyoutBackgroundColour}">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="8" />
@@ -93,58 +100,48 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" />
                         </Grid>
-
                     </Border>
 
                     <IndicatorView Grid.Row="4"
+                                   InputTransparent="True"
                                    SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
                                    IndicatorSize="4.5"
+                                   Position="{Binding CurrentQuestionIndex}"
+                                   Count="{Binding Questions.Count}"
                                    HorizontalOptions="Center"
-                                   VerticalOptions="End"
-                                   x:Name="QuestionIndicator" />
+                                   VerticalOptions="End"/>
+                    
+                    <!-- Question & Answer -->
+                    <Grid Grid.Row="5" RowDefinitions="Auto,Auto" Margin="20">
+                        <Label Grid.Row="0"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Start"
+                               VerticalTextAlignment="End"
+                               Style="{StaticResource LabelBold}"
+                               TextColor="White"
+                               FontSize="Large"
+                               Margin="0,0,0,40"
+                               Text="{Binding CurrentQuestion.Text}" />
+                        <Border Grid.Row="1"
+                                StrokeThickness="0"
+                                IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding CurrentQuestion.Answer}"
+                                    Placeholder="Enter your answer here"
+                                    BackgroundColor="White"
+                                    TextColor="Black" />
+                        </Border>
+                        <Label Grid.Row="1"
+                               IsVisible="{Binding CurrentQuestion.IsSubmitted}"
+                               Text="{Binding CurrentQuestion.Answer}"
+                               TextColor="White" />
+                    </Grid>
 
-                    <CarouselView Grid.Row="5"
-                                  IndicatorView="QuestionIndicator"
-                                  Loop="False"
-                                  IsSwipeEnabled="False"
-                                  ItemsSource="{Binding Questions}"
-                                  CurrentItem="{Binding CurrentQuestion}"
-                                  CurrentItemChangedCommand="{Binding CurrentQuestionChangedCommand}"
-                                  x:Name="QuestionsCarousel"
-                                  Margin="20">
-                        <CarouselView.ItemTemplate>
-                            <DataTemplate x:DataType="viewModels:EarnQuestionViewModel">
-                                <Grid RowDefinitions="80,Auto" RowSpacing="40">
-                                    <Label Grid.Row="0"
-                                           HorizontalOptions="FillAndExpand"
-                                           VerticalOptions="FillAndExpand"
-                                           HorizontalTextAlignment="Start"
-                                           VerticalTextAlignment="End"
-                                           Style="{StaticResource LabelBold}"
-                                           TextColor="White"
-                                           FontSize="Large"
-                                           Text="{Binding Text}" />
-                                    <Border Grid.Row="1"
-                                            StrokeThickness="0"
-                                            IsVisible="{Binding IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="8" />
-                                        </Border.StrokeShape>
-                                        <Entry Text="{Binding Answer}"
-                                                Placeholder="Enter your answer here"
-                                                BackgroundColor="White"
-                                                TextColor="Black" />
-                                    </Border>
-                                    <Label Grid.Row="1"
-                                           IsVisible="{Binding IsSubmitted}"
-                                           Text="{Binding Answer}"
-                                           TextColor="White" />
-                                </Grid>
-                            </DataTemplate>
-                        </CarouselView.ItemTemplate>
-                    </CarouselView>
-
+                    <!-- Quiz navigation -->
                     <Grid Grid.Row="6" ColumnDefinitions="*,*" Margin="20,0,20,10"
                           IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
                         <Button Grid.Column="0"
@@ -154,12 +151,12 @@
                                 FontFamily="FA6Solid"
                                 TextColor="White"
                                 HeightRequest="40"
-                                VerticalOptions="Start"
+                                VerticalOptions="End"
                                 HorizontalOptions="Start"
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
-
+                    
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
                                 Text="&#xf061;"
@@ -167,12 +164,12 @@
                                 FontFamily="FA6Solid"
                                 TextColor="White"
                                 HeightRequest="40"
-                                VerticalOptions="Start"
+                                VerticalOptions="End"
                                 HorizontalOptions="End"
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
-
+                    
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion}"
                                 Text="Submit"
@@ -181,7 +178,7 @@
                                 FontSize="12"
                                 TextColor="White"
                                 HeightRequest="40"
-                                VerticalOptions="Start"
+                                VerticalOptions="End"
                                 HorizontalOptions="End"
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
@@ -197,8 +194,8 @@
 
                 </Grid>
 
-                <Grid x:Name="ResultsView"
-                      RowDefinitions="70, 50, *"
+                <!-- Results -->
+                <Grid RowDefinitions="70, 50, *"
                       IsVisible="{Binding ResultsVisible}">
 
                     <Label Text="{Binding ResultsTitle}"
@@ -228,60 +225,67 @@
                                VerticalTextAlignment="Center" />
                     </Border>
 
-                    <ScrollView Grid.Row="2">
-                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
-                                             Margin="10"
-                                             Spacing="8">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="quizzes:QuestionResultDto">
-                                    <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                            StrokeThickness="2"
-                                            Stroke="{Binding Correct, Converter={StaticResource PassedToColorConverter}}"
-                                            Padding="4">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="6" />
-                                        </Border.StrokeShape>
-                                        <toolkit:Expander
-                                            IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
-                                            <toolkit:Expander.Header>
-                                                <Grid ColumnDefinitions="38, *" RowDefinitions="Auto">
-                                                    <lottie:SKLottieView Grid.Column="0"
-                                                                         Source="pass.json"
-                                                                         IsAnimationEnabled="True"
-                                                                         WidthRequest="30"
-                                                                         HeightRequest="30"
-                                                                         IsVisible="{Binding Correct}" />
-                                                    <lottie:SKLottieView Grid.Column="0"
-                                                                         Source="fail.json"
-                                                                         IsAnimationEnabled="True"
-                                                                         WidthRequest="30"
-                                                                         HeightRequest="30"
-                                                                         IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}" />
-                                                    <Label Grid.Column="1"
-                                                           VerticalTextAlignment="Center"
-                                                           Text="{Binding QuestionText}"
-                                                           FontAttributes="Bold" />
-                                                </Grid>
-                                            </toolkit:Expander.Header>
-                                            <VerticalStackLayout Padding="10">
-                                                <Label Text="Your response:"
-                                                       Style="{StaticResource LabelBold}"/>
-                                                <Label Text="{Binding AnswerText}"/>
-                                                <Label Text="Explanation:"
-                                                       Margin="0,8,0,0"
-                                                       Style="{StaticResource LabelBold}"/>
-                                                <Label Text="{Binding ExplanationText}"/>
-                                            </VerticalStackLayout>
-                                        </toolkit:Expander>
-                                    </Border>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </VerticalStackLayout>
-                    </ScrollView>
-
+                    
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
+                                         Margin="10"
+                                         Grid.Row="2"
+                                         Spacing="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="quizzes:QuestionResultDto">
+                                <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        StrokeThickness="2"
+                                        Stroke="{Binding Correct, Converter={StaticResource PassedToColorConverter}}"
+                                        Padding="4">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="6" />
+                                    </Border.StrokeShape>
+                                    <toolkit:Expander
+                                        IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
+                                        <toolkit:Expander.Header>
+                                            <Grid ColumnDefinitions="38, *" RowDefinitions="Auto">
+                                                <lottie:SKLottieView Grid.Column="0"
+                                                                     Source="pass.json"
+                                                                     IsAnimationEnabled="True"
+                                                                     WidthRequest="30"
+                                                                     HeightRequest="30"
+                                                                     IsVisible="{Binding Correct}" />
+                                                <lottie:SKLottieView Grid.Column="0"
+                                                                     Source="fail.json"
+                                                                     IsAnimationEnabled="True"
+                                                                     WidthRequest="30"
+                                                                     HeightRequest="30"
+                                                                     IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}" />
+                                                <Label Grid.Column="1"
+                                                       VerticalTextAlignment="Center"
+                                                       Text="{Binding QuestionText}"
+                                                       FontAttributes="Bold" />
+                                            </Grid>
+                                        </toolkit:Expander.Header>
+                                        <VerticalStackLayout Padding="10">
+                                            <Label Text="Your response:"
+                                                   Style="{StaticResource LabelBold}"/>
+                                            <Label Text="{Binding AnswerText}"/>
+                                            <Label Text="Explanation:"
+                                                   Margin="0,8,0,0"
+                                                   Style="{StaticResource LabelBold}"/>
+                                            <Label Text="{Binding ExplanationText}"/>
+                                        </VerticalStackLayout>
+                                    </toolkit:Expander>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                 </Grid>
+                
+                <ActivityIndicator Grid.Row="0"
+                                   Grid.RowSpan="7"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Color="{StaticResource SSWRed}"
+                                   IsEnabled="{Binding IsLoadingQuestions}"
+                                   IsRunning="{Binding IsLoadingQuestions}"
+                                   IsVisible="{Binding IsLoadingQuestions}"/>
             </Grid>
         </Border>
-
-    </ContentPage.Content>
+    </ScrollView>
 </ContentPage>
