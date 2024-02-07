@@ -141,12 +141,12 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task SubmitResponses()
         {
-            bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
-
-            if (IsLastQuestion && !allQuestionsAnswered)
+            if (!CurrentQuestion.IsSubmitted)
             {
                 await SubmitAnswer();
             }
+            
+            bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
             
             if (allQuestionsAnswered)
             {
