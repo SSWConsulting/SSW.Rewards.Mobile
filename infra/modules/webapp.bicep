@@ -164,6 +164,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
           name: 'SigningAuthority'
           value: idsUrl
         }
+        {
+          name: 'GPTServiceOptions__Url'
+          value: 'https://wapp-ssw-quizgpt-prod.azurewebsites.net/Quiz/SubmitAnswer'
+        }
       ]
     }
   }
