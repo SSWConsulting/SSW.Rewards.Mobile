@@ -119,9 +119,10 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task SubmitAnswer()
         {
+            IsBusy = true;
             var question = Questions.FirstOrDefault(q => q.QuestionId == CurrentQuestion.QuestionId);
 
-            if (!string.IsNullOrEmpty(CurrentQuestion.Answer))
+            if (!CurrentQuestion.IsSubmitted && !string.IsNullOrEmpty(CurrentQuestion.Answer))
             {
                 await _quizService.SubmitAnswer(new SubmitQuizAnswerDto()
                 {
@@ -135,12 +136,17 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             
             MoveNext(Questions.IndexOf(CurrentQuestion) + 1);
+            IsBusy = false;
         }
 
         private async Task SubmitResponses()
         {
-            await SubmitAnswer();
             bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
+
+            if (IsLastQuestion && !allQuestionsAnswered)
+            {
+                await SubmitAnswer();
+            }
             
             if (allQuestionsAnswered)
             {
