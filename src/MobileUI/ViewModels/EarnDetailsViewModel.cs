@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
@@ -14,42 +13,41 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly IQuizService _quizService;
         private readonly ISnackbarService _snackbarService;
         private int _quizId;
+        private string _quizIcon;
         private int _submissionId;
 
-        public ObservableCollection<EarnQuestionViewModel> Questions { get; set; } = new ObservableCollection<EarnQuestionViewModel>();
+        public ObservableCollection<EarnQuestionViewModel> Questions { get; } = [];
 
-        public ObservableCollection<QuestionResultDto> Results { get; set; } = new ObservableCollection<QuestionResultDto>();
+        public ObservableCollection<QuestionResultDto> Results { get; set; } = [];
 
         public ICommand BackCommand => new Command(async () => await GoBack());
-        
+
         public ICommand MoveBackCommand => new Command(() => MoveNext(Questions.IndexOf(CurrentQuestion) - 1));
-        
+
         public ICommand MoveNextCommand => new Command(async () => await SubmitAnswer());
 
         public ICommand SubmitCommand => new Command(async () => await SubmitResponses());
 
-        public ICommand CurrentQuestionChangedCommand => new Command(() => CurrentQuestionChanged());
-
         public ICommand ResultsButtonCommand { get; set; }
-        
+
         [ObservableProperty]
         private string _quizTitle;
-        
+
         [ObservableProperty]
         private string _quizDescription;
-        
+
         [ObservableProperty]
         private string _score;
-        
+
         [ObservableProperty]
         private string _resultsTitle;
-        
+
         [ObservableProperty]
         private string _resultButtonText;
-        
+
         [ObservableProperty]
         private bool _questionsVisible = true;
-        
+
         [ObservableProperty]
         private bool _resultsVisible;
 
@@ -58,31 +56,32 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private string _icon;
-        
+
         [ObservableProperty]
         private string _thumbnailImage;
 
         [ObservableProperty]
         private int _points;
-        
+
         [ObservableProperty]
         private bool _isFirstQuestion = true;
 
         [ObservableProperty]
         private bool _isLastQuestion;
-        
+
         [ObservableProperty]
         private bool _isSubmitted;
 
+        [ObservableProperty]
+        private EarnQuestionViewModel _currentQuestion;
+
+        [ObservableProperty]
+        private int _currentQuestionIndex;
+
+        [ObservableProperty]
+        private bool _isLoadingQuestions;
+
         public SnackbarOptions SnackOptions { get; set; }
-
-        public EventHandler<int> OnNextQuestionRequested;
-
-        public EarnQuestionViewModel CurrentQuestion { get; set; }
-
-        private string _quizIcon;
-
-        private bool IsLoadingQuestions { get; set; } = false;
 
         public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
         {
@@ -93,10 +92,8 @@ namespace SSW.Rewards.Mobile.ViewModels
         public async Task Initialise(int quizId, string icon)
         {
             IsBusy = true;
-            
             _quizId = quizId;
             _quizIcon = icon;
-
             IsLoadingQuestions = true;
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
@@ -107,7 +104,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 Questions.Add(new EarnQuestionViewModel(question));
             }
-
+            CurrentQuestion = Questions.First();
             IsLoadingQuestions = false;
             QuizTitle = quiz.Title;
             ThumbnailImage = quiz.ThumbnailImage;
@@ -119,11 +116,12 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task SubmitAnswer()
         {
+            IsBusy = true;
             var question = Questions.FirstOrDefault(q => q.QuestionId == CurrentQuestion.QuestionId);
 
-            if (!string.IsNullOrEmpty(CurrentQuestion.Answer))
+            if (!CurrentQuestion.IsSubmitted && !string.IsNullOrEmpty(CurrentQuestion.Answer))
             {
-                await _quizService.SubmitAnswer(new SubmitQuizAnswerDto()
+                await _quizService.SubmitAnswer(new SubmitQuizAnswerDto
                 {
                     AnswerText = CurrentQuestion.Answer, QuestionId = CurrentQuestion.QuestionId, SubmissionId = _submissionId
                 });
@@ -133,15 +131,20 @@ namespace SSW.Rewards.Mobile.ViewModels
                     question.IsSubmitted = true;
                 }
             }
-            
+
             MoveNext(Questions.IndexOf(CurrentQuestion) + 1);
+            IsBusy = false;
         }
 
         private async Task SubmitResponses()
         {
-            await SubmitAnswer();
-            bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
+            if (!CurrentQuestion.IsSubmitted)
+            {
+                await SubmitAnswer();
+            }
             
+            bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
+
             if (allQuestionsAnswered)
             {
                 IsBusy = true;
@@ -166,13 +169,13 @@ namespace SSW.Rewards.Mobile.ViewModels
                 await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
             }
         }
-        
+
         private async Task<bool> AwaitQuizCompletion()
         {
             var maxAttempts = 30;
             var delay = 5000;
             bool isComplete = false;
-            
+
             while (!isComplete)
             {
                 maxAttempts--;
@@ -182,7 +185,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     return false;
                 }
-                
+
                 isComplete = completion.Value;
                 await Task.Delay(delay);
             }
@@ -200,9 +203,9 @@ namespace SSW.Rewards.Mobile.ViewModels
             var correct = result.Results.Count(r => r.Correct);
 
             Score = $"{correct}/{total}";
-            
+
             Results.Clear();
-            
+
             foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
             {
                 Results.Add(questionResult);
@@ -229,7 +232,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 };
 
                 await _snackbarService.ShowSnackbar(SnackOptions);
-                
+
                 WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
             }
             else
@@ -246,14 +249,13 @@ namespace SSW.Rewards.Mobile.ViewModels
                     ResultsVisible = false;
                 });
             }
-            
+
             OnPropertyChanged(nameof(ResultsButtonCommand));
         }
 
-        private async Task GoBack(bool askFirst = true)
+        public async Task GoBack(bool askFirst = true)
         {
             bool confirmed;
-            
             if (askFirst)
             {
                 confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
@@ -262,7 +264,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 confirmed = true;
             }
-            
 
             if (confirmed)
                 await Shell.Current.GoToAsync("..");
@@ -273,38 +274,30 @@ namespace SSW.Rewards.Mobile.ViewModels
             if (CurrentQuestion == null)
                 return;
 
-            var selectedIndex = Questions.IndexOf(CurrentQuestion);
-            var isLastQuestion = selectedIndex == Questions.Count - 1;
-            
-            IsFirstQuestion = selectedIndex == 0;
+            CurrentQuestionIndex = Questions.IndexOf(CurrentQuestion);
+            var isLastQuestion = CurrentQuestionIndex == Questions.Count - 1;
+
+            IsFirstQuestion = CurrentQuestionIndex == 0;
             IsLastQuestion = isLastQuestion && !IsLoadingQuestions;
         }
 
         private void MoveNext(int next)
         {
-            OnNextQuestionRequested.Invoke(this, next);
-        }
+            if (next < 0 || next >= Questions.Count)
+                return;
 
-        public void Clear()
-        {
-            Questions.Clear();
-            Results.Clear();
-            QuizTitle = "";
-            QuizDescription = "";
-            ThumbnailImage = "";
-            Points = 0;
-            QuestionsVisible = true;
-            ResultsVisible = false;
+            CurrentQuestion = Questions[next];
+            CurrentQuestionChanged();
         }
     }
-    
+
     [ObservableObject]
     public partial class EarnQuestionViewModel : QuizQuestionDto
     {
         [ObservableProperty] private bool _isSubmitted;
-        
+
         [ObservableProperty] private string _answer;
-        
+
         public EarnQuestionViewModel(QuizQuestionDto questionDto)
         {
             this.QuestionId = questionDto.QuestionId;

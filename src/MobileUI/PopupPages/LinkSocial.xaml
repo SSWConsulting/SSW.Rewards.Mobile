@@ -17,14 +17,19 @@
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
 
-    <Frame WidthRequest="300"
-           HeightRequest="300"
-           HorizontalOptions="Center"
-           VerticalOptions="Center"
-           HasShadow="True"
-           BackgroundColor="{StaticResource LeaderCardBackground}"
-           CornerRadius="1">
-
+    <Border WidthRequest="300"
+            HeightRequest="300"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="{StaticResource LeaderCardBackground}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="1" />
+        </Border.StrokeShape>
+        <Border.Shadow>
+            <Shadow Brush="Black"
+                    Radius="40"
+                    Opacity="0.8"/>
+        </Border.Shadow>
         <Grid RowDefinitions="*, *, *">
             <Label Grid.Row="0"
                    x:Name="TitleLabel"
@@ -73,5 +78,5 @@
                     Clicked="SaveButton_Clicked"
                     x:Name="SaveButton"/>
         </Grid>
-    </Frame>
+    </Border>
 </pages:PopupPage>

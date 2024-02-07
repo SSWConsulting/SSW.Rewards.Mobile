@@ -22,9 +22,9 @@ public class PrizeDrawService : IPrizeDrawService
 
     public async Task<EligibleUsersViewModel> GetEligibleUsers(GetEligibleUsersFilter filter, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}GetEligibleUsers", filter, cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetEligibleUsers?filter={filter.Filter}&achievementId={filter.AchievementId}&filterStaff={filter.FilterStaff}", cancellationToken);
 
-        if  (result.IsSuccessStatusCode)
+        if (result.IsSuccessStatusCode)
         {
             var response = await result.Content.ReadFromJsonAsync<EligibleUsersViewModel>(cancellationToken: cancellationToken);
 
