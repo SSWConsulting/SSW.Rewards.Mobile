@@ -96,6 +96,7 @@ public class MyProfileViewModel : ProfileViewModelBase,
         userId = _userService.MyUserId;
 
         await UpdatePoints();
+        await LoadProfileSections();
     }
 
     private async Task OnPointsAwarded()
