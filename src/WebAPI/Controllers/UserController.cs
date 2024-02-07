@@ -7,10 +7,12 @@ using SSW.Rewards.Application.Users.Commands.UploadProfilePic;
 using SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUser;
 using SSW.Rewards.Application.Users.Queries.GetCurrentUserRoles;
+using SSW.Rewards.Application.Users.Queries.GetNewUsers;
 using SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
+using SSW.Rewards.Enums;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -86,5 +88,11 @@ public class UserController : ApiControllerBase
         await Mediator.Send(new DeleteMyProfileCommand());
 
         return Ok();
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<NewUsersViewModel>> FindNewUsers([FromQuery] LeaderboardFilter filter, bool filterStaff)
+    {
+        return await Mediator.Send(new GetNewUsersQuery { Filter = filter, FilterStaff = filterStaff });
     }
 }

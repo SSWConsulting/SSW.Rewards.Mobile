@@ -1,4 +1,4 @@
-using SSW.Rewards.Application.Users.Queries.GetNewUsers;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Users.Queries;
 
