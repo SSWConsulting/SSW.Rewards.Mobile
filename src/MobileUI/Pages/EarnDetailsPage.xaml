@@ -97,6 +97,7 @@
                     </Border>
 
                     <IndicatorView Grid.Row="4"
+                                   InputTransparent="True"
                                    SelectedIndicatorColor="{StaticResource SSWRed}"
                                    IndicatorColor="{StaticResource IndicatorColor}"
                                    IndicatorSize="4.5"
