@@ -1,5 +1,5 @@
 ﻿namespace SSW.Rewards.Application.Leaderboard.Queries.GetFilteredLeaderboardList;
-public class GetFilteredLeaderboardListValidator : AbstractValidator<GetFilteredLeaderboardList>
+public class GetFilteredLeaderboardListValidator : AbstractValidator<GetFilteredLeaderboardListQuery>
 {
     public GetFilteredLeaderboardListValidator()
     {

@@ -30,24 +30,25 @@ public class GetFilteredLeaderboardListQueryHandler : IRequestHandler<GetFiltere
         var query = _context.Users
             .Where(u => u.Activated == true);
 
-        if (request.Filter == LeaderboardFilter.ThisYear)
+        switch(request.Filter)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year));
-        }
-        else if (request.Filter == LeaderboardFilter.ThisMonth)
-        {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month));
-        }
-        else if (request.Filter == LeaderboardFilter.Today)
-        {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month && a.AwardedAt.Day == _dateTime.UtcNow.Day));
-        }
-        else if (request.Filter == LeaderboardFilter.ThisWeek)
-        {
-            var start = _dateTime.UtcNow.FirstDayOfWeek();
-            var end = start.AddDays(7);
-            // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
-            query = query.Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
+            case LeaderboardFilter.Today:
+                query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month && a.AwardedAt.Day == _dateTime.UtcNow.Day));
+                break;
+            case LeaderboardFilter.ThisWeek:
+                var start = _dateTime.UtcNow.FirstDayOfWeek();
+                var end = start.AddDays(7);
+                // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
+                query = query.Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
+                break;
+            case LeaderboardFilter.ThisMonth:
+                query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month));
+                break;
+            case LeaderboardFilter.ThisYear:
+                query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year));
+                break;
+            default: // forever. No filter required
+                break;
         }
 
         var users = await query.Include(u => u.UserAchievements)
