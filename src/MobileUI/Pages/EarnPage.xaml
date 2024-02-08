@@ -9,13 +9,6 @@
              x:Name="QuizList"
              x:DataType="viewModels:EarnViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
-    <Shell.TitleView>
-        <Label Text="Earn"
-               VerticalOptions="Center"
-               FontSize="18"
-               x:Name="TitleText"
-               TextColor="White" />
-    </Shell.TitleView>
     <ContentPage.Content>
         <ScrollView>
             <Grid RowDefinitions="Auto, *">

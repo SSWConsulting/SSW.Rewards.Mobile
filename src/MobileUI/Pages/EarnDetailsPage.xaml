@@ -13,12 +13,6 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}" />
     </Shell.BackButtonBehavior>
-    <Shell.TitleView>
-        <Label Text="{Binding QuizTitle}"
-               VerticalOptions="Center"
-               FontSize="18"
-               TextColor="White" />
-    </Shell.TitleView>
     <NavigationPage.TitleView>
         <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="10">
             <Image Source="logo.png"/>
