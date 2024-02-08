@@ -8,7 +8,7 @@ param idsUrl string
 param sqlConnectionStringSecretUriWithVersion string
 param hangfireSqlConnectionStringSecretUriWithVersion string
 
-var quizGptUrl = 'https://wapp-ssw-quizgpt-prod.azurewebsites.net/Quiz/SubmitAnswer' ;
+var quizGptUrl = 'https://wapp-ssw-quizgpt-prod.azurewebsites.net/Quiz/SubmitAnswer'
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
