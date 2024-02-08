@@ -26,7 +26,7 @@ public class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, int
             found = new Skill
             {
                 Name = request.Skill,
-                CreatedUtc = _dateTime.Now
+                CreatedUtc = _dateTime.UtcNow
             };
 
             _context.Skills.Add(found);

@@ -24,13 +24,13 @@ public class Mapping : Profile
                 //          this tech debt for now and investigate a better approach in the future. See
                 //          https://github.com/SSWConsulting/SSW.Rewards.API/issues/7
                 .ForMember(dst => dst.PointsThisYear, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.UtcNow.Year)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsThisMonth, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.UtcNow.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsToday, opt => opt.MapFrom(src => src.UserAchievements
-                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month && ua.AwardedAt.Day == DateTime.UtcNow.Day)
+                                                                                    .Where(ua => ua.AwardedAt.Year == DateTime.UtcNow.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month && ua.AwardedAt.Day == DateTime.UtcNow.Day)
                                                                                     .Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.PointsThisWeek, opt => opt.MapFrom(src => src.UserAchievements
                                                                                     .Where(ua => start <= ua.AwardedAt && ua.AwardedAt <= end)

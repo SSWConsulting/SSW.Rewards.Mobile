@@ -47,8 +47,8 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
             {
                 Achievement = achievement,
                 User        = user, 
-                AwardedAt   = _dateTimeService.Now,
-                CreatedUtc  = _dateTimeService.Now
+                AwardedAt   = _dateTimeService.UtcNow,
+                CreatedUtc  = _dateTimeService.UtcNow
             };
             _context.UserAchievements.Add(userAchievement);
             await _context.SaveChangesAsync(cancellationToken);

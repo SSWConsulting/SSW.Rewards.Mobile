@@ -36,19 +36,19 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
 
         if (request.Filter == LeaderboardFilter.ThisYear)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year));
         }
         else if (request.Filter == LeaderboardFilter.ThisMonth)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month));
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month));
         }
         else if (request.Filter == LeaderboardFilter.Today)
         {
-            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month && a.AwardedAt.Day == _dateTime.Now.Day));
+            query = query.Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month && a.AwardedAt.Day == _dateTime.UtcNow.Day));
         }
         else if (request.Filter == LeaderboardFilter.ThisWeek)
         {
-            var start = _dateTime.Now.FirstDayOfWeek();
+            var start = _dateTime.UtcNow.FirstDayOfWeek();
             var end = start.AddDays(7);
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             query = query.Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));

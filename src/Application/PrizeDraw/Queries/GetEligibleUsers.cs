@@ -38,23 +38,23 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
         {
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisYear")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
+                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year));
         }
         else if (request.Filter == LeaderboardFilter.ThisMonth)
         {
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisMonth")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month));
+                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month));
         }
         else if (request.Filter == LeaderboardFilter.Today)
         {
             eligibleUsers = eligibleUsers
                 .TagWith("PointsToday")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month && a.AwardedAt.Day == _dateTime.Now.Day));
+                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.UtcNow.Year && a.AwardedAt.Month == _dateTime.UtcNow.Month && a.AwardedAt.Day == _dateTime.UtcNow.Day));
         }
         else if (request.Filter == LeaderboardFilter.ThisWeek)
         {
-            var start = _dateTime.Now.FirstDayOfWeek();
+            var start = _dateTime.UtcNow.FirstDayOfWeek();
             var end = start.AddDays(7);
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             eligibleUsers = eligibleUsers
