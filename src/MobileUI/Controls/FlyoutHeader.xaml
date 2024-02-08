@@ -232,8 +232,7 @@
                              ForegroundColor="Transparent"
                              WidthRequest="150"
                              HeightRequest="150"
-                             VerticalOptions="Center"
-                             TranslationX="-10"/>
+                             VerticalOptions="Center"/>
     
     <VerticalStackLayout Grid.Row="6"
                          VerticalOptions="Start">
