@@ -89,9 +89,9 @@
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
 
-        <Tab Route="main" Icon="icon_home" Title="Home">
+        <!--<Tab Route="main" Icon="icon_home" Title="Home">
             <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
-            <!--<Tab.Icon>
+            --><!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
             </Tab.Icon>-->
@@ -118,8 +118,8 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>-->
-        </Tab>
+            </Tab.Style>--><!--
+        </Tab>-->
 
         <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
@@ -129,11 +129,9 @@
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
         
-        <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
-            <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
-        </Tab>
+        
 
-        <Tab Route="leader" Icon="icon_trophy" Title="Leaderboard">
+        <Tab Route="main" Icon="icon_trophy" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
@@ -163,6 +161,10 @@
                     </Style.Triggers>
                 </Style>
             </Tab.Style>-->
+        </Tab>
+
+        <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
+            <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
         </Tab>
 
 
