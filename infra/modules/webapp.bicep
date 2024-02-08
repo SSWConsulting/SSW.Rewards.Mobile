@@ -8,6 +8,8 @@ param idsUrl string
 param sqlConnectionStringSecretUriWithVersion string
 param hangfireSqlConnectionStringSecretUriWithVersion string
 
+var quizGptUrl = 'https://wapp-ssw-quizgpt-prod.azurewebsites.net/Quiz/SubmitAnswer' ;
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ai-${projectName}-${environment}'
   location: location
@@ -163,6 +165,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'SigningAuthority'
           value: idsUrl
+        }
+        {
+          name: 'GPTServiceOptions__Url'
+          value: quizGptUrl
         }
       ]
     }
