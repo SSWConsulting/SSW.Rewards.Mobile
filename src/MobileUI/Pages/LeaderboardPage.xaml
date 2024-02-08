@@ -17,10 +17,14 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid Margin="15,5"
-              RowSpacing="6"
-              RowDefinitions="1*, 7*, 8*">
+              RowSpacing="6">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="FirstRow" />
+                <RowDefinition x:Name="SecondRow" />
+                <RowDefinition x:Name="ThirdRow" />
+            </Grid.RowDefinitions>
 
-            <controls:SegmentedControl
+                <controls:SegmentedControl
                 Segments="{Binding Periods}"
                 Grid.Row="0"
                 SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
@@ -57,6 +61,7 @@
                         Margin="0,10"
                         ItemsUpdatingScrollMode="KeepItemsInView"
                         ItemSizingStrategy="MeasureFirstItem"
+                        Scrolled="LeadersCollection_Scrolled"
                         IsVisible="False">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:LeaderViewModel">

@@ -47,4 +47,29 @@ public partial class LeaderboardPage : ContentPage
         
         _isLoaded = true;
     }
+
+    private double _screenHeight = 1;
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        _screenHeight = height;
+
+        FirstRow.Height = height * 16;
+
+        SecondRow.Height = (height * 16) * 7;
+
+        ThirdRow.Height = height / 2;
+
+        base.OnSizeAllocated(width, height);
+    }
+
+    private void LeadersCollection_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+    {
+        SetScaleFactor(e.VerticalDelta);
+    }
+
+    private void SetScaleFactor (double offset)
+    {
+
+    }
 }
