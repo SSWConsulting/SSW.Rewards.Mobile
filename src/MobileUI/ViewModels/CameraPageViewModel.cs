@@ -139,7 +139,7 @@ public partial class CameraPageViewModel : BaseViewModel
     {
         IsUploading = true;
         var imageStream = await _imageFile.OpenReadAsync();
-        await _userService.UploadImageAsync(imageStream);
+        await _userService.UploadImageAsync(imageStream, _imageFile.FileName);
         await MopupService.Instance.PopAllAsync();
     }
 }
