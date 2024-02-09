@@ -15,6 +15,9 @@
             <converters:StaffToTextConverter x:Key="StaffToText"/>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent"/>
+    </ContentPage.Behaviors>
     <ContentPage.Content>
         <Grid Margin="15,5"
               RowSpacing="6"
