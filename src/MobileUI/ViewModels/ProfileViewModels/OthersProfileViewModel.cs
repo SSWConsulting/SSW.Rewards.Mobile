@@ -20,7 +20,7 @@ public class OthersProfileViewModel : ProfileViewModelBase
             });
         }
 
-        _isMe = false;
+        IsMe = false;
 
         await _initialise();
     }

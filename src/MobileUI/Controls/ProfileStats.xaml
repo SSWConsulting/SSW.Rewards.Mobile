@@ -77,7 +77,7 @@
         TranslationY="-35"
         StrokeShape="Ellipse"
         StrokeThickness="0"
-        IsVisible="{Binding ShowCamera}">
+        IsVisible="{Binding IsMe}">
         <Border.GestureRecognizers>
             <TapGestureRecognizer Command="{Binding CameraCommand}"/>
         </Border.GestureRecognizers>
