@@ -34,7 +34,7 @@ public class MyProfileViewModel : ProfileViewModelBase,
             });
         }
 
-        _isMe = true;
+        IsMe = true;
 
         var profilePic = _userService.MyProfilePic;
 

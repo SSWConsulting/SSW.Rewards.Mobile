@@ -69,9 +69,9 @@ public class UserService : IUserService, IDisposable
 
     public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
 
-    public async Task<string> UploadImageAsync(Stream image)
+    public async Task<string> UploadImageAsync(Stream image, string fileName)
     {
-        var response = await _userClient.UploadProilePic(image);
+        var response = await _userClient.UploadProfilePic(image, fileName);
 
         Preferences.Set(nameof(MyProfilePic), response.PicUrl);
 

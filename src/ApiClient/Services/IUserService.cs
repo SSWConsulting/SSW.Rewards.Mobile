@@ -7,7 +7,8 @@ public interface IUserService
 {
     Task DeleteMyProfile(CancellationToken cancellationToken = default);
 
-    Task<ProfilePicResponseDto> UploadProilePic(Stream file, CancellationToken cancellationToken = default);
+    Task<ProfilePicResponseDto> UploadProfilePic(Stream file, string fileName,
+        CancellationToken cancellationToken = default);
 
     Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken = default);
 
@@ -44,12 +45,12 @@ public class UserService : IUserService
         throw new Exception($"Failed to delete my profile: {responseContent}");
     }
 
-    public async Task<ProfilePicResponseDto> UploadProilePic(Stream file, CancellationToken cancellationToken = default)
+    public async Task<ProfilePicResponseDto> UploadProfilePic(Stream file, string fileName,
+        CancellationToken cancellationToken = default)
     {
-        var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(file), "file", "file");
+        var content = Helpers.ProcessImageContent(file, fileName);
 
-        var result = await _httpClient.PostAsync($"{_baseRoute}/UploadProfilePic", content, cancellationToken);
+        var result = await _httpClient.PostAsync($"{_baseRoute}UploadProfilePic", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -160,4 +161,23 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
     }
+
+    // public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff = false, CancellationToken cancellationToken = default)
+    // {
+    //     var result = await _httpClient.GetAsync($"{_baseRoute}/NewUsers?filter={filter}&filterStaff={filterStaff}");
+    //     
+    //     if  (result.IsSuccessStatusCode)
+    //     {
+    //         var response = await result.Content.ReadFromJsonAsync<NewUsersViewModel>(cancellationToken: cancellationToken);
+    //
+    //         if (response is not null)
+    //         {
+    //             return response;
+    //         }
+    //     }
+    //
+    //     var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+    //
+    //     throw new Exception($"Failed to get user rewards: {responseContent}");
+    // }
 }

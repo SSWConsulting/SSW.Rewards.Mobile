@@ -6,7 +6,7 @@ public class ProfilePicStorageProvider : IProfilePicStorageProvider
 {
     private readonly IStorageProvider _storageProvider;
 
-    private const string CONTAINER_NAME = "ProfilePics";
+    private const string CONTAINER_NAME = "profilepics";
 
     public ProfilePicStorageProvider(IStorageProvider storageProvider)
     {
