@@ -89,7 +89,7 @@
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
         
-        <Tab Route="main" Icon="icon_star" Title="Ranking">
+        <Tab Route="main" Icon="icon_star" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"

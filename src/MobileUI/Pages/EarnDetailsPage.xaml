@@ -117,7 +117,7 @@
                                TextColor="White"
                                FontSize="Large"
                                Margin="0,0,0,40"
-                               Text="{Binding CurrentQuestion.Text}" />
+                               Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
                         <Border Grid.Row="1"
                                 StrokeThickness="0"
                                 IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
@@ -131,7 +131,7 @@
                         </Border>
                         <Label Grid.Row="1"
                                IsVisible="{Binding CurrentQuestion.IsSubmitted}"
-                               Text="{Binding CurrentQuestion.Answer}"
+                               Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
                                TextColor="White" />
                     </Grid>
 
