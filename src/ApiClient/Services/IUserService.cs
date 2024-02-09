@@ -50,7 +50,7 @@ public class UserService : IUserService
     {
         var content = Helpers.ProcessImageContent(file, fileName);
 
-        var result = await _httpClient.PostAsync($"{_baseRoute}/UploadProfilePic", content, cancellationToken);
+        var result = await _httpClient.PostAsync($"{_baseRoute}UploadProfilePic", content, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
