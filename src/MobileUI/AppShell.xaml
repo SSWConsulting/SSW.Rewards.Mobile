@@ -121,13 +121,13 @@
             </Tab.Style>-->
         </Tab>
 
-        <!--<Tab Route="main" Icon="icon_home" Title="Home">
+        <Tab Route="me" Icon="icon_user" Title="Me">
             <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
-            <Tab.Icon>
+            <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
+            </Tab.Icon>
+            <Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
@@ -150,8 +150,8 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>
-        </Tab>-->
+            </Tab.Style>-->
+        </Tab>
 
         <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
