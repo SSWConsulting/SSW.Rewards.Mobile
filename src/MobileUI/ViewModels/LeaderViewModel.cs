@@ -59,6 +59,7 @@ public class LeaderViewModel : BaseViewModel
         TotalPoints = dto.TotalPoints;
         PointsThisMonth = dto.PointsThisMonth;
         PointsThisYear = dto.PointsThisYear;
+        PointsThisWeek = dto.PointsThisWeek;
         Balance = dto.Balance;
         Email = dto.Email;
         IsMe = isMe;
