@@ -104,6 +104,7 @@ public partial class LoginPageViewModel : BaseViewModel
                 // Everything else is fatal
                 Crashes.TrackError(e);
                 Console.WriteLine(e);
+                await WaitForWindowClose();
                 await Application.Current.MainPage.DisplayAlert("Login Failure",
                     "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
             }
