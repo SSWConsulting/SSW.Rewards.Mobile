@@ -72,10 +72,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             Points = 1000,
             ShowPoints = true
         };
-    }
-
-    public void OnAppearing()
-    {
+        
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
 

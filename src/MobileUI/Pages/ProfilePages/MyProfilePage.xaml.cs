@@ -25,8 +25,6 @@ public partial class MyProfilePage : ContentPage
             await viewModel.Initialise();
 
         _initialised = true;
-
-        viewModel.OnAppearing();
     }
 
     protected override void OnDisappearing()
