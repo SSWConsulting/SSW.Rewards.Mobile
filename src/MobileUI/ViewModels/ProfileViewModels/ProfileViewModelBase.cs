@@ -76,7 +76,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public void OnAppearing()
     {
-        if (!WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
+        if (WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
             return;
         
         WeakReferenceMessenger.Default.RegisterAll(this);
