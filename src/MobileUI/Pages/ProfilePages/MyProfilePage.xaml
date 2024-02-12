@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             BackgroundColor="{StaticResource MainBackground}"
+             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
@@ -32,9 +32,8 @@
 
     <Grid RowDefinitions="Auto,Auto,*,5"
           RowSpacing="6"
-          Padding="20,20,20,5"
+          Padding="10, 5"
           x:Name="MainPageRow">
-
         <Border
             Grid.Row="0"
             HorizontalOptions="End"
@@ -55,12 +54,20 @@
 
         <controls:ProfileStats Grid.Row="1"/>
 
-        <CarouselView Grid.Row="2"
-                      Margin="0,20,0,0"
-                      IndicatorView="ProfileIndicator"
-                      ItemsSource="{Binding ProfileSections}"
-                      ItemTemplate="{StaticResource ProfileViewSelector}"/>
-
+        <Border Grid.Row="2" 
+                BackgroundColor="{StaticResource MainBackground}"
+                Stroke="{StaticResource MainBackground}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8"/>
+            </Border.StrokeShape>
+            <CarouselView 
+                          Margin="0,0,0,0"
+                          IndicatorView="ProfileIndicator"
+                          ItemsSource="{Binding ProfileSections}"
+                          ItemTemplate="{StaticResource ProfileViewSelector}"
+                          />
+        </Border>
+        
         <IndicatorView Grid.Row="3"
                        SelectedIndicatorColor="{StaticResource primary}"
                        IndicatorColor="{StaticResource IndicatorColor}"
@@ -75,6 +82,5 @@
                            IsRunning="True"
                            Color="{StaticResource primary}"
                            IsVisible="{Binding IsLoading}"/>
-
     </Grid>
 </ContentPage>

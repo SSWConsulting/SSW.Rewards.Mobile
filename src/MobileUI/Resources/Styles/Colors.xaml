@@ -74,6 +74,7 @@
     <Color x:Key="QuizCheckColor">#1d4c39</Color>
     <Color x:Key="PassedQuizIcon">#181818</Color>
     <Color x:Key="QuizDescriptionBackground">#2f2f2f</Color>
+    <Color x:Key="ProfileGridBorder">#A0A0A0</Color>
 
     <Color x:Key="RankingTableHeader">#181818</Color>
     <Color x:Key="RankingTableBody">#606060</Color>

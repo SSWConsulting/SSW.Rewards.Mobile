@@ -1,92 +1,216 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Grid
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Border
+    HeightRequest="270"
+    Margin="0,10"
+    BackgroundColor="{StaticResource Background}"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="SSW.Rewards.Mobile.Controls.ProfileStats"
-    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls">
-              
-    <controls:RewardsProgress
-        Progress="{Binding Progress}"/>
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+    x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
+    <Border.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:StaffToTextConverter x:Key="StaffToText" />
+    </Border.Resources>
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="8" />
+    </Border.StrokeShape>
+    <Grid
+        RowDefinitions="120, 50, *"
+        RowSpacing="10"
+        Padding="0,10">
+        <VerticalStackLayout Grid.Row="0">
+            <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
+                                WidthRequest="120"
+                                HeightRequest="120"
+                                CornerRadius="60"
+                                BorderWidth="2" />
 
-    <!--
-    RewardsPregress is not taken into account when the size of ProfileStats is calculates.
-    So we need this placeholder. The bottom padding is 80px where 60px is the width of the progress bar
-    and 20 is the actual padding-->
-    <Label Margin="0,0,0,280"/>
+            <Border
+                BackgroundColor="{StaticResource primary}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                TranslationX="40"
+                TranslationY="-35"
+                StrokeShape="Ellipse"
+                StrokeThickness="0"
+                IsVisible="{Binding IsMe}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CameraCommand}" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontFamily="FluentIcons"
+                    FontSize="25"
+                    Text="&#xe299;"
+                    Margin="3"
+                    TextColor="White" />
+            </Border>
+        </VerticalStackLayout>
 
-    <HorizontalStackLayout
-        Spacing="6"
-        Padding="0,0,0,0"
-        Margin="0,0,0,200"
-        IsVisible="{Binding ShowBalance}"
-        VerticalOptions="Center"
-        HorizontalOptions="Center">
-        <Label
-            HorizontalOptions="End"
-            Text="⭐"
-            FontSize="Small"
-            TextColor="{StaticResource primary}" />
-        <Label
-            Text="{Binding Balance, StringFormat='{0:n0}'}"
-            FontSize="Small"
-            TextColor="{StaticResource primary}" />
-        <Label
-            HorizontalOptions="End"
-            Text="⭐"
-            FontSize="Small"
-            TextColor="{StaticResource primary}" />
-    </HorizontalStackLayout>
+        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center">
+            <Label
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="{Binding Name}"
+                Style="{StaticResource LabelBold}"
+                FontSize="Large"
+                TextColor="White" />
+            <Label
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="{Binding Path=IsStaff, Converter={StaticResource StaffToText}}"
+                Style="{StaticResource LabelBold}"
+                FontSize="Small"
+                TextColor="White" />
+        </VerticalStackLayout>
 
-    <Label
-        Margin="0,0,0,140"
-        TextColor="{StaticResource HeadingColor}"
-        FontSize="Large"
-        Text="{Binding Points, StringFormat='{0:n0}'}"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        HorizontalTextAlignment="Center"/>
+        <!-- User's own stats -->
+        <Border Grid.Row="2"
+                IsVisible="{Binding Path=ShowBalance}"
+                Stroke="{StaticResource ProfileGridBorder}"
+                StrokeThickness="2"
+                Margin="20, 0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Grid
+                HorizontalOptions="Center"
+                BackgroundColor="{StaticResource ProfileGridBorder}"
+                ColumnSpacing="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <VerticalStackLayout
+                    Spacing="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Center"
+                    Padding="0, 10"
+                    HeightRequest="70"
+                    BackgroundColor="{StaticResource Background}">
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label VerticalOptions="Center"
+                               FontFamily="FA6Solid"
+                               TextColor="{StaticResource Coin}"
+                               Text="&#xf091;" />
+                        <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Rank}" />
+                    </HorizontalStackLayout>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="Ranking"
+                        FontSize="Small"
+                        TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1"
+                                     Spacing="2"
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource Background}">
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label VerticalOptions="Center"
+                               FontFamily="FA6Solid"
+                               TextColor="{StaticResource Coin}"
+                               Text="&#x2b50;" />
+                        <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                               Text="{Binding Points, StringFormat='{0:n0}'}" />
+                    </HorizontalStackLayout>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="Points"
+                        FontSize="Small"
+                        TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2"
+                                     Spacing="2"
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource Background}">
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               FontFamily="FA6Solid"
+                               TextColor="{StaticResource Coin}"
+                               Text="&#xf51e;" />
+                        <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                               Text="{Binding Balance, StringFormat='{0:n0}'}" />
+                    </HorizontalStackLayout>
+                    <Label
+                        HorizontalTextAlignment="Center"
+                        HorizontalOptions="Center"
+                        Text="Credits"
+                        FontSize="Small"
+                        TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
 
-    <Label
-        Margin="0,150,0,0"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        HorizontalTextAlignment="Center"
-        Text="{Binding Name}"
-        TextColor="White"/>
-
-    <Image
-        Source="{Binding ProfilePic}"
-        WidthRequest="100"
-        HeightRequest="100"
-        VerticalOptions="Center"
-        HorizontalOptions="Center"
-        Aspect="AspectFill">
-        <Image.Clip>
-            <EllipseGeometry
-                Center="50,50"
-                RadiusX="50"
-                RadiusY="50"/>
-        </Image.Clip>
-    </Image>
-
-    <Border
-        BackgroundColor="{StaticResource primary}"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        TranslationX="40"
-        TranslationY="-35"
-        StrokeShape="Ellipse"
-        StrokeThickness="0"
-        IsVisible="{Binding IsMe}">
-        <Border.GestureRecognizers>
-            <TapGestureRecognizer Command="{Binding CameraCommand}"/>
-        </Border.GestureRecognizers>
-        <Label
-            FontFamily="FluentIcons"
-            FontSize="25"
-            Text="&#xe299;"
-            Margin="3"
-            TextColor="White"/>
-    </Border>
-</Grid>
-
+        <!-- Viewing other User's stats -->
+        <Border Grid.Row="2"
+                IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
+                Stroke="{StaticResource ProfileGridBorder}"
+                StrokeThickness="2"
+                Margin="20, 0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Grid
+                HorizontalOptions="Center"
+                BackgroundColor="{StaticResource ProfileGridBorder}"
+                ColumnSpacing="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+                <VerticalStackLayout Grid.Column="0"
+                                     Spacing="2"
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource Background}">
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label VerticalOptions="Center"
+                               FontFamily="FA6Solid"
+                               TextColor="{StaticResource Coin}"
+                               Text="&#xf091;" />
+                        <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Path=Rank}" />
+                    </HorizontalStackLayout>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="Ranking"
+                        FontSize="Small"
+                        TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1"
+                                     Spacing="2"
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource Background}">
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label VerticalOptions="Center"
+                               FontFamily="FA6Solid"
+                               TextColor="{StaticResource Coin}"
+                               Text="&#x2b50;" />
+                        <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                               Text="{Binding Points, StringFormat='{0:n0}'}" />
+                    </HorizontalStackLayout>
+                    <Label
+                        HorizontalOptions="Center"
+                        Text="Points"
+                        FontSize="Small"
+                        TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+    </Grid>
+</Border>
