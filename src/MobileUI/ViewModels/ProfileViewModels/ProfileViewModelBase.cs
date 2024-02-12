@@ -26,7 +26,15 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     private int _points;
     
     [ObservableProperty]
-    private int _balance;
+    private int _balance;    
+    
+    [ObservableProperty]
+    private int _rank; 
+
+    private string _email;
+    
+    [ObservableProperty]
+    private bool _isStaff = false;
 
     public bool ShowBalance { get; set; } = true;
 

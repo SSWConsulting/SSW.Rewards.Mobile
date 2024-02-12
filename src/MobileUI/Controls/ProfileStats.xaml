@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Border 
-    HeightRequest="260"
+    HeightRequest="270"
+    Margin="0,10"
     BackgroundColor="{StaticResource MainBackground}"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+        <converters:StaffToTextConverter x:Key="StaffToText"/>
     </Border.Resources>
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
     <Grid 
-        RowDefinitions="120, 40, 65"
+        RowDefinitions="120, 40, 70"
         RowSpacing="10">
         <VerticalStackLayout Grid.Row="0">
             <Image
@@ -66,7 +69,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             HorizontalTextAlignment="Center"
-            Text="SSW"
+            Text="{Binding Path=IsStaff, Converter={StaticResource StaffToText}}"
             FontAttributes="Bold"
             FontSize="Small"
             TextColor="White"/>
@@ -77,28 +80,32 @@
                 IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="2"
-                Padding="0,10"
-                Margin="10, 0">
+                Margin="20, 0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid 
-                HorizontalOptions="Center">
+                HorizontalOptions="Center"
+                BackgroundColor="{StaticResource ProfileGridBorder}"
+                ColumnSpacing="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <VerticalStackLayout Grid.Column="0"
+                <VerticalStackLayout 
                                      Spacing="2"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Center">
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource MainBackground}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"
                                TextColor="{StaticResource Coin}"
                                Text="&#xf091;"/> 
-                        <Label FontSize="Large" FontAttributes="Bold" Text="0001"/>
+                        <Label FontSize="Large" FontAttributes="Bold" Text="{Binding Rank}"/>
                     </HorizontalStackLayout>
                     <Label
                         HorizontalOptions="Center"
@@ -108,8 +115,11 @@
                 </VerticalStackLayout>  
                 <VerticalStackLayout Grid.Column="1"
                                      Spacing="2"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Center">
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource MainBackground}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"
@@ -125,8 +135,11 @@
                 </VerticalStackLayout>       
                 <VerticalStackLayout Grid.Column="2"
                                      Spacing="2"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Center">
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource MainBackground}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                VerticalTextAlignment="Center"
@@ -147,28 +160,34 @@
         
         <!-- Viewing other User's stats -->
         <Border Grid.Row="2"
-        Stroke="{StaticResource ProfileGridBorder}"
-        StrokeThickness="2"
-        Padding="0,10"
-        Margin="10, 0"
-        IsVisible="{Binding Converter={StaticResource InvertedBoolConverter}, Path=ShowBalance}"
-        >
+                IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
+                Stroke="{StaticResource ProfileGridBorder}"
+                StrokeThickness="2"
+                Margin="20, 0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid 
-            ColumnDefinitions="150,150"
-            HorizontalOptions="Center">
+                HorizontalOptions="Center"
+                BackgroundColor="{StaticResource ProfileGridBorder}"
+                ColumnSpacing="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
                 <VerticalStackLayout Grid.Column="0"
                                      Spacing="2"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Center">
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource MainBackground}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"
                                TextColor="{StaticResource Coin}"
                                Text="&#xf091;"/> 
-                        <Label FontSize="Large" FontAttributes="Bold" Text="0001"/>
+                        <Label FontSize="Large" FontAttributes="Bold" Text="{Binding Path=Rank}"/>
                     </HorizontalStackLayout>
                     <Label
                         HorizontalOptions="Center"
@@ -178,8 +197,11 @@
                 </VerticalStackLayout>  
                 <VerticalStackLayout Grid.Column="1"
                                      Spacing="2"
-                                     HorizontalOptions="Center"
-                                     VerticalOptions="Center">
+                                     HorizontalOptions="Fill"
+                                     VerticalOptions="Center"
+                                     Padding="0, 10"
+                                     HeightRequest="70"
+                                     BackgroundColor="{StaticResource MainBackground}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"

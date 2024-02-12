@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 namespace SSW.Rewards.Mobile.Pages;
 
@@ -9,7 +10,6 @@ public partial class MyProfilePage : ContentPage
     private MyProfileViewModel viewModel;
 
     private bool _bottomRowAdded = false;
-
 
     public MyProfilePage(MyProfileViewModel vm)
     {
@@ -73,5 +73,6 @@ public partial class MyProfilePage : ContentPage
             AddBottomPadding();
         }
     }
+    
     #endregion
 }
