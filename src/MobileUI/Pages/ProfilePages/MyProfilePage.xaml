@@ -37,7 +37,7 @@
         <Border
             Grid.Row="0"
             HorizontalOptions="End"
-            BackgroundColor="{StaticResource MainBackground}"
+            BackgroundColor="{StaticResource Background}"
             StrokeShape="Ellipse"
             StrokeThickness="0"
             Padding="0"
@@ -55,8 +55,8 @@
         <controls:ProfileStats Grid.Row="1"/>
 
         <Border Grid.Row="2" 
-                BackgroundColor="{StaticResource MainBackground}"
-                Stroke="{StaticResource MainBackground}">
+                BackgroundColor="{StaticResource Background}"
+                Stroke="{StaticResource Background}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8"/>
             </Border.StrokeShape>

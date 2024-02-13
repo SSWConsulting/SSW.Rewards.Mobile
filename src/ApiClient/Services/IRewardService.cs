@@ -103,7 +103,7 @@ public class RewardService : IRewardService
 
     public async Task<ClaimRewardResult> RedeemReward(string code, bool inPerson, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", new { code, inPerson }, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", code, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
