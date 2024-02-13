@@ -6,6 +6,10 @@
         <AssemblyName>SSW.Rewards.Infrastructure</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <!-- lmao wtf https://github.com/toddams/RazorLight/issues/127 -->
+    <PropertyGroup>
         <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
 
