@@ -1,9 +1,6 @@
 name: Admin - Main (Build & Deploy)
 
 on:
-  push:
-    branches: 
-      - main
     paths-ignore:
       - .github/settings.yml
 
