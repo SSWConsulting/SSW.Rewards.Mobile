@@ -52,7 +52,8 @@ public class StaffController : ApiControllerBase
             LinkedInUrl = staffMember.LinkedInUrl,
             ProfilePhoto = profilePhotoUri,
             Points = staffMember.Points,
-            Skills = staffMember.Skills.ToList()
+            Skills = staffMember.Skills.ToList(),
+            Title = staffMember.Title
         };
 
         return Ok(await Mediator.Send(command));
