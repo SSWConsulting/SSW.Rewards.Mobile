@@ -10,14 +10,21 @@
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
                                     IsDetecting="True"/>
-        <StackLayout Padding="0,0,0,200">
-            <Label Text="Scan a QR Code"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"/>
-            <Label Text="from an SSW Employee or Presentation"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"/>
-        </StackLayout>
+        <Border 
+            BackgroundColor="{StaticResource MainBackground}"
+            Padding="0,0,0,200">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8"/>
+            </Border.StrokeShape>
+            <StackLayout >
+                <Label Text="Scan a QR Code"
+                       HorizontalTextAlignment="Center"
+                       TextColor="White"/>
+                <Label Text="from an SSW Employee or Presentation"
+                       HorizontalTextAlignment="Center"
+                       TextColor="White"/>
+            </StackLayout>
+        </Border>
         <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>
