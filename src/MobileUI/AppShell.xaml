@@ -407,7 +407,7 @@
             <Label
                 Grid.Column="0"
                 Grid.Row="2"
-                Padding="0, 10,0,0"
+                Padding="0,10,0,0"
                 TextColor="#DDDDDD"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
@@ -416,7 +416,7 @@
             
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
-                   Padding="0,20,0,0"
+                   Padding="0,10,0,0"
                    x:Name="VersionLabel"
                    FontSize="12"
                    Grid.Column="2"
