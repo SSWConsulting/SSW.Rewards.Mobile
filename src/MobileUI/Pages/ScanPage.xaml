@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:DataType="viewModels:ScanResultViewModel">
@@ -11,19 +12,26 @@
                                     BarcodesDetected="Handle_OnScanResult"
                                     IsDetecting="True"/>
         <Border 
-            BackgroundColor="{StaticResource MainBackground}"
-            Padding="0,0,0,200">
+            BackgroundColor="{StaticResource Background}"
+            VerticalOptions="Start"
+            HeightRequest="80"
+            Margin="20">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8"/>
+                <RoundRectangle CornerRadius="20"/>
             </Border.StrokeShape>
-            <StackLayout >
-                <Label Text="Scan a QR Code"
-                       HorizontalTextAlignment="Center"
-                       TextColor="White"/>
-                <Label Text="from an SSW Employee or Presentation"
-                       HorizontalTextAlignment="Center"
-                       TextColor="White"/>
-            </StackLayout>
+            <Label FontSize="Medium"
+                   FontAutoScalingEnabled="False"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   TextColor="White">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Scan a QR Code" />
+                        <Span Text="{x:Static system:Environment.NewLine}"/>
+                        <Span Text="from an SSW Employee or Presentation" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
         </Border>
         <Image Source="qr_reticle"/>
     </Grid>
