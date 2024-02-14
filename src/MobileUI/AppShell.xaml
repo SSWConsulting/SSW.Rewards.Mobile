@@ -359,7 +359,7 @@
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
                        Text="&#xf235;">
@@ -369,7 +369,7 @@
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        Text="Delete Profile" />
             </Grid>
             
@@ -389,7 +389,7 @@
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
                        Text="&#xf08b;">
@@ -400,7 +400,7 @@
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        Text="Log Out" />
             </Grid>
             
@@ -411,13 +411,14 @@
                 TextColor="#DDDDDD"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
+                FontSize="12"
                 Text="Powered by .NET MAUI" />
             
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
                    Padding="0,10,0,0"
-                   Margin="0,0,10,0"
                    x:Name="VersionLabel"
+                   FontSize="12"
                    Grid.Column="2"
                    Grid.Row="2"
                    TextColor="#DDDDDD"/>
