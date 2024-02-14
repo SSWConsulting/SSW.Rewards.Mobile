@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              BackgroundColor="{StaticResource MainBackground}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:DataType="viewModels:ScanResultViewModel">
@@ -10,14 +11,28 @@
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
                                     IsDetecting="True"/>
-        <StackLayout Padding="0,0,0,200">
-            <Label Text="Scan a QR Code"
+        <Border 
+            BackgroundColor="{StaticResource Background}"
+            VerticalOptions="Start"
+            HeightRequest="80"
+            Margin="20">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20"/>
+            </Border.StrokeShape>
+            <Label FontSize="Medium"
+                   FontAutoScalingEnabled="False"
                    HorizontalTextAlignment="Center"
-                   TextColor="White"/>
-            <Label Text="from an SSW Employee or Presentation"
-                   HorizontalTextAlignment="Center"
-                   TextColor="White"/>
-        </StackLayout>
+                   VerticalOptions="Center"
+                   TextColor="White">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Scan a QR Code" />
+                        <Span Text="{x:Static system:Environment.NewLine}"/>
+                        <Span Text="from an SSW Employee or Presentation" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </Border>
         <Image Source="qr_reticle"/>
     </Grid>
 </ContentPage>
