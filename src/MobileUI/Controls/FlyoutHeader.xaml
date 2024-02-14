@@ -10,7 +10,7 @@
       Padding="20"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,158,32,50,182,32">
+      RowDefinitions="100,60,158,32,Auto,182,32">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -47,7 +47,7 @@
     <Grid Grid.Row="2"
           RowSpacing="2"
           RowDefinitions="40,40,40"
-          ColumnDefinitions="104,*">
+          ColumnDefinitions="Auto,*">
         <Border Grid.Column="0"
                 Grid.Row="0"
                 BackgroundColor="{StaticResource RankingTableHeader}"
@@ -63,7 +63,7 @@
                 <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       Margin="10,0,0,0"
+                       Margin="10,0,10,0"
                        TextColor="White"
                        Text="Ranking"/>
             </HorizontalStackLayout>
@@ -97,7 +97,7 @@
                 <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       Margin="10,0,0,0"
+                       Margin="10,0,10,0"
                        TextColor="White"
                        Text="Points"/>
             </HorizontalStackLayout>
@@ -131,7 +131,7 @@
                 <Label Style="{StaticResource LabelBold}"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       Margin="10,0,0,0"
+                       Margin="10,0,10,0"
                        TextColor="White"
                        Text="Credits"/>
             </HorizontalStackLayout>
@@ -182,10 +182,10 @@
 
     <Grid
         Grid.Row="4"
-        ColumnDefinitions="20,*"
-        RowDefinitions="*,*"
+        ColumnDefinitions="Auto,*"
+        RowDefinitions="*"
         ColumnSpacing="8"
-        RowSpacing="4" >
+        Margin="0,0,0,20">
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
@@ -198,6 +198,7 @@
         <Label Grid.Row="0"
                Grid.Column="1"
                Style="{StaticResource LabelBold}"
+               LineBreakMode="TailTruncation"
                TextColor="#DDDDDD"
                VerticalOptions="Center"
                FontSize="Medium"

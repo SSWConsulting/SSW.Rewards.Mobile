@@ -309,6 +309,7 @@
             Padding="20,0"
             RowDefinitions="Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
+            RowSpacing="10"
             VerticalOptions="End">
             
             <!-- Settings Button -->
