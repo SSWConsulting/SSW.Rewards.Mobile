@@ -171,7 +171,7 @@
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
                VerticalOptions="Center"
-               FontSize="Medium"
+               FontSize="Small"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
             
@@ -180,7 +180,7 @@
                Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"
                VerticalOptions="Center"
-               FontSize="Medium"
+               FontSize="Small"
                Text="{Binding Email}"/>
         
         <!-- TODO: Bind user location when implemented -->
