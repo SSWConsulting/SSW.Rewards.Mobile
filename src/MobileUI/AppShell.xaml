@@ -307,9 +307,10 @@
         <Grid
             Margin="0,0,0,20"
             Padding="20,0"
-            RowDefinitions="Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
-            VerticalOptions="End">
+            VerticalOptions="End"
+            RowSpacing="5">
             
             <!-- Settings Button -->
             <!-- TODO: Bind when settings implemented -->
@@ -341,7 +342,8 @@
             <!--            VerticalOptions="Center" -->
             <!--            FontSize="Medium" -->
             <!--            Text="Settings" /> -->
-            <!-- </Grid> -->            
+            <!-- </Grid> -->    
+            
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
@@ -402,18 +404,28 @@
                        Text="Log Out" />
             </Grid>
             
+            <Label
+                Grid.Column="0"
+                Grid.Row="2"
+                Padding="0,10,0,0"
+                TextColor="#DDDDDD"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                Text="Powered by .NET MAUI" />
+            
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
+                   Padding="0,10,0,0"
                    Margin="0,0,10,0"
                    x:Name="VersionLabel"
                    Grid.Column="2"
-                   Grid.Row="1"
+                   Grid.Row="2"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
             <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="2"
+                Grid.Row="3"
                 Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>
