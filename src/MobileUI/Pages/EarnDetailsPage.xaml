@@ -13,15 +13,9 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}" />
     </Shell.BackButtonBehavior>
-    <NavigationPage.TitleView>
-        <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="10">
-            <Image Source="logo.png"/>
-        </StackLayout>
-    </NavigationPage.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-        <converters:PassedToColorConverter x:Key="PassedToColorConverter" />
         <converters:AllTrueConverter x:Key="AllTrueConverter"/>
     </ContentPage.Resources>
     <ScrollView>
@@ -132,6 +126,7 @@
                         <Label Grid.Row="1"
                                IsVisible="{Binding CurrentQuestion.IsSubmitted}"
                                Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
+                               FontSize="Medium"
                                TextColor="White" />
                     </Grid>
 
@@ -228,11 +223,17 @@
                             <DataTemplate x:DataType="quizzes:QuestionResultDto">
                                 <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                         StrokeThickness="2"
-                                        Stroke="{Binding Correct, Converter={StaticResource PassedToColorConverter}}"
                                         Padding="4">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="6" />
                                     </Border.StrokeShape>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border"
+                                                     Binding="{Binding Correct}"
+                                                     Value="False">
+                                            <Setter Property="Stroke" Value="{StaticResource SSWRed}"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
                                     <toolkit:Expander
                                         IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
                                         <toolkit:Expander.Header>
@@ -252,17 +253,21 @@
                                                 <Label Grid.Column="1"
                                                        VerticalTextAlignment="Center"
                                                        Text="{Binding QuestionText}"
-                                                       FontAttributes="Bold" />
+                                                       FontSize="Medium" />
                                             </Grid>
                                         </toolkit:Expander.Header>
                                         <VerticalStackLayout Padding="10">
                                             <Label Text="Your response:"
+                                                   FontSize="Medium"
                                                    Style="{StaticResource LabelBold}"/>
-                                            <Label Text="{Binding AnswerText}"/>
+                                            <Label Text="{Binding AnswerText}"
+                                                   FontSize="Medium"/>
                                             <Label Text="Explanation:"
                                                    Margin="0,8,0,0"
+                                                   FontSize="Medium"
                                                    Style="{StaticResource LabelBold}"/>
-                                            <Label Text="{Binding ExplanationText}"/>
+                                            <Label Text="{Binding ExplanationText}"
+                                                   FontSize="Medium"/>
                                         </VerticalStackLayout>
                                     </toolkit:Expander>
                                 </Border>

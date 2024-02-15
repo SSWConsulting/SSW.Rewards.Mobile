@@ -256,7 +256,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         public async Task GoBack(bool askFirst = true)
         {
             bool confirmed;
-            if (askFirst)
+            if (askFirst && !ResultsVisible)
             {
                 confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
             }
