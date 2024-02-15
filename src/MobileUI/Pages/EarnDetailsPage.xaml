@@ -13,6 +13,18 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}" />
     </Shell.BackButtonBehavior>
+    <Shell.TitleView>
+        <Button Text="Done" 
+                IsVisible="{Binding ResultsVisible}" 
+                Command="{Binding BackCommand}"
+                Padding="{OnPlatform iOS='0'}"
+                FontAutoScalingEnabled="False"
+                HorizontalOptions="End">
+            <Button.Resources>
+                <Style TargetType="Button" />
+            </Button.Resources>
+        </Button>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
