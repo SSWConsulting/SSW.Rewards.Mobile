@@ -1,9 +1,6 @@
 name: Admin - Main (Build & Deploy)
 
 on:
-    paths-ignore:
-      - .github/settings.yml
-
   workflow_dispatch:
 
 jobs:
