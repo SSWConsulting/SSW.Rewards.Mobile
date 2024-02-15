@@ -15,6 +15,23 @@ namespace SSW.Rewards.Mobile.ViewModels
         private int _quizId;
         private string _quizIcon;
         private int _submissionId;
+        private List<string> _loadingPhrases = new ()
+        {
+            "Summoning answers from our quiz master!",
+            "Extracting brilliance from our genius AI companion!",
+            "Harvesting insights from the all-knowing AI guru!",
+            "Retrieving wisdom from the depths of the AI genius!",
+            "Snatching enlightenment from our brainy AI overlord!"
+        };
+        
+        [ObservableProperty]
+        private string _animRef = "Sophie.json";
+
+        [ObservableProperty] 
+        private bool _awaitingQuizResult = false;
+        
+        [ObservableProperty]
+        private string _loadingText = "Loading...";
 
         public ObservableCollection<EarnQuestionViewModel> Questions { get; } = [];
 
@@ -110,6 +127,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             ThumbnailImage = quiz.ThumbnailImage;
             QuizDescription = quiz.Description;
             Points = quiz.Points;
+            LoadingText = _loadingPhrases[new Random().Next(_loadingPhrases.Count)];;
 
             IsBusy = false;
         }
@@ -147,7 +165,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (allQuestionsAnswered)
             {
-                IsBusy = true;
+                AwaitingQuizResult = true;
 
                 var isComplete = await AwaitQuizCompletion();
 
@@ -160,7 +178,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 var result = await _quizService.GetQuizResults(_submissionId);
 
-                IsBusy = false;
+                AwaitingQuizResult = false;
 
                 await ProcessResult(result);
             }

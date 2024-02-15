@@ -179,13 +179,47 @@
                                 WidthRequest="80" />
                     </Grid>
 
+                    <Border 
+                        Grid.Row="0"
+                        Grid.RowSpan="7"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HeightRequest="300"
+                        WidthRequest="300"
+                        Stroke="{StaticResource MainBackground}"
+                        BackgroundColor="{StaticResource MainBackground}"
+                        IsVisible="{Binding AwaitingQuizResult}"
+                        >
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout HorizontalOptions="Fill"
+                                             VerticalOptions="Start">
+                            <lottie:SKLottieView 
+                                                 VerticalOptions="Center"
+                                                 Source="Sophie.json"
+                                                 IsAnimationEnabled="True"
+                                                 RepeatMode="Restart"
+                                                 RepeatCount="100"
+                                                 WidthRequest="200"
+                                                 HeightRequest="200" />
+                            <Label TextColor="White"
+                                   HeightRequest="100"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"
+                                   Text="{Binding LoadingText}"  
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                    
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Color="{StaticResource SSWRed}"
                                        IsVisible="{Binding IsBusy}"
                                        IsRunning="{Binding IsBusy}"
                                        Grid.Row="5" />
-
                 </Grid>
 
                 <!-- Results -->
