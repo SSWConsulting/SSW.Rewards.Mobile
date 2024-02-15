@@ -310,7 +310,7 @@
             RowDefinitions="Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End"
-            RowSpacing="10">
+            RowSpacing="15">
             
             <!-- Settings Button -->
             <!-- TODO: Bind when settings implemented -->

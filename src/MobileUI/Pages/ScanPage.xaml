@@ -14,24 +14,18 @@
         <Border 
             BackgroundColor="{StaticResource Background}"
             VerticalOptions="Start"
-            HeightRequest="80"
+            HeightRequest="60"
             Margin="20">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="20"/>
             </Border.StrokeShape>
-            <Label FontSize="Medium"
+            <Label Text="Scan a QR Code"
+                   Style="{StaticResource LabelBold}"
+                   FontSize="Large"
                    FontAutoScalingEnabled="False"
                    HorizontalTextAlignment="Center"
                    VerticalOptions="Center"
-                   TextColor="White">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Scan a QR Code" />
-                        <Span Text="{x:Static system:Environment.NewLine}"/>
-                        <Span Text="from an SSW Employee or Presentation" />
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
+                   TextColor="#DDDDDD" />
         </Border>
         <Image Source="qr_reticle"/>
     </Grid>
