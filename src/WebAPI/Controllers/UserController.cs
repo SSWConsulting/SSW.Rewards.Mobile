@@ -91,7 +91,7 @@ public class UserController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<NewUsersViewModel>> FindNewUsers([FromQuery] LeaderboardFilter filter, bool filterStaff)
+    public async Task<ActionResult<NewUsersViewModel>> GetNewUsers([FromQuery] LeaderboardFilter filter, bool filterStaff)
     {
         return await Mediator.Send(new GetNewUsersQuery { Filter = filter, FilterStaff = filterStaff });
     }

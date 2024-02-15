@@ -18,6 +18,8 @@ public interface IUserService
     Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken = default);
 
     Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default);
+    
+    Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService
@@ -159,5 +161,24 @@ public class UserService : IUserService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
+    }
+    
+    public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetNewUsers?filter={filter}&filterStaff={filterStaff}", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<NewUsersViewModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get new users: {responseContent}");
     }
 }
