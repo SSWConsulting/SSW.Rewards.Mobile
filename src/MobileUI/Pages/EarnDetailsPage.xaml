@@ -178,14 +178,13 @@
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="80" />
                     </Grid>
-
+                    
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Color="{StaticResource SSWRed}"
                                        IsVisible="{Binding IsBusy}"
                                        IsRunning="{Binding IsBusy}"
                                        Grid.Row="5" />
-
                 </Grid>
 
                 <!-- Results -->
