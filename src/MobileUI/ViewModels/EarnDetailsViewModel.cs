@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels
@@ -26,9 +28,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         
         [ObservableProperty]
         private string _animRef = "Sophie.json";
-
-        [ObservableProperty] 
-        private bool _awaitingQuizResult = false;
         
         [ObservableProperty]
         private string _loadingText = "Loading...";
@@ -127,7 +126,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             ThumbnailImage = quiz.ThumbnailImage;
             QuizDescription = quiz.Description;
             Points = quiz.Points;
-            LoadingText = _loadingPhrases[new Random().Next(_loadingPhrases.Count)];;
 
             IsBusy = false;
         }
@@ -165,7 +163,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (allQuestionsAnswered)
             {
-                AwaitingQuizResult = true;
+                var popup = new QuizResultPending();
+                await MopupService.Instance.PushAsync(popup);
 
                 var isComplete = await AwaitQuizCompletion();
 
@@ -173,14 +172,14 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     await App.Current.MainPage.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again.", "OK");
                     IsBusy = false;
+                    await MopupService.Instance.RemovePageAsync(popup);
                     return;
                 }
 
                 var result = await _quizService.GetQuizResults(_submissionId);
 
-                AwaitingQuizResult = false;
-
                 await ProcessResult(result);
+                await MopupService.Instance.RemovePageAsync(popup);
             }
             else
             {

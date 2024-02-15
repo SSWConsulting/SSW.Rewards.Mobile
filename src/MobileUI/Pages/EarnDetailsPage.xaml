@@ -178,59 +178,6 @@
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="80" />
                     </Grid>
-
-                    <Border 
-                        Grid.Row="0"
-                        Grid.RowSpan="7"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        HeightRequest="300"
-                        WidthRequest="300"
-                        Padding="10"
-                        Stroke="{StaticResource MainBackground}"
-                        BackgroundColor="{StaticResource MainBackground}"
-                        IsVisible="{Binding AwaitingQuizResult, Converter={StaticResource InvertedBoolConverter}}"
-                        >
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
-                        <VerticalStackLayout HorizontalOptions="Fill"
-                                             VerticalOptions="Start">
-                            <Label TextColor="White"
-                                   HeightRequest="30"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"
-                                   Text="Loading results..."  
-                                   Style="{StaticResource LabelBold}"
-                                   FontSize="20"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                            <lottie:SKLottieView 
-                                                 VerticalOptions="Center"
-                                                 Source="Sophie.json"
-                                                 IsAnimationEnabled="True"
-                                                 RepeatMode="Restart"
-                                                 RepeatCount="100"
-                                                 WidthRequest="200"
-                                                 HeightRequest="200" />
-                            <HorizontalStackLayout WidthRequest="280" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="Center">
-                                <Image HorizontalOptions="Center" 
-                                       VerticalOptions="Center"
-                                        HeightRequest="50" 
-                                        WidthRequest="40" 
-                                        Source="openai"/>
-                                <Label TextColor="White"
-                                       Margin="10,0,0,0"
-                                       HeightRequest="50"
-                                       HorizontalTextAlignment="Start"
-                                       VerticalTextAlignment="Center"
-                                       Text="{Binding LoadingText}"  
-                                       WidthRequest="220"
-                                       FontSize="18"
-                                       VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
                     
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"
