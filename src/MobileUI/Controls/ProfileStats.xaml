@@ -95,7 +95,7 @@
                                    FontFamily="FA6Solid"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Rank}" />
+                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Rank, StringFormat='#{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"
@@ -184,7 +184,7 @@
                                    FontFamily="FA6Solid"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Path=Rank}" />
+                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Path=Rank, StringFormat='#{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"

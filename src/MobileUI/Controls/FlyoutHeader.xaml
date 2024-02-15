@@ -10,7 +10,7 @@
       Padding="20"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,158,32,50,182,32">
+      RowDefinitions="100,60,148,32,40,202,32">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -70,7 +70,7 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    TextColor="White"
-                   Text="{Binding Path=Rank, StringFormat='{0:n0}'}"/>
+                   Text="{Binding Path=Rank, StringFormat='#{0:n0}'}"/>
         </Border>
 
         <Border Grid.Column="0"
@@ -163,14 +163,13 @@
     <Grid
         Grid.Row="4"
         ColumnDefinitions="20,*"
-        RowDefinitions="*,*"
-        ColumnSpacing="8"
-        RowSpacing="4" >
+        RowDefinitions="*"
+        ColumnSpacing="8">
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
                HorizontalTextAlignment="Center"
-               VerticalOptions="Center"
+               VerticalOptions="Start"
                FontSize="Small"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
@@ -179,7 +178,7 @@
                Grid.Column="1"
                Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"
-               VerticalOptions="Center"
+               VerticalOptions="Start"
                FontSize="Small"
                Text="{Binding Email}"/>
         
@@ -202,17 +201,22 @@
         <!--        FontSize="Medium" -->
         <!--        Text="Brisbane"/> -->
     </Grid>
-
-    <zx:BarcodeGeneratorView Grid.Row="5"
-                             x:Name="codeView"
-                             Format="QrCode"
-                             Value="{Binding QrCode}"
-                             HorizontalOptions="Start"
-                             BackgroundColor="#DDDDDD"
-                             ForegroundColor="Transparent"
-                             WidthRequest="150"
-                             HeightRequest="150"
-                             VerticalOptions="Center"/>
+    
+    <VerticalStackLayout Grid.Row="5" Spacing="10">
+        <Label Text="Scan me:"
+               FontSize="Small"
+               Style="{StaticResource LabelBold}"
+               TextColor="#DDDDDD"/>
+        <zx:BarcodeGeneratorView x:Name="codeView"
+                                 Format="QrCode"
+                                 Value="{Binding QrCode}"
+                                 HorizontalOptions="Start"
+                                 BackgroundColor="#DDDDDD"
+                                 ForegroundColor="Transparent"
+                                 WidthRequest="150"
+                                 HeightRequest="150"
+                                 VerticalOptions="Center"/>
+    </VerticalStackLayout>
     
     <VerticalStackLayout Grid.Row="6"
                          VerticalOptions="Start">
