@@ -234,7 +234,7 @@
                             <DataTemplate x:DataType="quizzes:QuestionResultDto">
                                 <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                         StrokeThickness="2"
-                                        Padding="4">
+                                        Padding="5,10">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="6" />
                                     </Border.StrokeShape>
@@ -248,7 +248,7 @@
                                     <toolkit:Expander
                                         IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
                                         <toolkit:Expander.Header>
-                                            <Grid ColumnDefinitions="38, *" RowDefinitions="Auto">
+                                            <Grid ColumnDefinitions="40, *" RowDefinitions="Auto">
                                                 <lottie:SKLottieView Grid.Column="0"
                                                                      Source="pass.json"
                                                                      IsAnimationEnabled="True"
