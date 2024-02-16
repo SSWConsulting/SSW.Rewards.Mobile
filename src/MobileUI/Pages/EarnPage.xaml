@@ -99,8 +99,8 @@
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
-                                    <Grid ColumnSpacing="6"
-                                          ColumnDefinitions="80, *, Auto"
+                                    <Grid ColumnSpacing="4"
+                                          ColumnDefinitions="74, *, Auto"
                                           BackgroundColor="{StaticResource Background}">
                                         <Border Grid.Column="0"
                                                 HeightRequest="64"
@@ -127,6 +127,7 @@
                                             VerticalOptions="Center"
                                             RowSpacing="2">
                                             <Label Grid.Row="0"
+                                                   Grid.Column="0"
                                                    Text="{Binding Title}"
                                                    TextColor="White"
                                                    InputTransparent="True"
@@ -144,10 +145,13 @@
                                                 </Label.Triggers>
                                             </Label>
                                             <Label Grid.Row="1"
+                                                   Grid.Column="0"
                                                    Text="{Binding Description}"
                                                    TextColor="White"
                                                    VerticalTextAlignment="Start"
                                                    InputTransparent="True"
+                                                   MaxLines="2"
+                                                   LineBreakMode="WordWrap"
                                                    FontSize="12">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label"
@@ -158,7 +162,7 @@
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
-                                            <Label Grid.Column="2"
+                                            <Label Grid.Column="1"
                                                    Grid.RowSpan="2"
                                                    Text="&#xf058;"
                                                    TextColor="Green"
@@ -173,7 +177,7 @@
                                         <controls:PointsButton Grid.Column="3"
                                                                ButtonText="GO"
                                                                Points="{Binding Points}"
-                                                               Margin="10,0"
+                                                               Margin="0,0,10,0"
                                                                IsDisabled="{Binding Passed}" />
 
                                     </Grid>
