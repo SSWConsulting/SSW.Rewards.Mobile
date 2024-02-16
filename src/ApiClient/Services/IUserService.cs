@@ -161,23 +161,23 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
     }
+    
+    public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetNewUsers?filter={filter}&filterStaff={filterStaff}", cancellationToken);
 
-    // public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff = false, CancellationToken cancellationToken = default)
-    // {
-    //     var result = await _httpClient.GetAsync($"{_baseRoute}/NewUsers?filter={filter}&filterStaff={filterStaff}");
-    //     
-    //     if  (result.IsSuccessStatusCode)
-    //     {
-    //         var response = await result.Content.ReadFromJsonAsync<NewUsersViewModel>(cancellationToken: cancellationToken);
-    //
-    //         if (response is not null)
-    //         {
-    //             return response;
-    //         }
-    //     }
-    //
-    //     var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-    //
-    //     throw new Exception($"Failed to get user rewards: {responseContent}");
-    // }
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<NewUsersViewModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get new users: {responseContent}");
+    }
 }
