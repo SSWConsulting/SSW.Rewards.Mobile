@@ -18,42 +18,40 @@ public class GetNewUsersHandler(
 {
     public async Task<NewUsersViewModel> Handle(GetNewUsersQuery request, CancellationToken cancellationToken)
     {
-        var eligibleUsers = context.Users.Where(u => u.Activated == true);
+        var eligibleUsers = context.Users.AsNoTracking().Where(u => u.Activated == true);
 
-        if (request.Filter == LeaderboardFilter.ThisYear)
+        switch (request.Filter)
         {
-            eligibleUsers = eligibleUsers
-                .TagWith("NewUsersThisYear")
-                .Where(u => u.CreatedUtc.Year == dateTime.Now.Year);
-        }
-        else if (request.Filter == LeaderboardFilter.ThisMonth)
-        {
-            eligibleUsers = eligibleUsers
-                .TagWith("NewUsersThisMonth")
-                .Where(u => u.CreatedUtc.Year == dateTime.Now.Year && u.CreatedUtc.Month == dateTime.Now.Month);
-        }
-        else if (request.Filter == LeaderboardFilter.Today)
-        {
-            eligibleUsers = eligibleUsers
-                .TagWith("NewUsersToday")
-                .Where(u => u.CreatedUtc.Year == dateTime.Now.Year && u.CreatedUtc.Month == dateTime.Now.Month && u.CreatedUtc.Day == dateTime.Now.Day);
-        }
-        else if (request.Filter == LeaderboardFilter.ThisWeek)
-        {
-            var start = dateTime.Now.FirstDayOfWeek();
-            var end = start.AddDays(7);
+            case LeaderboardFilter.ThisYear:
+                eligibleUsers = eligibleUsers
+                    .TagWith("NewUsersThisYear")
+                    .Where(u => u.CreatedUtc.Year == dateTime.Now.Year);
+                break;
+            case LeaderboardFilter.ThisMonth:
+                eligibleUsers = eligibleUsers
+                    .TagWith("NewUsersThisMonth")
+                    .Where(u => u.CreatedUtc.Year == dateTime.Now.Year && u.CreatedUtc.Month == dateTime.Now.Month);
+                break;
+            case LeaderboardFilter.Today:
+                eligibleUsers = eligibleUsers
+                    .TagWith("NewUsersToday")
+                    .Where(u => u.CreatedUtc.Year == dateTime.Now.Year && u.CreatedUtc.Month == dateTime.Now.Month && u.CreatedUtc.Day == dateTime.Now.Day);
+                break;
+            case LeaderboardFilter.ThisWeek:
+                {
+                    var start = dateTime.Now.FirstDayOfWeek();
+                    var end = start.AddDays(7);
             
-            eligibleUsers = eligibleUsers
-                .TagWith("NewUsersThisWeek")
-                .Where(u => start <= u.CreatedUtc && u.CreatedUtc <= end);
+                    eligibleUsers = eligibleUsers
+                        .TagWith("NewUsersThisWeek")
+                        .Where(u => start <= u.CreatedUtc && u.CreatedUtc <= end);
+                    break;
+                }
+            case LeaderboardFilter.Forever:
+            default:
+                // no action
+                break;
         }
-        else if (request.Filter == LeaderboardFilter.Forever)
-        {
-            // no action
-        }
-
-        eligibleUsers = eligibleUsers
-            .Include(u => u.UserAchievements);
 
         var users = await eligibleUsers
             .ProjectTo<NewUserDto>(mapper.ConfigurationProvider)
