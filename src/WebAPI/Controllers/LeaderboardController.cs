@@ -16,7 +16,7 @@ public class LeaderboardController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromBody] int achievementId, LeaderboardFilter filter, bool filterStaff)
+    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromQuery] int achievementId, LeaderboardFilter filter, bool filterStaff)
     {
         var getEligibleUsers = new GetEligibleUsers
         {
