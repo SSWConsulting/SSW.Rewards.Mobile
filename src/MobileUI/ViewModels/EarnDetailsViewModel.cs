@@ -236,7 +236,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 TestPassed = true;
 
-                ResultsButtonCommand = new Command(async () => await GoBack(false));
+                ResultsButtonCommand = new Command(async () => await GoBack());
 
                 SnackOptions = new SnackbarOptions
                 {
@@ -270,20 +270,9 @@ namespace SSW.Rewards.Mobile.ViewModels
             OnPropertyChanged(nameof(ResultsButtonCommand));
         }
 
-        public async Task GoBack(bool askFirst = true)
+        public async Task GoBack()
         {
-            bool confirmed;
-            if (askFirst && !ResultsVisible)
-            {
-                confirmed = await App.Current.MainPage.DisplayAlert("Leave Quiz", "Are you sure you want to quit this quiz?", "Yes", "No");
-            }
-            else
-            {
-                confirmed = true;
-            }
-
-            if (confirmed)
-                await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync("..");
         }
 
         private void CurrentQuestionChanged()
