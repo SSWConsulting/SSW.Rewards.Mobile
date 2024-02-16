@@ -1,0 +1,128 @@
+@page "/NewUsers"
+@using SSW.Rewards.ApiClient.Services
+@using SSW.Rewards.Enums
+@using SSW.Rewards.Shared.DTOs.Users
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Newtonsoft.Json
+@using Icons = MudBlazor.Icons
+@using System.Text
+@* @using Microsoft.AspNetCore.Authorization *@
+@* @attribute [Authorize] *@
+@inject IUserService UserService
+@inject IJSRuntime JSRuntime
+
+<MudText Typo="Typo.h2">New Users</MudText>
+<MudText Typo="Typo.body1">View new users</MudText>
+<MudTable Items="@_vm.NewUsers">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">New Users</MudText>
+        <MudSpacer/>
+        <MudStack Row="true" Spacing="5" Style="width: 50%">
+            <MudSelect Style="width: 50%" @bind-Value="_timeFrame" T="@LeaderboardFilter" Label="Since">
+                @foreach (var icon in Enum.GetValues<LeaderboardFilter>())
+                {
+                    <MudSelectItem Value="@icon">@icon.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSwitch
+                @bind-Value="@_hideStaff"
+                Color="Color.Primary"
+                Style="height: fit-content; align-self: center;">
+                Hide Staff
+            </MudSwitch>
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                OnClick="@FetchData"
+                StartIcon="@Icons.Material.Filled.Search"
+                Style="height: fit-content; align-self: center;">
+                Search
+            </MudButton> 
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                OnClick="CopyAllUsers"
+                StartIcon="@Icons.Material.Filled.FileCopy"
+                Style="height: fit-content; align-self: center;">
+                Copy All
+            </MudButton>
+        </MudStack>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width: 50px"/>
+        <col />
+        <col />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh Style="max-width: fit-content">Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Email</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.UserId</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd Class="d-flex align-items-center" DataLabel="Email">
+            <MudStack Row="true" Spacing="5" Style="align-items: center; width: 100%">
+                <MudText>@context.Email</MudText>
+                <MudSpacer />
+                <MudIconButton 
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    StartIcon="@Icons.Material.Filled.FileCopy"
+                    OnClick="() => { CopyToClipboard(context.Email); }"
+                    Icon="@Icons.Material.Filled.FileCopy" />
+            </MudStack>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }" InfoFormat="@($"Center {_infoFormat}")" HorizontalAlignment="HorizontalAlignment.Center" />
+    </PagerContent>
+</MudTable>
+
+@code {
+
+    NewUsersViewModel _vm = new ();
+    
+    private string _infoFormat = "{first_item}-{last_item} of {all_items}";
+    private LeaderboardFilter _timeFrame = LeaderboardFilter.ThisMonth;
+    private bool _hideStaff = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await FetchData();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task FetchData()
+    {
+        _vm = await UserService.GetNewUsers(_timeFrame, _hideStaff);
+    }
+    
+    private void CopyToClipboard(string text)
+    {
+        JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+
+    private void CopyAllUsers()
+    {
+        var serializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+        });
+        var stringBuilder = new StringBuilder();
+        using (var writer = new JsonTextWriter(new StringWriter(stringBuilder)))
+        {
+            serializer.Serialize(writer, _vm.NewUsers);
+        }
+        
+        var jsonText = stringBuilder.ToString();
+        
+        CopyToClipboard(jsonText);
+    }
+}
