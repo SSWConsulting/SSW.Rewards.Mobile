@@ -13,7 +13,7 @@
 
 <MudText Typo="Typo.h2">New Users</MudText>
 <MudText Typo="Typo.body1">View new users</MudText>
-<MudTable Items="@_vm.NewUsers">
+<MudTable Items="@_vm.NewUsers" Loading="@_loading" LoadingProgressColor="Color.Primary">
     <ToolBarContent>
         <MudText Typo="Typo.h6">New Users</MudText>
         <MudSpacer/>
@@ -86,6 +86,7 @@
     private string _infoFormat = "{first_item}-{last_item} of {all_items}";
     private LeaderboardFilter _timeFrame = LeaderboardFilter.ThisMonth;
     private bool _hideStaff = true;
+    private bool _loading = true;
     
     protected override async Task OnInitializedAsync()
     {
@@ -101,7 +102,9 @@
 
     private async Task FetchData()
     {
+        _loading = true;
         _vm = await UserService.GetNewUsers(_timeFrame, _hideStaff);
+        _loading = false;
     }
     
     private void CopyToClipboard(string text)
