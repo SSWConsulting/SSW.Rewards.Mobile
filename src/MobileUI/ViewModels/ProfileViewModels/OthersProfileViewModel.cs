@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net.Mail;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
@@ -20,8 +21,8 @@ public class OthersProfileViewModel : ProfileViewModelBase
             });
         }
 
-        _isMe = false;
-
+        IsMe = false;
+        
         await _initialise();
     }
 
@@ -32,6 +33,16 @@ public class OthersProfileViewModel : ProfileViewModelBase
         userId = vm.UserId;
         Points = vm.TotalPoints;
         Balance = vm.Balance;
+        Rank = vm.Rank;
+        IsStaff = false;
+        
+        var emailAddress = new MailAddress(vm.Email);
+
+        if (emailAddress.Host == "ssw.com.au")
+        {
+            IsStaff = true;
+        }
+        
         ShowBalance = false;
         ShowPopButton = true;
     }

@@ -11,6 +11,11 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <!-- lmao wtf https://github.com/toddams/RazorLight/issues/127 -->
+    <PropertyGroup>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.10.4" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />

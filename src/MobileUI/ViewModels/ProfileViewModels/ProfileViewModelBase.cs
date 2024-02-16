@@ -26,7 +26,15 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     private int _points;
     
     [ObservableProperty]
-    private int _balance;
+    private int _balance;    
+    
+    [ObservableProperty]
+    private int _rank; 
+
+    private string _email;
+    
+    [ObservableProperty]
+    private bool _isStaff = false;
 
     public bool ShowBalance { get; set; } = true;
 
@@ -38,7 +46,8 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private bool _isLoading;
 
-    public bool ShowCamera => _isMe && !IsLoading;
+    [ObservableProperty]
+    private bool _isMe;
     
     public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
 
@@ -49,8 +58,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     public ICommand PopProfile => new Command(async () => await Navigation.PopModalAsync());
 
     public bool ShowPopButton { get; set; } = false;
-
-    protected bool _isMe;
 
     protected double _topRewardCost;
 
@@ -77,6 +84,9 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public void OnAppearing()
     {
+        if (WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
+            return;
+        
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
@@ -129,7 +139,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     private void ProcessAchievement(ProfileAchievement achievement)
     {
-        if (achievement.IsMe == _isMe)
+        if (achievement.IsMe == IsMe)
         {
             if (achievement.Complete)
             {
@@ -137,7 +147,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             }
             else
             {
-                if (achievement.Type == AchievementType.Linked && _isMe)
+                if (achievement.Type == AchievementType.Linked && IsMe)
                 {
                     var popup = new LinkSocial(achievement);
                     MopupService.Instance.PushAsync(popup);
@@ -152,6 +162,9 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     private async Task ShowCameraPageAsync()
     {
+        if (IsLoading)
+            return;
+        
         var popup = new CameraPage(new CameraPageViewModel(_userService));
         //App.Current.MainPage.ShowPopup(popup);
         await MopupService.Instance.PushAsync(popup);
@@ -188,7 +201,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         foreach (var achievement in profileAchievements)
         {
-            achivementsSection.Achievements.Add(achievement.ToProfileAchievement(_isMe));
+            achivementsSection.Achievements.Add(achievement.ToProfileAchievement(IsMe));
         }
 
         ProfileSections.Add(achivementsSection);
@@ -197,7 +210,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         var activitySection = new ProfileCarouselViewModel();
         activitySection.Type = CarouselType.RecentActivity;
-        activitySection.IsMe = _isMe;
+        activitySection.IsMe = IsMe;
         activitySection.ProfileName = Name;
 
         var activityList = new List<Activity>();
@@ -234,7 +247,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         // ===== Notifications =====
 
-        if (_isMe)
+        if (IsMe)
         {
             var notificationsSection = new ProfileCarouselViewModel();
             notificationsSection.Type = CarouselType.Notifications;
@@ -287,7 +300,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public string GetMessage(Achievement achievement, bool IsActivity = false)
     {
-        string prefix = _isMe ? "You have" : $"{Name} has";
+        string prefix = IsMe ? "You have" : $"{Name} has";
 
         if (!achievement.Complete)
         {

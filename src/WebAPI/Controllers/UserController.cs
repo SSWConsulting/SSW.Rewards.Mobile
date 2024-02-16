@@ -49,9 +49,15 @@ public class UserController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProfilePicResponseDto>> UploadProfilePic(Stream file)
+    public async Task<ActionResult<ProfilePicResponseDto>> UploadProfilePic()
     {
-        return Ok(await Mediator.Send(new UploadProfilePicCommand { File = file }));
+        var file = HttpContext.Request.Form.Files["file"];
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file received");
+        }
+        
+        return Ok(await Mediator.Send(new UploadProfilePicCommand { File = file.OpenReadStream() }));
     }
 
     [HttpGet]

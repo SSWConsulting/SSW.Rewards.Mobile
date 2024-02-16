@@ -6,8 +6,9 @@
         <AssemblyName>SSW.Rewards.Infrastructure</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
         <PackageReference Include="FluentEmail.Graph" Version="2.5.0" />

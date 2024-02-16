@@ -88,14 +88,46 @@
         <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
+        
+        <Tab Route="main" Icon="icon_star" Title="Leaderboard">
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+            <!--<Tab.Icon>
+                <FontImageSource FontFamily="FluentIcons"
+                                 Glyph="&#xedba;"/>
+            </Tab.Icon>-->
+            <!--<Tab.Style>
+                <Style TargetType="Tab">
+                    <Style.Triggers>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
+                            <Setter Property="Icon" Value="icon_trophy_selected">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xedba;"
+                                                     Color="#BE4b47"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
+                            <Setter Property="Icon" Value="icon_trophy">
+                                <Setter.Value>
+                                    <FontImageSource FontFamily="FluentIcons"
+                                                     Glyph="&#xedba;"
+                                                     Color="#95FFFFFF"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Tab.Style>-->
+        </Tab>
 
-        <Tab Route="main" Icon="icon_home" Title="Home">
+        <Tab Route="me" Icon="icon_user" Title="Me">
             <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xe70e;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
+            </Tab.Icon>
+            <Tab.Style>
                 <Style TargetType="Tab">
                     <Style.Triggers>
                         <Trigger TargetType="Tab" Property="IsChecked" Value="True">
@@ -131,38 +163,6 @@
         
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
-        </Tab>
-
-        <Tab Route="leader" Icon="icon_trophy" Title="Leaderboard">
-            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-            <!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xedba;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_trophy_selected">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xedba;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_trophy">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xedba;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>-->
         </Tab>
 
 
@@ -307,9 +307,10 @@
         <Grid
             Margin="0,0,0,20"
             Padding="20,0"
-            RowDefinitions="Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
-            VerticalOptions="End">
+            VerticalOptions="End"
+            RowSpacing="15">
             
             <!-- Settings Button -->
             <!-- TODO: Bind when settings implemented -->
@@ -341,7 +342,8 @@
             <!--            VerticalOptions="Center" -->
             <!--            FontSize="Medium" -->
             <!--            Text="Settings" /> -->
-            <!-- </Grid> -->            
+            <!-- </Grid> -->    
+            
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
@@ -357,7 +359,7 @@
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
                        Text="&#xf235;">
@@ -367,7 +369,7 @@
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        Text="Delete Profile" />
             </Grid>
             
@@ -387,7 +389,7 @@
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
                        Text="&#xf08b;">
@@ -398,22 +400,33 @@
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Medium"
+                       FontSize="Small"
                        Text="Log Out" />
             </Grid>
             
+            <Label
+                Grid.Column="0"
+                Grid.Row="2"
+                Padding="0,10,0,0"
+                TextColor="#DDDDDD"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="12"
+                Text="Powered by .NET MAUI" />
+            
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
-                   Margin="0,0,10,0"
+                   Padding="0,10,0,0"
                    x:Name="VersionLabel"
+                   FontSize="12"
                    Grid.Column="2"
-                   Grid.Row="1"
+                   Grid.Row="2"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
             <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="2"
+                Grid.Row="3"
                 Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>

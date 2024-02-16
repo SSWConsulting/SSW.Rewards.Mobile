@@ -9,13 +9,6 @@
              x:Name="QuizList"
              x:DataType="viewModels:EarnViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
-    <Shell.TitleView>
-        <Label Text="Earn"
-               VerticalOptions="Center"
-               FontSize="18"
-               x:Name="TitleText"
-               TextColor="White" />
-    </Shell.TitleView>
     <ContentPage.Content>
         <ScrollView>
             <Grid RowDefinitions="Auto, *">
@@ -124,21 +117,12 @@
                                                        HeightRequest="64"
                                                        WidthRequest="64"
                                                        Aspect="AspectFill" />
-
-                                                <Label Text="&#xe30b;"
-                                                       TextColor="Green"
-                                                       FontFamily="FluentIcons"
-                                                       FontSize="28"
-                                                       HorizontalOptions="End"
-                                                       VerticalOptions="End"
-                                                       IsVisible="{Binding Passed}">
-                                                </Label>
                                             </Grid>
                                         </Border>
 
                                         <Grid
                                             Grid.Column="1"
-                                            ColumnDefinitions="*"
+                                            ColumnDefinitions="*,20"
                                             RowDefinitions="*,*"
                                             VerticalOptions="Center"
                                             RowSpacing="2">
@@ -149,16 +133,44 @@
                                                    VerticalTextAlignment="End"
                                                    FontSize="18"
                                                    Style="{StaticResource LabelBold}"
-                                                   LineBreakMode="TailTruncation" />
+                                                   LineBreakMode="TailTruncation">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label"
+                                                                 Binding="{Binding Path=Passed}"
+                                                                 Value="True">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.5" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                             <Label Grid.Row="1"
                                                    Text="{Binding Description}"
                                                    TextColor="White"
                                                    VerticalTextAlignment="Start"
                                                    InputTransparent="True"
-                                                   FontSize="12" />
+                                                   FontSize="12">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label"
+                                                                 Binding="{Binding Path=Passed}"
+                                                                 Value="True">
+                                                        <Setter Property="Opacity"
+                                                                Value="0.5" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                            <Label Grid.Column="2"
+                                                   Grid.RowSpan="2"
+                                                   Text="&#xf058;"
+                                                   TextColor="Green"
+                                                   FontSize="20"
+                                                   FontAutoScalingEnabled="False"
+                                                   FontFamily="FA6Regular"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="Center"
+                                                   IsVisible="{Binding Passed}"/>
                                         </Grid>
-
-                                        <controls:PointsButton Grid.Column="2"
+                                        
+                                        <controls:PointsButton Grid.Column="3"
                                                                ButtonText="GO"
                                                                Points="{Binding Points}"
                                                                Margin="10,0"

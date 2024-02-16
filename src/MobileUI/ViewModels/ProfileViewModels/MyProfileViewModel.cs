@@ -9,8 +9,11 @@ public class MyProfileViewModel : ProfileViewModelBase,
     IRecipient<PointsAwardedMessage>,
     IRecipient<SocialUsernameAddedMessage>
 {
-    public MyProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService) : base(rewardsService, userService, snackbarService)
+    private readonly ILeaderService _leaderService;
+
+    public MyProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, ILeaderService leaderService) : base(rewardsService, userService, snackbarService)
     {
+        _leaderService = leaderService;
     }
 
     public async void Receive(PointsAwardedMessage message)
@@ -34,7 +37,7 @@ public class MyProfileViewModel : ProfileViewModelBase,
             });
         }
 
-        _isMe = true;
+        IsMe = true;
 
         var profilePic = _userService.MyProfilePic;
 
@@ -44,6 +47,9 @@ public class MyProfileViewModel : ProfileViewModelBase,
         Points = _userService.MyPoints;
         Balance = _userService.MyBalance;
         userId = _userService.MyUserId;
+        
+        Rank = await LoadRank();
+        IsStaff = _userService.IsStaff;
 
         await _initialise();
     }
@@ -116,5 +122,12 @@ public class MyProfileViewModel : ProfileViewModelBase,
         }
 
         return Task.CompletedTask;
+    }
+    
+    private async Task<int> LoadRank()
+    {
+        var summaries = await _leaderService.GetLeadersAsync(false);
+        var myId = _userService.MyUserId;
+        return summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }
 }
