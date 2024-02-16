@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
@@ -13,6 +14,7 @@ using SSW.Rewards.Application.Users.Queries.GetUser;
 using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using SSW.Rewards.Enums;
+using SSW.Rewards.WebAPI.Authorisation;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -97,6 +99,7 @@ public class UserController : ApiControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<ActionResult<NewUsersViewModel>> GetNewUsers([FromQuery] LeaderboardFilter filter, bool filterStaff)
     {
         return await Mediator.Send(new GetNewUsersQuery { Filter = filter, FilterStaff = filterStaff });

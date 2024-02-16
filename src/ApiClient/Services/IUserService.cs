@@ -19,8 +19,6 @@ public interface IUserService
     Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken = default);
 
     Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default);
-    
-    Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService

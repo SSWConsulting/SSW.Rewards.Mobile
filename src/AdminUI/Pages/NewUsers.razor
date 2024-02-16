@@ -8,7 +8,7 @@
 @using System.Text
 @* @using Microsoft.AspNetCore.Authorization *@
 @* @attribute [Authorize] *@
-@inject IUserService UserService
+@inject IUserAdminService UserAdminService
 @inject IJSRuntime JSRuntime
 
 <MudText Typo="Typo.h2">New Users</MudText>
@@ -103,7 +103,7 @@
     private async Task FetchData()
     {
         _loading = true;
-        _vm = await UserService.GetNewUsers(_timeFrame, _hideStaff);
+        _vm = await UserAdminService.GetNewUsers(_timeFrame, _hideStaff);
         _loading = false;
     }
     
