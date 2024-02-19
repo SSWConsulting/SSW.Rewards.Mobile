@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Staff, Admin")]
 
 @inherits LayoutComponentBase
 

@@ -8,7 +8,7 @@
 @using SSW.Rewards.Shared.DTOs.Achievements
 @using SSW.Rewards.ApiClient.Services
 
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Admin")]
 
 @inject IAchievementAdminService achievementService
 @inject IDialogService DialogService
