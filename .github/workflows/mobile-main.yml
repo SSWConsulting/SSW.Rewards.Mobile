@@ -62,7 +62,7 @@ jobs:
 
   deploy_ios:
     name: Deploy iOS app
-    needs: [generate_build_number, android_build]
+    needs: [generate_build_number, ios_build]
     uses: ./.github/workflows/ios-deploy.yml
     with:
       environment: prod
