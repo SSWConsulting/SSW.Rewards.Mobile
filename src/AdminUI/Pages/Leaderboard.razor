@@ -6,7 +6,7 @@
 @using SSW.Rewards.Shared.DTOs.Leaderboard
 @using SSW.Rewards.ApiClient.Services
 
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Staff, Admin")]
 
 @inject ILeaderboardService leaderboardService
 
