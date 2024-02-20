@@ -51,22 +51,17 @@ jobs:
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-      - name: Build
-        run: dotnet publish src/MobileUI/MobileUI.csproj `
-          -v:diag -f:net8.0-ios -c:Release `
-          /p:ArchiveOnBuild=true `
-          /p:RuntimeIdentifier=ios-arm64 `
-          /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" `
+      - name: Build and sign
+        run: dotnet publish src/MobileUI/MobileUI.csproj \
+          -v:diag -f:net8.0-ios -c:Release \
+          /p:ArchiveOnBuild=true \
+          /p:RuntimeIdentifier=ios-arm64 \
+          /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" \
           /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
-
-      - name: Upload iOS artifact
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: mauistocktake-ios-build
-          path: src/MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: artifacts-ios-${{ inputs.build_number }}
-          path: MobileUI/bin/Release/net8.0-ios/ios-arm64/publish//*.ipa
+          path: | 
+            src/MobileUI/bin/Release/net8.0-ios/ios-arm64/publish/*.ipa
