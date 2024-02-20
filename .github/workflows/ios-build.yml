@@ -52,12 +52,7 @@ jobs:
             cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
       - name: Build and sign
-        run: dotnet publish src/MobileUI/MobileUI.csproj \
-          -v:diag -f:net8.0-ios -c:Release \
-          /p:ArchiveOnBuild=true \
-          /p:RuntimeIdentifier=ios-arm64 \
-          /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" \
-          /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
+        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net8.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v3.1.2
