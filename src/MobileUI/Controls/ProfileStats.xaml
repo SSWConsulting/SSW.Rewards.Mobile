@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Border
-    HeightRequest="280"
     BackgroundColor="{StaticResource Background}"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -15,11 +14,10 @@
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
-    <Grid
-        RowDefinitions="120, 50, Auto"
-        RowSpacing="10"
+    <VerticalStackLayout
+        Spacing="10"
         Padding="0,10">
-        <VerticalStackLayout Grid.Row="0">
+        <Grid>
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
                                 WidthRequest="120"
                                 HeightRequest="120"
@@ -31,7 +29,7 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 TranslationX="40"
-                TranslationY="-35"
+                TranslationY="35"
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
                 IsVisible="{Binding IsMe}">
@@ -40,18 +38,20 @@
                 </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"
+                    FontAutoScalingEnabled="False"
                     FontSize="25"
                     Text="&#xe299;"
                     Margin="3"
                     TextColor="White" />
             </Border>
-        </VerticalStackLayout>
+        </Grid>
 
-        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center">
+        <VerticalStackLayout VerticalOptions="Center">
             <Label
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HorizontalTextAlignment="Center"
+                FontAutoScalingEnabled="False"
                 Text="{Binding Name}"
                 Style="{StaticResource LabelBold}"
                 FontSize="Large"
@@ -60,6 +60,7 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HorizontalTextAlignment="Center"
+                FontAutoScalingEnabled="False"
                 Text="{Binding Path=IsStaff, Converter={StaticResource StaffToText}}"
                 Style="{StaticResource LabelBold}"
                 FontSize="Small"
@@ -67,8 +68,7 @@
         </VerticalStackLayout>
 
         <!-- User's own stats -->
-        <Border Grid.Row="2"
-                IsVisible="{Binding Path=ShowBalance}"
+        <Border IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="2"
                 Margin="20, 0">
@@ -93,11 +93,16 @@
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
                                    TextColor="{StaticResource Coin}"
+                                   FontAutoScalingEnabled="False"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Rank, StringFormat='#{0:n0}'}" />
+                            <Label FontSize="Large"
+                                   FontAutoScalingEnabled="False"
+                                   Style="{StaticResource LabelBold}"
+                                   Text="{Binding Rank, StringFormat='#{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"
+                            FontAutoScalingEnabled="False"
                             Text="Ranking"
                             FontSize="Small"
                             TextColor="{StaticResource White}" />
@@ -114,13 +119,17 @@
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"
                                TextColor="{StaticResource Coin}"
+                               FontAutoScalingEnabled="False"
                                Text="&#x2b50;" />
-                        <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                        <Label FontSize="Large"
+                               FontAutoScalingEnabled="False"
+                               Style="{StaticResource LabelBold}"
                                Text="{Binding Points, StringFormat='{0:n0}'}" />
                     </HorizontalStackLayout>
                     <Label
                         HorizontalOptions="Center"
                         Text="Points"
+                        FontAutoScalingEnabled="False"
                         FontSize="Small"
                         TextColor="{StaticResource White}" />
                 </VerticalStackLayout>
@@ -139,8 +148,11 @@
                                    VerticalTextAlignment="Center"
                                    FontFamily="FA6Solid"
                                    TextColor="{StaticResource Coin}"
+                                   FontAutoScalingEnabled="False"
                                    Text="&#xf51e;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                            <Label FontSize="Large"
+                                   FontAutoScalingEnabled="False"
+                                   Style="{StaticResource LabelBold}"
                                    Text="{Binding Balance, StringFormat='{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
@@ -148,6 +160,7 @@
                             HorizontalOptions="Center"
                             Text="Credits"
                             FontSize="Small"
+                            FontAutoScalingEnabled="False"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
@@ -181,14 +194,19 @@
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}" Text="{Binding Path=Rank, StringFormat='#{0:n0}'}" />
+                            <Label FontSize="Large"
+                                   FontAutoScalingEnabled="False"
+                                   Style="{StaticResource LabelBold}"
+                                   Text="{Binding Path=Rank, StringFormat='#{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"
                             Text="Ranking"
                             FontSize="Small"
+                            FontAutoScalingEnabled="False"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
@@ -205,20 +223,24 @@
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#x2b50;" />
-                            <Label FontSize="Large" Style="{StaticResource LabelBold}"
+                            <Label FontSize="Large"
+                                   FontAutoScalingEnabled="False"
+                                   Style="{StaticResource LabelBold}"
                                    Text="{Binding Points, StringFormat='{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"
                             Text="Points"
                             FontSize="Small"
+                            FontAutoScalingEnabled="False"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
                 
             </Grid>
         </Border>
-    </Grid>
+    </VerticalStackLayout>
 </Border>
