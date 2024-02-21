@@ -30,6 +30,7 @@
                     FontFamily="FluentIcons"
                     Text="&#xe4c3;"
                     FontSize="35"
+                    FontAutoScalingEnabled="False"
                     TextColor="{StaticResource primary}" />
             </Border>
 
