@@ -51,9 +51,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     private bool _isMe;
     
     [ObservableProperty]
-    private string _profileName;
-
-    [ObservableProperty]
     private bool _isLastSeenEmpty;
     
     [ObservableProperty]
@@ -201,14 +198,12 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType()
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
 
         // ===== Recent activity =====
-        IsMe = IsMe;
-        ProfileName = Name;
-
         var activityList = new List<Activity>();
 
         var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
@@ -219,7 +214,8 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType()
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
         
@@ -234,6 +230,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
                 ActivityName = $"Claimed {reward.Name}",
                 OccurredAt = reward.AwardedAt?.DateTime,
                 Type = ActivityType.Claimed,
+                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
             });
         }
 
@@ -314,6 +311,16 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         {
             return $"{prefix} {action} {activity}";
         }
+    }
+    
+    private static string GetTimeElapsed(DateTime occurredAt)
+    {
+        return (DateTime.Now - occurredAt) switch
+        {
+            { TotalDays: < 1 } ts => $"{ts.Hours}h",
+            { TotalDays: < 31 } ts => $"{ts.Days}d",
+            _ => occurredAt.ToString("dd MMMM yyyy"),
+        };
     }
 
     // The following method is required as a workaround

@@ -45,7 +45,7 @@
                Grid.Row="1"
                Margin="0,0,0,10"
                FontSize="13"
-               Text="{Binding OccurredAt, StringFormat='{0:dd/MM/yyyy}'}"
+               Text="{Binding TimeElapsed}"
                TextColor="{StaticResource Gray300}" />
     </Grid>
 </Border>

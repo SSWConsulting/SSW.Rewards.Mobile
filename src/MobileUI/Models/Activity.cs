@@ -9,6 +9,8 @@ public class Activity
     public string ActivityName { get; set; }
 
     public DateTime? OccurredAt { get; set; }
+    
+    public string TimeElapsed { get; set; }
 }
 
 public enum ActivityType
