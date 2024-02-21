@@ -78,13 +78,13 @@ public partial class Podium : ContentView
                 ProfilePic.WidthRequest = 130;
                 ProfilePic.HeightRequest = 130;
 				ProfilePic.CornerRadius = 65;
-				ProfilePic.BorderWidth = 5;
+				ProfilePic.BorderWidth = DeviceInfo.Current.Platform == DevicePlatform.iOS ? 0 : 5; // TODO: for some reason the border is not a circle on iOS, so we hide it
                 break;
             default:
                 ProfilePic.WidthRequest = 70;
                 ProfilePic.HeightRequest = 70;
 				ProfilePic.CornerRadius = 35;
-                ProfilePic.BorderWidth = 2;
+                ProfilePic.BorderWidth = DeviceInfo.Current.Platform == DevicePlatform.iOS ? 0 : 2;
                 break;
         }
     }

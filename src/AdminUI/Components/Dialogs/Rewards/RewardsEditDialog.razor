@@ -16,23 +16,42 @@
         </div>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@Dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
-        <MudTextField @bind-Value="@Dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
-        <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true" />
-        <MudSelect
-            @bind-Value="_selectedValue"
-            T="@LeaderboardUserDto"
-            Label="Assign to User"
-            AnchorOrigin="Origin.TopCenter"
-            TransformOrigin="Origin.BottomCenter"
-            Variant="Variant.Outlined"
-            AdornmentIcon="@Icons.Material.Filled.Search"
-            AdornmentColor="Color.Primary">
-            @foreach (var usr in _usersList.OrderBy(u => u.Name))
-            {
-                <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-            }
-        </MudSelect>
+        <MudStack>
+            <MudTextField @bind-Value="@Dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+            <MudTextField @bind-Value="@Dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
+            <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true" />
+            <MudSelect
+                @bind-Value="_selectedValue"
+                T="@LeaderboardUserDto"
+                Label="Assign to User"
+                AnchorOrigin="Origin.TopCenter"
+                TransformOrigin="Origin.BottomCenter"
+                Variant="Variant.Outlined"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                AdornmentColor="Color.Primary">
+                @foreach (var usr in _usersList.OrderBy(u => u.Name))
+                {
+                    <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
+                @if (!string.IsNullOrEmpty(_imageUrl))
+                {
+                    <MudImage id="profileImg" Src="@_imageUrl" Height="100" Width="100" Elevation="1" Alt="Reward thumbnail image"/>
+                }
+                else
+                {
+                    <MudPaper Height="100px" Width="100px" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave">
+                        <MudText Typo="Typo.body1">No Image</MudText>
+                    </MudPaper>
+                }
+                
+                <MudStack Row="false">
+                    <MudTextField Class="d-inline" T="string" Label="Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true"/>
+                    <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload a reward image"/>
+                </MudStack>
+            </MudStack>
+        </MudStack>
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
@@ -51,6 +70,7 @@
     [Parameter]
     public RewardEditDto Dto { get; set; } = new();
 
+    private string _imageUrl;
     private LeaderboardUserDto? _selectedValue;
     private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
@@ -58,6 +78,7 @@
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+        _imageUrl = Dto.ImageUri;
     }
     
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
@@ -75,6 +96,22 @@
         {
             MudDialog?.Close(DialogResult.Ok(Dto.Id));
         }
+    }
+
+    // todo: could be worth making this a generic function. This functionality is used across many places
+    private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        var ms = new MemoryStream();
+
+        await imageFile.OpenReadStream().CopyToAsync(ms);
+
+        var bytes = ms.ToArray();
+
+        Dto.ImageBytesInBase64 = Convert.ToBase64String(bytes);
+        Dto.ImageFileName = imageFile.Name;
+        _imageUrl = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
     }
 
     void AssignReward()

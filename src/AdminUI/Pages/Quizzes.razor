@@ -7,7 +7,7 @@
 @using SSW.Rewards.Shared.DTOs.Quizzes
 @using SSW.Rewards.ApiClient.Services
 
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Admin")]
 @inject IQuizAdminService quizService
 
 @inject NavigationManager NavManager
@@ -65,9 +65,11 @@
     </RowTemplate>
 </Table>
 
-<FabContainer>
-    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="add-quiz" />
-</FabContainer>
+<AuthorizeView Roles="Admin">
+    <FabContainer>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="add-quiz" />
+    </FabContainer>
+</AuthorizeView>
 
 @code {
     private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };

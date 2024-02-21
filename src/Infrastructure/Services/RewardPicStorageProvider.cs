@@ -6,7 +6,7 @@ public class RewardPicStorageProvider : IRewardPicStorageProvider
 {
     private readonly IStorageProvider _storageProvider;
 
-    private const string CONTAINER_NAME = "RewardPics";
+    private const string CONTAINER_NAME = "rewardpics";
 
     public RewardPicStorageProvider(IStorageProvider storageProvider)
     {
