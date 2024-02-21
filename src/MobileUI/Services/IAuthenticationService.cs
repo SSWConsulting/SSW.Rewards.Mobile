@@ -186,33 +186,13 @@ public class AuthenticationService : IAuthenticationService
             RefreshToken = result.RefreshToken;
             await SecureStorage.SetAsync(nameof(RefreshToken), RefreshToken);
         }
-
-        if (result.RefreshTokenExpiration.HasValue)
-        {
-            _refreshTokenExpiry = result.RefreshTokenExpiration.Value;
-            Preferences.Set(nameof(_refreshTokenExpiry), _refreshTokenExpiry.ToUnixTimeSeconds());
-        }
-        else
-        {
-            Preferences.Remove(nameof(_refreshTokenExpiry));
-        }
     }
 
     public async Task<bool> RefreshLoginAsync()
     {
         RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
 
-        var refreshTokenExpiry = Preferences.Get(nameof(_refreshTokenExpiry), 0L);
-
-        bool refreshTokenExpired = false;
-
-        if (refreshTokenExpiry > 0)
-        {
-            _refreshTokenExpiry = DateTimeOffset.FromUnixTimeSeconds(refreshTokenExpiry);
-            refreshTokenExpired = _refreshTokenExpiry < DateTimeOffset.Now.AddMinutes(2);
-        }
-
-        if (!string.IsNullOrWhiteSpace(RefreshToken) && !refreshTokenExpired)
+        if (!string.IsNullOrWhiteSpace(RefreshToken))
         {
             var oidcClient = new OidcClient(_options);
 
@@ -275,8 +255,7 @@ public class AuthenticationService : IAuthenticationService
                 AccessToken = loginResult.AccessToken,
                 RefreshToken = loginResult.RefreshToken,
                 AccessTokenExpiration = loginResult.AccessTokenExpiration,
-                IdentityToken = loginResult.IdentityToken,
-                RefreshTokenExpiration = null
+                IdentityToken = loginResult.IdentityToken
             };
         }
         else if (result is RefreshTokenResult refreshTokenResult)
@@ -286,8 +265,7 @@ public class AuthenticationService : IAuthenticationService
                 AccessToken = refreshTokenResult.AccessToken,
                 RefreshToken = refreshTokenResult.RefreshToken,
                 IdentityToken = refreshTokenResult.IdentityToken,
-                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
-                RefreshTokenExpiration = DateTimeOffset.UtcNow.AddSeconds(refreshTokenResult.ExpiresIn)
+                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration
             };
         }
         else
@@ -302,7 +280,6 @@ public class AuthenticationService : IAuthenticationService
         public string RefreshToken { get; set; }
         public string IdentityToken { get; set; }
         public DateTimeOffset AccessTokenExpiration { get; set; }
-        public DateTimeOffset? RefreshTokenExpiration { get; set; }
     }
 }
 
