@@ -1,86 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-             xmlns:helpers="clr-namespace:SSW.Rewards.Mobile.Helpers"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewModels:MyProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.MyProfilePage">
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent"/>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
-    <ContentPage.Resources>
-        <DataTemplate x:Key="AchievementsTemplate">
-            <controls:AchievementGrid />
-        </DataTemplate>
 
-        <DataTemplate x:Key="NotificationsTemplate">
-            <controls:Notifications />
-        </DataTemplate>
-
-        <DataTemplate x:Key="ActivityTemplate">
-            <controls:RecentActivity />
-        </DataTemplate>
-
-        <helpers:ProfileCarouselSelector x:Key="ProfileViewSelector"
-                                         Notifications="{StaticResource NotificationsTemplate}"
-                                         Achievements="{StaticResource AchievementsTemplate}"
-                                         RecentActivity="{StaticResource ActivityTemplate}" />
-    </ContentPage.Resources>
-
-    <Grid RowDefinitions="Auto,Auto,*,5"
-          RowSpacing="6"
-          Padding="10, 5"
-          x:Name="MainPageRow">
-        <Border
-            Grid.Row="0"
-            HorizontalOptions="End"
-            BackgroundColor="{StaticResource Background}"
-            StrokeShape="Ellipse"
-            StrokeThickness="0"
-            Padding="0"
-            IsVisible="{Binding ShowPopButton}">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding PopProfile}"/>
-            </Border.GestureRecognizers>
-            <Label
-                FontFamily="FluentIcons"
-                Text="&#xe4c3;"
-                FontSize="35"
-                TextColor="{StaticResource primary}"/>
-        </Border>
-
-        <controls:ProfileStats Grid.Row="1"/>
-
-        <Border Grid.Row="2" 
+    <ScrollView>
+        <VerticalStackLayout Spacing="15"
+                             Margin="15"
+                             x:Name="MainPageRow">
+            <Border
+                HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
-                Stroke="{StaticResource Background}">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8"/>
-            </Border.StrokeShape>
-            <CarouselView 
-                          Margin="0,0,0,0"
-                          IndicatorView="ProfileIndicator"
-                          ItemsSource="{Binding ProfileSections}"
-                          ItemTemplate="{StaticResource ProfileViewSelector}"
-                          />
-        </Border>
-        
-        <IndicatorView Grid.Row="3"
-                       SelectedIndicatorColor="{StaticResource primary}"
-                       IndicatorColor="{StaticResource IndicatorColor}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       x:Name="ProfileIndicator"/>
+                StrokeShape="Ellipse"
+                StrokeThickness="0"
+                IsVisible="{Binding ShowPopButton}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PopProfile}" />
+                </Border.GestureRecognizers>
+                <Label
+                    FontFamily="FluentIcons"
+                    Text="&#xe4c3;"
+                    FontSize="35"
+                    TextColor="{StaticResource primary}" />
+            </Border>
 
-        <ActivityIndicator Grid.Row="0"
-                           Grid.RowSpan="4"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           IsRunning="True"
-                           Color="{StaticResource primary}"
-                           IsVisible="{Binding IsLoading}"/>
-    </Grid>
+            <controls:ProfileStats />
+            
+            <controls:ProfileActivity />
+            
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

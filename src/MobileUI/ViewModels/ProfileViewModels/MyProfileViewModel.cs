@@ -28,15 +28,6 @@ public class MyProfileViewModel : ProfileViewModelBase,
 
     public async Task Initialise()
     {
-        if (DeviceInfo.Platform == DevicePlatform.iOS)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-                OnPropertyChanged(nameof(ProfileSections));
-            });
-        }
-
         IsMe = true;
 
         var profilePic = _userService.MyProfilePic;
