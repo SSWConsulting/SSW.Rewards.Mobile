@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Notifications
 
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Admin")]
 
 @inject INotificationsClient _client
 @inject IDialogService DialogService

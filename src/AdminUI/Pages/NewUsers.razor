@@ -6,8 +6,10 @@
 @using Newtonsoft.Json
 @using Icons = MudBlazor.Icons
 @using System.Text
-@* @using Microsoft.AspNetCore.Authorization *@
-@* @attribute [Authorize] *@
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize (Roles = "Admin")]
+
 @inject IUserAdminService UserAdminService
 @inject IJSRuntime JSRuntime
 
