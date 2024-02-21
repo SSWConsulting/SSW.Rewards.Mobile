@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Border
+    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+    StrokeThickness="0"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:namespace="clr-namespace:SSW.Rewards.Models"
+    x:Class="SSW.Rewards.Mobile.Controls.ProfileActivityItem"
+    x:DataType="namespace:Activity">
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="4" />
+    </Border.StrokeShape>
+    <Grid ColumnDefinitions="35, *" RowDefinitions="Auto,Auto">
+        <Label
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Text="&#xf51e;"
+            TextColor="{StaticResource Coin}"
+            FontFamily="FA6Solid"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontSize="14"
+            Style="{StaticResource LabelBold}"
+            FontAutoScalingEnabled="False"
+            InputTransparent="True">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding Type}"
+                             Value="{x:Static namespace:ActivityType.Attended}">
+                    <Setter Property="TextColor" Value="White"/>
+                    <Setter Property="Text" Value="&#xf3c5;"/>
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        <Label Grid.Column="1"
+               Grid.Row="0"
+               Margin="0,10,5,5"
+               MaxLines="2"
+               FontSize="16"
+               Style="{StaticResource LabelBold}"
+               Text="{Binding ActivityName}"/>
+        <Label Grid.Column="1"
+               Grid.Row="1"
+               Margin="0,0,0,10"
+               FontSize="13"
+               Text="{Binding OccurredAt, StringFormat='{0:dd/MM/yyyy}'}"
+               TextColor="{StaticResource Gray300}" />
+    </Grid>
+</Border>

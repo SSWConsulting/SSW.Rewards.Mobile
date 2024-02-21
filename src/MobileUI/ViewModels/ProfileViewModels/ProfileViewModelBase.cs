@@ -31,10 +31,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private int _rank; 
 
-    private string _email;
+    [ObservableProperty]
+    private string _userEmail;
     
     [ObservableProperty]
-    private bool _isStaff = false;
+    private bool _isStaff;
 
     public bool ShowBalance { get; set; } = true;
 
@@ -49,7 +50,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private bool _isMe;
     
-    public ObservableCollection<ProfileCarouselViewModel> ProfileSections { get; set; } = new ObservableCollection<ProfileCarouselViewModel>();
+    public ProfileCarouselViewModel ProfileSections { get; set; } = new ();
+    
+    public ObservableCollection<Activity> RecentActivity { get; set; } = new ();
+    
+    public ObservableCollection<Activity> LastSeen { get; set; } = new ();
 
     public SnackbarOptions SnackOptions { get; set; }
 
@@ -129,10 +134,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             Progress = 1;
         }
 
-        if (!ProfileSections.Any())
-        {
-            await LoadProfileSections();
-        }
+        await LoadProfileSections();
 
         IsLoading = false;
     }
@@ -175,104 +177,62 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        ProfileSections.Clear();
-        
-        if (DeviceInfo.Platform == DevicePlatform.iOS)
-        {
-            ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-            OnPropertyChanged(nameof(ProfileSections));
-        }
-
         var rewardListTask = _userService.GetRewardsAsync(userId);
-        var profileAchievementsTask = _userService.GetProfileAchievementsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
 
-        await Task.WhenAll(rewardListTask, profileAchievementsTask, achievementListTask);
+        await Task.WhenAll(rewardListTask, achievementListTask);
 
         var rewardList = rewardListTask.Result;
-        var profileAchievements = profileAchievementsTask.Result;
         var achievementList = achievementListTask.Result;
-
-
-        //===== Achievements =====
-
-        var achivementsSection = new ProfileCarouselViewModel();
-        achivementsSection.Type = CarouselType.Achievements;
-
-        foreach (var achievement in profileAchievements)
+        
+        // ===== Last seen =====
+        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        
+        foreach (var achievement in recentLastSeen)
         {
-            achivementsSection.Achievements.Add(achievement.ToProfileAchievement(IsMe));
+            LastSeen.Add(new Activity
+            {
+                ActivityName = GetMessage(achievement, true),
+                OccurredAt = achievement.AwardedAt,
+                Type = achievement.Type.ToActivityType()
+            });
         }
 
-        ProfileSections.Add(achivementsSection);
-
         // ===== Recent activity =====
-
-        var activitySection = new ProfileCarouselViewModel();
-        activitySection.Type = CarouselType.RecentActivity;
-        activitySection.IsMe = IsMe;
-        activitySection.ProfileName = Name;
+        ProfileSections.IsMe = IsMe;
+        ProfileSections.ProfileName = Name;
 
         var activityList = new List<Activity>();
 
-        var recentAchievements = achievementList.OrderByDescending(a => a.AwardedAt).Take(10);
+        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
 
         foreach (var achievement in recentAchievements)
         {
             activityList.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
-                OcurredAt = achievement.AwardedAt,
+                OccurredAt = achievement.AwardedAt,
                 Type = achievement.Type.ToActivityType()
             });
         }
-
+        
         var recentRewards = rewardList
-            .Where(r => r.Awarded == true)
-            .OrderByDescending(r => r.AwardedAt).Take(10);
+            .Where(r => r.Awarded)
+            .OrderByDescending(r => r.AwardedAt).Take(5);
 
-        foreach (var reward in rewardList)
+        foreach (var reward in recentRewards)
         {
             activityList.Add(new Activity
             {
                 ActivityName = $"Claimed {reward.Name}",
-                OcurredAt = reward.AwardedAt?.DateTime,
-                Type = ActivityType.Claimed
+                OccurredAt = reward.AwardedAt?.DateTime,
+                Type = ActivityType.Claimed,
             });
         }
 
-        activityList.OrderByDescending(a => a.OcurredAt).Take(10).ToList().ForEach(a => activitySection.RecentActivity.Add(a));
-
-        ProfileSections.Add(activitySection);
-
-        // ===== Notifications =====
-
-        if (IsMe)
+        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
         {
-            var notificationsSection = new ProfileCarouselViewModel();
-            notificationsSection.Type = CarouselType.Notifications;
-
-#if DEBUG
-            notificationsSection.Notifications.Add(new Notification
-            {
-                Message = "New tech trivia available: Scrum",
-                Type = NotificationType.Alert
-            });
-
-            notificationsSection.Notifications.Add(new Notification
-            {
-                Message = "Upcoming event: SSW User Group June 2022 with Jason Taylor",
-                Type = NotificationType.Event
-            });
-
-            notificationsSection.Notifications.Add(new Notification
-            {
-                Message = "Upcoming event: How to design darkmode mobile UI with Jayden Alchin",
-                Type = NotificationType.Event
-            });
-#endif
-
-            ProfileSections.Add(notificationsSection);
+            RecentActivity.Add(activity);
         }
 
         _loadingProfileSectionsSemaphore.Release();
@@ -298,7 +258,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         await _snackbarService.ShowSnackbar(options);
     }
 
-    public string GetMessage(Achievement achievement, bool IsActivity = false)
+    public string GetMessage(Achievement achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
 
@@ -312,28 +272,30 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         string action = string.Empty;
 
+        string scored = $"just scored {achievement.Value}pts for";
+
         switch (achievement.Type)
         {
             case AchievementType.Attended:
-                action = "attended";
+                action = "checked into";
                 break;
 
             case AchievementType.Completed:
-                action = "completed";
+                action = $"{scored} completing";
                 break;
 
             case AchievementType.Linked:
-                action = "followed";
+                action = $"{scored} following";
                 activity = activity.Replace("follow", "");
                 activity = activity.Replace("Follow", "");
                 break;
 
             case AchievementType.Scanned:
-                action = "scanned";
+                action = $"{scored} scanning";
                 break;
         }
 
-        if (IsActivity)
+        if (isActivity)
         {
             action = char.ToUpper(action[0]) + action.Substring(1);
             return $"{action} {activity}";
@@ -352,7 +314,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         IsBusy = false;
         IsLoading = false;
-        ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }

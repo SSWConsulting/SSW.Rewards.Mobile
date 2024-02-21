@@ -72,7 +72,7 @@
                                    Margin="10,5"
                                    VerticalOptions="Center"/>
                             <Label Grid.Column="2"
-                                   Text="{Binding OcurredAt, StringFormat='{0:dd/MM/yyyy}'}"
+                                   Text="{Binding OccurredAt, StringFormat='{0:dd/MM/yyyy}'}"
                                    FontSize="11"
                                    TextColor="White"
                                    Margin="0,0,5,0"

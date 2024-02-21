@@ -36,5 +36,9 @@
 	<string>3.0.7</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>mailto</string>
+    </array>
 </dict>
 </plist>

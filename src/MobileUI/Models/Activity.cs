@@ -8,7 +8,7 @@ public class Activity
 
     public string ActivityName { get; set; }
 
-    public DateTime? OcurredAt { get; set; }
+    public DateTime? OccurredAt { get; set; }
 }
 
 public enum ActivityType

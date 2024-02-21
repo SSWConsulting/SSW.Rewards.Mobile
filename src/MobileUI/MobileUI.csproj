@@ -120,6 +120,14 @@
 		  <DependentUpon>QuizResultPending.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Controls\ProfileActivity.xaml.cs">
+		  <DependentUpon>ProfileActivity.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\ProfileActivityItem.xaml.cs">
+		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -141,6 +149,12 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="PopupPages\QuizResultPending.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\ProfileActivity.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\ProfileActivityItem.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

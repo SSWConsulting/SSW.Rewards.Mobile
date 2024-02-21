@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Net.Mail;
+﻿using System.Net.Mail;
+using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 public class OthersProfileViewModel : ProfileViewModelBase
 {
+    public ICommand EmailUserCommand => new Command(async () => await EmailUser());
     public OthersProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
         : base(rewardsService, userService, snackbarService)
     {
@@ -12,15 +13,6 @@ public class OthersProfileViewModel : ProfileViewModelBase
 
     public async Task Initialise()
     {
-        if (DeviceInfo.Platform == DevicePlatform.iOS)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ProfileSections = new ObservableCollection<ProfileCarouselViewModel>();
-                OnPropertyChanged(nameof(ProfileSections));
-            });
-        }
-
         IsMe = false;
         
         await _initialise();
@@ -30,6 +22,7 @@ public class OthersProfileViewModel : ProfileViewModelBase
     {
         ProfilePic = vm.ProfilePic;
         Name = vm.Name;
+        UserEmail = vm.Email;
         userId = vm.UserId;
         Points = vm.TotalPoints;
         Balance = vm.Balance;
@@ -45,5 +38,19 @@ public class OthersProfileViewModel : ProfileViewModelBase
         
         ShowBalance = false;
         ShowPopButton = true;
+    }
+    
+    private async Task EmailUser()
+    {
+        if (Email.Default.IsComposeSupported)
+        {
+            var message = new EmailMessage
+            {
+                BodyFormat = EmailBodyFormat.PlainText,
+                To = [UserEmail]
+            };
+
+            await Email.Default.ComposeAsync(message);
+        }
     }
 }
