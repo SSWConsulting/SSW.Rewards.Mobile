@@ -13,15 +13,14 @@
     </ContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout Spacing="6"
-                             Padding="10, 5"
+        <VerticalStackLayout Spacing="15"
+                             Margin="15"
                              x:Name="MainPageRow">
             <Border
                 HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
-                Padding="0"
                 IsVisible="{Binding ShowPopButton}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding PopProfile}" />
@@ -36,12 +35,7 @@
             <controls:ProfileStats />
             
             <controls:ProfileActivity />
-
-            <ActivityIndicator HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               IsRunning="True"
-                               Color="{StaticResource primary}"
-                               IsVisible="{Binding IsLoading}" />
+            
         </VerticalStackLayout>
     </ScrollView>
 

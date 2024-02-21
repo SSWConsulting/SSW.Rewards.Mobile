@@ -50,7 +50,14 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private bool _isMe;
     
-    public ProfileCarouselViewModel ProfileSections { get; set; } = new ();
+    [ObservableProperty]
+    private string _profileName;
+
+    [ObservableProperty]
+    private bool _isLastSeenEmpty;
+    
+    [ObservableProperty]
+    private bool _isRecentActivityEmpty;
     
     public ObservableCollection<Activity> RecentActivity { get; set; } = new ();
     
@@ -199,8 +206,8 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         }
 
         // ===== Recent activity =====
-        ProfileSections.IsMe = IsMe;
-        ProfileSections.ProfileName = Name;
+        IsMe = IsMe;
+        ProfileName = Name;
 
         var activityList = new List<Activity>();
 
@@ -234,6 +241,9 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         {
             RecentActivity.Add(activity);
         }
+        
+        IsLastSeenEmpty = !LastSeen.Any();
+        IsRecentActivityEmpty = !RecentActivity.Any();
 
         _loadingProfileSectionsSemaphore.Release();
     }

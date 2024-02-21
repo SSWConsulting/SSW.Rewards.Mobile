@@ -14,15 +14,14 @@
 
     <ScrollView>
         <VerticalStackLayout
-            Spacing="6"
-            Padding="10,5">
+            Spacing="15"
+            Margin="15">
 
             <Border
                 HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
-                Padding="0"
                 IsVisible="{Binding ShowPopButton}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding PopProfile}" />
@@ -40,23 +39,18 @@
                     TextTransform="Uppercase"
                     Style="{StaticResource LabelBold}"
                     FontSize="16"
-                    ImageSource="icon_email"
                     BackgroundColor="{StaticResource SSWRed}"
+                    CornerRadius="8"
                     Command="{Binding EmailUserCommand}"
                     IsVisible="{Binding IsStaff}">
-                <Image.Behaviors>
-                    <mct:IconTintColorBehavior TintColor="White" />
-                </Image.Behaviors>
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xf0e0;" 
+                                     FontFamily="FA6Solid"
+                                     Size="16"/>
+                </Button.ImageSource>
             </Button>
 
             <controls:ProfileActivity />
-
-            <ActivityIndicator
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                IsRunning="True"
-                Color="{StaticResource primary}"
-                IsVisible="{Binding IsLoading}" />
 
         </VerticalStackLayout>
     </ScrollView>

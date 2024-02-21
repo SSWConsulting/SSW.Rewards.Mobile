@@ -3,7 +3,7 @@
 <Border
     BackgroundColor="{StaticResource Background}"
     Stroke="{StaticResource Background}"
-    Padding="12"
+    Padding="15"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
@@ -16,14 +16,26 @@
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
+        
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="True"
+            Color="{StaticResource primary}"
+            IsVisible="{Binding IsLoading}" />
+        
+        <Label Text="No check-ins"
+               TextColor="{StaticResource LeaderCardBackground}"
+               Margin="0, 10"
+               HorizontalOptions="Center"
+               IsVisible="{Binding IsLastSeenEmpty}"/>
 
         <CollectionView
             ItemsSource="{Binding LastSeen}"
-            ItemsUpdatingScrollMode="KeepItemsInView"
             Margin="0,0,0,10">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="5" />
+                                   ItemSpacing="8" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -36,13 +48,26 @@
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
+        
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="True"
+            Color="{StaticResource primary}"
+            IsVisible="{Binding IsLoading}" />
+        
+        <Label Text="No recent activity"
+               TextColor="{StaticResource LeaderCardBackground}"
+               Margin="0, 10"
+               HorizontalOptions="Center"
+               IsVisible="{Binding IsRecentActivityEmpty}"/>
 
         <CollectionView
             ItemsSource="{Binding RecentActivity}"
             ItemsUpdatingScrollMode="KeepItemsInView">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="5" />
+                                   ItemSpacing="8" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
