@@ -40,10 +40,11 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_15.1.app"
           echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.1.app" >> $GITHUB_ENV
 
-      - name: Import Distribution Certificate
-        run: |
-            echo ${{ secrets.APPLE_CERT }} | base64 --decode > DistributionCertificate.p12
-            security import DistributionCertificate.p12 -k ~/Library/Keychains/login.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }}
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERT }}
+          p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
 
       - name: Import Provisioning Profile
         run: |
