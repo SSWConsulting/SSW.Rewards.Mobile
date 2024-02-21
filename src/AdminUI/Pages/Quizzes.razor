@@ -7,7 +7,7 @@
 @using SSW.Rewards.Shared.DTOs.Quizzes
 @using SSW.Rewards.ApiClient.Services
 
-@attribute [Authorize (Roles = "Staff, Admin")]
+@attribute [Authorize (Roles = "Admin")]
 @inject IQuizAdminService quizService
 
 @inject NavigationManager NavManager
