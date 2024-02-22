@@ -6,17 +6,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+    xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
+    xmlns:profileViewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
+    x:DataType="profileViewModels:MyProfileViewModel"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:StaffToTextConverter x:Key="StaffToText" />
+        <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
     <VerticalStackLayout
-        Spacing="10"
-        Padding="0,10">
+        Spacing="15"
+        Padding="0,15,0,30">
         <Grid>
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
                                 WidthRequest="120"
@@ -169,8 +173,7 @@
         </Border>
 
         <!-- Viewing other User's stats -->
-        <Border Grid.Row="2"
-                IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
+        <Border IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="2"
                 Margin="20, 0">
@@ -242,5 +245,66 @@
                 
             </Grid>
         </Border>
+        
+        <Label Text="Skill Set"
+               HorizontalOptions="Center"
+               FontSize="16"
+               Style="{StaticResource LabelBold}"/>
+        
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="True"
+            Color="{StaticResource primary}"
+            IsVisible="{Binding IsLoading}" />
+        
+        <HorizontalStackLayout
+            BindableLayout.ItemsSource="{Binding Skills}"
+            HorizontalOptions="Center"
+            Spacing="30">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="staff:StaffSkillDto">
+                    <VerticalStackLayout Spacing="4">
+                        <Border HeightRequest="64" 
+                                WidthRequest="64"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Label FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="28"
+                                   Text="&#xf0eb;"/>
+                        </Border>
+                        <Label Text="{Binding Name}"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource LabelBold}"/>
+                        
+                        <HorizontalStackLayout
+                            BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label FontFamily="FA6Regular"
+                                           FontAutoScalingEnabled="False"
+                                           FontSize="14"
+                                           Text="&#xf005;">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding }"
+                                                         Value="True">
+                                                <Setter Property="FontFamily" Value="FA6Solid"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
     </VerticalStackLayout>
 </Border>

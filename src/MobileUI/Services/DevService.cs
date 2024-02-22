@@ -1,4 +1,5 @@
 ﻿using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -55,5 +56,42 @@ public class DevService : IDevService
         }
 
         return profiles.OrderBy(d => d.FirstName);
+    }
+    
+    public async Task<DevProfile> GetProfileAsync(string email)
+    {
+        try
+        {
+            var profile = await _staffClient.SearchStaffMember(new StaffMemberQueryDto() { email = email }, CancellationToken.None);
+
+            return new DevProfile
+            {
+                id = profile.Id,
+                FirstName = profile.Name,
+                Bio = profile.Profile,
+                Email = profile.Email,
+                Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto)
+                    ? "dev_placeholder"
+                    : profile.ProfilePhoto,
+                Title = profile.Title,
+                TwitterID = profile.TwitterUsername,
+                GitHubID = profile.GitHubUsername,
+                LinkedInId = profile.LinkedInUrl,
+                Skills = profile.Skills?.ToList(),
+                IsExternal = profile.IsExternal,
+                AchievementId = profile.StaffAchievement?.Id ?? 0,
+                Scanned = profile.Scanned,
+                Points = profile.StaffAchievement?.Value ?? 0
+            };
+        }
+        catch (Exception e)
+        {
+            if (!await ExceptionHandler.HandleApiException(e))
+            {
+                throw;
+            }
+        }
+
+        return null;
     }
 }

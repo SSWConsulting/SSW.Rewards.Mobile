@@ -7,7 +7,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileActivity">
+    <Border.Resources>
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </Border.Resources>
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
@@ -23,26 +27,24 @@
             IsRunning="True"
             Color="{StaticResource primary}"
             IsVisible="{Binding IsLoading}" />
-        
-        <Label Text="No check-ins"
-               TextColor="{StaticResource LeaderCardBackground}"
-               Margin="0, 10"
-               HorizontalOptions="Center"
-               IsVisible="{Binding IsLastSeenEmpty}"/>
 
-        <CollectionView
-            ItemsSource="{Binding LastSeen}"
-            Margin="0,0,0,10">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="8" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
+        <VerticalStackLayout
+            BindableLayout.ItemsSource="{Binding LastSeen}"
+            Margin="0,0,0,10"
+            Spacing="8">
+            <BindableLayout.ItemTemplate>
                 <DataTemplate>
                     <controls:ProfileActivityItem/>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </BindableLayout.ItemTemplate>
+            <BindableLayout.EmptyView>
+                <Label Text="No check-ins"
+                       TextColor="{StaticResource LeaderCardBackground}"
+                       Margin="0, 10"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"/>
+            </BindableLayout.EmptyView>
+        </VerticalStackLayout>
 
         <Label Text="Recent Activity"
                FontSize="16"
@@ -55,25 +57,22 @@
             IsRunning="True"
             Color="{StaticResource primary}"
             IsVisible="{Binding IsLoading}" />
-        
-        <Label Text="No recent activity"
-               TextColor="{StaticResource LeaderCardBackground}"
-               Margin="0, 10"
-               HorizontalOptions="Center"
-               IsVisible="{Binding IsRecentActivityEmpty}"/>
 
-        <CollectionView
-            ItemsSource="{Binding RecentActivity}"
-            ItemsUpdatingScrollMode="KeepItemsInView">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="8" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
+        <VerticalStackLayout
+            BindableLayout.ItemsSource="{Binding RecentActivity}"
+            Spacing="8">
+            <BindableLayout.ItemTemplate>
                 <DataTemplate>
                     <controls:ProfileActivityItem/>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </BindableLayout.ItemTemplate>
+            <BindableLayout.EmptyView>
+                <Label Text="No recent activity"
+                       TextColor="{StaticResource LeaderCardBackground}"
+                       Margin="0, 10"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"/>
+            </BindableLayout.EmptyView>
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </Border>
