@@ -248,20 +248,32 @@
         <Label Text="Skill Set"
                HorizontalOptions="Center"
                FontSize="16"
-               Style="{StaticResource LabelBold}"/>
+               Style="{StaticResource LabelBold}"
+               IsVisible="{Binding IsStaff}"/>
         
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
             IsRunning="True"
             Color="{StaticResource primary}"
-            IsVisible="{Binding IsLoading}" />
+            IsVisible="False">
+            <ActivityIndicator.Triggers>
+                <MultiTrigger TargetType="ActivityIndicator">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding IsLoading}" Value="True" />
+                        <BindingCondition Binding="{Binding IsStaff}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True" />
+                </MultiTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
         
         <HorizontalStackLayout
             BindableLayout.ItemsSource="{Binding Skills}"
             HorizontalOptions="Center"
             Margin="0,5,0,15"
-            Spacing="30">
+            Spacing="30"
+            IsVisible="{Binding IsStaff}">
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="staff:StaffSkillDto">
                     <VerticalStackLayout Spacing="4">
