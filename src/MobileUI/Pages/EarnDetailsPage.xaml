@@ -157,6 +157,14 @@
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
+                        
+                        <Button Grid.Column="0"
+                                VerticalOptions="End"
+                                HorizontalOptions="Center"
+                                Text="Record"
+                                BackgroundColor="{StaticResource SSWRed}"
+                                Command="{Binding RecordAudioCommand}"
+                                />
                     
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"

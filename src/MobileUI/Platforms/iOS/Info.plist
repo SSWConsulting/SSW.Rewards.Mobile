@@ -40,5 +40,9 @@
     <array>
         <string>mailto</string>
     </array>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Quiz answer audio is converted into text</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Users can answer quizes by recording audio</string>
 </dict>
 </plist>

@@ -1,6 +1,9 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
@@ -43,6 +46,8 @@ namespace SSW.Rewards.Mobile.ViewModels
         public ICommand MoveNextCommand => new Command(async () => await SubmitAnswer());
 
         public ICommand SubmitCommand => new Command(async () => await SubmitResponses());
+
+        public ICommand RecordAudioCommand => new Command(async () => await RecordAudio());
 
         public ICommand ResultsButtonCommand { get; set; }
 
@@ -294,6 +299,44 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             CurrentQuestion = Questions[next];
             CurrentQuestionChanged();
+        }
+
+        private bool _isRecording;
+        private CancellationTokenSource _audioRecordingCancellationTokenSource;
+        private async Task RecordAudio()
+        {
+            if (_isRecording)
+            {
+                await _audioRecordingCancellationTokenSource.CancelAsync();
+                _isRecording = false;
+                return;
+            }
+
+            _isRecording = true;
+            _audioRecordingCancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _audioRecordingCancellationTokenSource.Token;
+            
+            var isGranted = await SpeechToText.Default.RequestPermissions(cancellationToken);
+            if (!isGranted)
+            {
+                await Toast.Make("Permission not granted").Show(CancellationToken.None);
+                return;
+            }
+
+            var recognitionResult = await SpeechToText.Default.ListenAsync(
+                CultureInfo.GetCultureInfo("en-AU"),
+                new Progress<string>(partialText =>
+                {
+                    CurrentQuestion.Answer += partialText + " ";
+                }), cancellationToken);
+            if (recognitionResult.IsSuccessful)
+            {
+                CurrentQuestion.Answer = recognitionResult.Text;
+            }
+            else
+            {
+                await Toast.Make(recognitionResult.Exception?.Message ?? "Unable to recognize speech").Show(CancellationToken.None);
+            }
         }
     }
 
