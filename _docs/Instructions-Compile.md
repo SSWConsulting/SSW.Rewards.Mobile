@@ -81,9 +81,9 @@ devtunnel host -p 5001
 3. Update the `Constants.cs` `ApiBaseUrl` in the **#if DEBUG** block to use your DevTunnel address
 4. Run the MobileUI, targeting your Android Emulator
 
-#****## To work on the Mobile UI (iOS, MacOS Only)
-2. Complete steps 1-3 above
-3. Run the MobileUI, targeting your Android Emulator
+### To work on the Mobile UI (iOS, MacOS Only)
+1. Complete steps 1-3 above
+2. Run the MobileUI, targeting your Android Emulator
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
 
@@ -100,14 +100,39 @@ Or you can give it a go yourself. For that you will be using 2 portals - App Sto
 1. Talk to a team member who has either Admin or App Manager role in App Store Connect. Give them your Apple ID (you can provide your personal one) and they will send you an invite to the Apple Developer team. If you've never used Apple products before, you will need to [create an Apple ID](https://support.apple.com/en-au/108647). You need to be granted **at least the App Manager role** to be able to perform some of the steps below; otherwise ask someone with the App Manager Role or higher to assist you.
 2. On your mac create a Certificate Signing Request (CSR) using Keychain. Go to Keychain Access -> Certificate Assistant -> Request a certificate from a certificate authority. Fill the fields and save generated CSR somewhere.
 3. Go to https://developer.apple.com, scroll down and click "Certificates, IDs, & Profiles".
-4. Select the Certificates tab. Add a new Certificate of type Apple Development. For that you will need to upload the CSR. Once the certificate is created, the CSR is no longer needed and can be deleted.
+4. Select the Certificates tab. Add a new Certificate of type `Apple Development`. For that you will need to upload the CSR. Once the certificate is created, the CSR is no longer needed and can be deleted.
 5. Download the certificate on your mac and double click it to install.
 6. Go back to the developer portal and select the Devices tab.
 7. Add a device you are gonna be using for testing. To get your device's UDID connect it to your mac and open the Music app. Select your device on the left and then click a couple of times on the subtitle which displays your iPhone model, storage and battery level.
-8. Once your device is added to the developer portal, select the Profiles tab. Add a new provisioning profile for iOS App Development. Select App Id, certificate you've previously created and your device(s). Give provisioning profile a reasonable name.
+8. Once your device is added to the developer portal, select the Profiles tab. Update the provisioning profile for iOS App Development `SSWRewards_Dev`. Select the certificate and device added on the previous steps. **Tip:** Any changes to the provisioning profile won't disrupt the work of your team.
 9. Download the provisioning profile on your mac and double click to install it. **Tip:** provisioning profiles are installed to _~/Library/MobileDevice/Provisioning Profiles/_
 
 After that you should be able to deploy and debug the application on your iPhone.
+
+### Creating a production build locally
+Currently we have GitHub Actions which build and push the application to InternalTesting and TestFlight. But sometimes it's required to build and sign the application locally.
+Below is a detailed description how to do that.
+
+#### iOS
+Apple expects developers to have individual development certificates (up to 2 per developer) and share distribution certificates (up to 3 per team).
+To be able to build and sign an ipa file you need to have a distribution certificate and provisioning profile associated with it installed on your machine.
+All the secrets can be found in our password manager (PM).
+
+1. Get distribution certificate as a base-64 string from PM and run: `echo <cert-base64-string> | base64 --decode > DistributionCertificate.p12`
+2. Double click the certificate to install it; use the password from PM
+3. Download distribution provisioning profile form the Apple Developer Portal
+4. Double click the provisioning profile to install it
+5. Go to the MobileUI folder
+6. Run `dotnet publish -f net8.0-ios -p:ArchiveOnBuild=true -p:CodesignKey="XXX" -p:CodesignProvision="YYY"`; XXX is the CertificateName (in PM) and YYY is ProfileName (same as in Apple Developer Portal)
+7. The ipa file in the _../MobileUI/bin/Release/net8.0-ios/ios-arm64/publish/_ folder is ready to be uploaded to TestFlight
+
+#### Android
+1. Find keystore info in PM
+2. Run `echo <keystore-base64-string> | base64 --decode > rewards.keystore`
+3. To see the info about keystore run `keytool -list -v -keystore rewards.keystore`
+4. Run `dotnet publish -f net8.0-android -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=rewards.keystore -p:AndroidSigningKeyAlias=XXX -p:AndroidSigningKeyPass=YYY -p:AndroidSigningStorePass=YYY`; XXX and YYY can be found in PM
+5. The signed aab file in the _../MobileUI/bin/Release/net8.0-android/publish/_ folder is ready to be uploaded to InternalTesting
+
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
 
