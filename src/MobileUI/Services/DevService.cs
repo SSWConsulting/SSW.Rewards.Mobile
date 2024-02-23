@@ -88,10 +88,7 @@ public class DevService : IDevService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                throw;
-            }
+            await ExceptionHandler.HandleApiException(e);
         }
 
         return null;
