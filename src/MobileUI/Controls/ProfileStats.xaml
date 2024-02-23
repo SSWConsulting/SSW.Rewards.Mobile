@@ -248,8 +248,16 @@
         <Label Text="Skill Set"
                HorizontalOptions="Center"
                FontSize="16"
-               Style="{StaticResource LabelBold}"
-               IsVisible="{Binding IsStaff}"/>
+               Style="{StaticResource LabelBold}">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding Skills.Count}" Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
         
         <ActivityIndicator
             HorizontalOptions="Center"
@@ -272,8 +280,12 @@
             BindableLayout.ItemsSource="{Binding Skills}"
             HorizontalOptions="Center"
             Margin="0,5,0,15"
-            Spacing="30"
-            IsVisible="{Binding IsStaff}">
+            Spacing="30">
+            <HorizontalStackLayout.Triggers>
+                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Skills.Count}" Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </HorizontalStackLayout.Triggers>
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="staff:StaffSkillDto">
                     <VerticalStackLayout Spacing="4">

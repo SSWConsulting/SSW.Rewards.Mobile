@@ -62,7 +62,9 @@ public class DevService : IDevService
     {
         try
         {
-            var profile = await _staffClient.SearchStaffMember(new StaffMemberQueryDto() { email = email }, CancellationToken.None);
+            var profile =
+                await _staffClient.SearchStaffMember(new StaffMemberQueryDto() { email = email, GetByEmail = true },
+                    CancellationToken.None);
 
             return new DevProfile
             {

@@ -156,13 +156,17 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
-        var devProfileTask = _devService.GetProfileAsync(UserEmail);
+        DevProfile devProfile = null;
+        
+        await Task.WhenAll(rewardListTask, achievementListTask);
 
-        await Task.WhenAll(rewardListTask, achievementListTask, devProfileTask);
+        if (IsStaff)
+        {
+            devProfile = await _devService.GetProfileAsync(UserEmail);
+        }
 
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
-        var devProfile = devProfileTask.Result;
         
         // ===== Last seen =====
         var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
@@ -214,14 +218,14 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             RecentActivity.Add(activity);
         }
         
-        IsLastSeenEmpty = !LastSeen.Any();
-        IsRecentActivityEmpty = !RecentActivity.Any();
-        
         // ===== Skills =====
-        
-        foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+
+        if (IsStaff && devProfile != null)
         {
-            Skills.Add(skill);
+            foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+            {
+                Skills.Add(skill);
+            }
         }
 
         _loadingProfileSectionsSemaphore.Release();

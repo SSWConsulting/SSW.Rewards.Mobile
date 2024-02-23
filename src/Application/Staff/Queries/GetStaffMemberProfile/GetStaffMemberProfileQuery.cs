@@ -1,4 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Queries.GetStaffMemberProfile;
@@ -30,12 +31,21 @@ public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffM
 
     public async Task<StaffMemberDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
     {
-        var staffMember = await _dbContext.StaffMembers
+        IQueryable<StaffMemberDto> query = _dbContext.StaffMembers
             .Include(s => s.StaffMemberSkills)
             .ThenInclude(sms => sms.Skill)
-            .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
-            .Where(member => member.Id == request.Id)
-            .FirstOrDefaultAsync();
+            .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider);
+
+        query = request.GetByEmail
+            ? query.Where(member => member.Email == request.email)
+            : query.Where(member => member.Id == request.Id);
+
+        var staffMember = await query.FirstOrDefaultAsync(cancellationToken);
+
+        if (staffMember == null)
+        {
+            throw new NotFoundException(nameof(StaffMember), request.GetByEmail ? request.email : request.Id);
+        }
 
         return staffMember;
     }

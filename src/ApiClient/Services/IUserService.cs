@@ -34,7 +34,7 @@ public class UserService : IUserService
 
     public async Task DeleteMyProfile(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}/DeleteMyProfile", "", cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}DeleteMyProfile", "", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -88,7 +88,7 @@ public class UserService : IUserService
 
     public async Task<UserAchievementsViewModel> GetProfileAchievements(int userId, CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}/ProfileAchievements?userId={userId}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}ProfileAchievements?userId={userId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -126,7 +126,7 @@ public class UserService : IUserService
 
     public async Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}/Achievements?userId={userId}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Achievements?userId={userId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -145,7 +145,7 @@ public class UserService : IUserService
 
     public async Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}/Rewards?userId={userId}", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Rewards?userId={userId}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
