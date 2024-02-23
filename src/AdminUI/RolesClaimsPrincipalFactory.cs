@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 
 namespace SSW.Rewards.Admin.UI;
 
+// SSW.Identity currently returns roles as a string array.
+// This is here because of this https://github.com/dotnet/aspnetcore/issues/21836
 public class RolesClaimsPrincipalFactory : AccountClaimsPrincipalFactory<RemoteUserAccount>
 {
     public RolesClaimsPrincipalFactory(IAccessTokenProviderAccessor accessor) : base(accessor)
