@@ -44,6 +44,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ICommand SubmitCommand => new Command(async () => await SubmitResponses());
 
+        public ICommand AnswerChangedCommand => new Command<TextChangedEventArgs>(async (args) => AnswerChanged(args));
+
         public ICommand ResultsButtonCommand { get; set; }
 
         [ObservableProperty]
@@ -294,6 +296,11 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             CurrentQuestion = Questions[next];
             CurrentQuestionChanged();
+        }
+        
+        private async Task AnswerChanged(TextChangedEventArgs args)
+        {
+            CurrentQuestion.Answer = args.NewTextValue;
         }
     }
 
