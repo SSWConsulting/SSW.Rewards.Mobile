@@ -124,22 +124,27 @@
                                FontSize="Large"
                                Margin="0,0,0,40"
                                Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
-                        <Border Grid.Row="1"
-                                StrokeThickness="0"
-                                IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
+                        <Border
+                            Grid.Row="1"
+                            Stroke="{StaticResource White}"
+                            IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="8" />
                             </Border.StrokeShape>
-                            <Entry Text="{Binding CurrentQuestion.Answer}"
-                                    Placeholder="Enter your answer here"
-                                    BackgroundColor="White"
-                                    TextColor="Black" />
+                            <Editor
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Start"
+                                AutoSize="TextChanges"
+                                Text="{Binding CurrentQuestion.Answer}"
+                                MinimumHeightRequest="150"
+                                TextChanged="InputView_OnTextChanged"
+                                Placeholder="Enter you answer here"/>
                         </Border>
                         <Label Grid.Row="1"
                                IsVisible="{Binding CurrentQuestion.IsSubmitted}"
                                Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
                                FontSize="Medium"
-                               TextColor="White" />
+                               TextColor="{StaticResource White}" />
                     </Grid>
 
                     <!-- Quiz navigation -->

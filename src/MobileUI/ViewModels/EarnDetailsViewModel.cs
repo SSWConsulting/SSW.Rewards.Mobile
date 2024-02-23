@@ -49,6 +49,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public ICommand RecordAudioCommand => new Command(async () => await RecordAudio());
 
+        public ICommand AnswerChangedCommand => new Command<TextChangedEventArgs>(async (args) => AnswerChanged(args));
+
         public ICommand ResultsButtonCommand { get; set; }
 
         [ObservableProperty]
@@ -315,7 +317,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             _isRecording = true;
             _audioRecordingCancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _audioRecordingCancellationTokenSource.Token;
-            
+
             var isGranted = await SpeechToText.Default.RequestPermissions(cancellationToken);
             if (!isGranted)
             {
@@ -337,6 +339,11 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 await Toast.Make(recognitionResult.Exception?.Message ?? "Unable to recognize speech").Show(CancellationToken.None);
             }
+        }
+
+        private async Task AnswerChanged(TextChangedEventArgs args)
+        {
+            CurrentQuestion.Answer = args.NewTextValue;
         }
     }
 

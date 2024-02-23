@@ -10,6 +10,7 @@ using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 using SSW.Rewards.ApiClient;
 using System.Reflection;
+using Microsoft.Maui.Platform;
 using ZXing.Net.Maui.Controls;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -97,6 +98,13 @@ public static class MauiProgram
 #endif
 
         App.SetScope(builder.Services);
+
+#if ANDROID
+        Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
+        {
+            handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
+        });
+#endif
 
         return builder.Build();
     }

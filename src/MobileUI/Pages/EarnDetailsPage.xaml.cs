@@ -29,4 +29,9 @@ public partial class EarnDetailsPage
         _viewModel.GoBack();
         return true;
     }
+
+    private void InputView_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        _viewModel.AnswerChangedCommand.Execute(e.NewTextValue);
+    }
 }
