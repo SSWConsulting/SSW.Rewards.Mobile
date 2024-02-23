@@ -105,6 +105,17 @@ public static class MauiProgram
             handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
         });
 #endif
+        
+#if IOS
+        Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
+        {
+            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
+        });
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, editor) =>
+        {
+            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
+        });
+#endif
 
         return builder.Build();
     }
