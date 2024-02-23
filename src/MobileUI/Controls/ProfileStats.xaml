@@ -288,8 +288,9 @@
             </HorizontalStackLayout.Triggers>
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="staff:StaffSkillDto">
-                    <VerticalStackLayout Spacing="4">
-                        <Border HeightRequest="64" 
+                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
+                        <Border Grid.Row="0"
+                                HeightRequest="64" 
                                 WidthRequest="64"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                 StrokeThickness="0">
@@ -303,12 +304,18 @@
                                    FontSize="28"
                                    Text="&#xf0eb;"/>
                         </Border>
-                        <Label Text="{Binding Name}"
+                        <Label Grid.Row="1"
+                               Text="{Binding Name}"
+                               MaximumWidthRequest="94"
                                HorizontalOptions="Center"
-                               FontSize="15"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               FontSize="14"
                                Style="{StaticResource LabelBold}"/>
                         
                         <HorizontalStackLayout
+                            Grid.Row="2"
+                            HorizontalOptions="Center"
                             BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
@@ -327,7 +334,7 @@
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </HorizontalStackLayout>
-                    </VerticalStackLayout>
+                    </Grid>
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </HorizontalStackLayout>
