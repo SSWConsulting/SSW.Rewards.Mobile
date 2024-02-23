@@ -3,13 +3,14 @@ using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
-public class OthersProfileViewModel : ProfileViewModelBase
+public class OthersProfileViewModel(
+    IRewardService rewardsService,
+    IUserService userService,
+    ISnackbarService snackbarService,
+    IDevService devService)
+    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService)
 {
     public ICommand EmailUserCommand => new Command(async () => await EmailUser());
-    public OthersProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
-        : base(rewardsService, userService, snackbarService)
-    {
-    }
 
     public async Task Initialise()
     {
@@ -27,14 +28,7 @@ public class OthersProfileViewModel : ProfileViewModelBase
         Points = vm.TotalPoints;
         Balance = vm.Balance;
         Rank = vm.Rank;
-        IsStaff = false;
-        
-        var emailAddress = new MailAddress(vm.Email);
-
-        if (emailAddress.Host == "ssw.com.au")
-        {
-            IsStaff = true;
-        }
+        IsStaff = vm.IsStaff;
         
         ShowBalance = false;
         ShowPopButton = true;

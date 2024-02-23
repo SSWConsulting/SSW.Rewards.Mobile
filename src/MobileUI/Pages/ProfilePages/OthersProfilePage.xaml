@@ -39,15 +39,16 @@
             <Button Text="Get in touch"
                     TextTransform="Uppercase"
                     Style="{StaticResource LabelBold}"
+                    HeightRequest="50"
                     FontSize="16"
                     BackgroundColor="{StaticResource SSWRed}"
-                    CornerRadius="8"
+                    CornerRadius="4"
                     Command="{Binding EmailUserCommand}"
                     IsVisible="{Binding IsStaff}">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xf0e0;" 
                                      FontFamily="FA6Solid"
-                                     Size="16"/>
+                                     Size="20"/>
                 </Button.ImageSource>
             </Button>
 

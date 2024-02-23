@@ -4,18 +4,17 @@ using System.Collections.ObjectModel;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
-public class MyProfileViewModel : ProfileViewModelBase, 
-    IRecipient<ProfilePicUpdatedMessage>, 
-    IRecipient<PointsAwardedMessage>,
-    IRecipient<SocialUsernameAddedMessage>
+public class MyProfileViewModel(
+    IRewardService rewardsService,
+    IUserService userService,
+    ISnackbarService snackbarService,
+    ILeaderService leaderService,
+    IDevService devService)
+    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService),
+        IRecipient<ProfilePicUpdatedMessage>,
+        IRecipient<PointsAwardedMessage>,
+        IRecipient<SocialUsernameAddedMessage>
 {
-    private readonly ILeaderService _leaderService;
-
-    public MyProfileViewModel(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, ILeaderService leaderService) : base(rewardsService, userService, snackbarService)
-    {
-        _leaderService = leaderService;
-    }
-
     public async void Receive(PointsAwardedMessage message)
     {
         await OnPointsAwarded();
@@ -38,9 +37,9 @@ public class MyProfileViewModel : ProfileViewModelBase,
         Points = _userService.MyPoints;
         Balance = _userService.MyBalance;
         userId = _userService.MyUserId;
-        
         Rank = await LoadRank();
         IsStaff = _userService.IsStaff;
+        UserEmail = _userService.MyEmail;
 
         await _initialise();
     }
@@ -94,30 +93,12 @@ public class MyProfileViewModel : ProfileViewModelBase,
         Points = _userService.MyPoints;
         Balance = _userService.MyBalance;
 
-        double progress = Balance / _topRewardCost;
-
-        // TODO: we can get rid of this 0 condition if we award a 'sign up'
-        // achievement. We could also potentially get the ring to render
-        // empty.
-        if (progress == 0)
-        {
-            Progress = 0.01;
-        }
-        else if (progress < 1)
-        {
-            Progress = progress;
-        }
-        else
-        {
-            Progress = 1;
-        }
-
         return Task.CompletedTask;
     }
     
     private async Task<int> LoadRank()
     {
-        var summaries = await _leaderService.GetLeadersAsync(false);
+        var summaries = await leaderService.GetLeadersAsync(false);
         var myId = _userService.MyUserId;
         return summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }

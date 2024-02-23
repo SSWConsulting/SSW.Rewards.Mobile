@@ -6,17 +6,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+    xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
+    xmlns:profileViewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
+    x:DataType="profileViewModels:MyProfileViewModel"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:StaffToTextConverter x:Key="StaffToText" />
+        <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
     <VerticalStackLayout
-        Spacing="10"
-        Padding="0,10">
+        Spacing="15"
+        Padding="0,15">
         <Grid>
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
                                 WidthRequest="120"
@@ -70,14 +74,14 @@
         <!-- User's own stats -->
         <Border IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
-                StrokeThickness="2"
+                StrokeThickness="1"
                 Margin="20, 0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
-                ColumnSpacing="2"
+                ColumnSpacing="1"
                 ColumnDefinitions="*,*,*">
                 <Border Grid.Column="0" StrokeThickness="0">
                     <Border.StrokeShape>
@@ -87,24 +91,23 @@
                         Spacing="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="Fill"
-                        Padding="0, 5"
+                        Padding="0, 7"
                         BackgroundColor="{StaticResource Background}">
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
+                                   FontSize="14"
                                    TextColor="{StaticResource Coin}"
                                    FontAutoScalingEnabled="False"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large"
-                                   FontAutoScalingEnabled="False"
+                            <Label FontSize="21"
                                    Style="{StaticResource LabelBold}"
                                    Text="{Binding Rank, StringFormat='#{0:n0}'}" />
                         </HorizontalStackLayout>
                         <Label
                             HorizontalOptions="Center"
-                            FontAutoScalingEnabled="False"
                             Text="Ranking"
-                            FontSize="Small"
+                            FontSize="13"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
@@ -113,24 +116,23 @@
                                      Spacing="2"
                                      HorizontalOptions="Fill"
                                      VerticalOptions="Fill"
-                                     Padding="0, 5"
+                                     Padding="0, 7"
                                      BackgroundColor="{StaticResource Background}">
                     <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                         <Label VerticalOptions="Center"
                                FontFamily="FA6Solid"
+                               FontSize="14"
                                TextColor="{StaticResource Coin}"
                                FontAutoScalingEnabled="False"
                                Text="&#x2b50;" />
-                        <Label FontSize="Large"
-                               FontAutoScalingEnabled="False"
+                        <Label FontSize="21"
                                Style="{StaticResource LabelBold}"
                                Text="{Binding Points, StringFormat='{0:n0}'}" />
                     </HorizontalStackLayout>
                     <Label
                         HorizontalOptions="Center"
                         Text="Points"
-                        FontAutoScalingEnabled="False"
-                        FontSize="Small"
+                        FontSize="13"
                         TextColor="{StaticResource White}" />
                 </VerticalStackLayout>
 
@@ -141,17 +143,17 @@
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
-                                         Padding="0, 5"
+                                         Padding="0, 7"
                                          BackgroundColor="{StaticResource Background}">
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    VerticalTextAlignment="Center"
                                    FontFamily="FA6Solid"
+                                   FontSize="14"
                                    TextColor="{StaticResource Coin}"
                                    FontAutoScalingEnabled="False"
                                    Text="&#xf51e;" />
-                            <Label FontSize="Large"
-                                   FontAutoScalingEnabled="False"
+                            <Label FontSize="21"
                                    Style="{StaticResource LabelBold}"
                                    Text="{Binding Balance, StringFormat='{0:n0}'}" />
                         </HorizontalStackLayout>
@@ -159,8 +161,7 @@
                             HorizontalTextAlignment="Center"
                             HorizontalOptions="Center"
                             Text="Credits"
-                            FontSize="Small"
-                            FontAutoScalingEnabled="False"
+                            FontSize="13"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
@@ -169,17 +170,16 @@
         </Border>
 
         <!-- Viewing other User's stats -->
-        <Border Grid.Row="2"
-                IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
+        <Border IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
-                StrokeThickness="2"
+                StrokeThickness="1"
                 Margin="20, 0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
-                ColumnSpacing="2"
+                ColumnSpacing="1"
                 ColumnDefinitions="*,*">
                 
                 <Border Grid.Column="0" StrokeThickness="0">
@@ -189,15 +189,16 @@
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
-                                         Padding="0, 5"
+                                         Padding="0, 7"
                                          BackgroundColor="{StaticResource Background}">
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
+                                   FontSize="14"
                                    FontAutoScalingEnabled="False"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#xf091;" />
-                            <Label FontSize="Large"
+                            <Label FontSize="21"
                                    FontAutoScalingEnabled="False"
                                    Style="{StaticResource LabelBold}"
                                    Text="{Binding Path=Rank, StringFormat='#{0:n0}'}" />
@@ -205,7 +206,7 @@
                         <Label
                             HorizontalOptions="Center"
                             Text="Ranking"
-                            FontSize="Small"
+                            FontSize="13"
                             FontAutoScalingEnabled="False"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
@@ -218,15 +219,16 @@
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
-                                         Padding="0, 5"
+                                         Padding="0, 7"
                                          BackgroundColor="{StaticResource Background}">
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                             <Label VerticalOptions="Center"
                                    FontFamily="FA6Solid"
+                                   FontSize="14"
                                    FontAutoScalingEnabled="False"
                                    TextColor="{StaticResource Coin}"
                                    Text="&#x2b50;" />
-                            <Label FontSize="Large"
+                            <Label FontSize="21"
                                    FontAutoScalingEnabled="False"
                                    Style="{StaticResource LabelBold}"
                                    Text="{Binding Points, StringFormat='{0:n0}'}" />
@@ -234,7 +236,7 @@
                         <Label
                             HorizontalOptions="Center"
                             Text="Points"
-                            FontSize="Small"
+                            FontSize="13"
                             FontAutoScalingEnabled="False"
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
@@ -242,5 +244,92 @@
                 
             </Grid>
         </Border>
+        
+        <Label Text="Skill Set"
+               HorizontalOptions="Center"
+               FontSize="16"
+               Style="{StaticResource LabelBold}">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsLoading}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding Skills.Count}" Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            IsRunning="True"
+            Color="{StaticResource primary}"
+            IsVisible="False">
+            <ActivityIndicator.Triggers>
+                <MultiTrigger TargetType="ActivityIndicator">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding IsLoading}" Value="True" />
+                        <BindingCondition Binding="{Binding IsStaff}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True" />
+                </MultiTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
+        
+        <HorizontalStackLayout
+            BindableLayout.ItemsSource="{Binding Skills}"
+            HorizontalOptions="Center"
+            Margin="0,5,0,15"
+            Spacing="30">
+            <HorizontalStackLayout.Triggers>
+                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Skills.Count}" Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </HorizontalStackLayout.Triggers>
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="staff:StaffSkillDto">
+                    <VerticalStackLayout Spacing="4">
+                        <Border HeightRequest="64" 
+                                WidthRequest="64"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Label FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="28"
+                                   Text="&#xf0eb;"/>
+                        </Border>
+                        <Label Text="{Binding Name}"
+                               HorizontalOptions="Center"
+                               FontSize="15"
+                               Style="{StaticResource LabelBold}"/>
+                        
+                        <HorizontalStackLayout
+                            BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label FontFamily="FA6Regular"
+                                           FontAutoScalingEnabled="False"
+                                           FontSize="15"
+                                           Text="&#xf005;">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding }"
+                                                         Value="True">
+                                                <Setter Property="FontFamily" Value="FA6Solid"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
     </VerticalStackLayout>
 </Border>

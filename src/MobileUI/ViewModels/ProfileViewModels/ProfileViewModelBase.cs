@@ -7,6 +7,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
+using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -15,6 +16,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     protected readonly IRewardService _rewardsService;
     protected IUserService _userService;
     protected readonly ISnackbarService _snackbarService;
+    protected IDevService _devService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -39,9 +41,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public bool ShowBalance { get; set; } = true;
 
-    [ObservableProperty]
-    private double _progress;
-
     protected int userId { get; set; }
 
     [ObservableProperty]
@@ -50,15 +49,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private bool _isMe;
     
-    [ObservableProperty]
-    private bool _isLastSeenEmpty;
+    public ObservableCollection<Activity> RecentActivity { get; set; } = [];
     
-    [ObservableProperty]
-    private bool _isRecentActivityEmpty;
+    public ObservableCollection<Activity> LastSeen { get; set; } = [];
     
-    public ObservableCollection<Activity> RecentActivity { get; set; } = new ();
-    
-    public ObservableCollection<Activity> LastSeen { get; set; } = new ();
+    public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
 
     public SnackbarOptions SnackOptions { get; set; }
 
@@ -72,13 +67,13 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
-    public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService)
+    public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, IDevService devService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;
         _userService = userService;
         _snackbarService = snackbarService;
-
+        _devService = devService;
 
         SnackOptions = new SnackbarOptions
         {
@@ -115,28 +110,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         // https://github.com/SSWConsulting/SSW.Rewards/issues/276
         if (!rewards.Any())
             return;
-
-        var topReward = rewards.OrderByDescending(r => r.Cost).First();
-
-        _topRewardCost = (double)topReward.Cost;
-
-        double progress = Balance / _topRewardCost;
-
-        // TODO: we can get rid of this 0 condition if we award a 'sign up'
-        // achievement. We could also potentially get the ring to render
-        // empty.
-        if (progress <= 0)
-        {
-            Progress = 0.01;
-        }
-        else if (progress < 1)
-        {
-            Progress = progress;
-        }
-        else
-        {
-            Progress = 1;
-        }
 
         await LoadProfileSections();
 
@@ -183,8 +156,14 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
-
+        DevProfile devProfile = null;
+        
         await Task.WhenAll(rewardListTask, achievementListTask);
+
+        if (IsStaff)
+        {
+            devProfile = await _devService.GetProfileAsync(UserEmail);
+        }
 
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
@@ -239,8 +218,15 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             RecentActivity.Add(activity);
         }
         
-        IsLastSeenEmpty = !LastSeen.Any();
-        IsRecentActivityEmpty = !RecentActivity.Any();
+        // ===== Skills =====
+
+        if (IsStaff && devProfile != null)
+        {
+            foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+            {
+                Skills.Add(skill);
+            }
+        }
 
         _loadingProfileSectionsSemaphore.Release();
     }
