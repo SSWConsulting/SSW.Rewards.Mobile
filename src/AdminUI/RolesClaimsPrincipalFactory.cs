@@ -17,27 +17,32 @@ public class RolesClaimsPrincipalFactory : AccountClaimsPrincipalFactory<RemoteU
         if (user.Identity.IsAuthenticated)
         {
             var identity = (ClaimsIdentity)user.Identity;
+
             var roleClaims = identity.FindAll(identity.RoleClaimType);
+
             if (roleClaims != null && roleClaims.Any())
             {
-                foreach (var existingClaim in roleClaims)
+                var count = roleClaims.Count();
+
+                for (int i = 0; i < count; i++)
                 {
-                    identity.RemoveClaim(existingClaim);
+                    identity.RemoveClaim(roleClaims.ElementAt(i));
                 }
 
                 var rolesElem = account.AdditionalProperties[identity.RoleClaimType];
+
                 if (rolesElem is JsonElement roles)
                 {
                     if (roles.ValueKind == JsonValueKind.Array)
                     {
                         foreach (var role in roles.EnumerateArray())
                         {
-                            identity.AddClaim(new Claim(options.RoleClaim, role.GetString()));
+                            identity.AddClaim(new Claim(ClaimTypes.Role, role.GetString()));
                         }
                     }
                     else
                     {
-                        identity.AddClaim(new Claim(options.RoleClaim, roles.GetString()));
+                        identity.AddClaim(new Claim(ClaimTypes.Role, roles.GetString()));
                     }
                 }
             }
