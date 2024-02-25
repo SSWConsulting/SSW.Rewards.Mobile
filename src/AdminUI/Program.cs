@@ -65,7 +65,8 @@ public class Program
             }
 
             options.ProviderOptions.ResponseType = "code";
-        });
+        })
+        .AddAccountClaimsPrincipalFactory<RolesClaimsPrincipalFactory>();
 
         await builder.Build().RunAsync();
     }
