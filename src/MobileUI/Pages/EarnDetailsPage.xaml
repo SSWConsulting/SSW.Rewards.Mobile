@@ -11,19 +11,15 @@
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
     <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding BackCommand}" />
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />
     </Shell.BackButtonBehavior>
     <Shell.TitleView>
         <Button Text="Done" 
                 IsVisible="{Binding ResultsVisible}" 
-                Command="{Binding BackCommand}"
+                Command="{Binding GoBackCommand}"
                 Padding="{OnPlatform iOS='0'}"
                 FontAutoScalingEnabled="False"
-                HorizontalOptions="End">
-            <Button.Resources>
-                <Style TargetType="Button" />
-            </Button.Resources>
-        </Button>
+                HorizontalOptions="End"/>
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
@@ -137,8 +133,14 @@
                                 AutoSize="TextChanges"
                                 Text="{Binding CurrentQuestion.Answer}"
                                 MinimumHeightRequest="150"
-                                TextChanged="InputView_OnTextChanged"
-                                Placeholder="Enter you answer here"/>
+                                Placeholder="Enter you answer here">
+                                <Editor.Behaviors>
+                                    <toolkit:EventToCommandBehavior 
+                                        x:TypeArguments="TextChangedEventArgs"
+                                        EventName="TextChanged"
+                                        Command="{Binding AnswerChangedCommand}"/>
+                                </Editor.Behaviors>
+                            </Editor>
                         </Border>
                         <Label Grid.Row="1"
                                IsVisible="{Binding CurrentQuestion.IsSubmitted}"
@@ -166,7 +168,7 @@
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
                                 Text="&#xf061;"
-                                Command="{Binding MoveNextCommand}"
+                                Command="{Binding MoveForwardCommand}"
                                 FontFamily="FA6Solid"
                                 TextColor="White"
                                 HeightRequest="40"
@@ -179,7 +181,7 @@
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion}"
                                 Text="Submit"
-                                Command="{Binding SubmitCommand}"
+                                Command="{Binding SubmitResponsesCommand}"
                                 Style="{StaticResource LabelBold}"
                                 FontSize="12"
                                 TextColor="White"

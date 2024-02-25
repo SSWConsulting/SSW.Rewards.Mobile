@@ -23,15 +23,4 @@ public partial class EarnDetailsPage
         int quizId = int.Parse(QuizId);
         await _viewModel.Initialise(quizId, QuizIcon);
     }
-
-    protected override bool OnBackButtonPressed()
-    {
-        _viewModel.GoBack();
-        return true;
-    }
-
-    private void InputView_OnTextChanged(object sender, TextChangedEventArgs e)
-    {
-        _viewModel.AnswerChangedCommand.Execute(e.NewTextValue);
-    }
 }
