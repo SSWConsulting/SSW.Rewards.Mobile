@@ -288,7 +288,7 @@
             </HorizontalStackLayout.Triggers>
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="staff:StaffSkillDto">
-                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
+                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="8">
                         <Border Grid.Row="0"
                                 HeightRequest="64" 
                                 WidthRequest="64"
@@ -309,7 +309,7 @@
                                MaximumWidthRequest="94"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"
-                               VerticalOptions="Center"
+                               VerticalOptions="Start"
                                FontSize="14"
                                Style="{StaticResource LabelBold}"/>
                         
