@@ -5,7 +5,7 @@ namespace SSW.Rewards.Infrastructure.Services;
 public class SkillPicStorageProvider : ISkillPicStorageProvider
 {
     private readonly IStorageProvider _storageProvider;
-    private const string CONTAINER_NAME = "rewardpics";
+    private const string CONTAINER_NAME = "skillpics";
 
     public SkillPicStorageProvider(IStorageProvider storageProvider)
     {
