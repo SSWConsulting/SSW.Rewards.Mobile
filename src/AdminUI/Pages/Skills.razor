@@ -29,18 +29,40 @@
         <MudSpacer/>
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
+    <ColGroup>
+        <col style="width: 50px"/>
+        <col />
+        <col />
+    </ColGroup>
     <HeaderContent>
+        <MudTh>Thumbnail</MudTh>
         <MudTh>Name</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd DataLabel="Thumbnail">
+            @if (!string.IsNullOrEmpty(context.ImageUri))
+            {
+                <MudImage Src="@context.ImageUri" Width="50" Height="50" />
+            }
+            else
+            {
+                <MudPaper Width="50px" Height="50px" Class="d-flex align-items-center justify-content-center">
+                    No Image
+                </MudPaper>
+            }
+        </MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Delete"><MudButton OnClick="@(() => OnDeletedClicked(context))">Delete</MudButton></MudTd>
     </RowTemplate>
     <RowEditingTemplate>
+        <MudTd DataLabel="Thumbnail">
+            
+        </MudTd>
         <MudTd DataLabel="Name">
             <MudTextField @bind-Value="@context.Name" Required/>
         </MudTd>
+        <MudTd />
     </RowEditingTemplate>
     <PagerContent>
         <MudTablePager/>
