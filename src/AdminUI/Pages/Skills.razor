@@ -151,6 +151,7 @@
         
         _imageBase64 = base64;
         _imageName = name;
+        _selectedItem.ImageUri = $"data:{_imageName};base64,{_imageBase64}";
     }
 
     private async Task OnEditSubmit()
@@ -174,6 +175,8 @@
 
             _imageBase64 = string.Empty;
             _imageName = string.Empty;
+
+            await GetSkills();
         }
         catch(Exception ex)
         {
