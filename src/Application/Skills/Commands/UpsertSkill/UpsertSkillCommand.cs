@@ -48,6 +48,7 @@ public class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, int
         else
         {
             found.Name = request.Skill;
+            found.ImageUri = imageUri?.AbsoluteUri;
         }
 
         await _context.SaveChangesAsync(cancellationToken);

@@ -10,7 +10,7 @@
                 AutoFocus="true"
                 Class="d-inline" T="string" Label="Reward Name" @bind-Value="@dto.Name" Required="true"/>
             <MudTextField Class="d-inline" T="string" Label="Image" @bind-Value="@dto.ImageFileName" Required="false" Disabled="true" />
-            <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload a reward image"/>
+            <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload thumbnail"/>
         </MudForm>
     </DialogContent>
     <DialogActions>
