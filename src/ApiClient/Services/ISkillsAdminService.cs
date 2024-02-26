@@ -7,7 +7,7 @@ public interface ISkillsAdminService
 {
     Task DeleteSkill(int skillId, CancellationToken cancellationToken);
 
-    Task<int> AddOrUpdateSkill(SkillDto skill, CancellationToken cancellationToken);
+    Task<int> AddOrUpdateSkill(SkillEditDto skill, CancellationToken cancellationToken);
 }
 
 public class SkillsAdminService : ISkillsAdminService
@@ -34,7 +34,7 @@ public class SkillsAdminService : ISkillsAdminService
         throw new Exception($"Failed to delete skill: {responseContent}");
     }
 
-    public async Task<int> AddOrUpdateSkill(SkillDto skill, CancellationToken cancellationToken)
+    public async Task<int> AddOrUpdateSkill(SkillEditDto skill, CancellationToken cancellationToken)
     {
         var result = await _httpClient.PutAsJsonAsync($"{_baseRoute}UpsertSkill", skill, cancellationToken);
 

@@ -19,12 +19,14 @@ public class SkillController : ApiControllerBase
 
     [HttpPut]
     [Authorize(Roles = AuthorizationRoles.Admin)]
-    public async Task<ActionResult<int>> UpsertSkill(SkillDto dto)
+    public async Task<ActionResult<int>> UpsertSkill(SkillEditDto dto)
     {
         var command = new UpsertSkillCommand
         {
             Id = dto.Id,
-            Skill = dto.Name
+            Skill = dto.Name,
+            ImageBytesInBase64 = dto.ImageBytesInBase64,
+            ImageFileName = dto.ImageFileName
         };
 
         return Ok(await Mediator.Send(command));
