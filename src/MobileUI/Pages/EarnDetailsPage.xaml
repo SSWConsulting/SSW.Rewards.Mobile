@@ -11,19 +11,15 @@
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
     <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding BackCommand}" />
+        <BackButtonBehavior Command="{Binding GoBackCommand}" />
     </Shell.BackButtonBehavior>
     <Shell.TitleView>
         <Button Text="Done" 
                 IsVisible="{Binding ResultsVisible}" 
-                Command="{Binding BackCommand}"
+                Command="{Binding GoBackCommand}"
                 Padding="{OnPlatform iOS='0'}"
                 FontAutoScalingEnabled="False"
-                HorizontalOptions="End">
-            <Button.Resources>
-                <Style TargetType="Button" />
-            </Button.Resources>
-        </Button>
+                HorizontalOptions="End"/>
     </Shell.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
@@ -124,22 +120,33 @@
                                FontSize="Large"
                                Margin="0,0,0,40"
                                Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
-                        <Border Grid.Row="1"
-                                StrokeThickness="0"
-                                IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
+                        <Border
+                            Grid.Row="1"
+                            Stroke="{StaticResource White}"
+                            IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="8" />
                             </Border.StrokeShape>
-                            <Entry Text="{Binding CurrentQuestion.Answer}"
-                                    Placeholder="Enter your answer here"
-                                    BackgroundColor="White"
-                                    TextColor="Black" />
+                            <Editor
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Start"
+                                AutoSize="TextChanges"
+                                Text="{Binding CurrentQuestion.Answer}"
+                                MinimumHeightRequest="150"
+                                Placeholder="Enter you answer here">
+                                <Editor.Behaviors>
+                                    <toolkit:EventToCommandBehavior 
+                                        x:TypeArguments="TextChangedEventArgs"
+                                        EventName="TextChanged"
+                                        Command="{Binding AnswerChangedCommand}"/>
+                                </Editor.Behaviors>
+                            </Editor>
                         </Border>
                         <Label Grid.Row="1"
                                IsVisible="{Binding CurrentQuestion.IsSubmitted}"
                                Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
                                FontSize="Medium"
-                               TextColor="White" />
+                               TextColor="{StaticResource White}" />
                     </Grid>
 
                     <!-- Quiz navigation -->
@@ -161,7 +168,7 @@
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
                                 Text="&#xf061;"
-                                Command="{Binding MoveNextCommand}"
+                                Command="{Binding MoveForwardCommand}"
                                 FontFamily="FA6Solid"
                                 TextColor="White"
                                 HeightRequest="40"
@@ -174,7 +181,7 @@
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion}"
                                 Text="Submit"
-                                Command="{Binding SubmitCommand}"
+                                Command="{Binding SubmitResponsesCommand}"
                                 Style="{StaticResource LabelBold}"
                                 FontSize="12"
                                 TextColor="White"

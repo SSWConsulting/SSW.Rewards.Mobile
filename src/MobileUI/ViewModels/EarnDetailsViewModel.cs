@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
@@ -35,14 +36,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         public ObservableCollection<EarnQuestionViewModel> Questions { get; } = [];
 
         public ObservableCollection<QuestionResultDto> Results { get; set; } = [];
-
-        public ICommand BackCommand => new Command(async () => await GoBack());
-
-        public ICommand MoveBackCommand => new Command(() => MoveNext(Questions.IndexOf(CurrentQuestion) - 1));
-
-        public ICommand MoveNextCommand => new Command(async () => await SubmitAnswer());
-
-        public ICommand SubmitCommand => new Command(async () => await SubmitResponses());
 
         public ICommand ResultsButtonCommand { get; set; }
 
@@ -148,17 +141,18 @@ namespace SSW.Rewards.Mobile.ViewModels
                 }
             }
 
-            MoveNext(Questions.IndexOf(CurrentQuestion) + 1);
+            MoveTo(Questions.IndexOf(CurrentQuestion) + 1);
             IsBusy = false;
         }
 
+        [RelayCommand]
         private async Task SubmitResponses()
         {
             if (!CurrentQuestion.IsSubmitted)
             {
                 await SubmitAnswer();
             }
-            
+
             bool allQuestionsAnswered = Questions.All(q => q.IsSubmitted);
 
             if (allQuestionsAnswered)
@@ -236,7 +230,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 TestPassed = true;
 
-                ResultsButtonCommand = new Command(async () => await GoBack());
+                ResultsButtonCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
 
                 SnackOptions = new SnackbarOptions
                 {
@@ -270,7 +264,8 @@ namespace SSW.Rewards.Mobile.ViewModels
             OnPropertyChanged(nameof(ResultsButtonCommand));
         }
 
-        public async Task GoBack()
+        [RelayCommand]
+        private async Task GoBack()
         {
             await Shell.Current.GoToAsync("..");
         }
@@ -287,13 +282,31 @@ namespace SSW.Rewards.Mobile.ViewModels
             IsLastQuestion = isLastQuestion && !IsLoadingQuestions;
         }
 
-        private void MoveNext(int next)
+        private void MoveTo(int index)
         {
-            if (next < 0 || next >= Questions.Count)
+            if (index < 0 || index >= Questions.Count)
                 return;
 
-            CurrentQuestion = Questions[next];
+            CurrentQuestion = Questions[index];
             CurrentQuestionChanged();
+        }
+
+        [RelayCommand]
+        private void MoveBack()
+        {
+            MoveTo(Questions.IndexOf(CurrentQuestion) - 1);
+        }
+
+        [RelayCommand]
+        private async Task MoveForward()
+        {
+            await SubmitAnswer();
+        }
+
+        [RelayCommand]
+        private void AnswerChanged(TextChangedEventArgs args)
+        {
+            CurrentQuestion.Answer = args.NewTextValue;
         }
     }
 
