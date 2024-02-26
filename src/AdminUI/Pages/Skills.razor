@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Admin.UI.Helpers
 @using SSW.Rewards.Shared.DTOs.Skills
 @using SSW.Rewards.ApiClient.Services
 
@@ -17,30 +18,62 @@
 <MudText Typo="Typo.h2">Skills</MudText>
 <MudText Typo="Typo.body1">All Staff Skills</MudText>
 
-<MudTable Items="@_model.OrderBy(s => s.Name)"
+<MudTable Items="@Model.OrderBy(s => s.Name)"
           T="SkillDto"
           CanCancelEdit="true"
           Filter="new Func<SkillDto, bool>(FilterItemsFunc)"
-          @bind-SelectedItem="@selectedItem"
+          @bind-SelectedItem="@_selectedItem"
           CommitEditTooltip="Commit Edit"
           OnCommitEditClick="OnEditSubmit">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Staff Skills</MudText>
         <MudSpacer/>
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
+    <ColGroup>
+        <col style="width: 50px"/>
+        <col />
+        <col />
+    </ColGroup>
     <HeaderContent>
+        <MudTh>Thumbnail</MudTh>
         <MudTh>Name</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
+        <MudTd DataLabel="Thumbnail">
+            @if (!string.IsNullOrEmpty(context.ImageUri))
+            {
+                <MudImage Src="@context.ImageUri" Width="50" Height="50" />
+            }
+            else
+            {
+                <MudPaper Width="50px" Height="50px" Class="d-flex align-items-center justify-content-center">
+                    No Image
+                </MudPaper>
+            }
+        </MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Delete"><MudButton OnClick="@(() => OnDeletedClicked(context))">Delete</MudButton></MudTd>
     </RowTemplate>
     <RowEditingTemplate>
+        <MudTd DataLabel="Thumbnail">
+            @if (!string.IsNullOrEmpty(context.ImageUri))
+            {
+                <MudImage Src="@context.ImageUri" Width="50" Height="50" />
+            }
+            else
+            {
+                <MudPaper Width="50px" Height="50px" Class="d-flex align-items-center justify-content-center">
+                    No Image
+                </MudPaper>
+            }
+            <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload thumbnail"/>
+        </MudTd>
         <MudTd DataLabel="Name">
             <MudTextField @bind-Value="@context.Name" Required/>
         </MudTd>
+        <MudTd />
     </RowEditingTemplate>
     <PagerContent>
         <MudTablePager/>
@@ -48,15 +81,19 @@
 </MudTable>
 
 <FabContainer>
-    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(disableBackdropClick))"/>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@((e) => OpenDialog(_disableBackdropClick))"/>
 </FabContainer>
 
 @* TODO: Implement Deleting Skills *@
 @code {
-    private DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
-    private string searchString = string.Empty;
-    private SkillDto? selectedItem;
-    private IEnumerable<SkillDto> _model { get; set; } = Enumerable.Empty<SkillDto>();
+    private DialogOptions _disableBackdropClick = new() { DisableBackdropClick = true };
+    private string _searchString = string.Empty;
+    
+    private string _imageBase64 = string.Empty;
+    private string _imageName = string.Empty;
+    
+    private SkillDto? _selectedItem;
+    private IEnumerable<SkillDto> Model { get; set; } = Enumerable.Empty<SkillDto>();
 
 
     protected override async Task OnInitializedAsync()
@@ -74,7 +111,7 @@
 
     private async Task GetSkills()
     {
-        _model = (await skillsService.GetSkillsList(CancellationToken.None)).Skills;
+        Model = (await skillsService.GetSkillsList(CancellationToken.None)).Skills;
     }
 
     private async Task OpenDialog(DialogOptions options)
@@ -86,10 +123,9 @@
             try
             {
                 // Add the Skill
-                if (result.Data is string skill)
+                if (result.Data is SkillEditDto skill)
                 {
-                    var newSkill = new SkillDto { Name = skill };
-                    await skillsAdminService.AddOrUpdateSkill(newSkill, CancellationToken.None);
+                    await skillsAdminService.AddOrUpdateSkill(skill, CancellationToken.None);
                 }
                 await GetSkills();
                 Snackbar.Add("Skill added", Severity.Success);
@@ -101,12 +137,21 @@
         }
     }
 
-    private bool FilterItemsFunc(SkillDto item) => FilterFunc(item, searchString);
+    private bool FilterItemsFunc(SkillDto item) => FilterFunc(item, _searchString);
 
     //! Note: This is only filtering on the name
     private bool FilterFunc(SkillDto item, string searchString)
     {
         return string.IsNullOrWhiteSpace(searchString) || item.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
+    {
+        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
+        
+        _imageBase64 = base64;
+        _imageName = name;
+        _selectedItem.ImageUri = $"data:{_imageName};base64,{_imageBase64}";
     }
 
     private async Task OnEditSubmit()
@@ -116,8 +161,22 @@
 
         try
         {
-            await skillsAdminService.AddOrUpdateSkill(selectedItem, CancellationToken.None);
+            var editDto = new SkillEditDto
+            {
+                Id = _selectedItem.Id,
+                Name = _selectedItem.Name,
+                ImageUri = _selectedItem.ImageUri,
+                ImageBytesInBase64 = _imageBase64,
+                ImageFileName = _imageName
+            };
+            
+            await skillsAdminService.AddOrUpdateSkill(editDto, CancellationToken.None);
             Snackbar.Add("Updated Skill!", Severity.Success);
+
+            _imageBase64 = string.Empty;
+            _imageName = string.Empty;
+
+            await GetSkills();
         }
         catch(Exception ex)
         {
