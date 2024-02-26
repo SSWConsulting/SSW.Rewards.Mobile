@@ -62,6 +62,7 @@ public static class ConfigureServices
         services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
         services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
+        services.AddScoped<ISkillPicStorageProvider, SkillPicStorageProvider>();
 
         services.AddScoped<IEmailService, EmailService>();
 
