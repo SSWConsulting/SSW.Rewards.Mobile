@@ -253,9 +253,13 @@
                                         </DataTrigger>
                                     </Border.Triggers>
                                     <toolkit:Expander
+                                        x:Name="Expander"
                                         IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
                                         <toolkit:Expander.Header>
-                                            <Grid ColumnDefinitions="40, *" RowDefinitions="Auto">
+                                            <Grid 
+                                                ColumnDefinitions="40, *, Auto" 
+                                                RowDefinitions="Auto"
+                                                ColumnSpacing="6">
                                                 <lottie:SKLottieView Grid.Column="0"
                                                                      Source="pass.json"
                                                                      IsAnimationEnabled="True"
@@ -272,6 +276,18 @@
                                                        VerticalTextAlignment="Center"
                                                        Text="{Binding QuestionText}"
                                                        FontSize="Medium" />
+                                                <Image Grid.Column="2"
+                                                       Margin="0,0,10,0"
+                                                       IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded, Converter={toolkit:InvertedBoolConverter}}"
+                                                       HeightRequest="20"
+                                                       WidthRequest="20"
+                                                       Source="icon_chevron_right"/>
+                                                <Image Grid.Column="2"
+                                                       Margin="0,0,10,0"
+                                                       IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded}"
+                                                       HeightRequest="20"
+                                                       WidthRequest="20"
+                                                       Source="icon_chevron_down"/>
                                             </Grid>
                                         </toolkit:Expander.Header>
                                         <VerticalStackLayout Padding="10">
