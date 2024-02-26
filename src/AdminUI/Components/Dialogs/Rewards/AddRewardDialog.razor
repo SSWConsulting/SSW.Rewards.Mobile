@@ -1,4 +1,6 @@
 @using SSW.Rewards.Shared.DTOs.Rewards
+@using SSW.Rewards.Admin.UI.Helpers
+
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Reward</MudText>    
@@ -33,16 +35,10 @@
 
     private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
     {
-        var imageFile = e.File;
-
-        var ms = new MemoryStream();
-
-        await imageFile.OpenReadStream().CopyToAsync(ms);
-
-        var bytes = ms.ToArray();
-
-        Dto.ImageBytesInBase64 = Convert.ToBase64String(bytes);
-        Dto.ImageFileName = imageFile.Name;
+        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
+        
+        Dto.ImageBytesInBase64 = base64;
+        Dto.ImageFileName = name;
     }
     
     private async Task Submit()
