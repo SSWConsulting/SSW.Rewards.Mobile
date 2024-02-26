@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              BackgroundColor="{StaticResource QuizDescriptionBackground}"
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
@@ -148,7 +149,7 @@
                     </Grid>
 
                     <!-- Quiz navigation -->
-                    <Grid Grid.Row="6" ColumnDefinitions="*,*" Margin="20,0,20,10"
+                    <Grid Grid.Row="6" ColumnDefinitions="*,*,*" Margin="20,0,20,10"
                           IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
                         <Button Grid.Column="0"
                                 IsVisible="{Binding IsFirstQuestion, Converter={StaticResource InvertedBoolConverter}}"
@@ -163,15 +164,26 @@
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
                         
-                        <Button Grid.Column="0"
+                        <skia:SKLottieView Grid.Column="1"
                                 VerticalOptions="End"
                                 HorizontalOptions="Center"
-                                Text="Record"
-                                BackgroundColor="{StaticResource SSWRed}"
-                                Command="{Binding RecordAudioCommand}"
-                                />
+                                IsVisible="{Binding IsPulsingVisible}"
+                                RepeatCount="-1"
+                                IsEnabled="True"
+                                Source="pulsing.json"
+                                TranslationY="120"
+                                HeightRequest="300"
+                                WidthRequest="300"/>
+                        <Image Grid.Column="1"
+                               HeightRequest="40"
+                               WidthRequest="40"
+                               Source="{Binding MicIcon}">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding RecordAudioCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
                     
-                        <Button Grid.Column="1"
+                        <Button Grid.Column="2"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
                                 Text="&#xf061;"
                                 Command="{Binding MoveNextCommand}"
@@ -184,7 +196,7 @@
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
                     
-                        <Button Grid.Column="1"
+                        <Button Grid.Column="2"
                                 IsVisible="{Binding IsLastQuestion}"
                                 Text="Submit"
                                 Command="{Binding SubmitCommand}"

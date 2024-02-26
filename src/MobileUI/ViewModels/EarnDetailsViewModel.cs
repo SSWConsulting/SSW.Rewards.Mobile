@@ -104,6 +104,12 @@ namespace SSW.Rewards.Mobile.ViewModels
         [ObservableProperty]
         private bool _isLoadingQuestions;
 
+        [ObservableProperty]
+        private bool _isPulsingVisible;
+
+        [ObservableProperty]
+        private string _micIcon = "mic.png";
+
         public SnackbarOptions SnackOptions { get; set; }
 
         public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
@@ -311,13 +317,17 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 await _audioRecordingCancellationTokenSource.CancelAsync();
                 _isRecording = false;
+                IsPulsingVisible = false;
+                MicIcon = "mic.png";
                 return;
             }
 
             _isRecording = true;
+            IsPulsingVisible = true;
+            MicIcon = "mic_filled.png";
+
             _audioRecordingCancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _audioRecordingCancellationTokenSource.Token;
-
             var isGranted = await SpeechToText.Default.RequestPermissions(cancellationToken);
             if (!isGranted)
             {
