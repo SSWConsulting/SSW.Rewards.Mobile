@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                    xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
+                    xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels">
+    <ControlTemplate x:Key="PageTemplate">
+        <Grid RowDefinitions="55,*">
+            <Grid.BindingContext>
+                <resolver:ResolveViewModel x:TypeArguments="vm:TopBarViewModel" />
+            </Grid.BindingContext>
+            <FlexLayout JustifyContent="SpaceBetween"
+                        Margin="0"
+                        BackgroundColor="{StaticResource Background}">
+                <mct:AvatarView ImageSource="{Binding ProfilePic}"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                CornerRadius="20"
+                                BorderColor="White"
+                                BorderWidth="2"
+                                Margin="10,5">
+                    <mct:AvatarView.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />
+                    </mct:AvatarView.GestureRecognizers>
+                </mct:AvatarView>
+            </FlexLayout>
+            <ContentPresenter Grid.Row="1" />
+        </Grid>
+    </ControlTemplate>
+
+</ResourceDictionary>

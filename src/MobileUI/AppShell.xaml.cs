@@ -10,6 +10,8 @@ public partial class AppShell : Shell
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
 
+    public static string ProfilePic { get; set; }
+
     public AppShell(IUserService userService, IAuthenticationService authService, bool isStaff)
     {
         IsStaff = isStaff;

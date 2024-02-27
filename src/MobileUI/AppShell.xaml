@@ -9,7 +9,7 @@
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
-    FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="False"
     MenuItemTemplate="{StaticResource SSWMenuTemplate}"
     x:Name="RewardsShell">
 
