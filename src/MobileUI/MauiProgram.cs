@@ -59,7 +59,7 @@ public static class MauiProgram
             typeof(OthersProfilePage),
             typeof(ProfileViewModelBase),
             typeof(EarnDetailsPage),
-            typeof(EarnDetailsViewModel),
+            typeof(EarnDetailsViewModel)
         };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
@@ -88,6 +88,7 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
+        builder.Services.AddSingleton<TopBarViewModel>();
 
         builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
 

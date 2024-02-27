@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="QuizList"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:EarnViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
     <ScrollView>

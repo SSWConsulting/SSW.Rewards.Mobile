@@ -113,6 +113,8 @@ namespace SSW.Rewards.Mobile.ViewModels
             Points = quiz.Points;
 
             IsBusy = false;
+
+            WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
         }
 
         private async Task SubmitAnswer()
@@ -200,6 +202,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             QuestionsVisible = false;
             ResultsVisible = true;
+            WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Done));
 
             var total = result.Results.Count();
 

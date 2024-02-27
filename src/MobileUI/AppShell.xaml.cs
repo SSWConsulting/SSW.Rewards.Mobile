@@ -10,6 +10,8 @@ public partial class AppShell : Shell
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
 
+    public static string ProfilePic { get; set; }
+
     public AppShell(IUserService userService, IAuthenticationService authService, bool isStaff)
     {
         IsStaff = isStaff;
@@ -20,6 +22,7 @@ public partial class AppShell : Shell
         _authService = authService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
+        Routing.RegisterRoute("scan", typeof(ScanPage));
     }
 
     private bool _isStaff;
