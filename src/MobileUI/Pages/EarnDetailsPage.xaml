@@ -310,14 +310,13 @@
                     </VerticalStackLayout>
                 </Grid>
                 
-                <ActivityIndicator Grid.Row="0"
-                                   Grid.RowSpan="7"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   Color="{StaticResource SSWRed}"
-                                   IsEnabled="{Binding IsLoadingQuestions}"
-                                   IsRunning="{Binding IsLoadingQuestions}"
-                                   IsVisible="{Binding IsLoadingQuestions}"/>
+                <ActivityIndicator 
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Color="{StaticResource SSWRed}"
+                   IsEnabled="{Binding IsLoadingQuestions}"
+                   IsRunning="{Binding IsLoadingQuestions}"
+                   IsVisible="{Binding IsLoadingQuestions}" />
             </Grid>
         </Border>
     </ScrollView>

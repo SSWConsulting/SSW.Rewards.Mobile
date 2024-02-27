@@ -5,16 +5,17 @@
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-                 x:Class="SSW.Rewards.Mobile.PopupPages.QuizResultPending"
-                 x:DataType="viewModels:ScanResultViewModel"
+                 x:Class="SSW.Rewards.Mobile.PopupPages.QuizResultPendingPage"
                  BackgroundColor="#80000000"
-                 CloseWhenBackgroundIsClicked="False">
+                 CloseWhenBackgroundIsClicked="False"
+                 x:DataType="viewModels:QuizResultPendingViewModel">
     <Border
         HorizontalOptions="Center"
         VerticalOptions="Center"
-        HeightRequest="300"
-        WidthRequest="300"
+        MinimumHeightRequest="300"
+        MinimumWidthRequest="300"
         Padding="10"
+        Margin="70,0"
         Stroke="{StaticResource BorderDefault}"
         BackgroundColor="{StaticResource Background}">
         <Border.StrokeShape>
@@ -23,41 +24,42 @@
         <VerticalStackLayout HorizontalOptions="Fill"
                              VerticalOptions="Start">
             <Label TextColor="White"
-                   HeightRequest="30"
+                   Margin="0,30,0,0"
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center"
                    FontAutoScalingEnabled="False"
                    Text="Loading results..."
                    Style="{StaticResource LabelBold}"
                    FontSize="20"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center" />
+                   HorizontalOptions="Center" />
             <lottie:SKLottieView
-                VerticalOptions="Center"
                 Source="Sophie.json"
                 IsAnimationEnabled="True"
                 RepeatMode="Restart"
                 RepeatCount="100"
                 WidthRequest="200"
                 HeightRequest="200" />
-            <HorizontalStackLayout WidthRequest="280" HeightRequest="50" HorizontalOptions="Start"
-                                   VerticalOptions="Center">
-                <Image HorizontalOptions="Center"
-                       VerticalOptions="Center"
+            <Grid 
+                ColumnDefinitions="Auto, *"
+                ColumnSpacing="10"
+                Padding="10,0">
+                <Image Grid.Column="0"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Start"
                        HeightRequest="50"
                        WidthRequest="40"
                        Source="openai" />
-                <Label x:Name="LoadingText"
+                <Label Grid.Column="1"
                        TextColor="White"
-                       Margin="10,0,0,0"
-                       HeightRequest="50"
+                       MinimumHeightRequest="100"
+                       Text="{Binding LoadingPhrase}"
                        HorizontalTextAlignment="Start"
+                       LineBreakMode="WordWrap"
                        FontAutoScalingEnabled="False"
-                       VerticalTextAlignment="Center"
-                       WidthRequest="220"
+                       VerticalTextAlignment="Start"
                        FontSize="18"
                        VerticalOptions="Center" />
-            </HorizontalStackLayout>
+            </Grid>
         </VerticalStackLayout>
     </Border>
 </pages:PopupPage>

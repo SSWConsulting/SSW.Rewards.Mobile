@@ -2,8 +2,10 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -73,7 +75,9 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     private async Task OpenQuiz(int quizId, Icons icon)
     {
-        await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
+        // await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
+        var popup = new QuizResultPendingPage(new QuizResultPendingViewModel()); // TMP
+        await MopupService.Instance.PushAsync(popup);
     }
 
     public async void Receive(QuizzesUpdatedMessage message)
