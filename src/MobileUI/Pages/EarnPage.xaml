@@ -66,6 +66,7 @@
                                                Points="{Binding Points}"
                                                ButtonText="GO"
                                                ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                               ItemId="{Binding Id}"
                                                ThumbnailImage="{Binding ThumbnailImage}"
                                                ShowTick="{Binding Passed}"
                                                IsDisabled="{Binding Passed}"
