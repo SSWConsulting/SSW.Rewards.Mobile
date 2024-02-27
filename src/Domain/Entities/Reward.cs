@@ -5,6 +5,8 @@ public class Reward : BaseEntity
     public string? Name { get; set; } = string.Empty;
     public int Cost { get; set; }
     public string? ImageUri { get; set; } = string.Empty;
+    public string? CarouselImageUri { get; set; } = string.Empty;
+    public bool IsCarousel { get; set; } = false;
     public RewardType RewardType { get; set; } = RewardType.Digital;
     public Icons Icon { get; set; }
     public bool IconIsBranded { get; set; }
