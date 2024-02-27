@@ -1,7 +1,7 @@
 ---
 name: 'SSW.Rewards: Sprint Review Template'
 about: 'This is the SSW.Rewards: Sprint Review Template'
-title: 'SSW.Rewards: Sprint ✏️X review'
+title: 'SSW.Rewards: Sprint {{ XX }} review'
 labels: scrum
 assignees: ''
 
@@ -15,55 +15,65 @@ assignees: ''
 [//]: # ( 5. Submit the Issue to send the Sprint Review   )
 [//]: # (-------------------------------------------------)
 
-To: @adamcogan 
-Cc:  @mattgoldmanssw, @AndreasLengkeek
+To: Adam C., Seth D.
+Cc:  Matt G, Zach, Anton 
 (Checked by Adam)
 ### Hi Adam,
 
-Sprint in Review: | ✏️X
+Here are the Sprint Goals and their status at a glance:
+    - {{ SPRINT_GOALS }}
+
+Sprint in Review: | ✏️ {{ SPRINT_NUMBER }}
 -- | --
-Sprint Duration: | ✏️1 week
+Sprint Duration: | ✏️2 weeks
 Project: | SSW.Rewards
-Project Portal: | https://ssw.visualstudio.com/SSW.Rewards (Includes Private PBIs)
-GitHub SSW.Rewards Portal: | https://github.com/SSWConsulting/SSW.Rewards/issues (All other PBIs + Source Code)
-GitHub SSW.Rewards Admin Portal: | https://rewards.ssw.com.au
-Test Environment: | .rewards.ssw.com.au
-Product Owner: | Adam Cogan
-Scrum Master: | Andreas Lengkeek
+Project Portal: |  https://github.com/orgs/SSWConsulting/projects/7/views/1
+GitHub SSW.Rewards Portal: | https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues (All other PBIs + Source Code)
+Product Owner: | Adam Cogan (with Seth Daily)
+Scrum Master: | Tylah Kapa
 
-Attendees: Adam, Andreas, Matt G
+Attendees: Adam, Seth, Tylah, Matt G., Zach, Anton
 
-ID | Title | State | Assigned To | Remaining Work | Effort
-✏️-- | -- | -- | -- | -- | --
+## Sprint PBIs: 
+{{ INSERT SPRINT PBIs}}
+https://github.com/orgs/SSWConsulting/projects/7/views/2
 
-https://ssw.visualstudio.com/SSW.Rewards/_queries/query/91be0914-78f5-49e3-b7d2-2052da6ebff0
+PBIs in Sprint: {{ XX }}
+Done PBIs: {{ XX }}
 
-✏️
-**Figure: https://app.powerbi.com/groups/456358f7-5b12-46f5-b952-2a37fa9bb5e8/reports/ccff2316-9422-467d-8025-d447097ba6de/ReportSection3**
+## Application Health Overview (for the entire Sprint)
 
-✏️  
-**Figure: Azure DevOps | Project Dashboard https://ssw.visualstudio.com/SSW.Rewards/_dashboards/dashboard/0b33b8e2-fb0d-43f3-8870-0d68039dd27b**
+{{ AZURE_APP_INSIGHTS }}
+**Figure: https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Rewards.Prod/providers/Microsoft.Insights/components/ai-sswrewards-prod/overview**
 
-✏️
-**Figure: (Android App) Number of users per day during the last sprint
-https://appcenter.ms/orgs/SSW.MobileApps/apps/SSW.Xamarin.Android/analytics/overview**
+## Application Health - iOS
 
-✏️
-**Figure: (iOS App) Number of users per day during the last sprint
-https://appcenter.ms/orgs/SSW.MobileApps/apps/SSW.Xamarin.iOS/analytics/overview**
+{{ APP_CENTER_DIAGNOSTICS_IOS }}
+**Figure: App Center Diagnostics for iOS App https://appcenter.ms/orgs/SSW.MobileApps/apps/RewardsMAUI-3/crashes/errors**
 
-✏️
-**Figure: There were 2 deployments on production https://ssw.visualstudio.com/SSW.Rewards/_release?_a=releases&view=mine&definitionId=2**
+## Application Health - Android
+
+{{ APP_CENTER_DIAGNOSTICS_ANDROID }}
+**Figure: App Center Diagnostics for Android App https://appcenter.ms/orgs/SSW.MobileApps/apps/RewardsMAUI-3/crashes/errors**
+
+## Application Engagement - iOS
+ 
+{{ APP_CENTER_DIAGNOSTICS_ANDROID }}
+**Figure: App Center Analytics for iOS App https://appcenter.ms/orgs/SSW.MobileApps/apps/RewardsMAUI-3/analytics/overview**
+
+## Application Engagement - Android
+
+{{ APP_CENTER_DIAGNOSTICS_ANDROID }}
+**Figure: App Center Analytics for Android App https://appcenter.ms/orgs/SSW.MobileApps/apps/RewardsMAUI-3/analytics/overview**
+
+## Number of Deployments
+
+ - Beta/TestFlight: {{ XX }}
+ - Promotions to Production: {{ XX }}
+ - Admin Portal: {{ XX }}
 
 ## R&D 
-1.	Did we have any failed experiments?
-•	✏️None
- 
-<as per https://rules.ssw.com.au/do-you-record-your-failures>
- 
-2.	Did we need to invent any new solutions?
-•	✏️None
- 
+ - Did we do any experimental work?
 <as per https://rules.ssw.com.au/do-you-record-your-research-under-the-pbi>
 
 ## Sprint Retrospective
