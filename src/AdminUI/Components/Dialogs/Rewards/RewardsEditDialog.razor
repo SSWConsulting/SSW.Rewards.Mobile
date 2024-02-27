@@ -15,7 +15,7 @@
         
     </TitleContent>
     <DialogContent>
-        <MudStack>
+        <MudStack Spacing="5">
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
                 <AdminQRCode Height="150" QRCodeString="@Dto.Code"/>
                 <MudStack>
@@ -24,6 +24,7 @@
                 </MudStack>
             </MudStack>
             <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
+            <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
             <MudSelect
                 @bind-Value="_selectedValue"
                 T="@LeaderboardUserDto"

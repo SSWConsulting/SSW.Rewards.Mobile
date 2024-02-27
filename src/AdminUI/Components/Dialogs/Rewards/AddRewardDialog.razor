@@ -7,34 +7,37 @@
     </TitleContent>
     <DialogContent>
         <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid">
-            <MudTextField Class="d-inline" T="string" Label="Reward Name" @bind-Value="@Dto.Name" AutoFocus="true" Required="true"/>
-            <MudTextField Class="d-inline" T="int" Label="Reward Cost" @bind-Value="@Dto.Cost" Required="true"/>
-            <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
-            <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
-                <ButtonTemplate>
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context.Id">
-                        Upload Thumbnail Image
-                    </MudButton>
-                </ButtonTemplate>
-            </MudFileUpload>     
-            
-            <MudTextField Class="d-inline" T="string" Label="Carousel Image" @bind-Value="@Dto.CarouselImageFileName" Required="false" Disabled="true" />
-            <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
-                <ButtonTemplate>
-                    <MudButton HtmlTag="label"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.CloudUpload"
-                               for="@context.Id">
-                        Upload Carousel Image
-                    </MudButton>
-                </ButtonTemplate>
-            </MudFileUpload>
-            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+            <MudStack Spacing="5">
+                <MudTextField Class="d-inline" T="string" Label="Reward Name" @bind-Value="@Dto.Name" AutoFocus="true" Required="true"/>
+                <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
+                <MudTextField Class="d-inline" T="int" Label="Reward Cost" @bind-Value="@Dto.Cost" Required="true"/>
+                <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
+                <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   for="@context.Id">
+                            Upload Thumbnail Image
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>     
+                
+                <MudTextField Class="d-inline" T="string" Label="Carousel Image" @bind-Value="@Dto.CarouselImageFileName" Required="false" Disabled="true" />
+                <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   for="@context.Id">
+                            Upload Carousel Image
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+                <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+            </MudStack>
         </MudForm>
     </DialogContent>
     <DialogActions>
