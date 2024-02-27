@@ -94,46 +94,13 @@
                                           IndicatorView="QuizIndicator">
                                 <CarouselView.ItemTemplate>
                                     <DataTemplate x:DataType="models:Reward">
-                                        <Border StrokeThickness="0">
-                                            <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="8" />
-                                            </Border.StrokeShape>
-                                            <Border.GestureRecognizers>
-                                                <TapGestureRecognizer
-                                                    CommandParameter="{Binding Id}" />
-                                            </Border.GestureRecognizers>
-                                            <Grid HeightRequest="400">
-                                                <Image Grid.Row="0"
-                                                       Source="{Binding CarouselImageUri}"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center"
-                                                       HeightRequest="400"
-                                                       Aspect="AspectFill" />
-                                                <Grid Grid.Row="0"
-                                                      RowDefinitions="Auto"
-                                                      VerticalOptions="End"
-                                                      Margin="20,0,20,30">
-                                                    <Border Grid.Row="0"
-                                                            BackgroundColor="#BF000000"
-                                                            StrokeThickness="0">
-                                                        <Border.StrokeShape>
-                                                            <RoundRectangle CornerRadius="6" />
-                                                        </Border.StrokeShape>
-                                                        <Grid ColumnDefinitions="*, Auto" Padding="15">
-                                                            <Label Grid.Column="0"
-                                                                   Text="{Binding Name}"
-                                                                   Style="{StaticResource LabelBold}"
-                                                                   VerticalTextAlignment="Center" />
-                                                            <controls:PointsButton Grid.Column="1"
-                                                                                   ButtonText="GET"
-                                                                                   Points="{Binding Cost}"
-                                                                                   HorizontalOptions="End"
-                                                                                   IsDisabled="{Binding Awarded}" />
-                                                        </Grid>
-                                                    </Border>
-                                                </Grid>
-                                            </Grid>
-                                        </Border>
+                                        <controls:CarouselItem
+                                            CarouselImage="{Binding CarouselImageUri}"
+                                            Description="{Binding Description}"
+                                            Points="{Binding Cost}"
+                                            ButtonText="GET"
+                                            ItemId="{Binding Id}"
+                                            IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"/>
                                     </DataTemplate>
                                 </CarouselView.ItemTemplate>
                             </CarouselView>
@@ -157,6 +124,7 @@
                                     <controls:ListItem Title="{Binding Name}"
                                                        Description="{Binding Description}"
                                                        IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                                       ItemId="{Binding Id}"
                                                        Points="{Binding Cost}"
                                                        ButtonText="GET"
                                                        ThumbnailImage="{Binding ImageUri}"/> 

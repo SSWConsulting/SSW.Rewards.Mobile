@@ -4,33 +4,19 @@ using Maui.BindableProperty.Generator.Core;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class ListItem : Border
+public partial class CarouselItem : Border
 {
-    public string ThumbnailImage
+    public string CarouselImage
     {
-        get => (string)GetValue(ThumbnailImageProperty);
-        set => SetValue(ThumbnailImageProperty, value);
+        get => (string)GetValue(CarouselImageProperty);
+        set => SetValue(CarouselImageProperty, value);
     }
 
-    public static readonly BindableProperty ThumbnailImageProperty =
+    public static readonly BindableProperty CarouselImageProperty =
         BindableProperty.Create(
-            nameof(ThumbnailImage),
+            nameof(CarouselImage),
             typeof(string),
-            typeof(ListItem),
-            string.Empty
-        );
-    
-    public string Title
-    {
-        get => (string)GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
-
-    public static readonly BindableProperty TitleProperty =
-        BindableProperty.Create(
-            nameof(Title),
-            typeof(string),
-            typeof(ListItem),
+            typeof(CarouselItem),
             string.Empty
         );
     
@@ -44,7 +30,7 @@ public partial class ListItem : Border
         BindableProperty.Create(
             nameof(Description),
             typeof(string),
-            typeof(ListItem),
+            typeof(CarouselItem),
             string.Empty
         );
     
@@ -58,7 +44,7 @@ public partial class ListItem : Border
         BindableProperty.Create(
             nameof(Points),
             typeof(int),
-            typeof(ListItem),
+            typeof(CarouselItem),
             0
         );
     
@@ -72,7 +58,7 @@ public partial class ListItem : Border
         BindableProperty.Create(
             nameof(ButtonText),
             typeof(string),
-            typeof(ListItem),
+            typeof(CarouselItem),
             string.Empty
         );
     
@@ -86,49 +72,7 @@ public partial class ListItem : Border
         BindableProperty.Create(
             nameof(ButtonCommand),
             typeof(ICommand),
-            typeof(ListItem)
-        );
-    
-    public bool ShowTick
-    {
-        get => (bool)GetValue(ShowTickProperty);
-        set => SetValue(ShowTickProperty, value);
-    }
-
-    public static readonly BindableProperty ShowTickProperty =
-        BindableProperty.Create(
-            nameof(ShowTick),
-            typeof(bool),
-            typeof(ListItem),
-            false
-        );
-    
-    public bool IsDisabled
-    {
-        get => (bool)GetValue(IsDisabledProperty);
-        set => SetValue(IsDisabledProperty, value);
-    }
-
-    public static readonly BindableProperty IsDisabledProperty =
-        BindableProperty.Create(
-            nameof(IsDisabled),
-            typeof(bool),
-            typeof(ListItem),
-            false
-        );
-    
-    public bool IsButtonDisabled
-    {
-        get => (bool)GetValue(IsButtonDisabledProperty);
-        set => SetValue(IsButtonDisabledProperty, value);
-    }
-
-    public static readonly BindableProperty IsButtonDisabledProperty =
-        BindableProperty.Create(
-            nameof(IsButtonDisabled),
-            typeof(bool),
-            typeof(ListItem),
-            false
+            typeof(CarouselItem)
         );
     
     public int ItemId
@@ -141,11 +85,25 @@ public partial class ListItem : Border
         BindableProperty.Create(
             nameof(ItemId),
             typeof(int),
-            typeof(ListItem),
+            typeof(CarouselItem),
             -1
         );
     
-    public ListItem()
+    public bool IsButtonDisabled
+    {
+        get => (bool)GetValue(IsButtonDisabledProperty);
+        set => SetValue(IsButtonDisabledProperty, value);
+    }
+
+    public static readonly BindableProperty IsButtonDisabledProperty =
+        BindableProperty.Create(
+            nameof(IsButtonDisabled),
+            typeof(bool),
+            typeof(CarouselItem),
+            false
+        );
+    
+    public CarouselItem()
     {
         InitializeComponent();
     }

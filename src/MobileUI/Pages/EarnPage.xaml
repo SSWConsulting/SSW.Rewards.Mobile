@@ -32,47 +32,14 @@
                                   IndicatorView="QuizIndicator">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="quizzes:QuizDto">
-                                <Border StrokeThickness="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8" />
-                                    </Border.StrokeShape>
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
-                                            CommandParameter="{Binding Id}" />
-                                    </Border.GestureRecognizers>
-                                    <Grid HeightRequest="400">
-                                        <Image Grid.Row="0"
-                                               Source="{Binding CarouselImage}"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"
-                                               HeightRequest="400"
-                                               Aspect="AspectFill" />
-                                        <Grid Grid.Row="0"
-                                              RowDefinitions="Auto"
-                                              VerticalOptions="End"
-                                              Margin="20,0,20,30">
-                                            <Border Grid.Row="0"
-                                                    BackgroundColor="#BF000000"
-                                                    StrokeThickness="0">
-                                                <Border.StrokeShape>
-                                                    <RoundRectangle CornerRadius="6" />
-                                                </Border.StrokeShape>
-                                                <Grid ColumnDefinitions="*, Auto" Padding="15">
-                                                    <Label Grid.Column="0"
-                                                           Text="{Binding Description}"
-                                                           Style="{StaticResource LabelBold}"
-                                                           VerticalTextAlignment="Center" />
-                                                    <controls:PointsButton Grid.Column="1"
-                                                                           ButtonText="GO"
-                                                                           Points="{Binding Points}"
-                                                                           HorizontalOptions="End"
-                                                                           IsDisabled="{Binding Passed}" />
-                                                </Grid>
-                                            </Border>
-                                        </Grid>
-                                    </Grid>
-                                </Border>
+                                <controls:CarouselItem
+                                    CarouselImage="{Binding CarouselImage}"
+                                    Description="{Binding Description}"
+                                    Points="{Binding Points}"
+                                    ButtonText="GO"
+                                    ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                    ItemId="{Binding Id}"
+                                    IsButtonDisabled="{Binding Passed}"/>
                             </DataTemplate>
                         </CarouselView.ItemTemplate>
                     </CarouselView>

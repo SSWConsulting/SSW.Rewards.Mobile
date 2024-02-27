@@ -137,6 +137,10 @@
 		  <DependentUpon>ListItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Controls\CarouselItem.xaml.cs">
+		  <DependentUpon>CarouselItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -170,6 +174,10 @@
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\ListItem.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\CarouselItem.xaml">
 		  <SubType>Designer</SubType>
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -11,7 +11,7 @@
     <Border.GestureRecognizers>
         <TapGestureRecognizer
             Command="{Binding ButtonCommand, Source={x:Reference this}}"
-            CommandParameter="{Binding Id}" />
+            CommandParameter="{Binding ItemId, Source={x:Reference this}}" />
     </Border.GestureRecognizers>
     <Border.StrokeShape>
         <RoundRectangle CornerRadius="8" />
