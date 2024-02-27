@@ -4,6 +4,7 @@ public class RewardDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public int Cost { get; set; }
     public string? ImageUri { get; set; }
     public string? CarouselImageUri { get; set; }
