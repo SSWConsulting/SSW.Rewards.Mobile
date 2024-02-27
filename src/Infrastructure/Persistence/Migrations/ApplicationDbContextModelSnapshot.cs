@@ -66,7 +66,7 @@ namespace SSW.Rewards.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[IntegrationId] IS NOT NULL");
 
-                    b.ToTable("Achievements");
+                    b.ToTable("Achievements", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.CompletedQuiz", b =>
@@ -95,7 +95,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CompletedQuizzes");
+                    b.ToTable("CompletedQuizzes", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Notification", b =>
@@ -125,7 +125,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("SentByStaffMemberId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.PostalAddress", b =>
@@ -159,7 +159,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Quiz", b =>
@@ -209,7 +209,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.QuizAnswer", b =>
@@ -236,7 +236,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuizAnswers");
+                    b.ToTable("QuizAnswers", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.QuizQuestion", b =>
@@ -260,7 +260,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("QuizQuestions");
+                    b.ToTable("QuizQuestions", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Reward", b =>
@@ -270,9 +270,6 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CarouselImageUri")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -292,9 +289,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<string>("ImageUri")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsCarousel")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsOnboardingReward")
                         .HasColumnType("bit");
 
@@ -306,7 +300,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rewards");
+                    b.ToTable("Rewards", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Role", b =>
@@ -325,7 +319,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Skill", b =>
@@ -347,7 +341,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.SocialMediaPlatform", b =>
@@ -372,7 +366,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("AchievementId");
 
-                    b.ToTable("SocialMediaPlatforms");
+                    b.ToTable("SocialMediaPlatforms", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMember", b =>
@@ -425,7 +419,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("StaffAchievementId");
 
-                    b.ToTable("StaffMembers");
+                    b.ToTable("StaffMembers", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.StaffMemberSkill", b =>
@@ -455,7 +449,7 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.HasIndex("SkillId", "StaffMemberId")
                         .IsUnique();
 
-                    b.ToTable("StaffMemberSkills");
+                    b.ToTable("StaffMemberSkills", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.SubmittedQuizAnswer", b =>
@@ -500,7 +494,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("SubmittedAnswers");
+                    b.ToTable("SubmittedAnswers", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UnclaimedAchievement", b =>
@@ -525,7 +519,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("AchievementId");
 
-                    b.ToTable("UnclaimedAchievements");
+                    b.ToTable("UnclaimedAchievements", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.User", b =>
@@ -560,7 +554,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("Email");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserAchievement", b =>
@@ -591,7 +585,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("UserId", "AchievementId");
 
-                    b.ToTable("UserAchievements");
+                    b.ToTable("UserAchievements", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserReward", b =>
@@ -622,7 +616,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRewards");
+                    b.ToTable("UserRewards", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserRole", b =>
@@ -648,7 +642,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.UserSocialMediaId", b =>
@@ -678,7 +672,7 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserSocialMediaIds");
+                    b.ToTable("UserSocialMediaIds", (string)null);
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.CompletedQuiz", b =>
