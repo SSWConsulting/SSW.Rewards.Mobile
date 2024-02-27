@@ -9,8 +9,8 @@
              x:Name="QuizList"
              x:DataType="viewModels:EarnViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
-    <ContentPage.Content>
-        <ScrollView>
+    <ScrollView>
+        <Grid>
             <Grid RowDefinitions="Auto, *">
                 <Grid Grid.Row="0"
                       RowDefinitions="Auto" 
@@ -188,7 +188,13 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </Grid>
-        </ScrollView>
-
-    </ContentPage.Content>
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsEnabled="{Binding IsBusy}"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}" />
+        </Grid>
+    </ScrollView>
 </ContentPage>
