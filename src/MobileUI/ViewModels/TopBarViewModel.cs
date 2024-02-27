@@ -81,6 +81,8 @@ public partial class TopBarViewModel : ObservableObject
 
     private void SetDoneButton()
     {
-        SetDoneButton();
+        ShowDone = true;
+        ShowBack = false;
+        ShowAvatar = false;
     }
 }
