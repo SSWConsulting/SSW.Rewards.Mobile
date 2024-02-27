@@ -45,7 +45,7 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         if (!string.IsNullOrWhiteSpace(request.CarouselImageBytesInBase64) && !string.IsNullOrWhiteSpace(request.CarouselImageFileName))
         {
             Uri imageUri = await UploadImage(request.CarouselImageBytesInBase64, request.CarouselImageFileName);
-            reward.ImageUri = imageUri?.AbsoluteUri;
+            reward.CarouselImageUri = imageUri?.AbsoluteUri;
         }
 
         if (!string.IsNullOrWhiteSpace(request.RewardName))

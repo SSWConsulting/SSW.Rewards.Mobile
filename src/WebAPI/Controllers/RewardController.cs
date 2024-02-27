@@ -60,8 +60,8 @@ public class RewardController : ApiControllerBase
             RewardType = dto.RewardType,
             ImageBytesInBase64 = dto.ImageBytesInBase64,
             ImageFileName = dto.ImageFileName,
-            CarouselImageBytesInBase64 = dto.ImageBytesInBase64,
-            CarouselImageFileName = dto.ImageFileName,
+            CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
+            CarouselImageFileName = dto.CarouselImageFileName,
             IsCarousel = dto.IsCarousel
         };
         
@@ -101,8 +101,8 @@ public class RewardController : ApiControllerBase
             ImageBytesInBase64 = dto.ImageBytesInBase64,
             ImageFilename = dto.ImageFileName,
             IsOnboardingReward = dto.IsOnboardingReward,
-            CarouselImageBytesInBase64 = dto.ImageBytesInBase64,
-            CarouselImageFileName = dto.ImageFileName,
+            CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
+            CarouselImageFileName = dto.CarouselImageFileName,
             IsCarousel = dto.IsCarousel
         };
 
