@@ -44,6 +44,7 @@
                 ColumnSpacing="10"
                 Padding="10,0">
                 <Image Grid.Column="0"
+                       x:Name="ChatGptIcon"
                        HorizontalOptions="Center"
                        VerticalOptions="Start"
                        HeightRequest="50"

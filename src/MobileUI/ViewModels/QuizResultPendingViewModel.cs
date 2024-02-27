@@ -30,6 +30,8 @@ public partial class QuizResultPendingViewModel : ObservableObject
         _timer = new Timer(TimerCallback, null, TimeSpan.FromSeconds(periodInSeconds), TimeSpan.FromSeconds(periodInSeconds));
     }
 
+    public event Action TimeLapsed;
+
     public void KillTimer()
     {
         _timer.Dispose();
@@ -52,6 +54,8 @@ public partial class QuizResultPendingViewModel : ObservableObject
                 {
                     _discardedLoadingPhrases.Clear();
                 }
+
+                TimeLapsed?.Invoke();
             });
             _numberOfCalls++;
         }

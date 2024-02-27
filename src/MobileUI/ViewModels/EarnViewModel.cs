@@ -75,9 +75,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     private async Task OpenQuiz(int quizId, Icons icon)
     {
-        // await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
-        var popup = new QuizResultPendingPage(new QuizResultPendingViewModel()); // TMP
-        await MopupService.Instance.PushAsync(popup);
+        await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}&QuizIcon={icon}");
     }
 
     public async void Receive(QuizzesUpdatedMessage message)
