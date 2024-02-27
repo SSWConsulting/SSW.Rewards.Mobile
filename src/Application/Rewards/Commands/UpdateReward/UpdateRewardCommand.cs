@@ -5,6 +5,7 @@ namespace SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 public class UpdateRewardCommand : IRequest<Unit>
 {
     public int Id { get; set; }
+    public string? Description { get; set; }
     public int Cost { get; set; }
     public string? RewardName { get; set; }
     public string? ImageFilename { get; set; }
@@ -51,6 +52,11 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         if (!string.IsNullOrWhiteSpace(request.RewardName))
         {
             reward.Name = request.RewardName;
+        }        
+        
+        if (!string.IsNullOrWhiteSpace(request.Description))
+        {
+            reward.Description = request.Description;
         }
 
         if (request.IsOnboardingReward is not null)

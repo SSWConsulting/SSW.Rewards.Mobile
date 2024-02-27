@@ -6,6 +6,7 @@ public class AddRewardCommand : IRequest<int>
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public int Cost { get; set; }
     public string ImageUri { get; set; }
     public RewardType RewardType { get; set; }
@@ -39,6 +40,7 @@ public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
         {
             Name = request.Name,
             Cost = request.Cost,
+            Description = request.Description,
             RewardType = request.RewardType,
             ImageUri = imageUri?.AbsoluteUri,
             CarouselImageUri = carouselImageUri?.AbsoluteUri,
