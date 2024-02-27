@@ -117,6 +117,20 @@ public partial class ListItem : Border
             false
         );
     
+    public bool IsButtonDisabled
+    {
+        get => (bool)GetValue(IsButtonDisabledProperty);
+        set => SetValue(IsButtonDisabledProperty, value);
+    }
+
+    public static readonly BindableProperty IsButtonDisabledProperty =
+        BindableProperty.Create(
+            nameof(IsButtonDisabled),
+            typeof(bool),
+            typeof(ListItem),
+            false
+        );
+    
     public ListItem()
     {
         InitializeComponent();

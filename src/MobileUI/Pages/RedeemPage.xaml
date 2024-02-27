@@ -5,159 +5,174 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:RewardsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
+    <ContentPage.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="Auto, *"
-              Margin="15"
-              RowSpacing="10">
-            <Border Grid.Row="0"
-                    BackgroundColor="{StaticResource Background}"
-                    StrokeThickness="0"
-                    Padding="3">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="8" />
-                </Border.StrokeShape>
-                <Grid ColumnDefinitions="Auto, *, Auto">
-                    <Border Grid.Column="0"
-                            StrokeThickness="0"
-                            HorizontalOptions="End"
-                            VerticalOptions="Fill">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <Grid Padding="10" Background="{StaticResource ButtonBrush}">
-                            <Label
-                                Text="&#xf290;"
-                                FontFamily="FA6Solid"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                        </Grid>
-                    </Border>
-                    <Border Grid.Column="2"
-                            StrokeThickness="0"
-                            HorizontalOptions="End"
-                            VerticalOptions="Fill">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="5"
-                                               Padding="8"
-                                               Background="{StaticResource ButtonBrush}">
-                            <Label
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontSize="11"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                            <Label
-                                Text="{Binding Credits, StringFormat='{0:n0}'}"
-                                Style="{StaticResource LabelBold}"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                InputTransparent="True" />
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout Spacing="10">
-                    <Grid RowDefinitions="Auto"
-                          x:Name="CarouselSection">
-                        <Grid.Triggers>
-                            <DataTrigger TargetType="Grid" Binding="{Binding CarouselRewards.Count}" Value="0">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Grid.Triggers>
-                        <CarouselView Grid.Row="0"
-                                      x:Name="Carousel"
-                                      HeightRequest="400"
-                                      Loop="True"
-                                      ItemsSource="{Binding CarouselRewards}"
-                                      HorizontalScrollBarVisibility="Never"
-                                      IndicatorView="QuizIndicator">
-                            <CarouselView.ItemTemplate>
-                                <DataTemplate x:DataType="models:Reward">
-                                    <Border StrokeThickness="0">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="8" />
-                                        </Border.StrokeShape>
-                                        <Border.GestureRecognizers>
-                                            <TapGestureRecognizer
-                                                CommandParameter="{Binding Id}" />
-                                        </Border.GestureRecognizers>
-                                        <Grid HeightRequest="400">
-                                            <Image Grid.Row="0"
-                                                   Source="{Binding CarouselImageUri}"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center"
-                                                   HeightRequest="400"
-                                                   Aspect="AspectFill" />
-                                            <Grid Grid.Row="0"
-                                                  RowDefinitions="Auto"
-                                                  VerticalOptions="End"
-                                                  Margin="20,0,20,30">
-                                                <Border Grid.Row="0"
-                                                        BackgroundColor="#BF000000"
-                                                        StrokeThickness="0">
-                                                    <Border.StrokeShape>
-                                                        <RoundRectangle CornerRadius="6" />
-                                                    </Border.StrokeShape>
-                                                    <Grid ColumnDefinitions="*, Auto" Padding="15">
-                                                        <Label Grid.Column="0"
-                                                               Text="{Binding Name}"
-                                                               Style="{StaticResource LabelBold}"
-                                                               VerticalTextAlignment="Center" />
-                                                        <controls:PointsButton Grid.Column="1"
-                                                                               ButtonText="GET"
-                                                                               Points="{Binding Cost}"
-                                                                               HorizontalOptions="End"
-                                                                               IsDisabled="{Binding Awarded}" />
-                                                    </Grid>
-                                                </Border>
-                                            </Grid>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </CarouselView.ItemTemplate>
-                        </CarouselView>
-
-                        <IndicatorView Grid.Row="0"
-                                       SelectedIndicatorColor="{StaticResource SSWRed}"
-                                       IndicatorColor="{StaticResource IndicatorColor}"
-                                       IndicatorSize="4.5"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="End"
-                                       Margin="0,0,0,25"
-                                       x:Name="QuizIndicator" />
+        <Grid>
+            <Grid RowDefinitions="Auto, *"
+                  Margin="15"
+                  RowSpacing="10">
+                <Border Grid.Row="0"
+                        BackgroundColor="{StaticResource Background}"
+                        StrokeThickness="0"
+                        Padding="3">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Border Grid.Column="0"
+                                StrokeThickness="0"
+                                HorizontalOptions="End"
+                                VerticalOptions="Fill">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <Grid Padding="10" Background="{StaticResource ButtonBrush}">
+                                <Label
+                                    Text="&#xf290;"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2"
+                                StrokeThickness="0"
+                                HorizontalOptions="End"
+                                VerticalOptions="Fill">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="5"
+                                                   Padding="8"
+                                                   Background="{StaticResource ButtonBrush}">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                                <Label
+                                    Text="{Binding Credits, StringFormat='{0:n0}'}"
+                                    Style="{StaticResource LabelBold}"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    InputTransparent="True" />
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
+                </Border>
 
-                    <VerticalStackLayout
-                        x:Name="QuizListSection"
-                        BindableLayout.ItemsSource="{Binding Rewards}"
-                        Spacing="6">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:Reward">
-                                <controls:ListItem Title="{Binding Name}"
-                                                   Description="{Binding Description}"
-                                                   Points="{Binding Cost}"
-                                                   ButtonText="GET"
-                                                   ThumbnailImage="{Binding ImageUri}"/> 
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid RowDefinitions="Auto"
+                              x:Name="CarouselSection">
+                            <Grid.Triggers>
+                                <DataTrigger TargetType="Grid" Binding="{Binding CarouselRewards.Count}" Value="0">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Grid.Triggers>
+                            <CarouselView Grid.Row="0"
+                                          x:Name="Carousel"
+                                          HeightRequest="400"
+                                          Loop="True"
+                                          ItemsSource="{Binding CarouselRewards}"
+                                          HorizontalScrollBarVisibility="Never"
+                                          IndicatorView="QuizIndicator">
+                                <CarouselView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Reward">
+                                        <Border StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8" />
+                                            </Border.StrokeShape>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    CommandParameter="{Binding Id}" />
+                                            </Border.GestureRecognizers>
+                                            <Grid HeightRequest="400">
+                                                <Image Grid.Row="0"
+                                                       Source="{Binding CarouselImageUri}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       HeightRequest="400"
+                                                       Aspect="AspectFill" />
+                                                <Grid Grid.Row="0"
+                                                      RowDefinitions="Auto"
+                                                      VerticalOptions="End"
+                                                      Margin="20,0,20,30">
+                                                    <Border Grid.Row="0"
+                                                            BackgroundColor="#BF000000"
+                                                            StrokeThickness="0">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="6" />
+                                                        </Border.StrokeShape>
+                                                        <Grid ColumnDefinitions="*, Auto" Padding="15">
+                                                            <Label Grid.Column="0"
+                                                                   Text="{Binding Name}"
+                                                                   Style="{StaticResource LabelBold}"
+                                                                   VerticalTextAlignment="Center" />
+                                                            <controls:PointsButton Grid.Column="1"
+                                                                                   ButtonText="GET"
+                                                                                   Points="{Binding Cost}"
+                                                                                   HorizontalOptions="End"
+                                                                                   IsDisabled="{Binding Awarded}" />
+                                                        </Grid>
+                                                    </Border>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CarouselView.ItemTemplate>
+                            </CarouselView>
+
+                            <IndicatorView Grid.Row="0"
+                                           SelectedIndicatorColor="{StaticResource SSWRed}"
+                                           IndicatorColor="{StaticResource IndicatorColor}"
+                                           IndicatorSize="4.5"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="End"
+                                           Margin="0,0,0,25"
+                                           x:Name="QuizIndicator" />
+                        </Grid>
+
+                        <VerticalStackLayout
+                            x:Name="QuizListSection"
+                            BindableLayout.ItemsSource="{Binding Rewards}"
+                            Spacing="6">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:Reward">
+                                    <controls:ListItem Title="{Binding Name}"
+                                                       Description="{Binding Description}"
+                                                       IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                                       Points="{Binding Cost}"
+                                                       ButtonText="GET"
+                                                       ThumbnailImage="{Binding ImageUri}"/> 
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
-                </VerticalStackLayout>
-            </ScrollView>
+                </ScrollView>
+            </Grid>
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsEnabled="{Binding IsBusy}"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

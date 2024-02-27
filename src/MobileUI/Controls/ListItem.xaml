@@ -90,7 +90,7 @@
         <controls:PointsButton Grid.Column="3"
                                ButtonText="{Binding ButtonText, Source={x:Reference this}}"
                                Points="{Binding Points, Source={x:Reference this}}"
-                               IsDisabled="{Binding IsDisabled, Source={x:Reference this}}" />
+                               IsDisabled="{Binding IsButtonDisabled, Source={x:Reference this}}" />
 
     </Grid>
 </Border>

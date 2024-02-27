@@ -25,15 +25,16 @@ namespace SSW.Rewards.Mobile.ViewModels
             Title = "Rewards";
             _rewardService = rewardService;
             _userService = userService;
-            _ = Initialise();
         }
 
-        private async Task Initialise()
+        public async Task Initialise()
         {
+            IsBusy = true;
             var rewardList = await _rewardService.GetRewards();
 
             rewardList.ForEach(reward =>
             {
+                reward.CanAfford = reward.Cost <= _userService.MyBalance;
                 Rewards.Add(reward);
 
                 if (reward.IsCarousel)
@@ -53,6 +54,8 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 await OpenRewardDetails(reward);
             });
+
+            IsBusy = false;
         }
 
         public async Task OpenRewardDetails(Reward reward)

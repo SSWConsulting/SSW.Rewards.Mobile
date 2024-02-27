@@ -16,9 +16,10 @@ public partial class RedeemPage : ContentPage
         _timer = Application.Current.Dispatcher.CreateTimer();
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await _viewModel.Initialise();
         BeginAutoScroll();
     }
     

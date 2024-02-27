@@ -11,5 +11,6 @@
         public string ImageUri { get; set; }
         public string CarouselImageUri { get; set; }
         public bool IsCarousel { get; set; }
+        public bool CanAfford { get; set; }
     }
 }

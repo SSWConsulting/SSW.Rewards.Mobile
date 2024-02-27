@@ -101,7 +101,8 @@
                                                ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
                                                ThumbnailImage="{Binding ThumbnailImage}"
                                                ShowTick="{Binding Passed}"
-                                               IsDisabled="{Binding Passed}"/> 
+                                               IsDisabled="{Binding Passed}"
+                                               IsButtonDisabled="{Binding Passed}"/> 
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
