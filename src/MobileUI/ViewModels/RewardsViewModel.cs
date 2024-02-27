@@ -10,6 +10,7 @@ namespace SSW.Rewards.Mobile.ViewModels
     {
         private readonly IRewardService _rewardService;
         private readonly IUserService _userService;
+        private bool _isLoaded;
 
         public ICommand RewardCardTappedCommand { get; set; }
         public ICommand MoreTapped { get; set; }
@@ -29,6 +30,11 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public async Task Initialise()
         {
+            if (_isLoaded)
+            {
+                return;
+            }
+            
             IsBusy = true;
             var rewardList = await _rewardService.GetRewards();
 
@@ -56,6 +62,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             });
 
             IsBusy = false;
+            _isLoaded = true;
         }
 
         public async Task OpenRewardDetails(Reward reward)

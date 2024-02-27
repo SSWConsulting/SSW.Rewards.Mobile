@@ -28,6 +28,7 @@ public class RewardService : IRewardService
                     Id = reward.Id,
                     ImageUri = reward.ImageUri,
                     Name = reward.Name,
+                    Description = reward.Description,
                     CarouselImageUri = reward.CarouselImageUri,
                     IsCarousel = reward.IsCarousel
                 });

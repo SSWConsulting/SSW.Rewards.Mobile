@@ -96,7 +96,7 @@
                                     <DataTemplate x:DataType="models:Reward">
                                         <controls:CarouselItem
                                             CarouselImage="{Binding CarouselImageUri}"
-                                            Description="{Binding Description}"
+                                            Description="{Binding Name}"
                                             Points="{Binding Cost}"
                                             ButtonText="GET"
                                             ItemId="{Binding Id}"
