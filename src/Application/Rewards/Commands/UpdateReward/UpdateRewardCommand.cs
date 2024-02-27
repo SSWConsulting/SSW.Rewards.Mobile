@@ -5,16 +5,14 @@ namespace SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 public class UpdateRewardCommand : IRequest<Unit>
 {
     public int Id { get; set; }
-
     public int Cost { get; set; }
-
     public string? RewardName { get; set; }
-
     public string? ImageFilename { get; set; }
-
     public string? ImageBytesInBase64 { get; set; }
-
     public bool? IsOnboardingReward { get; set; }
+    public string? CarouselImageBytesInBase64 { get; set; }
+    public string? CarouselImageFileName { get; set; }
+    public bool IsCarousel { get; set; }
 }
 
 public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, Unit>
@@ -40,10 +38,13 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
 
         if (!string.IsNullOrWhiteSpace(request.ImageBytesInBase64) && !string.IsNullOrWhiteSpace(request.ImageFilename))
         {
-            Uri imageUri = null;
-            var imageBytes = Convert.FromBase64String(request.ImageBytesInBase64);
-            imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFilename);
-
+            Uri imageUri = await UploadImage(request.ImageBytesInBase64, request.ImageFilename);
+            reward.ImageUri = imageUri?.AbsoluteUri;
+        }        
+        
+        if (!string.IsNullOrWhiteSpace(request.CarouselImageBytesInBase64) && !string.IsNullOrWhiteSpace(request.CarouselImageFileName))
+        {
+            Uri imageUri = await UploadImage(request.CarouselImageBytesInBase64, request.CarouselImageFileName);
             reward.ImageUri = imageUri?.AbsoluteUri;
         }
 
@@ -58,8 +59,15 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         }
 
         reward.Cost = request.Cost;
+        reward.IsCarousel = request.IsCarousel;
 
         await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;
+    }
+    
+    private async Task<Uri> UploadImage(string imageBytesInBase64, string imageFileName)
+    {
+        var imageBytes = Convert.FromBase64String(imageBytesInBase64);
+        return await _picStorageProvider.UploadRewardPic(imageBytes, imageFileName);
     }
 }

@@ -59,9 +59,12 @@ public class RewardController : ApiControllerBase
             Cost = dto.Cost,
             RewardType = dto.RewardType,
             ImageBytesInBase64 = dto.ImageBytesInBase64,
-            ImageFileName = dto.ImageFileName
+            ImageFileName = dto.ImageFileName,
+            CarouselImageBytesInBase64 = dto.ImageBytesInBase64,
+            CarouselImageFileName = dto.ImageFileName,
+            IsCarousel = dto.IsCarousel
         };
-
+        
         return Ok(await Mediator.Send(command));
     }
 
@@ -97,7 +100,10 @@ public class RewardController : ApiControllerBase
             Cost = dto.Cost,
             ImageBytesInBase64 = dto.ImageBytesInBase64,
             ImageFilename = dto.ImageFileName,
-            IsOnboardingReward = dto.IsOnboardingReward
+            IsOnboardingReward = dto.IsOnboardingReward,
+            CarouselImageBytesInBase64 = dto.ImageBytesInBase64,
+            CarouselImageFileName = dto.ImageFileName,
+            IsCarousel = dto.IsCarousel
         };
 
         return Ok(await Mediator.Send(command));
