@@ -115,14 +115,12 @@
                                         <Border.StrokeShape>
                                             <RoundRectangle CornerRadius="6" />
                                         </Border.StrokeShape>
-                                        <Grid>
-                                            <Image Source="{Binding ThumbnailImage}"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center"
-                                                   HeightRequest="64"
-                                                   WidthRequest="64"
-                                                   Aspect="AspectFill" />
-                                        </Grid>
+                                        <Image Source="{Binding ThumbnailImage}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               HeightRequest="64"
+                                               WidthRequest="64"
+                                               Aspect="AspectFill" />
                                     </Border>
 
                                     <Grid

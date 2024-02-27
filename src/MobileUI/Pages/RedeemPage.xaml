@@ -98,7 +98,7 @@
                                         </Border.GestureRecognizers>
                                         <Grid HeightRequest="400">
                                             <Image Grid.Row="0"
-                                                   Source="{Binding ImageUri}"
+                                                   Source="{Binding CarouselImageUri}"
                                                    HorizontalOptions="Center"
                                                    VerticalOptions="Center"
                                                    HeightRequest="400"
@@ -164,14 +164,12 @@
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="6" />
                                             </Border.StrokeShape>
-                                            <Grid>
-                                                <Image Source="{Binding ImageUri}"
+                                            <Image Source="{Binding ImageUri}"
                                                        HorizontalOptions="Center"
                                                        VerticalOptions="Center"
                                                        HeightRequest="64"
                                                        WidthRequest="64"
                                                        Aspect="AspectFill" />
-                                            </Grid>
                                         </Border>
 
                                         <Grid
