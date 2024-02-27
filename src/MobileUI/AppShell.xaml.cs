@@ -19,7 +19,6 @@ public partial class AppShell : Shell
         _userService = userService;
         _authService = authService;
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
-        Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
     }
 
