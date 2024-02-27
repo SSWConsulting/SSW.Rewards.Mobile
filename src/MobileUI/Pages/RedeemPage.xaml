@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+             x:Name="RewardList"
+             x:DataType="viewModels:RewardsViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
+    <ContentPage.Content>
+        <Grid RowDefinitions="Auto, *"
+              Margin="15"
+              RowSpacing="10">
+            <Border Grid.Row="0"
+                    BackgroundColor="{StaticResource Background}"
+                    StrokeThickness="0"
+                    Padding="3">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Border Grid.Column="0"
+                            StrokeThickness="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Fill">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6" />
+                        </Border.StrokeShape>
+                        <Grid Padding="10" Background="{StaticResource ButtonBrush}">
+                            <Label
+                                Text="&#xf290;"
+                                FontFamily="FA6Solid"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                FontSize="14"
+                                Style="{StaticResource LabelBold}"
+                                InputTransparent="True" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2"
+                            StrokeThickness="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Fill">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="5"
+                                               Padding="8"
+                                               Background="{StaticResource ButtonBrush}">
+                            <Label
+                                TextColor="{StaticResource Coin}"
+                                Text="&#xf51e;"
+                                FontFamily="FA6Solid"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                FontSize="11"
+                                Style="{StaticResource LabelBold}"
+                                InputTransparent="True" />
+                            <Label
+                                Text="{Binding Credits, StringFormat='{0:n0}'}"
+                                Style="{StaticResource LabelBold}"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Center"
+                                FontSize="14"
+                                InputTransparent="True" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Spacing="10">
+                    <Grid RowDefinitions="Auto"
+                          x:Name="CarouselSection">
+                        <CarouselView Grid.Row="0"
+                                      x:Name="Carousel"
+                                      HeightRequest="400"
+                                      Loop="True"
+                                      ItemsSource="{Binding CarouselRewards}"
+                                      HorizontalScrollBarVisibility="Never"
+                                      IndicatorView="QuizIndicator">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Reward">
+                                    <Border StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                CommandParameter="{Binding Id}" />
+                                        </Border.GestureRecognizers>
+                                        <Grid HeightRequest="400">
+                                            <Image Grid.Row="0"
+                                                   Source="{Binding ImageUri}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="400"
+                                                   Aspect="AspectFill" />
+                                            <Grid Grid.Row="0"
+                                                  RowDefinitions="Auto"
+                                                  VerticalOptions="End"
+                                                  Margin="20,0,20,30">
+                                                <Border Grid.Row="0"
+                                                        BackgroundColor="#BF000000"
+                                                        StrokeThickness="0">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="6" />
+                                                    </Border.StrokeShape>
+                                                    <Grid ColumnDefinitions="*, Auto" Padding="15">
+                                                        <Label Grid.Column="0"
+                                                               Text="{Binding Name}"
+                                                               Style="{StaticResource LabelBold}"
+                                                               VerticalTextAlignment="Center" />
+                                                        <controls:PointsButton Grid.Column="1"
+                                                                               ButtonText="GET"
+                                                                               Points="{Binding Cost}"
+                                                                               HorizontalOptions="End"
+                                                                               IsDisabled="{Binding Awarded}" />
+                                                    </Grid>
+                                                </Border>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+
+                        <IndicatorView Grid.Row="0"
+                                       SelectedIndicatorColor="{StaticResource SSWRed}"
+                                       IndicatorColor="{StaticResource IndicatorColor}"
+                                       IndicatorSize="4.5"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="End"
+                                       Margin="0,0,0,25"
+                                       x:Name="QuizIndicator" />
+                    </Grid>
+
+                    <VerticalStackLayout
+                        x:Name="QuizListSection"
+                        BindableLayout.ItemsSource="{Binding Rewards}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Reward">
+                                <Grid RowDefinitions="78, 6">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            CommandParameter="{Binding Id}" />
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Row="0" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Grid ColumnSpacing="4"
+                                              ColumnDefinitions="74, *, Auto"
+                                              BackgroundColor="{StaticResource Background}">
+                                            <Border Grid.Column="0"
+                                                    HeightRequest="64"
+                                                    WidthRequest="64"
+                                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                                    StrokeThickness="0">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="6" />
+                                                </Border.StrokeShape>
+                                                <Grid>
+                                                    <Image Source="{Binding ImageUri}"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"
+                                                           HeightRequest="64"
+                                                           WidthRequest="64"
+                                                           Aspect="AspectFill" />
+                                                </Grid>
+                                            </Border>
+
+                                            <Grid
+                                                Grid.Column="1"
+                                                ColumnDefinitions="*,20"
+                                                RowDefinitions="*,*"
+                                                VerticalOptions="Center"
+                                                RowSpacing="2">
+                                                <Label Grid.Row="0"
+                                                       Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       TextColor="White"
+                                                       InputTransparent="True"
+                                                       VerticalTextAlignment="End"
+                                                       FontSize="18"
+                                                       Style="{StaticResource LabelBold}"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label Grid.Row="1"
+                                                       Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       TextColor="{StaticResource TextSecondary}"
+                                                       VerticalTextAlignment="Start"
+                                                       InputTransparent="True"
+                                                       MaxLines="2"
+                                                       LineBreakMode="WordWrap"
+                                                       FontSize="12" />
+                                            </Grid>
+
+                                            <controls:PointsButton Grid.Column="3"
+                                                                   ButtonText="GET"
+                                                                   Points="{Binding Cost}"
+                                                                   Margin="0,0,10,0"
+                                                                   IsDisabled="{Binding Awarded}" />
+
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

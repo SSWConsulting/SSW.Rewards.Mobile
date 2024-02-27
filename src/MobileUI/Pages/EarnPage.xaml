@@ -148,7 +148,7 @@
                                             <Label Grid.Row="1"
                                                    Grid.Column="0"
                                                    Text="{Binding Description}"
-                                                   TextColor="White"
+                                                   TextColor="{StaticResource TextSecondary}"
                                                    VerticalTextAlignment="Start"
                                                    InputTransparent="True"
                                                    MaxLines="2"

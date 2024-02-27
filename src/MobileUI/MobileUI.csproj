@@ -129,6 +129,10 @@
 		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Pages\RedeemPage.xaml.cs">
+		  <DependentUpon>RedeemPage.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -156,6 +160,9 @@
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\ProfileActivityItem.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Pages\RedeemPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Templates.xaml">

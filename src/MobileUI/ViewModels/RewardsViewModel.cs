@@ -9,34 +9,40 @@ namespace SSW.Rewards.Mobile.ViewModels
     public partial class RewardsViewModel : BaseViewModel
     {
         private readonly IRewardService _rewardService;
+        private readonly IUserService _userService;
 
         public ICommand RewardCardTappedCommand { get; set; }
         public ICommand MoreTapped { get; set; }
 
-        public ObservableCollection<Reward> Rewards { get; set; }
+        public ObservableCollection<Reward> Rewards { get; set; } = new ();
+        public ObservableCollection<Reward> CarouselRewards { get; set; } = new ();
+        
+        [ObservableProperty]
+        private int _credits;
 
-        [ObservableProperty] private bool _noRewards = true;
-
-        public RewardsViewModel(IRewardService rewardService)
+        public RewardsViewModel(IRewardService rewardService, IUserService userService)
         {
             Title = "Rewards";
             _rewardService = rewardService;
-            Rewards = new ObservableCollection<Reward>();
+            _userService = userService;
             _ = Initialise();
         }
 
         private async Task Initialise()
         {
             var rewardList = await _rewardService.GetRewards();
+
             rewardList.ForEach(reward =>
             {
                 Rewards.Add(reward);
-            });
 
-            if (Rewards.Count > 0)
-            {
-                NoRewards = false;
-            }
+                if (reward.IsCarousel)
+                {
+                    CarouselRewards.Add(reward);
+                }
+            });
+            
+            Credits = _userService.MyBalance;
 
             RewardCardTappedCommand = new Command<Reward>(async (reward) =>
             {

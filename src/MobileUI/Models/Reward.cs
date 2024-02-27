@@ -8,5 +8,7 @@
         public DateTimeOffset? AwardedAt { get; set; }
         public bool Awarded { get; set; }
         public string ImageUri { get; set; }
+        public string? CarouselImageUri { get; set; }
+        public bool IsCarousel { get; set; }
     }
 }
