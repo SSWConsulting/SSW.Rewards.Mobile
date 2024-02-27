@@ -133,6 +133,10 @@
 		  <DependentUpon>RedeemPage.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Controls\ListItem.xaml.cs">
+		  <DependentUpon>ListItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -165,8 +169,9 @@
 		<MauiXaml Update="Pages\RedeemPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
-		<MauiXaml Update="Resources\Styles\Templates.xaml">
-		  <Generator></Generator>
+		<MauiXaml Update="Controls\ListItem.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 

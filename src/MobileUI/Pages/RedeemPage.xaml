@@ -148,58 +148,11 @@
                         Spacing="6">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:Reward">
-                                <Border StrokeThickness="0"
-                                        BackgroundColor="{StaticResource Background}"
-                                        Padding="8">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8" />
-                                    </Border.StrokeShape>
-                                    <Grid ColumnSpacing="12"
-                                          ColumnDefinitions="Auto, *, Auto">
-                                        <Border Grid.Column="0"
-                                                HeightRequest="64"
-                                                WidthRequest="64"
-                                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                                StrokeThickness="0">
-                                            <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="6" />
-                                            </Border.StrokeShape>
-                                            <Image Source="{Binding ImageUri}"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center"
-                                                       HeightRequest="64"
-                                                       WidthRequest="64"
-                                                       Aspect="AspectFill" />
-                                        </Border>
-
-                                        <Grid
-                                            Grid.Column="1"
-                                            RowDefinitions="*,*"
-                                            VerticalOptions="Center"
-                                            RowSpacing="2">
-                                            <Label Grid.Row="0"
-                                                   Text="{Binding Name}"
-                                                   TextColor="White"
-                                                   InputTransparent="True"
-                                                   VerticalTextAlignment="End"
-                                                   FontSize="16"
-                                                   Style="{StaticResource LabelBold}"/>
-                                            <Label Grid.Row="1"
-                                                   Text="{Binding Description}"
-                                                   TextColor="{StaticResource TextSecondary}"
-                                                   VerticalTextAlignment="Start"
-                                                   InputTransparent="True"
-                                                   FontSize="12" />
-                                        </Grid>
-
-                                        <controls:PointsButton Grid.Column="3"
-                                                               ButtonText="GET"
-                                                               Points="{Binding Cost}"
-                                                               IsDisabled="{Binding Awarded}" />
-
-                                    </Grid>
-                                </Border>
-
+                                <controls:ListItem Title="{Binding Name}"
+                                                   Description="{Binding Description}"
+                                                   Points="{Binding Cost}"
+                                                   ButtonText="GET"
+                                                   ThumbnailImage="{Binding ImageUri}"/> 
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>

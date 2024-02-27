@@ -94,95 +94,14 @@
                     Spacing="6">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="quizzes:QuizDto">
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="{StaticResource Background}"
-                                    Padding="8">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
-                                        CommandParameter="{Binding Id}" />
-                                </Border.GestureRecognizers>
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
-                                </Border.StrokeShape>
-                                <Grid ColumnSpacing="12"
-                                      ColumnDefinitions="Auto, *, Auto">
-                                    <Border Grid.Column="0"
-                                            HeightRequest="64"
-                                            WidthRequest="64"
-                                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                            StrokeThickness="0">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="6" />
-                                        </Border.StrokeShape>
-                                        <Image Source="{Binding ThumbnailImage}"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"
-                                               HeightRequest="64"
-                                               WidthRequest="64"
-                                               Aspect="AspectFill" />
-                                    </Border>
-
-                                    <Grid
-                                        Grid.Column="1"
-                                        ColumnDefinitions="*,Auto"
-                                        RowDefinitions="*,*"
-                                        VerticalOptions="Center"
-                                        RowSpacing="2"
-                                        ColumnSpacing="12">
-                                        <Label Grid.Row="0"
-                                               Grid.Column="0"
-                                               Text="{Binding Title}"
-                                               TextColor="White"
-                                               InputTransparent="True"
-                                               VerticalTextAlignment="End"
-                                               FontSize="16"
-                                               Style="{StaticResource LabelBold}">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label"
-                                                             Binding="{Binding Path=Passed}"
-                                                             Value="True">
-                                                    <Setter Property="Opacity"
-                                                            Value="0.5" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Label Grid.Row="1"
-                                               Grid.Column="0"
-                                               Text="{Binding Description}"
-                                               TextColor="{StaticResource TextSecondary}"
-                                               VerticalTextAlignment="Start"
-                                               InputTransparent="True"
-                                               FontSize="12">
-                                            <Label.Triggers>
-                                                <DataTrigger TargetType="Label"
-                                                             Binding="{Binding Path=Passed}"
-                                                             Value="True">
-                                                    <Setter Property="Opacity"
-                                                            Value="0.5" />
-                                                </DataTrigger>
-                                            </Label.Triggers>
-                                        </Label>
-                                        <Label Grid.Column="1"
-                                               Grid.RowSpan="2"
-                                               Text="&#xf058;"
-                                               TextColor="Green"
-                                               FontSize="20"
-                                               FontAutoScalingEnabled="False"
-                                               FontFamily="FA6Regular"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="Center"
-                                               IsVisible="{Binding Passed}"/>
-                                    </Grid>
-                                    
-                                    <controls:PointsButton Grid.Column="3"
-                                                           ButtonText="GO"
-                                                           Points="{Binding Points}"
-                                                           IsDisabled="{Binding Passed}" />
-
-                                </Grid>
-                            </Border>
-
+                            <controls:ListItem Title="{Binding Title}"
+                                               Description="{Binding Description}"
+                                               Points="{Binding Points}"
+                                               ButtonText="GO"
+                                               ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                               ThumbnailImage="{Binding ThumbnailImage}"
+                                               ShowTick="{Binding Passed}"
+                                               IsDisabled="{Binding Passed}"/> 
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
