@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:SSW.Rewards.Models"
              xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
              x:DataType="viewModels:DevProfilesViewModel"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.PeoplePage"
              HideSoftInputOnTapped="True">
     <ContentPage.Resources>

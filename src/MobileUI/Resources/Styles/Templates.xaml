@@ -11,18 +11,56 @@
             </Grid.BindingContext>
             <FlexLayout JustifyContent="SpaceBetween"
                         Margin="0"
-                        BackgroundColor="{StaticResource Background}">
+                        BackgroundColor="{StaticResource Background}"
+                        x:DataType="vm:TopBarViewModel">
                 <mct:AvatarView ImageSource="{Binding ProfilePic}"
                                 HeightRequest="40"
                                 WidthRequest="40"
                                 CornerRadius="20"
                                 BorderColor="White"
                                 BorderWidth="2"
-                                Margin="10,5">
+                                Margin="10,5"
+                                IsVisible="{Binding ShowAvatar}">
                     <mct:AvatarView.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />
                     </mct:AvatarView.GestureRecognizers>
                 </mct:AvatarView>
+
+                <ImageButton HeightRequest="40"
+                             WidthRequest="40"
+                             CornerRadius="20"
+                             BorderColor="White"
+                             BackgroundColor="{StaticResource SSWRed}"
+                             Margin="10,5"
+                             Padding="3"
+                             IsVisible="{Binding ShowBack}"
+                             Command="{Binding GoBackCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="FluentIcons"
+                                         Glyph="&#xf189;"
+                                         Color="White"/>
+                    </ImageButton.Source>
+                </ImageButton>
+
+                <Button HeightRequest="40"
+                        WidthRequest="40"
+                        CornerRadius="20"
+                        BorderColor="White"
+                        BackgroundColor="{StaticResource SSWRed}"
+                        Margin="10,5"
+                        Padding="3"
+                        IsVisible="{Binding ShowDone}"
+                        Text="Done"
+                        Command="{Binding GoBackCommand}" />
+
+
+                <ImageButton Command="{Binding OpenScannerCommand}"
+                             Margin="10,5">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="FluentIcons"
+                                         Glyph="&#xf636;"/>
+                    </ImageButton.Source>
+                </ImageButton>
             </FlexLayout>
             <ContentPresenter Grid.Row="1" />
         </Grid>

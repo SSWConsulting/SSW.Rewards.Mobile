@@ -23,6 +23,7 @@ public partial class AppShell : Shell
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("quiz/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
+        Routing.RegisterRoute("scan", typeof(ScanPage));
     }
 
     private bool _isStaff;

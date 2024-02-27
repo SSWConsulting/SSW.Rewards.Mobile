@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:MyProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.MyProfilePage">
     <ContentPage.Behaviors>

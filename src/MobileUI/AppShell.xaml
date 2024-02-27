@@ -215,9 +215,9 @@
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
         </Tab>-->
 
-        <Tab Route="scan" Icon="icon_scanner" Title="Scanner">
+        <!--<Tab Route="scan" Icon="icon_scanner" Title="Scanner">
             <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-            <!--<Tab.Icon>
+            --><!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                     Glyph="&#xf636;"/>
             </Tab.Icon>-->
@@ -245,8 +245,8 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </Tab.Style>-->
-        </Tab>
+            </Tab.Style>--><!--
+        </Tab>-->
     </FlyoutItem>
 
     <!--<MenuItem Text="Rewards"

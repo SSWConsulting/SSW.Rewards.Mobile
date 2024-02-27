@@ -87,4 +87,8 @@ public static class Icon
     public const string Check = "\ue9b7";
 
     public const string Ribbon = "\uea30";
+
+    public const string Close = "\uf36e";
+
+    public const string LeftArrow = "\uf189";
 }
