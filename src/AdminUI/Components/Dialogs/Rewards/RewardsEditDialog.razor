@@ -2,6 +2,7 @@
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Models.Interfaces
 @using MudBlazor
+@using SSW.Rewards.Admin.UI.Helpers
 @using SSW.Rewards.Shared.DTOs.Leaderboard
 @using SSW.Rewards.Shared.DTOs.Rewards
 @using SSW.Rewards.ApiClient.Services
@@ -11,15 +12,19 @@
 
 <MudDialog>
     <TitleContent>
-        <div class="d-flex justify-center">
-            <AdminQRCode Height="200" QRCodeString="@Dto.Code"/>
-        </div>
+        
     </TitleContent>
     <DialogContent>
-        <MudStack>
-            <MudTextField @bind-Value="@Dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
-            <MudTextField @bind-Value="@Dto.Name" Label="Name" ReadOnly="true"  Disabled="true"/>
-            <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true" />
+        <MudStack Spacing="5">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
+                <AdminQRCode Height="150" QRCodeString="@Dto.Code"/>
+                <MudStack>
+                    <MudTextField @bind-Value="@Dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+                    <MudTextField @bind-Value="@Dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
+                </MudStack>
+            </MudStack>
+            <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
+            <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
             <MudSelect
                 @bind-Value="_selectedValue"
                 T="@LeaderboardUserDto"
@@ -35,9 +40,9 @@
                 }
             </MudSelect>
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
-                @if (!string.IsNullOrEmpty(_imageUrl))
+                @if (!string.IsNullOrEmpty(Dto.ImageUri))
                 {
-                    <MudImage id="profileImg" Src="@_imageUrl" Height="100" Width="100" Elevation="1" Alt="Reward thumbnail image"/>
+                    <MudImage id="profileImg" Src="@Dto.ImageUri" Height="100" Width="100" Elevation="1" Alt="Reward thumbnail image"/>
                 }
                 else
                 {
@@ -45,12 +50,52 @@
                         <MudText Typo="Typo.body1">No Image</MudText>
                     </MudPaper>
                 }
-                
+
                 <MudStack Row="false">
-                    <MudTextField Class="d-inline" T="string" Label="Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true"/>
-                    <DragDropFileUpload OnClick="OnPhotoUploadClick" Label="Upload a reward image"/>
+                    <MudStack Row="false">
+                        <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
+                        <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
+                            <ButtonTemplate>
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           for="@context.Id">
+                                    Upload Thumbnail Image
+                                </MudButton>
+                            </ButtonTemplate>
+                        </MudFileUpload>
+                    </MudStack>
+                </MudStack>
+            </MudStack>            
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
+                @if (!string.IsNullOrEmpty(Dto.CarouselImageUri))
+                {
+                    <MudImage id="profileImg" Src="@Dto.CarouselImageUri" Height="100" Width="100" Elevation="1" Alt="Reward thumbnail image"/>
+                }
+                else
+                {
+                    <MudPaper Height="100px" Width="100px" SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave">
+                        <MudText Typo="Typo.body1">No Image</MudText>
+                    </MudPaper>
+                }
+
+                <MudStack Row="false">
+                    <MudTextField Class="d-inline" T="string" Label="Carousel Image" @bind-Value="@Dto.CarouselImageFileName" Required="false" Disabled="true" />
+                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Carousel Image
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
                 </MudStack>
             </MudStack>
+            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
         </MudStack>
     </DialogContent>
     <DialogActions>
@@ -69,8 +114,6 @@
 
     [Parameter]
     public RewardEditDto Dto { get; set; } = new();
-
-    private string _imageUrl;
     private LeaderboardUserDto? _selectedValue;
     private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
@@ -78,7 +121,6 @@
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-        _imageUrl = Dto.ImageUri;
     }
     
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
@@ -98,22 +140,34 @@
         }
     }
 
-    // todo: could be worth making this a generic function. This functionality is used across many places
-    private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
+    private async Task SetThumbnailImage(IBrowserFile file)
     {
-        var imageFile = e.File;
+        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+        
+        Dto.ImageBytesInBase64 = base64;
+        Dto.ImageFileName = name;
+        Dto.ImageUri = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
+    }    
+    
+    private async Task SetCarouselImage(IBrowserFile file)
+    {
+        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+        
+        Dto.CarouselImageBytesInBase64 = base64;
+        Dto.CarouselImageFileName = name;
+        Dto.CarouselImageUri = $"data:{Dto.CarouselImageFileName};base64,{Dto.CarouselImageBytesInBase64}";
+    }    
 
-        var ms = new MemoryStream();
+    private string IsCarouselImage(bool isCarousel)
+    {
+        if (isCarousel && (String.IsNullOrEmpty(Dto.CarouselImageBytesInBase64)))
+        {
+            return "Carousel image is required when displaying on carousel";
+        }
 
-        await imageFile.OpenReadStream().CopyToAsync(ms);
-
-        var bytes = ms.ToArray();
-
-        Dto.ImageBytesInBase64 = Convert.ToBase64String(bytes);
-        Dto.ImageFileName = imageFile.Name;
-        _imageUrl = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
+        return null;
     }
-
+    
     void AssignReward()
     {
         if (_selectedValue == null)

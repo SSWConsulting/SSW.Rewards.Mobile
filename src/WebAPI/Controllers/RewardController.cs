@@ -56,12 +56,16 @@ public class RewardController : ApiControllerBase
         var command = new AddRewardCommand
         {
             Name = dto.Name,
+            Description = dto.Description,
             Cost = dto.Cost,
             RewardType = dto.RewardType,
             ImageBytesInBase64 = dto.ImageBytesInBase64,
-            ImageFileName = dto.ImageFileName
+            ImageFileName = dto.ImageFileName,
+            CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
+            CarouselImageFileName = dto.CarouselImageFileName,
+            IsCarousel = dto.IsCarousel
         };
-
+        
         return Ok(await Mediator.Send(command));
     }
 
@@ -94,10 +98,14 @@ public class RewardController : ApiControllerBase
         {
             Id = dto.Id,
             RewardName = dto.Name,
+            Description = dto.Description,
             Cost = dto.Cost,
             ImageBytesInBase64 = dto.ImageBytesInBase64,
             ImageFilename = dto.ImageFileName,
-            IsOnboardingReward = dto.IsOnboardingReward
+            IsOnboardingReward = dto.IsOnboardingReward,
+            CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
+            CarouselImageFileName = dto.CarouselImageFileName,
+            IsCarousel = dto.IsCarousel
         };
 
         return Ok(await Mediator.Send(command));

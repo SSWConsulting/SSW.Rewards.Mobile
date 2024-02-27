@@ -6,11 +6,15 @@ public class AddRewardCommand : IRequest<int>
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public int Cost { get; set; }
     public string ImageUri { get; set; }
     public RewardType RewardType { get; set; }
     public string ImageBytesInBase64 { get; set; }
     public string ImageFileName { get; set; }
+    public string CarouselImageBytesInBase64 { get; set; }
+    public string CarouselImageFileName { get; set; }
+    public bool IsCarousel { get; set; }
 }
 
 public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
@@ -26,22 +30,21 @@ public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
 
     public async Task<int> Handle(AddRewardCommand request, CancellationToken cancellationToken)
     {
-        Uri imageUri = null;
-        if (!string.IsNullOrWhiteSpace(request.ImageBytesInBase64))
-        {
-            var imageBytes = Convert.FromBase64String(request.ImageBytesInBase64);
-            imageUri = await _picStorageProvider.UploadRewardPic(imageBytes, request.ImageFileName);
-        }
+        Uri imageUri = await UploadImage(request.ImageBytesInBase64, request.ImageFileName);
+        Uri carouselImageUri = await UploadImage(request.CarouselImageBytesInBase64, request.CarouselImageFileName);
 
         var codeData = Encoding.ASCII.GetBytes($"rwd:{request.Name}");
         string code = Convert.ToBase64String(codeData);
 
-        var entity = new SSW.Rewards.Domain.Entities.Reward
+        var entity = new Reward
         {
             Name = request.Name,
             Cost = request.Cost,
+            Description = request.Description,
             RewardType = request.RewardType,
             ImageUri = imageUri?.AbsoluteUri,
+            CarouselImageUri = carouselImageUri?.AbsoluteUri,
+            IsCarousel = request.IsCarousel,
             Code = code
         };
 
@@ -50,6 +53,17 @@ public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
         await _context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
+    }
+    
+    private async Task<Uri> UploadImage(string imageBytesInBase64, string imageFileName)
+    {
+        if (string.IsNullOrWhiteSpace(imageBytesInBase64))
+        {
+            return null;
+        }
+
+        var imageBytes = Convert.FromBase64String(imageBytesInBase64);
+        return await _picStorageProvider.UploadRewardPic(imageBytes, imageFileName);
     }
 }
 
