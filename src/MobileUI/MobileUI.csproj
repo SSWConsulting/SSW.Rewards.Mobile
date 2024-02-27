@@ -117,7 +117,7 @@
 		  <DependentUpon>GoButton.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
-		<Compile Update="PopupPages\QuizResultPending.xaml.cs">
+		<Compile Update="PopupPages\QuizResultPendingPage.xaml.cs">
 		  <DependentUpon>QuizResultPending.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
@@ -149,7 +149,7 @@
 		  <SubType>Designer</SubType>
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="PopupPages\QuizResultPending.xaml">
+		<MauiXaml Update="PopupPages\QuizResultPendingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\ProfileActivity.xaml">

@@ -18,14 +18,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         private int _quizId;
         private string _quizIcon;
         private int _submissionId;
-        private List<string> _loadingPhrases = new ()
-        {
-            "Summoning answers from our quiz master!",
-            "Extracting brilliance from our genius AI companion!",
-            "Harvesting insights from the all-knowing AI guru!",
-            "Retrieving wisdom from the depths of the AI genius!",
-            "Snatching enlightenment from our brainy AI overlord!"
-        };
         
         [ObservableProperty]
         private string _animRef = "Sophie.json";
@@ -157,7 +149,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (allQuestionsAnswered)
             {
-                var popup = new QuizResultPending();
+                var popup = new QuizResultPendingPage(new QuizResultPendingViewModel());
                 await MopupService.Instance.PushAsync(popup);
 
                 var isComplete = await AwaitQuizCompletion();

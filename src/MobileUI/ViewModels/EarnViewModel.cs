@@ -2,14 +2,17 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Mopups.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
 {
+    private bool _isLoaded;
     private readonly IQuizService _quizService;
 
     private string quizDetailsPageUrl = "earn/details";
@@ -42,6 +45,11 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async Task Initialise()
     {
+        if (_isLoaded)
+        {
+            return;
+        }
+        
         Quizzes = new ObservableCollection<QuizDto>();
         OnPropertyChanged(nameof(Quizzes));
         CarouselQuizzes = new ObservableCollection<QuizDto>();
@@ -62,6 +70,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         }
         
         IsBusy = false;
+        _isLoaded = true;
     }
 
     private async Task OpenQuiz(int quizId, Icons icon)
