@@ -51,7 +51,8 @@
                 }
 
                 <MudStack Row="false">
-                     <MudStack Row="false">
+                    <MudStack Row="false">
+                        <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
                         <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
                             <ButtonTemplate>
                                 <MudButton HtmlTag="label"
@@ -79,6 +80,7 @@
                 }
 
                 <MudStack Row="false">
+                    <MudTextField Class="d-inline" T="string" Label="Carousel Image" @bind-Value="@Dto.CarouselImageFileName" Required="false" Disabled="true" />
                     <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
                         <ButtonTemplate>
                             <MudButton HtmlTag="label"
