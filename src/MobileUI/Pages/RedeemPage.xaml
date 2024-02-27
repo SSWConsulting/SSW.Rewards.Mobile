@@ -74,6 +74,11 @@
                 <VerticalStackLayout Spacing="10">
                     <Grid RowDefinitions="Auto"
                           x:Name="CarouselSection">
+                        <Grid.Triggers>
+                            <DataTrigger TargetType="Grid" Binding="{Binding CarouselRewards.Count}" Value="0">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Grid.Triggers>
                         <CarouselView Grid.Row="0"
                                       x:Name="Carousel"
                                       HeightRequest="400"
@@ -139,74 +144,63 @@
 
                     <VerticalStackLayout
                         x:Name="QuizListSection"
-                        BindableLayout.ItemsSource="{Binding Rewards}">
+                        BindableLayout.ItemsSource="{Binding Rewards}"
+                        Spacing="6">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:Reward">
-                                <Grid RowDefinitions="78, 6">
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            CommandParameter="{Binding Id}" />
-                                    </Grid.GestureRecognizers>
-                                    <Border Grid.Row="0" StrokeThickness="0">
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="8" />
-                                        </Border.StrokeShape>
-                                        <Grid ColumnSpacing="4"
-                                              ColumnDefinitions="74, *, Auto"
-                                              BackgroundColor="{StaticResource Background}">
-                                            <Border Grid.Column="0"
-                                                    HeightRequest="64"
-                                                    WidthRequest="64"
-                                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                                    StrokeThickness="0">
-                                                <Border.StrokeShape>
-                                                    <RoundRectangle CornerRadius="6" />
-                                                </Border.StrokeShape>
-                                                <Grid>
-                                                    <Image Source="{Binding ImageUri}"
-                                                           HorizontalOptions="Center"
-                                                           VerticalOptions="Center"
-                                                           HeightRequest="64"
-                                                           WidthRequest="64"
-                                                           Aspect="AspectFill" />
-                                                </Grid>
-                                            </Border>
-
-                                            <Grid
-                                                Grid.Column="1"
-                                                ColumnDefinitions="*,20"
-                                                RowDefinitions="*,*"
-                                                VerticalOptions="Center"
-                                                RowSpacing="2">
-                                                <Label Grid.Row="0"
-                                                       Grid.Column="0"
-                                                       Text="{Binding Name}"
-                                                       TextColor="White"
-                                                       InputTransparent="True"
-                                                       VerticalTextAlignment="End"
-                                                       FontSize="18"
-                                                       Style="{StaticResource LabelBold}"
-                                                       LineBreakMode="TailTruncation" />
-                                                <Label Grid.Row="1"
-                                                       Grid.Column="0"
-                                                       Text="{Binding Name}"
-                                                       TextColor="{StaticResource TextSecondary}"
-                                                       VerticalTextAlignment="Start"
-                                                       InputTransparent="True"
-                                                       MaxLines="2"
-                                                       LineBreakMode="WordWrap"
-                                                       FontSize="12" />
+                                <Border StrokeThickness="0"
+                                        BackgroundColor="{StaticResource Background}"
+                                        Padding="8">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8" />
+                                    </Border.StrokeShape>
+                                    <Grid ColumnSpacing="12"
+                                          ColumnDefinitions="Auto, *, Auto">
+                                        <Border Grid.Column="0"
+                                                HeightRequest="64"
+                                                WidthRequest="64"
+                                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                                StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="6" />
+                                            </Border.StrokeShape>
+                                            <Grid>
+                                                <Image Source="{Binding ImageUri}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       HeightRequest="64"
+                                                       WidthRequest="64"
+                                                       Aspect="AspectFill" />
                                             </Grid>
+                                        </Border>
 
-                                            <controls:PointsButton Grid.Column="3"
-                                                                   ButtonText="GET"
-                                                                   Points="{Binding Cost}"
-                                                                   Margin="0,0,10,0"
-                                                                   IsDisabled="{Binding Awarded}" />
-
+                                        <Grid
+                                            Grid.Column="1"
+                                            RowDefinitions="*,*"
+                                            VerticalOptions="Center"
+                                            RowSpacing="2">
+                                            <Label Grid.Row="0"
+                                                   Text="{Binding Name}"
+                                                   TextColor="White"
+                                                   InputTransparent="True"
+                                                   VerticalTextAlignment="End"
+                                                   FontSize="16"
+                                                   Style="{StaticResource LabelBold}"/>
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding Description}"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   VerticalTextAlignment="Start"
+                                                   InputTransparent="True"
+                                                   FontSize="12" />
                                         </Grid>
-                                    </Border>
-                                </Grid>
+
+                                        <controls:PointsButton Grid.Column="3"
+                                                               ButtonText="GET"
+                                                               Points="{Binding Cost}"
+                                                               IsDisabled="{Binding Awarded}" />
+
+                                    </Grid>
+                                </Border>
 
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>

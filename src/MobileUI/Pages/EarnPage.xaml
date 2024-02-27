@@ -12,17 +12,23 @@
              x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
     <ScrollView>
         <Grid>
-            <Grid RowDefinitions="Auto, *">
+            <Grid RowDefinitions="Auto, *"
+                  Margin="15"
+                  RowSpacing="10">
                 <Grid Grid.Row="0"
                       RowDefinitions="Auto" 
                       x:Name="CarouselSection">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid" Binding="{Binding CarouselQuizzes.Count}" Value="0">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Grid.Triggers>
                     <CarouselView Grid.Row="0"
                                   x:Name="Carousel"
                                   HeightRequest="400"
                                   Loop="True"
                                   ItemsSource="{Binding CarouselQuizzes}"
                                   HorizontalScrollBarVisibility="Never"
-                                  Margin="15"
                                   IndicatorView="QuizIndicator">
                         <CarouselView.ItemTemplate>
                             <DataTemplate x:DataType="quizzes:QuizDto">
@@ -81,113 +87,107 @@
                                    x:Name="QuizIndicator" />
                 </Grid>
 
-                <CollectionView
+                <VerticalStackLayout
                     Grid.Row="1"
                     x:Name="QuizListSection"
-                    ItemsSource="{Binding Quizzes}"
-                    Margin="15,0,15,10"
-                    ItemsUpdatingScrollMode="KeepItemsInView"
-                    ItemSizingStrategy="MeasureFirstItem">
-                    <CollectionView.ItemTemplate>
+                    BindableLayout.ItemsSource="{Binding Quizzes}"
+                    Spacing="6">
+                    <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="quizzes:QuizDto">
-                            <Grid RowDefinitions="78, 6">
-                                <Grid.GestureRecognizers>
+                            <Border StrokeThickness="0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    Padding="8">
+                                <Border.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
                                         CommandParameter="{Binding Id}" />
-                                </Grid.GestureRecognizers>
-                                <Border Grid.Row="0" StrokeThickness="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8" />
-                                    </Border.StrokeShape>
-                                    <Grid ColumnSpacing="4"
-                                          ColumnDefinitions="74, *, Auto"
-                                          BackgroundColor="{StaticResource Background}">
-                                        <Border Grid.Column="0"
-                                                HeightRequest="64"
-                                                WidthRequest="64"
-                                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                                StrokeThickness="0">
-                                            <Border.StrokeShape>
-                                                <RoundRectangle CornerRadius="6" />
-                                            </Border.StrokeShape>
-                                            <Grid>
-                                                <Image Source="{Binding ThumbnailImage}"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="Center"
-                                                       HeightRequest="64"
-                                                       WidthRequest="64"
-                                                       Aspect="AspectFill" />
-                                            </Grid>
-                                        </Border>
-
-                                        <Grid
-                                            Grid.Column="1"
-                                            ColumnDefinitions="*,20"
-                                            RowDefinitions="*,*"
-                                            VerticalOptions="Center"
-                                            RowSpacing="2">
-                                            <Label Grid.Row="0"
-                                                   Grid.Column="0"
-                                                   Text="{Binding Title}"
-                                                   TextColor="White"
-                                                   InputTransparent="True"
-                                                   VerticalTextAlignment="End"
-                                                   FontSize="18"
-                                                   Style="{StaticResource LabelBold}"
-                                                   LineBreakMode="TailTruncation">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label"
-                                                                 Binding="{Binding Path=Passed}"
-                                                                 Value="True">
-                                                        <Setter Property="Opacity"
-                                                                Value="0.5" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <Label Grid.Row="1"
-                                                   Grid.Column="0"
-                                                   Text="{Binding Description}"
-                                                   TextColor="{StaticResource TextSecondary}"
-                                                   VerticalTextAlignment="Start"
-                                                   InputTransparent="True"
-                                                   MaxLines="2"
-                                                   LineBreakMode="WordWrap"
-                                                   FontSize="12">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label"
-                                                                 Binding="{Binding Path=Passed}"
-                                                                 Value="True">
-                                                        <Setter Property="Opacity"
-                                                                Value="0.5" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <Label Grid.Column="1"
-                                                   Grid.RowSpan="2"
-                                                   Text="&#xf058;"
-                                                   TextColor="Green"
-                                                   FontSize="20"
-                                                   FontAutoScalingEnabled="False"
-                                                   FontFamily="FA6Regular"
-                                                   VerticalOptions="Center"
+                                </Border.GestureRecognizers>
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <Grid ColumnSpacing="12"
+                                      ColumnDefinitions="Auto, *, Auto">
+                                    <Border Grid.Column="0"
+                                            HeightRequest="64"
+                                            WidthRequest="64"
+                                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                            StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="6" />
+                                        </Border.StrokeShape>
+                                        <Grid>
+                                            <Image Source="{Binding ThumbnailImage}"
                                                    HorizontalOptions="Center"
-                                                   IsVisible="{Binding Passed}"/>
+                                                   VerticalOptions="Center"
+                                                   HeightRequest="64"
+                                                   WidthRequest="64"
+                                                   Aspect="AspectFill" />
                                         </Grid>
-                                        
-                                        <controls:PointsButton Grid.Column="3"
-                                                               ButtonText="GO"
-                                                               Points="{Binding Points}"
-                                                               Margin="0,0,10,0"
-                                                               IsDisabled="{Binding Passed}" />
+                                    </Border>
 
+                                    <Grid
+                                        Grid.Column="1"
+                                        ColumnDefinitions="*,Auto"
+                                        RowDefinitions="*,*"
+                                        VerticalOptions="Center"
+                                        RowSpacing="2"
+                                        ColumnSpacing="12">
+                                        <Label Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="{Binding Title}"
+                                               TextColor="White"
+                                               InputTransparent="True"
+                                               VerticalTextAlignment="End"
+                                               FontSize="16"
+                                               Style="{StaticResource LabelBold}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding Path=Passed}"
+                                                             Value="True">
+                                                    <Setter Property="Opacity"
+                                                            Value="0.5" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="{Binding Description}"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               VerticalTextAlignment="Start"
+                                               InputTransparent="True"
+                                               FontSize="12">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding Path=Passed}"
+                                                             Value="True">
+                                                    <Setter Property="Opacity"
+                                                            Value="0.5" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label Grid.Column="1"
+                                               Grid.RowSpan="2"
+                                               Text="&#xf058;"
+                                               TextColor="Green"
+                                               FontSize="20"
+                                               FontAutoScalingEnabled="False"
+                                               FontFamily="FA6Regular"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"
+                                               IsVisible="{Binding Passed}"/>
                                     </Grid>
-                                </Border>
-                            </Grid>
+                                    
+                                    <controls:PointsButton Grid.Column="3"
+                                                           ButtonText="GO"
+                                                           Points="{Binding Points}"
+                                                           IsDisabled="{Binding Passed}" />
+
+                                </Grid>
+                            </Border>
 
                         </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
             </Grid>
             <ActivityIndicator
                 HorizontalOptions="Center"
