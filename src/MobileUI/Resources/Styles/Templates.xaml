@@ -5,7 +5,10 @@
                     xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
                     xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels">
     <ControlTemplate x:Key="PageTemplate">
-        <Grid RowDefinitions="55,*">
+        <Grid RowDefinitions="55,*"
+              Margin="0"
+              Padding="0"
+              TranslationY="{OnPlatform iOS=-5, Default=0}">
             <Grid.BindingContext>
                 <resolver:ResolveViewModel x:TypeArguments="vm:TopBarViewModel" />
             </Grid.BindingContext>

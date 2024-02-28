@@ -11,25 +11,22 @@
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
                                     IsDetecting="True"/>
-
-        <Border HeightRequest="30"
-                StrokeShape="RoundRectangle 15"
-                BackgroundColor="{StaticResource SSWRed}"
+        
+        <Button Text="Close"
+                ContentLayout="Right, 10"
+                Clicked="DismissTapped"
+                Margin="20"
+                HeightRequest="40"
                 VerticalOptions="Start"
                 HorizontalOptions="End"
-                Margin="20"
-                Padding="5">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="DismissTapped" />
-            </Border.GestureRecognizers>
-            <HorizontalStackLayout Spacing="5">
-                <Label Text="Close"
-                       VerticalTextAlignment="Center"/>
-                <Label FontFamily="FluentIcons"
-                       Text="&#xf36e;"
-                       VerticalTextAlignment="Center"/>
-            </HorizontalStackLayout>
-        </Border>
+                CornerRadius="20"
+                ZIndex="100">
+            <Button.ImageSource>
+                <FontImageSource Glyph="&#xf36e;" 
+                                 FontFamily="FluentIcons"/>
+            </Button.ImageSource>
+        </Button>
+        
         <Border 
             BackgroundColor="{StaticResource Background}"
             VerticalOptions="End"
@@ -47,5 +44,6 @@
                    TextColor="#DDDDDD" />
         </Border>
         <Image Source="qr_reticle"/>
+        
     </Grid>
 </ContentPage>
