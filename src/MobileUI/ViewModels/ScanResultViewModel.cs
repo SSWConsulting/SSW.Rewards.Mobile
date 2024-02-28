@@ -140,8 +140,8 @@ public partial class ScanResultViewModel : BaseViewModel
 
     private async Task DismissWithWon()
     {
-        await Shell.Current.GoToAsync("//main");
         await MopupService.Instance.PopAllAsync();
+        await Navigation.PopModalAsync();
     }
 
     private async Task DismissWithoutWon()
