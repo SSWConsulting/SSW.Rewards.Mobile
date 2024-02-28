@@ -86,8 +86,8 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         scannerView.CameraLocation = CameraLocation.Rear;
     }
 
-    private async void DismissTapped(object sender, TappedEventArgs e)
+    private async void DismissTapped(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        await Navigation.PopModalAsync();
     }
 }

@@ -55,7 +55,7 @@ public partial class TopBarViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenScanner()
     {
-        await Shell.Current.GoToAsync("/scan");
+        await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
     }
 
     [RelayCommand]
