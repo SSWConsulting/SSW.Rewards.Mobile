@@ -293,16 +293,25 @@
                                 HeightRequest="64" 
                                 WidthRequest="64"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                StrokeThickness="0">
+                                StrokeThickness="0"
+                                Padding="8">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="8" />
                             </Border.StrokeShape>
-                            <Label FontFamily="FA6Solid"
-                                   FontAutoScalingEnabled="False"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   FontSize="28"
-                                   Text="&#xf0eb;"/>
+                            <Image Aspect="AspectFit">
+                                <Image.Source>
+                                    <Binding Path="ImageUri" >
+                                        <Binding.TargetNullValue>
+                                            <FontImageSource
+                                                FontFamily="FA6Solid"
+                                                FontAutoScalingEnabled="False"
+                                                Glyph="&#xf0eb;"
+                                                Color="{StaticResource Gray100}"
+                                                Size="28"/>
+                                        </Binding.TargetNullValue>
+                                    </Binding>
+                                </Image.Source>
+                            </Image>
                         </Border>
                         <Label Grid.Row="1"
                                Text="{Binding Name}"
