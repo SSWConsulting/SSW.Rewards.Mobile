@@ -7,7 +7,8 @@ public class Mapping : Profile
     {
         CreateMap<StaffMemberSkill, StaffSkillDto>()
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Skill.Name))
-                .ForMember(dst => dst.Level, opt => opt.MapFrom(src => src.Level));
+                .ForMember(dst => dst.Level, opt => opt.MapFrom(src => src.Level))
+                .ForMember(dst => dst.ImageUri, opt => opt.MapFrom(src => src.Skill.ImageUri));
 
         CreateMap<StaffMember, StaffMemberDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.StaffMemberSkills))
