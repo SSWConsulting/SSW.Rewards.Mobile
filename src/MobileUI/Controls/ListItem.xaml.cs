@@ -1,6 +1,4 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Maui.BindableProperty.Generator.Core;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -157,6 +155,15 @@ public partial class ListItem
             typeof(ListItem),
             -1
         );
+    
+    public ICommand OnButtonClicked => new Command(() =>
+    {
+        if (!IsButtonDisabled)
+        {
+            ButtonCommand?.Execute(ItemId);
+        }
+    
+    });
     
     public ListItem()
     {

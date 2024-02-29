@@ -141,6 +141,10 @@
 		  <DependentUpon>CarouselItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="PopupPages\RedeemReward.xaml.cs">
+		  <DependentUpon>RedeemReward.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -180,6 +184,9 @@
 		<MauiXaml Update="Controls\CarouselItem.xaml">
 		  <SubType>Designer</SubType>
 		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="PopupPages\RedeemReward.xaml">
+		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>
 

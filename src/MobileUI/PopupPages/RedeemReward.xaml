@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 x:DataType="viewModels:RedeemRewardViewModel"
+                 x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
+                 BackgroundColor="#80000000">
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation PositionIn="Bottom"
+                                  PositionOut="Bottom"
+                                  DurationIn="300"
+                                  DurationOut="300"
+                                  EasingIn="SinOut"
+                                  EasingOut="SinIn"
+                                  HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <pages:PopupPage.Resources>
+        <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
+        <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+    </pages:PopupPage.Resources>
+    <Border
+        HorizontalOptions="Fill"
+        VerticalOptions="Center"
+        MinimumHeightRequest="400"
+        Padding="30"
+        Margin="40"
+        StrokeThickness="2"
+        Stroke="{StaticResource BorderDefault}"
+        BackgroundColor="{StaticResource Background}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="8" />
+        </Border.StrokeShape>
+        <VerticalStackLayout>
+            <Border HeightRequest="80"
+                    WidthRequest="80"
+                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                    StrokeThickness="0"
+                    Margin="0,0,0,30">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="6" />
+                </Border.StrokeShape>
+                <Grid>
+                    <Image HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Aspect="AspectFill"
+                           Source="{Binding Image}"
+                           IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                    <Label FontFamily="FA6Solid"
+                           FontAutoScalingEnabled="False"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           Text="&#xf06b;"
+                           TextColor="{StaticResource Gray300}"
+                           FontSize="28"
+                           IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
+                </Grid>
+            </Border>
+            
+            <Label Text="You are about to get:"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Style="{StaticResource LabelBold}"/>
+            
+            <Label Text="{Binding Name}"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Style="{StaticResource LabelBold}"/>
+            
+            <Label Text="{Binding Description}"
+                   FontSize="18"
+                   TextColor="{StaticResource TextSecondary}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,30"/>
+            
+            <Grid RowDefinitions="Auto,Auto"
+                  ColumnDefinitions="Auto,Auto"
+                  HorizontalOptions="Center"
+                  RowSpacing="6"
+                  ColumnSpacing="10"
+                  Margin="0,0,0,30">
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Text="Your Balance"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                
+                <Border Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                        StrokeThickness="0"
+                        Padding="15,4">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6" />
+                    </Border.StrokeShape>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label 
+                            TextColor="{StaticResource Coin}"
+                            Text="&#xf51e;"
+                            FontFamily="FA6Solid" 
+                            VerticalOptions="Center"
+                            FontSize="11" 
+                            InputTransparent="True" />
+                        <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
+                               VerticalOptions="Center"
+                               FontSize="18"/>
+                    </HorizontalStackLayout>
+                </Border>
+            
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Text="Product Cost"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                
+                <Border Grid.Row="1"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                        StrokeThickness="0"
+                        Padding="15,4">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="6" />
+                    </Border.StrokeShape>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label 
+                            TextColor="{StaticResource Coin}"
+                            Text="&#xf51e;"
+                            FontFamily="FA6Solid" 
+                            VerticalOptions="Center"
+                            FontSize="11" 
+                            InputTransparent="True" />
+                        <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
+                               VerticalOptions="Center"
+                               FontSize="18"/>
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+            
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="10">
+                <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                        StrokeThickness="0"
+                        Padding="8">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="4" />
+                    </Border.StrokeShape>
+                    <HorizontalStackLayout Spacing="4">
+                        <Label VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               FontFamily="FA6Regular"
+                               Text="&#xf057;">
+                        </Label>
+                        <Label Text="Cancel"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource LabelBold}"/>
+                    </HorizontalStackLayout>
+                </Border>
+                
+                <Border Background="{StaticResource BrandBrush}"
+                        StrokeThickness="0"
+                        Padding="8">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="4" />
+                    </Border.StrokeShape>
+                    <Label Text="Next"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           Style="{StaticResource LabelBold}"/>
+                </Border>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</pages:PopupPage>

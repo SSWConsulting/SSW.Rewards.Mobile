@@ -128,7 +128,8 @@
                                                        Points="{Binding Cost}"
                                                        ButtonText="GET"
                                                        ThumbnailImage="{Binding ImageUri}"
-                                                       PlaceholderGlyph="&#xf06b;"/> 
+                                                       PlaceholderGlyph="&#xf06b;"
+                                                       ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/> 
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
