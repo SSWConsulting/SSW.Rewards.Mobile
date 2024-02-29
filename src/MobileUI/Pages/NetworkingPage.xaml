@@ -1,0 +1,35 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:models="clr-namespace:SSW.Rewards.Models"
+             xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:NetworkingPageViewModel"
+             ControlTemplate="{DynamicResource PageTemplate}"
+             x:Class="SSW.Rewards.Mobile.Pages.NetworkingPage"
+             HideSoftInputOnTapped="True">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
+            <converters:ScannedToColorConverter x:Key="ScannedToColor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid RowDefinitions="50, *">
+            <controls:SegmentedControl 
+                Segments="{Binding Segments}" 
+                Grid.Row="0"
+                Margin="10, 5"
+                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior 
+                        EventName="SelectionChanged"
+                        Command="{Binding FilterBySegmentCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
