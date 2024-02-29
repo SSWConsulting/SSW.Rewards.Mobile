@@ -24,7 +24,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
     
     public async Task Initialise()
     {
-        if (Segments is null || Segments.Count() != 0)
+        if (Segments is null || Segments.Count() == 0)
         {
             Segments = new List<Segment>
             {
