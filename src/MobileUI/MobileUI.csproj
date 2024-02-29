@@ -129,6 +129,10 @@
 		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Pages\NetworkingPage.xaml.cs">
+		  <DependentUpon>Networking.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 		<Compile Update="Pages\RedeemPage.xaml.cs">
 		  <DependentUpon>RedeemPage.xaml</DependentUpon>
 		  <SubType>Code</SubType>
@@ -186,6 +190,12 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="PopupPages\RedeemReward.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Resources\Styles\Templates.xaml">
+		  <Generator></Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\NetworkingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>
