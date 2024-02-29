@@ -3,11 +3,16 @@
 <Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         x:Class="SSW.Rewards.Mobile.Controls.ListItem"
         x:Name="this"
         StrokeThickness="0"
         BackgroundColor="{StaticResource Background}"
         Padding="8">
+    <Border.Resources>
+        <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
+        <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+    </Border.Resources>
     <Border.GestureRecognizers>
         <TapGestureRecognizer
             Command="{Binding ButtonCommand, Source={x:Reference this}}"
@@ -26,12 +31,21 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="6" />
             </Border.StrokeShape>
-            <Image Source="{Binding ThumbnailImage, Source={x:Reference this}}"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   HeightRequest="64"
-                   WidthRequest="64"
-                   Aspect="AspectFill" />
+            <Grid>
+                <Image HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Aspect="AspectFill"
+                       Source="{Binding ThumbnailImage, Source={x:Reference this}}"
+                       IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                <Label FontFamily="FA6Solid"
+                       FontAutoScalingEnabled="False"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Text="{Binding PlaceholderGlyph, Source={x:Reference this}}"
+                       TextColor="{StaticResource Gray300}"
+                       FontSize="28"
+                       IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNullOrEmpty}}" />
+            </Grid>
         </Border>
 
         <Grid

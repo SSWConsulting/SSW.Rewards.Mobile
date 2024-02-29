@@ -127,7 +127,8 @@
                                                        ItemId="{Binding Id}"
                                                        Points="{Binding Cost}"
                                                        ButtonText="GET"
-                                                       ThumbnailImage="{Binding ImageUri}"/> 
+                                                       ThumbnailImage="{Binding ImageUri}"
+                                                       PlaceholderGlyph="&#xf06b;"/> 
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>

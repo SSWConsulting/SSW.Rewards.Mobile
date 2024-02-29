@@ -4,7 +4,7 @@ using Maui.BindableProperty.Generator.Core;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class ListItem : Border
+public partial class ListItem
 {
     public string ThumbnailImage
     {
@@ -18,6 +18,19 @@ public partial class ListItem : Border
             typeof(string),
             typeof(ListItem),
             string.Empty
+        );
+    public string PlaceholderGlyph
+    {
+        get => (string)GetValue(PlaceholderGlyphProperty);
+        set => SetValue(PlaceholderGlyphProperty, value);
+    }
+
+    public static readonly BindableProperty PlaceholderGlyphProperty =
+        BindableProperty.Create(
+            nameof(PlaceholderGlyph),
+            typeof(string),
+            typeof(ListItem),
+            "\uf03e"
         );
     
     public string Title

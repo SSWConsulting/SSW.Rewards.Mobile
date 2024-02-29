@@ -68,6 +68,7 @@
                                                ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
                                                ItemId="{Binding Id}"
                                                ThumbnailImage="{Binding ThumbnailImage}"
+                                               PlaceholderGlyph="&#xf11b;"
                                                ShowTick="{Binding Passed}"
                                                IsDisabled="{Binding Passed}"
                                                IsButtonDisabled="{Binding Passed}"/> 
