@@ -6,8 +6,15 @@ namespace SSW.Rewards.Application.Rewards.Commands;
 public class ClaimRewardCommand : IRequest<ClaimRewardResult>
 {
     public string Code { get; set; }
+    public int Id { get; set; }
+    
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string AddressSuburb { get; set; }
+    public string AddressState { get; set; }
+    public string AddressPostcode { get; set; }
 
-    public bool ClaimInPerson { get; set; } = true;
+    public bool ClaimInPerson { get; set; }
 }
 
 public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
@@ -34,7 +41,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
     {
-        var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == request.Code, cancellationToken);
+        var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == request.Code || r.Id == request.Id, cancellationToken);
 
         if (reward == null)
         {
@@ -76,6 +83,13 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             }
         }
 
+        string address = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(request.AddressLine1))
+        {
+            address = $"{request.AddressLine1}, {request.AddressLine2}, {request.AddressSuburb}, {request.AddressState}, {request.AddressPostcode}";
+        }
+
         user.UserRewards.Add(new UserReward
         {
             Reward = reward
@@ -83,7 +97,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _rewardSender.SendRewardAsync(user, reward, cancellationToken);
+        await _rewardSender.SendRewardAsync(user, reward, address, cancellationToken);
 
         var rewardModel = _mapper.Map<RewardDto>(reward);
 

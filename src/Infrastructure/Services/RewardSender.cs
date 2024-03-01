@@ -19,10 +19,10 @@ public class RewardSender : IRewardSender
 
     public void SendReward(User user, Reward reward)
     {
-        SendRewardAsync(user, reward, CancellationToken.None).RunSynchronously();
+        SendRewardAsync(user, reward, string.Empty, CancellationToken.None).RunSynchronously();
     }
 
-    public async Task SendRewardAsync(User user, Reward reward, CancellationToken cancellationToken)
+    public async Task SendRewardAsync(User user, Reward reward, string address, CancellationToken cancellationToken)
     {
 
         string emailSubject = "SSW Rewards - Reward Notification";
@@ -40,7 +40,7 @@ public class RewardSender : IRewardSender
         {
             PhysicalRewardEmail emailProps = new PhysicalRewardEmail
             {
-                RecipientAddress = "Please contact user for address", // TODO: when we implement addess capture, change to: user.Address.ToString(),
+                RecipientAddress = address, // TODO: when we implement addess capture, change to: user.Address.ToString(),
                 RecipientName = user.FullName,
                 RewardName = reward.Name
             };

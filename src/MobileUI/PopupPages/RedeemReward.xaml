@@ -23,7 +23,7 @@
     <pages:PopupPage.Resources>
         <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
-        <toolkit:InvertedBoolConverter x:Key="InverseBool"/>
+        <toolkit:InvertedBoolConverter x:Key="InverseBool" />
     </pages:PopupPage.Resources>
     <ScrollView>
         <Border
@@ -38,278 +38,288 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
-            <VerticalStackLayout>
-                <Border HeightRequest="80"
-                        WidthRequest="80"
-                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                        StrokeThickness="0"
-                        Margin="0,0,0,30">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="6" />
-                    </Border.StrokeShape>
-                    <Grid>
-                        <Image HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Aspect="AspectFill"
-                               Source="{Binding Image}"
-                               IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
-                        <Label FontFamily="FA6Solid"
-                               FontAutoScalingEnabled="False"
-                               VerticalOptions="Center"
+            <Grid>
+                <VerticalStackLayout>
+                    <Border HeightRequest="80"
+                            WidthRequest="80"
+                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                            StrokeThickness="0"
+                            Margin="0,0,0,30">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="6" />
+                        </Border.StrokeShape>
+                        <Grid>
+                            <Image HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Aspect="AspectFill"
+                                   Source="{Binding Image}"
+                                   IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                            <Label FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Text="&#xf06b;"
+                                   TextColor="{StaticResource Gray300}"
+                                   FontSize="28"
+                                   IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="You are about to get:"
+                           FontSize="24"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}" />
+
+                    <Label Text="{Binding Name}"
+                           FontSize="24"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}" />
+
+                    <Label Text="{Binding Description}"
+                           FontSize="18"
+                           TextColor="{StaticResource Gray300}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,30" />
+
+                    <!-- Balance section -->
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="Auto,Auto"
+                          HorizontalOptions="Center"
+                          RowSpacing="6"
+                          ColumnSpacing="10"
+                          Margin="0,0,0,30"
+                          IsVisible="{Binding IsBalanceVisible}">
+                        <Label Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Your Balance"
+                               FontSize="18"
                                HorizontalOptions="Center"
-                               Text="&#xf06b;"
-                               TextColor="{StaticResource Gray300}"
-                               FontSize="28"
-                               IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
+                               VerticalOptions="Center" />
+
+                        <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0"
+                                Padding="15,4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    InputTransparent="True" />
+                                <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
+                                       VerticalOptions="Center"
+                                       FontSize="18" />
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Label Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Product Cost"
+                               FontSize="18"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0"
+                                Padding="15,4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    InputTransparent="True" />
+                                <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
+                                       VerticalOptions="Center"
+                                       FontSize="18" />
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
-                </Border>
 
-                <Label Text="You are about to get:"
-                       FontSize="24"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Style="{StaticResource LabelBold}" />
+                    <!-- Address section -->
+                    <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
+                                         Spacing="2"
+                                         Margin="0,0,0,30">
+                        <Label Text="Address Line 1"
+                               FontSize="18">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsLine1Valid}"
+                                             Value="true">
+                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsLine1Valid}"
+                                             Value="false">
+                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Entry Text="{Binding Address.Line1}"
+                               Margin="0,0,0,8" />
 
-                <Label Text="{Binding Name}"
-                       FontSize="24"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Style="{StaticResource LabelBold}" />
+                        <Label Text="Address Line 2"
+                               FontSize="18"
+                               TextColor="{StaticResource Gray300}" />
+                        <Entry Text="{Binding Address.Line2}"
+                               Margin="0,0,0,8" />
 
-                <Label Text="{Binding Description}"
-                       FontSize="18"
-                       TextColor="{StaticResource Gray300}"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Margin="0,0,0,30" />
+                        <Label Text="Suburb"
+                               FontSize="18">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsSuburbValid}"
+                                             Value="true">
+                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsSuburbValid}"
+                                             Value="false">
+                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Entry Text="{Binding Address.Suburb}"
+                               Margin="0,0,0,8" />
 
-                <!-- Balance section -->
-                <Grid RowDefinitions="Auto,Auto"
-                      ColumnDefinitions="Auto,Auto"
-                      HorizontalOptions="Center"
-                      RowSpacing="6"
-                      ColumnSpacing="10"
-                      Margin="0,0,0,30"
-                      IsVisible="{Binding IsBalanceVisible}">
-                    <Label Grid.Row="0"
-                           Grid.Column="0"
-                           Text="Your Balance"
-                           FontSize="18"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
+                        <Label Text="Postcode"
+                               FontSize="18">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsPostcodeValid}"
+                                             Value="true">
+                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsPostcodeValid}"
+                                             Value="false">
+                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Entry Text="{Binding Address.Postcode}"
+                               Margin="0,0,0,8" />
 
-                    <Border Grid.Row="0"
-                            Grid.Column="1"
-                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            Padding="15,4">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="8">
-                            <Label
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid"
-                                VerticalOptions="Center"
-                                FontSize="11"
-                                InputTransparent="True" />
-                            <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
-                                   VerticalOptions="Center"
-                                   FontSize="18" />
-                        </HorizontalStackLayout>
-                    </Border>
-
-                    <Label Grid.Row="1"
-                           Grid.Column="0"
-                           Text="Product Cost"
-                           FontSize="18"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
-
-                    <Border Grid.Row="1"
-                            Grid.Column="1"
-                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            Padding="15,4">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="8">
-                            <Label
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid"
-                                VerticalOptions="Center"
-                                FontSize="11"
-                                InputTransparent="True" />
-                            <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
-                                   VerticalOptions="Center"
-                                   FontSize="18" />
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-
-                <!-- Address section -->
-                <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
-                                     Spacing="2"
-                                     Margin="0,0,0,30">
-                    <Label Text="Address Line 1"
-                           FontSize="18">
-                        <Entry.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsLine1Valid}"
-                                         Value="true">
-                                <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsLine1Valid}"
-                                         Value="false">
-                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                            </DataTrigger>
-                        </Entry.Triggers>
-                    </Label>
-                    <Entry Text="{Binding Address.Line1}"
-                           Margin="0,0,0,8" />
-
-                    <Label Text="Address Line 2"
-                           FontSize="18"
-                           TextColor="{StaticResource Gray300}" />
-                    <Entry Text="{Binding Address.Line2}"
-                           Margin="0,0,0,8" />
-
-                    <Label Text="Suburb"
-                           FontSize="18">
-                        <Entry.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsSuburbValid}"
-                                         Value="true">
-                                <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsSuburbValid}"
-                                         Value="false">
-                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                            </DataTrigger>
-                        </Entry.Triggers>
-                    </Label>
-                    <Entry Text="{Binding Address.Suburb}"
-                           Margin="0,0,0,8" />
-
-                    <Label Text="Postcode"
-                           FontSize="18">
-                        <Entry.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsPostcodeValid}"
-                                         Value="true">
-                                <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsPostcodeValid}"
-                                         Value="false">
-                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                            </DataTrigger>
-                        </Entry.Triggers>
-                    </Label>
-                    <Entry Text="{Binding Address.Postcode}"
-                           Margin="0,0,0,8" />
-
-                    <Label Text="State"
-                           FontSize="18">
-                        <Entry.Triggers>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsStateValid}"
-                                         Value="true">
-                                <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label"
-                                         Binding="{Binding Address.IsStateValid}"
-                                         Value="false">
-                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                            </DataTrigger>
-                        </Entry.Triggers>
-                    </Label>
-                    <FlexLayout BindableLayout.ItemsSource="{Binding States}"
-                                Wrap="Wrap"
-                                RadioButtonGroup.GroupName="States"
-                                RadioButtonGroup.SelectedValue="{Binding Address.State}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate>
-                                <RadioButton WidthRequest="90" Value="{Binding}">
-                                    <RadioButton.Content>
-                                        <Label
-                                            Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
-                                            VerticalOptions="Center"
-                                            TextColor="{StaticResource Gray300}" />
-                                    </RadioButton.Content>
-                                </RadioButton>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
-                </VerticalStackLayout>
+                        <Label Text="State"
+                               FontSize="18">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsStateValid}"
+                                             Value="true">
+                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding Address.IsStateValid}"
+                                             Value="false">
+                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <FlexLayout BindableLayout.ItemsSource="{Binding States}"
+                                    Wrap="Wrap"
+                                    RadioButtonGroup.GroupName="States"
+                                    RadioButtonGroup.SelectedValue="{Binding Address.State}" >
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton WidthRequest="90" Value="{Binding}">
+                                        <RadioButton.Content>
+                                            <Label
+                                                Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
+                                                VerticalOptions="Center"
+                                                TextColor="{StaticResource Gray300}" />
+                                        </RadioButton.Content>
+                                    </RadioButton>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
 
 
-                <HorizontalStackLayout HorizontalOptions="Center"
-                                       Spacing="10">
-                    <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            Padding="8">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4" />
-                        </Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding ClosePopupCommand}" />
-                        </Border.GestureRecognizers>
-                        <HorizontalStackLayout Spacing="4">
-                            <Label VerticalOptions="Center"
-                                   VerticalTextAlignment="Center"
-                                   FontFamily="FA6Regular"
-                                   Text="&#xf057;">
-                            </Label>
-                            <Label Text="Cancel"
+                    <HorizontalStackLayout HorizontalOptions="Center"
+                                           Spacing="10" >
+                        <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0"
+                                Padding="8">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding ClosePopupCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="4">
+                                <Label VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"
+                                       FontFamily="FA6Regular"
+                                       Text="&#xf057;">
+                                </Label>
+                                <Label Text="Cancel"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"
+                                       Style="{StaticResource LabelBold}" />
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Background="{StaticResource BrandBrush}"
+                                StrokeThickness="0"
+                                Padding="8"
+                                IsVisible="{Binding IsBalanceVisible}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding NextClickedCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Next"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Center"
                                    Style="{StaticResource LabelBold}" />
-                        </HorizontalStackLayout>
-                    </Border>
+                        </Border>
 
-                    <Border Background="{StaticResource BrandBrush}"
-                            StrokeThickness="0"
-                            Padding="8"
-                            IsVisible="{Binding IsBalanceVisible}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4" />
-                        </Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding NextClickedCommand}" />
-                        </Border.GestureRecognizers>
-                        <Label Text="Next"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               Style="{StaticResource LabelBold}" />
-                    </Border>
+                        <Border Background="{StaticResource BrandBrush}"
+                                StrokeThickness="0"
+                                Padding="8"
+                                IsVisible="{Binding IsAddressVisible}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding ConfirmClickedCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Confirm"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Style="{StaticResource LabelBold}" />
 
-                    <Border Background="{StaticResource BrandBrush}"
-                            StrokeThickness="0"
-                            Padding="8"
-                            IsVisible="{Binding IsAddressVisible}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4" />
-                        </Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding ConfirmClickedCommand}" />
-                        </Border.GestureRecognizers>
-                        <Label Text="Confirm"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               Style="{StaticResource LabelBold}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+                <ActivityIndicator
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Color="{StaticResource SSWRed}"
+                    IsEnabled="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}" />
+            </Grid>
 
-                    </Border>
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
         </Border>
     </ScrollView>
 </pages:PopupPage>

@@ -3,11 +3,14 @@ using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class RedeemRewardViewModel(IUserService userService) : BaseViewModel
+public partial class RedeemRewardViewModel(IUserService userService, IRewardService rewardService) : BaseViewModel
 {
+    private Reward _reward;
+    
     [ObservableProperty]
     private string _image;
     
@@ -46,6 +49,7 @@ public partial class RedeemRewardViewModel(IUserService userService) : BaseViewM
 
     public void Initialise(Reward reward)
     {
+        _reward = reward;
         Image = reward.ImageUri;
         Name = reward.Name;
         Description = reward.Description;
@@ -68,9 +72,28 @@ public partial class RedeemRewardViewModel(IUserService userService) : BaseViewM
     }
     
     [RelayCommand]
-    private void ConfirmClicked()
+    private async Task ConfirmClicked()
     {
         Address.ValidateCommand.Execute(null);
+        
+        if (!Address.HasErrors)
+        {
+            IsBusy = true;
+            await rewardService.ClaimReward(new ClaimRewardDto()
+            {
+                Id = _reward.Id,
+                InPerson = false,
+                AddressLine1 = Address.Line1,
+                AddressLine2 = Address.Line2,
+                AddressPostcode = Address.Postcode,
+                AddressSuburb = Address.Suburb,
+                AddressState = Address.State
+            });
+            
+            IsBusy = false;
+            // TODO: Implement confirmation page here
+            await MopupService.Instance.PopAsync();
+        }
     }
 }
 
@@ -79,8 +102,7 @@ public partial class AddressForm : ObservableValidator
     [Required]
     [ObservableProperty]
     private string _line1;
-
-    [Required]
+    
     [ObservableProperty]
     private string _line2;
 
@@ -107,9 +129,6 @@ public partial class AddressForm : ObservableValidator
     
     [ObservableProperty]
     bool _isPostcodeValid;
-    
-    [ObservableProperty]
-    string _error;
     
     [RelayCommand]
     void Validate()

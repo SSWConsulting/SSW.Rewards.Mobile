@@ -2,6 +2,7 @@
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Shared.DTOs.Rewards;
 using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -80,14 +81,16 @@ public class ScannerService : IScannerService
 
     private async Task<ScanResponseViewModel> PostRewardAsync(string rewardString)
     {
-        ScanResponseViewModel vm = new ScanResponseViewModel
+        ScanResponseViewModel vm = new()
         {
             ScanType = ScanType.Reward
         };
 
+        ClaimRewardDto claim = new() { Code = rewardString, InPerson = true };
+
         try
         {
-            var response = await _rewardClient.RedeemReward(rewardString, true, CancellationToken.None);
+            var response = await _rewardClient.RedeemReward(claim, CancellationToken.None);
 
             if (response != null)
             {

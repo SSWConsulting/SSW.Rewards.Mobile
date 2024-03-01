@@ -59,7 +59,7 @@ public partial class RewardsViewModel : BaseViewModel
         var reward = Rewards.FirstOrDefault(r => r.Id == id);
         if (reward != null)
         {
-            var popup = new RedeemReward(new RedeemRewardViewModel(_userService), reward);
+            var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService), reward);
             await MopupService.Instance.PushAsync(popup);
         }
     }
