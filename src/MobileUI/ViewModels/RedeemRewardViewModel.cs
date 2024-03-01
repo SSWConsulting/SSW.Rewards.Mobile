@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -28,11 +29,8 @@ public partial class RedeemRewardViewModel(IUserService userService) : BaseViewM
     [ObservableProperty]
     private bool _isAddressVisible;
     
-    public string AddressLine1 { get; set; }
-    public string AddressLine2 { get; set; }
-    public string AddressSuburb { get; set; }
-    public string AddressState { get; set; }
-    public string AddressPostcode { get; set; }
+    [ObservableProperty]
+    private AddressForm _address = new ();
     
     public ObservableCollection<string> States { get; set; } =
     [
@@ -72,5 +70,55 @@ public partial class RedeemRewardViewModel(IUserService userService) : BaseViewM
     [RelayCommand]
     private void ConfirmClicked()
     {
+        Address.ValidateCommand.Execute(null);
+    }
+}
+
+public partial class AddressForm : ObservableValidator
+{
+    [Required]
+    [ObservableProperty]
+    private string _line1;
+
+    [Required]
+    [ObservableProperty]
+    private string _line2;
+
+    [Required]
+    [ObservableProperty]
+    private string _suburb;
+
+    [Required]
+    [ObservableProperty]
+    private string _state;
+
+    [Required]
+    [ObservableProperty]
+    private string _postcode;
+    
+    [ObservableProperty]
+    bool _isLine1Valid;
+    
+    [ObservableProperty]
+    bool _isSuburbValid;
+    
+    [ObservableProperty]
+    bool _isStateValid;
+    
+    [ObservableProperty]
+    bool _isPostcodeValid;
+    
+    [ObservableProperty]
+    string _error;
+    
+    [RelayCommand]
+    void Validate()
+    {
+        ValidateAllProperties();
+
+        IsLine1Valid = GetErrors(nameof(Line1)).Any();
+        IsSuburbValid = GetErrors(nameof(Suburb)).Any();
+        IsStateValid = GetErrors(nameof(State)).Any();
+        IsPostcodeValid = GetErrors(nameof(Postcode)).Any();
     }
 }
