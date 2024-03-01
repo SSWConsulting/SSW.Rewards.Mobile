@@ -29,7 +29,7 @@
             HorizontalOptions="Fill"
             VerticalOptions="Center"
             MinimumHeightRequest="400"
-            Padding="30"
+            Padding="25"
             Margin="40"
             StrokeThickness="2"
             Stroke="{StaticResource BorderDefault}"
@@ -151,7 +151,8 @@
                 
                 <!-- Address section -->
                 <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
-                                     Spacing="2">
+                                     Spacing="2"
+                                     Margin="0,0,0,30">
                     <Label Text="Address Line 1"
                            FontSize="18"
                            TextColor="{StaticResource Gray300}"/>
@@ -180,8 +181,12 @@
                                 Wrap="Wrap">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton Content="{Binding}"
-                                             WidthRequest="75"/>
+                                <RadioButton WidthRequest="74">
+                                    <RadioButton.Content>
+                                        <Label Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
+                                               VerticalOptions="Center"/>
+                                    </RadioButton.Content>
+                                </RadioButton>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
