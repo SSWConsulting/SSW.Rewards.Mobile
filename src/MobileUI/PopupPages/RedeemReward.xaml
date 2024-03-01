@@ -184,7 +184,8 @@
                                 <RadioButton WidthRequest="74">
                                     <RadioButton.Content>
                                         <Label Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
-                                               VerticalOptions="Center"/>
+                                               VerticalOptions="Center"
+                                               TextColor="{StaticResource Gray300}"/>
                                     </RadioButton.Content>
                                 </RadioButton>
                             </DataTemplate>
