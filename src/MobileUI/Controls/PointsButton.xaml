@@ -2,24 +2,18 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SSW.Rewards.Mobile.Controls.PointsButton"
              x:Name="this">
-    <ContentView.Resources>
-        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-    </ContentView.Resources>
     <Border StrokeThickness="0"
             HorizontalOptions="Center"
-            VerticalOptions="Center"
-            HeightRequest="34"
-            WidthRequest="110">
+            VerticalOptions="Center">
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="6" />
         </Border.StrokeShape>
-        <Grid ColumnDefinitions="25,*,36"
-              Background="{StaticResource ButtonBrush}">
+        <HorizontalStackLayout Spacing="5"
+                               Padding="8,0,0,0"
+                               Background="{StaticResource ButtonBrush}">
             <Label
-                Grid.Column="0"
                 TextColor="{StaticResource Coin}"
                 Text="&#xf51e;"
                 FontFamily="FA6Solid"
@@ -29,17 +23,14 @@
                 Style="{StaticResource LabelBold}"
                 InputTransparent="True" />
             <Label
-                Grid.Column="1"
                 Text="{Binding Points, Source={x:Reference this}}"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
                 FontSize="18"
                 InputTransparent="True" />
-            <Border Grid.Column="2"
-                    HeightRequest="34"
-                    WidthRequest="36"
-                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                    StrokeThickness="0">
+            <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                    StrokeThickness="0"
+                    Padding="8">
                 <Border.Triggers>
                     <DataTrigger TargetType="Border"
                                  Binding="{Binding IsDisabled, Source={x:Reference this}}"
@@ -69,6 +60,6 @@
                     </Label>
                 </Grid>
             </Border>
-        </Grid>
+        </HorizontalStackLayout>
     </Border>
 </ContentView>

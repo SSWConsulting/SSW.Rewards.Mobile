@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+        x:Class="SSW.Rewards.Mobile.Controls.ListItem"
+        x:Name="this"
+        StrokeThickness="0"
+        BackgroundColor="{StaticResource Background}"
+        Padding="8">
+    <Border.Resources>
+        <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
+        <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+    </Border.Resources>
+    <Border.GestureRecognizers>
+        <TapGestureRecognizer
+            Command="{Binding OnButtonClicked, Source={x:Reference this}}"/>
+    </Border.GestureRecognizers>
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="8" />
+    </Border.StrokeShape>
+    <Grid ColumnSpacing="12"
+          ColumnDefinitions="Auto, *, Auto">
+        <Border Grid.Column="0"
+                HeightRequest="64"
+                WidthRequest="64"
+                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="6" />
+            </Border.StrokeShape>
+            <Grid>
+                <Image HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Aspect="AspectFill"
+                       Source="{Binding ThumbnailImage, Source={x:Reference this}}"
+                       IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                <Label FontFamily="FA6Solid"
+                       FontAutoScalingEnabled="False"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       Text="{Binding PlaceholderGlyph, Source={x:Reference this}}"
+                       TextColor="{StaticResource Gray300}"
+                       FontSize="28"
+                       IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNullOrEmpty}}" />
+            </Grid>
+        </Border>
+
+        <Grid
+            Grid.Column="1"
+            ColumnDefinitions="*,Auto"
+            RowDefinitions="*,*"
+            VerticalOptions="Center"
+            RowSpacing="2">
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Text="{Binding Title, Source={x:Reference this}}"
+                   TextColor="White"
+                   InputTransparent="True"
+                   VerticalTextAlignment="End"
+                   FontSize="16"
+                   Style="{StaticResource LabelBold}">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding Path=IsDisabled, Source={x:Reference this}}"
+                                 Value="True">
+                        <Setter Property="Opacity"
+                                Value="0.5" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <Label Grid.Row="1"
+                   Grid.Column="0"
+                   Text="{Binding Description, Source={x:Reference this}}"
+                   TextColor="{StaticResource TextSecondary}"
+                   VerticalTextAlignment="Start"
+                   InputTransparent="True"
+                   MaxLines="2"
+                   LineBreakMode="WordWrap"
+                   FontSize="12">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding Path=IsDisabled, Source={x:Reference this}}"
+                                 Value="True">
+                        <Setter Property="Opacity"
+                                Value="0.5" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <Label Grid.Column="1"
+                   Grid.RowSpan="2"
+                   Text="&#xf058;"
+                   TextColor="Green"
+                   FontSize="20"
+                   FontAutoScalingEnabled="False"
+                   FontFamily="FA6Regular"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding ShowTick, Source={x:Reference this}}" />
+        </Grid>
+
+        <controls:PointsButton Grid.Column="3"
+                               ButtonText="{Binding ButtonText, Source={x:Reference this}}"
+                               Points="{Binding Points, Source={x:Reference this}}"
+                               IsDisabled="{Binding IsButtonDisabled, Source={x:Reference this}}" />
+
+    </Grid>
+</Border>
