@@ -55,8 +55,8 @@ public static class MauiProgram
 
         var excludedTypes = new []
         {
-            typeof(OthersProfileViewModel),
             typeof(OthersProfilePage),
+            typeof(OthersProfileViewModel),
             typeof(ProfileViewModelBase),
             typeof(EarnDetailsPage),
             typeof(EarnDetailsViewModel)
@@ -70,8 +70,8 @@ public static class MauiProgram
             builder.Services.AddSingleton(type.AsType());
         }
 
-        builder.Services.AddTransient<OthersProfileViewModel>();
         builder.Services.AddTransient<OthersProfilePage>();
+        builder.Services.AddTransient<OthersProfileViewModel>();
         builder.Services.AddTransient<EarnDetailsPage>();
         builder.Services.AddTransient<EarnDetailsViewModel>();
 

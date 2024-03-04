@@ -225,7 +225,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private async Task HandleLeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
-            await Shell.Current.GoToAsync("//main");
+            await Shell.Current.GoToAsync("//me");
         else
             await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }
