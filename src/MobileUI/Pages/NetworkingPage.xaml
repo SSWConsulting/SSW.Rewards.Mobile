@@ -18,18 +18,68 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="50, *">
-            <controls:SegmentedControl 
-                Segments="{Binding Segments}" 
-                Grid.Row="0"
-                Margin="10, 5"
-                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
-                <controls:SegmentedControl.Behaviors>
-                    <mct:EventToCommandBehavior 
-                        EventName="SelectionChanged"
-                        Command="{Binding FilterBySegmentCommand}" />
-                </controls:SegmentedControl.Behaviors>
-            </controls:SegmentedControl>
-        </Grid>
+        <RefreshView>
+            <CollectionView 
+                ItemsSource="{Binding SearchResults}" 
+                x:Name="NetworkCollection"
+                ItemsUpdatingScrollMode="KeepItemsInView" 
+                IsVisible="True"
+                Margin="10, 5">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" 
+                                     Span="3"
+                                     HorizontalItemSpacing="5"
+                                     VerticalItemSpacing="5"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.Header>
+                <Grid RowDefinitions="50, *">
+                    <controls:SegmentedControl 
+                        Segments="{Binding Segments}" 
+                        Grid.Row="0"
+                        Margin="10, 5"
+                        SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                        <controls:SegmentedControl.Behaviors>
+                            <mct:EventToCommandBehavior 
+                                EventName="SelectionChanged"
+                                Command="{Binding FilterBySegmentCommand}" />
+                        </controls:SegmentedControl.Behaviors>
+                    </controls:SegmentedControl>
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:DevProfile">
+                    <Border 
+                        HeightRequest="155"
+                        WidthRequest="80"
+                        BackgroundColor="{StaticResource MainBackground}"
+                        Stroke="{StaticResource MainBackground}"
+                        StrokeShape="RoundRectangle 10,10,10,10 ">
+                        <Grid 
+                            RowDefinitions="10, 70, 60"
+                            RowSpacing="5">
+                            <Label Grid.Row="0" Text="Scanned" IsVisible="{Binding Scanned}" />
+                            <Border Grid.Row="1">
+                            </Border>
+                            <Border
+                                Grid.Row="2"
+                            >
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    Spacing="3">
+                                    <Label
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        FontSize="Small"
+                                        FontAttributes="Bold"
+                                        Text="{Binding FirstName}" />
+                                    <Label FontSize="10" Text="{Binding Title}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        </RefreshView>
     </ContentPage.Content>
 </ContentPage>
