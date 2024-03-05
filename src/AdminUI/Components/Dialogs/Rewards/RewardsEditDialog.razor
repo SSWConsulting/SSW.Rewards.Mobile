@@ -95,7 +95,10 @@
                     </MudFileUpload>
                 </MudStack>
             </MudStack>
-            <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+            <MudStac Row="true">
+                <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                <MudCheckBox T="bool" Label="Hidden on Mobile" Class="m-0" @bind-value="@Dto.IsHidden" />
+            </MudStac>
         </MudStack>
     </DialogContent>
     <DialogActions>
