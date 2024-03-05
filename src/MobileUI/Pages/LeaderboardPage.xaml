@@ -58,9 +58,10 @@
                     <DataTemplate x:DataType="viewModels:LeaderViewModel">
                         <Grid RowDefinitions="84, 5" Padding="15,0">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1"
-                                  Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
-                                  CommandParameter="{Binding  .}" />
+                                <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTappedCommand}"
+                                    CommandParameter="{Binding  .}" />
                             </Grid.GestureRecognizers>
                             <Border 
                                 Grid.Row="0" 

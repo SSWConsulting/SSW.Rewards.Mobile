@@ -31,7 +31,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         WeakReferenceMessenger.Default.Register(this);
     }
     
-    public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
     public ICommand OnRefreshCommand { get; set; }
     public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
 
@@ -222,7 +221,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         IsRefreshing = false;
     }
 
-    private async Task HandleLeaderTapped(LeaderViewModel leader)
+    [RelayCommand]
+    private async Task LeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
             await Shell.Current.GoToAsync("//me");
