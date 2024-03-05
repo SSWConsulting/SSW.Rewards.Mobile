@@ -20,7 +20,7 @@ public class ScannerService : IScannerService
 
     private async Task<ScanResponseViewModel> PostAchievementAsync(string achievementString)
     {
-        ScanResponseViewModel vm = new ScanResponseViewModel
+        ScanResponseViewModel vm = new()
         {
             ScanType = ScanType.Achievement
         };
@@ -73,14 +73,12 @@ public class ScannerService : IScannerService
             vm.result = ScanResult.Error;
         }
 
-        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-
         return vm;
     }
 
     private async Task<ScanResponseViewModel> PostRewardAsync(string rewardString)
     {
-        ScanResponseViewModel vm = new ScanResponseViewModel
+        ScanResponseViewModel vm = new()
         {
             ScanType = ScanType.Reward
         };
@@ -140,8 +138,6 @@ public class ScannerService : IScannerService
         {
             vm.result = ScanResult.Error;
         }
-        
-        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
 
         return vm;
     }
@@ -154,17 +150,16 @@ public class ScannerService : IScannerService
         {
             return await PostAchievementAsync(qrCodeData);
         }
-        else if (decodedQR.StartsWith("rwd:"))
+
+        if (decodedQR.StartsWith("rwd:"))
         {
             return await PostRewardAsync(qrCodeData);
         }
-        else
+
+        return new ScanResponseViewModel
         {
-            return new ScanResponseViewModel
-            {
-                result = ScanResult.NotFound,
-                Title = "Unrecognised"
-            };
-        }
+            result = ScanResult.NotFound,
+            Title = "Unrecognised"
+        };
     }
 }

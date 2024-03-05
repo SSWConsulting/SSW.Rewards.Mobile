@@ -78,7 +78,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 HeadingColour = (Color)color;
                 AchievementHeading = result.Title;
                 _wonPrize = true;
-                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
                 break;
 
             case ScanResult.Duplicate:
