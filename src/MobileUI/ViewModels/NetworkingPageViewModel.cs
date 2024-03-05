@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -18,17 +20,18 @@ public partial class NetworkingPageViewModel : BaseViewModel
     public NetworkingPageSegments CurrentSegment { get; set; }
 
     [ObservableProperty]
-    private List<DevProfile> _profiles;
+    private List<NetworkingProfileDto> _profiles;
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
     private Segment _selectedSegment;
     [ObservableProperty]
-    private ObservableCollection<DevProfile> _searchResults = new ();
-
+    private ObservableCollection<NetworkingProfileDto> _searchResults = new ();
 
     private IDevService _devService;
 
+    public ICommand UserTapped => new Command<NetworkingPageViewModel>(async (x) => await HandleLeaderTapped(x));
+    
     public NetworkingPageViewModel(IDevService devService)
     {
         _devService = devService;
@@ -51,7 +54,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
         {
             var profiles = await _devService.GetProfilesAsync();
             Profiles = profiles.ToList();
-            SearchResults = new ObservableCollection<DevProfile>(Profiles);
+            SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles);
         }
     }
 
@@ -59,5 +62,10 @@ public partial class NetworkingPageViewModel : BaseViewModel
     private async Task FilterBySegment()
     {
         CurrentSegment = (NetworkingPageSegments)SelectedSegment.Value;
+    }
+    
+    private async Task HandleLeaderTapped(NetworkingPageViewModel  leader)
+    { 
+        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }
 }
