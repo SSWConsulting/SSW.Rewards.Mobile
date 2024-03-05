@@ -8,6 +8,7 @@
              x:DataType="viewModels:NetworkingPageViewModel"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.NetworkingPage"
+             x:Name="Networking"
              HideSoftInputOnTapped="True">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -54,6 +55,12 @@
                         <Grid 
                             RowDefinitions="90, 50"
                             RowSpacing="5">
+                            <!-- TODO: Implement Tapping to navigate to the OthersProfilePage -->
+                            <!-- <Grid.GestureRecognizers> -->
+                            <!--     <TapGestureRecognizer NumberOfTapsRequired="1" -->
+                            <!--                           Command="{Binding Source={x:Reference Networking}, Path=BindingContext.UserTapped}" -->
+                            <!--                           CommandParameter="{Binding  .}" /> -->
+                            <!-- </Grid.GestureRecognizers> -->
                             <HorizontalStackLayout
                                 Grid.Row="0"
                                 Margin="0,10, 0,0"
