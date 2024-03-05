@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
@@ -86,8 +87,12 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         scannerView.CameraLocation = CameraLocation.Rear;
     }
 
-    private async void DismissTapped(object sender, EventArgs e)
+    [RelayCommand]
+    private async Task Dismiss()
     {
-        await Navigation.PopModalAsync();
+        if (Navigation.ModalStack.Count > 0)
+        {
+            await Navigation.PopModalAsync();
+        }
     }
 }
