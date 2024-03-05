@@ -46,9 +46,9 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
     [ObservableProperty]
     int points;
 
-    public ObservableCollection<DevProfile> Profiles { get; set; } = new ObservableCollection<DevProfile>();
+    public ObservableCollection<DevProfile> Profiles { get; set; } = new(new List<DevProfile>(200));
 
-    public ObservableCollection<StaffSkillDto> Skills { get; set; } = new ObservableCollection<StaffSkillDto>();
+    public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
 
     public DevProfile SelectedProfile { get; set; }
 
@@ -73,13 +73,12 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     private int _lastProfileIndex;
 
-    private bool _initialised = false;
+    private bool _initialised;
+    private bool _profilesLoaded;
 
-    private bool _firstRun = true;
 
     public DevProfilesViewModel(IDevService devService, ISnackbarService snackbarService)
     {
-        IsRunning = true;
         TwitterEnabled = true;
         _devService = devService;
         _snackbarService = snackbarService;
@@ -98,10 +97,12 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     public async Task Initialise()
     {
-        if (_firstRun)
+        if (!_initialised)
         {
+            IsRunning = true;
             await LoadProfiles();
-            _firstRun = false;
+            _initialised = true;
+            IsRunning = false;
         }
     }
 
@@ -111,6 +112,9 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
         if (profiles.Any())
         {
+            _profilesLoaded = false;
+            Profiles.Clear();
+
             int i = 0;
             foreach (var profile in profiles)
             {
@@ -119,31 +123,9 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
                 i++;
             }
 
-            IsRunning = false;
-
             _lastProfileIndex = Profiles.Count - 1;
-
-            //SelectedProfile = Profiles[_lastProfileIndex];
-            //OnPropertyChanged(nameof(SelectedProfile));
-
             ShowDevCards = true;
-
-            // Disabling the scrolling carousel effect because
-            // it's janky and probably not needed for v2 (it was
-            // a v1 issue). Leacving this here becase we can 
-            // probably fix the jankiness and re-enable for a nice
-            // effect when we have time.
-
-            //for (int i = _lastProfileIndex; i > -1; i--)
-            //{
-            //    if (PageInView)
-            //    {
-            //        ScrollToRequested.Invoke(this, i);
-            //        await Task.Delay(50);
-            //    }
-            //}
-
-            _initialised = true;
+            _profilesLoaded = true;
 
             SetDevDetails();
         }
@@ -151,7 +133,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     private void SetDevDetails()
     {
-        if (_initialised)
+        if (_profilesLoaded)
         {
             if (SelectedProfile == null)
             {
@@ -264,9 +246,9 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         await _snackbarService.ShowSnackbar(options);
     }
 
-    public async void Receive(PointsAwardedMessage message)
+    public void Receive(PointsAwardedMessage message)
     {
-        await LoadProfiles();
+        _initialised = false;
     }
 
     private void SearchTextHandler(string searchBarText)
