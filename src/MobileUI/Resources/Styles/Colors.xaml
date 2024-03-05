@@ -83,6 +83,7 @@
     <Color x:Key="Background">#181818</Color>
     <Color x:Key="BorderDefault">#373737</Color>
     <Color x:Key="Coin">#FFC700</Color>
+    <Color x:Key="Scanned">#6EA100</Color>
     <Color x:Key="CorrectColor">#52B5AA</Color>
     <Color x:Key="TextSecondary">#A0A0A0</Color>
     
