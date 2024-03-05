@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class PeoplePage : ContentPage
+public partial class PeoplePage
 {
     private readonly DevProfilesViewModel _viewModel;
 

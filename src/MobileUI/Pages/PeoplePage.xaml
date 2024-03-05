@@ -46,7 +46,7 @@
                 Text="&#xf2ad;"
                 TextColor="White">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding BackCommand}"/>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding NavigateBackCommand}"/>
                 </Label.GestureRecognizers>
             </Label>
 
@@ -60,7 +60,7 @@
                 Text="&#xf2b3;"
                 TextColor="White">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ForwardCommand}"/>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding NavigateForwardCommand}"/>
                 </Label.GestureRecognizers>
             </Label>
 
@@ -117,7 +117,7 @@
                               Margin="0,0,0,-10"
                               x:Name="PicCarousel"
                               ItemsSource="{Binding Profiles}"
-                              CurrentItemChangedCommand="{Binding OnCardSwiped}"
+                              CurrentItemChangedCommand="{Binding SetDevDetailsCommand}"
                               CurrentItem="{Binding SelectedProfile}"
                               IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
@@ -137,7 +137,7 @@
                     <!-- QR Code -->
                     <VerticalStackLayout HorizontalOptions="End">
                         <VerticalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding StaffQRCommand}"/>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ShowScannedMessageCommand}"/>
                         </VerticalStackLayout.GestureRecognizers>
                     
                         <Label FontFamily="FluentIcons"
@@ -178,7 +178,7 @@
                                VerticalTextAlignment="Center"
                                BackgroundColor="Transparent">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnTwitterTapped}"/>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OpenTwitterCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
 
@@ -193,7 +193,7 @@
                                VerticalTextAlignment="Center"
                                BackgroundColor="Transparent">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OnGithubTapped}"/>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OpenGithubCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
 
@@ -209,7 +209,7 @@
                                BackgroundColor="Transparent">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                      Command="{Binding OnLinkedinTapped}"/>
+                                                      Command="{Binding OpenLinkedinCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
 
@@ -224,7 +224,7 @@
                                VerticalTextAlignment="Center"
                                BackgroundColor="Transparent">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PeopleCommand}"/>
+                                <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding OpenPeopleCommand}"/>
                             </Label.GestureRecognizers>
                         </Label>
                     </HorizontalStackLayout>
