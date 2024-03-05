@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -30,7 +30,7 @@ public partial class ListItem
             typeof(ListItem),
             "\uf03e"
         );
-    
+
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -44,7 +44,7 @@ public partial class ListItem
             typeof(ListItem),
             string.Empty
         );
-    
+
     public string Description
     {
         get => (string)GetValue(DescriptionProperty);
@@ -58,7 +58,7 @@ public partial class ListItem
             typeof(ListItem),
             string.Empty
         );
-    
+
     public int Points
     {
         get => (int)GetValue(PointsProperty);
@@ -72,7 +72,7 @@ public partial class ListItem
             typeof(ListItem),
             0
         );
-    
+
     public string ButtonText
     {
         get => (string)GetValue(ButtonTextProperty);
@@ -86,20 +86,20 @@ public partial class ListItem
             typeof(ListItem),
             string.Empty
         );
-    
-    public ICommand ButtonCommand
+
+    public IAsyncRelayCommand ButtonCommand
     {
-        get => (ICommand)GetValue(ButtonCommandProperty);
+        get => (IAsyncRelayCommand)GetValue(ButtonCommandProperty);
         set => SetValue(ButtonCommandProperty, value);
     }
 
     public static readonly BindableProperty ButtonCommandProperty =
         BindableProperty.Create(
             nameof(ButtonCommand),
-            typeof(ICommand),
+            typeof(IAsyncRelayCommand),
             typeof(ListItem)
         );
-    
+
     public bool ShowTick
     {
         get => (bool)GetValue(ShowTickProperty);
@@ -113,7 +113,7 @@ public partial class ListItem
             typeof(ListItem),
             false
         );
-    
+
     public bool IsDisabled
     {
         get => (bool)GetValue(IsDisabledProperty);
@@ -127,7 +127,7 @@ public partial class ListItem
             typeof(ListItem),
             false
         );
-    
+
     public bool IsButtonDisabled
     {
         get => (bool)GetValue(IsButtonDisabledProperty);
@@ -141,7 +141,7 @@ public partial class ListItem
             typeof(ListItem),
             false
         );
-    
+
     public int ItemId
     {
         get => (int)GetValue(ItemIdProperty);
@@ -155,18 +155,18 @@ public partial class ListItem
             typeof(ListItem),
             -1
         );
-    
-    public ICommand OnButtonClicked => new Command(() =>
-    {
-        if (!IsButtonDisabled)
-        {
-            ButtonCommand?.Execute(ItemId);
-        }
-    
-    });
-    
+
     public ListItem()
     {
         InitializeComponent();
+    }
+
+    [RelayCommand]
+    private async Task ButtonClicked()
+    {
+        if (!IsButtonDisabled && ButtonCommand != null)
+        {
+            await ButtonCommand.ExecuteAsync(ItemId);
+        }
     }
 }
