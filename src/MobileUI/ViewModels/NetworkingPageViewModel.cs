@@ -30,7 +30,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
 
     private IDevService _devService;
 
-    public ICommand UserTapped => new Command<NetworkingPageViewModel>(async (x) => await HandleLeaderTapped(x));
+    public ICommand UserTapped => new Command<NetworkingProfileDto>(async (x) => await HandleLeaderTapped(x));
     
     public NetworkingPageViewModel(IDevService devService)
     {
@@ -64,7 +64,8 @@ public partial class NetworkingPageViewModel : BaseViewModel
         CurrentSegment = (NetworkingPageSegments)SelectedSegment.Value;
     }
     
-    private async Task HandleLeaderTapped(NetworkingPageViewModel  leader)
+    // TODO: Implement Navigation to OthersProfilePage with NetworkingProfileDto
+    private async Task HandleLeaderTapped(NetworkingProfileDto  leader)
     { 
         await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }
