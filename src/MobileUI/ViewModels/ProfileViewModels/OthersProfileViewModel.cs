@@ -1,23 +1,24 @@
 ﻿using System.Net.Mail;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
-public class OthersProfileViewModel(
+public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
     ISnackbarService snackbarService,
     IDevService devService)
     : ProfileViewModelBase(rewardsService, userService, snackbarService, devService)
 {
-    public ICommand EmailUserCommand => new Command(async () => await EmailUser());
-
     public async Task Initialise()
     {
         IsMe = false;
         
         await _initialise();
     }
+
+    public bool ShowCloseButton { get; set; } = true;
 
     public void SetLeader(LeaderViewModel vm)
     {
@@ -31,9 +32,15 @@ public class OthersProfileViewModel(
         IsStaff = vm.IsStaff;
         
         ShowBalance = false;
-        ShowPopButton = true;
+    }
+
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await Navigation.PopModalAsync();
     }
     
+    [RelayCommand]
     private async Task EmailUser()
     {
         if (Email.Default.IsComposeSupported)

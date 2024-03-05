@@ -38,7 +38,7 @@
                 StrokeThickness="0"
                 IsVisible="{Binding IsMe}">
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding CameraCommand}" />
+                    <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
                 </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"

@@ -22,9 +22,9 @@
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
-                IsVisible="{Binding ShowPopButton}">
+                IsVisible="{Binding ShowCloseButton}">
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding PopProfile}" />
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
                 </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"
