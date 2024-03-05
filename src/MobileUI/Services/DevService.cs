@@ -14,7 +14,7 @@ public class DevService : IDevService
 
     public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
     {
-		List<DevProfile> profiles = new List<DevProfile>();
+		List<DevProfile> profiles = new(200);
         int id = 0;
 
         try

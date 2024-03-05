@@ -6,20 +6,23 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
              xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewModels:DevProfilesViewModel"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.PeoplePage"
              HideSoftInputOnTapped="True">
     <ContentPage.Resources>
         <ResourceDictionary>
+            <mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BoolToSocialColorConverter x:Key="BoolToSocial"/>
             <converters:ScannedToColorConverter x:Key="ScannedToColor" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ContentPage.Content>
+    <Grid>
         <Grid RowDefinitions="65, 2.5*, 12*, 150"
               ColumnDefinitions="*, 5*, *"
-              ColumnSpacing="6">
+              ColumnSpacing="6"
+              IsVisible="{Binding IsRunning, Converter={StaticResource InvertedBoolConverter}}">
 
             <ContentView
                 Grid.Row="0"
@@ -227,8 +230,7 @@
                     </HorizontalStackLayout>
                  </VerticalStackLayout>
             </Grid>
-
-
+            
             <ScrollView Grid.Row="3"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
@@ -240,14 +242,12 @@
                        Margin="22,16"
                        Text="{Binding DevBio}"/>
             </ScrollView>
-
-            <ActivityIndicator Color="{StaticResource primary}"
-                               IsRunning="True"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Grid.ColumnSpan="3"
-                               Grid.RowSpan="4"
-                               IsVisible="{Binding IsRunning}"/>
         </Grid>
-    </ContentPage.Content>
+
+        <ActivityIndicator Color="{StaticResource primary}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           IsRunning="{Binding IsRunning}"
+                           IsVisible="{Binding IsRunning}"/>
+    </Grid>
 </ContentPage>
