@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+        x:Class="SSW.Rewards.Mobile.Controls.CarouselItem"
+        x:Name="this"
+        StrokeThickness="0">
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="8" />
+    </Border.StrokeShape>
+    <Border.GestureRecognizers>
+        <TapGestureRecognizer
+            Command="{Binding ButtonCommand, Source={x:Reference this}}"
+            CommandParameter="{Binding ItemId, Source={x:Reference this}}" />
+    </Border.GestureRecognizers>
+    <Grid HeightRequest="400">
+        <Image Grid.Row="0"
+               Source="{Binding CarouselImage, Source={x:Reference this}}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               HeightRequest="400"
+               Aspect="AspectFill" />
+        <Grid Grid.Row="0"
+              RowDefinitions="Auto"
+              VerticalOptions="End"
+              Margin="20,0,20,30">
+            <Border Grid.Row="0"
+                    BackgroundColor="#BF000000"
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="6" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="*, Auto" Padding="15">
+                    <Label Grid.Column="0"
+                           Text="{Binding Description, Source={x:Reference this}}"
+                           Style="{StaticResource LabelBold}"
+                           VerticalTextAlignment="Center" />
+                    <controls:PointsButton Grid.Column="1"
+                                           ButtonText="{Binding ButtonText, Source={x:Reference this}}"
+                                           Points="{Binding Points, Source={x:Reference this}}"
+                                           HorizontalOptions="End"
+                                           IsDisabled="{Binding IsButtonDisabled, Source={x:Reference this}}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Border>

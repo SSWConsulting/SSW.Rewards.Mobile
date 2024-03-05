@@ -1,57 +1,66 @@
 using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using SSW.Rewards.Mobile.PopupPages;
 
-namespace SSW.Rewards.Mobile.ViewModels
+namespace SSW.Rewards.Mobile.ViewModels;
+
+public partial class RewardsViewModel : BaseViewModel
 {
-    public partial class RewardsViewModel : BaseViewModel
+    private readonly IRewardService _rewardService;
+    private readonly IUserService _userService;
+    private bool _isLoaded;
+
+    public ObservableCollection<Reward> Rewards { get; set; } = new ();
+    public ObservableCollection<Reward> CarouselRewards { get; set; } = new ();
+        
+    [ObservableProperty]
+    private int _credits;
+
+    public RewardsViewModel(IRewardService rewardService, IUserService userService)
     {
-        private readonly IRewardService _rewardService;
+        Title = "Rewards";
+        _rewardService = rewardService;
+        _userService = userService;
+    }
 
-        public ICommand RewardCardTappedCommand { get; set; }
-        public ICommand MoreTapped { get; set; }
-
-        public ObservableCollection<Reward> Rewards { get; set; }
-
-        [ObservableProperty] private bool _noRewards = true;
-
-        public RewardsViewModel(IRewardService rewardService)
+    public async Task Initialise()
+    {
+        if (_isLoaded)
         {
-            Title = "Rewards";
-            _rewardService = rewardService;
-            Rewards = new ObservableCollection<Reward>();
-            _ = Initialise();
+            return;
         }
+            
+        IsBusy = true;
+        var rewardList = await _rewardService.GetRewards();
 
-        private async Task Initialise()
+        rewardList.ForEach(reward =>
         {
-            var rewardList = await _rewardService.GetRewards();
-            rewardList.ForEach(reward =>
-            {
-                Rewards.Add(reward);
-            });
+            reward.CanAfford = reward.Cost <= _userService.MyBalance;
+            Rewards.Add(reward);
 
-            if (Rewards.Count > 0)
+            if (reward.IsCarousel)
             {
-                NoRewards = false;
+                CarouselRewards.Add(reward);
             }
+        });
+            
+        Credits = _userService.MyBalance;
 
-            RewardCardTappedCommand = new Command<Reward>(async (reward) =>
-            {
-                await OpenRewardDetails(reward);
-            });
+        IsBusy = false;
+        _isLoaded = true;
+    }
 
-            MoreTapped = new Command<Reward>(async (reward) =>
-            {
-                await OpenRewardDetails(reward);
-            });
-        }
-
-        public async Task OpenRewardDetails(Reward reward)
+    [RelayCommand]
+    public async Task RedeemReward(int id)
+    {
+        var reward = Rewards.FirstOrDefault(r => r.Id == id);
+        if (reward != null)
         {
-            await MopupService.Instance.PushAsync(new RewardDetailsPage(reward));
+            var popup = new RedeemReward(new RedeemRewardViewModel(_userService), reward);
+            await MopupService.Instance.PushAsync(popup);
         }
     }
 }

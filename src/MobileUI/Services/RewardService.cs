@@ -27,7 +27,10 @@ public class RewardService : IRewardService
                     Cost = reward.Cost,
                     Id = reward.Id,
                     ImageUri = reward.ImageUri,
-                    Name = reward.Name
+                    Name = reward.Name,
+                    Description = reward.Description,
+                    CarouselImageUri = reward.CarouselImageUri,
+                    IsCarousel = reward.IsCarousel
                 });
             }
 

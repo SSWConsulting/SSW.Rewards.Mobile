@@ -164,6 +164,10 @@
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
         </Tab>
+        
+        <Tab Route="redeem" Icon="icon_store" Title="Redeem">
+            <ShellContent ContentTemplate="{DataTemplate pages:RedeemPage}" />
+        </Tab>
 
 
         <!--<Tab Route="people" IsVisible="{Binding IsAndroidVisible}">

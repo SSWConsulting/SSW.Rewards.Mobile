@@ -133,6 +133,22 @@
 		  <DependentUpon>Networking.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Pages\RedeemPage.xaml.cs">
+		  <DependentUpon>RedeemPage.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\ListItem.xaml.cs">
+		  <DependentUpon>ListItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\CarouselItem.xaml.cs">
+		  <DependentUpon>CarouselItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="PopupPages\RedeemReward.xaml.cs">
+		  <DependentUpon>RedeemReward.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -162,6 +178,20 @@
 		<MauiXaml Update="Controls\ProfileActivityItem.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
+		<MauiXaml Update="Pages\RedeemPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\ListItem.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\CarouselItem.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="PopupPages\RedeemReward.xaml">
+		  <SubType>Designer</SubType>
+        </MauiXaml>
 		<MauiXaml Update="Resources\Styles\Templates.xaml">
 		  <Generator></Generator>
 		</MauiXaml>

@@ -7,6 +7,8 @@ public class UpdateRewardCommand : IRequest<Unit>
     public int Id { get; set; }
     public string? Description { get; set; }
     public int Cost { get; set; }
+    public bool IsHidden { get; set; }
+
     public string? RewardName { get; set; }
     public string? ImageFilename { get; set; }
     public string? ImageBytesInBase64 { get; set; }
@@ -66,6 +68,7 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
 
         reward.Cost = request.Cost;
         reward.IsCarousel = request.IsCarousel;
+        reward.IsHidden = request.IsHidden;
 
         await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;
