@@ -50,6 +50,22 @@ public partial class Search
         get => (bool)GetValue(ClearSearchProperty);
         set => SetValue(ClearSearchProperty, value);
     }
+    
+    public static readonly BindableProperty IsSearchingProperty = BindableProperty.Create(
+        nameof(IsSearching),
+        typeof(bool),
+        typeof(Search));
+
+    public bool IsSearching
+    {
+        get => (bool)GetValue(IsSearchingProperty);
+        set
+        {
+            SetValue(IsSearchingProperty, value);
+            ActivityIndicator.IsVisible = value;
+            Icon.IsVisible = !value;
+        }
+    }
 
     public Search()
     {
@@ -72,25 +88,6 @@ public partial class Search
     {
         SearchEntry.Text = string.Empty;
         Icon.Text = SearchIcon;
-    }
-
-    protected override void OnPropertyChanged(string propertyName = null)
-    {
-        base.OnPropertyChanged(propertyName);
-
-        if (propertyName == nameof(BorderColor))
-        {
-            SearchControl.BackgroundColor = BorderColor;
-        }
-        else if (propertyName == nameof(TextColor))
-        {
-            SearchEntry.TextColor = TextColor;
-            Icon.TextColor = TextColor;
-        }
-        else if (propertyName == nameof(ClearSearch))
-        {
-            Clear();
-        }
     }
 }
 

@@ -1,13 +1,16 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Shared.DTOs.AddressTypes;
 using SSW.Rewards.Shared.DTOs.Rewards;
+using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
+using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class RedeemRewardViewModel(IUserService userService, IRewardService rewardService) : BaseViewModel
+public partial class RedeemRewardViewModel(IUserService userService, IRewardService rewardService, IAddressService addressService) : BaseViewModel
 {
     private Reward _reward;
     
@@ -31,21 +34,15 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     
     [ObservableProperty]
     private bool _isAddressVisible;
+
+    [ObservableProperty]
+    private bool _isSearching;
+    
+    public ObservableCollection<Address> SearchResults { get; set; } = [];
     
     [ObservableProperty]
-    private AddressForm _address = new ();
+    private Address _selectedAddress;
     
-    public ObservableCollection<string> States { get; set; } =
-    [
-        "NSW",
-        "VIC",
-        "QLD",
-        "SA",
-        "WA",
-        "TAS",
-        "NT",
-        "ACT"
-    ];
 
     public void Initialise(Reward reward)
     {
@@ -59,6 +56,28 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     }
 
     [RelayCommand]
+    private async Task SearrhAddress(string addressQuery)
+    {
+        IsSearching = true;
+        
+        SearchResults.Clear();
+        
+        var results = await addressService.Search(addressQuery);
+
+        results = results.ToList();
+        
+        if (results.Any())
+        {
+            foreach (var result in results)
+            {
+                SearchResults.Add(result);
+            }
+        }
+        
+        IsSearching = false;
+    }
+    
+    [RelayCommand]
     private void ClosePopup()
     {
         MopupService.Instance.PopAsync();
@@ -71,73 +90,24 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         IsAddressVisible = true;
     }
     
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(ConfirmClickedIsExecutable))]
     private async Task ConfirmClicked()
     {
-        Address.ValidateCommand.Execute(null);
-        
-        if (!Address.HasErrors)
+        IsBusy = true;
+        await rewardService.ClaimReward(new ClaimRewardDto()
         {
-            IsBusy = true;
-            await rewardService.ClaimReward(new ClaimRewardDto()
-            {
-                Id = _reward.Id,
-                InPerson = false,
-                AddressLine1 = Address.Line1,
-                AddressLine2 = Address.Line2,
-                AddressPostcode = Address.Postcode,
-                AddressSuburb = Address.Suburb,
-                AddressState = Address.State
-            });
+            Id = _reward.Id,
+            InPerson = false,
+            Address = _selectedAddress
+        });
             
-            IsBusy = false;
-            // TODO: Implement confirmation page here
-            await MopupService.Instance.PopAsync();
-        }
+        IsBusy = false;
+        // TODO: Implement confirmation page here
+        await MopupService.Instance.PopAsync();
     }
-}
-
-public partial class AddressForm : ObservableValidator
-{
-    [Required]
-    [ObservableProperty]
-    private string _line1;
-    
-    [ObservableProperty]
-    private string _line2;
-
-    [Required]
-    [ObservableProperty]
-    private string _suburb;
-
-    [Required]
-    [ObservableProperty]
-    private string _state;
-
-    [Required]
-    [ObservableProperty]
-    private string _postcode;
-    
-    [ObservableProperty]
-    bool _isLine1Valid;
-    
-    [ObservableProperty]
-    bool _isSuburbValid;
-    
-    [ObservableProperty]
-    bool _isStateValid;
-    
-    [ObservableProperty]
-    bool _isPostcodeValid;
-    
-    [RelayCommand]
-    void Validate()
+    private bool ConfirmClickedIsExecutable()
     {
-        ValidateAllProperties();
-
-        IsLine1Valid = GetErrors(nameof(Line1)).Any();
-        IsSuburbValid = GetErrors(nameof(Suburb)).Any();
-        IsStateValid = GetErrors(nameof(State)).Any();
-        IsPostcodeValid = GetErrors(nameof(Postcode)).Any();
+        return _selectedAddress != null;
     }
+    
 }

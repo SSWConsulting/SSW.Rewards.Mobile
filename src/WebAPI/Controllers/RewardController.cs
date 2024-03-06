@@ -83,11 +83,7 @@ public class RewardController : ApiControllerBase
         {
             Code = claim.Code,
             Id = claim.Id,
-            AddressLine1 = claim.AddressLine1,
-            AddressLine2 = claim.AddressLine2,
-            AddressPostcode = claim.AddressPostcode,
-            AddressSuburb = claim.AddressSuburb,
-            AddressState = claim.AddressState,
+            Address = claim.Address,
             ClaimInPerson = claim.InPerson
         }));
     }

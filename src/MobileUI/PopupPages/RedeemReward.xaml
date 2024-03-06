@@ -2,6 +2,7 @@
 
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
@@ -155,98 +156,8 @@
                     <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
                                          Spacing="2"
                                          Margin="0,0,0,30">
-                        <Label Text="Address Line 1"
-                               FontSize="18">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsLine1Valid}"
-                                             Value="true">
-                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsLine1Valid}"
-                                             Value="false">
-                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <Entry Text="{Binding Address.Line1}"
-                               Margin="0,0,0,8" />
-
-                        <Label Text="Address Line 2"
-                               FontSize="18"
-                               TextColor="{StaticResource Gray300}" />
-                        <Entry Text="{Binding Address.Line2}"
-                               Margin="0,0,0,8" />
-
-                        <Label Text="Suburb"
-                               FontSize="18">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsSuburbValid}"
-                                             Value="true">
-                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsSuburbValid}"
-                                             Value="false">
-                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <Entry Text="{Binding Address.Suburb}"
-                               Margin="0,0,0,8" />
-
-                        <Label Text="Postcode"
-                               FontSize="18">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsPostcodeValid}"
-                                             Value="true">
-                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsPostcodeValid}"
-                                             Value="false">
-                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <Entry Text="{Binding Address.Postcode}"
-                               Margin="0,0,0,8" />
-
-                        <Label Text="State"
-                               FontSize="18">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsStateValid}"
-                                             Value="true">
-                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding Address.IsStateValid}"
-                                             Value="false">
-                                    <Setter Property="TextColor" Value="{StaticResource Gray300}" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <FlexLayout BindableLayout.ItemsSource="{Binding States}"
-                                    Wrap="Wrap"
-                                    RadioButtonGroup.GroupName="States"
-                                    RadioButtonGroup.SelectedValue="{Binding Address.State}" >
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <RadioButton WidthRequest="90" Value="{Binding}">
-                                        <RadioButton.Content>
-                                            <Label
-                                                Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
-                                                VerticalOptions="Center"
-                                                TextColor="{StaticResource Gray300}" />
-                                        </RadioButton.Content>
-                                    </RadioButton>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </FlexLayout>
+                        <controls:Search Command="{Binding SearrhAddressCommand}"
+                                         IsSearching="{Binding IsSearching}"/>
                     </VerticalStackLayout>
 
 
