@@ -27,7 +27,7 @@
             <ContentView
                 Grid.Row="0"
                 Grid.ColumnSpan="3"
-                BackgroundColor="{StaticResource MainBackground}"
+                BackgroundColor="{StaticResource Background}"
                 Padding="10,10">
                 <controls:Search
                     VerticalOptions="Center"
@@ -122,7 +122,7 @@
                               IsVisible="{Binding ShowDevCards}">
                     <CarouselView.ItemTemplate>
                         <DataTemplate x:DataType="models:DevProfile">
-                            <controls:DevImageView Profile="{Binding .}"/>                            
+                            <controls:DevImageView Profile="{Binding .}"/>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
@@ -139,7 +139,7 @@
                         <VerticalStackLayout.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ShowScannedMessageCommand}"/>
                         </VerticalStackLayout.GestureRecognizers>
-                    
+
                         <Label FontFamily="FluentIcons"
                                TextColor="{Binding Scanned, Converter={StaticResource ScannedToColor}}"
                                Text="&#xf636;"
@@ -162,10 +162,10 @@
 
                     <!-- Social networks -->
                     <HorizontalStackLayout
-                    
+
                         Spacing="20"
                         HorizontalOptions="End"
-                        Padding="10">                     
+                        Padding="10">
 
                         <Label FontFamily="FA6Brands"
                                TextColor="{Binding TwitterEnabled, Converter={StaticResource BoolToSocial}}"
@@ -230,11 +230,11 @@
                     </HorizontalStackLayout>
                  </VerticalStackLayout>
             </Grid>
-            
+
             <ScrollView Grid.Row="3"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
-                        BackgroundColor="{StaticResource MainBackground}">
+                        BackgroundColor="{StaticResource Background}">
                 <Label HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"

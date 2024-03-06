@@ -11,7 +11,7 @@ public class MainActivity : MauiAppCompatActivity
 {
     protected override void OnCreate(Bundle savedInstanceState)
     {
-        var MainBackground = Color.FromArgb("#FF121212").ToAndroid();
+        var MainBackground = Color.FromArgb("#181818").ToAndroid();
         Window!.SetNavigationBarColor(MainBackground);
         base.OnCreate(savedInstanceState);
     }
