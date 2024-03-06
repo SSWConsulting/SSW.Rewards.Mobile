@@ -29,8 +29,6 @@ public partial class NetworkingPageViewModel : BaseViewModel
     private ObservableCollection<NetworkingProfileDto> _searchResults = new ();
 
     private IDevService _devService;
-
-    public ICommand UserTapped => new Command<NetworkingProfileDto>(async (x) => await HandleLeaderTapped(x));
     
     public NetworkingPageViewModel(IDevService devService)
     {
@@ -54,7 +52,8 @@ public partial class NetworkingPageViewModel : BaseViewModel
         {
             var profiles = await _devService.GetProfilesAsync();
             Profiles = profiles.ToList();
-            SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles);
+            CurrentSegment = NetworkingPageSegments.Friends;
+            SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => x.Scanned));
         }
     }
 
@@ -62,10 +61,31 @@ public partial class NetworkingPageViewModel : BaseViewModel
     private async Task FilterBySegment()
     {
         CurrentSegment = (NetworkingPageSegments)SelectedSegment.Value;
+
+        if (Profiles is null || Profiles.Count() == 0)
+        {
+            var profiles = await _devService.GetProfilesAsync();
+            Profiles = profiles.ToList();
+        }
+        
+        switch (CurrentSegment)
+        {
+            case NetworkingPageSegments.Friends:
+                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => x.Scanned));
+                break;
+            case NetworkingPageSegments.ToMeet:
+                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => !x.Scanned));
+                break;
+            case NetworkingPageSegments.SSW:
+            default:
+                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles);
+                break;
+        }
     }
     
     // TODO: Implement Navigation to OthersProfilePage with NetworkingProfileDto
-    private async Task HandleLeaderTapped(NetworkingProfileDto  leader)
+    [RelayCommand]
+    private async Task UserTapped(NetworkingProfileDto  leader)
     { 
         await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }

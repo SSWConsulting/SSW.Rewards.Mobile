@@ -15,92 +15,86 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid Margin="15, 10, 15,0">
-            <RefreshView>
-                <CollectionView 
+        <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
+            <Grid RowDefinitions="45">
+                <controls:SegmentedControl 
+                    Grid.Row="0"
+                    Segments="{Binding Segments}" 
+                    SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                    <controls:SegmentedControl.Behaviors>
+                        <mct:EventToCommandBehavior 
+                            EventName="SelectionChanged"
+                            Command="{Binding FilterBySegmentCommand}" />
+                    </controls:SegmentedControl.Behaviors>
+                </controls:SegmentedControl>
+            </Grid>
+            <CollectionView 
                 ItemsSource="{Binding SearchResults}" 
                 x:Name="NetworkCollection"
                 ItemsUpdatingScrollMode="KeepItemsInView" 
                 IsVisible="True"
-                >
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" 
-                                     Span="3"
-                                     HorizontalItemSpacing="10"
-                                     VerticalItemSpacing="10"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.Header>
-                <Grid Padding="0, 0, 0,6" RowDefinitions="50" >
-                    <controls:SegmentedControl 
-                        Grid.Row="0"
-                        Segments="{Binding Segments}" 
-                        SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
-                        <controls:SegmentedControl.Behaviors>
-                            <mct:EventToCommandBehavior 
-                                EventName="SelectionChanged"
-                                Command="{Binding FilterBySegmentCommand}" />
-                        </controls:SegmentedControl.Behaviors>
-                    </controls:SegmentedControl>
-                </Grid>
-            </CollectionView.Header>
+                Grid.Row="1">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" 
+                                 Span="3"
+                                 HorizontalItemSpacing="10"
+                                 VerticalItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="users:NetworkingProfileDto">
                     <Border 
-                        Margin="5"
-                        HeightRequest="135"
+                        HeightRequest="140"
                         WidthRequest="80"
                         BackgroundColor="{StaticResource MainBackground}"
                         Stroke="{StaticResource MainBackground}"
                         StrokeShape="RoundRectangle 10,10,10,10 ">
-                        <Grid 
-                            RowDefinitions="90, 50"
-                            RowSpacing="5">
+                        <Grid RowDefinitions="75, 60" RowSpacing="5">
                             <!-- TODO: Implement Tapping to navigate to the OthersProfilePage -->
                             <!-- <Grid.GestureRecognizers> -->
                             <!--     <TapGestureRecognizer NumberOfTapsRequired="1" -->
                             <!--                           Command="{Binding Source={x:Reference Networking}, Path=BindingContext.UserTapped}" -->
                             <!--                           CommandParameter="{Binding  .}" /> -->
                             <!-- </Grid.GestureRecognizers> -->
-                            <HorizontalStackLayout
-                                Grid.Row="0"
-                                Margin="0,10, 0,0"
-                                HorizontalOptions="Center">
+                            <Grid>
+                                <Label  
+                                    Grid.Row="0"
+                                    Padding="0,5,5,0"
+                                    Text="&#xf029;"
+                                    TextColor="{StaticResource Scanned}"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="End"
+                                    FontSize="10"
+                                    IsVisible="{Binding Scanned}"
+                                />
                                 <mct:AvatarView 
                                     ImageSource="{Binding ProfilePicture}"
-                                    WidthRequest="80"
-                                    HeightRequest="80"
+                                    WidthRequest="65"
+                                    HeightRequest="65"
                                     CornerRadius="60"
                                     BorderWidth="2" />
-                                <Label  
-                                       Text="&#xf029;"
-                                       TextColor="{StaticResource Scanned}"
-                                       FontFamily="FA6Solid"
-                                       HorizontalOptions="End"
-                                       />
-                            </HorizontalStackLayout>
+                            </Grid>
                             <VerticalStackLayout
-                                Grid.Row="1"
-                                HorizontalOptions="Center"
-                                WidthRequest="100"
-                                Spacing="3">
-                                <Label
-                                    VerticalTextAlignment="Center"
-                                    HorizontalTextAlignment="Center"
-                                    FontSize="11"
-                                    Style="{StaticResource LabelBold}" 
-                                    Text="{Binding Name}" />
-                                <Label 
-                                    VerticalTextAlignment="Start"
-                                    HorizontalTextAlignment="Center"
-                                    FontSize="9" 
-                                    Text="{Binding Title}" />
+                            Grid.Row="2"
+                            WidthRequest="80"
+                            HeightRequest="60"
+                            Spacing="3">
+                            <Label
+                                VerticalTextAlignment="Center"
+                                HorizontalTextAlignment="Center"
+                                FontSize="11"
+                                Style="{StaticResource LabelBold}" 
+                                Text="{Binding Name}" />
+                            <Label 
+                                VerticalTextAlignment="End"
+                                HorizontalTextAlignment="Center"
+                                FontSize="9" 
+                                Text="{Binding Title}" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-            </RefreshView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
