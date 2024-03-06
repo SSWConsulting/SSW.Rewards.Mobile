@@ -14,24 +14,9 @@
     </ContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout Spacing="15"
-                             Margin="15"
-                             x:Name="MainPageRow">
-            <Border
-                HorizontalOptions="End"
-                BackgroundColor="{StaticResource Background}"
-                StrokeShape="Ellipse"
-                StrokeThickness="0"
-                IsVisible="{Binding ShowPopButton}">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding PopProfile}" />
-                </Border.GestureRecognizers>
-                <Label
-                    FontFamily="FluentIcons"
-                    Text="&#xe4c3;"
-                    FontSize="35"
-                    TextColor="{StaticResource primary}" />
-            </Border>
+        <VerticalStackLayout 
+            Spacing="15"
+            Margin="15">
 
             <controls:ProfileStats />
             

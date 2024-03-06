@@ -36,8 +36,6 @@ public enum CarouselType
 
 public class ProfileAchievement : Achievement
 {
-    public ICommand AchievementTappedCommand { get; set; }
-
     public static string AchievementTappedMessage = "AchivementTapped";
 
     public bool IsMe { get; set; }
@@ -46,8 +44,6 @@ public class ProfileAchievement : Achievement
     {
         //AchievementTappedCommand = new Command(() =>
         //    WeakReferenceMessenger.Default.Send(new AchievementTappedMessage(this)));
-
-        AchievementTappedCommand = new Command(() => WeakReferenceMessenger.Default.Send(new AchievementTappedMessage(this)));
     }
 }
 

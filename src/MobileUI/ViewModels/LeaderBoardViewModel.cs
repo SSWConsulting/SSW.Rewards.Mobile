@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
@@ -17,11 +16,10 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
     [ObservableProperty]
     private ObservableCollection<LeaderViewModel> searchResults = new ();
-    
+
     public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
     {
         Title = "Leaderboard";
-        OnRefreshCommand = new Command(async () => await Refresh());
         _leaderService = leaderService;
         _userService = userService;
         ProfilePic = _userService.MyProfilePic;
@@ -30,22 +28,18 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         Leaders = new ObservableCollection<LeaderViewModel>();
         WeakReferenceMessenger.Default.Register(this);
     }
-    
-    public ICommand LeaderTapped => new Command<LeaderViewModel>(async (x) => await HandleLeaderTapped(x));
-    public ICommand OnRefreshCommand { get; set; }
-    public ICommand RefreshCommand => new Command(async () => await RefreshLeaderboard());
 
     public ObservableCollection<LeaderViewModel> Leaders { get; set; }
 
     [ObservableProperty]
     private List<Segment> _periods;
-    
+
     [ObservableProperty]
     private bool _isRunning;
-    
+
     [ObservableProperty]
     private bool _isRefreshing;
-    
+
     public string ProfilePic { get; set; }
     public Action<int> ScrollTo { get; set; }
 
@@ -53,10 +47,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
     [ObservableProperty]
     private Segment _selectedPeriod;
-    
-    [ObservableProperty]
-    private int _totalLeaders;
-    
+
     [ObservableProperty]
     private int _myRank;
 
@@ -68,7 +59,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
     [ObservableProperty]
     private LeaderViewModel _third;
-    
+
     public int MyPoints { get; set; }
     public int MyBalance { get; set; }
 
@@ -96,24 +87,41 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         {
             Periods = new List<Segment>
             {
-                new Segment { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
-                new Segment { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
-                new Segment { Name = "This Year", Value = LeaderboardFilter.ThisYear },
-                new Segment { Name = "All Time", Value = LeaderboardFilter.Forever },
+                new() { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
+                new() { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
+                new() { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+                new() { Name = "All Time", Value = LeaderboardFilter.Forever },
             };
         }
     }
 
+    [RelayCommand]
     private async Task RefreshLeaderboard()
     {
         await LoadLeaderboard();
         IsRefreshing = false;
     }
 
+    [RelayCommand]
+    private async Task FilterByPeriod()
+    {
+        CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
+        ClearSearch = !ClearSearch;
+        await FilterAndSortLeaders(Leaders, CurrentPeriod);
+    }
+
+    [RelayCommand]
+    private async Task LeaderTapped(LeaderViewModel leader)
+    {
+        if (leader.IsMe)
+            await Shell.Current.GoToAsync("//me");
+        else
+            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+    }
+
     private async Task LoadLeaderboard()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
-
         int myId = _userService.MyUserId;
 
         Leaders.Clear();
@@ -126,10 +134,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
 
             Leaders.Add(vm);
         }
-
-        TotalLeaders = summaries.Count();
-
-        ScrollTo?.Invoke(0);
     }
 
     private async Task UpdateSearchResults(IEnumerable<LeaderViewModel> sortedLeaders)
@@ -139,14 +143,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         {
             SearchResults = newList;
         });
-    }
-
-    [RelayCommand]
-    private async Task FilterByPeriod()
-    {
-        CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
-        ClearSearch = !ClearSearch;
-        await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
     public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, LeaderboardFilter period, bool keepRank = false)
@@ -201,38 +197,11 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         Third = leaders.Skip(2).FirstOrDefault();
     }
 
-    public async Task Refresh()
-    {
-        var summaries = await _leaderService.GetLeadersAsync(false);
-        int myId = _userService.MyUserId;
-
-        Leaders.Clear();
-        
-        foreach (var summary in summaries)
-        {
-            var isMe = myId == summary.UserId;
-            var vm = new LeaderViewModel();
-            vm.MapFrom(summary, isMe);
-
-            Leaders.Add(vm);
-        }
-
-        FilterAndSortLeaders(Leaders, CurrentPeriod);
-        
-        IsRefreshing = false;
-    }
-
-    private async Task HandleLeaderTapped(LeaderViewModel leader)
-    {
-        if (leader.IsMe)
-            await Shell.Current.GoToAsync("//me");
-        else
-            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
-    }
-
     public async void Receive(PointsAwardedMessage message)
     {
-        await Refresh();
+        await LoadLeaderboard();
+        await FilterAndSortLeaders(Leaders, CurrentPeriod);
+        IsRefreshing = false;
     }
 
     private void UpdateMyRankIfRequired(LeaderViewModel mySummary)

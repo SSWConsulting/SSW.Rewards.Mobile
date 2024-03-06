@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              BackgroundColor="{StaticResource MainBackground}"
-             x:Class="SSW.Rewards.Mobile.Pages.ScanPage">
+             x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
+             x:Name="this">
     <Grid>
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
@@ -11,7 +12,7 @@
         
         <Button Text="Close"
                 ContentLayout="Right, 10"
-                Clicked="DismissTapped"
+                Command="{Binding Path=DismissCommand, Source={x:Reference this}}"
                 Margin="20"
                 HeightRequest="40"
                 VerticalOptions="Start"

@@ -1,9 +1,8 @@
 ﻿using Mopups.Services;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
-using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -30,16 +29,12 @@ public partial class ScanResultViewModel : BaseViewModel
     
     [ObservableProperty]
     private string _achievementHeading;
-    
-    public ICommand OnOkCommand { get; set; }
 
     [ObservableProperty]
     private Color _headingColour;
 
     public ScanResultViewModel(IUserService userService, IScannerService scannerService)
     {
-        OnOkCommand = new Command(async () => await DismissPopups());
-
         _userService = userService;
         _scannerService = scannerService;
     }
@@ -123,6 +118,12 @@ public partial class ScanResultViewModel : BaseViewModel
             await _userService.UpdateMyDetailsAsync();
             WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         }
+    }
+
+    [RelayCommand]
+    private async Task Ok()
+    {
+        await DismissPopups();
     }
 
     private async Task DismissPopups()

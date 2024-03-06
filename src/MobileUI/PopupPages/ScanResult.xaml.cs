@@ -26,7 +26,7 @@ public partial class ScanResult : PopupPage
 
     protected override bool OnBackButtonPressed()
     {
-        _viewModel.OnOkCommand.Execute(null);
+        _viewModel.OkCommand.Execute(null);
         return true;
     }
 }

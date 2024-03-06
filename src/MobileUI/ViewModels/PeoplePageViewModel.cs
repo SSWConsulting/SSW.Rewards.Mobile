@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
@@ -12,16 +13,6 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 {
     private IDevService _devService;
     private readonly ISnackbarService _snackbarService;
-
-    public ICommand OnCardSwiped => new Command(SetDevDetails);
-    public ICommand StaffQRCommand => new Command(ShowScannedMessage);
-    public ICommand OnTwitterTapped => new Command(async () => await OpenTwitter());
-    public ICommand OnGithubTapped => new Command(async () => await OpenGithub());
-    public ICommand OnLinkedinTapped => new Command(async () => await OpenLinkedin());
-    public ICommand PeopleCommand => new Command(async () => await OpenPeople());
-    public ICommand ForwardCommand => new Command(NavigateForward);
-    public ICommand BackCommand => new Command(NavigateBack);
-    public ICommand SearchTextCommand => new Command<string>(SearchTextHandler);
 
     public EventHandler<ScrollToEventArgs> ScrollToRequested;
 
@@ -131,6 +122,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         }
     }
 
+    [RelayCommand]
     private void SetDevDetails()
     {
         if (_profilesLoaded)
@@ -168,6 +160,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         }
     }
 
+    [RelayCommand]
     private void NavigateForward()
     {
         var selectedIndex = Profiles.IndexOf(SelectedProfile);
@@ -184,6 +177,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         }
     }
 
+    [RelayCommand]
     private void NavigateBack()
     {
         var selectedIndex = Profiles.IndexOf(SelectedProfile);
@@ -209,29 +203,34 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         return $"https://www.ssw.com.au/people/{profile}";
     }
 
+    [RelayCommand]
     private async Task OpenTwitter()
     {
         if (TwitterEnabled)
         await Launcher.OpenAsync(new Uri(_twitterURI));
     }
 
+    [RelayCommand]
     private async Task OpenGithub()
     {
         if (GitHubEnabled)
         await Launcher.OpenAsync(new Uri(_githubURI));
     }
 
+    [RelayCommand]
     private async Task OpenLinkedin()
     {
         if (LinkedinEnabled)
         await Launcher.OpenAsync(new Uri(_linkedinUri));
     }
 
+    [RelayCommand]
     private async Task OpenPeople()
     {
         await Launcher.OpenAsync(new Uri(_peopleUri));
     }
 
+    [RelayCommand]
     private async void ShowScannedMessage()
     {
         var options = new SnackbarOptions
@@ -251,7 +250,8 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
         _initialised = false;
     }
 
-    private void SearchTextHandler(string searchBarText)
+    [RelayCommand]
+    private void SearchText(string searchBarText)
     {
         // UserStoppedTypingBehavior fires the command on a threadPool thread
         // as internally it uses .ContinueWith
