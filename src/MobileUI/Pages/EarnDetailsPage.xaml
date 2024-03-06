@@ -11,17 +11,6 @@
              ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding GoBackCommand}" />
-    </Shell.BackButtonBehavior>
-    <Shell.TitleView>
-        <Button Text="Done" 
-                IsVisible="{Binding ResultsVisible}" 
-                Command="{Binding GoBackCommand}"
-                Padding="{OnPlatform iOS='0'}"
-                FontAutoScalingEnabled="False"
-                HorizontalOptions="End"/>
-    </Shell.TitleView>
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="InverseBool" />
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
@@ -56,7 +45,7 @@
                                WidthRequest="80"
                                Aspect="AspectFill" />
                     </Border>
-                    
+
                     <Label Grid.Row="1"
                            Text="{Binding QuizTitle}"
                            Style="{StaticResource LabelBold}"
@@ -108,7 +97,7 @@
                                    Count="{Binding Questions.Count}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="End"/>
-                    
+
                     <!-- Question & Answer -->
                     <Grid Grid.Row="5" RowDefinitions="Auto,Auto" Margin="20">
                         <Label Grid.Row="0"
@@ -136,7 +125,7 @@
                                 MinimumHeightRequest="150"
                                 Placeholder="Enter your answer here">
                                 <Editor.Behaviors>
-                                    <toolkit:EventToCommandBehavior 
+                                    <toolkit:EventToCommandBehavior
                                         x:TypeArguments="TextChangedEventArgs"
                                         EventName="TextChanged"
                                         Command="{Binding AnswerChangedCommand}"/>
@@ -165,7 +154,7 @@
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
-                    
+
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
                                 Text="&#xf061;"
@@ -178,7 +167,7 @@
                                 Padding="0"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
-                    
+
                         <Button Grid.Column="1"
                                 IsVisible="{Binding IsLastQuestion}"
                                 Text="Submit"
@@ -193,7 +182,7 @@
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="80" />
                     </Grid>
-                    
+
                     <ActivityIndicator HorizontalOptions="Center"
                                        VerticalOptions="Center"
                                        Color="{StaticResource SSWRed}"
@@ -233,7 +222,7 @@
                                VerticalTextAlignment="Center" />
                     </Border>
 
-                    
+
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
                                          Margin="10"
                                          Grid.Row="2"
@@ -257,8 +246,8 @@
                                         x:Name="Expander"
                                         IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
                                         <toolkit:Expander.Header>
-                                            <Grid 
-                                                ColumnDefinitions="40, *, Auto" 
+                                            <Grid
+                                                ColumnDefinitions="40, *, Auto"
                                                 RowDefinitions="Auto"
                                                 ColumnSpacing="6">
                                                 <lottie:SKLottieView Grid.Column="0"
@@ -310,8 +299,8 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </Grid>
-                
-                <ActivityIndicator 
+
+                <ActivityIndicator
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    Color="{StaticResource SSWRed}"
