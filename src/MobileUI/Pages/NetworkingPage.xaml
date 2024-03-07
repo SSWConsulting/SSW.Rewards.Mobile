@@ -43,7 +43,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="users:NetworkingProfileDto">
                     <Border 
-                        HeightRequest="140"
+                        HeightRequest="145"
                         WidthRequest="80"
                         BackgroundColor="{StaticResource MainBackground}"
                         Stroke="{StaticResource MainBackground}"
@@ -94,6 +94,14 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        <ActivityIndicator
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -2,14 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-             BackgroundColor="{StaticResource MainBackground}"
+             BackgroundColor="{StaticResource Background}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:Name="this">
     <Grid>
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
                                     IsDetecting="True"/>
-        
+
         <Button Text="Close"
                 ContentLayout="Right, 10"
                 Command="{Binding Path=DismissCommand, Source={x:Reference this}}"
@@ -20,12 +20,12 @@
                 CornerRadius="20"
                 ZIndex="100">
             <Button.ImageSource>
-                <FontImageSource Glyph="&#xf36e;" 
+                <FontImageSource Glyph="&#xf36e;"
                                  FontFamily="FluentIcons"/>
             </Button.ImageSource>
         </Button>
-        
-        <Border 
+
+        <Border
             BackgroundColor="{StaticResource Background}"
             VerticalOptions="End"
             HeightRequest="60"
@@ -42,6 +42,6 @@
                    TextColor="#DDDDDD" />
         </Border>
         <Image Source="qr_reticle"/>
-        
+
     </Grid>
 </ContentPage>

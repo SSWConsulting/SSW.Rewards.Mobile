@@ -10,18 +10,18 @@
              x:DataType="viewModels:MyProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.MyProfilePage">
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout 
+        <VerticalStackLayout
             Spacing="15"
             Margin="15">
 
             <controls:ProfileStats />
-            
+
             <controls:ProfileActivity />
-            
+
         </VerticalStackLayout>
     </ScrollView>
 

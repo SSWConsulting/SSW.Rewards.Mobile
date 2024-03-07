@@ -52,7 +52,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
             var profiles = await _devService.GetProfilesAsync();
             Profiles = profiles.ToList();
             CurrentSegment = NetworkingPageSegments.Friends;
-            SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => x.Scanned));
+            SearchResults = new ObservableCollection<NetworkingProfileDto>();
         }
     }
 
