@@ -9,7 +9,7 @@
              x:DataType="viewModels:OthersProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OthersProfilePage">
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <ScrollView>
@@ -35,7 +35,7 @@
             </Border>
 
             <controls:ProfileStats />
-            
+
             <Button Text="Get in touch"
                     TextTransform="Uppercase"
                     Style="{StaticResource LabelBold}"
@@ -46,7 +46,7 @@
                     Command="{Binding EmailUserCommand}"
                     IsVisible="{Binding IsStaff}">
                 <Button.ImageSource>
-                    <FontImageSource Glyph="&#xf0e0;" 
+                    <FontImageSource Glyph="&#xf0e0;"
                                      FontFamily="FA6Solid"
                                      Size="20"/>
                 </Button.ImageSource>

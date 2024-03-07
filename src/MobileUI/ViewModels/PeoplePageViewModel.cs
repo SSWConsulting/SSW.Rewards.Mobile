@@ -37,7 +37,7 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
     [ObservableProperty]
     int points;
 
-    public ObservableCollection<DevProfile> Profiles { get; set; } = new(new List<DevProfile>(200));
+    public ObservableRangeCollection<DevProfile> Profiles { get; set; } = new(new List<DevProfile>(200));
 
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
 
@@ -99,20 +99,21 @@ public partial class DevProfilesViewModel : BaseViewModel, IRecipient<PointsAwar
 
     private async Task LoadProfiles()
     {
-        var profiles = await _devService.GetProfilesAsync();
+        var result = await _devService.GetProfilesAsync();
+        var profiles = result.ToList();
 
-        if (profiles.Any())
+        if (profiles.Count != 0)
         {
             _profilesLoaded = false;
-            Profiles.Clear();
 
             int i = 0;
             foreach (var profile in profiles)
             {
                 profile.Index = i;
-                Profiles.Add(profile);
                 i++;
             }
+
+            Profiles.ReplaceRange(profiles);
 
             _lastProfileIndex = Profiles.Count - 1;
             ShowDevCards = true;

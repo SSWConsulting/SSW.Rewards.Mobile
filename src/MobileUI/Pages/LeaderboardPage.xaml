@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}"
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
           StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
     <Grid>
