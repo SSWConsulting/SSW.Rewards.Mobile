@@ -4,7 +4,7 @@ public static class Constants
 {
 #if DEBUG
     //public const string ApiBaseUrl = "https://app-sswrewards-api-staging.azurewebsites.net";
-    public const string ApiBaseUrl = "https://f6c7-163-53-144-8.ngrok-free.app";//"https://localhost:5001/";//"https://api.rewards.ssw.com.au";
+    public const string ApiBaseUrl = "https://cdf9-163-53-144-8.ngrok-free.app";//"https://localhost:5001/";//"https://api.rewards.ssw.com.au";
     public const string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public const string AppCenterIOSId = "21efe682-dc49-4d39-8af8-ad05911be003";
 

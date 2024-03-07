@@ -51,20 +51,45 @@ public partial class Search
         set => SetValue(ClearSearchProperty, value);
     }
     
+    public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
+        nameof(Placeholder),
+        typeof(string),
+        typeof(Search),
+        propertyChanged: OnPlaceholderChanged);
+
+    private static void OnPlaceholderChanged(BindableObject bindable, object oldvalue, object newvalue)
+    {
+        var placeholder = (string)newvalue;
+        var search = (Search)bindable;
+        
+        search.SearchEntry.Placeholder = placeholder;
+    }
+
+    public string Placeholder
+    {
+        get => (string)GetValue(PlaceholderProperty);
+        set => SetValue(PlaceholderProperty, value);
+    }
+    
     public static readonly BindableProperty IsSearchingProperty = BindableProperty.Create(
         nameof(IsSearching),
         typeof(bool),
-        typeof(Search));
+        typeof(Search),
+        propertyChanged: OnIsSearchingChanged);
+
+    private static void OnIsSearchingChanged(BindableObject bindable, object oldvalue, object newvalue)
+    {
+        var isSearching = (bool)newvalue;
+        var search = (Search)bindable;
+        
+        search.ActivityIndicator.IsVisible = isSearching;
+        search.Icon.IsVisible = !isSearching;
+    }
 
     public bool IsSearching
     {
         get => (bool)GetValue(IsSearchingProperty);
-        set
-        {
-            SetValue(IsSearchingProperty, value);
-            ActivityIndicator.IsVisible = value;
-            Icon.IsVisible = !value;
-        }
+        set => SetValue(IsSearchingProperty, value);
     }
 
     public Search()

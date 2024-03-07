@@ -41,7 +41,13 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     public ObservableCollection<Address> SearchResults { get; set; } = [];
     
     [ObservableProperty]
-    private Address _selectedAddress;
+    private Address? _selectedAddress;
+    
+    [ObservableProperty]
+    private bool _confirmEnabled = false;
+    
+    [ObservableProperty]
+    private bool _isAddressEditExpanded = false;
     
 
     public void Initialise(Reward reward)
@@ -56,11 +62,17 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     }
 
     [RelayCommand]
-    private async Task SearrhAddress(string addressQuery)
+    private async Task SearchAddress(string addressQuery)
     {
         IsSearching = true;
         
         SearchResults.Clear();
+        
+        if (string.IsNullOrEmpty(addressQuery))
+        {
+            IsSearching = false;
+            return;
+        }
         
         var results = await addressService.Search(addressQuery);
 
@@ -89,25 +101,57 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         IsBalanceVisible = false;
         IsAddressVisible = true;
     }
+
+    [RelayCommand]
+    private void AddressSelected()
+    {
+        ConfirmEnabled = SelectedAddress != null;
+        
+        if (!ConfirmEnabled)
+        {
+            return;
+        }
+        
+        IsAddressVisible = false;
+    }
     
     [RelayCommand(CanExecute = nameof(ConfirmClickedIsExecutable))]
     private async Task ConfirmClicked()
     {
+        if (SelectedAddress is null)
+        {
+            return;
+        }
+        
         IsBusy = true;
         await rewardService.ClaimReward(new ClaimRewardDto()
         {
             Id = _reward.Id,
             InPerson = false,
-            Address = _selectedAddress
+            Address = SelectedAddress
         });
             
         IsBusy = false;
         // TODO: Implement confirmation page here
         await MopupService.Instance.PopAsync();
     }
+
+    [RelayCommand]
+    private void EditAddress()
+    {
+        IsAddressEditExpanded = !IsAddressEditExpanded;
+    }
+    
+    [RelayCommand]
+    private void SearchAgain()
+    {
+        ConfirmEnabled = false;
+        IsAddressVisible = true;
+    }
+    
     private bool ConfirmClickedIsExecutable()
     {
-        return _selectedAddress != null;
+        return ConfirmEnabled;
     }
     
 }

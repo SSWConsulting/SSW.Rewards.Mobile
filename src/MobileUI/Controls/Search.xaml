@@ -46,7 +46,7 @@
             Grid.Column="1"
             IsRunning="True"
             IsVisible="False"
-            Color="{DynamicResource PrimaryColor}"
+            Color="{DynamicResource SSWRed}"
             HorizontalOptions="Center"
             VerticalOptions="Center" />
     </Grid>

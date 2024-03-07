@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
@@ -25,6 +25,24 @@
         <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
         <toolkit:InvertedBoolConverter x:Key="InverseBool" />
+        <Style TargetType="Label" x:Key="SelectedCheckLabelStyle">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="IsVisible" Value="False"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="IsVisible" Value="True"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
     </pages:PopupPage.Resources>
     <ScrollView>
         <Border
@@ -152,12 +170,100 @@
                         </Border>
                     </Grid>
 
-                    <!-- Address section -->
+                    <!-- Address search -->
                     <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
                                          Spacing="2"
                                          Margin="0,0,0,30">
-                        <controls:Search Command="{Binding SearrhAddressCommand}"
-                                         IsSearching="{Binding IsSearching}"/>
+                        <controls:Search Command="{Binding SearchAddressCommand}"
+                                         IsSearching="{Binding IsSearching}"
+                                         BorderColor="{StaticResource BorderDefault}"
+                                         BackgroundColor="{StaticResource Gray900}"
+                                         Placeholder="Search for an address"/>
+                        
+                        <CollectionView ItemsSource="{Binding SearchResults}"
+                                        SelectedItem="{Binding SelectedAddress}"
+                                        SelectionChangedCommand="{Binding AddressSelectedCommand}"
+                                        SelectionMode="Single"
+                                        MaximumHeightRequest="250">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="addr:Address">
+                                    <Grid HeightRequest="30"
+                                          Margin="5">
+                                        <Label Text="{Binding freeformAddress}"
+                                               Margin="5"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"/>
+                                        
+                                        <Label HorizontalOptions="End"
+                                               Margin="5,5,10,5"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               FontFamily="FA6Solid"
+                                               TextColor="{StaticResource CorrectColor}"
+                                               LineBreakMode="WordWrap"
+                                               Text="&#xf058;"
+                                               Style="{StaticResource SelectedCheckLabelStyle}">
+                                            
+                                        </Label>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                    
+                    <VerticalStackLayout IsVisible="{Binding ConfirmEnabled}">
+                        <Label Text="Sending to:"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" 
+                               Margin="5,10,5,5"/>
+                        
+                        <Label Text="{Binding SelectedAddress.freeformAddress}"
+                                 HorizontalOptions="Center"
+                                 HorizontalTextAlignment="Center"
+                                 Margin="5,5,5,10"/>
+                        
+                        <HorizontalStackLayout HorizontalOptions="Center"
+                                               Spacing="10"
+                                               Margin="0,15">
+                            <Label Text="Edit"
+                                   TextColor="{StaticResource SSWRed}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding EditAddressCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label Text="Search again"
+                                   TextColor="{StaticResource SSWRed}"
+                                   VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding SearchAgainCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        
+                        <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}">
+                            <VerticalStackLayout BindingContext="{Binding Source={x:Reference RedeemRewardPopup}, Path=BindingContext.SelectedAddress}"
+                                                 x:DataType="addr:Address"
+                                                 Spacing="5">
+                                <Entry Text="{Binding streetNumber}"
+                                       Placeholder="Street Number" />
+                                <Entry Text="{Binding streetName}"
+                                        Placeholder="Street Name" />
+                                <Entry Text="{Binding municipalitySubdivision}"
+                                        Placeholder="Suburb" />
+                                <Entry Text="{Binding municipality}"
+                                        Placeholder="City" />
+                                <Entry Text="{Binding countrySubdivisionCode}"
+                                        Placeholder="State" />
+                                <Entry Text="{Binding postalCode}"
+                                        Placeholder="Postcode" />
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
                     </VerticalStackLayout>
 
 
@@ -206,7 +312,7 @@
                         <Border Background="{StaticResource BrandBrush}"
                                 StrokeThickness="0"
                                 Padding="8"
-                                IsVisible="{Binding IsAddressVisible}">
+                                IsVisible="{Binding ConfirmEnabled}">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="4" />
                             </Border.StrokeShape>

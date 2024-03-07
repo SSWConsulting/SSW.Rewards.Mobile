@@ -21,7 +21,7 @@ public class AddressService : IAddressService
     
     public async Task<IEnumerable<Address>> Search(string query)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}Search?query={query}");
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get?query={query}");
         
         if  (result.IsSuccessStatusCode)
         {
