@@ -124,7 +124,8 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         }
         
         IsBusy = true;
-        await rewardService.ClaimReward(new ClaimRewardDto()
+        
+        var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
         {
             Id = _reward.Id,
             InPerson = false,
@@ -132,6 +133,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         });
             
         IsBusy = false;
+        
         // TODO: Implement confirmation page here
         await MopupService.Instance.PopAsync();
     }

@@ -8,5 +8,5 @@ public class ClaimRewardDto
     public int Id { get; set; }
     
     public Address Address { get; set; }
-    public bool InPerson { get; set; }
+    public bool InPerson { get; set; } = true;
 }

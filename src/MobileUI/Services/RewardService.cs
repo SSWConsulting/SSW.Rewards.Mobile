@@ -50,13 +50,13 @@ public class RewardService : IRewardService
         return rewardList;
     }
     
-    public async Task ClaimReward(ClaimRewardDto claim)
+    public async Task<ClaimRewardResult> ClaimReward(ClaimRewardDto claim)
     {
+        var result = new ClaimRewardResult() { status = RewardStatus.Error };
+        
         try
         {
-            var response = await _rewardClient.RedeemReward(claim, CancellationToken.None);
-            
-            // TODO: Handle response
+            result = await _rewardClient.RedeemReward(claim, CancellationToken.None);
         }
         catch (Exception e)
         {
@@ -65,7 +65,12 @@ public class RewardService : IRewardService
             {
             }
         }
-        
-        WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+
+        if (result.status == RewardStatus.Claimed)
+        {
+            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
+        }
+
+        return result;
     }
 }
