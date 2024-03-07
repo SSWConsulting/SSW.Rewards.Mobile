@@ -37,6 +37,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
     
     public async Task Initialise()
     {
+        IsBusy = true;
         if (Segments is null || Segments.Count() == 0)
         {
             Segments = new List<Segment>
@@ -54,6 +55,8 @@ public partial class NetworkingPageViewModel : BaseViewModel
             CurrentSegment = NetworkingPageSegments.Friends;
             SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
         }
+
+        IsBusy = false;
     }
 
     private async Task GetProfiles()
