@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Controls;
@@ -52,7 +53,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
             var profiles = await _devService.GetProfilesAsync();
             Profiles = profiles.ToList();
             CurrentSegment = NetworkingPageSegments.Friends;
-            SearchResults = new ObservableCollection<NetworkingProfileDto>();
+            SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
         }
     }
 
@@ -67,17 +68,20 @@ public partial class NetworkingPageViewModel : BaseViewModel
             Profiles = profiles.ToList();
         }
         
+        SearchResults.Clear();
+        
         switch (CurrentSegment)
         {
             case NetworkingPageSegments.Friends:
-                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => x.Scanned));
+                SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
                 break;
             case NetworkingPageSegments.ToMeet:
-                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles.Where(x => !x.Scanned));
+                SearchResults = Profiles.Where(x => !x.Scanned).ToObservableCollection();
                 break;
             case NetworkingPageSegments.SSW:
+            case NetworkingPageSegments.Other:
             default:
-                SearchResults = new ObservableCollection<NetworkingProfileDto>(Profiles);
+                SearchResults = Profiles.ToObservableCollection();
                 break;
         }
     }
