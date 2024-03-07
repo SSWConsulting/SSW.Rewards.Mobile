@@ -26,7 +26,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
     [ObservableProperty]
     private Segment _selectedSegment;
     [ObservableProperty]
-    private ObservableCollection<NetworkingProfileDto> _searchResults = new ();
+    private ObservableCollection<NetworkingProfileDto> _searchResults;
 
     private IDevService _devService;
     
@@ -50,11 +50,16 @@ public partial class NetworkingPageViewModel : BaseViewModel
         
         if(Profiles is null || Profiles.Count() == 0)
         {
-            var profiles = await _devService.GetProfilesAsync();
-            Profiles = profiles.ToList();
+            await GetProfiles();
             CurrentSegment = NetworkingPageSegments.Friends;
             SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
         }
+    }
+
+    private async Task GetProfiles()
+    {
+        var profiles = await _devService.GetProfilesAsync();
+        Profiles = profiles.ToList();
     }
 
     [RelayCommand]
@@ -64,11 +69,8 @@ public partial class NetworkingPageViewModel : BaseViewModel
 
         if (Profiles is null || Profiles.Count() == 0)
         {
-            var profiles = await _devService.GetProfilesAsync();
-            Profiles = profiles.ToList();
+            await GetProfiles();
         }
-        
-        SearchResults.Clear();
         
         switch (CurrentSegment)
         {
