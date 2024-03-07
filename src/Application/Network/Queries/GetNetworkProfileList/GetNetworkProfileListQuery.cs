@@ -1,13 +1,7 @@
-using AutoMapper.QueryableExtensions;
-using SSW.Rewards.Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Network;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Network.Queries;
-
-public class NetworkProfileListViewModel
-{
-    public IEnumerable<NetworkingProfileDto> Profiles { get; set; } = Enumerable.Empty<NetworkingProfileDto>();
-}
 
 public class GetNetworkProfileListQuery : IRequest<NetworkProfileListViewModel>;
 

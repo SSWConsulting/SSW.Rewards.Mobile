@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using SSW.Rewards.Shared.DTOs.Network;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -10,6 +11,8 @@ public interface IStaffService
     Task<StaffMemberDto> GetStaffMember(int id, CancellationToken cancellationToken);
 
     Task<StaffMemberDto> SearchStaffMember(StaffMemberQueryDto query, CancellationToken cancellationToken);
+    
+    Task<NetworkProfileListViewModel> GetNetworkProfileList(CancellationToken cancellationToken);
 }
 
 public class StaffService : IStaffService
@@ -78,5 +81,24 @@ public class StaffService : IStaffService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
         throw new Exception($"Failed to search staff member: {responseContent}");
+    }
+    
+    public async Task<NetworkProfileListViewModel> GetNetworkProfileList(CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.GetAsync("Network/GetList", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<NetworkProfileListViewModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get network profile list: {responseContent}");
     }
 }
