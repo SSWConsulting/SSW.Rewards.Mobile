@@ -13,7 +13,7 @@ public class DevService : IDevService
         _staffClient = staffClient;
     }
 
-    public async Task<IEnumerable<NetworkingProfileDto>> GetProfilesAsync()
+    public async Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync()
     {
         try
         {
@@ -29,7 +29,7 @@ public class DevService : IDevService
             }
         }
         
-        return new List<NetworkingProfileDto>(0);
+        return new List<NetworkProfileDto>(0);
     }
     
     public async Task<DevProfile> GetProfileAsync(string email)

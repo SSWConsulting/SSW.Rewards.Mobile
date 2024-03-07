@@ -25,7 +25,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
     
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
-        var profiles = new List<NetworkingProfileDto>(200);
+        var profiles = new List<NetworkProfileDto>(200);
         var user = await _userService.GetCurrentUser(cancellationToken);
         var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
         
@@ -74,7 +74,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         {
             var leaderboardUser = leaderboardUserDtos.FirstOrDefault(u => u.UserId == profile.UserId);
             
-            return new NetworkingProfileDto
+            return new NetworkProfileDto
             {
                 UserId = profile.UserId,
                 ProfilePicture = profile.ProfilePicture,

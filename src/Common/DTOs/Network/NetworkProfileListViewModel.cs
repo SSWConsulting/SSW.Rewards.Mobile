@@ -4,5 +4,5 @@ namespace SSW.Rewards.Shared.DTOs.Network;
 
 public class NetworkProfileListViewModel
 {
-    public IEnumerable<NetworkingProfileDto> Profiles { get; set; } = Enumerable.Empty<NetworkingProfileDto>();
+    public IEnumerable<NetworkProfileDto> Profiles { get; set; } = Enumerable.Empty<NetworkProfileDto>();
 }

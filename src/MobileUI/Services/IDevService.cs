@@ -4,7 +4,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IDevService
 {
-    Task<IEnumerable<NetworkingProfileDto>> GetProfilesAsync();
+    Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync();
     
     Task<DevProfile> GetProfileAsync(string email);
 }

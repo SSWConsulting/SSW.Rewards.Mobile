@@ -20,7 +20,7 @@ public partial class OthersProfilePage : ContentPage
         BindingContext = viewModel;
     }    
     
-    public OthersProfilePage(OthersProfileViewModel vm, NetworkingProfileDto networking)
+    public OthersProfilePage(OthersProfileViewModel vm, NetworkProfileDto networking)
     {
         InitializeComponent();
         viewModel = vm;

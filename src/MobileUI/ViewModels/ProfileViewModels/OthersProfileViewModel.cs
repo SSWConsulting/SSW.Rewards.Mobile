@@ -32,7 +32,7 @@ public partial class OthersProfileViewModel(
         ShowBalance = false;
     }    
     
-    public void SetUser(NetworkingProfileDto vm)
+    public void SetUser(NetworkProfileDto vm)
     {
         ProfilePic = vm.ProfilePicture;
         Name = vm.Name;

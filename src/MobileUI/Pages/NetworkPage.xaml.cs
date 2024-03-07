@@ -1,10 +1,10 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class NetworkingPage : ContentPage
+public partial class NetworkPage : ContentPage
 {
-    private readonly NetworkingPageViewModel _viewModel;
+    private readonly NetworkPageViewModel _viewModel;
 
-    public NetworkingPage(NetworkingPageViewModel viewModel)
+    public NetworkPage(NetworkPageViewModel viewModel)
     {
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;

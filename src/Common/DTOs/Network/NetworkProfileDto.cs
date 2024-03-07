@@ -1,6 +1,6 @@
 namespace SSW.Rewards.Shared.DTOs.Users;
 
-public class NetworkingProfileDto
+public class NetworkProfileDto
 {
     public int UserId { get; set; }
     public string Name { get; set; }

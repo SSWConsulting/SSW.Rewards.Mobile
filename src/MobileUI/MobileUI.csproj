@@ -130,7 +130,7 @@
 		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
-		<Compile Update="Pages\NetworkingPage.xaml.cs">
+		<Compile Update="Pages\NetworkPage.xaml.cs">
 		  <DependentUpon>Networking.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
@@ -196,7 +196,7 @@
 		<MauiXaml Update="Resources\Styles\Templates.xaml">
 		  <Generator></Generator>
 		</MauiXaml>
-		<MauiXaml Update="Pages\NetworkingPage.xaml">
+		<MauiXaml Update="Pages\NetworkPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Templates.xaml">

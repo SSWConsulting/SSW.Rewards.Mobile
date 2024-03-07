@@ -7,7 +7,7 @@ using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public enum NetworkingPageSegments
+public enum NetworkPageSegments
 {
     Friends,
     ToMeet,
@@ -15,22 +15,22 @@ public enum NetworkingPageSegments
     Other
 }
 
-public partial class NetworkingPageViewModel : BaseViewModel
+public partial class NetworkPageViewModel : BaseViewModel
 {
-    public NetworkingPageSegments CurrentSegment { get; set; }
+    public NetworkPageSegments CurrentSegment { get; set; }
 
     [ObservableProperty]
-    private List<NetworkingProfileDto> _profiles;
+    private List<NetworkProfileDto> _profiles;
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
     private Segment _selectedSegment;
     [ObservableProperty]
-    private ObservableCollection<NetworkingProfileDto> _searchResults;
+    private ObservableCollection<NetworkProfileDto> _searchResults;
 
     private IDevService _devService;
     
-    public NetworkingPageViewModel(IDevService devService)
+    public NetworkPageViewModel(IDevService devService)
     {
         _devService = devService;
     }
@@ -42,17 +42,16 @@ public partial class NetworkingPageViewModel : BaseViewModel
         {
             Segments = new List<Segment>
             {
-                new() { Name = "Friends", Value = NetworkingPageSegments.Friends },
-                new() { Name = "To Meet", Value = NetworkingPageSegments.ToMeet },
-                new() { Name = "SSW", Value = NetworkingPageSegments.SSW }
-                // new() { Name = "This Year", Value = NetworkingPageSegments.Other },
+                new() { Name = "Friends", Value = NetworkPageSegments.Friends },
+                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet },
+                new() { Name = "SSW", Value = NetworkPageSegments.SSW }
             };
         }
         
         if(Profiles is null || Profiles.Count() == 0)
         {
             await GetProfiles();
-            CurrentSegment = NetworkingPageSegments.Friends;
+            CurrentSegment = NetworkPageSegments.Friends;
             SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
         }
 
@@ -68,7 +67,7 @@ public partial class NetworkingPageViewModel : BaseViewModel
     [RelayCommand]
     private async Task FilterBySegment()
     {
-        CurrentSegment = (NetworkingPageSegments)SelectedSegment.Value;
+        CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
         if (Profiles is null || Profiles.Count() == 0)
         {
@@ -77,23 +76,22 @@ public partial class NetworkingPageViewModel : BaseViewModel
         
         switch (CurrentSegment)
         {
-            case NetworkingPageSegments.Friends:
+            case NetworkPageSegments.Friends:
                 SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
                 break;
-            case NetworkingPageSegments.ToMeet:
+            case NetworkPageSegments.ToMeet:
                 SearchResults = Profiles.Where(x => !x.Scanned).ToObservableCollection();
                 break;
-            case NetworkingPageSegments.SSW:
-            case NetworkingPageSegments.Other:
+            case NetworkPageSegments.SSW:
+            case NetworkPageSegments.Other:
             default:
                 SearchResults = Profiles.ToObservableCollection();
                 break;
         }
     }
     
-    // TODO: Implement Navigation to OthersProfilePage with NetworkingProfileDto
     [RelayCommand]
-    private async Task UserTapped(NetworkingProfileDto  leader)
+    private async Task UserTapped(NetworkProfileDto  leader)
     { 
         await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }
