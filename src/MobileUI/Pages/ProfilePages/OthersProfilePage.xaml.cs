@@ -14,7 +14,7 @@ public partial class OthersProfilePage : ContentPage
         InitializeComponent();
         viewModel = vm;
 
-        viewModel.SetLeader(leader);
+        viewModel.SetUser(leader);
 
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
@@ -24,7 +24,11 @@ public partial class OthersProfilePage : ContentPage
     {
         InitializeComponent();
         viewModel = vm;
+        
+        viewModel.ShowBalance = false;
 
+        viewModel.SetUser(networking);
+        
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
     }

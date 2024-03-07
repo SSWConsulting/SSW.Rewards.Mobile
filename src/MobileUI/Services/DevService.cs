@@ -15,26 +15,11 @@ public class DevService : IDevService
 
     public async Task<IEnumerable<NetworkingProfileDto>> GetProfilesAsync()
     {
-		List<NetworkingProfileDto> profiles = new (200);
-
         try
         {
-            var profileList = await _staffClient.GetStaffList(CancellationToken.None);
+            var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
 
-            foreach (var profile in profileList.Staff.Where(s => !s.IsDeleted))
-            {
-                var dev = new NetworkingProfileDto
-                {
-                    Name = profile.Name,
-                    ProfilePicture = "v2sophie",
-					Title = profile.Title,
-                    IsExternal = profile.IsExternal,
-                    AchievementId = profile.StaffAchievement?.Id ?? 0,
-                    Scanned = profile.Scanned,
-				};
-
-                profiles.Add(dev);
-            }
+            return vm.Profiles.OrderBy(x => x.Name);
         }
         catch (Exception e)
         {
@@ -43,8 +28,8 @@ public class DevService : IDevService
                 throw;
             }
         }
-
-        return profiles.OrderBy(d => d.Name);
+        
+        return new List<NetworkingProfileDto>(0);
     }
     
     public async Task<DevProfile> GetProfileAsync(string email)

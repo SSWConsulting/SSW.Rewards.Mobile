@@ -85,7 +85,7 @@ public class StaffService : IStaffService
     
     public async Task<NetworkProfileListViewModel> GetNetworkProfileList(CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync("Network/GetList", cancellationToken);
+        var result = await _httpClient.GetAsync("api/Network/GetList", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
