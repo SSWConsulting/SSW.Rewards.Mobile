@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.AddressTypes;
 using SSW.Rewards.Shared.DTOs.Rewards;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
@@ -18,7 +19,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     private string _image;
     
     [ObservableProperty]
-    private string _name;
+    private string _heading;
     
     [ObservableProperty]
     private string _description;
@@ -48,13 +49,25 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     
     [ObservableProperty]
     private bool _isAddressEditExpanded = false;
+
+    [ObservableProperty]
+    private bool _sendingClaim = false;
+    
+    [ObservableProperty]
+    private bool _claimError = false;
+    
+    [ObservableProperty]
+    private bool _claimSuccess = false;
+    
+    [ObservableProperty]
+    private string _closeButtonText = "Cancel";
     
 
     public void Initialise(Reward reward)
     {
         _reward = reward;
         Image = reward.ImageUri;
-        Name = reward.Name;
+        Heading = $"You are about to get:{Environment.NewLine}{reward.Name}";
         Description = reward.Description;
         Cost = reward.Cost;
         
@@ -90,9 +103,9 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     }
     
     [RelayCommand]
-    private void ClosePopup()
+    private async Task ClosePopup()
     {
-        MopupService.Instance.PopAsync();
+        await MopupService.Instance.PopAsync();
     }
 
     [RelayCommand]
@@ -115,15 +128,17 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         IsAddressVisible = false;
     }
     
-    [RelayCommand(CanExecute = nameof(ConfirmClickedIsExecutable))]
+    [RelayCommand]//(CanExecute = nameof(ConfirmClickedIsExecutable))]
     private async Task ConfirmClicked()
     {
         if (SelectedAddress is null)
         {
             return;
         }
-        
-        IsBusy = true;
+
+        ConfirmEnabled = false;
+        SendingClaim = true;
+        Heading = "Claiming reward...";
         
         var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
         {
@@ -131,11 +146,23 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
             InPerson = false,
             Address = SelectedAddress
         });
-            
-        IsBusy = false;
+
+        SendingClaim = false;
         
-        // TODO: Implement confirmation page here
-        await MopupService.Instance.PopAsync();
+        if (claimResult.status == RewardStatus.Claimed)
+        {
+            Heading = "Success!";
+            Description = "Your reward is on the way!";
+            ClaimSuccess = true;
+        }
+        else
+        {
+            Heading = "Error";
+            Description = "Something went wrong - please try again later";
+            ClaimError = true;
+        }
+        
+        CloseButtonText = "Close";
     }
 
     [RelayCommand]

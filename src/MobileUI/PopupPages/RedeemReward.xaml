@@ -7,6 +7,7 @@
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
+                 xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
@@ -84,13 +85,7 @@
                         </Grid>
                     </Border>
 
-                    <Label Text="You are about to get:"
-                           FontSize="24"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           Style="{StaticResource LabelBold}" />
-
-                    <Label Text="{Binding Name}"
+                    <Label Text="{Binding Heading}"
                            FontSize="24"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
@@ -184,6 +179,8 @@
                                         SelectedItem="{Binding SelectedAddress}"
                                         SelectionChangedCommand="{Binding AddressSelectedCommand}"
                                         SelectionMode="Single"
+                                        VerticalScrollBarVisibility="Always"
+                                        BackgroundColor="{StaticResource Gray950}"
                                         MaximumHeightRequest="250">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="addr:Address">
@@ -246,7 +243,8 @@
                             </Label>
                         </HorizontalStackLayout>
                         
-                        <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}">
+                        <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}"
+                                          Margin="0,0,0,5">
                             <VerticalStackLayout BindingContext="{Binding Source={x:Reference RedeemRewardPopup}, Path=BindingContext.SelectedAddress}"
                                                  x:DataType="addr:Address"
                                                  Spacing="5">
@@ -265,67 +263,75 @@
                             </VerticalStackLayout>
                         </toolkit:Expander>
                     </VerticalStackLayout>
+                    
+                    <!-- Technical debt: This should be a single lottie view with a binding to the source, however source binding doesn't work -->
+                    <lottie:SKLottieView Source="delivery2.json"
+                                         IsVisible="{Binding SendingClaim}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
+                    
+                    <lottie:SKLottieView Source="delivery1.json"
+                                         IsVisible="{Binding ClaimSuccess}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
+                    
+                    <lottie:SKLottieView Source="error.json"
+                                         IsVisible="{Binding ClaimError}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
 
 
                     <HorizontalStackLayout HorizontalOptions="Center"
                                            Spacing="10" >
-                        <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                StrokeThickness="0"
-                                Padding="8">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="4" />
-                            </Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding ClosePopupCommand}" />
-                            </Border.GestureRecognizers>
-                            <HorizontalStackLayout Spacing="4">
-                                <Label VerticalOptions="Center"
-                                       VerticalTextAlignment="Center"
-                                       FontFamily="FA6Regular"
-                                       Text="&#xf057;">
-                                </Label>
-                                <Label Text="Cancel"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Style="{StaticResource LabelBold}" />
-                            </HorizontalStackLayout>
-                        </Border>
-
-                        <Border Background="{StaticResource BrandBrush}"
-                                StrokeThickness="0"
-                                Padding="8"
-                                IsVisible="{Binding IsBalanceVisible}">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="4" />
-                            </Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding NextClickedCommand}" />
-                            </Border.GestureRecognizers>
-                            <Label Text="Next"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   Style="{StaticResource LabelBold}" />
-                        </Border>
-
-                        <Border Background="{StaticResource BrandBrush}"
-                                StrokeThickness="0"
-                                Padding="8"
-                                IsVisible="{Binding ConfirmEnabled}">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="4" />
-                            </Border.StrokeShape>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding ConfirmClickedCommand}" />
-                            </Border.GestureRecognizers>
-                            <Label Text="Confirm"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   Style="{StaticResource LabelBold}" />
-
-                        </Border>
+                        <Button Text="{Binding CloseButtonText}"
+                                Command="{Binding ClosePopupCommand}"
+                                ContentLayout="Left, 10"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                VerticalOptions="Start"
+                                HorizontalOptions="Center"
+                                CornerRadius="4">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf057;" 
+                                                 FontFamily="FA6Regular"
+                                                 FontAutoScalingEnabled="True"
+                                                 Size="16"/>
+                            </Button.ImageSource>
+                        </Button>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                IsVisible="{Binding IsBalanceVisible}"
+                                Text="Next"
+                                WidthRequest="80"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding NextClickedCommand}"/>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                WidthRequest="80"
+                                IsVisible="{Binding ConfirmEnabled}"
+                                Text="Confirm"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding ConfirmClickedCommand}"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
                 <ActivityIndicator
