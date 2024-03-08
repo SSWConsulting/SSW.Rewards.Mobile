@@ -50,7 +50,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .Join(_dbContext.Users,
                 staff => staff.Email, 
                 user => user.Email,
-                (staff, user) => new { staff, user })
+                (staff, user) => new NetworkMap { Staff = staff, User = user })
             .ProjectTo<NetworkProfileDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
