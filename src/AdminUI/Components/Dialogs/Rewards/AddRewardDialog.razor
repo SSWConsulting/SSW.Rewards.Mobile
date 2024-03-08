@@ -43,10 +43,10 @@
                     <MudItem xs="4">
                         <MudText>Reward type</MudText>
                     </MudItem>
-                    <MudRadioGroup T="RewardType" @bind-Value="Dto.RewardType">
-                        <MudRadio Value="@(RewardType.Digital)">Digital</MudRadio>
-                        <MudRadio Value="@(RewardType.Physical)">Physical</MudRadio>
-                    </MudRadioGroup>
+                    <MudToggleGroup T="RewardType" @bind-Value="Dto.RewardType">
+                        <MudToggleItem Value="@(RewardType.Digital)" Text="Digital" />
+                        <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
+                    </MudToggleGroup>
                 </MudStack>
             </MudStack>
         </MudForm>

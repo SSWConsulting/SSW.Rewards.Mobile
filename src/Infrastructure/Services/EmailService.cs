@@ -40,7 +40,7 @@ public class EmailService : IEmailService
 
     public async Task<bool> SendPhysicalRewardEmail(string to, string toName, string subject, PhysicalRewardEmail emailProps, CancellationToken cancellationToken)
     {
-        var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please organise to send it to @Model.RecipientAddress.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p><ol><li>Please organise to send it to @Model.RecipientAddress</li><li>Please send an email with tracking info to @Model.RecipientEmail</li></ol></p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
         var result = await _fluentEmail
             .To(to)

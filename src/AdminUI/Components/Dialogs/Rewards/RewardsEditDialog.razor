@@ -102,10 +102,10 @@
                 <MudItem xs="4">
                     <MudText>Reward type</MudText>
                 </MudItem>
-                <MudRadioGroup @bind-Value="@_rewardType">
-                    <MudRadio Value="@(RewardType.Digital)">Digital</MudRadio>
-                    <MudRadio Value="@(RewardType.Physical)">Physical</MudRadio>
-                </MudRadioGroup>
+                <MudToggleGroup T="RewardType" @bind-Value="Dto.RewardType">
+                    <MudToggleItem Value="@(RewardType.Digital)" Text="Digital" />
+                    <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
+                </MudToggleGroup>
             </MudStack>
         </MudStack>
     </DialogContent>
@@ -128,20 +128,16 @@
     private LeaderboardUserDto? _selectedValue;
     private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
-    public RewardType _rewardType { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-        
-        _rewardType = Dto.RewardType;
+        Console.WriteLine($"On init - reward type is {Dto.RewardType}");
     }
 
     void Submit()
     {
-        Console.WriteLine($"Selected Reward Type: {_rewardType}");
-        Dto.RewardType = _rewardType;
+        Console.WriteLine($"Selected Reward Type: {Dto.RewardType}");
         MudDialog?.Close(DialogResult.Ok(Dto));
     }
 

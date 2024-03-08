@@ -41,6 +41,7 @@ public class RewardSender : IRewardSender
             PhysicalRewardEmail emailProps = new PhysicalRewardEmail
             {
                 RecipientAddress = address, // TODO: when we implement addess capture, change to: user.Address.ToString(),
+                RecipientEmail = user.Email,
                 RecipientName = user.FullName,
                 RewardName = reward.Name
             };
