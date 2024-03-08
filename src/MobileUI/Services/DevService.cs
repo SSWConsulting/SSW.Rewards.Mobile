@@ -19,15 +19,7 @@ public class DevService : IDevService
         {
             var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
 
-            return vm.Profiles
-                .Select(x =>
-                {
-                    x.ProfilePicture = string.IsNullOrWhiteSpace(x.ProfilePicture)
-                        ? "v2Sophie"
-                        : x.ProfilePicture;
-
-                    return x;
-                });
+            return vm.Profiles.OrderBy(x => x.Name);
         }
         catch (Exception e)
         {
