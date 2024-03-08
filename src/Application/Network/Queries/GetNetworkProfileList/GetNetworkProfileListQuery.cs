@@ -25,7 +25,6 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
     
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
-        var profiles = new List<NetworkProfileDto>();
         var user = await _userService.GetCurrentUser(cancellationToken);
         var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
         
@@ -34,23 +33,22 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .Select(a => a.AchievementId)
             .ToList();
 
+        // TODO: This may not be the best approach, see https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/759
         var staffDtos = await _dbContext.StaffMembers
+            .Where(x => !x.IsDeleted && x.Email != user.Email)
             .Join(_dbContext.Users,
                 staff => staff.Email, 
                 user => user.Email,
                 (staff, user) =>
-                new
+                new NetworkProfileDto
                 {
                     UserId = user.Id,
-                    staff.Name,
-                    ProfilePicture = user.Avatar ?? "v2sophie",
-                    staff.Title,
-                    staff.Email,
+                    Name = staff.Name,
+                    ProfilePicture = user.Avatar,
+                    Title = staff.Title,
+                    Email = staff.Email,
                     AchievementId = staff.StaffAchievement.Id,
-                    staff.IsDeleted,
-                    user.Activated
                 })
-            .Where(x => (!x.IsDeleted && x.Activated) && x.UserId != user.Id)
             .ToListAsync(cancellationToken);
         
         var users = await _dbContext.Users
@@ -70,25 +68,19 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
                 return u;
             }).ToList();
         
-        profiles.AddRange(staffDtos.Select(profile =>
-        {
-            var leaderboardUser = leaderboardUserDtos.FirstOrDefault(u => u.UserId == profile.UserId);
-            
-            return new NetworkProfileDto
+        staffDtos = staffDtos
+            .Select(profile =>
             {
-                UserId = profile.UserId,
-                ProfilePicture = profile.ProfilePicture,
-                TotalPoints = leaderboardUser.TotalPoints,
-                Rank = leaderboardUser.Rank,
-                IsExternal = false,
-                Name = profile.Name,
-                Title = profile.Title,
-                Email = profile.Email,
-                AchievementId = profile.AchievementId,
-                Scanned = (bool)(completedAchievements?.Contains(profile.AchievementId)),
-            };
-        }));
+                var leaderboardUser = leaderboardUserDtos.FirstOrDefault(u => u.UserId == profile.UserId);
+                
+                profile.TotalPoints = leaderboardUser.TotalPoints;
+                profile.Rank = leaderboardUser.Rank;
+                profile.Scanned = (bool)(completedAchievements?.Contains(profile.AchievementId));
+                profile.IsExternal = false;
+
+                return profile;
+            }).ToList();
         
-        return new NetworkProfileListViewModel { Profiles = profiles };
+        return new NetworkProfileListViewModel { Profiles = staffDtos };
     }
 }
