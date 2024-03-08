@@ -135,11 +135,7 @@
         Console.WriteLine($"On init - reward type is {Dto.RewardType}");
     }
 
-    void Submit()
-    {
-        Console.WriteLine($"Selected Reward Type: {Dto.RewardType}");
-        MudDialog?.Close(DialogResult.Ok(Dto));
-    }
+    void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
 
     void Cancel() => MudDialog?.Cancel();
     async Task Delete()

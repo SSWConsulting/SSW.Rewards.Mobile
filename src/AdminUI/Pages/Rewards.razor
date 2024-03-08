@@ -81,12 +81,6 @@
             _loading = true;
             await Task.Delay(250);
             _model = (await rewardAdminService.GetRewards(CancellationToken.None)).Rewards;
-            
-            foreach (var reward in _model)
-            {
-                Console.WriteLine($"{reward.Name} - {reward.RewardType}");
-            }
-            
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
