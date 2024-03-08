@@ -99,6 +99,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+	  <ProjectReference Include="..\Common\Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -127,6 +128,10 @@
 		</Compile>
 		<Compile Update="Controls\ProfileActivityItem.xaml.cs">
 		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\NetworkPage.xaml.cs">
+		  <DependentUpon>Networking.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Pages\RedeemPage.xaml.cs">
@@ -186,6 +191,18 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="PopupPages\RedeemReward.xaml">
+		  <SubType>Designer</SubType>
+        </MauiXaml>
+		<MauiXaml Update="Resources\Styles\Templates.xaml">
+		  <Generator></Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\NetworkPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Resources\Styles\Templates.xaml">
+		  <Generator></Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\NetworkingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

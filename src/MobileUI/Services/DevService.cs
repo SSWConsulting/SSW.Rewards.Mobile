@@ -1,5 +1,6 @@
 ﻿using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -12,40 +13,22 @@ public class DevService : IDevService
         _staffClient = staffClient;
     }
 
-    public async Task<IEnumerable<DevProfile>> GetProfilesAsync()
+    public async Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync()
     {
-		List<DevProfile> profiles = new(200);
-        int id = 0;
-
         try
         {
-            var profileList = await _staffClient.GetStaffList(CancellationToken.None);
+            var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
 
-            foreach (var profile in profileList.Staff.Where(s => !s.IsDeleted))
-            {
-                var dev = new DevProfile
+            return vm.Profiles
+                .Select(x =>
                 {
-                    id = id,
-                    FirstName = profile.Name,
-                    Bio = profile.Profile,
-                    Email = profile.Email,
-                    Picture = string.IsNullOrWhiteSpace(profile.ProfilePhoto?.ToString())
-                        ? "dev_placeholder"
-                        : profile.ProfilePhoto.ToString(),
-					Title = profile.Title,
-                    TwitterID = profile.TwitterUsername,
-                    GitHubID = profile.GitHubUsername,
-                    LinkedInId = profile.LinkedInUrl,
-					Skills = profile.Skills?.ToList(),
-                    IsExternal = profile.IsExternal,
-                    AchievementId = profile.StaffAchievement?.Id ?? 0,
-                    Scanned = profile.Scanned,
-                    Points = profile.StaffAchievement?.Value ?? 0
-				};
-
-                profiles.Add(dev);
-                id++;
-            }
+                    x.ProfilePicture = string.IsNullOrWhiteSpace(x.ProfilePicture)
+                        ? "v2sophie"
+                        : x.ProfilePicture;
+                    return x;
+                })
+                .ToList()
+                .OrderBy(x => x.Name);
         }
         catch (Exception e)
         {
@@ -54,8 +37,8 @@ public class DevService : IDevService
                 throw;
             }
         }
-
-        return profiles.OrderBy(d => d.FirstName);
+        
+        return new List<NetworkProfileDto>(0);
     }
     
     public async Task<DevProfile> GetProfileAsync(string email)

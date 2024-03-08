@@ -1,6 +1,5 @@
-﻿using System.Net.Mail;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
@@ -20,17 +19,29 @@ public partial class OthersProfileViewModel(
 
     public bool ShowCloseButton { get; set; } = true;
 
-    public void SetLeader(LeaderViewModel vm)
+    public void SetUser(LeaderViewModel vm)
     {
         ProfilePic = vm.ProfilePic;
         Name = vm.Name;
         UserEmail = vm.Email;
         userId = vm.UserId;
         Points = vm.TotalPoints;
-        Balance = vm.Balance;
         Rank = vm.Rank;
         IsStaff = vm.IsStaff;
         
+        ShowBalance = false;
+    }    
+    
+    public void SetUser(NetworkProfileDto vm)
+    {
+        ProfilePic = vm.ProfilePicture;
+        Name = vm.Name;
+        UserEmail = vm.Email;
+        userId = vm.UserId;
+        Points = vm.TotalPoints;
+        Rank = vm.Rank;
+        IsStaff = true;
+                
         ShowBalance = false;
     }
 

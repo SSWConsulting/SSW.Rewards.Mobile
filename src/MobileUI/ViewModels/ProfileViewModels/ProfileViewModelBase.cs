@@ -58,13 +58,15 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public SnackbarOptions SnackOptions { get; set; }
 
-   
-
     protected double _topRewardCost;
 
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
-    public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, IDevService devService)
+    public ProfileViewModelBase(
+        IRewardService rewardsService, 
+        IUserService userService, 
+        ISnackbarService snackbarService, 
+        IDevService devService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;

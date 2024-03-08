@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Users;
+
+namespace SSW.Rewards.Mobile.Services;
 
 public interface IUserService
 {
@@ -27,8 +29,7 @@ public interface IUserService
     Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
     Task<ImageSource> GetAvatarAsync(string url);
     Task<string> UploadImageAsync(Stream image, string fileName);
-
-
+    Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool> DeleteProfileAsync();
 }
 

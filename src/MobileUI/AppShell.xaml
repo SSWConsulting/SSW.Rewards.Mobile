@@ -179,8 +179,8 @@
         </Tab>-->
 
 
-        <Tab Route="people" Icon="icon_people" Title="SSW People">
-            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+        <Tab Route="people" Icon="icon_people" Title="Network">
+            <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
