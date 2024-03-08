@@ -112,7 +112,8 @@ public class RewardController : ApiControllerBase
             IsOnboardingReward = dto.IsOnboardingReward,
             CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
             CarouselImageFileName = dto.CarouselImageFileName,
-            IsCarousel = dto.IsCarousel
+            IsCarousel = dto.IsCarousel,
+            RewardType = dto.RewardType
         };
 
         return Ok(await Mediator.Send(command));

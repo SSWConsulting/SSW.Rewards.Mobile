@@ -14,6 +14,7 @@ public class UpdateRewardCommand : IRequest<Unit>
     public string? CarouselImageBytesInBase64 { get; set; }
     public string? CarouselImageFileName { get; set; }
     public bool IsCarousel { get; set; }
+    public RewardType RewardType { get; set; }
 }
 
 public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, Unit>
@@ -63,6 +64,8 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         {
             reward.IsOnboardingReward = request.IsOnboardingReward.Value;
         }
+        
+        reward.RewardType = request.RewardType;
 
         reward.Cost = request.Cost;
         reward.IsCarousel = request.IsCarousel;
