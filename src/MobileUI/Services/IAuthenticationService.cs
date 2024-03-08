@@ -23,16 +23,16 @@ public class AuthenticationService : IAuthenticationService
     private bool _loggedIn = false;
 
     private string RefreshToken;
-    
+
     private string _accessToken;
-    
+
     private DateTimeOffset _tokenExpiry;
     private DateTimeOffset _refreshTokenExpiry;
 
     public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
 
     private bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
-    
+
     public AuthenticationService(IBrowser browser)
     {
         _options = new OidcClientOptions
@@ -44,7 +44,7 @@ public class AuthenticationService : IAuthenticationService
             Browser = browser,
         };
     }
-    
+
     public async Task<ApiStatus> SignInAsync()
     {
         try
@@ -67,7 +67,7 @@ public class AuthenticationService : IAuthenticationService
 
             var authResult = GetAuthResult(result);
 
-            await SettRefreshToken(authResult);
+            await SetRefreshToken(authResult);
 
             return await SetLoggedInState(authResult);
         }
@@ -128,7 +128,7 @@ public class AuthenticationService : IAuthenticationService
             _tokenExpiry = loginResult.AccessTokenExpiration;
 
             try
-            {                
+            {
                 Preferences.Set(nameof(HasCachedAccount), true);
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -179,7 +179,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    private async Task SettRefreshToken(AuthResult result)
+    private async Task SetRefreshToken(AuthResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.RefreshToken))
         {
@@ -201,7 +201,7 @@ public class AuthenticationService : IAuthenticationService
             if (!result.IsError)
             {
                 var authResult = GetAuthResult(result);
-                await SettRefreshToken(authResult);
+                await SetRefreshToken(authResult);
                 await SetLoggedInState(authResult);
                 return true;
             }
@@ -219,24 +219,22 @@ public class AuthenticationService : IAuthenticationService
                     FrontChannelExtraParameters = fcep
                 };
 
-                var silentResult = await oidcClient.LoginAsync(silentRequest);
-
-                if (!silentResult.IsError)
+                try
                 {
-                    try
+                    var silentResult = await oidcClient.LoginAsync(silentRequest);
+                    if (!silentResult.IsError)
                     {
                         var authResult = GetAuthResult(silentResult);
                         await SetLoggedInState(authResult);
-
-                        await SettRefreshToken(authResult);
+                        await SetRefreshToken(authResult);
 
                         return true;
                     }
-                    catch
-                    {
-
-                        return false;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Crashes.TrackError(new Exception($"Error during silent login, {ex.Message}, stack trace: {ex.StackTrace}"));
+                    return false;
                 }
 
                 await SignInAsync();
