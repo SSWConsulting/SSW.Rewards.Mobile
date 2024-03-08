@@ -128,19 +128,23 @@
     private LeaderboardUserDto? _selectedValue;
     private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
-    public RewardType _rewardType
-    {
-        get => Dto.RewardType;
-        set => Dto.RewardType = value;
-    }
+    public RewardType _rewardType { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+        
+        _rewardType = Dto.RewardType;
     }
-    
-    void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
+
+    void Submit()
+    {
+        Console.WriteLine($"Selected Reward Type: {_rewardType}");
+        Dto.RewardType = _rewardType;
+        MudDialog?.Close(DialogResult.Ok(Dto));
+    }
+
     void Cancel() => MudDialog?.Cancel();
     async Task Delete()
     {
