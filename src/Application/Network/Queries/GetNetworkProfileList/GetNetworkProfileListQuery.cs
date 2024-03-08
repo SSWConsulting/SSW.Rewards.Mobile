@@ -34,6 +34,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .Select(a => a.AchievementId)
             .ToList();
 
+        // TODO: This may not be the best approach, see https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/759
         var staffDtos = await _dbContext.StaffMembers
             .Join(_dbContext.Users,
                 staff => staff.Email, 
@@ -43,7 +44,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
                 {
                     UserId = user.Id,
                     staff.Name,
-                    ProfilePicture = user.Avatar ?? "v2sophie",
+                    ProfilePicture = user.Avatar,
                     staff.Title,
                     staff.Email,
                     AchievementId = staff.StaffAchievement.Id,
