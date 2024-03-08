@@ -17,10 +17,14 @@ public class AuthBrowser : IBrowser
 
     private string ParseAuthenticationResult(WebAuthenticatorResult result)
     {
-        string code = result?.Properties["code"];
-        string state = result?.Properties["state"];
-        string scope = result?.Properties["scope"];
-        string sessionState = result?.Properties["session_state"];
+        var code = String.Empty;
+        var state = String.Empty;
+        var scope = String.Empty;
+        var sessionState = String.Empty;
+        result?.Properties.TryGetValue("code", out code);
+        result?.Properties.TryGetValue("state", out state);
+        result?.Properties.TryGetValue("scope", out scope);
+        result?.Properties.TryGetValue("session_state", out sessionState);
 
         return $"{Constants.AuthRedirectUrl}#code={code}&scope={scope}&state={state}&session_state={sessionState}";
     }
