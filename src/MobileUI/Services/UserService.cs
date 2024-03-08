@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -40,6 +41,10 @@ public class UserService : IUserService, IDisposable
 
     }
 
+    public async Task<UserProfileDto> GetUserAsync(int userId)
+    {
+        return await _userClient.GetUser(userId);
+    }
 
     #region USERDETAILS
 

@@ -7,8 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
     xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
-    xmlns:profileViewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
-    x:DataType="profileViewModels:MyProfileViewModel"
+    xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    x:DataType="viewModels:ProfileViewModelBase"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
@@ -38,7 +38,7 @@
                 StrokeThickness="0"
                 IsVisible="{Binding IsMe}">
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding CameraCommand}" />
+                    <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
                 </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"

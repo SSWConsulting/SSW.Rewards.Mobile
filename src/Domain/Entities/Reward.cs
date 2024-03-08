@@ -4,6 +4,7 @@ public class Reward : BaseEntity
     public string? Code { get; set; } = string.Empty;
     public string? Name { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;
+    public bool IsHidden { get; set; }
     public int Cost { get; set; }
     public string? ImageUri { get; set; } = string.Empty;
     public string? CarouselImageUri { get; set; } = string.Empty;

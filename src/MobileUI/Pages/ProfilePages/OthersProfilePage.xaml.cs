@@ -1,4 +1,5 @@
 ﻿using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Pages;
 
@@ -13,8 +14,21 @@ public partial class OthersProfilePage : ContentPage
         InitializeComponent();
         viewModel = vm;
 
-        viewModel.SetLeader(leader);
+        viewModel.SetUser(leader);
 
+        viewModel.Navigation = Navigation;
+        BindingContext = viewModel;
+    }    
+    
+    public OthersProfilePage(OthersProfileViewModel vm, NetworkProfileDto networking)
+    {
+        InitializeComponent();
+        viewModel = vm;
+        
+        viewModel.ShowBalance = false;
+
+        viewModel.SetUser(networking);
+        
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
     }

@@ -1,17 +1,15 @@
-﻿using System.Net.Mail;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
-public class OthersProfileViewModel(
+public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
     ISnackbarService snackbarService,
     IDevService devService)
     : ProfileViewModelBase(rewardsService, userService, snackbarService, devService)
 {
-    public ICommand EmailUserCommand => new Command(async () => await EmailUser());
-
     public async Task Initialise()
     {
         IsMe = false;
@@ -19,21 +17,41 @@ public class OthersProfileViewModel(
         await _initialise();
     }
 
-    public void SetLeader(LeaderViewModel vm)
+    public bool ShowCloseButton { get; set; } = true;
+
+    public void SetUser(LeaderViewModel vm)
     {
         ProfilePic = vm.ProfilePic;
         Name = vm.Name;
         UserEmail = vm.Email;
         userId = vm.UserId;
         Points = vm.TotalPoints;
-        Balance = vm.Balance;
         Rank = vm.Rank;
         IsStaff = vm.IsStaff;
         
         ShowBalance = false;
-        ShowPopButton = true;
+    }    
+    
+    public void SetUser(NetworkProfileDto vm)
+    {
+        ProfilePic = vm.ProfilePicture;
+        Name = vm.Name;
+        UserEmail = vm.Email;
+        userId = vm.UserId;
+        Points = vm.TotalPoints;
+        Rank = vm.Rank;
+        IsStaff = true;
+                
+        ShowBalance = false;
+    }
+
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await Navigation.PopModalAsync();
     }
     
+    [RelayCommand]
     private async Task EmailUser()
     {
         if (Email.Default.IsComposeSupported)

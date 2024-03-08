@@ -17,38 +17,38 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}"
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
           StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
     <Grid>
-        <RefreshView 
-            Command="{Binding RefreshCommand}" 
+        <RefreshView
+            Command="{Binding RefreshLeaderboardCommand}"
             IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView 
-                ItemsSource="{Binding SearchResults}" 
+            <CollectionView
+                ItemsSource="{Binding SearchResults}"
                 x:Name="LeadersCollection"
-                ItemsUpdatingScrollMode="KeepItemsInView" 
+                ItemsUpdatingScrollMode="KeepItemsInView"
                 ItemSizingStrategy="MeasureFirstItem"
                 IsVisible="False">
                 <CollectionView.Header>
                     <Grid Padding="15,10,15,0" HeightRequest="370" RowSpacing="6" RowDefinitions="1*, 7*">
-                        <controls:SegmentedControl 
-                            Segments="{Binding Periods}" 
+                        <controls:SegmentedControl
+                            Segments="{Binding Periods}"
                             Grid.Row="0"
                             SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
                             <controls:SegmentedControl.Behaviors>
-                                <mct:EventToCommandBehavior 
+                                <mct:EventToCommandBehavior
                                     EventName="SelectionChanged"
                                     Command="{Binding FilterByPeriodCommand}" />
                             </controls:SegmentedControl.Behaviors>
                         </controls:SegmentedControl>
                         <Grid Grid.Row="1" ColumnDefinitions="6*,14*,6*">
                              <!-- 2nd -->
-                             <controls:Podium Leader="{Binding Second}" Grid.Column="0" /> 
-                             
+                             <controls:Podium Leader="{Binding Second}" Grid.Column="0" />
+
                              <!-- 1st -->
-                             <controls:Podium Leader="{Binding First}" Grid.Column="1" /> 
-                             
+                             <controls:Podium Leader="{Binding First}" Grid.Column="1" />
+
                              <!-- 3rd -->
                              <controls:Podium Leader="{Binding Third}" Grid.Column="2" />
                         </Grid>
@@ -58,97 +58,98 @@
                     <DataTemplate x:DataType="viewModels:LeaderViewModel">
                         <Grid RowDefinitions="84, 5" Padding="15,0">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer NumberOfTapsRequired="1"
-                                  Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTapped}"
-                                  CommandParameter="{Binding  .}" />
+                                <TapGestureRecognizer
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTappedCommand}"
+                                    CommandParameter="{Binding  .}" />
                             </Grid.GestureRecognizers>
-                            <Border 
-                                Grid.Row="0" 
+                            <Border
+                                Grid.Row="0"
                                 Stroke="{Binding IsMe, Converter={StaticResource MeToColor}}"
                                 StrokeThickness="2">
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="8" />
                                 </Border.StrokeShape>
-                                <Grid 
-                                    ColumnSpacing="6" 
+                                <Grid
+                                    ColumnSpacing="6"
                                     ColumnDefinitions="60, 60, *, Auto"
                                     BackgroundColor="{StaticResource Background}">
-                                    <Border 
-                                        Grid.Column="0" 
-                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                        Stroke="White" 
-                                        StrokeShape="Ellipse" 
-                                        HorizontalOptions="End" 
-                                        WidthRequest="50"
-                                        HeightRequest="50" 
-                                        StrokeThickness="1.5">
-                                        <Label 
-                                            Text="{Binding Rank}" 
-                                            TextColor="White" 
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Center" 
-                                            HorizontalTextAlignment="Center"
-                                            InputTransparent="True" 
-                                            WidthRequest="50" />
-                                    </Border>                                                                       
                                     <Border
-                                        Grid.Column="1" 
-                                        Stroke="White" 
-                                        StrokeShape="Ellipse" 
+                                        Grid.Column="0"
+                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        Stroke="White"
+                                        StrokeShape="Ellipse"
+                                        HorizontalOptions="End"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        StrokeThickness="1.5">
+                                        <Label
+                                            Text="{Binding Rank}"
+                                            TextColor="White"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center"
+                                            HorizontalTextAlignment="Center"
+                                            InputTransparent="True"
+                                            WidthRequest="50" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="1"
+                                        Stroke="White"
+                                        StrokeShape="Ellipse"
                                         HorizontalOptions="Start"
-                                        WidthRequest="50" 
-                                        HeightRequest="50" 
+                                        WidthRequest="50"
+                                        HeightRequest="50"
                                         StrokeThickness="1.5">
                                         <Image Source="{Binding ProfilePic}" Aspect="AspectFill" InputTransparent="True">
                                             <Image.Clip>
                                                 <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
                                             </Image.Clip>
                                         </Image>
-                                    </Border>                                                                        
+                                    </Border>
                                     <Grid
-                                        Grid.Column="2" 
-                                        ColumnDefinitions="*" 
+                                        Grid.Column="2"
+                                        ColumnDefinitions="*"
                                         RowDefinitions="*,*"
-                                        VerticalOptions="Center" 
+                                        VerticalOptions="Center"
                                         RowSpacing="2">
-                                        <Label 
-                                            Grid.Row="0" 
-                                            Text="{Binding Name}" 
+                                        <Label
+                                            Grid.Row="0"
+                                            Text="{Binding Name}"
                                             TextColor="White"
-                                            InputTransparent="True" 
-                                            VerticalTextAlignment="End" 
+                                            InputTransparent="True"
+                                            VerticalTextAlignment="End"
                                             FontSize="20"
-                                            Style="{StaticResource LabelBold}" 
+                                            Style="{StaticResource LabelBold}"
                                             LineBreakMode="TailTruncation" />
                                         <Label Grid.Row="1"
                                             Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
-                                            TextColor="White" 
-                                            VerticalTextAlignment="Start" 
+                                            TextColor="White"
+                                            VerticalTextAlignment="Start"
                                             InputTransparent="True"
                                             FontSize="12" />
-                                    </Grid> 
+                                    </Grid>
                                     <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
-                                    <Grid 
+                                    <Grid
                                         Grid.Column="3"
-                                        ColumnDefinitions="30,*" 
-                                        ColumnSpacing="4" 
+                                        ColumnDefinitions="30,*"
+                                        ColumnSpacing="4"
                                         Margin="0,0,15,0">
-                                    <Label 
-                                        Grid.Column="0" 
+                                    <Label
+                                        Grid.Column="0"
                                         Text="{Binding DisplayPointsShort}"
-                                        HorizontalOptions="End" 
-                                        VerticalOptions="Center" 
-                                        HorizontalTextAlignment="End"
-                                        FontSize="15" 
-                                        Style="{StaticResource LabelBold}" InputTransparent="True" />
-                                    <Label 
-                                        Grid.Column="1" 
-                                        TextColor="{StaticResource Coin}" Text="&#x2b50;"
-                                        FontFamily="FA6Solid" 
-                                        HorizontalOptions="End" 
+                                        HorizontalOptions="End"
                                         VerticalOptions="Center"
-                                        FontSize="11" 
-                                        Style="{StaticResource LabelBold}" 
+                                        HorizontalTextAlignment="End"
+                                        FontSize="15"
+                                        Style="{StaticResource LabelBold}" InputTransparent="True" />
+                                    <Label
+                                        Grid.Column="1"
+                                        TextColor="{StaticResource Coin}" Text="&#x2b50;"
+                                        FontFamily="FA6Solid"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        FontSize="11"
+                                        Style="{StaticResource LabelBold}"
                                         InputTransparent="True" />
                                   </Grid>
                                 </Grid>
@@ -158,12 +159,12 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <ActivityIndicator 
-            HorizontalOptions="Center" 
-            VerticalOptions="Center" 
-            Color="{StaticResource SSWRed}" 
-            IsEnabled="{Binding IsRunning}" 
-            IsRunning="{Binding IsRunning}" 
-            IsVisible="{Binding IsRunning}" /> 
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsRunning}"
+            IsRunning="{Binding IsRunning}"
+            IsVisible="{Binding IsRunning}" />
     </Grid>
 </ContentPage>

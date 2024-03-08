@@ -6,11 +6,10 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:OthersProfileViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OthersProfilePage">
     <ContentPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource MainBackground}" StatusBarStyle="LightContent" />
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}" StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
 
     <ScrollView>
@@ -23,9 +22,9 @@
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
-                IsVisible="{Binding ShowPopButton}">
+                IsVisible="{Binding ShowCloseButton}">
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding PopProfile}" />
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
                 </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"
@@ -36,7 +35,7 @@
             </Border>
 
             <controls:ProfileStats />
-            
+
             <Button Text="Get in touch"
                     TextTransform="Uppercase"
                     Style="{StaticResource LabelBold}"
@@ -47,7 +46,7 @@
                     Command="{Binding EmailUserCommand}"
                     IsVisible="{Binding IsStaff}">
                 <Button.ImageSource>
-                    <FontImageSource Glyph="&#xf0e0;" 
+                    <FontImageSource Glyph="&#xf0e0;"
                                      FontFamily="FA6Solid"
                                      Size="20"/>
                 </Button.ImageSource>

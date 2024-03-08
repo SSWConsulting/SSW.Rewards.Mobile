@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
@@ -57,17 +58,15 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public SnackbarOptions SnackOptions { get; set; }
 
-    public ICommand CameraCommand => new Command(async () => await ShowCameraPageAsync());
-
-    public ICommand PopProfile => new Command(async () => await Navigation.PopModalAsync());
-
-    public bool ShowPopButton { get; set; } = false;
-
     protected double _topRewardCost;
 
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
-    public ProfileViewModelBase(IRewardService rewardsService, IUserService userService, ISnackbarService snackbarService, IDevService devService)
+    public ProfileViewModelBase(
+        IRewardService rewardsService, 
+        IUserService userService, 
+        ISnackbarService snackbarService, 
+        IDevService devService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;
@@ -139,13 +138,13 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         }
     }
 
-    private async Task ShowCameraPageAsync()
+    [RelayCommand]
+    private async Task ChangeProfilePicture()
     {
         if (IsLoading)
             return;
-        
+
         var popup = new CameraPage(new CameraPageViewModel(_userService));
-        //App.Current.MainPage.ShowPopup(popup);
         await MopupService.Instance.PushAsync(popup);
     }
 

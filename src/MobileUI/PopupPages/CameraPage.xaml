@@ -57,13 +57,13 @@
                          Spacing="20"
                          VerticalOptions="Center">
                 <Button Text="Take a new photo"
-                        Command="{Binding OnTakePhotoTapped}"/>
-                
+                        Command="{Binding TakePhotoCommand}"/>
+
                 <Button Text="Choose a new photo"
-                        Command="{Binding OnChoosePhotoTapped}"/>
-                
+                        Command="{Binding ChoosePhotoCommand}"/>
+
                 <Button Text="Use this picture"
-                        Command="{Binding UseButtonTapped}"
+                        Command="{Binding UsePhotoCommand}"
                         IsEnabled="{Binding UseButtonEnabled}"/>
             </StackLayout>
             <StackLayout Grid.Row="0"

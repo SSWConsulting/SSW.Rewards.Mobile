@@ -18,18 +18,16 @@ namespace SSW.Rewards.Mobile.ViewModels
         private int _quizId;
         private string _quizIcon;
         private int _submissionId;
-        
+
         [ObservableProperty]
         private string _animRef = "Sophie.json";
-        
+
         [ObservableProperty]
         private string _loadingText = "Loading...";
 
         public ObservableCollection<EarnQuestionViewModel> Questions { get; } = [];
 
         public ObservableCollection<QuestionResultDto> Results { get; set; } = [];
-
-        public ICommand ResultsButtonCommand { get; set; }
 
         [ObservableProperty]
         private string _quizTitle;
@@ -42,9 +40,6 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private string _resultsTitle;
-
-        [ObservableProperty]
-        private string _resultButtonText;
 
         [ObservableProperty]
         private bool _questionsVisible = true;
@@ -219,14 +214,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (result.Passed)
             {
-                ResultButtonText = "Take Another Quiz";
-
                 ResultsTitle = "Test Passed!";
-
                 TestPassed = true;
-
-                ResultsButtonCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
-
                 SnackOptions = new SnackbarOptions
                 {
                     ActionCompleted = true,
@@ -243,26 +232,9 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                ResultButtonText = "Try Again";
-
                 ResultsTitle = "Test Failed";
-
                 TestPassed = false;
-
-                ResultsButtonCommand = new Command(() =>
-                {
-                    QuestionsVisible = true;
-                    ResultsVisible = false;
-                });
             }
-
-            OnPropertyChanged(nameof(ResultsButtonCommand));
-        }
-
-        [RelayCommand]
-        private async Task GoBack()
-        {
-            await Shell.Current.GoToAsync("..");
         }
 
         private void CurrentQuestionChanged()

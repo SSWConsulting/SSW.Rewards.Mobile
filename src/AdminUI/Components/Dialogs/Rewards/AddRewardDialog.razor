@@ -48,6 +48,7 @@
                         <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
                     </MudToggleGroup>
                 </MudStack>
+                <MudCheckBox T="bool" Label="Hidden on Mobile" Class="m-0" @bind-value="@Dto.IsHidden" />
             </MudStack>
         </MudForm>
     </DialogContent>

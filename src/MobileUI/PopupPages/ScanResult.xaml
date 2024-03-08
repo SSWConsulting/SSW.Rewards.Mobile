@@ -9,7 +9,7 @@
              xmlns:const="clr-namespace:SSW.Rewards"
              x:Class="SSW.Rewards.Mobile.PopupPages.ScanResult"
              x:DataType="viewModels:ScanResultViewModel"
-             BackgroundClickedCommand="{Binding OnOkCommand}"
+             BackgroundClickedCommand="{Binding OkCommand}"
              BackgroundColor="Transparent">
     <pages:PopupPage.Resources>
         <converters:StringToSkLottieImageSourceConverter x:Key="StringToSkLottieImageSourceConverter"/>
@@ -62,7 +62,7 @@
                     BackgroundColor="{StaticResource SSWRed}"
                     TextColor="White"
                     Margin="0,0,0,20"
-                    Command="{Binding OnOkCommand}"/>
+                    Command="{Binding OkCommand}"/>
         </StackLayout>
     </Frame>
 </pages:PopupPage>

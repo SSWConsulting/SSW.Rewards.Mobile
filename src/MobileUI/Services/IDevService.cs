@@ -1,8 +1,10 @@
-﻿namespace SSW.Rewards.Mobile.Services;
+﻿using SSW.Rewards.Shared.DTOs.Users;
+
+namespace SSW.Rewards.Mobile.Services;
 
 public interface IDevService
 {
-    Task<IEnumerable<DevProfile>> GetProfilesAsync();
+    Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync();
     
     Task<DevProfile> GetProfileAsync(string email);
 }

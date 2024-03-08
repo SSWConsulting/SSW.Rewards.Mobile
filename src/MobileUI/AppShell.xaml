@@ -17,7 +17,7 @@
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">Black</Color>
             <Style x:Key="BaseStyle" TargetType="ShellItem">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource MainBackground}" />
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Background}" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
@@ -54,8 +54,8 @@
                             HeightRequest="30"
                             WidthRequest="30"
                             Source="{Binding Icon}">
-                    </Image> 
-                    
+                    </Image>
+
                     <Label Grid.Column="1"
                         TextColor="White"
                         VerticalOptions="Center"
@@ -88,7 +88,7 @@
         <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
                     It will need to be updated before we deploy to Android.
                     See: https://github.com/dotnet/maui/issues/8244 -->
-        
+
         <Tab Route="main" Icon="icon_star" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
             <!--<Tab.Icon>
@@ -160,11 +160,11 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>-->
-        
+
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
         </Tab>
-        
+
         <Tab Route="redeem" Icon="icon_store" Title="Redeem">
             <ShellContent ContentTemplate="{DataTemplate pages:RedeemPage}" />
         </Tab>
@@ -179,8 +179,8 @@
         </Tab>-->
 
 
-        <Tab Route="people" Icon="icon_people" Title="SSW People">
-            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
+        <Tab Route="people" Icon="icon_people" Title="Network">
+            <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
@@ -315,7 +315,7 @@
             ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End"
             RowSpacing="15">
-            
+
             <!-- Settings Button -->
             <!-- TODO: Bind when settings implemented -->
             <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/582 -->
@@ -346,8 +346,8 @@
             <!--            VerticalOptions="Center" -->
             <!--            FontSize="Medium" -->
             <!--            Text="Settings" /> -->
-            <!-- </Grid> -->    
-            
+            <!-- </Grid> -->
+
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
@@ -376,7 +376,7 @@
                        FontSize="Small"
                        Text="Delete Profile" />
             </Grid>
-            
+
             <!-- Logout Button -->
             <Grid
                 VerticalOptions="End"
@@ -407,7 +407,7 @@
                        FontSize="Small"
                        Text="Log Out" />
             </Grid>
-            
+
             <Label
                 Grid.Column="0"
                 Grid.Row="2"
@@ -417,7 +417,7 @@
                 VerticalOptions="Center"
                 FontSize="12"
                 Text="Powered by .NET MAUI" />
-            
+
             <Label HorizontalOptions="End"
                    VerticalTextAlignment="Center"
                    Padding="0,10,0,0"
