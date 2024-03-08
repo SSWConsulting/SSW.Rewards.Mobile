@@ -44,7 +44,7 @@ public partial class NetworkPageViewModel : BaseViewModel
             {
                 new() { Name = "Friends", Value = NetworkPageSegments.Friends },
                 new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet },
-                new() { Name = "SSW", Value = NetworkPageSegments.SSW }
+                new() { Name = "All", Value = NetworkPageSegments.SSW }
             };
         }
         
