@@ -41,7 +41,7 @@ public partial class RewardsViewModel : BaseViewModel
         IsBusy = true;
         var rewardList = await _rewardService.GetRewards();
 
-        rewardList.ForEach(reward =>
+        foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
             reward.CanAfford = reward.Cost <= _userService.MyBalance;
             Rewards.Add(reward);
@@ -50,7 +50,7 @@ public partial class RewardsViewModel : BaseViewModel
             {
                 CarouselRewards.Add(reward);
             }
-        });
+        }
             
         Credits = _userService.MyBalance;
 
