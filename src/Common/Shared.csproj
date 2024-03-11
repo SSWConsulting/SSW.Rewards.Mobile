@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\SSW.Rewards.Domain.csproj" />
     <ProjectReference Include="..\SSW.Rewards.Enums\SSW.Rewards.Enums.csproj" />
   </ItemGroup>
 

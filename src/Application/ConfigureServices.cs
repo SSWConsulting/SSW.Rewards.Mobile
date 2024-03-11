@@ -23,6 +23,7 @@ public static class ConfigureServices
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRolesService, UserService>();
+        services.AddScoped<IActivityFeedService, ActivityFeedService>();
 
         return services;
     }
