@@ -3,7 +3,10 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.PopupPages;
+using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
+using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -11,6 +14,7 @@ public partial class RewardsViewModel : BaseViewModel
 {
     private readonly IRewardService _rewardService;
     private readonly IUserService _userService;
+    private readonly IAddressService _addressService;
     private bool _isLoaded;
 
     public ObservableCollection<Reward> Rewards { get; set; } = new ();
@@ -19,11 +23,12 @@ public partial class RewardsViewModel : BaseViewModel
     [ObservableProperty]
     private int _credits;
 
-    public RewardsViewModel(IRewardService rewardService, IUserService userService)
+    public RewardsViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
     {
         Title = "Rewards";
         _rewardService = rewardService;
         _userService = userService;
+        _addressService = addressService;
     }
 
     public async Task Initialise()
@@ -36,7 +41,7 @@ public partial class RewardsViewModel : BaseViewModel
         IsBusy = true;
         var rewardList = await _rewardService.GetRewards();
 
-        rewardList.ForEach(reward =>
+        foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
             reward.CanAfford = reward.Cost <= _userService.MyBalance;
             Rewards.Add(reward);
@@ -45,7 +50,7 @@ public partial class RewardsViewModel : BaseViewModel
             {
                 CarouselRewards.Add(reward);
             }
-        });
+        }
             
         Credits = _userService.MyBalance;
 
@@ -59,7 +64,7 @@ public partial class RewardsViewModel : BaseViewModel
         var reward = Rewards.FirstOrDefault(r => r.Id == id);
         if (reward != null)
         {
-            var popup = new RedeemReward(new RedeemRewardViewModel(_userService), reward);
+            var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
             await MopupService.Instance.PushAsync(popup);
         }
     }

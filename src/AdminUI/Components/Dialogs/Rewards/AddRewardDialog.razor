@@ -1,5 +1,7 @@
 @using SSW.Rewards.Shared.DTOs.Rewards
 @using SSW.Rewards.Admin.UI.Helpers
+@using SSW.Rewards.Enums
+@using Icons = MudBlazor.Icons
 
 <MudDialog>
     <TitleContent>
@@ -37,6 +39,15 @@
                     </ButtonTemplate>
                 </MudFileUpload>
                 <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                <MudStack Row="false">
+                    <MudItem xs="4">
+                        <MudText>Reward type</MudText>
+                    </MudItem>
+                    <MudToggleGroup T="RewardType" @bind-Value="Dto.RewardType">
+                        <MudToggleItem Value="@(RewardType.Digital)" Text="Digital" />
+                        <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
+                    </MudToggleGroup>
+                </MudStack>
                 <MudCheckBox T="bool" Label="Hidden on Mobile" Class="m-0" @bind-value="@Dto.IsHidden" />
             </MudStack>
         </MudForm>
@@ -100,4 +111,10 @@
     }
     
     void Cancel() => MudDialog?.Cancel();
+
+    private void RewardTypeChanged<T>(T obj)
+    {
+        
+    }
+
 }

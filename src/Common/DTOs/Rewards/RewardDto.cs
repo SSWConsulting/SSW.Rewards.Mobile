@@ -9,6 +9,7 @@ public class RewardDto
     public string? ImageUri { get; set; }
     public string? CarouselImageUri { get; set; }
     public bool IsCarousel { get; set; }
+    public bool IsHidden { get; set; }
     
     public RewardType RewardType { get; set; }
 }

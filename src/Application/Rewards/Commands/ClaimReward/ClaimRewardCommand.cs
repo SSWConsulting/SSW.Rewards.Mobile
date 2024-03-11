@@ -1,31 +1,31 @@
-﻿using SSW.Rewards.Shared.DTOs.Rewards;
-using SSW.Rewards.Application.System.Commands.Common;
+﻿using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Shared.DTOs.AddressTypes;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
-namespace SSW.Rewards.Application.Rewards.Commands;
+namespace SSW.Rewards.Application.Rewards.Commands.ClaimReward;
 
 public class ClaimRewardCommand : IRequest<ClaimRewardResult>
 {
     public string Code { get; set; }
+    public int Id { get; set; }
 
-    public bool ClaimInPerson { get; set; } = true;
+    public Address? Address { get; set; }
+    public bool ClaimInPerson { get; set; }
 }
 
 public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, ClaimRewardResult>
 {
-    private readonly IUserService _userService;
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IRewardSender _rewardSender;
     private readonly ICurrentUserService _currentUserService;
 
     public ClaimRewardCommandHandler(
-        IUserService userService,
         IApplicationDbContext context,
         IMapper mapper,
         IRewardSender rewardSender,
         ICurrentUserService currentUserService)
     {
-        _userService = userService;
         _context = context;
         _mapper = mapper;
         _rewardSender = rewardSender;
@@ -34,7 +34,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
     {
-        var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == request.Code, cancellationToken);
+        var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == request.Code || r.Id == request.Id, cancellationToken);
 
         if (reward == null)
         {
@@ -83,7 +83,10 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        await _rewardSender.SendRewardAsync(user, reward, cancellationToken);
+        if (!request.ClaimInPerson)
+        {
+            await _rewardSender.SendRewardAsync(user, reward, request.Address?.freeformAddress??string.Empty, cancellationToken);
+        }
 
         var rewardModel = _mapper.Map<RewardDto>(reward);
 

@@ -38,5 +38,16 @@
                 <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="Icon_OnTapped" />
             </Label.GestureRecognizers>
         </Label>
+        
+        <ActivityIndicator
+            x:Name="ActivityIndicator"
+            WidthRequest="20"
+            HeightRequest="20"
+            Grid.Column="1"
+            IsRunning="True"
+            IsVisible="False"
+            Color="{DynamicResource SSWRed}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
     </Grid>
 </Border>

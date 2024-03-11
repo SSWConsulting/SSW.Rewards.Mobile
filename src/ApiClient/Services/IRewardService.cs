@@ -11,7 +11,7 @@ public interface IRewardService
     Task<RewardListViewModel> SearchRewards(string searchTerm, CancellationToken cancellationToken);
 
 
-    Task<ClaimRewardResult> RedeemReward(string code, bool inPerson, CancellationToken cancellationToken);
+    Task<ClaimRewardResult> RedeemReward(ClaimRewardDto claim, CancellationToken cancellationToken);
 }
 
 public class RewardService : IRewardService
@@ -101,9 +101,9 @@ public class RewardService : IRewardService
         throw new Exception($"Failed to get rewards list: {responseContent}");
     }
 
-    public async Task<ClaimRewardResult> RedeemReward(string code, bool inPerson, CancellationToken cancellationToken)
+    public async Task<ClaimRewardResult> RedeemReward(ClaimRewardDto claim, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", code, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}Claim", claim, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

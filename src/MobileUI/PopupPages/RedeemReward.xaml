@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
+                 xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
@@ -23,6 +25,25 @@
     <pages:PopupPage.Resources>
         <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+        <toolkit:InvertedBoolConverter x:Key="InverseBool" />
+        <Style TargetType="Label" x:Key="SelectedCheckLabelStyle">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="IsVisible" Value="False"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="IsVisible" Value="True"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
     </pages:PopupPage.Resources>
     <ScrollView>
         <Border
@@ -37,221 +58,291 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="8" />
             </Border.StrokeShape>
-            <VerticalStackLayout>
-                <Border HeightRequest="80"
-                        WidthRequest="80"
-                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                        StrokeThickness="0"
-                        Margin="0,0,0,30">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="6" />
-                    </Border.StrokeShape>
-                    <Grid>
-                        <Image HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               Aspect="AspectFill"
-                               Source="{Binding Image}"
-                               IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
-                        <Label FontFamily="FA6Solid"
-                               FontAutoScalingEnabled="False"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               Text="&#xf06b;"
-                               TextColor="{StaticResource Gray300}"
-                               FontSize="28"
-                               IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
-                    </Grid>
-                </Border>
-                
-                <Label Text="You are about to get:"
-                       FontSize="24"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Style="{StaticResource LabelBold}"/>
-                
-                <Label Text="{Binding Name}"
-                       FontSize="24"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Style="{StaticResource LabelBold}"/>
-                
-                <Label Text="{Binding Description}"
-                       FontSize="18"
-                       TextColor="{StaticResource Gray300}"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Margin="0,0,0,30"/>
-                
-                <!-- Balance section -->
-                <Grid RowDefinitions="Auto,Auto"
-                      ColumnDefinitions="Auto,Auto"
-                      HorizontalOptions="Center"
-                      RowSpacing="6"
-                      ColumnSpacing="10"
-                      Margin="0,0,0,30"
-                      IsVisible="{Binding IsBalanceVisible}">
-                    <Label Grid.Row="0"
-                           Grid.Column="0"
-                           Text="Your Balance"
-                           FontSize="18"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                    
-                    <Border Grid.Row="0"
-                            Grid.Column="1"
+            <Grid>
+                <VerticalStackLayout>
+                    <Border HeightRequest="80"
+                            WidthRequest="80"
                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                             StrokeThickness="0"
-                            Padding="15,4">
+                            Margin="0,0,0,30">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="8">
-                            <Label 
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid" 
-                                VerticalOptions="Center"
-                                FontSize="11" 
-                                InputTransparent="True" />
-                            <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
-                                   VerticalOptions="Center"
-                                   FontSize="18"/>
-                        </HorizontalStackLayout>
-                    </Border>
-                
-                    <Label Grid.Row="1"
-                           Grid.Column="0"
-                           Text="Product Cost"
-                           FontSize="18"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                    
-                    <Border Grid.Row="1"
-                            Grid.Column="1"
-                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            Padding="15,4">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="8">
-                            <Label 
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid" 
-                                VerticalOptions="Center"
-                                FontSize="11" 
-                                InputTransparent="True" />
-                            <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
-                                   VerticalOptions="Center"
-                                   FontSize="18"/>
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-                
-                <!-- Address section -->
-                <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
-                                     Spacing="2"
-                                     Margin="0,0,0,30">
-                    <Label Text="Address Line 1"
-                           FontSize="18"
-                           TextColor="{StaticResource Gray300}"/>
-                    <Entry Text="{Binding AddressLine1}"
-                           Margin="0,0,0,8"/>
-                    
-                    <Label Text="Address Line 2"
-                           FontSize="18"
-                           TextColor="{StaticResource Gray300}"/>
-                    <Entry Text="{Binding AddressLine2}"
-                           Margin="0,0,0,8"/>
-                    
-                    <Label Text="Suburb"
-                           FontSize="18"
-                           TextColor="{StaticResource Gray300}"/>
-                    <Entry Text="{Binding AddressSuburb}"
-                           Margin="0,0,0,8"/>
-                    
-                    <Label Text="Postcode"
-                           FontSize="18"
-                           TextColor="{StaticResource Gray300}"/>
-                    <Entry Text="{Binding AddressPostcode}"
-                           Margin="0,0,0,8"/>
-                    
-                    <FlexLayout BindableLayout.ItemsSource="{Binding States}"
-                                Wrap="Wrap">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate>
-                                <RadioButton WidthRequest="74">
-                                    <RadioButton.Content>
-                                        <Label Text="{Binding Source={RelativeSource AncestorType={x:Type RadioButton}, AncestorLevel=1}, Path=BindingContext}"
-                                               VerticalOptions="Center"
-                                               TextColor="{StaticResource Gray300}"/>
-                                    </RadioButton.Content>
-                                </RadioButton>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
-                </VerticalStackLayout>
-                
-                
-                <HorizontalStackLayout HorizontalOptions="Center"
-                                       Spacing="10">
-                    <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            Padding="8">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4" />
-                        </Border.StrokeShape>
-                        <HorizontalStackLayout Spacing="4">
-                            <Label VerticalOptions="Center"
-                                   VerticalTextAlignment="Center"
-                                   FontFamily="FA6Regular"
-                                   Text="&#xf057;">
-                            </Label>
-                            <Label Text="Cancel"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   Style="{StaticResource LabelBold}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding ClosePopupCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </HorizontalStackLayout>
-                    </Border>
-                    
-                    <Border Background="{StaticResource BrandBrush}"
-                            StrokeThickness="0"
-                            Padding="8">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4" />
                         </Border.StrokeShape>
                         <Grid>
-                            <Label Text="Next"
+                            <Image HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Aspect="AspectFill"
+                                   Source="{Binding Image}"
+                                   IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                            <Label FontFamily="FA6Solid"
+                                   FontAutoScalingEnabled="False"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Center"
-                                   Style="{StaticResource LabelBold}"
-                                   IsVisible="{Binding IsBalanceVisible}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding NextClickedCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
-                            
-                            <Label Text="Confirm"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   Style="{StaticResource LabelBold}"
-                                   IsVisible="{Binding IsAddressVisible}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding ConfirmClickedCommand}"/>
-                                </Label.GestureRecognizers>
-                            </Label>
+                                   Text="&#xf06b;"
+                                   TextColor="{StaticResource Gray300}"
+                                   FontSize="28"
+                                   IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
                         </Grid>
                     </Border>
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+
+                    <Label Text="{Binding Heading}"
+                           FontSize="24"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}" />
+
+                    <Label Text="{Binding Description}"
+                           FontSize="18"
+                           TextColor="{StaticResource Gray300}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,0,0,30" />
+
+                    <!-- Balance section -->
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="Auto,Auto"
+                          HorizontalOptions="Center"
+                          RowSpacing="6"
+                          ColumnSpacing="10"
+                          Margin="0,0,0,30"
+                          IsVisible="{Binding IsBalanceVisible}">
+                        <Label Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Your Balance"
+                               FontSize="18"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0"
+                                Padding="15,4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    InputTransparent="True" />
+                                <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
+                                       VerticalOptions="Center"
+                                       FontSize="18" />
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Label Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Product Cost"
+                               FontSize="18"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                StrokeThickness="0"
+                                Padding="15,4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="6" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    InputTransparent="True" />
+                                <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
+                                       VerticalOptions="Center"
+                                       FontSize="18" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Address search -->
+                    <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
+                                         Spacing="2"
+                                         Margin="0,0,0,30">
+                        <controls:Search Command="{Binding SearchAddressCommand}"
+                                         IsSearching="{Binding IsSearching}"
+                                         BorderColor="{StaticResource BorderDefault}"
+                                         BackgroundColor="{StaticResource Gray900}"
+                                         Placeholder="Search for an address"/>
+                        
+                        <CollectionView ItemsSource="{Binding SearchResults}"
+                                        SelectedItem="{Binding SelectedAddress}"
+                                        SelectionChangedCommand="{Binding AddressSelectedCommand}"
+                                        SelectionMode="Single"
+                                        VerticalScrollBarVisibility="Always"
+                                        BackgroundColor="{StaticResource Gray950}"
+                                        MaximumHeightRequest="250">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="addr:Address">
+                                    <Grid HeightRequest="30"
+                                          Margin="5">
+                                        <Label Text="{Binding freeformAddress}"
+                                               Margin="5"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"/>
+                                        
+                                        <Label HorizontalOptions="End"
+                                               Margin="5,5,10,5"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               FontFamily="FA6Solid"
+                                               TextColor="{StaticResource CorrectColor}"
+                                               LineBreakMode="WordWrap"
+                                               Text="&#xf058;"
+                                               Style="{StaticResource SelectedCheckLabelStyle}">
+                                            
+                                        </Label>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                    
+                    <VerticalStackLayout IsVisible="{Binding ConfirmEnabled}">
+                        <Label Text="Sending to:"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" 
+                               Margin="5,10,5,5"/>
+                        
+                        <Label Text="{Binding SelectedAddress.freeformAddress}"
+                                 HorizontalOptions="Center"
+                                 HorizontalTextAlignment="Center"
+                                 Margin="5,5,5,10"/>
+                        
+                        <HorizontalStackLayout HorizontalOptions="Center"
+                                               Spacing="10"
+                                               Margin="0,15">
+                            <Label Text="Edit"
+                                   TextColor="{StaticResource SSWRed}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding EditAddressCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label Text="Search again"
+                                   TextColor="{StaticResource SSWRed}"
+                                   VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding SearchAgainCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        
+                        <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}"
+                                          Margin="0,0,0,5">
+                            <VerticalStackLayout BindingContext="{Binding Source={x:Reference RedeemRewardPopup}, Path=BindingContext.SelectedAddress}"
+                                                 x:DataType="addr:Address"
+                                                 Spacing="5">
+                                <Entry Text="{Binding streetNumber}"
+                                       Placeholder="Street Number" />
+                                <Entry Text="{Binding streetName}"
+                                        Placeholder="Street Name" />
+                                <Entry Text="{Binding municipalitySubdivision}"
+                                        Placeholder="Suburb" />
+                                <Entry Text="{Binding municipality}"
+                                        Placeholder="City" />
+                                <Entry Text="{Binding countrySubdivisionCode}"
+                                        Placeholder="State" />
+                                <Entry Text="{Binding postalCode}"
+                                        Placeholder="Postcode" />
+                            </VerticalStackLayout>
+                        </toolkit:Expander>
+                    </VerticalStackLayout>
+                    
+                    <!-- Technical debt: This should be a single lottie view with a binding to the source, however source binding doesn't work -->
+                    <lottie:SKLottieView Source="delivery2.json"
+                                         IsVisible="{Binding SendingClaim}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
+                    
+                    <lottie:SKLottieView Source="delivery1.json"
+                                         IsVisible="{Binding ClaimSuccess}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
+                    
+                    <lottie:SKLottieView Source="error.json"
+                                         IsVisible="{Binding ClaimError}"
+                                         IsAnimationEnabled="True"
+                                         RepeatCount="-1"
+                                         VerticalOptions="CenterAndExpand"
+                                         HorizontalOptions="CenterAndExpand"
+                                         HeightRequest="200"
+                                         WidthRequest="200"
+                                         Scale="1"/>
+
+
+                    <HorizontalStackLayout HorizontalOptions="Center"
+                                           Spacing="10" >
+                        <Button Text="{Binding CloseButtonText}"
+                                Command="{Binding ClosePopupCommand}"
+                                ContentLayout="Left, 10"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                VerticalOptions="Start"
+                                HorizontalOptions="Center"
+                                CornerRadius="4">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf057;" 
+                                                 FontFamily="FA6Regular"
+                                                 FontAutoScalingEnabled="True"
+                                                 Size="16"/>
+                            </Button.ImageSource>
+                        </Button>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                IsVisible="{Binding IsBalanceVisible}"
+                                Text="Next"
+                                WidthRequest="80"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding NextClickedCommand}"/>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                WidthRequest="80"
+                                IsVisible="{Binding ConfirmEnabled}"
+                                Text="Confirm"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding ConfirmClickedCommand}"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+                <ActivityIndicator
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Color="{StaticResource SSWRed}"
+                    IsEnabled="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}" />
+            </Grid>
+
         </Border>
     </ScrollView>
 </pages:PopupPage>

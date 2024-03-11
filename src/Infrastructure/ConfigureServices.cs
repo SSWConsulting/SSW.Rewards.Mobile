@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
+using SSW.Rewards.Application.AddressLookup;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Infrastructure;
@@ -49,6 +50,10 @@ public static class ConfigureServices
         services.AddOptions<NotificationHubOptions>()
                 .Configure(configuration.GetSection("NotificationHub").Bind)
                 .ValidateDataAnnotations();
+        
+        services.AddOptions<AzureMapsOptions>()
+                .Configure(configuration.GetSection("AzureMaps").Bind)
+                .ValidateDataAnnotations();
 
         services.AddAzureClients(clientBuilder =>
         {
@@ -63,6 +68,7 @@ public static class ConfigureServices
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
         services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
         services.AddScoped<ISkillPicStorageProvider, SkillPicStorageProvider>();
+        services.AddSingleton<IAddressLookupService, AddressLookupService>();
 
         services.AddScoped<IEmailService, EmailService>();
 

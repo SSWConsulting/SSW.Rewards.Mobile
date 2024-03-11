@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Rewards;
 using SSW.Rewards.Application.Rewards.Commands;
 using SSW.Rewards.Application.Rewards.Commands.AddReward;
+using SSW.Rewards.Application.Rewards.Commands.ClaimReward;
 using SSW.Rewards.Application.Rewards.Commands.DeleteReward;
 using SSW.Rewards.Application.Rewards.Commands.UpdateReward;
 using SSW.Rewards.Application.Rewards.Queries.GetOnboardingRewards;
@@ -78,9 +79,15 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ClaimRewardResult>> Claim([FromBody] string code)
+    public async Task<ActionResult<ClaimRewardResult>> Claim(ClaimRewardDto claim)
     {
-        return Ok(await Mediator.Send(new ClaimRewardCommand { Code = code }));
+        return Ok(await Mediator.Send(new ClaimRewardCommand
+        {
+            Code = claim.Code,
+            Id = claim.Id,
+            Address = claim.Address,
+            ClaimInPerson = claim.InPerson
+        }));
     }
 
     [HttpDelete("{id}")]
@@ -107,7 +114,8 @@ public class RewardController : ApiControllerBase
             IsOnboardingReward = dto.IsOnboardingReward,
             CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
             CarouselImageFileName = dto.CarouselImageFileName,
-            IsCarousel = dto.IsCarousel
+            IsCarousel = dto.IsCarousel,
+            RewardType = dto.RewardType
         };
 
         return Ok(await Mediator.Send(command));

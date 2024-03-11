@@ -6,6 +6,8 @@
 @using SSW.Rewards.Shared.DTOs.Leaderboard
 @using SSW.Rewards.Shared.DTOs.Rewards
 @using SSW.Rewards.ApiClient.Services
+@using SSW.Rewards.Enums
+@using Icons = MudBlazor.Icons
 
 @inject ILeaderboardService leaderboardService
 @inject IDialogService DialogService
@@ -95,6 +97,15 @@
                     </MudFileUpload>
                 </MudStack>
             </MudStack>
+            <MudStack Row="false">
+                <MudItem xs="4">
+                    <MudText>Reward type</MudText>
+                </MudItem>
+                <MudToggleGroup T="RewardType" @bind-Value="Dto.RewardType">
+                    <MudToggleItem Value="@(RewardType.Digital)" Text="Digital" />
+                    <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
+                </MudToggleGroup>
+            </MudStack>
             <MudStac Row="true">
                 <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
                 <MudCheckBox T="bool" Label="Hidden on Mobile" Class="m-0" @bind-value="@Dto.IsHidden" />
@@ -124,9 +135,11 @@
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+        Console.WriteLine($"On init - reward type is {Dto.RewardType}");
     }
-    
+
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
+
     void Cancel() => MudDialog?.Cancel();
     async Task Delete()
     {
