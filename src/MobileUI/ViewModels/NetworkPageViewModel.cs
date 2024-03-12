@@ -27,6 +27,8 @@ public partial class NetworkPageViewModel : BaseViewModel
     private Segment _selectedSegment;
     [ObservableProperty]
     private ObservableCollection<NetworkProfileDto> _searchResults;
+    [ObservableProperty]
+    private bool _isRefreshing;
 
     private IDevService _devService;
     
@@ -50,9 +52,8 @@ public partial class NetworkPageViewModel : BaseViewModel
         
         if(Profiles is null || Profiles.Count() == 0)
         {
-            await GetProfiles();
             CurrentSegment = NetworkPageSegments.Friends;
-            SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
+            await LoadNetwork();
         }
 
         IsBusy = false;
@@ -94,5 +95,20 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task UserTapped(NetworkProfileDto  leader)
     { 
         await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+    }
+    
+    [RelayCommand]
+    private async Task RefreshNetwork()
+    {
+        await LoadNetwork();
+        IsRefreshing = false;
+    }
+
+    private async Task LoadNetwork()
+    {
+        var profiles = await _devService.GetProfilesAsync();
+        Profiles = profiles.ToList();
+
+        await FilterBySegment();
     }
 }
