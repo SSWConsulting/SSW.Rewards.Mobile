@@ -1,32 +1,34 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class OnBoardingViewModel : BaseViewModel
 {
     public ICommand DoActionCommand { get; set; }
-		public ICommand Swiped { get; set; }
+	public ICommand Swiped { get; set; }
     public ICommand Skip { get; set; }
     public ObservableCollection<CarouselViewModel> Items { get; set; }
     public CarouselViewModel SelectedItem { get; set; }
 
     [ObservableProperty]
     private string _subHeading;
-    
+
     [ObservableProperty]
     private string _content;
-    
+
     [ObservableProperty]
     private string _buttonText;
-    
+
     [ObservableProperty]
     private Color _backgroundColour;
-    
+
     [ObservableProperty]
     private int _points;
-    
+
     [ObservableProperty]
     private bool _hasPoints;
 
@@ -102,6 +104,12 @@ public partial class OnBoardingViewModel : BaseViewModel
         SetDetails();
     }
 
+    [RelayCommand]
+    private async void ClosePage()
+    {
+        await MopupService.Instance.PopAsync();
+    }
+
     private async void DoAction()
     {
         // find next item
@@ -132,6 +140,18 @@ public partial class OnBoardingViewModel : BaseViewModel
         if (SelectedItem is null)
             return;
         SetDetails();
+    }
+
+    [RelayCommand]
+    private void SwipeForward()
+    {
+
+    }
+
+    [RelayCommand]
+    private void SwipeBackward()
+    {
+
     }
 
     private void SetDetails()

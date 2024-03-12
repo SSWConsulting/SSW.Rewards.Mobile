@@ -311,53 +311,49 @@
         <Grid
             Margin="0,0,0,20"
             Padding="20,0"
-            RowDefinitions="Auto,Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End"
             RowSpacing="15">
 
-            <!-- Settings Button -->
-            <!-- TODO: Bind when settings implemented -->
-            <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/582 -->
-            <!-- <Grid -->
-            <!--     VerticalOptions="End" -->
-            <!--     Grid.Column="0" -->
-            <!--     Grid.Row="0" -->
-            <!--     ColumnDefinitions="Auto,*"> -->
-            <!--     <Grid.GestureRecognizers> -->
-            <!--         <TapGestureRecognizer NumberOfTapsRequired="1" -->
-            <!--                               Tapped="Handle_SettingsClicked"/> -->
-            <!--     </Grid.GestureRecognizers> -->
-            <!--     ~1~ Update to settings Icon @1@ -->
-            <!--     <Label Grid.Column="0" -->
-            <!--            HeightRequest="30" -->
-            <!--            WidthRequest="30" -->
-            <!--            VerticalOptions="Center" -->
-            <!--            VerticalTextAlignment="Center" -->
-            <!--            FontSize="Medium" -->
-            <!--            FontFamily="FA6Solid" -->
-            <!--            TextColor="#DDDDDD" -->
-            <!--            Text="&#x2699;"> -->
-            <!--     </Label> -->
-            <!--     <Label Grid.Column="1" -->
-            <!--            Style="{StaticResource LabelBold}" -->
-            <!--            TextColor="#DDDDDD" -->
-            <!--            HorizontalOptions="Center" -->
-            <!--            VerticalOptions="Center" -->
-            <!--            FontSize="Medium" -->
-            <!--            Text="Settings" /> -->
-            <!-- </Grid> -->
-
+            <!-- Intro button -->
             <Grid
-                VerticalOptions="End"
                 Grid.Column="0"
                 Grid.Row="0"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
+                                          Tapped="Handle_IntroClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0"
+                       HeightRequest="30"
+                       WidthRequest="30"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="Small"
+                       FontFamily="FA6Solid"
+                       TextColor="#DDDDDD"
+                       Text="&#xf152;">
+                </Label>
+                <Label Grid.Column="1"
+                       Style="{StaticResource LabelBold}"
+                       TextColor="#DDDDDD"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontSize="Small"
+                       Text="Intro" />
+            </Grid>
+
+            <!-- Delete account button -->
+            <Grid
+                VerticalOptions="End"
+                Grid.Column="0"
+                Grid.Row="1"
+                ColumnDefinitions="Auto,*">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_DeleteClicked"/>
                 </Grid.GestureRecognizers>
-                <!-- Update to settings Icon -->
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
@@ -381,7 +377,7 @@
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
-                Grid.Row="1"
+                Grid.Row="2"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
@@ -410,7 +406,7 @@
 
             <Label
                 Grid.Column="0"
-                Grid.Row="2"
+                Grid.Row="3"
                 Padding="0,10,0,0"
                 TextColor="#DDDDDD"
                 HorizontalOptions="Start"
@@ -430,7 +426,7 @@
             <!-- workaround for iOS footer safe area -->
             <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="3"
+                Grid.Row="4"
                 Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>

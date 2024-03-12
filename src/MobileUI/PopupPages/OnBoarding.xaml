@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:OnBoardingViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation PositionIn="Bottom"
+                                  PositionOut="Bottom"
+                                  DurationIn="300"
+                                  DurationOut="300"
+                                  EasingIn="SinOut"
+                                  EasingOut="SinIn"
+                                  HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <Grid Padding="30,70">
+        <Border
+            StrokeThickness="1"
+            BackgroundColor="{StaticResource Background}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <Grid RowDefinitions="Auto, *, Auto">
+                <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                               IndicatorColor="{StaticResource IndicatorColor}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="0,25,0,5"
+                               Grid.Row="0"
+                               x:Name="RewardsIndicator"/>
+                <ScrollView Grid.Row="1">
+                    <CarouselView
+                        ItemsSource="{Binding Items}"
+                        CurrentItem="{Binding SelectedItem}"
+                        Loop="False"
+                        CurrentItemChangedCommand="{Binding Swiped}"
+                        IndicatorView="RewardsIndicator"
+                        x:Name="RewardsCarousel">
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:CarouselViewModel">
+
+                                <VerticalStackLayout>
+                                    <Image Source="{Binding Image}"
+                                           Margin="60"
+                                           Aspect="AspectFit" />
+
+                                    <Label
+                                        Padding="50,0"
+                                        Text="{Binding Content}"
+                                        TextColor="White"
+                                        FontSize="Medium"/>
+                                </VerticalStackLayout>
+
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                </ScrollView>
+                <Grid Grid.Row="2">
+                    <ImageButton
+                        Command="{Binding SwipeBackwardCommand}"
+                        CornerRadius="10"
+                        Margin="20,0,0,20"
+                        Padding="10"
+                        BackgroundColor="{StaticResource LeaderCardBackground}"
+                        HorizontalOptions="Start"
+                        Source="icon_left_arrow"/>
+                    <ImageButton
+                        Command="{Binding SwipeForwardCommand}"
+                        CornerRadius="10"
+                        Margin="0,0,20,20"
+                        Padding="10"
+                        BackgroundColor="{StaticResource primary}"
+                        HorizontalOptions="End"
+                        Source="icon_right_arrow"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Close button -->
+        <ImageButton
+            WidthRequest="46"
+            HeightRequest="46"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            BackgroundColor="{StaticResource primary}"
+            TranslationX="23"
+            TranslationY="-23"
+            CornerRadius="23"
+            Padding="12"
+            Source="icon_close"
+            Command="{Binding ClosePageCommand}"/>
+    </Grid>
+</pages:PopupPage>

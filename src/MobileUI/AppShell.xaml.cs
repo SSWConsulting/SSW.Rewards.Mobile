@@ -45,8 +45,8 @@ public partial class AppShell : Shell
             _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
         }
-    }    
-    
+    }
+
     public async void Handle_SettingsClicked(object sender, EventArgs e)
     {
         //TODO: Perform SettingsClickedAction
@@ -131,5 +131,11 @@ public partial class AppShell : Shell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
+    }
+
+    private async void Handle_IntroClicked(object sender, TappedEventArgs e)
+    {
+        var page = new OnBoarding();
+        await MopupService.Instance.PushAsync(page);
     }
 }
