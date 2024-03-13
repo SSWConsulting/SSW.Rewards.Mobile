@@ -46,6 +46,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             var existingQuestion = dbQuiz.Questions.First(x => x.Id == q.QuestionId);
             
             //Delete the question if it's marked as deleted
+            //TODO: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/773
             if (q.IsDeleted)
             {
                 dbQuiz.Questions.Remove(existingQuestion);
