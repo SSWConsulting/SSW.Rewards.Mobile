@@ -209,34 +209,6 @@ public class AuthenticationService : IAuthenticationService
             {
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
-                var fcep = new Parameters
-                {
-                    { "prompt", "none" }
-                };
-
-                var silentRequest = new LoginRequest
-                {
-                    FrontChannelExtraParameters = fcep
-                };
-
-                try
-                {
-                    var silentResult = await oidcClient.LoginAsync(silentRequest);
-                    if (!silentResult.IsError)
-                    {
-                        var authResult = GetAuthResult(silentResult);
-                        await SetLoggedInState(authResult);
-                        await SetRefreshToken(authResult);
-
-                        return true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Crashes.TrackError(new Exception($"Error during silent login, {ex.Message}, stack trace: {ex.StackTrace}"));
-                    return false;
-                }
-
                 await SignInAsync();
             }
         }
