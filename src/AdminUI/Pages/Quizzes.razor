@@ -17,15 +17,20 @@
 
 
 <Table TItem="QuizDetailsDto"
-       Items="@(_model.Where(s => s.Title.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
+       Items="@(_model
+            .Where(x=> _showArchived || !x.IsArchived)
+            .Where(s => s.Title.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))"
        TableTitle="Profiles"
        OnRowClick="OnRowClicked"
        IsLoading="@_loading">
     <ToolbarContent>
-        <MudTextField @bind-Value="_searchString"
-                      Placeholder="Search for a quiz"
-                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" />
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudSwitch Label="Show Archived" @bind-Checked="_showArchived" />
+            <MudTextField @bind-Value="_searchString"
+                          Placeholder="Search for a quiz"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                          Class="mt-0"/>
+        </MudStack>
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh>
@@ -73,19 +78,22 @@
 
 @code {
     private readonly DialogOptions disableBackdropClick = new() { DisableBackdropClick = true };
+    private bool _showArchived = false;
     private bool _loading = true;
     private string _searchString = string.Empty;
     private IEnumerable<QuizDetailsDto> _model = Enumerable.Empty<QuizDetailsDto>();
-
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await GetQuizzes();
     }
+    
     private void OnRowClicked(TableRowClickEventArgs<QuizDetailsDto> obj)
     {
         NavManager.NavigateTo($"edit-quiz/{obj.Item.QuizId}");
     }
+    
     private async Task GetQuizzes()
     {
         try
