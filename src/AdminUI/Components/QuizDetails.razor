@@ -89,12 +89,19 @@
             
             @if (Model.Questions != null)
             {
-                @foreach (var q in Model.Questions)
+                @foreach (var q in Model.Questions.Where(x => !x.IsDeleted))
                 {
                     <MudPaper Class="pa-4 mb-4">
                         <div class="d-flex align-content-between">
                             <MudText Typo="Typo.h6" Class="d-flex flex-1">@q.Text</MudText>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@((e) => EditQuestionDialog(_disableBackdropClick, q))">Edit question</MudButton>
+                            <MudIconButton 
+                                Color="Color.Primary" 
+                                Icon="@Icons.Material.Filled.Edit" 
+                                OnClick="@((e) => EditQuestionDialog(_disableBackdropClick, q))" />
+                            <MudIconButton 
+                                Color="Color.Primary" 
+                                Icon="@Icons.Material.Filled.Delete" 
+                                OnClick="@((e) => DeleteQuestion(q.QuestionId))"/>
                         </div>
                         <MudList>
                             @foreach (var a in q.Answers)
@@ -197,5 +204,11 @@
         var imageType = file.ContentType;
         
         return $"data:{imageType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private void DeleteQuestion(int questionId)
+    {
+        var question = Model.Questions.FirstOrDefault(q => q.QuestionId == questionId);
+        question.IsDeleted = true;
     }
 }
