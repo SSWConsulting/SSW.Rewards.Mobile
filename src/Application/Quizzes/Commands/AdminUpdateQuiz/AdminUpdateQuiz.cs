@@ -32,20 +32,28 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         dbQuiz.CarouselImage = request.Quiz.CarouselImage;
         dbQuiz.ThumbnailImage = request.Quiz.ThumbnailImage;
         dbQuiz.IsCarousel = request.Quiz.IsCarousel;
-
+        
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
         foreach (var q in request.Quiz.Questions)
         {
-            if (q.QuestionId > 0)
-            {
-                var existingQuestion = dbQuiz.Questions.First(x => x.Id == q.QuestionId);
-                UpdateExistingQuestion(ref existingQuestion, q);
-            }
-            else
+            if (q.QuestionId == 0)
             {
                 // New question. Add it.
                 dbQuiz.Questions.Add(CreateQuestion(q));
+                continue;
             }
+            
+            var existingQuestion = dbQuiz.Questions.First(x => x.Id == q.QuestionId);
+            
+            //Delete the question if it's marked as deleted
+            //TODO: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/773
+            if (q.IsDeleted)
+            {
+                dbQuiz.Questions.Remove(existingQuestion);
+                continue;
+            }
+            
+            UpdateExistingQuestion(ref existingQuestion, q);
         }
         _context.Quizzes.Update(dbQuiz);
         await _context.SaveChangesAsync(cancellationToken);
@@ -86,6 +94,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                 existingQuestion.Answers.Add(answer);
             }
         }
+        
         foreach (int i in currentAnswerIds)
         {
             QuizAnswer answerToBeDeleted = existingQuestion.Answers.First(x => x.Id == i);
