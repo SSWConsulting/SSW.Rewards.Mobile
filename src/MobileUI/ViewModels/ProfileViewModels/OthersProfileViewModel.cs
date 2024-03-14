@@ -7,13 +7,14 @@ public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
     ISnackbarService snackbarService,
-    IDevService devService)
-    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService)
+    IDevService devService,
+    IPermissionsService permissionsService)
+    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService, permissionsService)
 {
     public async Task Initialise()
     {
         IsMe = false;
-        
+
         await _initialise();
     }
 
@@ -28,10 +29,10 @@ public partial class OthersProfileViewModel(
         Points = vm.TotalPoints;
         Rank = vm.Rank;
         IsStaff = vm.IsStaff;
-        
+
         ShowBalance = false;
-    }    
-    
+    }
+
     public void SetUser(NetworkProfileDto vm)
     {
         ProfilePic = vm.ProfilePicture;
@@ -41,7 +42,7 @@ public partial class OthersProfileViewModel(
         Points = vm.TotalPoints;
         Rank = vm.Rank;
         IsStaff = true;
-                
+
         ShowBalance = false;
     }
 
@@ -50,7 +51,7 @@ public partial class OthersProfileViewModel(
     {
         await Navigation.PopModalAsync();
     }
-    
+
     [RelayCommand]
     private async Task EmailUser()
     {

@@ -85,6 +85,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AuthHandler>();
         builder.Services.AddSingleton(options);
         builder.Services.AddSingleton<ISnackbarService, SnackBarService>();
+        builder.Services.AddSingleton<IPermissionsService, PermissionsService>();
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
@@ -106,7 +107,7 @@ public static class MauiProgram
             handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
         });
 #endif
-        
+
 #if IOS
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
         {

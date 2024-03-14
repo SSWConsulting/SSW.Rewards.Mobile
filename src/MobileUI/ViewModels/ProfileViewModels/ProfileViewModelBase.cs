@@ -18,25 +18,26 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     protected IUserService _userService;
     protected readonly ISnackbarService _snackbarService;
     protected IDevService _devService;
+    private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
     private string _profilePic;
-    
+
     [ObservableProperty]
     private string _name;
-    
+
     [ObservableProperty]
     private int _points;
-    
+
     [ObservableProperty]
-    private int _balance;    
-    
+    private int _balance;
+
     [ObservableProperty]
-    private int _rank; 
+    private int _rank;
 
     [ObservableProperty]
     private string _userEmail;
-    
+
     [ObservableProperty]
     private bool _isStaff;
 
@@ -49,11 +50,11 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     [ObservableProperty]
     private bool _isMe;
-    
+
     public ObservableCollection<Activity> RecentActivity { get; set; } = [];
-    
+
     public ObservableCollection<Activity> LastSeen { get; set; } = [];
-    
+
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
 
     public SnackbarOptions SnackOptions { get; set; }
@@ -63,16 +64,18 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
-        IRewardService rewardsService, 
-        IUserService userService, 
-        ISnackbarService snackbarService, 
-        IDevService devService)
+        IRewardService rewardsService,
+        IUserService userService,
+        ISnackbarService snackbarService,
+        IDevService devService,
+        IPermissionsService permissionsService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;
         _userService = userService;
         _snackbarService = snackbarService;
         _devService = devService;
+        _permissionsService = permissionsService;
 
         SnackOptions = new SnackbarOptions
         {
@@ -89,7 +92,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         if (WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
             return;
-        
+
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
@@ -144,7 +147,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         if (IsLoading)
             return;
 
-        var popup = new CameraPage(new CameraPageViewModel(_userService));
+        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
         await MopupService.Instance.PushAsync(popup);
     }
 
@@ -156,7 +159,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         var rewardListTask = _userService.GetRewardsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
         DevProfile devProfile = null;
-        
+
         await Task.WhenAll(rewardListTask, achievementListTask);
 
         if (IsStaff)
@@ -166,10 +169,10 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
-        
+
         // ===== Last seen =====
         var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-        
+
         foreach (var achievement in recentLastSeen)
         {
             LastSeen.Add(new Activity
@@ -196,7 +199,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
                 TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
-        
+
         var recentRewards = rewardList
             .Where(r => r.Awarded)
             .OrderByDescending(r => r.AwardedAt).Take(5);
@@ -216,7 +219,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         {
             RecentActivity.Add(activity);
         }
-        
+
         // ===== Skills =====
 
         if (IsStaff && devProfile != null)
@@ -297,7 +300,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             return $"{prefix} {action} {activity}";
         }
     }
-    
+
     private static string GetTimeElapsed(DateTime occurredAt)
     {
         return (DateTime.Now - occurredAt) switch
@@ -307,7 +310,7 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             _ => occurredAt.ToString("dd MMMM yyyy"),
         };
     }
-    
+
     public void OnDisappearing()
     {
         IsBusy = false;
