@@ -9,8 +9,9 @@ public class MyProfileViewModel(
     IUserService userService,
     ISnackbarService snackbarService,
     ILeaderService leaderService,
-    IDevService devService)
-    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService),
+    IDevService devService,
+    IPermissionsService permissionsService)
+    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService, permissionsService),
         IRecipient<ProfilePicUpdatedMessage>,
         IRecipient<PointsAwardedMessage>,
         IRecipient<SocialUsernameAddedMessage>
@@ -95,7 +96,7 @@ public class MyProfileViewModel(
 
         return Task.CompletedTask;
     }
-    
+
     private async Task<int> LoadRank()
     {
         var summaries = await leaderService.GetLeadersAsync(false);

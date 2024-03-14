@@ -7,6 +7,8 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class TopBarViewModel : ObservableObject
 {
+    private readonly IPermissionsService _permissionsService;
+
     [ObservableProperty]
     string profilePic;
 
@@ -19,8 +21,9 @@ public partial class TopBarViewModel : ObservableObject
     [ObservableProperty]
     bool showDone = false;
 
-    public TopBarViewModel()
+    public TopBarViewModel(IPermissionsService permissionsService)
     {
+        _permissionsService = permissionsService;
         WeakReferenceMessenger.Default.Register<ProfilePicUpdatedMessage>(this, (r, m) =>
         {
             ProfilePic = m.ProfilePic;
@@ -55,7 +58,11 @@ public partial class TopBarViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenScanner()
     {
-        await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
+        if (granted)
+        {
+            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+        }
     }
 
     [RelayCommand]

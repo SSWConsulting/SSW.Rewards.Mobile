@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class CameraPageViewModel(IUserService userService) : BaseViewModel
+public partial class CameraPageViewModel(IUserService userService, IPermissionsService permissionsService) : BaseViewModel
 {
     [ObservableProperty]
     private bool _useButtonEnabled;
@@ -23,21 +23,16 @@ public partial class CameraPageViewModel(IUserService userService) : BaseViewMod
     [RelayCommand]
     private async Task TakePhoto()
     {
-        PermissionStatus storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-        PermissionStatus cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+        var storageGranted = await permissionsService.CheckAndRequestPermission<Permissions.StorageWrite>();
+        if (!storageGranted)
+            return;
+
+        var cameraGranted = await permissionsService.CheckAndRequestPermission<Permissions.Camera>();
+        if (!cameraGranted)
+            return;
 
         try
         {
-            if (storageStatus != PermissionStatus.Granted)
-            {
-                await Permissions.RequestAsync<Permissions.StorageWrite>();
-            }
-
-            if (cameraStatus != PermissionStatus.Granted)
-            {
-                await Permissions.RequestAsync<Permissions.Camera>();
-            }
-
             await CapturePhoto();
         }
         catch (Exception ex)
