@@ -25,9 +25,7 @@ public class AuthenticationService : IAuthenticationService
     private string RefreshToken;
 
     private string _accessToken;
-
     private DateTimeOffset _tokenExpiry;
-    private DateTimeOffset _refreshTokenExpiry;
 
     public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
 
@@ -66,9 +64,7 @@ public class AuthenticationService : IAuthenticationService
             }
 
             var authResult = GetAuthResult(result);
-
             await SetRefreshToken(authResult);
-
             return await SetLoggedInState(authResult);
         }
         catch (TaskCanceledException taskEx)
@@ -118,6 +114,7 @@ public class AuthenticationService : IAuthenticationService
         // TODO: remove from auth client
         SecureStorage.RemoveAll();
         Preferences.Clear();
+        Preferences.Set("FirstRun", false);
     }
 
     private async Task<ApiStatus> SetLoggedInState(AuthResult loginResult)
@@ -209,7 +206,14 @@ public class AuthenticationService : IAuthenticationService
             {
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
-                await SignInAsync();
+                var signInResult = await SignInAsync();
+                if (signInResult != ApiStatus.Success)
+                {
+                    Crashes.TrackError(new Exception(
+                        $"Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+                }
+
+                return signInResult == ApiStatus.Success;
             }
         }
 
@@ -225,7 +229,7 @@ public class AuthenticationService : IAuthenticationService
                 AccessToken = loginResult.AccessToken,
                 RefreshToken = loginResult.RefreshToken,
                 AccessTokenExpiration = loginResult.AccessTokenExpiration,
-                IdentityToken = loginResult.IdentityToken
+                IdentityToken = loginResult.IdentityToken,
             };
         }
         else if (result is RefreshTokenResult refreshTokenResult)
@@ -234,8 +238,8 @@ public class AuthenticationService : IAuthenticationService
             {
                 AccessToken = refreshTokenResult.AccessToken,
                 RefreshToken = refreshTokenResult.RefreshToken,
+                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
                 IdentityToken = refreshTokenResult.IdentityToken,
-                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration
             };
         }
         else
