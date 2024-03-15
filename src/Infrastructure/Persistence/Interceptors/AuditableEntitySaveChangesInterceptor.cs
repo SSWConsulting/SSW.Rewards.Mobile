@@ -50,6 +50,17 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
                 entry.Entity.LastModified = _dateTime.Now;
             }
         }
+
+        // Technical debt: The following requires a refactor, but this workaround will ensure we capture the CreatedUtc time for all entities
+        // See: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/749
+
+        foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedUtc = _dateTime.Now;
+            }
+        }
     }
 }
 
