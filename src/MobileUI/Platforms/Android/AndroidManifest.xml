@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="50" android:versionName="3.0.11">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="51" android:versionName="3.0.12">
 	<application android:allowBackup="true" android:icon="@mipmap/icon_android_dark" android:supportsRtl="true" android:label="SSW Rewards"></application>
 	<!-- Setting Targeted sdk version to 32 instead of the latest 33 due to Android Permissions not correctly implemented yet
 		 See Issue: https://github.com/dotnet/maui/issues/11275 -->
