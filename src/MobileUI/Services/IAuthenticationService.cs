@@ -114,6 +114,7 @@ public class AuthenticationService : IAuthenticationService
         // TODO: remove from auth client
         SecureStorage.RemoveAll();
         Preferences.Clear();
+        Preferences.Set("FirstRun", false);
     }
 
     private async Task<ApiStatus> SetLoggedInState(AuthResult loginResult)
