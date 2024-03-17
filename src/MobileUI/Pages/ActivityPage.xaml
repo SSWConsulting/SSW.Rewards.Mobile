@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             x:DataType="viewModels:NetworkPageViewModel"
+             ControlTemplate="{DynamicResource PageTemplate}"
+             x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
+             x:Name="Activity"
+             HideSoftInputOnTapped="True">
+    <ContentPage.Content>
+        
+    </ContentPage.Content>
+</ContentPage>

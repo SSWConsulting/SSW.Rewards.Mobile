@@ -120,39 +120,7 @@
                 </Style>
             </Tab.Style>-->
         </Tab>
-
-        <Tab Route="me" Icon="icon_user" Title="Me">
-            <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
-            <!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xe70e;"/>
-            </Tab.Icon>
-            <Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_home_selected">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xe70e;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_home">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xe70e;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>-->
-        </Tab>
-
+        
         <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
@@ -181,6 +149,11 @@
 
         <Tab Route="people" Icon="icon_people" Title="Network">
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
+        </Tab>        
+        <Tab Route="activity" Icon="icon_people" Title="Activity">
+            <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
+        </Tab>
+
             <!--<Tab.Icon>
                 <FontImageSource FontFamily="FluentIcons"
                                  Glyph="&#xf5a8;"/>
@@ -209,7 +182,6 @@
                     </Style.Triggers>
                 </Style>
             </Tab.Style>-->
-        </Tab>
 
         <!--<Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
             <Tab.Icon>
