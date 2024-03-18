@@ -5,7 +5,7 @@ namespace SSW.Rewards.ApiClient.Services;
 
 public interface IActivityService
 {
-    Task<IList<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken);
+    Task<IList<ActivityFeedViewModel>> GetActivityFeed(ActivityFeedFilter filter, int skip, int take, CancellationToken cancellationToken);
 }
 
 public class ActivityService : IActivityService
@@ -19,9 +19,9 @@ public class ActivityService : IActivityService
         _httpClient = clientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
-    public async Task<IList<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken)
+    public async Task<IList<ActivityFeedViewModel>> GetActivityFeed(ActivityFeedFilter filter, int skip, int take, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}GetActivities", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetActivities?filter={filter}&skip={skip}&take={take}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

@@ -82,7 +82,7 @@ public partial class ActivityPageViewModel : BaseViewModel
     
     private async Task GetActivity()
     {
-        var activity = await _activityService.GetActivityFeed(new CancellationToken());
+        var activity = await _activityService.GetActivityFeed((ActivityFeedFilter)SelectedSegment.Value, 0, 10, new CancellationToken());
         Activity = activity.ToList();
     }
     
