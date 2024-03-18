@@ -30,17 +30,16 @@
                 Command="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing}"
                 Grid.Row="1">
-                <Label Text="Help" />
-                <!--         <CollectionView -->
-            <!--         ItemsSource="{Binding SearchResults}" -->
-            <!--         ItemsUpdatingScrollMode="KeepItemsInView" -->
-            <!--         IsVisible="True"> -->
-            <!--     <CollectionView.ItemTemplate> -->
-            <!--         <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel"> -->
-            <!--             <Label Text="{Binding UserName}" /> -->
-            <!--         </DataTemplate> -->
-            <!--     </CollectionView.ItemTemplate> -->
-            <!-- </CollectionView> -->
+                <CollectionView
+                    ItemsSource="{Binding SearchResults}"
+                    ItemsUpdatingScrollMode="KeepItemsInView"
+                    IsVisible="True">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel">
+                        <Label Text="{Binding UserName}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
             </RefreshView>
         </Grid>
     </ContentPage.Content>
