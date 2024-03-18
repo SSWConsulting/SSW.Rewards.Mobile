@@ -31,7 +31,7 @@ public partial class ActivityPageViewModel : BaseViewModel
         _activityService = activityService;
     }
     
-    public async void Initialise()
+    public async Task Initialise()
     {
         IsBusy = true;
         

@@ -13,31 +13,34 @@
              HideSoftInputOnTapped="True">
     <ContentPage.Content>
         <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
-            <controls:SegmentedControl
-                Grid.Row="0"
-                Segments="{Binding Segments}"
-                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
-                <controls:SegmentedControl.Behaviors>
-                    <mct:EventToCommandBehavior
-                        EventName="SelectionChanged"
-                        Command="{Binding FilterBySegmentCommand}" />
-                </controls:SegmentedControl.Behaviors>
-            </controls:SegmentedControl>
+            <Grid RowDefinitions="45">
+                <controls:SegmentedControl
+                    Grid.Row="0"
+                    Segments="{Binding Segments}"
+                    SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                    <controls:SegmentedControl.Behaviors>
+                        <mct:EventToCommandBehavior
+                            EventName="SelectionChanged"
+                            Command="{Binding FilterBySegmentCommand}" />
+                    </controls:SegmentedControl.Behaviors>
+                </controls:SegmentedControl>
+            </Grid>
             
             <RefreshView
                 Command="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing}"
                 Grid.Row="1">
-                <CollectionView
-                    ItemsSource="{Binding SearchResults}"
-                    ItemsUpdatingScrollMode="KeepItemsInView"
-                    IsVisible="True">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel">
-                        <Label Text="{Binding UserName}" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <Label Text="Help" />
+                <!--         <CollectionView -->
+            <!--         ItemsSource="{Binding SearchResults}" -->
+            <!--         ItemsUpdatingScrollMode="KeepItemsInView" -->
+            <!--         IsVisible="True"> -->
+            <!--     <CollectionView.ItemTemplate> -->
+            <!--         <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel"> -->
+            <!--             <Label Text="{Binding UserName}" /> -->
+            <!--         </DataTemplate> -->
+            <!--     </CollectionView.ItemTemplate> -->
+            <!-- </CollectionView> -->
             </RefreshView>
         </Grid>
     </ContentPage.Content>
