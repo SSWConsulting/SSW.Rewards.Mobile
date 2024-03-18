@@ -8,7 +8,8 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class ActivityFeedController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IList<ActivityFeedViewModel>>> GetActivities(ActivityFeedFilter filter, int skip, int take)
+    
+    public async Task<ActionResult<IList<ActivityFeedViewModel>>> GetActivities([FromQuery] ActivityFeedFilter filter, int skip, int take)
     {
         return Ok(await Mediator.Send(new GetActivitiesQuery
         {
