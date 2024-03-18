@@ -11,16 +11,18 @@ public partial class OnBoarding
         BindingContext = _viewModel;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // _viewModel.ScrollToRequested += ScrollToIndex;
+        _viewModel.ScrollToRequested += ScrollToIndex;
+        await Task.Delay(300);
+        _viewModel.IsOverlayVisible = true;
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        // _viewModel.ScrollToRequested -= ScrollToIndex;
+        _viewModel.ScrollToRequested -= ScrollToIndex;
     }
 
     private void ScrollToIndex(object sender, int index)
