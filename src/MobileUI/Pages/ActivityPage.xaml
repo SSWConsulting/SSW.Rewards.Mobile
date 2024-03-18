@@ -2,13 +2,43 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             x:DataType="viewModels:NetworkPageViewModel"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
+             x:DataType="viewModels:ActivityPageViewModel"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
              x:Name="Activity"
              HideSoftInputOnTapped="True">
     <ContentPage.Content>
-        
+        <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
+            <controls:SegmentedControl
+                Grid.Row="0"
+                Segments="{Binding Segments}"
+                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior
+                        EventName="SelectionChanged"
+                        Command="{Binding FilterBySegmentCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
+            
+            <RefreshView
+                Command="{Binding RefreshCommand}"
+                IsRefreshing="{Binding IsRefreshing}"
+                Grid.Row="1">
+                <CollectionView
+                    ItemsSource="{Binding SearchResults}"
+                    ItemsUpdatingScrollMode="KeepItemsInView"
+                    IsVisible="True">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel">
+                        <Label Text="{Binding UserName}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            </RefreshView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

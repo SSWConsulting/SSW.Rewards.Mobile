@@ -73,6 +73,13 @@ public partial class ActivityPageViewModel : BaseViewModel
         }
     }
     
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        await LoadActivities();
+        IsRefreshing = false;
+    }
+    
     private async Task GetActivity()
     {
         var activity = await _activityService.GetActivityFeed(new CancellationToken());
@@ -81,6 +88,7 @@ public partial class ActivityPageViewModel : BaseViewModel
     
     private async Task LoadActivities()
     {
-        return;
+        await GetActivity();
+        await FilterBySegment();
     }
 }
