@@ -5,7 +5,7 @@ namespace SSW.Rewards.ApiClient.Services;
 
 public interface IActivityService
 {
-    Task<List<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken);
+    Task<IList<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken);
 }
 
 public class ActivityService : IActivityService
@@ -19,13 +19,13 @@ public class ActivityService : IActivityService
         _httpClient = clientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
-    public async Task<List<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken)
+    public async Task<IList<ActivityFeedViewModel>> GetActivityFeed(CancellationToken cancellationToken)
     {
         var result = await _httpClient.GetAsync($"{_baseRoute}GetActivities", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
-            var response = await result.Content.ReadFromJsonAsync<List<ActivityFeedViewModel>>(cancellationToken: cancellationToken);
+            var response = await result.Content.ReadFromJsonAsync<IList<ActivityFeedViewModel>>(cancellationToken: cancellationToken);
 
             if (response is not null)
             {
@@ -35,6 +35,6 @@ public class ActivityService : IActivityService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
-        throw new Exception($"Failed to claim achievement: {responseContent}");
+        throw new Exception($"Failed to fetch Activity Feed: {responseContent}");
     }
 }
