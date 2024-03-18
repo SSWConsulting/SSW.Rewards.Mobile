@@ -39,6 +39,7 @@ public static class ConfigureServices
         services.AddSingleton<IStaffService, StaffService>();
         services.AddSingleton<IUserService, UserService>();
         services.AddSingleton<IAddressService, AddressService>();
+        services.AddSingleton<IActivityService, ActivityService>();
 
         return services;
     }
