@@ -91,75 +91,11 @@
 
         <Tab Route="main" Icon="icon_star" Title="Leaderboard">
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-            <!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xedba;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_trophy_selected">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xedba;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_trophy">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xedba;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>-->
         </Tab>
 
         <Tab Route="me" Icon="icon_user" Title="Me">
             <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
-            <!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xe70e;"/>
-            </Tab.Icon>
-            <Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_home_selected">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xe70e;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_home">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xe70e;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>-->
         </Tab>
-
-        <!--<Tab Route="leader" IsVisible="{Binding IsAndroidVisible}">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                    Glyph="&#xedba;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
-        </Tab>-->
 
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
@@ -169,143 +105,10 @@
             <ShellContent ContentTemplate="{DataTemplate pages:RedeemPage}" />
         </Tab>
 
-
-        <!--<Tab Route="people" IsVisible="{Binding IsAndroidVisible}">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                    Glyph="&#xf5a8;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:PeoplePage}" />
-        </Tab>-->
-
-
         <Tab Route="people" Icon="icon_people" Title="Network">
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
-            <!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                 Glyph="&#xf5a8;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_people_selected">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xf5a8;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_people">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xf5a8;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>-->
         </Tab>
-
-        <!--<Tab Route="scan" IsVisible="{Binding IsAndroidVisible}">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                    Glyph="&#xf636;"/>
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-        </Tab>-->
-
-        <!--<Tab Route="scan" Icon="icon_scanner" Title="Scanner">
-            <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" />
-            --><!--<Tab.Icon>
-                <FontImageSource FontFamily="FluentIcons"
-                                    Glyph="&#xf636;"/>
-            </Tab.Icon>-->
-            <!--<Tab.Style>
-                <Style TargetType="Tab">
-                    <Style.Triggers>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="True">
-                            <Setter Property="Icon" Value="icon_scanner_selected">
-
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xf636;"
-                                                     Color="#BE4b47"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger TargetType="Tab" Property="IsChecked" Value="False">
-                            <Setter Property="Icon" Value="icon_scanner">
-                                <Setter.Value>
-                                    <FontImageSource FontFamily="FluentIcons"
-                                                     Glyph="&#xf636;"
-                                                     Color="#95FFFFFF"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Tab.Style>--><!--
-        </Tab>-->
     </FlyoutItem>
-
-    <!--<MenuItem Text="Rewards"
-              Clicked="Handle_HowToPlayClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf455;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
-    <MenuItem Text="SSW Events"
-              Clicked="Handle_EventsClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf226;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
-    <MenuItem Text="Join SSW"
-              Clicked="Handle_JoinClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf5c2;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
-    <MenuItem Text="My QRCode"
-              Clicked="Handle_QRClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf635;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
-    <MenuItem Text="About SSW"
-              Clicked="Handle_AboutClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf4a3;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
-    <MenuItem Text="Delete Profile"
-              Clicked="Handle_DeleteClicked">
-        <MenuItem.IconImageSource>
-            <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf5d1;"
-                             Color="White"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>-->
 
     <Shell.FlyoutFooter>
         <Grid
@@ -333,7 +136,7 @@
                        FontSize="Small"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
-                       Text="&#xf152;">
+                       Text="&#xf25b;">
                 </Label>
                 <Label Grid.Column="1"
                        Style="{StaticResource LabelBold}"
@@ -420,7 +223,7 @@
                    x:Name="VersionLabel"
                    FontSize="12"
                    Grid.Column="2"
-                   Grid.Row="2"
+                   Grid.Row="3"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
