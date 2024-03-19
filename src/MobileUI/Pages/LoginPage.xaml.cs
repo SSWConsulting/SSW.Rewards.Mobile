@@ -28,7 +28,8 @@ public partial class LoginPage : ContentPage
         if (Preferences.Get("FirstRun", true))
         {
             Preferences.Set("FirstRun", false);
-            await MopupService.Instance.PushAsync(new OnBoardingPage(true));
+            Application.Current.Resources.TryGetValue("SecondaryBackground", out var statusBarColor);
+            await MopupService.Instance.PushAsync(new OnBoardingPage(true, statusBarColor as Color));
         }
         else
         {

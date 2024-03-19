@@ -6,9 +6,11 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class OnBoardingPage
 {
     private readonly OnBoardingViewModel _viewModel;
+    private readonly Color _parentPageStatusBarColor;
 
-    public OnBoardingPage(bool isFirstRun = false)
+    public OnBoardingPage(bool isFirstRun = false, Color parentPageStatusBarColor = null)
     {
+        _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
         _viewModel = new OnBoardingViewModel(isFirstRun);
         BindingContext = _viewModel;
@@ -34,11 +36,10 @@ public partial class OnBoardingPage
         _viewModel.ScrollToRequested -= ScrollToIndex;
 
         // Change status bar back
-        Application.Current.Resources.TryGetValue("Background", out var color);
         this.Behaviors.Clear();
         this.Behaviors.Add(new StatusBarBehavior
         {
-            StatusBarColor = (Color) color ?? Colors.Black,
+            StatusBarColor = _parentPageStatusBarColor,
             StatusBarStyle = StatusBarStyle.LightContent,
         });
     }

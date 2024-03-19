@@ -135,7 +135,8 @@ public partial class AppShell : Shell
 
     private async void Handle_IntroClicked(object sender, TappedEventArgs e)
     {
-        var page = new OnBoardingPage();
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var page = new OnBoardingPage(parentPageStatusBarColor: statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 }
