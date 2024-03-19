@@ -1,4 +1,7 @@
-﻿namespace SSW.Rewards.Mobile.Pages;
+﻿using CommunityToolkit.Maui.Behaviors;
+using CommunityToolkit.Maui.Core;
+
+namespace SSW.Rewards.Mobile.Pages;
 
 public partial class OnBoardingPage
 {
@@ -29,6 +32,15 @@ public partial class OnBoardingPage
     {
         base.OnDisappearing();
         _viewModel.ScrollToRequested -= ScrollToIndex;
+
+        // Change status bar back
+        Application.Current.Resources.TryGetValue("Background", out var color);
+        this.Behaviors.Clear();
+        this.Behaviors.Add(new StatusBarBehavior
+        {
+            StatusBarColor = (Color) color ?? Colors.Black,
+            StatusBarStyle = StatusBarStyle.LightContent,
+        });
     }
 
     private void ScrollToIndex(object sender, int index)

@@ -8,6 +8,9 @@
              x:Name="This"
              x:DataType="viewModels:OnBoardingViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OnBoardingPage">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation PositionIn="Bottom"
                                   PositionOut="Bottom"
