@@ -8,7 +8,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class OnBoardingViewModel : BaseViewModel
 {
-	public ICommand Swiped { get; set; }
+    public ICommand Swiped { get; set; }
     public ObservableCollection<CarouselViewModel> Items { get; set; }
     public CarouselViewModel SelectedItem { get; set; }
 
@@ -33,10 +33,13 @@ public partial class OnBoardingViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isOverlayVisible;
 
+    public bool IsFirstRun { get; }
+
     public EventHandler<int> ScrollToRequested;
 
-    public OnBoardingViewModel()
+    public OnBoardingViewModel(bool isFirstRun)
     {
+        IsFirstRun = isFirstRun;
         Swiped = new Command(HandleSwiped);
         Items = new ObservableCollection<CarouselViewModel>
         {

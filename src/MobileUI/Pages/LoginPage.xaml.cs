@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Pages;
+﻿using Mopups.Services;
+
+namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LoginPage : ContentPage
 {
@@ -26,7 +28,7 @@ public partial class LoginPage : ContentPage
         if (Preferences.Get("FirstRun", true))
         {
             Preferences.Set("FirstRun", false);
-            await Navigation.PushModalAsync<OnBoarding>();
+            await MopupService.Instance.PushAsync(new OnBoardingPage(true));
         }
         else
         {

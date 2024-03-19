@@ -1,14 +1,20 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class OnBoarding
+public partial class OnBoardingPage
 {
     private readonly OnBoardingViewModel _viewModel;
 
-    public OnBoarding()
+    public OnBoardingPage(bool isFirstRun = false)
     {
         InitializeComponent();
-        _viewModel = new OnBoardingViewModel();
+        _viewModel = new OnBoardingViewModel(isFirstRun);
         BindingContext = _viewModel;
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        _viewModel.ClosePageCommand.ExecuteAsync(null);
+        return true;
     }
 
     protected override async void OnAppearing()

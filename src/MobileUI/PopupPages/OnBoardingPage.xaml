@@ -7,7 +7,7 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Name="This"
              x:DataType="viewModels:OnBoardingViewModel"
-             x:Class="SSW.Rewards.Mobile.Pages.OnBoarding">
+             x:Class="SSW.Rewards.Mobile.Pages.OnBoardingPage">
     <pages:PopupPage.Animation>
         <animations:MoveAnimation PositionIn="Bottom"
                                   PositionOut="Bottom"
@@ -136,9 +136,17 @@
                             Margin="0,0,20,20"
                             HorizontalOptions="End"
                             BackgroundColor="{StaticResource primary}"
-                            IsVisible="{Binding IsLast}"
+
                             Command="{Binding GetStartedCommand}"
-                            Text="Get Started!"/>
+                            Text="Get Started!">
+                            <Button.IsVisible>
+                                <MultiBinding Converter="{mct:VariableMultiValueConverter ConditionType=All}">
+                                    <Binding Path="IsLast" />
+                                    <Binding Path="IsFirstRun" Converter="{mct:InvertedBoolConverter}"/>
+                                </MultiBinding>
+                            </Button.IsVisible>
+                        </Button>
+
                     </Grid>
                 </Grid>
             </Border>

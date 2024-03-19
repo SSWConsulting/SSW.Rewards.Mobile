@@ -150,7 +150,7 @@
 		  <DependentUpon>RedeemReward.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
-		<Compile Update="PopupPages\OnBoarding.xaml.cs">
+		<Compile Update="PopupPages\OnBoardingPage.xaml.cs">
 		  <DependentUpon>OnBoarding.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
@@ -209,7 +209,7 @@
 		<MauiXaml Update="Pages\NetworkingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
-		<MauiXaml Update="PopupPages\OnBoarding.xaml">
+		<MauiXaml Update="PopupPages\OnBoardingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

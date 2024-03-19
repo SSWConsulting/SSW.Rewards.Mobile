@@ -108,7 +108,7 @@ public partial class AppShell : Shell
 
     public void Handle_HowToPlayClicked(object sender, EventArgs e)
     {
-        Navigation.PushModalAsync<OnBoarding>();
+        Navigation.PushModalAsync<OnBoardingPage>();
     }
 
     private void Handle_QRClicked(object sender, EventArgs e)
@@ -135,7 +135,7 @@ public partial class AppShell : Shell
 
     private async void Handle_IntroClicked(object sender, TappedEventArgs e)
     {
-        var page = new OnBoarding();
+        var page = new OnBoardingPage();
         await MopupService.Instance.PushAsync(page);
     }
 }
