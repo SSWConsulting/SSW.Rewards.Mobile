@@ -1,29 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
-using System.Collections.ObjectModel;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 public class MyProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
-    ISnackbarService snackbarService,
     ILeaderService leaderService,
     IDevService devService,
     IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService, permissionsService),
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService),
         IRecipient<ProfilePicUpdatedMessage>,
-        IRecipient<PointsAwardedMessage>,
-        IRecipient<SocialUsernameAddedMessage>
+        IRecipient<PointsAwardedMessage>
 {
+    private readonly IUserService _userService = userService;
+
     public async void Receive(PointsAwardedMessage message)
     {
         await OnPointsAwarded();
-    }
-
-    public void Receive(SocialUsernameAddedMessage message)
-    {
-        AddSocialMediaId(message);
     }
 
     public async Task Initialise()
@@ -43,43 +37,6 @@ public class MyProfileViewModel(
         UserEmail = _userService.MyEmail;
 
         await _initialise();
-    }
-
-    private void AddSocialMediaId(SocialUsernameAddedMessage message)
-    {
-        // We will remove this. In v3 we're doing social media integration at the identity level.
-        return;
-
-        //WeakReferenceMessenger.Default.Unregister<SocialUsernameAddedMessage>(this);
-
-        //IsBusy = true;
-
-        //var result = await _userService.SaveSocialMediaId(message.Value.Achievement.Id, message.Value.Username);
-
-        //var options = new SnackbarOptions
-        //{
-        //    ActionCompleted = false,
-        //    Points = message.Value.Achievement.Value,
-        //    GlyphIsBrand = message.Value.Achievement.IconIsBranded,
-        //    Glyph = (string)typeof(Icon).GetField(message.Value.Achievement.AchievementIcon.ToString()).GetValue(null)
-        //};
-
-        //if (result)
-        //{
-        //    options.ActionCompleted = true;
-        //    message.Value.Achievement.Complete = true;
-        //}
-
-        //options.Message = $"{GetMessage(message.Value.Achievement)}";
-
-        //await _snackbarService.ShowSnackbar(options);
-
-        //if (result)
-        //{
-        //    WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        //}
-
-        //IsBusy = false;
     }
 
     private async Task OnPointsAwarded()

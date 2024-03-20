@@ -20,13 +20,13 @@ namespace SSW.Rewards.PopupPages
 
         private async void SaveButton_Clicked(object sender, System.EventArgs e)
         {
-            var msg = new SocialUsernameAddedMessage(new SocialAchievement
-            {
-                Achievement = _achievement,
-                Username = UsernameEntry.Text
-            });
+            // var msg = new SocialUsernameAddedMessage(new SocialAchievement
+            // {
+            //     Achievement = _achievement,
+            //     Username = UsernameEntry.Text
+            // });
 
-            WeakReferenceMessenger.Default.Send(msg);
+            // WeakReferenceMessenger.Default.Send(msg);
 
             await MopupService.Instance.PopAllAsync();
         }

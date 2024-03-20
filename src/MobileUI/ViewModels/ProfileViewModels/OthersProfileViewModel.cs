@@ -6,10 +6,9 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
-    ISnackbarService snackbarService,
     IDevService devService,
     IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService, permissionsService)
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService)
 {
     public async Task Initialise()
     {

@@ -1,23 +1,19 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class ProfileViewModelBase : BaseViewModel, IRecipient<AchievementTappedMessage>
+public partial class ProfileViewModelBase : BaseViewModel
 {
-    protected readonly IRewardService _rewardsService;
-    protected IUserService _userService;
-    protected readonly ISnackbarService _snackbarService;
-    protected IDevService _devService;
+    private readonly IRewardService _rewardsService;
+    private readonly IUserService _userService;
+    private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
@@ -57,48 +53,19 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
 
-    public SnackbarOptions SnackOptions { get; set; }
-
-    protected double _topRewardCost;
-
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
         IRewardService rewardsService,
         IUserService userService,
-        ISnackbarService snackbarService,
         IDevService devService,
         IPermissionsService permissionsService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;
         _userService = userService;
-        _snackbarService = snackbarService;
         _devService = devService;
         _permissionsService = permissionsService;
-
-        SnackOptions = new SnackbarOptions
-        {
-            ActionCompleted = true,
-            GlyphIsBrand = true,
-            Glyph = "\uf420",
-            Message = "You have completed the Angular quiz",
-            Points = 1000,
-            ShowPoints = true
-        };
-    }
-
-    public void OnAppearing()
-    {
-        if (WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
-            return;
-
-        WeakReferenceMessenger.Default.RegisterAll(this);
-    }
-
-    public void Receive(AchievementTappedMessage message)
-    {
-        ProcessAchievement(message.Value);
     }
 
     protected async Task _initialise()
@@ -116,29 +83,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         await LoadProfileSections();
 
         IsLoading = false;
-    }
-
-    private void ProcessAchievement(ProfileAchievement achievement)
-    {
-        if (achievement.IsMe == IsMe)
-        {
-            if (achievement.Complete)
-            {
-                ShowAchievementSnackbar(achievement);
-            }
-            else
-            {
-                if (achievement.Type == AchievementType.Linked && IsMe)
-                {
-                    var popup = new LinkSocial(achievement);
-                    MopupService.Instance.PushAsync(popup);
-                }
-                else
-                {
-                    ShowAchievementSnackbar(achievement);
-                }
-            }
-        }
     }
 
     [RelayCommand]
@@ -238,21 +182,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         ProfilePic = message.ProfilePic;
     }
 
-    private async void ShowAchievementSnackbar(ProfileAchievement achievement)
-    {
-        // TODO: set Glyph when given values
-        var options = new SnackbarOptions
-        {
-            ActionCompleted = achievement.Complete,
-            Points = achievement.Value,
-            Message = $"{GetMessage(achievement)}",
-            GlyphIsBrand = achievement.IconIsBranded,
-            Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
-        };
-
-        await _snackbarService.ShowSnackbar(options);
-    }
-
     public string GetMessage(Achievement achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
@@ -315,6 +244,5 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         IsBusy = false;
         IsLoading = false;
-        WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }
