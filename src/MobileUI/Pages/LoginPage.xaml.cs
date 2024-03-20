@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Pages;
+﻿using Mopups.Services;
+
+namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LoginPage : ContentPage
 {
@@ -26,7 +28,8 @@ public partial class LoginPage : ContentPage
         if (Preferences.Get("FirstRun", true))
         {
             Preferences.Set("FirstRun", false);
-            await Navigation.PushModalAsync<OnBoarding>();
+            Application.Current.Resources.TryGetValue("SecondaryBackground", out var statusBarColor);
+            await MopupService.Instance.PushAsync(new OnBoardingPage(true, statusBarColor as Color));
         }
         else
         {

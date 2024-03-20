@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="This"
+             x:DataType="viewModels:OnBoardingViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.OnBoardingPage">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation PositionIn="Bottom"
+                                  PositionOut="Bottom"
+                                  DurationIn="300"
+                                  DurationOut="300"
+                                  EasingIn="SinOut"
+                                  EasingOut="SinIn"
+                                  HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <Grid>
+        <Grid BackgroundColor="#b3000000" IsVisible="{Binding IsOverlayVisible}"/>
+        <Grid Padding="30,70">
+            <Border
+                StrokeThickness="1"
+                BackgroundColor="{StaticResource Background}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+
+                <Grid RowDefinitions="Auto, *, Auto">
+                    <IndicatorView SelectedIndicatorColor="{StaticResource SSWRed}"
+                                   Grid.Row="0"
+                                   IndicatorColor="{StaticResource IndicatorColor}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Margin="0,25,0,15"
+                                   x:Name="RewardsIndicator"/>
+
+                    <CarouselView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Items}"
+                        CurrentItem="{Binding SelectedItem}"
+                        CurrentItemChangedCommand="{Binding Swiped}"
+                        Loop="False"
+                        IndicatorView="RewardsIndicator"
+                        HorizontalScrollBarVisibility="Never"
+                        x:Name="RewardsCarousel">
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:CarouselViewModel">
+                                <Grid RowDefinitions="*,Auto,*">
+                                    <VerticalStackLayout
+                                        Grid.Row="0"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="End">
+                                        <Label
+                                            VerticalOptions="End"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding Heading1}"
+                                            FontSize="30"/>
+                                        <Label
+                                            VerticalOptions="End"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding Heading2}"
+                                            FontSize="Medium"/>
+                                    </VerticalStackLayout>
+
+                                    <Image
+                                        Grid.Row="1"
+                                        Source="{Binding Image}"
+                                        Margin="{OnPlatform Android='40,10', iOS='60,10'}"
+                                        VerticalOptions="Center"
+                                        Aspect="AspectFit" />
+
+                                    <Label
+                                        Grid.Row="2"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="Center"
+                                        Padding="50,10"
+                                        Text="{Binding Content}"
+                                        FontSize="Small"/>
+
+                                    <Label
+                                        Grid.Row="2"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="Center"
+                                        Padding="50,0"
+                                        Text="{Binding Heading3}"
+                                        FontSize="30"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+
+                    <Grid Grid.Row="2">
+                        <!-- Back button -->
+                        <Border
+                            WidthRequest="50"
+                            HeightRequest="50"
+                            StrokeThickness="0"
+                            Margin="20,0,0,20"
+                            Padding="10"
+                            IsVisible="{Binding IsFirst, Converter={mct:InvertedBoolConverter}}"
+                            BackgroundColor="{StaticResource LeaderCardBackground}"
+                            HorizontalOptions="Start">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SwipeBackwardCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <Image Source="icon_left_arrow"/>
+                        </Border>
+
+                        <!-- Forward button -->
+                        <Border
+                            WidthRequest="50"
+                            HeightRequest="50"
+                            StrokeThickness="0"
+                            Margin="0,0,20,20"
+                            Padding="10"
+                            IsVisible="{Binding IsLast, Converter={mct:InvertedBoolConverter}}"
+                            BackgroundColor="{StaticResource primary}"
+                            HorizontalOptions="End">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SwipeForwardCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <Image Source="icon_right_arrow"/>
+                        </Border>
+
+                        <!-- Get Started button -->
+                        <Button
+                            Margin="0,0,20,20"
+                            HorizontalOptions="End"
+                            BackgroundColor="{StaticResource primary}"
+
+                            Command="{Binding GetStartedCommand}"
+                            Text="Get Started!">
+                            <Button.IsVisible>
+                                <MultiBinding Converter="{mct:VariableMultiValueConverter ConditionType=All}">
+                                    <Binding Path="IsLast" />
+                                    <Binding Path="IsFirstRun" Converter="{mct:InvertedBoolConverter}"/>
+                                </MultiBinding>
+                            </Button.IsVisible>
+                        </Button>
+
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Close button -->
+            <Border
+                WidthRequest="40"
+                HeightRequest="40"
+                StrokeThickness="0"
+                TranslationX="20"
+                TranslationY="-20"
+                Padding="10"
+                BackgroundColor="{StaticResource primary}"
+                VerticalOptions="Start"
+                HorizontalOptions="End">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}"/>
+                </Border.GestureRecognizers>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20"/>
+                </Border.StrokeShape>
+                <Image Source="icon_close"/>
+            </Border>
+        </Grid>
+    </Grid>
+</pages:PopupPage>

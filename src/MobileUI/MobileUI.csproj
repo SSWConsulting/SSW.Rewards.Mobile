@@ -150,6 +150,10 @@
 		  <DependentUpon>RedeemReward.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="PopupPages\OnBoardingPage.xaml.cs">
+		  <DependentUpon>OnBoarding.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -203,6 +207,9 @@
 		  <Generator></Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\NetworkingPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="PopupPages\OnBoardingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

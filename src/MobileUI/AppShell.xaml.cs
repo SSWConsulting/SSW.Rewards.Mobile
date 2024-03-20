@@ -45,23 +45,6 @@ public partial class AppShell : Shell
             _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
         }
-    }    
-    
-    public async void Handle_SettingsClicked(object sender, EventArgs e)
-    {
-        //TODO: Perform SettingsClickedAction
-    }
-
-    public void Handle_EventsClicked(object sender, EventArgs e)
-    {
-        var popup = new Events();
-        MopupService.Instance.PushAsync(popup);
-    }
-
-    public void Handle_JoinClicked(object sender, EventArgs e)
-    {
-        var popup = new JoinUs();
-        MopupService.Instance.PushAsync(popup);
     }
 
     public void Handle_AboutClicked(object sender, EventArgs e)
@@ -106,22 +89,6 @@ public partial class AppShell : Shell
         }
     }
 
-    public void Handle_HowToPlayClicked(object sender, EventArgs e)
-    {
-        Navigation.PushModalAsync<OnBoarding>();
-    }
-
-    private void Handle_QRClicked(object sender, EventArgs e)
-    {
-        var qrCode = _userService.MyQrCode;
-
-        if (!string.IsNullOrWhiteSpace(qrCode))
-        {
-            var popup = new MyQRPage(qrCode);
-            MopupService.Instance.PushAsync(popup);
-        }
-    }
-
     protected override bool OnBackButtonPressed()
     {
         if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
@@ -131,5 +98,12 @@ public partial class AppShell : Shell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
+    }
+
+    private async void Handle_IntroClicked(object sender, TappedEventArgs e)
+    {
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var page = new OnBoardingPage(parentPageStatusBarColor: statusBarColor as Color);
+        await MopupService.Instance.PushAsync(page);
     }
 }
