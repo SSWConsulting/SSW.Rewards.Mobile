@@ -1,6 +1,4 @@
 ﻿using System.Reactive.Subjects;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
@@ -17,6 +15,7 @@ public class UserService : IUserService
     {
         _userClient = userService;
         _authService = authService;
+        _authService.DetailsUpdated += UpdateMyDetailsAsync;
 
         MyUserId = new BehaviorSubject<int>(0);
         MyName = new BehaviorSubject<string>(string.Empty);
@@ -24,27 +23,7 @@ public class UserService : IUserService
         MyProfilePic = new BehaviorSubject<string>(string.Empty);
         MyPoints = new BehaviorSubject<int>(0);
         MyBalance = new BehaviorSubject<int>(0);
-
-        _authService.DetailsUpdated += UpdateMyDetailsAsync;
-    }
-
-    public async Task<bool> DeleteProfileAsync()
-    {
-        try
-        {
-            await _userClient.DeleteMyProfile();
-            _authService.SignOut();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    public async Task<UserProfileDto> GetUserAsync(int userId)
-    {
-        return await _userClient.GetUser(userId);
+        MyQrCode = new BehaviorSubject<string>(string.Empty);
     }
 
     public BehaviorSubject<int> MyUserId { get; }
@@ -53,9 +32,12 @@ public class UserService : IUserService
     public BehaviorSubject<string> MyProfilePic { get; }
     public BehaviorSubject<int> MyPoints { get; }
     public BehaviorSubject<int> MyBalance { get; }
-    public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
+    public BehaviorSubject<string> MyQrCode { get; }
 
-    public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
+    public async Task<UserProfileDto> GetUserAsync(int userId)
+    {
+        return await _userClient.GetUser(userId);
+    }
 
     public async Task<string> UploadImageAsync(Stream image, string fileName)
     {
@@ -73,20 +55,13 @@ public class UserService : IUserService
     public async Task UpdateMyDetailsAsync()
     {
         var user = await _userClient.GetCurrentUser();
-
-        Preferences.Set(nameof(MyQrCode), user.QRCode);
-
         MyUserId.OnNext(user.Id);
         MyName.OnNext(user.FullName);
         MyEmail.OnNext(user.Email);
         MyProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
         MyPoints.OnNext(user.Points);
         MyBalance.OnNext(user.Balance);
-
-        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
-        {
-            IsStaff     = IsStaff
-        }));
+        MyQrCode.OnNext(user.QRCode);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
@@ -174,5 +149,19 @@ public class UserService : IUserService
         }
 
         return rewards;
+    }
+
+    public async Task<bool> DeleteProfileAsync()
+    {
+        try
+        {
+            await _userClient.DeleteMyProfile();
+            _authService.SignOut();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

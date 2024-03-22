@@ -11,9 +11,8 @@ public interface IUserService
     BehaviorSubject<string> MyProfilePic { get; }
     BehaviorSubject<int> MyPoints { get; }
     BehaviorSubject<int> MyBalance { get; }
-    string MyQrCode { get; }
+    BehaviorSubject<string> MyQrCode { get; }
     bool HasCachedAccount { get; }
-    bool IsStaff { get; }
 
     // auth methods
 

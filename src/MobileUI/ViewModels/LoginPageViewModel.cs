@@ -68,7 +68,7 @@ public partial class LoginPageViewModel : BaseViewModel
         LoginButtonEnabled = enableButtonAfterLogin;
         IsRunning = false;
     }
-    
+
     private async static Task WaitForWindowClose()
     {
         // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
@@ -123,7 +123,7 @@ public partial class LoginPageViewModel : BaseViewModel
 
     private async Task OnAfterLogin()
     {
-        var qr = _userService.MyQrCode;
+        var qr = _userService.MyQrCode.Value;
         if (!string.IsNullOrWhiteSpace(qr))
         {
             _isStaff = true;

@@ -46,12 +46,9 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
-    public ObservableCollection<Activity> RecentActivity { get; set; } = [];
-
-    public ObservableCollection<Activity> LastSeen { get; set; } = [];
-
+    public ObservableCollection<Activity> RecentActivity { get; } = [];
+    public ObservableCollection<Activity> LastSeen { get; } = [];
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
-
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(

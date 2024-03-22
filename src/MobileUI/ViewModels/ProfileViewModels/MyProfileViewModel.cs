@@ -30,8 +30,8 @@ public class MyProfileViewModel(
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(myBalance => Balance = myBalance);
         _userService.MyUserId.AsObservable().Subscribe(myUserId => userId = myUserId);
+        _userService.MyQrCode.AsObservable().Subscribe(myQrCode => IsStaff = !string.IsNullOrWhiteSpace(myQrCode));
         Rank = await LoadRank();
-        IsStaff = _userService.IsStaff;
 
         await _initialise();
     }

@@ -13,7 +13,6 @@ public partial class OthersProfileViewModel(
     public async Task Initialise()
     {
         IsMe = false;
-
         await _initialise();
     }
 
@@ -40,7 +39,7 @@ public partial class OthersProfileViewModel(
         userId = vm.UserId;
         Points = vm.TotalPoints;
         Rank = vm.Rank;
-        IsStaff = true;
+        IsStaff = !vm.IsExternal;
 
         ShowBalance = false;
     }

@@ -1,11 +1,9 @@
 ﻿using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDetailsUpdatedMessage>
+public partial class FlyoutHeaderViewModel : ObservableObject
 {
     private readonly IUserService _userService;
     private readonly ILeaderService _leaderService;
@@ -18,9 +16,6 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
 
     [ObservableProperty]
     private string _email;
-
-    [ObservableProperty]
-    private bool _isStaff;
 
     [ObservableProperty]
     private string _qrCode;
@@ -36,20 +31,16 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
 
     public FlyoutHeaderViewModel(IUserService userService, ILeaderService leaderService)
     {
-        WeakReferenceMessenger.Default.Register<UserDetailsUpdatedMessage>(this);
         _userService = userService;
         _leaderService = leaderService;
-
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
-        IsStaff = _userService.IsStaff;
 
         _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
         _userService.MyEmail.AsObservable().Subscribe(myEmail => Email = myEmail);
         _userService.MyProfilePic.AsObservable().Subscribe(myProfilePic => ProfilePic = myProfilePic);
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(myBalance => Credits = myBalance);
-
-        UpdateUserValues();
+        _userService.MyQrCode.AsObservable().Subscribe(myQrCode => QrCode = myQrCode);
 
         _ = LoadRank();
     }
@@ -59,18 +50,5 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         var summaries = await _leaderService.GetLeadersAsync(false);
         var myId = _userService.MyUserId.Value;
         Rank = summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
-    }
-
-    public void Receive(UserDetailsUpdatedMessage message)
-    {
-        Console.WriteLine($"[FlyoutHeaderViewModel] Received new user details message: {message.Value.Name}");
-        IsStaff = message.Value.IsStaff;
-
-        UpdateUserValues();
-    }
-
-    private void UpdateUserValues()
-    {
-        QrCode = _userService.MyQrCode;
     }
 }
