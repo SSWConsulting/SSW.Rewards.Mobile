@@ -11,7 +11,6 @@ public class MyProfileViewModel(
     IDevService devService,
     IPermissionsService permissionsService)
     : ProfileViewModelBase(rewardsService, userService, devService, permissionsService),
-        IRecipient<ProfilePicUpdatedMessage>,
         IRecipient<PointsAwardedMessage>
 {
     private readonly IUserService _userService = userService;
@@ -25,13 +24,10 @@ public class MyProfileViewModel(
     {
         IsMe = true;
 
-        var profilePic = _userService.MyProfilePic;
-
-        //initialise me
-        ProfilePic = profilePic;
         _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
+        _userService.MyProfilePic.AsObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
-        _userService.MyBalance.AsObservable().Subscribe(balance => Balance = balance);
+        _userService.MyBalance.AsObservable().Subscribe(myBalance => Balance = myBalance);
         userId = _userService.MyUserId;
         Rank = await LoadRank();
         IsStaff = _userService.IsStaff;

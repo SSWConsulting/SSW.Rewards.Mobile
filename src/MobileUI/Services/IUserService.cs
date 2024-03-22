@@ -10,7 +10,7 @@ public interface IUserService
     int MyUserId { get; }
     BehaviorSubject<string> MyName { get; }
     BehaviorSubject<string> MyEmail { get; }
-    string MyProfilePic { get; }
+    BehaviorSubject<string> MyProfilePic { get; }
     BehaviorSubject<int> MyPoints { get; }
     BehaviorSubject<int> MyBalance { get; }
     string MyQrCode { get; }
@@ -28,7 +28,6 @@ public interface IUserService
     Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId);
     Task<IEnumerable<Reward>> GetRewardsAsync();
     Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
-    Task<ImageSource> GetAvatarAsync(string url);
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool> DeleteProfileAsync();

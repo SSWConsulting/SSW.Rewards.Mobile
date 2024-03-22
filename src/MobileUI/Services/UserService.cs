@@ -6,7 +6,7 @@ using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.Services;
 
-public class UserService : IUserService, IDisposable
+public class UserService : IUserService
 {
     private IApiUserService _userClient { get; }
 
@@ -22,6 +22,7 @@ public class UserService : IUserService, IDisposable
 
         MyName = new BehaviorSubject<string>(string.Empty);
         MyEmail = new BehaviorSubject<string>(string.Empty);
+        MyProfilePic = new BehaviorSubject<string>(string.Empty);
         MyPoints = new BehaviorSubject<int>(0);
         MyBalance = new BehaviorSubject<int>(0);
 
@@ -35,16 +36,13 @@ public class UserService : IUserService, IDisposable
         try
         {
             await _userClient.DeleteMyProfile();
-
             _authService.SignOut();
-
             return true;
         }
         catch
         {
             return false;
         }
-
     }
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
@@ -55,39 +53,19 @@ public class UserService : IUserService, IDisposable
     public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
     public BehaviorSubject<string> MyEmail { get; }
     public BehaviorSubject<string> MyName { get; }
+    public BehaviorSubject<string> MyProfilePic { get; }
     public BehaviorSubject<int> MyPoints { get; }
     public BehaviorSubject<int> MyBalance { get; }
     public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
 
-    public string MyProfilePic
-    {
-        get
-        {
-            var pic = Preferences.Get(nameof(MyProfilePic), string.Empty);
-            if (!string.IsNullOrWhiteSpace(pic))
-                return pic;
-
-            return "v2sophie";
-        }
-    }
 
     public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
 
     public async Task<string> UploadImageAsync(Stream image, string fileName)
     {
         var response = await _userClient.UploadProfilePic(image, fileName);
+        await UpdateMyDetailsAsync();
 
-        Preferences.Set(nameof(MyProfilePic), response.PicUrl);
-
-        if (response.AchievementAwarded)
-        {
-            await UpdateMyDetailsAsync();
-        }
-
-        WeakReferenceMessenger.Default.Send(new ProfilePicUpdatedMessage
-        {
-            ProfilePic = MyProfilePic
-        });
         return response.PicUrl;
     }
 
@@ -101,17 +79,16 @@ public class UserService : IUserService, IDisposable
         var user = await _userClient.GetCurrentUser();
 
         Preferences.Set(nameof(MyUserId), user.Id);
-        Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
         Preferences.Set(nameof(MyQrCode), user.QRCode);
 
         MyName.OnNext(user.FullName);
         MyEmail.OnNext(user.Email);
+        MyProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
         MyPoints.OnNext(user.Points);
         MyBalance.OnNext(user.Balance);
 
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
         {
-            ProfilePic  = MyProfilePic,
             IsStaff     = IsStaff
         }));
     }
@@ -204,20 +181,5 @@ public class UserService : IUserService, IDisposable
         }
 
         return rewards;
-    }
-
-    public Task<ImageSource> GetProfilePicAsync(string url)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ImageSource> GetAvatarAsync(string url)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Dispose()
-    {
-        //_authService.DetailsUpdated -= UpdateMyDetailsAsync;
     }
 }

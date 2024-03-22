@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 
@@ -81,6 +80,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
 
         await LoadProfileSections();
+        _userService.MyProfilePic.Subscribe(myProfilePic => ProfilePic = myProfilePic);
 
         IsLoading = false;
     }
@@ -175,11 +175,6 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         _loadingProfileSectionsSemaphore.Release();
-    }
-
-    public void Receive(ProfilePicUpdatedMessage message)
-    {
-        ProfilePic = message.ProfilePic;
     }
 
     public string GetMessage(Achievement achievement, bool isActivity = false)

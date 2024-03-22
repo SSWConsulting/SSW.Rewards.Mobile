@@ -23,7 +23,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         Title = "Leaderboard";
         _leaderService = leaderService;
         _userService = userService;
-        ProfilePic = _userService.MyProfilePic;
         _userService.MyPoints.AsObservable().Subscribe(myPoints => MyPoints = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(myBalance => MyBalance = myBalance);
         Leaders = new ObservableCollection<LeaderViewModel>();
@@ -41,7 +40,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     [ObservableProperty]
     private bool _isRefreshing;
 
-    public string ProfilePic { get; set; }
     public Action<int> ScrollTo { get; set; }
 
     public LeaderboardFilter CurrentPeriod { get; set; }
