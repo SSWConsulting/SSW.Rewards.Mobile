@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
@@ -29,8 +30,8 @@ public class MyProfileViewModel(
         //initialise me
         ProfilePic = profilePic;
         Name = _userService.MyName;
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
+        _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
+        _userService.MyBalance.AsObservable().Subscribe(balance => Balance = balance);
         userId = _userService.MyUserId;
         Rank = await LoadRank();
         IsStaff = _userService.IsStaff;
@@ -42,16 +43,7 @@ public class MyProfileViewModel(
     private async Task OnPointsAwarded()
     {
         await _userService.UpdateMyDetailsAsync();
-        await UpdatePoints();
         await LoadProfileSections();
-    }
-
-    private Task UpdatePoints()
-    {
-        Points = _userService.MyPoints;
-        Balance = _userService.MyBalance;
-
-        return Task.CompletedTask;
     }
 
     private async Task<int> LoadRank()

@@ -1,5 +1,5 @@
-using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -19,7 +19,7 @@ public partial class RewardsViewModel : BaseViewModel
 
     public ObservableCollection<Reward> Rewards { get; set; } = new ();
     public ObservableCollection<Reward> CarouselRewards { get; set; } = new ();
-        
+
     [ObservableProperty]
     private int _credits;
 
@@ -37,13 +37,13 @@ public partial class RewardsViewModel : BaseViewModel
         {
             return;
         }
-            
+
         IsBusy = true;
         var rewardList = await _rewardService.GetRewards();
 
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
-            reward.CanAfford = reward.Cost <= _userService.MyBalance;
+            reward.CanAfford = reward.Cost <= _userService.MyBalance.Value;
             Rewards.Add(reward);
 
             if (reward.IsCarousel)
@@ -51,8 +51,8 @@ public partial class RewardsViewModel : BaseViewModel
                 CarouselRewards.Add(reward);
             }
         }
-            
-        Credits = _userService.MyBalance;
+
+        _userService.MyBalance.AsObservable().Subscribe(balance => Credits = balance);
 
         IsBusy = false;
         _isLoaded = true;

@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Users;
+﻿using System.Reactive.Subjects;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -10,8 +11,8 @@ public interface IUserService
     string MyName { get; }
     string MyEmail { get; }
     string MyProfilePic { get; }
-    int MyPoints { get; }
-    int MyBalance { get; }
+    BehaviorSubject<int> MyPoints { get; }
+    BehaviorSubject<int> MyBalance { get; }
     string MyQrCode { get; }
     bool IsLoggedIn { get; }
     bool HasCachedAccount { get; }

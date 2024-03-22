@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 
@@ -8,7 +9,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
 {
     private readonly IUserService _userService;
     private readonly ILeaderService _leaderService;
-    
+
     [ObservableProperty]
     private string _profilePic;
 
@@ -20,16 +21,16 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
 
     [ObservableProperty]
     private bool _isStaff;
-    
+
     [ObservableProperty]
     private string _qrCode;
-    
+
     [ObservableProperty]
     private int _points;
-    
+
     [ObservableProperty]
     private int _credits;
-    
+
     [ObservableProperty]
     private int _rank;
 
@@ -46,11 +47,14 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         IsStaff = _userService.IsStaff;
         AppShell.ProfilePic = ProfilePic;
 
+        _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
+        _userService.MyBalance.AsObservable().Subscribe(myBalance => Credits = myBalance);
+
         UpdateUserValues();
 
         _ = LoadRank();
     }
-    
+
     private async Task LoadRank()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
@@ -72,7 +76,5 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     private void UpdateUserValues()
     {
         QrCode = _userService.MyQrCode;
-        Points = _userService.MyPoints;
-        Credits = _userService.MyBalance;
     }
 }

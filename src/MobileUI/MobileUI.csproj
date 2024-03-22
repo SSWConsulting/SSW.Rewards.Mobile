@@ -86,6 +86,7 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 

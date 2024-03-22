@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
@@ -23,8 +24,8 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         _leaderService = leaderService;
         _userService = userService;
         ProfilePic = _userService.MyProfilePic;
-        MyPoints = _userService.MyPoints;
-        MyBalance = _userService.MyBalance;
+        _userService.MyPoints.AsObservable().Subscribe(myPoints => MyPoints = myPoints);
+        _userService.MyBalance.AsObservable().Subscribe(myBalance => MyBalance = myBalance);
         Leaders = new ObservableCollection<LeaderViewModel>();
         WeakReferenceMessenger.Default.Register(this);
     }

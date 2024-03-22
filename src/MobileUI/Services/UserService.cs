@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Reactive.Subjects;
+using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
@@ -7,7 +8,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public class UserService : IUserService, IDisposable
 {
-    private IApiUserService _userClient { get; set; }
+    private IApiUserService _userClient { get; }
 
     private readonly IAuthenticationService _authService;
     private bool _loggedIn = false;
@@ -18,6 +19,9 @@ public class UserService : IUserService, IDisposable
     {
         _userClient = userService;
         _authService = authService;
+
+        MyPoints = new BehaviorSubject<int>(0);
+        MyBalance = new BehaviorSubject<int>(0);
 
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
@@ -46,18 +50,11 @@ public class UserService : IUserService, IDisposable
         return await _userClient.GetUser(userId);
     }
 
-    #region USERDETAILS
-
     public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
-
     public string MyEmail { get => Preferences.Get(nameof(MyEmail), string.Empty); }
-
     public string MyName { get => Preferences.Get(nameof(MyName), string.Empty); }
-
-    public int MyPoints { get => Preferences.Get(nameof(MyPoints), 0); }
-
-    public int MyBalance { get => Preferences.Get(nameof(MyBalance), 0); }
-
+    public BehaviorSubject<int> MyPoints { get; }
+    public BehaviorSubject<int> MyBalance { get; }
     public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
 
     public string MyProfilePic
@@ -105,9 +102,10 @@ public class UserService : IUserService, IDisposable
         Preferences.Set(nameof(MyEmail), user.Email);
         Preferences.Set(nameof(MyUserId), user.Id);
         Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
-        Preferences.Set(nameof(MyPoints), user.Points);
-        Preferences.Set(nameof(MyBalance), user.Balance);
         Preferences.Set(nameof(MyQrCode), user.QRCode);
+
+        MyPoints.OnNext(user.Points);
+        MyBalance.OnNext(user.Balance);
 
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
         {
@@ -222,6 +220,4 @@ public class UserService : IUserService, IDisposable
     {
         //_authService.DetailsUpdated -= UpdateMyDetailsAsync;
     }
-
-    #endregion
 }
