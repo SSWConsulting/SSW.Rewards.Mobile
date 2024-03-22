@@ -35,7 +35,6 @@ public class MyProfileViewModel(
         userId = _userService.MyUserId;
         Rank = await LoadRank();
         IsStaff = _userService.IsStaff;
-        UserEmail = _userService.MyEmail;
 
         await _initialise();
     }

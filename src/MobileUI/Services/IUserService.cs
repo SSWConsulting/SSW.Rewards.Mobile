@@ -9,7 +9,7 @@ public interface IUserService
     // values
     int MyUserId { get; }
     string MyName { get; }
-    string MyEmail { get; }
+    BehaviorSubject<string> MyEmail { get; }
     string MyProfilePic { get; }
     BehaviorSubject<int> MyPoints { get; }
     BehaviorSubject<int> MyBalance { get; }

@@ -149,11 +149,6 @@ public class AuthenticationService : IAuthenticationService
                     Preferences.Set("JobTitle", jobTitle);
                 }
 
-                if (!string.IsNullOrWhiteSpace(email))
-                {
-                    Preferences.Set("MyEmail", email);
-                }
-
                 DetailsUpdated?.Invoke(this, new DetailsUpdatedEventArgs
                 {
                     Name = fullName,

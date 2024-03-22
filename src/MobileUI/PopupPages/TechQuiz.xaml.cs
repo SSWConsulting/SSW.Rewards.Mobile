@@ -15,7 +15,7 @@ namespace SSW.Rewards.PopupPages
 
         private async void FindoutMore_Tapped(object sender, EventArgs e)
         {
-            string quizUri = Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + _userService.MyEmail;
+            string quizUri = Constants.ApiBaseUrl + "/api/achievement/techquiz?user=" + _userService.MyEmail.Value;
 
             await Browser.OpenAsync(quizUri, BrowserLaunchMode.External);
         }
