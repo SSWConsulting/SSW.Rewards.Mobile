@@ -8,10 +8,8 @@ namespace SSW.Rewards.Mobile.Services;
 
 public class UserService : IUserService
 {
-    private IApiUserService _userClient { get; }
-
+    private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
-    private bool _loggedIn = false;
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
@@ -20,6 +18,7 @@ public class UserService : IUserService
         _userClient = userService;
         _authService = authService;
 
+        MyUserId = new BehaviorSubject<int>(0);
         MyName = new BehaviorSubject<string>(string.Empty);
         MyEmail = new BehaviorSubject<string>(string.Empty);
         MyProfilePic = new BehaviorSubject<string>(string.Empty);
@@ -28,8 +27,6 @@ public class UserService : IUserService
 
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
-
-    public bool IsLoggedIn { get => _loggedIn; }
 
     public async Task<bool> DeleteProfileAsync()
     {
@@ -50,14 +47,13 @@ public class UserService : IUserService
         return await _userClient.GetUser(userId);
     }
 
-    public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
+    public BehaviorSubject<int> MyUserId { get; }
     public BehaviorSubject<string> MyEmail { get; }
     public BehaviorSubject<string> MyName { get; }
     public BehaviorSubject<string> MyProfilePic { get; }
     public BehaviorSubject<int> MyPoints { get; }
     public BehaviorSubject<int> MyBalance { get; }
     public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
-
 
     public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
 
@@ -78,9 +74,9 @@ public class UserService : IUserService
     {
         var user = await _userClient.GetCurrentUser();
 
-        Preferences.Set(nameof(MyUserId), user.Id);
         Preferences.Set(nameof(MyQrCode), user.QRCode);
 
+        MyUserId.OnNext(user.Id);
         MyName.OnNext(user.FullName);
         MyEmail.OnNext(user.Email);
         MyProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
@@ -95,7 +91,7 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
     {
-        return await GetAchievementsForUserAsync(MyUserId);
+        return await GetAchievementsForUserAsync(MyUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
@@ -105,13 +101,12 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync()
     {
-        return await GetProfileAchievementsAsync(MyUserId);
+        return await GetProfileAchievementsAsync(MyUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId)
     {
-        List<Achievement> achievements = new List<Achievement>();
-
+        List<Achievement> achievements = [];
         var achievementsList = await _userClient.GetProfileAchievements(userId);
 
         foreach (var achievement in achievementsList.UserAchievements)
@@ -134,8 +129,7 @@ public class UserService : IUserService
 
     private async Task<IEnumerable<Achievement>> GetAchievementsForUserAsync(int userId)
     {
-        List<Achievement> achievements = new List<Achievement>();
-
+        List<Achievement> achievements = [];
         var achievementsList = await _userClient.GetUserAchievements(userId);
 
         foreach (var achievement in achievementsList.UserAchievements)
@@ -155,7 +149,7 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync()
     {
-        return await GetRewardsForUserAsync(MyUserId);
+        return await GetRewardsForUserAsync(MyUserId.Value);
     }
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)
@@ -165,8 +159,7 @@ public class UserService : IUserService
 
     private async Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId)
     {
-        List<Reward> rewards = new List<Reward>();
-
+        List<Reward> rewards = [];
         var rewardsList = await _userClient.GetUserRewards(userId);
 
         foreach (var userReward in rewardsList.UserRewards)

@@ -57,7 +57,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     private async Task LoadRank()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
-        var myId = _userService.MyUserId;
+        var myId = _userService.MyUserId.Value;
         Rank = summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }
 

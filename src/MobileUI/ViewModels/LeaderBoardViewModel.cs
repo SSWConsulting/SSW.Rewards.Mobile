@@ -121,7 +121,7 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private async Task LoadLeaderboard()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
-        int myId = _userService.MyUserId;
+        int myId = _userService.MyUserId.Value;
 
         Leaders.Clear();
 

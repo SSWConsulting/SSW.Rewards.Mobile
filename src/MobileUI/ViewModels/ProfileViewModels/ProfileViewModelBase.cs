@@ -80,7 +80,6 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
 
         await LoadProfileSections();
-        _userService.MyProfilePic.Subscribe(myProfilePic => ProfilePic = myProfilePic);
 
         IsLoading = false;
     }
@@ -102,14 +101,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
-        DevProfile devProfile = null;
-
         await Task.WhenAll(rewardListTask, achievementListTask);
-
-        if (IsStaff)
-        {
-            devProfile = await _devService.GetProfileAsync(UserEmail);
-        }
 
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
@@ -165,12 +157,15 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         // ===== Skills =====
-
-        if (IsStaff && devProfile != null)
+        if (IsStaff)
         {
-            foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+            DevProfile devProfile = await _devService.GetProfileAsync(UserEmail);
+            if (devProfile != null)
             {
-                Skills.Add(skill);
+                foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+                {
+                    Skills.Add(skill);
+                }
             }
         }
 
@@ -186,11 +181,8 @@ public partial class ProfileViewModelBase : BaseViewModel
             prefix += " not";
         }
 
-
         string activity = achievement.Name;
-
         string action = string.Empty;
-
         string scored = $"just scored {achievement.Value}pts for";
 
         switch (achievement.Type)

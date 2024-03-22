@@ -25,10 +25,11 @@ public class MyProfileViewModel(
         IsMe = true;
 
         _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
+        _userService.MyEmail.AsObservable().Subscribe(myEmail => UserEmail = myEmail);
         _userService.MyProfilePic.AsObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(myBalance => Balance = myBalance);
-        userId = _userService.MyUserId;
+        _userService.MyUserId.AsObservable().Subscribe(myUserId => userId = myUserId);
         Rank = await LoadRank();
         IsStaff = _userService.IsStaff;
 
@@ -44,7 +45,7 @@ public class MyProfileViewModel(
     private async Task<int> LoadRank()
     {
         var summaries = await leaderService.GetLeadersAsync(false);
-        var myId = _userService.MyUserId;
+        var myId = _userService.MyUserId.Value;
         return summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }
 }

@@ -5,16 +5,13 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IUserService
 {
-    // TODO: Replace all this with a GetMyProfile method
-    // values
-    int MyUserId { get; }
+    BehaviorSubject<int> MyUserId { get; }
     BehaviorSubject<string> MyName { get; }
     BehaviorSubject<string> MyEmail { get; }
     BehaviorSubject<string> MyProfilePic { get; }
     BehaviorSubject<int> MyPoints { get; }
     BehaviorSubject<int> MyBalance { get; }
     string MyQrCode { get; }
-    bool IsLoggedIn { get; }
     bool HasCachedAccount { get; }
     bool IsStaff { get; }
 
