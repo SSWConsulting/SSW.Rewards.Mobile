@@ -20,6 +20,7 @@ public class UserService : IUserService, IDisposable
         _userClient = userService;
         _authService = authService;
 
+        MyName = new BehaviorSubject<string>(string.Empty);
         MyEmail = new BehaviorSubject<string>(string.Empty);
         MyPoints = new BehaviorSubject<int>(0);
         MyBalance = new BehaviorSubject<int>(0);
@@ -53,7 +54,7 @@ public class UserService : IUserService, IDisposable
 
     public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
     public BehaviorSubject<string> MyEmail { get; }
-    public string MyName { get => Preferences.Get(nameof(MyName), string.Empty); }
+    public BehaviorSubject<string> MyName { get; }
     public BehaviorSubject<int> MyPoints { get; }
     public BehaviorSubject<int> MyBalance { get; }
     public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
@@ -99,11 +100,11 @@ public class UserService : IUserService, IDisposable
     {
         var user = await _userClient.GetCurrentUser();
 
-        Preferences.Set(nameof(MyName), user.FullName);
         Preferences.Set(nameof(MyUserId), user.Id);
         Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
         Preferences.Set(nameof(MyQrCode), user.QRCode);
 
+        MyName.OnNext(user.FullName);
         MyEmail.OnNext(user.Email);
         MyPoints.OnNext(user.Points);
         MyBalance.OnNext(user.Balance);
@@ -111,7 +112,6 @@ public class UserService : IUserService, IDisposable
         WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
         {
             ProfilePic  = MyProfilePic,
-            Name        = MyName,
             IsStaff     = IsStaff
         }));
     }

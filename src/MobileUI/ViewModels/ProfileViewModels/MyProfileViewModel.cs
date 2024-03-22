@@ -29,7 +29,7 @@ public class MyProfileViewModel(
 
         //initialise me
         ProfilePic = profilePic;
-        Name = _userService.MyName;
+        _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(balance => Balance = balance);
         userId = _userService.MyUserId;

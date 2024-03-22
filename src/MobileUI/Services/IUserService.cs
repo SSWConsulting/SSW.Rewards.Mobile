@@ -8,7 +8,7 @@ public interface IUserService
     // TODO: Replace all this with a GetMyProfile method
     // values
     int MyUserId { get; }
-    string MyName { get; }
+    BehaviorSubject<string> MyName { get; }
     BehaviorSubject<string> MyEmail { get; }
     string MyProfilePic { get; }
     BehaviorSubject<int> MyPoints { get; }

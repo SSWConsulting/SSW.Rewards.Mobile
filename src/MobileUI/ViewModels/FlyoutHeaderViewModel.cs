@@ -41,11 +41,11 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
         _leaderService = leaderService;
 
         ProfilePic = _userService.MyProfilePic;
-        Name = _userService.MyName;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
         IsStaff = _userService.IsStaff;
         AppShell.ProfilePic = ProfilePic;
 
+        _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
         _userService.MyEmail.AsObservable().Subscribe(myEmail => Email = myEmail);
         _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalance.AsObservable().Subscribe(myBalance => Credits = myBalance);
@@ -66,7 +66,6 @@ public partial class FlyoutHeaderViewModel : ObservableObject, IRecipient<UserDe
     {
         Console.WriteLine($"[FlyoutHeaderViewModel] Received new user details message: {message.Value.Name}");
         ProfilePic = message.Value.ProfilePic;
-        Name = message.Value.Name;
         IsStaff = message.Value.IsStaff;
 
         UpdateUserValues();
