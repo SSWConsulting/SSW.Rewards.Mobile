@@ -222,7 +222,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                     GlyphIsBrand = true,
                     Glyph = _quizIcon,
                     Message = $"You have completed the {QuizTitle} quiz",
-                    Points = result.Points,
+                    Points = Points,
                     ShowPoints = true
                 };
 
