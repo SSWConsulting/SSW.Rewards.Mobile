@@ -48,6 +48,17 @@ module sqlServer 'modules/sql.bicep' = {
   }
 }
 
+module maps 'modules/maps.bicep' = {
+  name: 'maps-${now}'
+  params: {
+    environment: environment
+    location: location
+    projectName: projectName
+    keyVaultName: keyVault.outputs.keyVaultName
+    now: now
+  }
+}
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' existing = {
   name: appServicePlanName
   scope: resourceGroup(appServicePlanResourceGroup)
@@ -65,6 +76,7 @@ module appService 'modules/webapp.bicep' = {
     idsUrl: idsUrl
     sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
     hangfireSqlConnectionStringSecretUriWithVersion: sqlServer.outputs.hangfireSqlConnectionStringSecretUriWithVersion
+    mapsApiKeySecretUriWithVersion: maps.outputs.mapsApiKeySecretUriWithVersion
   }
 }
 
