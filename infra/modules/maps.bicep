@@ -35,3 +35,5 @@ module mapsApiKey 'create-secrets.bicep' = {
     secretValue: mapsAccount.listKeys().primaryKey
   }
 }
+
+output mapsApiKeySecretUriWithVersion string = mapsApiKey.outputs.secretUriWithVersion

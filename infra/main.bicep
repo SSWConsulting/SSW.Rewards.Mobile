@@ -76,6 +76,7 @@ module appService 'modules/webapp.bicep' = {
     idsUrl: idsUrl
     sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
     hangfireSqlConnectionStringSecretUriWithVersion: sqlServer.outputs.hangfireSqlConnectionStringSecretUriWithVersion
+    mapsApiKeySecretUriWithVersion: maps.outputs.mapsApiKeySecretUriWithVersion
   }
 }
 

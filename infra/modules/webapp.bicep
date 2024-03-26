@@ -7,6 +7,7 @@ param adminPortalUrl string
 param idsUrl string
 param sqlConnectionStringSecretUriWithVersion string
 param hangfireSqlConnectionStringSecretUriWithVersion string
+param mapsApiKeySecretUriWithVersion string
 
 var quizGptUrl = 'https://wapp-ssw-quizgpt-prod.azurewebsites.net/Quiz/SubmitAnswer'
 
@@ -169,6 +170,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'GPTServiceOptions__Url'
           value: quizGptUrl
+        }
+        {
+          name: 'AzureMaps__Key'
+          value: '@Microsoft.KeyVault(SecretUri=${mapsApiKeySecretUriWithVersion})'
         }
       ]
     }
