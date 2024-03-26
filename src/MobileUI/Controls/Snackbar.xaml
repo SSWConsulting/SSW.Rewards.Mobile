@@ -18,7 +18,6 @@
 
             <!-- Glyph Icon-->
             <Label Grid.Column="0"
-                   Grid.ColumnSpan="2"
                    x:Name="GlyphIconLabel"
                    FontSize="30"
                    FontFamily="FluentIcons"
@@ -58,8 +57,7 @@
                    x:Name="TickLabel"/>
 
             <!-- End points coin -->
-            <Label Grid.Column="1"
-                   Grid.ColumnSpan="2"
+            <Label Grid.Column="2"
                    x:Name="PointsLabel"
                    FontSize="11"
                    HorizontalOptions="End"
