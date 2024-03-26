@@ -4,7 +4,7 @@
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!--<TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks>--> 
+		<!--<TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks>-->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SSW.Rewards.Mobile</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -150,6 +150,10 @@
 		  <DependentUpon>RedeemReward.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="PopupPages\OnBoardingPage.xaml.cs">
+		  <DependentUpon>OnBoarding.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -205,12 +209,18 @@
 		<MauiXaml Update="Pages\NetworkingPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
+		<MauiXaml Update="PopupPages\OnBoardingPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
 	</ItemGroup>
 
 	<!--https://github.com/dotnet/maui/issues/16514-->
 	<PropertyGroup>
 		<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
 	</PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('Release')) And $(TargetFramework.Contains('ios'))">
+        <MtouchInterpreter>-all,System.Collections.Immutable</MtouchInterpreter>
+    </PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <WarningLevel>4</WarningLevel>
 	  <PlatformTarget>anycpu</PlatformTarget>

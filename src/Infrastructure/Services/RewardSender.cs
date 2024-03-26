@@ -31,7 +31,7 @@ public class RewardSender : IRewardSender
         // replaced with the user's details once we implement
         // physical address functionality and automatic sending
         // of rewards
-        string recipientEmail = "SSWRewards@ssw.com.au";
+        string recipientEmail = "SSWMarketing@ssw.com.au";
         string recipientName = "SSW Marketing";
 
         bool rewardSentSuccessully;

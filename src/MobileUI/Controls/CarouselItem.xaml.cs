@@ -1,10 +1,8 @@
-﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Maui.BindableProperty.Generator.Core;
+﻿using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class CarouselItem : Border
+public partial class CarouselItem
 {
     public string CarouselImage
     {
@@ -62,16 +60,16 @@ public partial class CarouselItem : Border
             string.Empty
         );
     
-    public ICommand ButtonCommand
+    public IAsyncRelayCommand ButtonCommand
     {
-        get => (ICommand)GetValue(ButtonCommandProperty);
+        get => (IAsyncRelayCommand)GetValue(ButtonCommandProperty);
         set => SetValue(ButtonCommandProperty, value);
     }
 
     public static readonly BindableProperty ButtonCommandProperty =
         BindableProperty.Create(
             nameof(ButtonCommand),
-            typeof(ICommand),
+            typeof(IAsyncRelayCommand),
             typeof(CarouselItem)
         );
     
@@ -106,5 +104,14 @@ public partial class CarouselItem : Border
     public CarouselItem()
     {
         InitializeComponent();
+    }
+    
+    [RelayCommand]
+    private async Task ButtonClicked()
+    {
+        if (!IsButtonDisabled && ButtonCommand != null)
+        {
+            await ButtonCommand.ExecuteAsync(ItemId);
+        }
     }
 }
