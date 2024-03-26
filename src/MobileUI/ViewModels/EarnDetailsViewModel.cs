@@ -161,8 +161,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 var result = await _quizService.GetQuizResults(_submissionId);
 
-                await ProcessResult(result);
                 await MopupService.Instance.RemovePageAsync(popup);
+                await ProcessResult(result);
             }
             else
             {
