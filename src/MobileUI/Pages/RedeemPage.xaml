@@ -100,7 +100,8 @@
                                             Points="{Binding Cost}"
                                             ButtonText="GET"
                                             ItemId="{Binding Id}"
-                                            IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"/>
+                                            IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                            ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/>
                                     </DataTemplate>
                                 </CarouselView.ItemTemplate>
                             </CarouselView>
