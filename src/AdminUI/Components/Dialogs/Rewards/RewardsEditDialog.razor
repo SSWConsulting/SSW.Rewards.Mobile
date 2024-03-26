@@ -53,20 +53,21 @@
                     </MudPaper>
                 }
 
-                <MudStack Row="false">
-                    <MudStack Row="false">
-                        <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
-                        <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
+                <MudStack Class="w-100" Row="false">
+                    <MudTextField Class="d-inline" T="string" Label="Thumbnail Image" @bind-Value="@Dto.ImageFileName" Required="false" Disabled="true" />
+                    <MudStack Class="w-100" Row="true">
+                        <MudFileUpload Class="w-50" T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
                             <ButtonTemplate>
                                 <MudButton HtmlTag="label"
                                            Variant="Variant.Filled"
                                            Color="Color.Primary"
                                            StartIcon="@Icons.Material.Filled.CloudUpload"
                                            for="@context.Id">
-                                    Upload Thumbnail Image
+                                    Upload
                                 </MudButton>
                             </ButtonTemplate>
                         </MudFileUpload>
+                        <MudIconButton Class="w-25" Icon="@Icons.Material.Filled.Delete" @onclick="RemoveThumbnailImage"/>
                     </MudStack>
                 </MudStack>
             </MudStack>            
@@ -82,19 +83,22 @@
                     </MudPaper>
                 }
 
-                <MudStack Row="false">
+                <MudStack Class="w-100" Row="false">
                     <MudTextField Class="d-inline" T="string" Label="Carousel Image" @bind-Value="@Dto.CarouselImageFileName" Required="false" Disabled="true" />
-                    <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
-                        <ButtonTemplate>
-                            <MudButton HtmlTag="label"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       StartIcon="@Icons.Material.Filled.CloudUpload"
-                                       for="@context.Id">
-                                Upload Carousel Image
-                            </MudButton>
-                        </ButtonTemplate>
-                    </MudFileUpload>
+                    <MudStack Class="w-100" Row="true">
+                        <MudFileUpload Class="w-50" T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
+                            <ButtonTemplate>
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           for="@context.Id">
+                                    Upload
+                                </MudButton>
+                            </ButtonTemplate>
+                        </MudFileUpload>
+                        <MudIconButton Class="w-25" Icon="@Icons.Material.Filled.Delete" @onclick="RemoveCarouselImage"/>
+                    </MudStack>
                 </MudStack>
             </MudStack>
             <MudStack Row="false">
@@ -159,7 +163,8 @@
     private async Task SetThumbnailImage(IBrowserFile file)
     {
         (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
-        
+
+        Dto.DeleteThumbnailImage = false;
         Dto.ImageBytesInBase64 = base64;
         Dto.ImageFileName = name;
         Dto.ImageUri = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
@@ -169,6 +174,7 @@
     {
         (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
         
+        Dto.DeleteCarouselImage = false;
         Dto.CarouselImageBytesInBase64 = base64;
         Dto.CarouselImageFileName = name;
         Dto.CarouselImageUri = $"data:{Dto.CarouselImageFileName};base64,{Dto.CarouselImageBytesInBase64}";
@@ -182,6 +188,22 @@
         }
 
         return null;
+    }
+    
+    private void RemoveThumbnailImage()
+    {
+        Dto.ImageBytesInBase64 = string.Empty;
+        Dto.ImageFileName = string.Empty;
+        Dto.ImageUri = string.Empty;
+        Dto.DeleteThumbnailImage = true;
+    }    
+    
+    private void RemoveCarouselImage()
+    {
+        Dto.CarouselImageBytesInBase64 = string.Empty;
+        Dto.CarouselImageFileName = string.Empty;
+        Dto.CarouselImageUri = string.Empty;
+        Dto.DeleteCarouselImage = true;
     }
     
     void AssignReward()

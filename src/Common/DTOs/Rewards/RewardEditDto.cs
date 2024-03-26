@@ -16,5 +16,7 @@ public class RewardEditDto
     public string ImageFileName { get; set; }    
     public string CarouselImageBytesInBase64 { get; set; }
     public string CarouselImageFileName { get; set; }
+    public bool DeleteThumbnailImage { get; set; } = false;
+    public bool DeleteCarouselImage { get; set; } = false;
     public bool? IsOnboardingReward { get; set; }
 }

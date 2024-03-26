@@ -15,6 +15,8 @@ public class UpdateRewardCommand : IRequest<Unit>
     public bool? IsOnboardingReward { get; set; }
     public string? CarouselImageBytesInBase64 { get; set; }
     public string? CarouselImageFileName { get; set; }
+    public bool DeleteThumbnailImage { get; set; }
+    public bool DeleteCarouselImage { get; set; }
     public bool IsCarousel { get; set; }
     public RewardType RewardType { get; set; }
 }
@@ -50,6 +52,16 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         {
             Uri imageUri = await UploadImage(request.CarouselImageBytesInBase64, request.CarouselImageFileName);
             reward.CarouselImageUri = imageUri?.AbsoluteUri;
+        }
+        
+        if (request.DeleteThumbnailImage)
+        {
+            reward.ImageUri = null;
+        }
+        
+        if (request.DeleteCarouselImage)
+        {
+            reward.CarouselImageUri = null;
         }
 
         if (!string.IsNullOrWhiteSpace(request.RewardName))

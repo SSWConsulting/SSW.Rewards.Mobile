@@ -115,6 +115,8 @@ public class RewardController : ApiControllerBase
             CarouselImageBytesInBase64 = dto.CarouselImageBytesInBase64,
             CarouselImageFileName = dto.CarouselImageFileName,
             IsCarousel = dto.IsCarousel,
+            DeleteThumbnailImage = dto.DeleteThumbnailImage,
+            DeleteCarouselImage = dto.DeleteCarouselImage,
             RewardType = dto.RewardType
         };
 
