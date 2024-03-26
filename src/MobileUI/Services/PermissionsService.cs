@@ -41,7 +41,7 @@ public class PermissionsService : IPermissionsService
             // Prompt the user to turn on in settings
             // On iOS once a permission has been denied it may not be requested again from the application
             var message =
-                $"You need to grant access to {typeof(TPermission).Name} in Settings on your phone to use this feature";
+                $"You need to grant access to {typeof(TPermission).Name} in Settings on your phone to use this feature.";
             await CommunityToolkit.Maui.Alerts.Snackbar
                 .Make(message, duration: TimeSpan.FromSeconds(5))
                 .Show();
@@ -61,7 +61,7 @@ public class PermissionsService : IPermissionsService
         }
 
         await CommunityToolkit.Maui.Alerts.Snackbar
-            .Make("You cannot use this feature without granting access", duration: TimeSpan.FromSeconds(5))
+            .Make("You cannot use this feature without granting access.", duration: TimeSpan.FromSeconds(5))
             .Show();
 
         return false;
