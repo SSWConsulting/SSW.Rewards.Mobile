@@ -3,7 +3,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="QuizList"
@@ -31,7 +30,7 @@
                                   HorizontalScrollBarVisibility="Never"
                                   IndicatorView="QuizIndicator">
                         <CarouselView.ItemTemplate>
-                            <DataTemplate x:DataType="quizzes:QuizDto">
+                            <DataTemplate x:DataType="viewModels:QuizItemViewModel">
                                 <controls:CarouselItem
                                     CarouselImage="{Binding CarouselImage}"
                                     Description="{Binding Description}"
@@ -60,7 +59,7 @@
                     BindableLayout.ItemsSource="{Binding Quizzes}"
                     Spacing="6">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="quizzes:QuizDto">
+                        <DataTemplate x:DataType="viewModels:QuizItemViewModel">
                             <controls:ListItem Title="{Binding Title}"
                                                Description="{Binding Description}"
                                                Points="{Binding Points}"

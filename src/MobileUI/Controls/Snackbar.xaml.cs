@@ -41,7 +41,7 @@ public partial class Snackbar
         MessageLabel.Text = options.Message;
         TickLabel.IsVisible = !options.ShowPoints && options.ActionCompleted;
         PointsLabel.IsVisible = options.ShowPoints;
-        PointsLabel.Text = string.Format("⭐ {0:n0}", options.Points);
+        PointsLabel.Text = $"⭐ {options.Points:n0}";
 
         _ = SetDismissTimer();
     }

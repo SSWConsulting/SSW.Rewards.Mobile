@@ -161,8 +161,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 var result = await _quizService.GetQuizResults(_submissionId);
 
-                await ProcessResult(result);
                 await MopupService.Instance.RemovePageAsync(popup);
+                await ProcessResult(result);
             }
             else
             {
@@ -222,7 +222,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                     GlyphIsBrand = true,
                     Glyph = _quizIcon,
                     Message = $"You have completed the {QuizTitle} quiz",
-                    Points = result.Points,
+                    Points = Points,
                     ShowPoints = true
                 };
 

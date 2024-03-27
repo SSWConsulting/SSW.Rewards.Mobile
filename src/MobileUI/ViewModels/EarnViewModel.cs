@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
@@ -13,9 +14,9 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     private string quizDetailsPageUrl = "earn/details";
 
-    public ObservableCollection<QuizDto> Quizzes { get; set; } = new ();
+    public ObservableCollection<QuizItemViewModel> Quizzes { get; set; } = new ();
 
-    public ObservableCollection<QuizDto> CarouselQuizzes { get; set; } = new ();
+    public ObservableCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = new ();
 
     public EarnViewModel(IQuizService quizService)
     {
@@ -25,32 +26,40 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async Task Initialise()
     {
-        if (_isLoaded)
+        if (!_isLoaded)
         {
-            return;
+            IsBusy = true;
         }
 
-        Quizzes = new ObservableCollection<QuizDto>();
-        OnPropertyChanged(nameof(Quizzes));
-        CarouselQuizzes = new ObservableCollection<QuizDto>();
-        OnPropertyChanged(nameof(CarouselQuizzes));
+        await UpdateQuizzes();
 
-        IsBusy = true;
+        IsBusy = false;
+        _isLoaded = true;
+    }
 
+    private async Task UpdateQuizzes()
+    {
         var quizzes = await _quizService.GetQuizzes();
 
         foreach (var quiz in quizzes)
         {
-            Quizzes.Add(quiz);
-
-            if (quiz.IsCarousel)
+            var currentQuiz = Quizzes.FirstOrDefault(x => x.Id == quiz.Id);
+            
+            if (currentQuiz == null)
             {
-                CarouselQuizzes.Add(quiz);
+                var vm = new QuizItemViewModel(quiz);
+                Quizzes.Add(vm);
+
+                if (quiz.IsCarousel)
+                {
+                    CarouselQuizzes.Add(vm);
+                }
+            }
+            else
+            {
+                currentQuiz.Passed = quiz.Passed;
             }
         }
-
-        IsBusy = false;
-        _isLoaded = true;
     }
 
     [RelayCommand]
@@ -68,5 +77,24 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     public async void Receive(QuizzesUpdatedMessage message)
     {
         await Initialise();
+    }
+}
+
+[ObservableObject]
+public partial class QuizItemViewModel : QuizDto
+{
+    [ObservableProperty] private bool _passed;
+
+    public QuizItemViewModel(QuizDto questionDto)
+    {
+        Id = questionDto.Id;
+        Title = questionDto.Title;
+        Description = questionDto.Description;
+        Passed = questionDto.Passed;
+        ThumbnailImage = questionDto.ThumbnailImage;
+        CarouselImage = questionDto.CarouselImage;
+        IsCarousel = questionDto.IsCarousel;
+        Icon = questionDto.Icon;
+        Points = questionDto.Points;
     }
 }
