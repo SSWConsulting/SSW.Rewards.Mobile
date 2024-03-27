@@ -8,7 +8,14 @@ public class AdminDeleteProfileCommandValidator : AbstractValidator<AdminDeleteP
     {
         _applicationDbContext = applicationDbContext;
 
-        RuleFor(c => c.Profile.UserId).MustAsync(HaveCorrespondingDeletionRequest);
+        RuleFor(c => c.Profile.UserId)
+            .MustAsync(HaveCorrespondingDeletionRequest);
+
+        RuleFor(c => c.Profile.AdminConfirmed1)
+            .Equal(true);
+
+        RuleFor(c => c.Profile.AdminConfirmed2)
+            .Equal(true);
     }
 
     private async Task<bool> HaveCorrespondingDeletionRequest(int userId, CancellationToken cancellationToken)
