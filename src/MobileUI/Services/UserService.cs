@@ -1,16 +1,22 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.Services;
 
-public class UserService : IUserService, IDisposable
+public class UserService : IUserService
 {
-    private IApiUserService _userClient { get; set; }
-
+    private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
-    private bool _loggedIn = false;
+
+    private readonly BehaviorSubject<int> _myUserId = new(0);
+    private readonly BehaviorSubject<string> _myName = new(string.Empty);
+    private readonly BehaviorSubject<string> _myEmail = new(string.Empty);
+    private readonly BehaviorSubject<string> _myProfilePic = new(string.Empty);
+    private readonly BehaviorSubject<int> _myPoints = new(0);
+    private readonly BehaviorSubject<int> _myBalance = new(0);
+    private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
 
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
@@ -18,77 +24,27 @@ public class UserService : IUserService, IDisposable
     {
         _userClient = userService;
         _authService = authService;
-
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
 
-    public bool IsLoggedIn { get => _loggedIn; }
-
-    public async Task<bool> DeleteProfileAsync()
-    {
-        try
-        {
-            await _userClient.DeleteMyProfile();
-
-            _authService.SignOut();
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-
-    }
+    public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
+    public IObservable<string> MyNameObservable() => _myName.AsObservable();
+    public IObservable<string> MyEmailObservable() => _myEmail.AsObservable();
+    public IObservable<string> MyProfilePicObservable() => _myProfilePic.AsObservable();
+    public IObservable<int> MyPointsObservable() => _myPoints.AsObservable();
+    public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
+    public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
         return await _userClient.GetUser(userId);
     }
 
-    #region USERDETAILS
-
-    public int MyUserId { get => Preferences.Get(nameof(MyUserId), 0); }
-
-    public string MyEmail { get => Preferences.Get(nameof(MyEmail), string.Empty); }
-
-    public string MyName { get => Preferences.Get(nameof(MyName), string.Empty); }
-
-    public int MyPoints { get => Preferences.Get(nameof(MyPoints), 0); }
-
-    public int MyBalance { get => Preferences.Get(nameof(MyBalance), 0); }
-
-    public string MyQrCode { get => Preferences.Get(nameof(MyQrCode), string.Empty); }
-
-    public string MyProfilePic
-    {
-        get
-        {
-            var pic = Preferences.Get(nameof(MyProfilePic), string.Empty);
-            if (!string.IsNullOrWhiteSpace(pic))
-                return pic;
-
-            return "v2sophie";
-        }
-    }
-
-    public bool IsStaff { get => !string.IsNullOrWhiteSpace(MyQrCode); }
-
     public async Task<string> UploadImageAsync(Stream image, string fileName)
     {
         var response = await _userClient.UploadProfilePic(image, fileName);
+        await UpdateMyDetailsAsync();
 
-        Preferences.Set(nameof(MyProfilePic), response.PicUrl);
-
-        if (response.AchievementAwarded)
-        {
-            await UpdateMyDetailsAsync();
-        }
-
-        WeakReferenceMessenger.Default.Send(new ProfilePicUpdatedMessage
-        {
-            ProfilePic = MyProfilePic
-        });
         return response.PicUrl;
     }
 
@@ -100,27 +56,18 @@ public class UserService : IUserService, IDisposable
     public async Task UpdateMyDetailsAsync()
     {
         var user = await _userClient.GetCurrentUser();
-
-        Preferences.Set(nameof(MyName), user.FullName);
-        Preferences.Set(nameof(MyEmail), user.Email);
-        Preferences.Set(nameof(MyUserId), user.Id);
-        Preferences.Set(nameof(MyProfilePic), user.ProfilePic);
-        Preferences.Set(nameof(MyPoints), user.Points);
-        Preferences.Set(nameof(MyBalance), user.Balance);
-        Preferences.Set(nameof(MyQrCode), user.QRCode);
-
-        WeakReferenceMessenger.Default.Send(new UserDetailsUpdatedMessage(new UserContext
-        {
-            Email       = MyEmail,
-            ProfilePic  = MyProfilePic,
-            Name        = MyName,
-            IsStaff     = IsStaff
-        }));
+        _myUserId.OnNext(user.Id);
+        _myName.OnNext(user.FullName);
+        _myEmail.OnNext(user.Email);
+        _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
+        _myPoints.OnNext(user.Points);
+        _myBalance.OnNext(user.Balance);
+        _myQrCode.OnNext(user.QRCode);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
     {
-        return await GetAchievementsForUserAsync(MyUserId);
+        return await GetAchievementsForUserAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
@@ -130,13 +77,12 @@ public class UserService : IUserService, IDisposable
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync()
     {
-        return await GetProfileAchievementsAsync(MyUserId);
+        return await GetProfileAchievementsAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId)
     {
-        List<Achievement> achievements = new List<Achievement>();
-
+        List<Achievement> achievements = [];
         var achievementsList = await _userClient.GetProfileAchievements(userId);
 
         foreach (var achievement in achievementsList.UserAchievements)
@@ -159,8 +105,7 @@ public class UserService : IUserService, IDisposable
 
     private async Task<IEnumerable<Achievement>> GetAchievementsForUserAsync(int userId)
     {
-        List<Achievement> achievements = new List<Achievement>();
-
+        List<Achievement> achievements = [];
         var achievementsList = await _userClient.GetUserAchievements(userId);
 
         foreach (var achievement in achievementsList.UserAchievements)
@@ -180,7 +125,7 @@ public class UserService : IUserService, IDisposable
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync()
     {
-        return await GetRewardsForUserAsync(MyUserId);
+        return await GetRewardsForUserAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)
@@ -190,8 +135,7 @@ public class UserService : IUserService, IDisposable
 
     private async Task<IEnumerable<Reward>> GetRewardsForUserAsync(int userId)
     {
-        List<Reward> rewards = new List<Reward>();
-
+        List<Reward> rewards = [];
         var rewardsList = await _userClient.GetUserRewards(userId);
 
         foreach (var userReward in rewardsList.UserRewards)
@@ -208,20 +152,17 @@ public class UserService : IUserService, IDisposable
         return rewards;
     }
 
-    public Task<ImageSource> GetProfilePicAsync(string url)
+    public async Task<bool> DeleteProfileAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _userClient.DeleteMyProfile();
+            _authService.SignOut();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
-
-    public Task<ImageSource> GetAvatarAsync(string url)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Dispose()
-    {
-        //_authService.DetailsUpdated -= UpdateMyDetailsAsync;
-    }
-
-    #endregion
 }

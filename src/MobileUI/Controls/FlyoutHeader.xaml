@@ -42,7 +42,7 @@
                VerticalTextAlignment="Center"
                TranslationY="1"
                Text="&#xf3ca;"
-               IsVisible="{Binding IsStaff}"/>
+               IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}"/>
     </HorizontalStackLayout>
 
     <!-- User Stats -->
@@ -60,7 +60,7 @@
                    Margin="10,0,10,0"
                    FontFamily="FA6Solid"
                    TextColor="{StaticResource Coin}"
-                   Text="&#xf091;"/>            
+                   Text="&#xf091;"/>
         </Border>
 
         <Border Grid.Column="1"
@@ -130,24 +130,6 @@
                    TextColor="White"
                    Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
         </Border>
-        <!-- TODO: Bind Redeem button when implemented -->
-        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/560 -->
-        <!-- <Border Grid.Column="1" -->
-        <!--         Grid.Row="2" -->
-        <!--         Background="{StaticResource BrandBrush}" -->
-        <!--         StrokeShape="RoundRectangle 4" -->
-        <!--         Padding="5" -->
-        <!--         WidthRequest="80" -->
-        <!--         Margin="2" -->
-        <!--         HorizontalOptions="End"> -->
-        <!--     <Label Style="{StaticResource LabelBold}" -->
-        <!--            VerticalOptions="Center" -->
-        <!--            VerticalTextAlignment="Center" -->
-        <!--            HorizontalOptions="Center" -->
-        <!--            HorizontalTextAlignment="Center" -->
-        <!--            TextColor="White" -->
-        <!--            Text="Redeem"/> -->
-        <!-- </Border> -->
     </Grid>
 
     <!-- Divider -->
@@ -177,7 +159,7 @@
                FontSize="Small"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
-            
+
         <Label Grid.Row="0"
                Grid.Column="1"
                Style="{StaticResource LabelBold}"
@@ -185,29 +167,10 @@
                VerticalOptions="Start"
                FontSize="Small"
                Text="{Binding Email}"/>
-        
-        <!-- TODO: Bind user location when implemented -->
-        <!-- https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/581 -->
-        <!-- <Label Grid.Row="1" -->
-        <!--        Grid.Column="0" -->
-        <!--        TextColor="{StaticResource SSWRed}" -->
-        <!--        HorizontalTextAlignment="Center" -->
-        <!--        VerticalOptions="Center" -->
-        <!--        FontSize="Medium" -->
-        <!--        FontFamily="FA6Solid" -->
-        <!--        Text="&#xf041;"/>   -->
-        <!--      -->
-        <!-- <Label Grid.Row="1" -->
-        <!--        Grid.Column="1" -->
-        <!--        Style="{StaticResource LabelBold}" -->
-        <!--        TextColor="#DDDDDD" -->
-        <!--        VerticalOptions="Center" -->
-        <!--        FontSize="Medium" -->
-        <!--        Text="Brisbane"/> -->
     </Grid>
-    
+
     <!-- QR Code -->
-    <VerticalStackLayout Grid.Row="5" Spacing="10" IsVisible="{Binding IsStaff}">
+    <VerticalStackLayout Grid.Row="5" Spacing="10" IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}">
         <Label Text="Scan me:"
                FontSize="Small"
                Style="{StaticResource LabelBold}"
@@ -222,11 +185,11 @@
                                  HeightRequest="150"
                                  VerticalOptions="Center"/>
     </VerticalStackLayout>
-    
+
     <!-- Divider -->
-    <VerticalStackLayout 
+    <VerticalStackLayout
         Grid.Row="6"
-        IsVisible="{Binding IsStaff}"
+        IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}"
         VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"

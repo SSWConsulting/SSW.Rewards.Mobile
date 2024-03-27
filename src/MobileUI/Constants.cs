@@ -20,7 +20,8 @@ public static class Constants
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-    public const string AuthorityUri = "https://app-ssw-ident-staging-api.azurewebsites.net";
+    public const string AuthorityUri = "https://identity.ssw.com.au";
+    //public const string AuthorityUri = "https://app-ssw-ident-staging-api.azurewebsites.net";
 #else
     public const string AuthorityUri = "https://identity.ssw.com.au";
 #endif

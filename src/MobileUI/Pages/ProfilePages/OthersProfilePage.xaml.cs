@@ -18,17 +18,17 @@ public partial class OthersProfilePage : ContentPage
 
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
-    }    
-    
+    }
+
     public OthersProfilePage(OthersProfileViewModel vm, NetworkProfileDto networking)
     {
         InitializeComponent();
         viewModel = vm;
-        
+
         viewModel.ShowBalance = false;
 
         viewModel.SetUser(networking);
-        
+
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;
     }
@@ -39,8 +39,6 @@ public partial class OthersProfilePage : ContentPage
             await viewModel.Initialise();
 
         _initialised = true;
-
-        viewModel.OnAppearing();
     }
 
     protected override void OnDisappearing()

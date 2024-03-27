@@ -6,15 +6,13 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
-    ISnackbarService snackbarService,
     IDevService devService,
     IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, snackbarService, devService, permissionsService)
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService)
 {
     public async Task Initialise()
     {
         IsMe = false;
-
         await _initialise();
     }
 
@@ -41,7 +39,7 @@ public partial class OthersProfileViewModel(
         userId = vm.UserId;
         Points = vm.TotalPoints;
         Rank = vm.Rank;
-        IsStaff = true;
+        IsStaff = !vm.IsExternal;
 
         ShowBalance = false;
     }

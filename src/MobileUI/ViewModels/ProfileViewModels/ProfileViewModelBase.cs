@@ -1,23 +1,18 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class ProfileViewModelBase : BaseViewModel, IRecipient<AchievementTappedMessage>
+public partial class ProfileViewModelBase : BaseViewModel
 {
-    protected readonly IRewardService _rewardsService;
-    protected IUserService _userService;
-    protected readonly ISnackbarService _snackbarService;
-    protected IDevService _devService;
+    private readonly IRewardService _rewardsService;
+    private readonly IUserService _userService;
+    private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
@@ -51,54 +46,22 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     [ObservableProperty]
     private bool _isMe;
 
-    public ObservableCollection<Activity> RecentActivity { get; set; } = [];
-
-    public ObservableCollection<Activity> LastSeen { get; set; } = [];
-
+    public ObservableCollection<Activity> RecentActivity { get; } = [];
+    public ObservableCollection<Activity> LastSeen { get; } = [];
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
-
-    public SnackbarOptions SnackOptions { get; set; }
-
-    protected double _topRewardCost;
-
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
         IRewardService rewardsService,
         IUserService userService,
-        ISnackbarService snackbarService,
         IDevService devService,
         IPermissionsService permissionsService)
     {
         IsLoading = true;
         _rewardsService = rewardsService;
         _userService = userService;
-        _snackbarService = snackbarService;
         _devService = devService;
         _permissionsService = permissionsService;
-
-        SnackOptions = new SnackbarOptions
-        {
-            ActionCompleted = true,
-            GlyphIsBrand = true,
-            Glyph = "\uf420",
-            Message = "You have completed the Angular quiz",
-            Points = 1000,
-            ShowPoints = true
-        };
-    }
-
-    public void OnAppearing()
-    {
-        if (WeakReferenceMessenger.Default.IsRegistered<AchievementTappedMessage>(this))
-            return;
-
-        WeakReferenceMessenger.Default.RegisterAll(this);
-    }
-
-    public void Receive(AchievementTappedMessage message)
-    {
-        ProcessAchievement(message.Value);
     }
 
     protected async Task _initialise()
@@ -118,29 +81,6 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         IsLoading = false;
     }
 
-    private void ProcessAchievement(ProfileAchievement achievement)
-    {
-        if (achievement.IsMe == IsMe)
-        {
-            if (achievement.Complete)
-            {
-                ShowAchievementSnackbar(achievement);
-            }
-            else
-            {
-                if (achievement.Type == AchievementType.Linked && IsMe)
-                {
-                    var popup = new LinkSocial(achievement);
-                    MopupService.Instance.PushAsync(popup);
-                }
-                else
-                {
-                    ShowAchievementSnackbar(achievement);
-                }
-            }
-        }
-    }
-
     [RelayCommand]
     private async Task ChangeProfilePicture()
     {
@@ -158,99 +98,16 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
 
         var rewardListTask = _userService.GetRewardsAsync(userId);
         var achievementListTask = _userService.GetAchievementsAsync(userId);
-        DevProfile devProfile = null;
-
         await Task.WhenAll(rewardListTask, achievementListTask);
-
-        if (IsStaff)
-        {
-            devProfile = await _devService.GetProfileAsync(UserEmail);
-        }
 
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
 
-        // ===== Last seen =====
-        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-
-        foreach (var achievement in recentLastSeen)
-        {
-            LastSeen.Add(new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
-            });
-        }
-
-        // ===== Recent activity =====
-        var activityList = new List<Activity>();
-
-        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-
-        foreach (var achievement in recentAchievements)
-        {
-            activityList.Add(new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
-            });
-        }
-
-        var recentRewards = rewardList
-            .Where(r => r.Awarded)
-            .OrderByDescending(r => r.AwardedAt).Take(5);
-
-        foreach (var reward in recentRewards)
-        {
-            activityList.Add(new Activity
-            {
-                ActivityName = $"Claimed {reward.Name}",
-                OccurredAt = reward.AwardedAt?.DateTime,
-                Type = ActivityType.Claimed,
-                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
-            });
-        }
-
-        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
-        {
-            RecentActivity.Add(activity);
-        }
-
-        // ===== Skills =====
-
-        if (IsStaff && devProfile != null)
-        {
-            foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
-            {
-                Skills.Add(skill);
-            }
-        }
+        UpdateLastSeenSection(achievementList);
+        UpdateRecentActivitySection(achievementList, rewardList);
+        await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
-    }
-
-    public void Receive(ProfilePicUpdatedMessage message)
-    {
-        ProfilePic = message.ProfilePic;
-    }
-
-    private async void ShowAchievementSnackbar(ProfileAchievement achievement)
-    {
-        // TODO: set Glyph when given values
-        var options = new SnackbarOptions
-        {
-            ActionCompleted = achievement.Complete,
-            Points = achievement.Value,
-            Message = $"{GetMessage(achievement)}",
-            GlyphIsBrand = achievement.IconIsBranded,
-            Glyph = (string)typeof(Icon).GetField(achievement.AchievementIcon.ToString()).GetValue(null)
-        };
-
-        await _snackbarService.ShowSnackbar(options);
     }
 
     public string GetMessage(Achievement achievement, bool isActivity = false)
@@ -262,11 +119,8 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
             prefix += " not";
         }
 
-
         string activity = achievement.Name;
-
         string action = string.Empty;
-
         string scored = $"just scored {achievement.Value}pts for";
 
         switch (achievement.Type)
@@ -301,6 +155,75 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
         }
     }
 
+    private void UpdateLastSeenSection(IEnumerable<Achievement> achievementList)
+    {
+        LastSeen.Clear(); // it could contain data from another user profile
+        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        foreach (var achievement in recentLastSeen)
+        {
+            LastSeen.Add(new Activity
+            {
+                ActivityName = GetMessage(achievement, true),
+                OccurredAt = achievement.AwardedAt,
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+            });
+        }
+    }
+
+    private void UpdateRecentActivitySection(IEnumerable<Achievement> achievementList, IEnumerable<Reward> rewardList)
+    {
+        var activityList = new List<Activity>();
+        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        foreach (var achievement in recentAchievements)
+        {
+            activityList.Add(new Activity
+            {
+                ActivityName = GetMessage(achievement, true),
+                OccurredAt = achievement.AwardedAt,
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+            });
+        }
+
+        var recentRewards = rewardList
+            .Where(r => r.Awarded)
+            .OrderByDescending(r => r.AwardedAt).Take(5);
+
+        foreach (var reward in recentRewards)
+        {
+            activityList.Add(new Activity
+            {
+                ActivityName = $"Claimed {reward.Name}",
+                OccurredAt = reward.AwardedAt?.DateTime,
+                Type = ActivityType.Claimed,
+                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
+            });
+        }
+
+        RecentActivity.Clear(); // it could contain data from another user profile
+        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
+        {
+            RecentActivity.Add(activity);
+        }
+    }
+
+    private async Task UpdateSkillsSectionIfRequired()
+    {
+        if (IsStaff)
+        {
+            DevProfile devProfile = await _devService.GetProfileAsync(UserEmail);
+            if (devProfile != null)
+            {
+                Skills.Clear(); // it could contain data from another user profile
+                foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+                {
+                    Skills.Add(skill);
+                }
+            }
+        }
+    }
+
     private static string GetTimeElapsed(DateTime occurredAt)
     {
         return (DateTime.Now - occurredAt) switch
@@ -315,6 +238,5 @@ public partial class ProfileViewModelBase : BaseViewModel, IRecipient<Achievemen
     {
         IsBusy = false;
         IsLoading = false;
-        WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 }

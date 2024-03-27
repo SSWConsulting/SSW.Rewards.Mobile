@@ -1,4 +1,3 @@
-using SSW.Rewards.PopupPages;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,7 +18,7 @@ public partial class RewardsViewModel : BaseViewModel
 
     public ObservableCollection<Reward> Rewards { get; set; } = new ();
     public ObservableCollection<Reward> CarouselRewards { get; set; } = new ();
-        
+
     [ObservableProperty]
     private int _credits;
 
@@ -29,6 +28,7 @@ public partial class RewardsViewModel : BaseViewModel
         _rewardService = rewardService;
         _userService = userService;
         _addressService = addressService;
+        _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
     }
 
     public async Task Initialise()
@@ -37,13 +37,13 @@ public partial class RewardsViewModel : BaseViewModel
         {
             return;
         }
-            
+
         IsBusy = true;
         var rewardList = await _rewardService.GetRewards();
 
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
-            reward.CanAfford = reward.Cost <= _userService.MyBalance;
+            reward.CanAfford = reward.Cost <= Credits;
             Rewards.Add(reward);
 
             if (reward.IsCarousel)
@@ -51,8 +51,6 @@ public partial class RewardsViewModel : BaseViewModel
                 CarouselRewards.Add(reward);
             }
         }
-            
-        Credits = _userService.MyBalance;
 
         IsBusy = false;
         _isLoaded = true;

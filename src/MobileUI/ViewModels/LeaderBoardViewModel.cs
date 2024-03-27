@@ -4,14 +4,14 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
+public partial class LeaderBoardViewModel : BaseViewModel
 {
+    private int _myUserId;
+
     private ILeaderService _leaderService;
-    private IUserService _userService;
     private bool _loaded;
 
     [ObservableProperty]
@@ -21,15 +21,12 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
-        _userService = userService;
-        ProfilePic = _userService.MyProfilePic;
-        MyPoints = _userService.MyPoints;
-        MyBalance = _userService.MyBalance;
-        Leaders = new ObservableCollection<LeaderViewModel>();
-        WeakReferenceMessenger.Default.Register(this);
+        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
+        userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
+        userService.MyBalanceObservable().Subscribe(myBalance => HandleMyBalanceChange(myBalance));
     }
 
-    public ObservableCollection<LeaderViewModel> Leaders { get; set; }
+    public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
 
     [ObservableProperty]
     private List<Segment> _periods;
@@ -40,7 +37,6 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     [ObservableProperty]
     private bool _isRefreshing;
 
-    public string ProfilePic { get; set; }
     public Action<int> ScrollTo { get; set; }
 
     public LeaderboardFilter CurrentPeriod { get; set; }
@@ -122,13 +118,12 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private async Task LoadLeaderboard()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
-        int myId = _userService.MyUserId;
 
         Leaders.Clear();
 
         foreach (var summary in summaries)
         {
-            var isMe = myId == summary.UserId;
+            var isMe = _myUserId == summary.UserId;
             var vm = new LeaderViewModel();
             vm.MapFrom(summary, isMe);
 
@@ -197,8 +192,9 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         Third = leaders.Skip(2).FirstOrDefault();
     }
 
-    public async void Receive(PointsAwardedMessage message)
+    private async void HandleMyBalanceChange(int myBalance)
     {
+        MyBalance = myBalance;
         await LoadLeaderboard();
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
         IsRefreshing = false;

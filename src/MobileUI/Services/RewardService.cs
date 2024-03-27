@@ -1,6 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿
 using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Rewards;
 using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
@@ -9,10 +8,12 @@ namespace SSW.Rewards.Mobile.Services;
 public class RewardService : IRewardService
 {
     private readonly IApiRewardService _rewardClient;
+    private readonly IUserService _userService;
 
-    public RewardService(IApiRewardService rewardClient)
+    public RewardService(IApiRewardService rewardClient, IUserService userService)
     {
         _rewardClient = rewardClient;
+        _userService = userService;
     }
 
     public async Task<List<Reward>> GetRewards()
@@ -50,11 +51,11 @@ public class RewardService : IRewardService
 
         return rewardList;
     }
-    
+
     public async Task<ClaimRewardResult> ClaimReward(ClaimRewardDto claim)
     {
         var result = new ClaimRewardResult() { status = RewardStatus.Error };
-        
+
         try
         {
             result = await _rewardClient.RedeemReward(claim, CancellationToken.None);
@@ -67,10 +68,7 @@ public class RewardService : IRewardService
             }
         }
 
-        if (result.status == RewardStatus.Claimed)
-        {
-            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
-        }
+        await _userService.UpdateMyDetailsAsync();
 
         return result;
     }

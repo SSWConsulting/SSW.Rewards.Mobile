@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
@@ -21,14 +22,9 @@ public partial class TopBarViewModel : ObservableObject
     [ObservableProperty]
     bool showDone = false;
 
-    public TopBarViewModel(IPermissionsService permissionsService)
+    public TopBarViewModel(IPermissionsService permissionsService, IUserService userService)
     {
         _permissionsService = permissionsService;
-        WeakReferenceMessenger.Default.Register<ProfilePicUpdatedMessage>(this, (r, m) =>
-        {
-            ProfilePic = m.ProfilePic;
-        });
-
         WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (r, m) =>
         {
             switch (m.Value)
@@ -45,7 +41,7 @@ public partial class TopBarViewModel : ObservableObject
             }
         });
 
-        ProfilePic = AppShell.ProfilePic;
+        userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }
 
 

@@ -1,21 +1,18 @@
-﻿using SSW.Rewards.Shared.DTOs.Users;
+﻿using System.Reactive.Subjects;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Services;
 
 public interface IUserService
 {
-    // TODO: Replace all this with a GetMyProfile method
-    // values
-    int MyUserId { get; }
-    string MyName { get; }
-    string MyEmail { get; }
-    string MyProfilePic { get; }
-    int MyPoints { get; }
-    int MyBalance { get; }
-    string MyQrCode { get; }
-    bool IsLoggedIn { get; }
+    IObservable<int> MyUserIdObservable();
+    IObservable<string> MyNameObservable();
+    IObservable<string> MyEmailObservable();
+    IObservable<string> MyProfilePicObservable();
+    IObservable<int> MyPointsObservable();
+    IObservable<int> MyBalanceObservable();
+    IObservable<string> MyQrCodeObservable();
     bool HasCachedAccount { get; }
-    bool IsStaff { get; }
 
     // auth methods
 
@@ -27,7 +24,6 @@ public interface IUserService
     Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId);
     Task<IEnumerable<Reward>> GetRewardsAsync();
     Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
-    Task<ImageSource> GetAvatarAsync(string url);
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool> DeleteProfileAsync();

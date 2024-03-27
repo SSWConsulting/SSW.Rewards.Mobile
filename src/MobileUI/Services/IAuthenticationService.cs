@@ -139,19 +139,9 @@ public class AuthenticationService : IAuthenticationService
 
                 string fullName = firstName + " " + familyName;
 
-                if (!string.IsNullOrWhiteSpace(fullName))
-                {
-                    Preferences.Set("MyName", fullName);
-                }
-
                 if (!string.IsNullOrWhiteSpace(jobTitle))
                 {
                     Preferences.Set("JobTitle", jobTitle);
-                }
-
-                if (!string.IsNullOrWhiteSpace(email))
-                {
-                    Preferences.Set("MyEmail", email);
                 }
 
                 DetailsUpdated?.Invoke(this, new DetailsUpdatedEventArgs

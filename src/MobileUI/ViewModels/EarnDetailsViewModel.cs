@@ -1,6 +1,5 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -15,6 +14,7 @@ namespace SSW.Rewards.Mobile.ViewModels
     {
         private readonly IQuizService _quizService;
         private readonly ISnackbarService _snackbarService;
+        private readonly IUserService _userService;
         private int _quizId;
         private string _quizIcon;
         private int _submissionId;
@@ -79,10 +79,11 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService)
+        public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;
+            _userService = userService;
         }
 
         public async Task Initialise(int quizId, string icon)
@@ -226,9 +227,8 @@ namespace SSW.Rewards.Mobile.ViewModels
                     ShowPoints = true
                 };
 
+                await _userService.UpdateMyDetailsAsync();
                 await _snackbarService.ShowSnackbar(SnackOptions);
-
-                WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
             }
             else
             {
