@@ -11,8 +11,9 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
 {
+    private int _myUserId;
+
     private ILeaderService _leaderService;
-    private IUserService _userService;
     private bool _loaded;
 
     [ObservableProperty]
@@ -22,9 +23,9 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
-        _userService = userService;
-        _userService.MyPoints.AsObservable().Subscribe(myPoints => MyPoints = myPoints);
-        _userService.MyBalance.AsObservable().Subscribe(myBalance => MyBalance = myBalance);
+        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
+        userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
+        userService.MyBalanceObservable().Subscribe(myBalance => MyBalance = myBalance);
         Leaders = new ObservableCollection<LeaderViewModel>();
         WeakReferenceMessenger.Default.Register(this);
     }
@@ -121,13 +122,12 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
     private async Task LoadLeaderboard()
     {
         var summaries = await _leaderService.GetLeadersAsync(false);
-        int myId = _userService.MyUserId.Value;
 
         Leaders.Clear();
 
         foreach (var summary in summaries)
         {
-            var isMe = myId == summary.UserId;
+            var isMe = _myUserId == summary.UserId;
             var vm = new LeaderViewModel();
             vm.MapFrom(summary, isMe);
 

@@ -71,7 +71,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         Description = reward.Description;
         Cost = reward.Cost;
 
-        UserBalance = userService.MyBalance.Value;
+        userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
     }
 
     [RelayCommand]

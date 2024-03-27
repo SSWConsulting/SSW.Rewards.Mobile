@@ -41,7 +41,7 @@ public partial class TopBarViewModel : ObservableObject
             }
         });
 
-        userService.MyProfilePic.AsObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
+        userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }
 
 

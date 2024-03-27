@@ -1,4 +1,5 @@
-﻿using System.Reactive.Subjects;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
@@ -9,6 +10,14 @@ public class UserService : IUserService
     private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
 
+    private readonly BehaviorSubject<int> _myUserId = new(0);
+    private readonly BehaviorSubject<string> _myName = new(string.Empty);
+    private readonly BehaviorSubject<string> _myEmail = new(string.Empty);
+    private readonly BehaviorSubject<string> _myProfilePic = new(string.Empty);
+    private readonly BehaviorSubject<int> _myPoints = new(0);
+    private readonly BehaviorSubject<int> _myBalance = new(0);
+    private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
+
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
@@ -16,23 +25,15 @@ public class UserService : IUserService
         _userClient = userService;
         _authService = authService;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
-
-        MyUserId = new BehaviorSubject<int>(0);
-        MyName = new BehaviorSubject<string>(string.Empty);
-        MyEmail = new BehaviorSubject<string>(string.Empty);
-        MyProfilePic = new BehaviorSubject<string>(string.Empty);
-        MyPoints = new BehaviorSubject<int>(0);
-        MyBalance = new BehaviorSubject<int>(0);
-        MyQrCode = new BehaviorSubject<string>(string.Empty);
     }
 
-    public BehaviorSubject<int> MyUserId { get; }
-    public BehaviorSubject<string> MyEmail { get; }
-    public BehaviorSubject<string> MyName { get; }
-    public BehaviorSubject<string> MyProfilePic { get; }
-    public BehaviorSubject<int> MyPoints { get; }
-    public BehaviorSubject<int> MyBalance { get; }
-    public BehaviorSubject<string> MyQrCode { get; }
+    public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
+    public IObservable<string> MyNameObservable() => _myName.AsObservable();
+    public IObservable<string> MyEmailObservable() => _myEmail.AsObservable();
+    public IObservable<string> MyProfilePicObservable() => _myProfilePic.AsObservable();
+    public IObservable<int> MyPointsObservable() => _myPoints.AsObservable();
+    public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
+    public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -55,18 +56,18 @@ public class UserService : IUserService
     public async Task UpdateMyDetailsAsync()
     {
         var user = await _userClient.GetCurrentUser();
-        MyUserId.OnNext(user.Id);
-        MyName.OnNext(user.FullName);
-        MyEmail.OnNext(user.Email);
-        MyProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
-        MyPoints.OnNext(user.Points);
-        MyBalance.OnNext(user.Balance);
-        MyQrCode.OnNext(user.QRCode);
+        _myUserId.OnNext(user.Id);
+        _myName.OnNext(user.FullName);
+        _myEmail.OnNext(user.Email);
+        _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
+        _myPoints.OnNext(user.Points);
+        _myBalance.OnNext(user.Balance);
+        _myQrCode.OnNext(user.QRCode);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
     {
-        return await GetAchievementsForUserAsync(MyUserId.Value);
+        return await GetAchievementsForUserAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId)
@@ -76,7 +77,7 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync()
     {
-        return await GetProfileAchievementsAsync(MyUserId.Value);
+        return await GetProfileAchievementsAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId)
@@ -124,7 +125,7 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync()
     {
-        return await GetRewardsForUserAsync(MyUserId.Value);
+        return await GetRewardsForUserAsync(_myUserId.Value);
     }
 
     public async Task<IEnumerable<Reward>> GetRewardsAsync(int userId)

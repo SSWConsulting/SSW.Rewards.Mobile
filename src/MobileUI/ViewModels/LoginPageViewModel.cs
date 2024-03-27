@@ -12,7 +12,7 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private bool _loginButtonEnabled;
 
-    bool _isStaff = false;
+    bool _isStaff;
 
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
@@ -25,6 +25,7 @@ public partial class LoginPageViewModel : BaseViewModel
         _authService = authService;
         _userService = userService;
         ButtonText = "Sign up / Log in";
+        _userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
 
     [RelayCommand]
@@ -123,16 +124,6 @@ public partial class LoginPageViewModel : BaseViewModel
 
     private async Task OnAfterLogin()
     {
-        var qr = _userService.MyQrCode.Value;
-        if (!string.IsNullOrWhiteSpace(qr))
-        {
-            _isStaff = true;
-        }
-        else
-        {
-            _isStaff = false;
-        }
-
         Application.Current.MainPage = App.ResolveShell(_isStaff);
         await Shell.Current.GoToAsync("//main");
     }

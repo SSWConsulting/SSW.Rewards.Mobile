@@ -29,6 +29,7 @@ public partial class RewardsViewModel : BaseViewModel
         _rewardService = rewardService;
         _userService = userService;
         _addressService = addressService;
+        _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
     }
 
     public async Task Initialise()
@@ -43,7 +44,7 @@ public partial class RewardsViewModel : BaseViewModel
 
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
-            reward.CanAfford = reward.Cost <= _userService.MyBalance.Value;
+            reward.CanAfford = reward.Cost <= Credits;
             Rewards.Add(reward);
 
             if (reward.IsCarousel)
@@ -52,7 +53,7 @@ public partial class RewardsViewModel : BaseViewModel
             }
         }
 
-        _userService.MyBalance.AsObservable().Subscribe(balance => Credits = balance);
+
 
         IsBusy = false;
         _isLoaded = true;

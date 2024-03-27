@@ -24,13 +24,13 @@ public class MyProfileViewModel(
     {
         IsMe = true;
 
-        _userService.MyName.AsObservable().Subscribe(myName => Name = myName);
-        _userService.MyEmail.AsObservable().Subscribe(myEmail => UserEmail = myEmail);
-        _userService.MyProfilePic.AsObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
-        _userService.MyPoints.AsObservable().Subscribe(myPoints => Points = myPoints);
-        _userService.MyBalance.AsObservable().Subscribe(myBalance => Balance = myBalance);
-        _userService.MyUserId.AsObservable().Subscribe(myUserId => userId = myUserId);
-        _userService.MyQrCode.AsObservable().Subscribe(myQrCode => IsStaff = !string.IsNullOrWhiteSpace(myQrCode));
+        _userService.MyUserIdObservable().Subscribe(myUserId => userId = myUserId);
+        _userService.MyNameObservable().Subscribe(myName => Name = myName);
+        _userService.MyEmailObservable().Subscribe(myEmail => UserEmail = myEmail);
+        _userService.MyProfilePicObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
+        _userService.MyPointsObservable().Subscribe(myPoints => Points = myPoints);
+        _userService.MyBalanceObservable().Subscribe(myBalance => Balance = myBalance);
+        _userService.MyQrCodeObservable().Subscribe(myQrCode => IsStaff = !string.IsNullOrWhiteSpace(myQrCode));
         Rank = await LoadRank();
 
         await _initialise();
@@ -45,7 +45,7 @@ public class MyProfileViewModel(
     private async Task<int> LoadRank()
     {
         var summaries = await leaderService.GetLeadersAsync(false);
-        var myId = _userService.MyUserId.Value;
+        var myId = userId;
         return summaries.FirstOrDefault(x => x.UserId == myId)?.Rank ?? 0;
     }
 }

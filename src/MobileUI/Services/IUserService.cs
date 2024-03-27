@@ -5,13 +5,13 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IUserService
 {
-    BehaviorSubject<int> MyUserId { get; }
-    BehaviorSubject<string> MyName { get; }
-    BehaviorSubject<string> MyEmail { get; }
-    BehaviorSubject<string> MyProfilePic { get; }
-    BehaviorSubject<int> MyPoints { get; }
-    BehaviorSubject<int> MyBalance { get; }
-    BehaviorSubject<string> MyQrCode { get; }
+    IObservable<int> MyUserIdObservable();
+    IObservable<string> MyNameObservable();
+    IObservable<string> MyEmailObservable();
+    IObservable<string> MyProfilePicObservable();
+    IObservable<int> MyPointsObservable();
+    IObservable<int> MyBalanceObservable();
+    IObservable<string> MyQrCodeObservable();
     bool HasCachedAccount { get; }
 
     // auth methods
