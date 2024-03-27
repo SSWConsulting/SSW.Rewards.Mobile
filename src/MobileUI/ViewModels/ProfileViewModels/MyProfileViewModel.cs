@@ -1,7 +1,4 @@
-﻿using System.Reactive.Linq;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
-
+﻿
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 public class MyProfileViewModel(
@@ -10,21 +7,15 @@ public class MyProfileViewModel(
     ILeaderService leaderService,
     IDevService devService,
     IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService),
-        IRecipient<PointsAwardedMessage>
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService)
 {
     private readonly IUserService _userService = userService;
-
-    public async void Receive(PointsAwardedMessage message)
-    {
-        await OnPointsAwarded();
-    }
 
     public async Task Initialise()
     {
         IsMe = true;
 
-        _userService.MyUserIdObservable().Subscribe(myUserId => userId = myUserId);
+        _userService.MyUserIdObservable().Subscribe(myUserId => HandleUserIdChange(myUserId));
         _userService.MyNameObservable().Subscribe(myName => Name = myName);
         _userService.MyEmailObservable().Subscribe(myEmail => UserEmail = myEmail);
         _userService.MyProfilePicObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
@@ -36,9 +27,9 @@ public class MyProfileViewModel(
         await _initialise();
     }
 
-    private async Task OnPointsAwarded()
+    private async void HandleUserIdChange(int myUserId)
     {
-        await _userService.UpdateMyDetailsAsync();
+        userId = myUserId;
         await LoadProfileSections();
     }
 

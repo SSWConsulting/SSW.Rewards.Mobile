@@ -103,68 +103,9 @@ public partial class ProfileViewModelBase : BaseViewModel
         var rewardList = rewardListTask.Result;
         var achievementList = achievementListTask.Result;
 
-        // ===== Last seen =====
-        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-
-        foreach (var achievement in recentLastSeen)
-        {
-            LastSeen.Add(new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
-            });
-        }
-
-        // ===== Recent activity =====
-        var activityList = new List<Activity>();
-
-        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-
-        foreach (var achievement in recentAchievements)
-        {
-            activityList.Add(new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
-            });
-        }
-
-        var recentRewards = rewardList
-            .Where(r => r.Awarded)
-            .OrderByDescending(r => r.AwardedAt).Take(5);
-
-        foreach (var reward in recentRewards)
-        {
-            activityList.Add(new Activity
-            {
-                ActivityName = $"Claimed {reward.Name}",
-                OccurredAt = reward.AwardedAt?.DateTime,
-                Type = ActivityType.Claimed,
-                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
-            });
-        }
-
-        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
-        {
-            RecentActivity.Add(activity);
-        }
-
-        // ===== Skills =====
-        if (IsStaff)
-        {
-            DevProfile devProfile = await _devService.GetProfileAsync(UserEmail);
-            if (devProfile != null)
-            {
-                foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
-                {
-                    Skills.Add(skill);
-                }
-            }
-        }
+        UpdateLastSeenSection(achievementList);
+        UpdateRecentActivitySection(achievementList, rewardList);
+        await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
     }
@@ -211,6 +152,75 @@ public partial class ProfileViewModelBase : BaseViewModel
         else
         {
             return $"{prefix} {action} {activity}";
+        }
+    }
+
+    private void UpdateLastSeenSection(IEnumerable<Achievement> achievementList)
+    {
+        LastSeen.Clear(); // it could contain data from another user profile
+        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        foreach (var achievement in recentLastSeen)
+        {
+            LastSeen.Add(new Activity
+            {
+                ActivityName = GetMessage(achievement, true),
+                OccurredAt = achievement.AwardedAt,
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+            });
+        }
+    }
+
+    private void UpdateRecentActivitySection(IEnumerable<Achievement> achievementList, IEnumerable<Reward> rewardList)
+    {
+        var activityList = new List<Activity>();
+        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        foreach (var achievement in recentAchievements)
+        {
+            activityList.Add(new Activity
+            {
+                ActivityName = GetMessage(achievement, true),
+                OccurredAt = achievement.AwardedAt,
+                Type = achievement.Type.ToActivityType(),
+                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+            });
+        }
+
+        var recentRewards = rewardList
+            .Where(r => r.Awarded)
+            .OrderByDescending(r => r.AwardedAt).Take(5);
+
+        foreach (var reward in recentRewards)
+        {
+            activityList.Add(new Activity
+            {
+                ActivityName = $"Claimed {reward.Name}",
+                OccurredAt = reward.AwardedAt?.DateTime,
+                Type = ActivityType.Claimed,
+                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
+            });
+        }
+
+        RecentActivity.Clear(); // it could contain data from another user profile
+        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
+        {
+            RecentActivity.Add(activity);
+        }
+    }
+
+    private async Task UpdateSkillsSectionIfRequired()
+    {
+        if (IsStaff)
+        {
+            DevProfile devProfile = await _devService.GetProfileAsync(UserEmail);
+            if (devProfile != null)
+            {
+                Skills.Clear(); // it could contain data from another user profile
+                foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
+                {
+                    Skills.Add(skill);
+                }
+            }
         }
     }
 
