@@ -11,22 +11,22 @@ public partial class ScanResultViewModel : BaseViewModel
     private readonly IUserService _userService;
 
     private readonly IScannerService _scannerService;
-    
+
     private bool _wonPrize { get; set; }
     private string data;
 
     [ObservableProperty]
     private string _animationRef;
-    
+
     [ObservableProperty]
     private bool _animationLoop;
-    
+
     [ObservableProperty]
     private string _resultHeading;
-    
+
     [ObservableProperty]
     private string _resultBody;
-    
+
     [ObservableProperty]
     private string _achievementHeading;
 
@@ -112,11 +112,10 @@ public partial class ScanResultViewModel : BaseViewModel
                 HeadingColour = Colors.White;
                 break;
         }
-        
+
         if (result.result == ScanResult.Added)
         {
             await _userService.UpdateMyDetailsAsync();
-            WeakReferenceMessenger.Default.Send(new PointsAwardedMessage());
         }
     }
 

@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -52,8 +51,6 @@ public partial class RewardsViewModel : BaseViewModel
                 CarouselRewards.Add(reward);
             }
         }
-
-
 
         IsBusy = false;
         _isLoaded = true;

@@ -1,15 +1,13 @@
 ﻿using System.Collections.ObjectModel;
-using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwardedMessage>
+public partial class LeaderBoardViewModel : BaseViewModel
 {
     private int _myUserId;
 
@@ -25,12 +23,10 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         _leaderService = leaderService;
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
         userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
-        userService.MyBalanceObservable().Subscribe(myBalance => MyBalance = myBalance);
-        Leaders = new ObservableCollection<LeaderViewModel>();
-        WeakReferenceMessenger.Default.Register(this);
+        userService.MyBalanceObservable().Subscribe(myBalance => HandleMyBalanceChange(myBalance));
     }
 
-    public ObservableCollection<LeaderViewModel> Leaders { get; set; }
+    public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
 
     [ObservableProperty]
     private List<Segment> _periods;
@@ -196,8 +192,9 @@ public partial class LeaderBoardViewModel : BaseViewModel, IRecipient<PointsAwar
         Third = leaders.Skip(2).FirstOrDefault();
     }
 
-    public async void Receive(PointsAwardedMessage message)
+    private async void HandleMyBalanceChange(int myBalance)
     {
+        MyBalance = myBalance;
         await LoadLeaderboard();
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
         IsRefreshing = false;
