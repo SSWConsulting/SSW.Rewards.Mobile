@@ -1,5 +1,5 @@
 ﻿using SSW.Rewards.Application.Common.Models;
-using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
+using SSW.Rewards.Application.Users.Commands.Common;
 
 namespace SSW.Rewards.Application.Common.Interfaces;
 
@@ -10,4 +10,6 @@ public interface IEmailService
     Task<bool> SendDigitalRewardEmail(string to, string toName, string subject, DigitalRewardEmail emailProps, CancellationToken cancellationToken);
 
     Task<bool> SendProfileDeletionRequest(DeleteProfileEmail model, CancellationToken cancellationToken);
+
+    Task<bool> SendProfileDeletionConfirmation(DeleteProfileEmail model, string deletionRequestDate, CancellationToken cancellationToken);
 }
