@@ -20,7 +20,18 @@
         <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
           StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
-    <Grid>
+    <StackLayout Orientation="Vertical">
+        <controls:SegmentedControl
+            Segments="{Binding Periods}"
+            HeightRequest="50"
+            Padding="15,10,15,0"
+            SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
+            <controls:SegmentedControl.Behaviors>
+                <mct:EventToCommandBehavior
+                    EventName="SelectionChanged"
+                    Command="{Binding FilterByPeriodCommand}" />
+            </controls:SegmentedControl.Behaviors>
+        </controls:SegmentedControl>
         <RefreshView
             Command="{Binding RefreshLeaderboardCommand}"
             IsRefreshing="{Binding IsRefreshing}">
@@ -31,27 +42,15 @@
                 ItemSizingStrategy="MeasureFirstItem"
                 IsVisible="False">
                 <CollectionView.Header>
-                    <Grid Padding="15,10,15,0" HeightRequest="370" RowSpacing="6" RowDefinitions="1*, 7*">
-                        <controls:SegmentedControl
-                            Segments="{Binding Periods}"
-                            Grid.Row="0"
-                            SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
-                            <controls:SegmentedControl.Behaviors>
-                                <mct:EventToCommandBehavior
-                                    EventName="SelectionChanged"
-                                    Command="{Binding FilterByPeriodCommand}" />
-                            </controls:SegmentedControl.Behaviors>
-                        </controls:SegmentedControl>
-                        <Grid Grid.Row="1" ColumnDefinitions="6*,14*,6*">
-                             <!-- 2nd -->
-                             <controls:Podium Leader="{Binding Second}" Grid.Column="0" />
+                    <Grid Grid.Row="1" Padding="15,10,15,0" HeightRequest="320" ColumnDefinitions="6*,14*,6*">
+                        <!-- 2nd -->
+                        <controls:Podium Leader="{Binding Second}" Grid.Column="0" />
 
-                             <!-- 1st -->
-                             <controls:Podium Leader="{Binding First}" Grid.Column="1" />
+                        <!-- 1st -->
+                        <controls:Podium Leader="{Binding First}" Grid.Column="1" />
 
-                             <!-- 3rd -->
-                             <controls:Podium Leader="{Binding Third}" Grid.Column="2" />
-                        </Grid>
+                        <!-- 3rd -->
+                        <controls:Podium Leader="{Binding Third}" Grid.Column="2" />
                     </Grid>
                 </CollectionView.Header>
                 <CollectionView.ItemTemplate>
@@ -166,5 +165,5 @@
             IsEnabled="{Binding IsRunning}"
             IsRunning="{Binding IsRunning}"
             IsVisible="{Binding IsRunning}" />
-    </Grid>
+    </StackLayout>
 </ContentPage>
