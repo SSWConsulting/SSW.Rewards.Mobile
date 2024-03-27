@@ -52,7 +52,7 @@ module maps 'modules/maps.bicep' = {
   name: 'maps-${now}'
   params: {
     environment: environment
-    location: location
+    location: 'westus2'
     projectName: projectName
     keyVaultName: keyVault.outputs.keyVaultName
     now: now

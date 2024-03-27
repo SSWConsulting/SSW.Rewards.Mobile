@@ -1,10 +1,18 @@
 param projectName string
-param location string = resourceGroup().location
 param environment string
 param keyVaultName string
 param now string
 
 var mapsAccountName = 'maps-${projectName}-${environment}'
+
+@allowed([
+  'westcentralus'
+  'westus2'
+  'eastus'
+  'westeurope'
+  'northeurope'
+])
+param location string = 'westus2'
 
 @description('The pricing tier SKU for the account.')
 @allowed([
