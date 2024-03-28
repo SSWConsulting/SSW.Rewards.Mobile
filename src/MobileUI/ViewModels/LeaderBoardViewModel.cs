@@ -23,7 +23,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
         _leaderService = leaderService;
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
         userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
-        userService.MyBalanceObservable().Subscribe(myBalance => HandleMyBalanceChange(myBalance));
+        userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
     }
 
     public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
@@ -73,8 +73,6 @@ public partial class LeaderBoardViewModel : BaseViewModel
 
             await LoadLeaderboard();
             _loaded = true;
-
-            await FilterAndSortLeaders(Leaders, LeaderboardFilter.ThisWeek);
 
             IsRunning = false;
         }
@@ -129,6 +127,8 @@ public partial class LeaderBoardViewModel : BaseViewModel
 
             Leaders.Add(vm);
         }
+        
+        await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
     private async Task UpdateSearchResults(IEnumerable<LeaderViewModel> sortedLeaders)
@@ -195,8 +195,14 @@ public partial class LeaderBoardViewModel : BaseViewModel
     private async void HandleMyBalanceChange(int myBalance)
     {
         MyBalance = myBalance;
+
+        // Don't attempt to refresh leaderboard until initial load is complete
+        if (!_loaded)
+        {
+            return;
+        }
+
         await LoadLeaderboard();
-        await FilterAndSortLeaders(Leaders, CurrentPeriod);
         IsRefreshing = false;
     }
 
