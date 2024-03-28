@@ -20,8 +20,9 @@
         <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
           StatusBarStyle="LightContent" />
     </ContentPage.Behaviors>
-    <StackLayout Orientation="Vertical">
+    <Grid RowDefinitions="Auto,*">
         <controls:SegmentedControl
+            Grid.Row="0"
             Segments="{Binding Periods}"
             HeightRequest="50"
             Padding="15,10,15,0"
@@ -33,13 +34,12 @@
             </controls:SegmentedControl.Behaviors>
         </controls:SegmentedControl>
         <RefreshView
+            Grid.Row="1"
             Command="{Binding RefreshLeaderboardCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
                 ItemsSource="{Binding SearchResults}"
                 x:Name="LeadersCollection"
-                ItemsUpdatingScrollMode="KeepItemsInView"
-                ItemSizingStrategy="MeasureFirstItem"
                 IsVisible="False">
                 <CollectionView.Header>
                     <Grid Grid.Row="1" Padding="15,10,15,0" HeightRequest="320" ColumnDefinitions="6*,14*,6*">
@@ -159,11 +159,13 @@
             </CollectionView>
         </RefreshView>
         <ActivityIndicator
+            Grid.Row="0"
+            Grid.RowSpan="2"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
             IsEnabled="{Binding IsRunning}"
             IsRunning="{Binding IsRunning}"
             IsVisible="{Binding IsRunning}" />
-    </StackLayout>
+    </Grid>
 </ContentPage>
