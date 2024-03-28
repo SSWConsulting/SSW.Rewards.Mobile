@@ -40,6 +40,8 @@
             <CollectionView
                 ItemsSource="{Binding SearchResults}"
                 x:Name="LeadersCollection"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                ItemSizingStrategy="MeasureFirstItem"
                 IsVisible="False">
                 <CollectionView.Header>
                     <Grid Grid.Row="1" Padding="15,10,15,0" HeightRequest="320" ColumnDefinitions="6*,14*,6*">
