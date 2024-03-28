@@ -67,16 +67,6 @@ public partial class LeaderBoardViewModel : BaseViewModel
 
     public async Task Initialise()
     {
-        if (!_loaded)
-        {
-            IsRunning = true;
-
-            await LoadLeaderboard();
-            _loaded = true;
-
-            IsRunning = false;
-        }
-
         if (Periods is null || !Periods.Any())
         {
             Periods = new List<Segment>
@@ -86,6 +76,16 @@ public partial class LeaderBoardViewModel : BaseViewModel
                 new() { Name = "This Year", Value = LeaderboardFilter.ThisYear },
                 new() { Name = "All Time", Value = LeaderboardFilter.Forever },
             };
+        }
+        
+        if (!_loaded)
+        {
+            IsRunning = true;
+
+            await LoadLeaderboard();
+            _loaded = true;
+
+            IsRunning = false;
         }
     }
 
