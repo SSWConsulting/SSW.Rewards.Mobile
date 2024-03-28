@@ -25,7 +25,7 @@
             Grid.Row="0"
             Segments="{Binding Periods}"
             HeightRequest="45"
-            Margin="15,10,15,0"
+            Margin="15,10,15,15"
             SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
             <controls:SegmentedControl.Behaviors>
                 <mct:EventToCommandBehavior
