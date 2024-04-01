@@ -59,20 +59,23 @@ public class AuthenticationService : IAuthenticationService
 
             if (result.IsError)
             {
+                Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
                 SignOut();
                 return ApiStatus.Error;
             }
 
             var authResult = GetAuthResult(result);
             await SetRefreshToken(authResult);
-            return await SetLoggedInState(authResult);
+            return SetLoggedInState(authResult);
         }
         catch (TaskCanceledException taskEx)
         {
+            Crashes.TrackError(new Exception($"AuthDebug: TaskCancelledException was thrown during SignIn ${taskEx.StackTrace}"));
             return ApiStatus.LoginFailure;
         }
         catch (Exception ex)
         {
+            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
             SignOut();
             return ApiStatus.Error;
         }
@@ -117,7 +120,7 @@ public class AuthenticationService : IAuthenticationService
         Preferences.Set("FirstRun", false);
     }
 
-    private async Task<ApiStatus> SetLoggedInState(AuthResult loginResult)
+    private ApiStatus SetLoggedInState(AuthResult loginResult)
     {
         if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
         {
@@ -155,6 +158,7 @@ public class AuthenticationService : IAuthenticationService
             }
             catch (Exception ex)
             {
+                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
                 return ApiStatus.Unavailable;
             }
 
@@ -162,6 +166,8 @@ public class AuthenticationService : IAuthenticationService
         }
         else
         {
+            Crashes.TrackError(new Exception(
+                $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
             return ApiStatus.LoginFailure;
         }
     }
@@ -189,7 +195,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 var authResult = GetAuthResult(result);
                 await SetRefreshToken(authResult);
-                await SetLoggedInState(authResult);
+                SetLoggedInState(authResult);
                 return true;
             }
             else
@@ -200,7 +206,7 @@ public class AuthenticationService : IAuthenticationService
                 if (signInResult != ApiStatus.Success)
                 {
                     Crashes.TrackError(new Exception(
-                        $"Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+                        $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
                 }
 
                 return signInResult == ApiStatus.Success;
