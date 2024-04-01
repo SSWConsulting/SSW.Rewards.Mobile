@@ -156,8 +156,9 @@ public class AuthenticationService : IAuthenticationService
 
                 _loggedIn = true;
             }
-            catch (Exception ex) // TODO: What sort of exceptions are we catching here? Do we need this catch?
+            catch (Exception ex)
             {
+                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
                 return ApiStatus.Unavailable;
             }
 
