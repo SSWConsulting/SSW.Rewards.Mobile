@@ -6,6 +6,8 @@ namespace SSW.Rewards.ApiClient.Services;
 public interface IUserAdminService
 {
     Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default);
+    Task<ProfileDeletionRequestsVieWModel> GetProfileDeletionRequests(CancellationToken cancellationToken = default);
+    Task DeleteUserProfile(AdminDeleteProfileDto dto, CancellationToken cancellationToken = default);
 }
 
 public class UserAdminService : IUserAdminService
@@ -36,5 +38,36 @@ public class UserAdminService : IUserAdminService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
         throw new Exception($"Failed to get new users: {responseContent}");
+    }
+
+    public async Task<ProfileDeletionRequestsVieWModel> GetProfileDeletionRequests(CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetProfileDeletionRequests", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<ProfileDeletionRequestsVieWModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get profile deletion requests: {responseContent}");
+    }
+
+    public async Task DeleteUserProfile(AdminDeleteProfileDto dto, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}DeleteUserProfile", dto, cancellationToken);
+
+        if  (!result.IsSuccessStatusCode)
+        {
+            var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+            throw new Exception($"Failed to delete user profile: {responseContent}");
+        }
     }
 }
