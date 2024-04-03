@@ -1,0 +1,57 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:users="clr-namespace:SSW.Rewards.Shared.DTOs.Users;assembly=Shared"
+             x:DataType="viewModels:NetworkPageViewModel"
+             ControlTemplate="{DynamicResource PageTemplate}"
+             x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
+             x:Name="Activity"
+             HideSoftInputOnTapped="True">
+    <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
+        <Grid RowDefinitions="45">
+            <controls:SegmentedControl
+                Grid.Row="0"
+                Segments="{Binding Segments}"
+                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior
+                        EventName="SelectionChanged"
+                        Command="{Binding FilterBySegmentCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
+        </Grid>
+        <RefreshView
+            Command="{Binding RefreshNetworkCommand}"
+            IsRefreshing="{Binding IsRefreshing}"
+            Grid.Row="1">
+            <CollectionView
+                ItemsSource="{Binding SearchResults}"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}"
+                IsVisible="True">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="3"
+                                     HorizontalItemSpacing="10"
+                                     VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="users:NetworkProfileDto">
+                        
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <ActivityIndicator
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+    </Grid>
+</ContentPage>

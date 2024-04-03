@@ -108,7 +108,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
     private async Task LeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
-            await Shell.Current.GoToAsync("//me");
+            await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
         else
             await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
     }

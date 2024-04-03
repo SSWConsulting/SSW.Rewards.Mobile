@@ -39,6 +39,8 @@ public partial class ProfileViewModelBase : BaseViewModel
     public bool ShowBalance { get; set; } = true;
 
     protected int userId { get; set; }
+    
+    public bool ShowCloseButton { get; set; } = true;
 
     [ObservableProperty]
     private bool _isLoading;
@@ -238,5 +240,11 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         IsBusy = false;
         IsLoading = false;
+    }
+    
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await Navigation.PopModalAsync();
     }
 }
