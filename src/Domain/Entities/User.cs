@@ -1,4 +1,5 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
+
 public class User : BaseEntity
 {
     public string? FullName { get; set; } = string.Empty;

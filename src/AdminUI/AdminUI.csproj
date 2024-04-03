@@ -57,4 +57,12 @@
     <ItemGroup>
       <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\ProfileDeletions.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\ProfileDeletions.razor" />
+    </ItemGroup>
 </Project>
