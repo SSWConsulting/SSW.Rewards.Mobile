@@ -12,7 +12,6 @@ public interface IUserService
     IObservable<int> MyBalanceObservable();
     IObservable<string> MyQrCodeObservable();
     IObservable<int> MyAllTimeRankObservable();
-    bool HasCachedAccount { get; }
 
     // auth methods
 

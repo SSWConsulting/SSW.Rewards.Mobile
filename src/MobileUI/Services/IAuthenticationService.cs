@@ -12,6 +12,7 @@ public interface IAuthenticationService
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     void SignOut();
+    bool HasCachedAccount { get; }
 
     event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
 }
@@ -20,16 +21,13 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly OidcClientOptions _options;
 
-    private bool _loggedIn = false;
-
     private string RefreshToken;
 
     private string _accessToken;
     private DateTimeOffset _tokenExpiry;
 
     public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
-
-    private bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
+    public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
     public AuthenticationService(IBrowser browser)
     {
@@ -153,8 +151,6 @@ public class AuthenticationService : IAuthenticationService
                     Email = email,
                     Jobtitle = jobTitle
                 });
-
-                _loggedIn = true;
             }
             catch (Exception ex)
             {

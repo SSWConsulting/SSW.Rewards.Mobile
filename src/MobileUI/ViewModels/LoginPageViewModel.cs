@@ -84,7 +84,7 @@ public partial class LoginPageViewModel : BaseViewModel
     {
         bool enableButtonAfterLogin = true;
 
-        if (_userService.HasCachedAccount)
+        if (_authService.HasCachedAccount)
         {
             LoginButtonEnabled = false;
             IsRunning = true;

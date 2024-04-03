@@ -19,8 +19,6 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
     private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
 
-    public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
-
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
         _userClient = userService;
