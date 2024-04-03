@@ -12,6 +12,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
     private int _myUserId;
 
     private ILeaderService _leaderService;
+    private readonly IUserService _userService;
     private bool _loaded;
 
     [ObservableProperty]
@@ -21,9 +22,10 @@ public partial class LeaderBoardViewModel : BaseViewModel
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
-        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
-        userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
-        userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
+        _userService = userService;
+        _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
+        _userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
+        _userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
     }
 
     public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
@@ -77,7 +79,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
                 new() { Name = "All Time", Value = LeaderboardFilter.Forever },
             };
         }
-        
+
         if (!_loaded)
         {
             IsRunning = true;
@@ -127,7 +129,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
 
             Leaders.Add(vm);
         }
-        
+
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
     }
 
@@ -181,7 +183,8 @@ public partial class LeaderBoardViewModel : BaseViewModel
         }
 
         await UpdateSearchResults(leaders);
-        UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe == true));
+        UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe));
+        UpdateMyAllTimeRank(list.OrderByDescending(l => l.TotalPoints).FirstOrDefault(l => l.IsMe));
 
         // setting to null to trigger PropertyChanged event
         First = null!;
@@ -211,6 +214,14 @@ public partial class LeaderBoardViewModel : BaseViewModel
         if (mySummary is not null)
         {
             MyRank = mySummary.Rank;
+        }
+    }
+
+    private void UpdateMyAllTimeRank(LeaderViewModel me)
+    {
+        if (me is not null)
+        {
+            _userService.UpdateMyAllTimeRank(me.Rank);
         }
     }
 }
