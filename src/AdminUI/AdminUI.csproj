@@ -15,6 +15,10 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'SSW.Rewards.Admin' " />
+
+    <ItemGroup>
+      <Content Remove="Pages\ProfileDeletions.razor" />
+    </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.1" />
@@ -44,6 +48,7 @@
         <Content Include=".codeanalysis\codeanalysis.ruleset" />
         <Content Include=".codeanalysis\stylecop.json" />
         <None Include="Components\Dialogs\Quizzes\QuizQuestionDialog.razor" />
+        <None Include="Pages\ProfileDeletions.razor" />
         <None Include="wwwroot\js\DetailedProfile.js" />
     </ItemGroup>
 
@@ -54,5 +59,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\ProfileDeletions.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\ProfileDeletions.razor" />
     </ItemGroup>
 </Project>

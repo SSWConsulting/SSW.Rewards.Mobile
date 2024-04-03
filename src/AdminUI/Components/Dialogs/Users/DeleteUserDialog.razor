@@ -1,0 +1,54 @@
+﻿@using SSW.Rewards.Shared.DTOs.Users
+
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Delete User Profile</MudText>    
+    </TitleContent>
+    <DialogContent>
+    <MudForm  @ref="_form" Model="@Dto" @bind-IsValid="@valid" @bind-Errors="@errors">
+        <MudGrid>
+                    <MudItem xs="12">
+                        <MudCheckBox T="bool" Label="@($"Are you sure you want to delete {Dto.UserName}?")" @bind-Value="DeleteDto.AdminConfirmed1" />
+                        <MudCheckBox T="bool" Label="Are you 100% sure? This can't be undone!" @bind-Value="DeleteDto.AdminConfirmed2" />
+                    </MudItem>
+            </MudGrid>
+    </MudForm >
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary" OnClick="Submit">Create</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+    
+    [Parameter]
+    public ProfileDeletionRequestDto Dto { get; set; } = new();
+
+    private AdminDeleteProfileDto DeleteDto { get; set; } = new();
+    
+
+    private MudForm? _form;
+    private bool valid;
+    private string[] errors = Array.Empty<string>();
+
+    private async Task Submit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();   
+        }
+        if (valid)
+        {
+            DeleteDto.UserId = Dto.UserId;
+            MudDialog?.Close(DialogResult.Ok(Dto));
+        }
+    }
+
+    void Cancel() => MudDialog?.Cancel();
+    
+}
