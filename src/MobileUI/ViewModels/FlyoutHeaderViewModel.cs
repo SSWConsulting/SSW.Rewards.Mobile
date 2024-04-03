@@ -1,14 +1,9 @@
-﻿using System.Reactive.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class FlyoutHeaderViewModel : ObservableObject
 {
-    private int _myUserId;
-
-    private readonly ILeaderService _leaderService;
-
     [ObservableProperty]
     private string _profilePic;
 
@@ -30,25 +25,16 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     [ObservableProperty]
     private int _rank;
 
-    public FlyoutHeaderViewModel(IUserService userService, ILeaderService leaderService)
+    public FlyoutHeaderViewModel(IUserService userService)
     {
-        _leaderService = leaderService;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
 
-        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
         userService.MyNameObservable().Subscribe(myName => Name = myName);
         userService.MyEmailObservable().Subscribe(myEmail => Email = myEmail);
         userService.MyProfilePicObservable().Subscribe(myProfilePic => ProfilePic = myProfilePic);
         userService.MyPointsObservable().Subscribe(myPoints => Points = myPoints);
         userService.MyBalanceObservable().Subscribe(myBalance => Credits = myBalance);
         userService.MyQrCodeObservable().Subscribe(myQrCode => QrCode = myQrCode);
-
-        _ = LoadRank();
-    }
-
-    private async Task LoadRank()
-    {
-        var summaries = await _leaderService.GetLeadersAsync(false);
-        Rank = summaries.FirstOrDefault(x => x.UserId == _myUserId)?.Rank ?? 0;
+        userService.MyAllTimeRankObservable().Subscribe(myRank => Rank = myRank);
     }
 }
