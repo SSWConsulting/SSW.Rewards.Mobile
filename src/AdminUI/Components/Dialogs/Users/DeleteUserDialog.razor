@@ -18,7 +18,9 @@
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Variant="Variant.Filled"
-                                   Color="Color.Primary" OnClick="Submit">Create</MudButton>
+                   Color="Color.Primary"
+                   OnClick="Submit"
+                   Disabled="@(!DeleteDto.AdminConfirmed1 || !DeleteDto.AdminConfirmed2)">Delete</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -45,7 +47,7 @@
         if (valid)
         {
             DeleteDto.UserId = Dto.UserId;
-            MudDialog?.Close(DialogResult.Ok(Dto));
+            MudDialog?.Close(DialogResult.Ok(DeleteDto));
         }
     }
 

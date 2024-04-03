@@ -18,7 +18,8 @@
 
 <Table TItem="ProfileDeletionRequestDto"
        Items="@(_model)"
-       IsLoading="@_loading">
+       IsLoading="@_loading"
+       OnRowClick="OnRowClicked">
     <HeadingTemplate>
         <MudTh>
             Id
