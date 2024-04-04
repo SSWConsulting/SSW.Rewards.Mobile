@@ -48,7 +48,7 @@ public class UserService : IUserService
         return response.PicUrl;
     }
 
-    private void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private void UpdateMyDetailsAsync(object sender, EventArgs args)
     {
         MainThread.BeginInvokeOnMainThread(async () => await UpdateMyDetailsAsync());
     }

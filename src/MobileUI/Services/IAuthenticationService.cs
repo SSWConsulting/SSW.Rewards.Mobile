@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
@@ -13,8 +12,7 @@ public interface IAuthenticationService
     Task<string> GetAccessToken();
     void SignOut();
     bool HasCachedAccount { get; }
-
-    event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
+    event EventHandler DetailsUpdated;
 }
 
 public class AuthenticationService : IAuthenticationService
@@ -26,7 +24,7 @@ public class AuthenticationService : IAuthenticationService
     private string _accessToken;
     private DateTimeOffset _tokenExpiry;
 
-    public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
+    public event EventHandler DetailsUpdated;
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
     public AuthenticationService(IBrowser browser)
@@ -128,29 +126,7 @@ public class AuthenticationService : IAuthenticationService
             try
             {
                 Preferences.Set(nameof(HasCachedAccount), true);
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-
-                var jwToken = tokenHandler.ReadJwtToken(loginResult.IdentityToken);
-
-                var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "email")?.Value;
-
-                string fullName = firstName + " " + familyName;
-
-                if (!string.IsNullOrWhiteSpace(jobTitle))
-                {
-                    Preferences.Set("JobTitle", jobTitle);
-                }
-
-                DetailsUpdated?.Invoke(this, new DetailsUpdatedEventArgs
-                {
-                    Name = fullName,
-                    Email = email,
-                    Jobtitle = jobTitle
-                });
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
@@ -247,11 +223,4 @@ public class AuthenticationService : IAuthenticationService
         public string IdentityToken { get; set; }
         public DateTimeOffset AccessTokenExpiration { get; set; }
     }
-}
-
-public class DetailsUpdatedEventArgs : EventArgs
-{
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Jobtitle { get; set; }
 }
