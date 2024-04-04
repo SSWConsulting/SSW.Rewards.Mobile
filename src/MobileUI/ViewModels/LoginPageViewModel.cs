@@ -6,26 +6,24 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
+    private readonly IAuthenticationService _authService;
+
     [ObservableProperty]
     private bool _isRunning;
 
     [ObservableProperty]
     private bool _loginButtonEnabled;
 
-    bool _isStaff;
-
-    private readonly IUserService _userService;
-    private readonly IAuthenticationService _authService;
-
     [ObservableProperty]
-    public string _buttonText;
+    private string _buttonText;
+
+    bool _isStaff;
 
     public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
         _authService = authService;
-        _userService = userService;
         ButtonText = "Sign up / Log in";
-        _userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
+        userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
 
     [RelayCommand]
@@ -35,18 +33,7 @@ public partial class LoginPageViewModel : BaseViewModel
         LoginButtonEnabled = false;
         bool enableButtonAfterLogin = true;
 
-        ApiStatus status;
-        try
-        {
-            status = await _authService.SignInAsync();
-        }
-        catch (Exception exception)
-        {
-            await WaitForWindowClose();
-            status = ApiStatus.LoginFailure;
-            //Crashes.TrackError(exception);
-            await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
-        }
+        ApiStatus status = await _authService.SignInAsync();
 
         var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {
@@ -54,16 +41,19 @@ public partial class LoginPageViewModel : BaseViewModel
             { ApiStatus.LoginFailure, ("Login Failure", "There seems to have been a problem logging you in. Please try again.") },
         };
 
-        if (status != ApiStatus.Success)
+        if (status != ApiStatus.CancelledByUser)
         {
-            await WaitForWindowClose();
-            var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-            await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
-        }
-        else
-        {
-            enableButtonAfterLogin = false;
-            await OnAfterLogin();
+            if (status != ApiStatus.Success)
+            {
+                await WaitForWindowClose();
+                var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
+                await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+            }
+            else
+            {
+                enableButtonAfterLogin = false;
+                await OnAfterLogin();
+            }
         }
 
         LoginButtonEnabled = enableButtonAfterLogin;
@@ -82,43 +72,40 @@ public partial class LoginPageViewModel : BaseViewModel
 
     public async Task Refresh()
     {
-        bool enableButtonAfterLogin = true;
-
-        if (_userService.HasCachedAccount)
-        {
-            LoginButtonEnabled = false;
-            IsRunning = true;
-            ButtonText = "Logging you in...";
-
-            try
-            {
-                if(!string.IsNullOrEmpty(await _authService.GetAccessToken()))
-                {
-                    enableButtonAfterLogin = false;
-
-                    await OnAfterLogin();
-
-                }
-            }
-            catch (Exception e)
-            {
-                // Everything else is fatal
-                Crashes.TrackError(e);
-                Console.WriteLine(e);
-                await WaitForWindowClose();
-                await Application.Current.MainPage.DisplayAlert("Login Failure",
-                    "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
-            }
-            finally
-            {
-                IsRunning = false;
-                LoginButtonEnabled = enableButtonAfterLogin;
-                ButtonText = "Sign up / Log in";
-            }
-        }
-        else
+        if (!_authService.HasCachedAccount)
         {
             LoginButtonEnabled = true;
+            return;
+        }
+
+        bool enableButtonAfterLogin = true;
+        LoginButtonEnabled = false;
+        IsRunning = true;
+        ButtonText = "Logging you in...";
+
+        try
+        {
+            if (!string.IsNullOrEmpty(await _authService.GetAccessToken()))
+            {
+                enableButtonAfterLogin = false;
+
+                await OnAfterLogin();
+            }
+        }
+        catch (Exception e)
+        {
+            // Everything else is fatal
+            Crashes.TrackError(e);
+            Console.WriteLine(e);
+            await WaitForWindowClose();
+            await Application.Current.MainPage.DisplayAlert("Login Failure",
+                "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
+        }
+        finally
+        {
+            IsRunning = false;
+            LoginButtonEnabled = enableButtonAfterLogin;
+            ButtonText = "Sign up / Log in";
         }
     }
 

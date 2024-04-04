@@ -6,6 +6,7 @@
         LoginFailure,
         Unavailable,
         BadRequest,
-        Error
+        Error,
+        CancelledByUser
     }
 }
