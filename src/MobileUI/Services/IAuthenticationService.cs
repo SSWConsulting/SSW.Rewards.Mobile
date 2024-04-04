@@ -64,10 +64,9 @@ public class AuthenticationService : IAuthenticationService
             await SetRefreshToken(authResult);
             return SetLoggedInState(authResult);
         }
-        catch (TaskCanceledException taskEx)
+        catch (TaskCanceledException) // Is thrown when user closes the browser without logging-in
         {
-            Crashes.TrackError(new Exception($"AuthDebug: TaskCancelledException was thrown during SignIn ${taskEx.StackTrace}"));
-            return ApiStatus.LoginFailure;
+            return ApiStatus.CancelledByUser;
         }
         catch (Exception ex)
         {
@@ -175,7 +174,7 @@ public class AuthenticationService : IAuthenticationService
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
                 var signInResult = await SignInAsync();
-                if (signInResult != ApiStatus.Success)
+                if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
                 {
                     Crashes.TrackError(new Exception(
                         $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
