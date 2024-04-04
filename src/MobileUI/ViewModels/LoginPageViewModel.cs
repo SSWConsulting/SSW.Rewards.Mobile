@@ -6,26 +6,24 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
+    private readonly IAuthenticationService _authService;
+
     [ObservableProperty]
     private bool _isRunning;
 
     [ObservableProperty]
     private bool _loginButtonEnabled;
 
-    bool _isStaff;
-
-    private readonly IUserService _userService;
-    private readonly IAuthenticationService _authService;
-
     [ObservableProperty]
-    public string _buttonText;
+    private string _buttonText;
+
+    bool _isStaff;
 
     public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
         _authService = authService;
-        _userService = userService;
         ButtonText = "Sign up / Log in";
-        _userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
+        userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
 
     [RelayCommand]
@@ -35,18 +33,7 @@ public partial class LoginPageViewModel : BaseViewModel
         LoginButtonEnabled = false;
         bool enableButtonAfterLogin = true;
 
-        ApiStatus status;
-        try
-        {
-            status = await _authService.SignInAsync();
-        }
-        catch (Exception exception)
-        {
-            await WaitForWindowClose();
-            status = ApiStatus.LoginFailure;
-            //Crashes.TrackError(exception);
-            await App.Current.MainPage.DisplayAlert("Login Failure", exception.Message, "OK");
-        }
+        ApiStatus status = await _authService.SignInAsync();
 
         var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {
@@ -97,7 +84,6 @@ public partial class LoginPageViewModel : BaseViewModel
                     enableButtonAfterLogin = false;
 
                     await OnAfterLogin();
-
                 }
             }
             catch (Exception e)
