@@ -97,7 +97,7 @@ public static class ConfigureServices
             options.Audience = "rewards";
             options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
         });
-
+        
         return services;
     }
 }
