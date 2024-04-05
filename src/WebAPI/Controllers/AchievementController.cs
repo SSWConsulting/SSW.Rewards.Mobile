@@ -75,6 +75,7 @@ public class AchievementController : ApiControllerBase
 
 
     [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
     public async Task<ActionResult<ClaimAchievementResult>> Claim([FromBody] string code)
     {
         return Ok(await Mediator.Send(new PostAchievementCommand { Code = code }));
