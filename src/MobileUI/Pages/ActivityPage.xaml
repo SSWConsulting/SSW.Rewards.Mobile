@@ -5,6 +5,7 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
+             xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
              x:DataType="viewModels:ActivityPageViewModel"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
@@ -79,9 +80,24 @@
                                           ColumnSpacing="15">
                                         <Label
                                             Grid.Column="0"
+                                            Text="&#xf51e;"
+                                            TextColor="{StaticResource Coin}"
+                                            FontFamily="FA6Solid"
+                                            HorizontalOptions="Center"
                                             VerticalOptions="Center"
                                             FontSize="14"
-                                            Text="🏆"/>
+                                            Style="{StaticResource LabelBold}"
+                                            FontAutoScalingEnabled="False"
+                                            InputTransparent="True">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding Achievement.AchievementType}"
+                                                             Value="{x:Static enums:AchievementType.Attended}">
+                                                    <Setter Property="TextColor" Value="White"/>
+                                                    <Setter Property="Text" Value="&#xf3c5;"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
                                         <Label
                                             Grid.Column="1"
                                             FontSize="14"
