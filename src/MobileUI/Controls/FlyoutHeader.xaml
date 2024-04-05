@@ -15,16 +15,35 @@
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
 
-    <mct:AvatarView Grid.Row="0"
-                    VerticalOptions="End"
-                    HorizontalOptions="Start"
-                    ImageSource="{Binding ProfilePic}"
-                    HeightRequest="80"
-                    WidthRequest="80"
-                    CornerRadius="40"
-                    BorderColor="White"
-                    BorderWidth="2"/>
-
+    <Grid Grid.Row="0">
+        <mct:AvatarView VerticalOptions="End"
+                        HorizontalOptions="Start"
+                        ImageSource="{Binding ProfilePic}"
+                        HeightRequest="80"
+                        WidthRequest="80"
+                        CornerRadius="40"
+                        BorderColor="White"
+                        BorderWidth="2"/>
+        <Border
+            BackgroundColor="{StaticResource primary}"
+            HorizontalOptions="Start"
+            VerticalOptions="Center"
+            TranslationX="60"
+            TranslationY="35"
+            StrokeShape="Ellipse"
+            StrokeThickness="0">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+            </Border.GestureRecognizers>
+            <Label
+                FontFamily="FluentIcons"
+                FontAutoScalingEnabled="False"
+                FontSize="25"
+                Text="&#xe299;"
+                Margin="3"
+                TextColor="White" />
+        </Border>
+    </Grid>
 
     <!-- User Name -->
     <HorizontalStackLayout Grid.Row="1"
