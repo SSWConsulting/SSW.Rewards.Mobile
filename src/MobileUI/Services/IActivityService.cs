@@ -4,7 +4,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IActivityService
 {
-    Task<ActivityFeedViewModel> GetActivityFeed();
+    Task<IEnumerable<ActivityFeedViewModel>> GetActivityFeed();
 
-    Task<ActivityFeedViewModel> GetFriendsFeed();
+    Task<IEnumerable<ActivityFeedViewModel>> GetFriendsFeed();
 }

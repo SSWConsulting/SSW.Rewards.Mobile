@@ -105,7 +105,7 @@
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
         </Tab>
         
-        <Tab Route="activity" Icon="icon_user" Title="Activity">
+        <Tab Route="activity" Icon="icon_bell" Title="Activity">
             <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
         </Tab>
     </FlyoutItem>

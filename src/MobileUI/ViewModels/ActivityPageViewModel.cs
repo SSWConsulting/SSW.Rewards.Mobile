@@ -1,8 +1,13 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Shared.DTOs.ActivityFeed;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -13,99 +18,193 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel : BaseViewModel
+public partial class ActivityPageViewModel(IActivityService activityService) : BaseViewModel
 {
-    public NetworkPageSegments CurrentSegment { get; set; }
+    public ActivityPageSegments CurrentSegment { get; set; }
 
     [ObservableProperty]
-    private List<NetworkProfileDto> _profiles;
-    [ObservableProperty] 
-    private List<Segment> _segments;
+    private ObservableCollection<ActivityFeedViewModel> _feed = [];
+
+    [ObservableProperty]
+    private List<Segment> _segments = [];
+    
     [ObservableProperty]
     private Segment _selectedSegment;
-    [ObservableProperty]
-    private ObservableCollection<NetworkProfileDto> _searchResults;
+    
     [ObservableProperty]
     private bool _isRefreshing;
 
-    private IDevService _devService;
+    private bool _loaded;
+
+    private IEnumerable<ActivityFeedViewModel> _allFeed = [];
     
-    public ActivityPageViewModel(IDevService devService)
-    {
-        _devService = devService;
-    }
-    
+    private IEnumerable<ActivityFeedViewModel> _friendsFeed = [];
+
     public async Task Initialise()
     {
+        if (_loaded)
+            return;
+        
         IsBusy = true;
-        if (Segments is null || Segments.Count() == 0)
+        if (Segments.Count == 0)
         {
-            Segments = new List<Segment>
-            {
-                new() { Name = "All", Value = ActivityPageSegments.All },
-                new() { Name = "Friends", Value = ActivityPageSegments.Friends }
-            };
-        }
-        
-        if(Profiles is null || Profiles.Count() == 0)
-        {
-            CurrentSegment = NetworkPageSegments.Friends;
-            await LoadNetwork();
+            Segments =
+            [
+                new Segment { Name = "All", Value = ActivityPageSegments.All },
+                new Segment { Name = "Friends", Value = ActivityPageSegments.Friends }
+            ];
         }
 
+        await RefreshFeed();
+        
         IsBusy = false;
+        _loaded = true;
     }
-
-    private async Task GetProfiles()
+    
+    private string GetMessage(UserAchievementDto achievement)
     {
-        var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
-    }
+        string name = achievement.AchievementName;
+        string action = string.Empty;
+        string scored = $"just scored {achievement.AchievementValue}pts for";
 
-    [RelayCommand]
-    private async Task FilterBySegment()
-    {
-        CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
-
-        if (Profiles is null || Profiles.Count() == 0)
+        switch (achievement.AchievementType)
         {
-            await GetProfiles();
+            case AchievementType.Attended:
+                action = "checked into";
+                break;
+
+            case AchievementType.Completed:
+                action = $"{scored} completing";
+                break;
+
+            case AchievementType.Linked:
+                action = $"{scored} following";
+                name = name.Replace("follow", "");
+                name = name.Replace("Follow", "");
+                break;
+
+            case AchievementType.Scanned:
+                action = $"{scored} scanning";
+                break;
         }
+
+        action = char.ToUpper(action[0]) + action.Substring(1);
+        return $"{action} {name}";
+    }
+    
+    private static string GetTimeElapsed(DateTime occurredAt)
+    {
+        return (DateTime.Now - occurredAt) switch
+        {
+            { TotalMinutes: < 5 } ts => "Just now",
+            { TotalHours: < 1 } ts => $"{ts.Minutes}m ago",
+            { TotalDays: < 1 } ts => $"{ts.Hours}h ago",
+            { TotalDays: < 31 } ts => $"{ts.Days}d ago",
+            _ => occurredAt.ToString("dd MMMM yyyy"),
+        };
+    }
+
+    private async Task GetAllFeed()
+    {
+        //var feed = await _activityService.GetActivityFeed();
+
+        // TESTING
+        await Task.Delay(1000);
+        var feed = new[]
+        {
+            new ActivityFeedViewModel
+            {
+                UserAvatar = "https://www.ssw.com.au/people/static/597a0489c18de9fe07e0d6941ac6addd/3b8ba/Adam-Cogan-Profile.webp",
+                UserName = "Adam Cogan",
+                UserTitle = "Chief Architect",
+                Achievement = new UserAchievementDto
+                {
+                    AchievementName = "Quiz: React Quiz",
+                    AchievementType = AchievementType.Completed,
+                    AchievementValue = 500
+                },
+                AwardedAt = DateTime.Now.AddHours(-.5)
+            },
+            new ActivityFeedViewModel
+            {
+                UserAvatar = "https://www.ssw.com.au/people/static/597a0489c18de9fe07e0d6941ac6addd/3b8ba/Adam-Cogan-Profile.webp",
+                UserName = "Adam Cogan",
+                UserTitle = "Chief Architect",
+                Achievement = new UserAchievementDto
+                {
+                    AchievementName = "Zach Keeping",
+                    AchievementType = AchievementType.Scanned,
+                    AchievementValue = 500
+                },
+                AwardedAt = DateTime.Now.AddDays(-3)
+            },
+        };
         
-        switch (CurrentSegment)
+        if (feed is null)
+            return;
+
+        foreach (var f in feed)
         {
-            case NetworkPageSegments.Friends:
-                SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
-                break;
-            case NetworkPageSegments.ToMeet:
-                SearchResults = Profiles.Where(x => !x.Scanned).ToObservableCollection();
-                break;
-            case NetworkPageSegments.SSW:
-            case NetworkPageSegments.Other:
-            default:
-                SearchResults = Profiles.ToObservableCollection();
-                break;
+            f.AchievementMessage = GetMessage(f.Achievement);
+            f.TimeElapsed = GetTimeElapsed(f.AwardedAt);
+        }
+        _allFeed = feed;
+    }
+    
+    private async Task GetFriendsFeed()
+    {
+        var feed = await activityService.GetFriendsFeed();
+        if (feed is null)
+            return;
+
+        _friendsFeed = feed;
+    }
+
+    private async Task RefreshFeed()
+    {
+        if (CurrentSegment == ActivityPageSegments.Friends)
+        {
+            await GetFriendsFeed();
+        }
+        else
+        {
+            await GetAllFeed();
+        }
+
+        LoadFeed();
+    }
+
+    private void LoadFeed()
+    {
+        Feed.Clear();
+        
+        if (CurrentSegment == ActivityPageSegments.Friends)
+        {
+            foreach (var f in _friendsFeed)
+            {
+                Feed.Add(f);
+            }
+        }
+        else
+        {
+            foreach (var f in _allFeed)
+            {
+                Feed.Add(f);
+            }
         }
     }
-    
+
     [RelayCommand]
-    private async Task UserTapped(NetworkProfileDto  leader)
-    { 
-        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+    private void FilterBySegment()
+    {
+        CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
+        LoadFeed();
     }
     
     [RelayCommand]
-    private async Task RefreshNetwork()
+    private async Task Refresh()
     {
-        await LoadNetwork();
+        await RefreshFeed();
         IsRefreshing = false;
-    }
-
-    private async Task LoadNetwork()
-    {
-        var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
-
-        await FilterBySegment();
     }
 }

@@ -81,6 +81,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IScannerService, ScannerService>();
         builder.Services.AddSingleton<IRewardService, RewardService>();
         builder.Services.AddSingleton<IQuizService, QuizService>();
+        builder.Services.AddSingleton<IActivityService, ActivityService>();
         builder.Services.AddSingleton<IBrowser, AuthBrowser>();
         builder.Services.AddTransient<AuthHandler>();
         builder.Services.AddSingleton(options);

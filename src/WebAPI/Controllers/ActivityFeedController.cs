@@ -8,24 +8,24 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class ActivityFeedController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ActivityFeedViewModel>> GetAllActivities()
+    public async Task<ActionResult<IEnumerable<ActivityFeedViewModel>>> GetAllActivities([FromQuery] int take = 50, [FromQuery] int skip = 0)
     {
-        return Ok(await Mediator.Send(new GetActivitiesQuery()
+        return Ok(await Mediator.Send(new GetActivitiesQuery
         {
-            Take = 50,
-            Skip = 0,
+            Take = take,
+            Skip = skip,
             Filter = ActivityFeedFilter.All
         }));
     }
     
     [HttpGet]
-    public async Task<ActionResult<ActivityFeedViewModel>> GetFriendsActivities()
+    public async Task<ActionResult<IEnumerable<ActivityFeedViewModel>>> GetFriendsActivities([FromQuery] int take = 50, [FromQuery] int skip = 0)
     {
-        return Ok(await Mediator.Send(new GetActivitiesQuery()
+        return Ok(await Mediator.Send(new GetActivitiesQuery
         {
-            Take = 50,
-            Skip = 0,
-            Filter = ActivityFeedFilter.Friends
+            Take = take,
+            Skip = skip,
+            Filter = ActivityFeedFilter.Friends,
         }));
     }
 }

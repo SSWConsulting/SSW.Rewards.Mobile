@@ -12,7 +12,7 @@ public class ActivityService : IActivityService
         _activityClient = activityService;
     }
     
-    public async Task<ActivityFeedViewModel> GetActivityFeed()
+    public async Task<IEnumerable<ActivityFeedViewModel>> GetActivityFeed()
     {
         try
         {
@@ -31,7 +31,7 @@ public class ActivityService : IActivityService
         }
     }
     
-    public async Task<ActivityFeedViewModel> GetFriendsFeed()
+    public async Task<IEnumerable<ActivityFeedViewModel>> GetFriendsFeed()
     {
         try
         {
