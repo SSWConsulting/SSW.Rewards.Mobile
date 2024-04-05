@@ -48,7 +48,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
                         staff.IsDeleted,
                         user.Activated
                     })
-            .Where(x => (!x.IsDeleted && x.Activated) && x.UserId != user.Id)
+            .Where(x => !x.IsDeleted && x.Activated)
             .ToListAsync(cancellationToken);
 
         if (filter == ActivityFeedFilter.Friends)
@@ -64,6 +64,8 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
                 .Select(staff => staff.UserId);
 
             userAchievements = await _dbContext.UserAchievements
+                .Include(u => u.User)
+                .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
                 .Where(x => friendIds.Contains(x.UserId))
                 .Skip(skip)
@@ -73,6 +75,8 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
         else
         {
             userAchievements = await _dbContext.UserAchievements
+                .Include(u => u.User)
+                .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
                 .Skip(skip)
                 .Take(take)

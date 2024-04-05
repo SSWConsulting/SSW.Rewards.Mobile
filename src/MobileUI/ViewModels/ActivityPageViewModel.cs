@@ -39,6 +39,7 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
     private IEnumerable<ActivityFeedViewModel> _allFeed = [];
     
     private IEnumerable<ActivityFeedViewModel> _friendsFeed = [];
+    private bool _friendsLoaded;
 
     public async Task Initialise()
     {
@@ -80,7 +81,7 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
             case AchievementType.Linked:
                 action = $"{scored} following";
                 name = name.Replace("follow", "");
-                name = name.Replace("Follow", "");
+                name = name.Replace("Follow", "").Trim();
                 break;
 
             case AchievementType.Scanned:
@@ -104,71 +105,31 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
         };
     }
 
-    private async Task GetAllFeed()
-    {
-        //var feed = await _activityService.GetActivityFeed();
-
-        // TESTING
-        await Task.Delay(1000);
-        var feed = new[]
-        {
-            new ActivityFeedViewModel
-            {
-                UserAvatar = "https://www.ssw.com.au/people/static/597a0489c18de9fe07e0d6941ac6addd/3b8ba/Adam-Cogan-Profile.webp",
-                UserName = "Adam Cogan",
-                UserTitle = "Chief Architect",
-                Achievement = new UserAchievementDto
-                {
-                    AchievementName = "Quiz: React Quiz",
-                    AchievementType = AchievementType.Completed,
-                    AchievementValue = 500
-                },
-                AwardedAt = DateTime.Now.AddHours(-.5)
-            },
-            new ActivityFeedViewModel
-            {
-                UserAvatar = "https://www.ssw.com.au/people/static/597a0489c18de9fe07e0d6941ac6addd/3b8ba/Adam-Cogan-Profile.webp",
-                UserName = "Adam Cogan",
-                UserTitle = "Chief Architect",
-                Achievement = new UserAchievementDto
-                {
-                    AchievementName = "Zach Keeping",
-                    AchievementType = AchievementType.Scanned,
-                    AchievementValue = 500
-                },
-                AwardedAt = DateTime.Now.AddDays(-3)
-            },
-        };
-        
-        if (feed is null)
-            return;
-
-        foreach (var f in feed)
-        {
-            f.AchievementMessage = GetMessage(f.Achievement);
-            f.TimeElapsed = GetTimeElapsed(f.AwardedAt);
-        }
-        _allFeed = feed;
-    }
-    
-    private async Task GetFriendsFeed()
-    {
-        var feed = await activityService.GetFriendsFeed();
-        if (feed is null)
-            return;
-
-        _friendsFeed = feed;
-    }
-
     private async Task RefreshFeed()
     {
+        var feed = (CurrentSegment == ActivityPageSegments.Friends
+            ? await activityService.GetFriendsFeed()
+            : await activityService.GetActivityFeed())?.Select(x =>
+        {
+            x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
+                ? "v2sophie"
+                : x.UserAvatar;
+            x.AchievementMessage = GetMessage(x.Achievement);
+            x.TimeElapsed = GetTimeElapsed(x.AwardedAt);
+            return x;
+        });
+
+        if (feed is null)
+            return;
+
         if (CurrentSegment == ActivityPageSegments.Friends)
         {
-            await GetFriendsFeed();
+            _friendsFeed = feed;
+            _friendsLoaded = true;
         }
         else
         {
-            await GetAllFeed();
+            _allFeed = feed;
         }
 
         LoadFeed();
@@ -195,9 +156,16 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
     }
 
     [RelayCommand]
-    private void FilterBySegment()
+    private async Task FilterBySegment()
     {
         CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
+        
+        if (CurrentSegment == ActivityPageSegments.Friends && !_friendsLoaded)
+        {
+            await RefreshFeed();
+            return;
+        }
+        
         LoadFeed();
     }
     
