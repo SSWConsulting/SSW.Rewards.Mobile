@@ -1,4 +1,5 @@
-﻿namespace SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
+﻿namespace SSW.Rewards.Application.Users.Commands.Common;
+
 public class DeleteProfileEmail
 {
     public string UserName { get; set; }

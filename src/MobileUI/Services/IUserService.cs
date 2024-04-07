@@ -1,5 +1,4 @@
-﻿using System.Reactive.Subjects;
-using SSW.Rewards.Shared.DTOs.Users;
+﻿using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -12,12 +11,13 @@ public interface IUserService
     IObservable<int> MyPointsObservable();
     IObservable<int> MyBalanceObservable();
     IObservable<string> MyQrCodeObservable();
-    bool HasCachedAccount { get; }
+    IObservable<int> MyAllTimeRankObservable();
 
     // auth methods
 
     // user details
     Task UpdateMyDetailsAsync();
+    void UpdateMyAllTimeRank(int newRank);
     Task<IEnumerable<Achievement>> GetAchievementsAsync();
     Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
     Task<IEnumerable<Achievement>> GetProfileAchievementsAsync();

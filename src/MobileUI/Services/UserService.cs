@@ -17,8 +17,7 @@ public class UserService : IUserService
     private readonly BehaviorSubject<int> _myPoints = new(0);
     private readonly BehaviorSubject<int> _myBalance = new(0);
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
-
-    public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
+    private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
@@ -34,6 +33,7 @@ public class UserService : IUserService
     public IObservable<int> MyPointsObservable() => _myPoints.AsObservable();
     public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
     public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
+    public IObservable<int> MyAllTimeRankObservable() => _myAllTimeRank.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -48,7 +48,7 @@ public class UserService : IUserService
         return response.PicUrl;
     }
 
-    private void UpdateMyDetailsAsync(object sender, DetailsUpdatedEventArgs args)
+    private void UpdateMyDetailsAsync(object sender, EventArgs args)
     {
         MainThread.BeginInvokeOnMainThread(async () => await UpdateMyDetailsAsync());
     }
@@ -63,6 +63,11 @@ public class UserService : IUserService
         _myPoints.OnNext(user.Points);
         _myBalance.OnNext(user.Balance);
         _myQrCode.OnNext(user.QRCode);
+    }
+
+    public void UpdateMyAllTimeRank(int newRank)
+    {
+        _myAllTimeRank.OnNext(newRank);
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()

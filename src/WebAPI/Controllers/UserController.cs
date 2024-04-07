@@ -15,6 +15,8 @@ using SSW.Rewards.Application.Users.Queries.GetUserAchievements;
 using SSW.Rewards.Application.Users.Queries.GetUserRewards;
 using SSW.Rewards.Enums;
 using SSW.Rewards.WebAPI.Authorisation;
+using SSW.Rewards.Application.Users.Commands.AdminDeleteProfile;
+using SSW.Rewards.Application.Users.Queries.AdminGetProfileDeletionRequests;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -103,5 +105,20 @@ public class UserController : ApiControllerBase
     public async Task<ActionResult<NewUsersViewModel>> GetNewUsers([FromQuery] LeaderboardFilter filter, bool filterStaff)
     {
         return await Mediator.Send(new GetNewUsersQuery { Filter = filter, FilterStaff = filterStaff });
+    }
+
+    [HttpPost]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<IActionResult> DeleteUserProfile(AdminDeleteProfileDto dto)
+    {
+        await Mediator.Send(new AdminDeleteProfileCommand { Profile = dto });
+        return Accepted();
+    }
+
+    [HttpGet]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<ActionResult<ProfileDeletionRequestsVieWModel>> GetProfileDeletionRequests()
+    {
+        return await Mediator.Send(new AdminGetProfileDeletionRequestsQuery());
     }
 }

@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
@@ -12,24 +11,21 @@ public interface IAuthenticationService
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     void SignOut();
-
-    event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
+    bool HasCachedAccount { get; }
+    event EventHandler DetailsUpdated;
 }
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly OidcClientOptions _options;
 
-    private bool _loggedIn = false;
-
     private string RefreshToken;
 
     private string _accessToken;
     private DateTimeOffset _tokenExpiry;
 
-    public event EventHandler<DetailsUpdatedEventArgs> DetailsUpdated;
-
-    private bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
+    public event EventHandler DetailsUpdated;
+    public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
 
     public AuthenticationService(IBrowser browser)
     {
@@ -59,20 +55,22 @@ public class AuthenticationService : IAuthenticationService
 
             if (result.IsError)
             {
+                Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
                 SignOut();
                 return ApiStatus.Error;
             }
 
             var authResult = GetAuthResult(result);
             await SetRefreshToken(authResult);
-            return await SetLoggedInState(authResult);
+            return SetLoggedInState(authResult);
         }
-        catch (TaskCanceledException taskEx)
+        catch (TaskCanceledException) // Is thrown when user closes the browser without logging-in
         {
-            return ApiStatus.LoginFailure;
+            return ApiStatus.CancelledByUser;
         }
         catch (Exception ex)
         {
+            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
             SignOut();
             return ApiStatus.Error;
         }
@@ -117,7 +115,7 @@ public class AuthenticationService : IAuthenticationService
         Preferences.Set("FirstRun", false);
     }
 
-    private async Task<ApiStatus> SetLoggedInState(AuthResult loginResult)
+    private ApiStatus SetLoggedInState(AuthResult loginResult)
     {
         if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
         {
@@ -127,34 +125,11 @@ public class AuthenticationService : IAuthenticationService
             try
             {
                 Preferences.Set(nameof(HasCachedAccount), true);
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-
-                var jwToken = tokenHandler.ReadJwtToken(loginResult.IdentityToken);
-
-                var firstName = jwToken.Claims.FirstOrDefault(t => t.Type == "given_name")?.Value;
-                var familyName = jwToken.Claims.FirstOrDefault(t => t.Type == "family_name")?.Value;
-                var jobTitle = jwToken.Claims.FirstOrDefault(t => t.Type == "jobTitle")?.Value;
-                var email = jwToken.Claims.FirstOrDefault(t => t.Type == "email")?.Value;
-
-                string fullName = firstName + " " + familyName;
-
-                if (!string.IsNullOrWhiteSpace(jobTitle))
-                {
-                    Preferences.Set("JobTitle", jobTitle);
-                }
-
-                DetailsUpdated?.Invoke(this, new DetailsUpdatedEventArgs
-                {
-                    Name = fullName,
-                    Email = email,
-                    Jobtitle = jobTitle
-                });
-
-                _loggedIn = true;
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
+                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
                 return ApiStatus.Unavailable;
             }
 
@@ -162,6 +137,8 @@ public class AuthenticationService : IAuthenticationService
         }
         else
         {
+            Crashes.TrackError(new Exception(
+                $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
             return ApiStatus.LoginFailure;
         }
     }
@@ -189,7 +166,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 var authResult = GetAuthResult(result);
                 await SetRefreshToken(authResult);
-                await SetLoggedInState(authResult);
+                SetLoggedInState(authResult);
                 return true;
             }
             else
@@ -197,10 +174,10 @@ public class AuthenticationService : IAuthenticationService
                 Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
                 var signInResult = await SignInAsync();
-                if (signInResult != ApiStatus.Success)
+                if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
                 {
                     Crashes.TrackError(new Exception(
-                        $"Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+                        $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
                 }
 
                 return signInResult == ApiStatus.Success;
@@ -245,11 +222,4 @@ public class AuthenticationService : IAuthenticationService
         public string IdentityToken { get; set; }
         public DateTimeOffset AccessTokenExpiration { get; set; }
     }
-}
-
-public class DetailsUpdatedEventArgs : EventArgs
-{
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Jobtitle { get; set; }
 }

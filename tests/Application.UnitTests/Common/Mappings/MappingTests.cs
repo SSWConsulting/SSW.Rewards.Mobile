@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SSW.Rewards.Application.Common.Mappings;
 using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.UnitTests.Common.Mappings;
 
@@ -28,6 +29,7 @@ public class MappingTests
 
     [Test]
     [TestCase(typeof(User), typeof(LeaderboardUserDto))]
+    [TestCase(typeof(OpenProfileDeletionRequest), typeof(ProfileDeletionRequestDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);
