@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Application.ActivityFeed.Queries;
+using Microsoft.Extensions.DependencyInjection.ActivityFeed.Queries;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
 

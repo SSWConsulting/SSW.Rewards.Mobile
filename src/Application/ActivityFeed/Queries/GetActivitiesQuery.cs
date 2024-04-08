@@ -1,7 +1,7 @@
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
 using SSW.Rewards.Shared.DTOs.Users;
 
-namespace SSW.Rewards.Application.ActivityFeed.Queries;
+namespace Microsoft.Extensions.DependencyInjection.ActivityFeed.Queries;
 
 public class GetActivitiesQuery : IRequest<ActivityFeedViewModel>
 {
