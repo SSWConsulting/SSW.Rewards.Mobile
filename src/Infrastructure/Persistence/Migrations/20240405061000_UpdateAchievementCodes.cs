@@ -10,8 +10,8 @@ namespace SSW.Rewards.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //TODO: Update to Base64
             migrationBuilder.Sql("UPDATE Achievements SET Code = 'ach:' + CONVERT(NVARCHAR(36), NEWID())");
+            migrationBuilder.Sql("UPDATE Rewards SET Code = 'rwd:' + CONVERT(NVARCHAR(36), NEWID())");
         }
     }
 }

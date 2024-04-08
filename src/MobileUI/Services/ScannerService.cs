@@ -147,14 +147,12 @@ public class ScannerService : IScannerService
 
     public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string qrCodeData)
     {
-        var decodedQR = StringHelpers.Base64Decode(qrCodeData);
-
-        if (decodedQR.StartsWith("ach:"))
+        if (qrCodeData.StartsWith("ach:"))
         {
             return await PostAchievementAsync(qrCodeData);
         }
 
-        if (decodedQR.StartsWith("rwd:"))
+        if (qrCodeData.StartsWith("rwd:"))
         {
             return await PostRewardAsync(qrCodeData);
         }

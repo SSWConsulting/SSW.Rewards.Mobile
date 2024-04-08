@@ -34,9 +34,6 @@ public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
         Uri imageUri = await UploadImage(request.ImageBytesInBase64, request.ImageFileName);
         Uri carouselImageUri = await UploadImage(request.CarouselImageBytesInBase64, request.CarouselImageFileName);
 
-        var codeData = Encoding.ASCII.GetBytes($"rwd:{request.Name}");
-        string code = Convert.ToBase64String(codeData);
-
         var entity = new Reward
         {
             Name = request.Name,
@@ -47,7 +44,7 @@ public class AddRewardCommandHandler : IRequestHandler<AddRewardCommand, int>
             ImageUri = imageUri?.AbsoluteUri,
             CarouselImageUri = carouselImageUri?.AbsoluteUri,
             IsCarousel = request.IsCarousel,
-            Code = code
+            Code = $"rwd:{Guid.NewGuid().ToString()}"
         };
 
         _context.Rewards.Add(entity);
