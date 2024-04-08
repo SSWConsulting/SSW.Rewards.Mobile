@@ -36,7 +36,7 @@
                                      VerticalItemSpacing="8" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="activityFeed:ActivityFeedViewModel">
+                    <DataTemplate x:DataType="activityFeed:ActivityFeedItemDto">
                         <Border
                             BackgroundColor="{StaticResource MainBackground}"
                             Stroke="{StaticResource MainBackground}"

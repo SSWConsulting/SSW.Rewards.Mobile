@@ -1,18 +1,16 @@
-using AutoMapper.QueryableExtensions;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
-using SSW.Rewards.Shared.DTOs.Staff;
 using SSW.Rewards.Shared.DTOs.Users;
 
-namespace Microsoft.Extensions.DependencyInjection.ActivityFeed.Queries;
+namespace SSW.Rewards.Application.ActivityFeed.Queries;
 
-public class GetActivitiesQuery : IRequest<IList<ActivityFeedViewModel>>
+public class GetActivitiesQuery : IRequest<ActivityFeedViewModel>
 {
     public ActivityFeedFilter Filter { get; set; }
     public int Skip { get; set; }
     public int Take { get; set; }
 }
 
-public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, IList<ActivityFeedViewModel>>
+public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ActivityFeedViewModel>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserService _userService;
@@ -23,7 +21,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
         _userService = userService;
     }
 
-    public async Task<IList<ActivityFeedViewModel>> Handle(GetActivitiesQuery request, CancellationToken cancellationToken)
+    public async Task<ActivityFeedViewModel> Handle(GetActivitiesQuery request, CancellationToken cancellationToken)
     {
         var filter = request.Filter;
         var skip = request.Skip;
@@ -82,13 +80,13 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
                 .Take(take)
                 .ToListAsync(cancellationToken);
         }
-
-        var result = new List<ActivityFeedViewModel>(userAchievements.Count);
+        
+        var feed = new List<ActivityFeedItemDto>();
         foreach (var userAchievement in userAchievements)
         {
             var staff = staffDtos.FirstOrDefault(s => s.UserId == userAchievement.UserId);
             
-            result.Add(new ActivityFeedViewModel
+            feed.Add(new ActivityFeedItemDto
             {
                 UserAvatar = userAchievement.User.Avatar,
                 UserName = userAchievement.User.FullName,
@@ -103,7 +101,10 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ILi
             });
         }
 
-        return result;
+        return new ActivityFeedViewModel()
+        {
+            Feed = feed
+        };
     }
 }
 

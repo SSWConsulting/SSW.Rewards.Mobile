@@ -1,10 +1,7 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
+using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
@@ -18,12 +15,12 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel(IActivityService activityService) : BaseViewModel
+public partial class ActivityPageViewModel(IActivityFeedService activityService) : BaseViewModel
 {
     public ActivityPageSegments CurrentSegment { get; set; }
 
     [ObservableProperty]
-    private ObservableCollection<ActivityFeedViewModel> _feed = [];
+    private ObservableCollection<ActivityFeedItemDto> _feed = [];
 
     [ObservableProperty]
     private List<Segment> _segments = [];
@@ -36,9 +33,9 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
 
     private bool _loaded;
 
-    private IEnumerable<ActivityFeedViewModel> _allFeed = [];
+    private IEnumerable<ActivityFeedItemDto> _allFeed = [];
     
-    private IEnumerable<ActivityFeedViewModel> _friendsFeed = [];
+    private IEnumerable<ActivityFeedItemDto> _friendsFeed = [];
     private bool _friendsLoaded;
 
     public async Task Initialise()
@@ -107,20 +104,31 @@ public partial class ActivityPageViewModel(IActivityService activityService) : B
 
     private async Task RefreshFeed()
     {
-        var feed = (CurrentSegment == ActivityPageSegments.Friends
-            ? await activityService.GetFriendsFeed()
-            : await activityService.GetActivityFeed())?.Select(x =>
+        IEnumerable<ActivityFeedItemDto> feed;
+        
+        try
         {
-            x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
-                ? "v2sophie"
-                : x.UserAvatar;
-            x.AchievementMessage = GetMessage(x.Achievement);
-            x.TimeElapsed = GetTimeElapsed(x.AwardedAt);
-            return x;
-        });
+            feed = (CurrentSegment == ActivityPageSegments.Friends
+                ? await activityService.GetFriendsActivities(CancellationToken.None)
+                : await activityService.GetAllActivities(CancellationToken.None)).Feed.Select(x =>
+            {
+                x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
+                    ? "v2sophie"
+                    : x.UserAvatar;
+                x.AchievementMessage = GetMessage(x.Achievement);
+                x.TimeElapsed = GetTimeElapsed(x.AwardedAt);
+                return x;
+            });
+        }
+        catch (Exception e)
+        {
+            if (! await ExceptionHandler.HandleApiException(e))
+            {
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+            }
 
-        if (feed is null)
             return;
+        }
 
         if (CurrentSegment == ActivityPageSegments.Friends)
         {
