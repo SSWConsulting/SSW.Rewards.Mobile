@@ -1,0 +1,122 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
+             xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
+             x:DataType="viewModels:ActivityPageViewModel"
+             ControlTemplate="{DynamicResource PageTemplate}"
+             x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
+             x:Name="Activity">
+    <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
+        <Grid RowDefinitions="45" Grid.Row="0">
+            <controls:SegmentedControl
+                Grid.Row="0"
+                Segments="{Binding Segments}"
+                SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior
+                        EventName="SelectionChanged"
+                        Command="{Binding FilterBySegmentCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
+        </Grid>
+        <RefreshView
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}"
+            Grid.Row="1">
+            <CollectionView
+                ItemsSource="{Binding Feed}"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                IsVisible="True">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     VerticalItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="activityFeed:ActivityFeedItemDto">
+                        <Border
+                            BackgroundColor="{StaticResource MainBackground}"
+                            Stroke="{StaticResource MainBackground}"
+                            StrokeShape="RoundRectangle 10">
+                            <Grid RowDefinitions="Auto, *"
+                                  RowSpacing="10"
+                                  Padding="15">
+                                <Grid Grid.Row="0"
+                                      ColumnDefinitions="Auto, *"
+                                      ColumnSpacing="15">
+                                    <mct:AvatarView
+                                        Grid.Column="0"
+                                        ImageSource="{Binding UserAvatar}"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        CornerRadius="25"
+                                        BorderWidth="2" />
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontSize="20"
+                                            Style="{StaticResource LabelBold}"
+                                            Text="{Binding UserName}" />
+                                        <Label
+                                            FontSize="14"
+                                            Text="{Binding UserTitle}" />
+                                        <Label
+                                            FontSize="14"
+                                            Text="{Binding TimeElapsed}"
+                                            Margin="0,3,0,0"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                                <Border
+                                    Grid.Row="1"
+                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                    Stroke="{StaticResource MainBackground}"
+                                    StrokeShape="RoundRectangle 5"
+                                    Padding="10">
+                                    <Grid ColumnDefinitions="Auto, *"
+                                          ColumnSpacing="15">
+                                        <Label
+                                            Grid.Column="0"
+                                            Text="&#xf51e;"
+                                            TextColor="{StaticResource Coin}"
+                                            FontFamily="FA6Solid"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            FontSize="14"
+                                            Style="{StaticResource LabelBold}"
+                                            FontAutoScalingEnabled="False"
+                                            InputTransparent="True">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding Achievement.AchievementType}"
+                                                             Value="{x:Static enums:AchievementType.Attended}">
+                                                    <Setter Property="TextColor" Value="White"/>
+                                                    <Setter Property="Text" Value="&#xf3c5;"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label
+                                            Grid.Column="1"
+                                            FontSize="14"
+                                            Text="{Binding AchievementMessage}" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <ActivityIndicator
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+    </Grid>
+</ContentPage>
