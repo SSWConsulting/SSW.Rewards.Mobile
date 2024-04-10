@@ -5,6 +5,7 @@ namespace SSW.Rewards.ApiClient.Services;
 
 public interface IUserAdminService
 {
+    Task<UsersViewModel> GetUsers(CancellationToken cancellationToken = default);
     Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default);
     Task<ProfileDeletionRequestsVieWModel> GetProfileDeletionRequests(CancellationToken cancellationToken = default);
     Task DeleteUserProfile(AdminDeleteProfileDto dto, CancellationToken cancellationToken = default);
@@ -19,6 +20,25 @@ public class UserAdminService : IUserAdminService
     public UserAdminService(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient(Constants.AuthenticatedClient);
+    }
+    
+    public async Task<UsersViewModel> GetUsers(CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetUsers", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<UsersViewModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get users: {responseContent}");
     }
     
     public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)
