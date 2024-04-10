@@ -29,6 +29,7 @@ public static class ConfigureServices
             services.AddSingleton<ISkillsAdminService, SkillsAdminService>();
             services.AddSingleton<IStaffAdminService, StaffAdminService>();
             services.AddSingleton<IUserAdminService, UserAdminService>();
+            services.AddSingleton<IRoleService, RoleService>();
         }
 
         services.AddSingleton<IAchievementService, AchievementService>();

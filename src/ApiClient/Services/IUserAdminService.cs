@@ -7,6 +7,7 @@ public interface IUserAdminService
 {
     Task<UsersViewModel> GetUsers(CancellationToken cancellationToken = default);
     Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default);
+    Task UpdateUserRoles(UserDto dto, CancellationToken cancellationToken = default);
     Task<ProfileDeletionRequestsVieWModel> GetProfileDeletionRequests(CancellationToken cancellationToken = default);
     Task DeleteUserProfile(AdminDeleteProfileDto dto, CancellationToken cancellationToken = default);
 }
@@ -39,6 +40,18 @@ public class UserAdminService : IUserAdminService
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
         throw new Exception($"Failed to get users: {responseContent}");
+    }
+    
+    public async Task UpdateUserRoles(UserDto dto, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}UpdateUserRoles", dto, cancellationToken);
+
+        if  (!result.IsSuccessStatusCode)
+        {
+            var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+            throw new Exception($"Failed to update user roles: {responseContent}");
+        }
     }
     
     public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)

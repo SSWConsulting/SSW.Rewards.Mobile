@@ -1,8 +1,6 @@
-﻿
+﻿namespace SSW.Rewards.Shared.DTOs.Roles;
 
-namespace SSW.Rewards.Shared.DTOs.Users;
-
-public class UserRoleDto
+public class RoleDto
 {
     public int Id { get; set; }
 

@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Shared.DTOs.Users;
+﻿using SSW.Rewards.Shared.DTOs.Roles;
+
+namespace SSW.Rewards.Shared.DTOs.Users;
 
 public class UserDto
 {
@@ -8,5 +10,5 @@ public class UserDto
 
     public string Email { get; set; } = string.Empty;
     
-    public IEnumerable<UserRoleDto> Roles { get; set; } = Enumerable.Empty<UserRoleDto>();
+    public IEnumerable<RoleDto> Roles { get; set; } = Enumerable.Empty<RoleDto>();
 }

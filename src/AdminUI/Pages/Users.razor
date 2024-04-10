@@ -6,9 +6,11 @@
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components
 
-@attribute [Authorize (Roles = "Admin")]
+@attribute [Authorize(Roles = "Admin")]
 
 @inject IUserAdminService UserAdminService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <MudText Typo="Typo.h2">Users</MudText>
 <MudText Typo="Typo.body1">All users</MudText>
@@ -21,7 +23,7 @@
         <MudTextField @bind-Value="_searchString"
                       Placeholder="Search for a user"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" />
+                      Class="mt-0"/>
     </ToolbarContent>
     <HeadingTemplate>
         <MudTh Style="max-width: fit-content">
@@ -45,16 +47,26 @@
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
-        <MudTd DataLabel="Roles">@context.Roles.Select(x => x.Name).Aggregate((a, b) => a + ", " + b)</MudTd>
+        <MudTd DataLabel="Roles">
+            <MudStack Row="true" Spacing="5" Style="align-items: center; width: 100%">
+                <MudText>@string.Join(", ", context.Roles.Select(x => x.Name).OrderBy(x => x))</MudText>
+                <MudSpacer/>
+                <MudIconButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    OnClick="() => { EditRoles(context); }"
+                    Icon="@Icons.Material.Filled.Edit"/>
+            </MudStack>
+        </MudTd>
     </RowTemplate>
 </Table>
 
 @code {
-    UsersViewModel _vm = new ();
-    
+    UsersViewModel _vm = new();
+
     private bool _loading = true;
     private string _searchString = string.Empty;
-    
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -73,4 +85,28 @@
         _vm = await UserAdminService.GetUsers();
         _loading = false;
     }
+
+    private async Task EditRoles(UserDto user)
+    {
+        var dialog = DialogService.Show<SSW.Rewards.Admin.UI.Components.Dialogs.Users.EditUserRoles>("Edit User Roles", new DialogParameters { { "User", user } });
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            try
+            {
+                if (result.Data is UserDto userResult)
+                {
+                    await UserAdminService.UpdateUserRoles(userResult);
+                    StateHasChanged();
+                }
+                
+                Snackbar.Add("Roles updated", Severity.Success);
+            }
+            catch (Exception)
+            {
+                Snackbar.Add("Failed to update roles", Severity.Error);
+            }
+        }
+    }
+
 }
