@@ -180,9 +180,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
             return;
 
         _skip += _take;
-        
         IsBusy = true;
-
         var feed = await GetFeedData();
         
         if (feed.Count == 0)
