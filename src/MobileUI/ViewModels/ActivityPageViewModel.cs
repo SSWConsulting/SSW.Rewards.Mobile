@@ -33,10 +33,14 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
 
     private bool _loaded;
 
-    private IEnumerable<ActivityFeedItemDto> _allFeed = [];
+    private List<ActivityFeedItemDto> _allFeed = [];
     
-    private IEnumerable<ActivityFeedItemDto> _friendsFeed = [];
+    private List<ActivityFeedItemDto> _friendsFeed = [];
     private bool _friendsLoaded;
+
+    private const int _take = 50;
+    private int _skip;
+    private bool _limitReached;
 
     public async Task Initialise()
     {
@@ -104,31 +108,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
 
     private async Task RefreshFeed()
     {
-        IEnumerable<ActivityFeedItemDto> feed;
-        
-        try
-        {
-            feed = (CurrentSegment == ActivityPageSegments.Friends
-                ? await activityService.GetFriendsActivities(CancellationToken.None)
-                : await activityService.GetAllActivities(CancellationToken.None)).Feed.Select(x =>
-            {
-                x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
-                    ? "v2sophie"
-                    : x.UserAvatar;
-                x.AchievementMessage = GetMessage(x.Achievement);
-                x.TimeElapsed = GetTimeElapsed(x.AwardedAt);
-                return x;
-            });
-        }
-        catch (Exception e)
-        {
-            if (! await ExceptionHandler.HandleApiException(e))
-            {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
-            }
-
-            return;
-        }
+        var feed = await GetFeedData();
+        _skip = 0;
 
         if (CurrentSegment == ActivityPageSegments.Friends)
         {
@@ -162,11 +143,69 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
             }
         }
     }
+    
+    private async Task<List<ActivityFeedItemDto>> GetFeedData()
+    {
+        List<ActivityFeedItemDto> feed = [];
+        
+        try
+        {
+            feed = (CurrentSegment == ActivityPageSegments.Friends
+                ? await activityService.GetFriendsActivities(_take, _skip, CancellationToken.None)
+                : await activityService.GetAllActivities(_take, _skip, CancellationToken.None)).Feed.Select(x =>
+            {
+                x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
+                    ? "v2sophie"
+                    : x.UserAvatar;
+                x.AchievementMessage = GetMessage(x.Achievement);
+                x.TimeElapsed = GetTimeElapsed(x.AwardedAt);
+                return x;
+            }).ToList();
+        }
+        catch (Exception e)
+        {
+            if (! await ExceptionHandler.HandleApiException(e))
+            {
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+            }
+        }
+
+        return feed;
+    }
+    
+    [RelayCommand]
+    private async Task LoadMore()
+    {
+        if (_limitReached)
+            return;
+
+        _skip += _take;
+        
+        IsBusy = true;
+
+        var feed = await GetFeedData();
+        
+        if (feed.Count == 0)
+        {
+            _limitReached = true;
+            IsBusy = false;
+            return;
+        }
+        
+        foreach (var f in feed)
+        {
+            Feed.Add(f);
+        }
+
+        IsBusy = false;
+    }
 
     [RelayCommand]
     private async Task FilterBySegment()
     {
         CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
+        _limitReached = false;
+        _skip = 0;
         
         if (CurrentSegment == ActivityPageSegments.Friends && !_friendsLoaded)
         {
