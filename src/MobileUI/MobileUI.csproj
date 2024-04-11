@@ -155,6 +155,10 @@
 		  <DependentUpon>OnBoarding.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Pages\ActivityPage.xaml.cs">
+		  <DependentUpon>ActivityPage.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -211,6 +215,9 @@
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="PopupPages\OnBoardingPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Pages\ActivityPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

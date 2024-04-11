@@ -93,10 +93,6 @@
             <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
         </Tab>
 
-        <Tab Route="me" Icon="icon_user" Title="Me">
-            <ShellContent ContentTemplate="{DataTemplate pages:MyProfilePage}" />
-        </Tab>
-
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
             <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
         </Tab>
@@ -107,6 +103,10 @@
 
         <Tab Route="people" Icon="icon_people" Title="Network">
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
+        </Tab>
+        
+        <Tab Route="activity" Icon="icon_bell" Title="Activity">
+            <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
         </Tab>
     </FlyoutItem>
 

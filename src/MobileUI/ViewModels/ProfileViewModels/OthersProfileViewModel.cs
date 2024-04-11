@@ -16,8 +16,6 @@ public partial class OthersProfileViewModel(
         await _initialise();
     }
 
-    public bool ShowCloseButton { get; set; } = true;
-
     public void SetUser(LeaderViewModel vm)
     {
         ProfilePic = vm.ProfilePic;
@@ -42,12 +40,6 @@ public partial class OthersProfileViewModel(
         IsStaff = !vm.IsExternal;
 
         ShowBalance = false;
-    }
-
-    [RelayCommand]
-    private async Task ClosePage()
-    {
-        await Navigation.PopModalAsync();
     }
 
     [RelayCommand]

@@ -1,9 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
+using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class FlyoutHeaderViewModel : ObservableObject
 {
+    private readonly IUserService _userService;
+    private readonly IPermissionsService _permissionsService;
+
     [ObservableProperty]
     private string _profilePic;
 
@@ -25,8 +31,10 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     [ObservableProperty]
     private int _rank;
 
-    public FlyoutHeaderViewModel(IUserService userService)
+    public FlyoutHeaderViewModel(IUserService userService, IPermissionsService permissionsService)
     {
+        _userService = userService;
+        _permissionsService = permissionsService;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
 
         userService.MyNameObservable().Subscribe(myName => Name = myName);
@@ -36,5 +44,12 @@ public partial class FlyoutHeaderViewModel : ObservableObject
         userService.MyBalanceObservable().Subscribe(myBalance => Credits = myBalance);
         userService.MyQrCodeObservable().Subscribe(myQrCode => QrCode = myQrCode);
         userService.MyAllTimeRankObservable().Subscribe(myRank => Rank = myRank);
+    }
+    
+    [RelayCommand]
+    private async Task ChangeProfilePicture()
+    {
+        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        await MopupService.Instance.PushAsync(popup);
     }
 }
