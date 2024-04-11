@@ -228,7 +228,27 @@ public class UserService : IUserService, IRolesService
 
         return vm;
     }
+    
+    public UsersViewModel GetUsers()
+    {
+        return GetUsers(CancellationToken.None).Result;
+    }
 
+    public async Task<UsersViewModel> GetUsers(CancellationToken cancellationToken)
+    {
+        var vm = await _dbContext.Users
+            .Include(x => x.Roles)
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+
+        if (vm == null)
+        {
+            throw new NotFoundException(nameof(User));
+        }
+
+        return new UsersViewModel { Users = vm };
+    }
+    
     public UserAchievementsViewModel GetUserAchievements(int userId)
     {
         return GetUserAchievements(userId, CancellationToken.None).Result;

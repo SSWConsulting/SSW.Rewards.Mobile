@@ -34,6 +34,10 @@ public interface IUserService
     UserProfileDto GetUser(int userId);
     Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken);
     Task<int> GetUserId(string email, CancellationToken cancellationToken);
+    
+    // Get users
+    UsersViewModel GetUsers();
+    Task<UsersViewModel> GetUsers(CancellationToken cancellationToken);
 
     // Get user achievements
     UserAchievementsViewModel GetUserAchievements(int userId);
