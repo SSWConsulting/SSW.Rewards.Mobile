@@ -32,19 +32,19 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
         
         var staffDtos = await _dbContext.StaffMembers
             .Join(_dbContext.Users,
-                s => s.Email, 
-                u => u.Email,
-                (sm, u) =>
+                staff => staff.Email, 
+                user => user.Email,
+                (staff, user) =>
                     new
                     {
-                        UserId = u.Id,
-                        sm.Name,
-                        ProfilePicture = u.Avatar,
-                        sm.Title,
-                        sm.Email,
-                        AchievementId = sm.StaffAchievement.Id,
-                        sm.IsDeleted,
-                        u.Activated
+                        UserId = user.Id,
+                        staff.Name,
+                        ProfilePicture = user.Avatar,
+                        staff.Title,
+                        staff.Email,
+                        AchievementId = staff.StaffAchievement.Id,
+                        staff.IsDeleted,
+                        user.Activated
                     })
             .Where(x => !x.IsDeleted && x.Activated)
             .ToListAsync(cancellationToken);
