@@ -17,6 +17,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Users.Commands.AdminDeleteProfile;
 using SSW.Rewards.Application.Users.Queries.AdminGetProfileDeletionRequests;
+using SSW.Rewards.Application.Users.Queries.GetUsers;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -98,6 +99,21 @@ public class UserController : ApiControllerBase
         await Mediator.Send(new DeleteMyProfileCommand());
 
         return Ok();
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<ActionResult<UsersViewModel>> GetUsers()
+    {
+        return await Mediator.Send(new GetUsersQuery());
+    }
+    
+    [HttpPost]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<IActionResult> UpdateUserRoles(UserDto dto)
+    {
+        await Mediator.Send(new AdminUpdateUserRolesCommand { User = dto });
+        return Accepted();
     }
 
     [HttpGet]

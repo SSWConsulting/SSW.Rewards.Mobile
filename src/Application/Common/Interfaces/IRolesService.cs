@@ -1,4 +1,4 @@
-﻿using SSW.Rewards.Domain.Entities;
+﻿
 
 namespace SSW.Rewards.Application.Common.Interfaces;
 
