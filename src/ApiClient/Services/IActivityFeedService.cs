@@ -5,8 +5,8 @@ namespace SSW.Rewards.ApiClient.Services;
 
 public interface IActivityFeedService
 {
-    Task<ActivityFeedViewModel> GetAllActivities(CancellationToken cancellationToken);
-    Task<ActivityFeedViewModel> GetFriendsActivities(CancellationToken cancellationToken);
+    Task<ActivityFeedViewModel> GetAllActivities(int take, int skip, CancellationToken cancellationToken);
+    Task<ActivityFeedViewModel> GetFriendsActivities(int take, int skip, CancellationToken cancellationToken);
 }
 
 public class ActivityFeedService(IHttpClientFactory clientFactory) : IActivityFeedService
@@ -15,9 +15,9 @@ public class ActivityFeedService(IHttpClientFactory clientFactory) : IActivityFe
 
     private const string _baseRoute = "api/ActivityFeed/";
 
-    public async Task<ActivityFeedViewModel> GetAllActivities(CancellationToken cancellationToken)
+    public async Task<ActivityFeedViewModel> GetAllActivities(int take, int skip, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}GetAllActivities", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetAllActivities?skip={skip}&take={take}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
@@ -33,9 +33,9 @@ public class ActivityFeedService(IHttpClientFactory clientFactory) : IActivityFe
         throw new Exception($"Failed to get all activities: {responseContent}");
     }
     
-    public async Task<ActivityFeedViewModel> GetFriendsActivities(CancellationToken cancellationToken)
+    public async Task<ActivityFeedViewModel> GetFriendsActivities(int take, int skip, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}GetFriendsActivities", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetFriendsActivities?skip={skip}&take={take}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

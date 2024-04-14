@@ -58,7 +58,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
                 .ToList();
 
             var friendIds = staffDtos
-                .Where(staff => completedAchievements.Contains(staff.AchievementId))
+                .Where(staff => staff.UserId != user.Id && completedAchievements.Contains(staff.AchievementId))
                 .Select(staff => staff.UserId);
 
             userAchievements = await _dbContext.UserAchievements
@@ -80,26 +80,24 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
                 .Take(take)
                 .ToListAsync(cancellationToken);
         }
-        
-        var feed = new List<ActivityFeedItemDto>();
-        foreach (var userAchievement in userAchievements)
+
+        var feed = userAchievements.Select(userAchievement =>
         {
             var staff = staffDtos.FirstOrDefault(s => s.UserId == userAchievement.UserId);
-            
-            feed.Add(new ActivityFeedItemDto
+            return new ActivityFeedItemDto
             {
-                UserAvatar = userAchievement.User.Avatar,
-                UserName = userAchievement.User.FullName,
-                UserTitle = staff != null ? staff.Title : "Community",
+                UserAvatar = userAchievement.User.Avatar ?? string.Empty,
+                UserName = userAchievement.User.FullName ?? string.Empty,
+                UserTitle = staff?.Title ?? "Community",
                 Achievement = new UserAchievementDto
                 {
-                    AchievementName = userAchievement.Achievement.Name,
+                    AchievementName = userAchievement.Achievement.Name ?? string.Empty,
                     AchievementType = userAchievement.Achievement.Type,
                     AchievementValue = userAchievement.Achievement.Value
                 },
                 AwardedAt = userAchievement.AwardedAt,
-            });
-        }
+            };
+        }).ToList();
 
         return new ActivityFeedViewModel()
         {
