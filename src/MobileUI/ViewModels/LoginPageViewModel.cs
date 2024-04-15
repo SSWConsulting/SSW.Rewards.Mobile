@@ -8,6 +8,7 @@ public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
     private readonly IPushNotificationsService _pushNotificationsService;
+    private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -20,10 +21,15 @@ public partial class LoginPageViewModel : BaseViewModel
 
     bool _isStaff;
 
-    public LoginPageViewModel(IAuthenticationService authService, IUserService userService, IPushNotificationsService pushNotificationsService)
+    public LoginPageViewModel(
+        IAuthenticationService authService,
+        IUserService userService,
+        IPushNotificationsService pushNotificationsService,
+        IPermissionsService permissionsService)
     {
         _authService = authService;
         _pushNotificationsService = pushNotificationsService;
+        _permissionsService = permissionsService;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
@@ -114,8 +120,12 @@ public partial class LoginPageViewModel : BaseViewModel
     private async Task OnAfterLogin()
     {
         Application.Current.MainPage = App.ResolveShell(_isStaff);
-        await UploadDeviceTokenIfRequired();
         await Shell.Current.GoToAsync("//main");
+        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
+        if (granted)
+        {
+            await UploadDeviceTokenIfRequired();
+        }
     }
 
     /// <summary>
@@ -125,8 +135,8 @@ public partial class LoginPageViewModel : BaseViewModel
     private async Task UploadDeviceTokenIfRequired()
     {
         var now = DateTime.Now;
-        var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MaxValue.AddDays(-30));
-        if (lastTimeUpdated.AddDays(30) < now)
+        var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MinValue);
+        if (now <= lastTimeUpdated.AddDays(30)) // update token on the server only after 30 days from the previous update
         {
             return;
         }

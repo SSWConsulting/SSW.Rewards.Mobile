@@ -38,7 +38,7 @@ public class NotificationsController : ApiControllerBase
         {
             DeviceToken = dto.DeviceToken,
             LastTimeUpdated = dto.LastTimeUpdated,
-            DeviceId = dto.DeviceToken,
+            DeviceId = dto.DeviceId,
         }));
     }
 
