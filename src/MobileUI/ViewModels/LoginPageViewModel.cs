@@ -137,7 +137,7 @@ public partial class LoginPageViewModel : BaseViewModel
             return;
         }
 
-        var success = await _pushNotificationsService.UploadDeviceToken(token, now);
+        var success = await _pushNotificationsService.UploadDeviceToken(token, now, DeviceService.GetDeviceId());
         if (success)
         {
             Preferences.Set("DeviceTokenLastTimeUpdated", now);

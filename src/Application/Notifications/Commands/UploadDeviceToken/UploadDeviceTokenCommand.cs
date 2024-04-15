@@ -4,6 +4,7 @@ public class UploadDeviceTokenCommand : IRequest<Unit>
 {
     public string DeviceToken { get; set; }
     public DateTime LastTimeUpdated { get; set; }
+    public string DeviceId { get; set; }
 }
 
 public class Handler : IRequestHandler<UploadDeviceTokenCommand, Unit>
@@ -22,7 +23,11 @@ public class Handler : IRequestHandler<UploadDeviceTokenCommand, Unit>
         var currentUser = _userService.GetCurrentUser();
         var dbUser = await _context.Users.FirstAsync(x => x.Id == currentUser.Id, cancellationToken);
 
-        var currentDeviceToken = await _context.DeviceTokens.FirstOrDefaultAsync(x => x.User.Id == currentUser.Id, cancellationToken);
+        var currentDeviceToken =
+            await _context.DeviceTokens.FirstOrDefaultAsync(x =>
+                    x.DeviceId == request.DeviceToken &&
+                    x.User.Id == currentUser.Id,
+                cancellationToken);
         if (currentDeviceToken == null)
         {
             AddToken(request, dbUser);
@@ -43,6 +48,7 @@ public class Handler : IRequestHandler<UploadDeviceTokenCommand, Unit>
             {
                 Token = request.DeviceToken,
                 LastTimeUpdated = request.LastTimeUpdated,
+                DeviceId = request.DeviceId,
                 User = user
             };
 

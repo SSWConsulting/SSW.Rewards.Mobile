@@ -36,7 +36,9 @@ public class NotificationsController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new UploadDeviceTokenCommand
         {
-            DeviceToken = dto.DeviceToken, LastTimeUpdated = dto.LastTimeUpdated
+            DeviceToken = dto.DeviceToken,
+            LastTimeUpdated = dto.LastTimeUpdated,
+            DeviceId = dto.DeviceToken,
         }));
     }
 

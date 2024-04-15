@@ -6,7 +6,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IPushNotificationsService
 {
-    public Task<bool> UploadDeviceToken(string token, DateTime lastTimeUpdated);
+    public Task<bool> UploadDeviceToken(string token, DateTime lastTimeUpdated, string deviceId);
 }
 
 public class PushNotificationsService : IPushNotificationsService
@@ -18,11 +18,11 @@ public class PushNotificationsService : IPushNotificationsService
         _notificationsService = notificationsService;
     }
 
-    public async Task<bool> UploadDeviceToken(string token, DateTime lastTimeUpdated)
+    public async Task<bool> UploadDeviceToken(string token, DateTime lastTimeUpdated, string deviceId)
     {
         try
         {
-            var dto = new DeviceTokenDto { DeviceToken = token, LastTimeUpdated = lastTimeUpdated };
+            var dto = new DeviceTokenDto { DeviceToken = token, LastTimeUpdated = lastTimeUpdated, DeviceId = deviceId };
             await _notificationsService.UploadDeviceToken(dto, CancellationToken.None);
             return true;
         }
