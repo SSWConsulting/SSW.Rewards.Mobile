@@ -34,6 +34,7 @@ public static class ConfigureServices
 
         services.AddSingleton<IAchievementService, AchievementService>();
         services.AddSingleton<ILeaderboardService, LeaderboardService>();
+        services.AddSingleton<INotificationsService, NotificationsService>();
         services.AddSingleton<IQuizService, QuizService>();
         services.AddSingleton<IRewardService, RewardService>();
         services.AddSingleton<ISkillsService, SkillsService>();

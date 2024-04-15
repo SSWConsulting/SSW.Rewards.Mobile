@@ -21,6 +21,10 @@ public partial class AppShell : Shell
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
+        if (Preferences.ContainsKey("DeviceToken"))
+        {
+            Debug.WriteLine("Token exists");
+        }
     }
 
     private bool _isStaff;

@@ -90,12 +90,14 @@
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
+        <GoogleServicesJson Include="Platforms/Android/google-services.json" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.6.2.1" />
-		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.1">
-		</PackageReference>
-		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.2.0.5">
-		</PackageReference>
+		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2"/>
+		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.2.0.6" />
+        <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
+        <Compile Update="Platforms\Android\Services\RewardsFirebaseMessagingService.cs">
+        </Compile>
 	</ItemGroup>
 
 	<ItemGroup>

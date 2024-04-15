@@ -86,6 +86,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(options);
         builder.Services.AddSingleton<ISnackbarService, SnackBarService>();
         builder.Services.AddSingleton<IPermissionsService, PermissionsService>();
+        builder.Services.AddSingleton<IPushNotificationsService, PushNotificationsService>();
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
