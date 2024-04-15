@@ -32,6 +32,10 @@ jobs:
 
           Set-Content src/MobileUI/MobileUI.csproj -Value $newContent
 
+      - name: Update google-services.json
+        run: |
+          echo ${{ secrets.GOOGLE_SERVICES_JSON }} > src/MobileUI/Platforms/Android/google-services.json
+
       - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v3
         with:
