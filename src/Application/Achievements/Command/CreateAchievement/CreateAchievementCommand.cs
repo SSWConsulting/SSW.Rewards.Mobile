@@ -25,9 +25,9 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
 
     public async Task<AchievementAdminDto> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
     {
-        var codeData = Encoding.ASCII.GetBytes($"ach:{request.Name}");
+        var codeData = Encoding.ASCII.GetBytes($"ach:{Guid.NewGuid().ToString()}");
         var code = Convert.ToBase64String(codeData);
-
+        
         var achievement = new Achievement
         {
             Name = request.Name,

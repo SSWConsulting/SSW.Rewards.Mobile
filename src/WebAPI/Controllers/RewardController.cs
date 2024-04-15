@@ -79,6 +79,7 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
     public async Task<ActionResult<ClaimRewardResult>> Claim(ClaimRewardDto claim)
     {
         return Ok(await Mediator.Send(new ClaimRewardCommand

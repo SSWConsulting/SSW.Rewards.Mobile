@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Infrastructure.Persistence;
+using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.WebAPI.Filters;
 using SSW.Rewards.WebAPI.Services;
 
@@ -84,6 +85,10 @@ public static class ConfigureServices
         services.AddApplicationInsightsTelemetry();
         services.AddDistributedMemoryCache();
 
+        //TODO: Remove magic string
+        services.AddAuthorization(options => 
+            options.AddPolicy(Policies.MobileApp, policy => policy.RequireClaim("client_id", "ssw-rewards-mobile-app")));
+        
         return services;
     }
 }
