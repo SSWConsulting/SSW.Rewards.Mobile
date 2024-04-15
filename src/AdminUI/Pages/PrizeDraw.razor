@@ -35,7 +35,6 @@ else
                 ToStringFunc="@GetAchievementName"
             />
         </MudItem>
-
         <MudItem>
             <MudSelect
                 Style="width: 250px;"
@@ -49,6 +48,13 @@ else
                     <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
                 }
             </MudSelect>
+        </MudItem>        
+        <MudItem>
+            <MudTextField
+                Label="Leaderboard Top X"
+                Variant="Variant.Filled"
+                Type="InputType.Number"
+                @bind-Value="_top"/>
         </MudItem>
         <MudItem>
             <MudCheckBox T="bool"
@@ -169,6 +175,7 @@ else
     AchievementDto? _selectedAchievement;
     string? _selectedRewardCode;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
+    private int _top = 0;
     private bool _filterStaff = true;
     private EligibleUserDto? _prizeWinner;
 
@@ -195,7 +202,8 @@ else
             {
                 AchievementId = _selectedAchievement?.Id,
                 Filter = _filter,
-                FilterStaff = _filterStaff
+                FilterStaff = _filterStaff,
+                Top = _top,
             };
 
             var eligibleUsersVm = await prizeDrawService.GetEligibleUsers(filter, CancellationToken.None);
