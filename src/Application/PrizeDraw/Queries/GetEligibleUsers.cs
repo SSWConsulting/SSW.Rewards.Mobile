@@ -11,6 +11,7 @@ public class GetEligibleUsers : IRequest<EligibleUsersViewModel>
     public int AchievementId { get; set; }
     public LeaderboardFilter Filter { get; set; }
     public bool FilterStaff { get; set; }
+    public int Top { get; set; }
 }
 
 public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, EligibleUsersViewModel>
@@ -103,6 +104,11 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
         };
 
         vm.EligibleUsers = vm.EligibleUsers.OrderByDescending(u => u.Balance);
+        
+        if (request.Top > 0)
+        {
+            vm.EligibleUsers = vm.EligibleUsers.Take(request.Top);
+        }
 
         return vm;
     }
