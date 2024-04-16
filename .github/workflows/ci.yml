@@ -84,6 +84,16 @@ jobs:
         run: |
           echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
 
+      - name: Check if file exists
+        shell: bash
+        run: |
+          test -f src/MobileUI/Platforms/Android/google-services.json && echo "File exists" || echo "Cannot find the file"
+
+      - name: Print first lines
+        shell: bash
+        run: |
+          head -n 5 src/MobileUI/Platforms/Android/google-services.json
+
       - name: Build and sign Android
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
 
