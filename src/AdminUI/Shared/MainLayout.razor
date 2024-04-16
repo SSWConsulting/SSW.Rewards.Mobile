@@ -3,6 +3,8 @@
 
 @inherits LayoutComponentBase
 
+<PageTitle>@_title</PageTitle>
+
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="AdminPortalMudTheme.Theme"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -10,7 +12,7 @@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudSpacer/>
+        <MudText Typo="Typo.h4">@_title</MudText>
     </MudAppBar>
     <MudDrawer ClipMode="DrawerClipMode.Never" @bind-Open="_drawerOpen" Elevation="1" Variant="DrawerVariant.Mini" OpenMiniOnHover="true" Style="height: 100vh">
         <MudDrawerHeader>
@@ -30,6 +32,8 @@
     private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
 
+    private string _title = "Admin Portal";
+    
     [CascadingParameter]
     protected Task<AuthenticationState> AuthStat { get; set; } = null!;
 

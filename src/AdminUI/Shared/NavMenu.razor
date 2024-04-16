@@ -10,7 +10,9 @@
         <AuthorizeView Roles="Admin, Staff">
             @foreach (var staffPage in NavigationPages.StaffPages())
             {
-                <MudNavLink Href="@staffPage.Href" Match="NavLinkMatch.Prefix" Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
+                <MudNavLink Href="@staffPage.Href" 
+                            Match="NavLinkMatch.Prefix" 
+                            Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
                 <MudDivider Style="background-color: black"/>
             }
         </AuthorizeView>
@@ -18,7 +20,9 @@
         <AuthorizeView Roles="Admin" Context="sub_context">
             @foreach (var adminPage in NavigationPages.AdminPages())
             {
-                <MudNavLink Href="@adminPage.Href" Match="NavLinkMatch.Prefix" Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
+                <MudNavLink Href="@adminPage.Href"
+                            Match="NavLinkMatch.Prefix" 
+                            Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
                 <MudDivider Style="background-color: black"/>
             }
         </AuthorizeView>
