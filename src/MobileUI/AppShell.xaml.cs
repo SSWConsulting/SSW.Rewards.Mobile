@@ -33,7 +33,12 @@ public partial class AppShell : Shell
             OnPropertyChanged();
         }
     }
-
+    
+    public async void Handle_SettingsClicked(object sender, EventArgs e)
+    {
+        await Current.Navigation.PushModalAsync<SettingsPage>();
+    }
+    
     public async void Handle_LogOutClicked(object sender, EventArgs e)
     {
         var sure = await App.Current.MainPage.DisplayAlert("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
@@ -42,48 +47,6 @@ public partial class AppShell : Shell
         {
             _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
-        }
-    }
-
-    public void Handle_AboutClicked(object sender, EventArgs e)
-    {
-        var popup = new AboutSSW();
-        MopupService.Instance.PushAsync(popup);
-    }
-
-    public async void Handle_DeleteClicked(object sender, EventArgs e)
-    {
-        // TODO: remove the DisplayAlert and use the Mopup instead
-        // Currently blocked by this issue: https://github.com/LuckyDucko/Mopups/issues/66
-        // Note this is related to an underlying .NET MAUI change, which has been
-        // fixed, see: https://github.com/dotnet/maui/pull/16983.
-        // Until this is merged into a build we can use, we will
-        // need to use OS dialogs instead. We can also make this
-        // method sync again once we have the fix.
-        // var popup = new DeleteProfilePage(_userService);
-        // MopupService.Instance.PushAsync(popup);
-
-        // Remove all remaining code in this method after the fix is available
-
-        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "If you no longer want an SSW or SSW Rewards account, you can submit a request to SSW to delete your profile and all associated data. Are you sure you want to delete your profile and all associated data?", "Yes", "No");
-
-        if (sure)
-        {
-            var page = new BusyPage();
-            await MopupService.Instance.PushAsync(page);
-            var requestSubmitted = await _userService.DeleteProfileAsync();
-            await MopupService.Instance.PopAllAsync();
-
-            if (requestSubmitted)
-            {
-                await App.Current.MainPage.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
-                await Navigation.PushModalAsync<LoginPage>();
-                await MopupService.Instance.PopAllAsync();
-            }
-            else
-            {
-                await App.Current.MainPage.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
-            }
         }
     }
 
@@ -96,12 +59,5 @@ public partial class AppShell : Shell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
-    }
-
-    private async void Handle_IntroClicked(object sender, TappedEventArgs e)
-    {
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new OnBoardingPage(parentPageStatusBarColor: statusBarColor as Color);
-        await MopupService.Instance.PushAsync(page);
     }
 }

@@ -112,40 +112,26 @@
 
     <Shell.FlyoutFooter>
         <Grid
-            Margin="0,0,0,20"
+            Margin="0,0,0,5"
             Padding="20,0"
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End"
-            RowSpacing="15">
-
-            <!-- Intro button -->
-            <Grid
-                Grid.Column="0"
-                Grid.Row="0"
-                ColumnDefinitions="Auto,*">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Tapped="Handle_IntroClicked"/>
-                </Grid.GestureRecognizers>
-                <Label Grid.Column="0"
-                       HeightRequest="30"
-                       WidthRequest="30"
-                       VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       FontSize="Small"
-                       FontFamily="FA6Solid"
-                       TextColor="#DDDDDD"
-                       Text="&#xf25b;">
-                </Label>
-                <Label Grid.Column="1"
-                       Style="{StaticResource LabelBold}"
-                       TextColor="#DDDDDD"
-                       HorizontalOptions="Start"
-                       VerticalOptions="Center"
-                       FontSize="Small"
-                       Text="Intro" />
-            </Grid>
+            RowSpacing="10">
+            
+            <VerticalStackLayout Grid.Column="0"
+                                 Grid.Row="0"
+                                 Grid.ColumnSpan="3"
+                                 VerticalOptions="Start">
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#171717"
+                         VerticalOptions="End"/>
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#404040"
+                         VerticalOptions="Start"/>
+            </VerticalStackLayout>
 
             <!-- Delete account button -->
             <Grid
@@ -155,32 +141,46 @@
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Tapped="Handle_DeleteClicked"/>
+                                          Tapped="Handle_SettingsClicked"/>
                 </Grid.GestureRecognizers>
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Small"
+                       FontSize="16"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
-                       Text="&#xf235;">
+                       Text="&#xf013;">
                 </Label>
                 <Label Grid.Column="1"
                        Style="{StaticResource LabelBold}"
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Small"
-                       Text="Delete Profile" />
+                       FontSize="16"
+                       Text="Settings" />
             </Grid>
+            
+            <VerticalStackLayout Grid.Column="0"
+                                 Grid.Row="2"
+                                 Grid.ColumnSpan="3"
+                                 VerticalOptions="Start">
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#171717"
+                         VerticalOptions="End"/>
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#404040"
+                         VerticalOptions="Start"/>
+            </VerticalStackLayout>
 
             <!-- Logout Button -->
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
-                Grid.Row="2"
+                Grid.Row="3"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
@@ -192,7 +192,7 @@
                        WidthRequest="30"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
-                       FontSize="Small"
+                       FontSize="16"
                        FontFamily="FA6Solid"
                        TextColor="#DDDDDD"
                        Text="&#xf08b;">
@@ -203,13 +203,27 @@
                        TextColor="#DDDDDD"
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
-                       FontSize="Small"
+                       FontSize="16"
                        Text="Log Out" />
             </Grid>
+            
+            <VerticalStackLayout Grid.Column="0"
+                                 Grid.Row="4"
+                                 Grid.ColumnSpan="3"
+                                 VerticalOptions="Start">
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#171717"
+                         VerticalOptions="End"/>
+                <BoxView HorizontalOptions="FillAndExpand"
+                         HeightRequest="1"
+                         Color="#404040"
+                         VerticalOptions="Start"/>
+            </VerticalStackLayout>
 
             <Label
                 Grid.Column="0"
-                Grid.Row="3"
+                Grid.Row="5"
                 Padding="0,10,0,0"
                 TextColor="#DDDDDD"
                 HorizontalOptions="Start"
@@ -223,13 +237,13 @@
                    x:Name="VersionLabel"
                    FontSize="12"
                    Grid.Column="2"
-                   Grid.Row="3"
+                   Grid.Row="5"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
             <Label
                 Grid.ColumnSpan="2"
-                Grid.Row="4"
+                Grid.Row="6"
                 Text=" "
                 IsVisible="{OnPlatform Android='False', iOS='True'}"/>
         </Grid>

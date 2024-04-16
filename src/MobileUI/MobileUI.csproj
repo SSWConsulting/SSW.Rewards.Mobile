@@ -159,6 +159,10 @@
 		  <DependentUpon>ActivityPage.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Pages\SettingsPage.xaml.cs">
+		  <DependentUpon>SettingsPage.xaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<!-- TODO: Do we need this? -->
@@ -218,6 +222,9 @@
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Pages\ActivityPage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Pages\SettingsPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>

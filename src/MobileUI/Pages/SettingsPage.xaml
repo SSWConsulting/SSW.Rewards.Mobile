@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    x:Class="SSW.Rewards.Mobile.Pages.SettingsPage"
+    x:DataType="viewModels:SettingsViewModel"
+    ControlTemplate="{DynamicResource PageTemplate}"
+    BackgroundColor="{StaticResource Background}">
+    <ContentPage.Content>
+        <TableView Intent="Menu" BackgroundColor="Transparent">
+            <TableRoot>
+                <TableSection Title="Preferences" TextColor="{StaticResource Gray500}">
+                    <TextCell Text="Intro" TextColor="White" Command="{Binding IntroClickedCommand}" />
+                    <TextCell Text="Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
+                </TableSection>
+                
+                <TableSection Title="Your Account" TextColor="{StaticResource Gray500}">
+                    <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
+                </TableSection>
+                
+                <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray500}">
+                    <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
+                </TableSection>
+            </TableRoot>
+        </TableView>
+
+    </ContentPage.Content>
+</ContentPage>

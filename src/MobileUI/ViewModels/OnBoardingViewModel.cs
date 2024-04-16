@@ -9,7 +9,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class OnBoardingViewModel : BaseViewModel
 {
     public ICommand Swiped { get; set; }
-    public ObservableCollection<CarouselViewModel> Items { get; set; }
+    public ObservableRangeCollection<CarouselViewModel> Items { get; set; } = [];
     public CarouselViewModel SelectedItem { get; set; }
 
     [ObservableProperty]
@@ -41,7 +41,11 @@ public partial class OnBoardingViewModel : BaseViewModel
     {
         IsFirstRun = isFirstRun;
         Swiped = new Command(HandleSwiped);
-        Items = new ObservableCollection<CarouselViewModel>
+    }
+
+    public void Initialise()
+    {
+        Items.AddRange(new List<CarouselViewModel>
         {
             new()
             {
@@ -76,10 +80,9 @@ public partial class OnBoardingViewModel : BaseViewModel
                 Content = "Move up the leaderboard",
                 Image = "position.png",
             },
-        };
-
+        });
+        
         SelectedItem = Items[0];
-
         SetDetails();
     }
 
@@ -117,7 +120,9 @@ public partial class OnBoardingViewModel : BaseViewModel
         IsOverlayVisible = false;
         await MopupService.Instance.PopAsync();
         Shell.Current.FlyoutIsPresented = false;
-        await Shell.Current.GoToAsync("//earn");
+        
+        if (IsFirstRun)
+            await Shell.Current.GoToAsync("//earn");
     }
 
     private void SetDetails()
