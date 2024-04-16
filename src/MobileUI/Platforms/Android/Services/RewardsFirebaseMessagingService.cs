@@ -11,5 +11,6 @@ public class RewardsFirebaseMessagingService : FirebaseMessagingService
     {
         base.OnNewToken(token);
         await SecureStorage.SetAsync("DeviceToken", token);
+        Preferences.Set("DeviceTokenLastTimeUpdated", DateTime.MinValue);
     }
 }

@@ -136,7 +136,7 @@ public partial class LoginPageViewModel : BaseViewModel
     {
         var now = DateTime.Now;
         var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MinValue);
-        if (now <= lastTimeUpdated.AddDays(30)) // update token on the server only after 30 days from the previous update
+        if (now <= lastTimeUpdated.AddDays(30)) // do not upload token if we are still in the 30-day period from the previous upload
         {
             return;
         }
