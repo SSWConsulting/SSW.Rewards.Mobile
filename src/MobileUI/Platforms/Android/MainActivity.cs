@@ -21,13 +21,7 @@ public class MainActivity : MauiAppCompatActivity
         var MainBackground = Color.FromArgb("#181818").ToAndroid();
         Window!.SetNavigationBarColor(MainBackground);
         base.OnCreate(savedInstanceState);
-        // await AzureNotificationHubService.RegisterDevice(
-        //     "ntfns-sswrewards-staging",
-        //     "smnDd7R/cxaTHu5l/IgqHi50MZ+NpNBUYcFDDdcrKgI="
-        // );
         CreateNotificationChannel();
-        var token = await FirebaseMessaging.Instance.GetToken();
-        // FirebaseMessaging.Instance.AutoInitEnabled = false;
     }
 
     private void CreateNotificationChannel()
