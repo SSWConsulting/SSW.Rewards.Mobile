@@ -22,7 +22,7 @@
                                 CornerRadius="20"
                                 BorderColor="White"
                                 BorderWidth="2"
-                                Margin="10,8,10,5"
+                                Margin="10,7,10,5"
                                 IsVisible="{Binding ShowAvatar}">
                     <mct:AvatarView.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />
@@ -33,15 +33,18 @@
                     HeightRequest="40"
                     WidthRequest="40"
                     CornerRadius="20"
+                    MinimumHeightRequest="40"
+                    MinimumWidthRequest="40"
                     BorderColor="White"
                     BackgroundColor="{StaticResource SSWRed}"
-                    Margin="10,7.5"
+                    Margin="10,7,10,5"
                     Padding="0"
                     IsVisible="{Binding ShowBack}"
                     Command="{Binding GoBackCommand}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="FluentIcons"
                                          Glyph="&#xf189;"
+                                         Size="22"
                                          Color="White"/>
                     </Button.ImageSource>
                 </Button>
