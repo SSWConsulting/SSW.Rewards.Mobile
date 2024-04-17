@@ -27,7 +27,7 @@ public partial class TopBarViewModel : ObservableObject
     public TopBarViewModel(IPermissionsService permissionsService, IUserService userService)
     {
         _permissionsService = permissionsService;
-        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (_, m) =>
         {
             switch (m.Value)
             {
