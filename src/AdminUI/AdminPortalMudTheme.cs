@@ -19,7 +19,7 @@ public static class AdminPortalMudTheme
             {
                 Primary = "#cc4141",
                 Black = "#27272f",
-                Background = "#333333",
+                Background = "#181818",
                 BackgroundGrey = "#27272f",
                 Surface = "#373740",
                 DrawerBackground = "#333333",

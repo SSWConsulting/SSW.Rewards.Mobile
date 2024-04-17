@@ -14,9 +14,14 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudText Typo="Typo.h4">@_title</MudText>
     </MudAppBar>
-    <MudDrawer ClipMode="DrawerClipMode.Never" @bind-Open="_drawerOpen" Elevation="1" Variant="DrawerVariant.Mini" OpenMiniOnHover="true" Style="height: 100vh">
-        <MudDrawerHeader>
-            <MudImage Src="/images/ssw-rewards-logo.svg" />
+    <MudDrawer ClipMode="DrawerClipMode.Never" 
+    @bind-Open="_drawerOpen" 
+    Elevation="1" 
+    Variant="DrawerVariant.Mini" 
+    OpenMiniOnHover="true" 
+    Style="height: 100vh; overflow: hidden">
+        <MudDrawerHeader Style="padding: 0; justify-content: space-around;">
+                <MudImage Src="@_titleImage" />
         </MudDrawerHeader>
         <NavMenu IsOpen="@_drawerOpen"/>
     </MudDrawer>
@@ -33,6 +38,7 @@
     private MudThemeProvider? _mudThemeProvider;
 
     private string _title = "Admin Portal";
+    private string _titleImage = "/images/ssw-rewards-logo.svg";
     
     [CascadingParameter]
     protected Task<AuthenticationState> AuthStat { get; set; } = null!;
@@ -42,6 +48,15 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+
+        if (_drawerOpen)
+        {
+            _titleImage = "/images/ssw-rewards-logo.svg";
+        }
+        else
+        {
+            _titleImage = "/images/ssw-rewards-logo-collapsed.svg";
+        }
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
