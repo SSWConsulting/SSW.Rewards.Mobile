@@ -81,8 +81,10 @@ jobs:
 
       - name: Update google-services.json
         shell: bash
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
+          echo $GOOGLE_SERVICES_JSON | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
 
       - name: Check if file exists
         shell: bash
