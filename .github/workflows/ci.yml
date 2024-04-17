@@ -82,17 +82,7 @@ jobs:
       - name: Update google-services.json
         shell: bash
         run: |
-          echo ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
-
-      - name: Check if file exists
-        shell: bash
-        run: |
-          test -f src/MobileUI/Platforms/Android/google-services.json && echo "File exists" || echo "Cannot find the file"
-
-      - name: Print content
-        shell: bash
-        run: |
-          cat src/MobileUI/Platforms/Android/google-services.json
+          ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
 
       - name: Build and sign Android
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
