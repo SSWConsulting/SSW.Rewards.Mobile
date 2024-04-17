@@ -134,22 +134,6 @@
                             <Image Source="icon_right_arrow"/>
                         </Border>
 
-                        <!-- Get Started button -->
-                        <Button
-                            Margin="0,0,20,20"
-                            HorizontalOptions="End"
-                            BackgroundColor="{StaticResource primary}"
-
-                            Command="{Binding GetStartedCommand}"
-                            Text="Get Started!">
-                            <Button.IsVisible>
-                                <MultiBinding Converter="{mct:VariableMultiValueConverter ConditionType=All}">
-                                    <Binding Path="IsLast" />
-                                    <Binding Path="IsFirstRun" Converter="{mct:InvertedBoolConverter}"/>
-                                </MultiBinding>
-                            </Button.IsVisible>
-                        </Button>
-
                     </Grid>
                 </Grid>
             </Border>
