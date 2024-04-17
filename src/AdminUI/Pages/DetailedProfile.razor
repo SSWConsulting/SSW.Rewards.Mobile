@@ -67,28 +67,30 @@
 
 @* Skill Section *@
 <MudPaper Class="mt-8">
-    <div class="d-flex justify-center" >
-            <div style="width: 50%">
-                <MudSelect T="string"
-                           MultiSelection="true"
-                           SelectAllText="Select all felines"
-                           HelperText="@value"
-                           @bind-Value="@value"
-                           @bind-SelectedValues="@selected"
-                           MaxLength="5"
-                           Counter="5"
-                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
-                           Label="Skills"
-                           Clearable="true"
-                           AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
-                           Class="ml-9">
-                    @foreach (var skill in selectionSkills.OrderBy(s => s.Name))
-                    {
-                        <MudSelectItem T="string" Value="@skill.Name" Disabled="@skill.IsDisabled">@skill.Name</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
+    <div class="d-flex justify-center">
+        <div style="width: 50%">
+            <MudSelect T="string"
+                       MultiSelection="true"
+                       SelectAllText="Select all felines"
+                       HelperText="@value"
+                       @bind-Value="@value"
+                       @bind-SelectedValues="@selected"
+                       MaxLength="5"
+                       Counter="5"
+                       MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))"
+                       Label="Skills"
+                       Clearable="true"
+                       AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
+                       Class="ml-9">
+                @foreach (var skill in selectionSkills.OrderBy(s => s.Name))
+                {
+                    <MudSelectItem T="string" Value="@skill.Name" Disabled="@skill.IsDisabled">@skill.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </div>
     </div>
+
+    <MudText Typo="Typo.caption" Color="Color.Warning" Class="d-flex ml-8 mt-4">Note: Only the top 3 skills will be shown in the app</MudText>
 
     @if (_staff?.Skills?.Any() ?? false)
     {
