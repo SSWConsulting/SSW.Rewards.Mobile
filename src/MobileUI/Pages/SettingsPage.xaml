@@ -10,16 +10,16 @@
     <ContentPage.Content>
         <TableView Intent="Menu" BackgroundColor="Transparent">
             <TableRoot>
-                <TableSection Title="Preferences" TextColor="{StaticResource Gray500}">
+                <TableSection Title="Preferences" TextColor="{StaticResource Gray300}">
                     <TextCell Text="Intro" TextColor="White" Command="{Binding IntroClickedCommand}" />
                     <TextCell Text="Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
                 </TableSection>
                 
-                <TableSection Title="Your Account" TextColor="{StaticResource Gray500}">
+                <TableSection Title="Your Account" TextColor="{StaticResource Gray300}">
                     <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
                 </TableSection>
                 
-                <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray500}">
+                <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray300}">
                     <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
                 </TableSection>
             </TableRoot>
