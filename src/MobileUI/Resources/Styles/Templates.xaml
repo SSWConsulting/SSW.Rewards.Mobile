@@ -22,7 +22,7 @@
                                 CornerRadius="20"
                                 BorderColor="White"
                                 BorderWidth="2"
-                                Margin="10,5"
+                                Margin="10,8,10,5"
                                 IsVisible="{Binding ShowAvatar}">
                     <mct:AvatarView.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />

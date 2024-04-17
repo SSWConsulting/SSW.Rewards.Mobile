@@ -7,10 +7,10 @@
       xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
       HeightRequest="668"
       Margin="0"
-      Padding="20"
+      Padding="20,0"
       xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,148,32,40,202,32">
+      RowDefinitions="100,60,148,24,40,*">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -203,20 +203,5 @@
                                  WidthRequest="150"
                                  HeightRequest="150"
                                  VerticalOptions="Center"/>
-    </VerticalStackLayout>
-
-    <!-- Divider -->
-    <VerticalStackLayout
-        Grid.Row="6"
-        IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}"
-        VerticalOptions="Start">
-        <BoxView HorizontalOptions="FillAndExpand"
-                 HeightRequest="1"
-                 Color="#171717"
-                 VerticalOptions="End"/>
-        <BoxView HorizontalOptions="FillAndExpand"
-                 HeightRequest="1"
-                 Color="#404040"
-                 VerticalOptions="Start"/>
     </VerticalStackLayout>
 </Grid>

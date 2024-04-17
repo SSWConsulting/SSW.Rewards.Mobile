@@ -25,6 +25,7 @@ public partial class OnBoardingPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _viewModel.Initialise();
         _viewModel.ScrollToRequested += ScrollToIndex;
         await Task.Delay(300);
         _viewModel.IsOverlayVisible = true;
@@ -34,6 +35,7 @@ public partial class OnBoardingPage
     {
         base.OnDisappearing();
         _viewModel.ScrollToRequested -= ScrollToIndex;
+        _viewModel.Items.Clear();
 
         // Change status bar back
         this.Behaviors.Clear();
