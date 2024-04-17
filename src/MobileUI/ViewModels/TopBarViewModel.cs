@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
@@ -39,6 +38,7 @@ public partial class TopBarViewModel : ObservableObject
                     SetBackButton();
                     break;
                 case AvatarOptions.Original:
+                default:
                     SetDefaultAvatar();
                     break;
             }
