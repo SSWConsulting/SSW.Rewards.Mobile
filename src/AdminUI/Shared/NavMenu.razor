@@ -1,19 +1,66 @@
-﻿<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <AuthorizeView Roles="Admin, Staff">
-        <MudNavLink Href="leaderboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Leaderboard</MudNavLink>
-        <MudNavLink Href="profiles" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Profiles</MudNavLink>
-        <MudNavLink Href="skills" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.WorkspacePremium">Skills</MudNavLink>
-    </AuthorizeView>
-    <!-- Admin only links -->
-    <AuthorizeView Roles="Admin" Context="sub_context">
-        <MudNavLink Href="achievements" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Stars">Achievements</MudNavLink>
-        <MudNavLink Href="rewards" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Redeem">Rewards</MudNavLink>
-        <MudNavLink Href="quizzes" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Quiz">Quizzes</MudNavLink>
-        <MudNavLink Href="users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
-        <MudNavLink Href="newusers" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.SupervisedUserCircle">New Users</MudNavLink>
-        <MudNavLink Href="prizedraw" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Celebration">Prize Draw</MudNavLink>
-        <MudNavLink Href="notifications" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Chat">Notifications</MudNavLink>
-        <MudNavLink Href="delete" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Delete">Delete</MudNavLink>
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Reflection.Metadata
+@using SSW.Rewards.Admin.UI.Helpers
+
+@inject NavigationManager Navigation
+
+<MudDivider Style="background-color: black"/>
+<MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
+    <MudStack Spacing="2"  >
+        <AuthorizeView Roles="Admin, Staff">
+            @foreach (var staffPage in NavigationPages.StaffPages())
+            {
+                <MudNavLink Href="@staffPage.Href" 
+                            Match="NavLinkMatch.Prefix" 
+                            Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
+                <MudDivider Style="background-color: black"/>
+            }
+        </AuthorizeView>
+        <!-- Admin only links -->
+        <AuthorizeView Roles="Admin" Context="sub_context">
+            @foreach (var adminPage in NavigationPages.AdminPages())
+            {
+                <MudNavLink Href="@adminPage.Href"
+                            Match="NavLinkMatch.Prefix" 
+                            Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
+                <MudDivider Style="background-color: black"/>
+            }
+        </AuthorizeView>
+    </MudStack>
+    
+    <AuthorizeView>
+        @if (!IsOpen)
+        {
+            <MudIconButton 
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                Icon="@Icons.Material.Outlined.Logout"
+                OnClick="@BeginSignOut"
+                Style="margin: 0px 8px;"
+                />
+        }
+        else
+        {
+            <MudButton
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.Outlined.Logout"
+                OnClick="@BeginSignOut"
+                Style="margin: 0px 8px;"
+                >
+                Log Out
+            </MudButton>
+        }
     </AuthorizeView>
 </MudNavMenu>
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    
+    private void BeginSignOut(MouseEventArgs args)
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+}

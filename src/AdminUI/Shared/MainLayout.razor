@@ -1,10 +1,9 @@
-﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using Microsoft.AspNetCore.Authorization
+﻿@using Microsoft.AspNetCore.Authorization
 @attribute [Authorize (Roles = "Staff, Admin")]
 
 @inherits LayoutComponentBase
 
-@inject NavigationManager Navigation
+<PageTitle>@_title</PageTitle>
 
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="AdminPortalMudTheme.Theme"/>
 <MudDialogProvider/>
@@ -13,17 +12,18 @@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudSpacer/>
-        <AuthorizeView>
-            <MudText>Hello, @context.User.Identity?.Name!</MudText>
-            <MudIconButton OnClick="@BeginSignOut">Log out</MudIconButton>
-        </AuthorizeView>
+        <MudText Typo="Typo.h4">@_title</MudText>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">SSW.Rewards.Admin</MudText>
+    <MudDrawer ClipMode="DrawerClipMode.Never" 
+    @bind-Open="_drawerOpen" 
+    Elevation="1" 
+    Variant="DrawerVariant.Mini" 
+    OpenMiniOnHover="true" 
+    Style="height: 100vh; overflow: hidden">
+        <MudDrawerHeader Style="padding: 0; justify-content: space-around;">
+                <MudImage Src="@_titleImage" />
         </MudDrawerHeader>
-        <NavMenu/>
+        <NavMenu IsOpen="@_drawerOpen"/>
     </MudDrawer>
     <MudMainContent>
         <MudContainer Fixed="true" Class="mb-16 pt-2">
@@ -37,6 +37,9 @@
     private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
 
+    private string _title = "Admin Portal";
+    private string _titleImage = "/images/ssw-rewards-logo.svg";
+    
     [CascadingParameter]
     protected Task<AuthenticationState> AuthStat { get; set; } = null!;
 
@@ -45,11 +48,15 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
-    }
 
-    private void BeginSignOut(MouseEventArgs args)
-    {
-        Navigation.NavigateToLogout("authentication/logout");
+        if (_drawerOpen)
+        {
+            _titleImage = "/images/ssw-rewards-logo.svg";
+        }
+        else
+        {
+            _titleImage = "/images/ssw-rewards-logo-collapsed.svg";
+        }
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
