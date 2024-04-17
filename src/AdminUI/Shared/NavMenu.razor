@@ -5,7 +5,8 @@
 
 @inject NavigationManager Navigation
 
-<MudNavMenu Style="display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
+<MudDivider Style="background-color: black"/>
+<MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
     <MudStack Spacing="2"  >
         <AuthorizeView Roles="Admin, Staff">
             @foreach (var staffPage in NavigationPages.StaffPages())
