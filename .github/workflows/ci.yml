@@ -82,7 +82,7 @@ jobs:
       - name: Update google-services.json
         shell: bash
         run: |
-          ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
+          echo ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
 
       - name: Build and sign Android
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
