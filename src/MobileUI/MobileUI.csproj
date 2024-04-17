@@ -233,4 +233,7 @@
 	  <WarningLevel>4</WarningLevel>
 	  <PlatformTarget>anycpu</PlatformTarget>
 	</PropertyGroup>
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+        <BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
+    </ItemGroup>
 </Project>
