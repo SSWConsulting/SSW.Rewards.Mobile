@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Rewards.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SSW.Rewards.Infrastructure.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412045814_AddDeviceToken")]
+    partial class AddDeviceToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,10 +111,6 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("DeviceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastTimeUpdated")
                         .HasColumnType("datetime2");

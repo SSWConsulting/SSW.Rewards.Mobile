@@ -162,7 +162,7 @@ public class UserService : IUserService
         try
         {
             await _userClient.DeleteMyProfile();
-            _authService.SignOut();
+            await _authService.SignOut();
             return true;
         }
         catch

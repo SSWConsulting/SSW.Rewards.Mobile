@@ -12,6 +12,7 @@ public interface IApplicationDbContext
     DbSet<Reward> Rewards { get; set; }
     DbSet<PostalAddress> Addresses { get; set; }
     DbSet<Notification> Notifications { get; set; }
+    DbSet<DeviceToken> DeviceTokens { get; set; }
     DbSet<Role> Roles { get; set; }
     DbSet<UserRole> UserRoles { get; set; }
     DbSet<Quiz> Quizzes { get; set; }

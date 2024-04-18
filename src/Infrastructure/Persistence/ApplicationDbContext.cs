@@ -17,7 +17,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         //IMediator mediator,
         AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         AchievementIntegrationIdInterceptor achievementIntegrationIdInterceptor
-        ) 
+        )
         : base(options)
     {
         //_mediator = mediator;
@@ -35,6 +35,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Reward> Rewards { get; set; }
     public DbSet<PostalAddress> Addresses { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<DeviceToken> DeviceTokens { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Quiz> Quizzes { get; set; }

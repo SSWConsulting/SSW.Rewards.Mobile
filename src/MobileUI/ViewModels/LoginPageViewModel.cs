@@ -7,6 +7,8 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
+    private readonly IPushNotificationsService _pushNotificationsService;
+    private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -19,9 +21,15 @@ public partial class LoginPageViewModel : BaseViewModel
 
     bool _isStaff;
 
-    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
+    public LoginPageViewModel(
+        IAuthenticationService authService,
+        IUserService userService,
+        IPushNotificationsService pushNotificationsService,
+        IPermissionsService permissionsService)
     {
         _authService = authService;
+        _pushNotificationsService = pushNotificationsService;
+        _permissionsService = permissionsService;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
@@ -113,5 +121,36 @@ public partial class LoginPageViewModel : BaseViewModel
     {
         Application.Current.MainPage = App.ResolveShell(_isStaff);
         await Shell.Current.GoToAsync("//main");
+        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
+        if (granted)
+        {
+            await UploadDeviceTokenIfRequired();
+        }
+    }
+
+    /// <summary>
+    /// Updates FCM device token on the server every 30 days as per Google's recommendation:
+    /// https://firebase.google.com/docs/cloud-messaging/manage-tokens#update-tokens-on-a-regular-basis
+    /// </summary>
+    private async Task UploadDeviceTokenIfRequired()
+    {
+        var now = DateTime.Now;
+        var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MinValue);
+        if (now <= lastTimeUpdated.AddDays(30)) // do not upload token if we are still in the 30-day period from the previous upload
+        {
+            return;
+        }
+
+        var token = await SecureStorage.GetAsync("DeviceToken");
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return;
+        }
+
+        var success = await _pushNotificationsService.UploadDeviceToken(token, now, DeviceService.GetDeviceId());
+        if (success)
+        {
+            Preferences.Set("DeviceTokenLastTimeUpdated", now);
+        }
     }
 }

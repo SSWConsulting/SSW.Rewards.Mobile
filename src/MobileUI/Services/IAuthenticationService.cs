@@ -10,7 +10,7 @@ public interface IAuthenticationService
 {
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
-    void SignOut();
+    Task SignOut();
     bool HasCachedAccount { get; }
     event EventHandler DetailsUpdated;
 }
@@ -56,7 +56,7 @@ public class AuthenticationService : IAuthenticationService
             if (result.IsError)
             {
                 Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
-                SignOut();
+                await SignOut();
                 return ApiStatus.Error;
             }
 
@@ -71,7 +71,7 @@ public class AuthenticationService : IAuthenticationService
         catch (Exception ex)
         {
             Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
-            SignOut();
+            await SignOut();
             return ApiStatus.Error;
         }
     }
@@ -107,11 +107,17 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public void SignOut()
+    public async Task SignOut()
     {
         // TODO: remove from auth client
+        var deviceToken = await SecureStorage.GetAsync("DeviceToken");
         SecureStorage.RemoveAll();
         Preferences.Clear();
+        if (deviceToken != null)
+        {
+            await SecureStorage.SetAsync("DeviceToken", deviceToken);
+        }
+
         Preferences.Set("FirstRun", false);
     }
 

@@ -45,7 +45,7 @@ public partial class AppShell : Shell
 
         if (sure)
         {
-            _authService.SignOut();
+            await _authService.SignOut();
             await Navigation.PushModalAsync<LoginPage>();
         }
     }

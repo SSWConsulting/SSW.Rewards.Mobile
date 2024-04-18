@@ -57,7 +57,7 @@ jobs:
           reporter: dotnet-trx
 
   build_and_test_mobile:
-    name: Build & Test Mobile
+    name: Build & Test Android
     runs-on: windows-latest
     if: ${{ inputs.test_mobile != 'false' && inputs.test_mobile != '' }}
 
@@ -79,7 +79,12 @@ jobs:
         run: |
           dotnet restore SSW.Rewards.sln
 
-      - name: Build and sign
+      - name: Update google-services.json
+        shell: bash
+        run: |
+          echo ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
+
+      - name: Build and sign Android
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
 
       - name: Test

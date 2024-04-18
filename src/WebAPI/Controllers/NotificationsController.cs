@@ -3,6 +3,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
 using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
@@ -19,7 +20,7 @@ public class NotificationsController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new GetNotificationHistoryListQuery()));
     }
-    
+
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -31,11 +32,24 @@ public class NotificationsController : ApiControllerBase
     [HttpPut]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<Unit>> UploadDeviceToken([Required] DeviceTokenDto dto)
+    {
+        return Ok(await Mediator.Send(new UploadDeviceTokenCommand
+        {
+            DeviceToken = dto.DeviceToken,
+            LastTimeUpdated = dto.LastTimeUpdated,
+            DeviceId = dto.DeviceId,
+        }));
+    }
+
+    [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<Unit>> UpdateInstallation([Required] UpdateInstallationCommand deviceInstallation)
     {
         return Ok(await Mediator.Send(deviceInstallation));
     }
-    
+
     [HttpDelete("{installationId}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
