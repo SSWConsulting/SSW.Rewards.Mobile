@@ -60,7 +60,8 @@
                         Command="{Binding GoBackCommand}" />
 
                 <ImageButton Command="{Binding OpenScannerCommand}"
-                             Margin="10,5">
+                             Margin="10,5"
+                             IsVisible="{Binding ShowScanner}">
                     <ImageButton.Source>
                         <FontImageSource FontFamily="FluentIcons"
                                          Glyph="&#xf636;"/>

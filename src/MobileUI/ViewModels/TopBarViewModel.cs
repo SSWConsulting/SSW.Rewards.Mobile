@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
@@ -11,21 +10,24 @@ public partial class TopBarViewModel : ObservableObject
     private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
-    string profilePic;
+    private string _profilePic;
 
     [ObservableProperty]
-    bool showAvatar = true;
+    private bool _showAvatar = true;
 
     [ObservableProperty]
-    bool showBack = false;
+    private bool _showBack;
 
     [ObservableProperty]
-    bool showDone = false;
+    private bool _showDone;
+
+    [ObservableProperty]
+    private bool _showScanner = true;
 
     public TopBarViewModel(IPermissionsService permissionsService, IUserService userService)
     {
         _permissionsService = permissionsService;
-        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (_, m) =>
         {
             switch (m.Value)
             {
@@ -36,6 +38,7 @@ public partial class TopBarViewModel : ObservableObject
                     SetBackButton();
                     break;
                 case AvatarOptions.Original:
+                default:
                     SetDefaultAvatar();
                     break;
             }
@@ -73,6 +76,7 @@ public partial class TopBarViewModel : ObservableObject
         ShowDone = false;
         ShowBack = false;
         ShowAvatar = true;
+        ShowScanner = true;
     }
 
     private void SetBackButton()
@@ -80,6 +84,7 @@ public partial class TopBarViewModel : ObservableObject
         ShowDone = false;
         ShowBack = true;
         ShowAvatar = false;
+        ShowScanner = false;
     }
 
     private void SetDoneButton()
@@ -87,5 +92,6 @@ public partial class TopBarViewModel : ObservableObject
         ShowDone = true;
         ShowBack = false;
         ShowAvatar = false;
+        ShowScanner = false;
     }
 }

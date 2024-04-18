@@ -24,6 +24,5 @@
                 </TableSection>
             </TableRoot>
         </TableView>
-
     </ContentPage.Content>
 </ContentPage>

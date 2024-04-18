@@ -1,9 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
-namespace SSW.Rewards.Mobile.Pages;
-
-public partial class SettingsPage : ContentPage
+public partial class SettingsPage
 {
     public SettingsPage(SettingsViewModel viewModel)
     {
