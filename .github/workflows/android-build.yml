@@ -33,6 +33,7 @@ jobs:
           Set-Content src/MobileUI/MobileUI.csproj -Value $newContent
 
       - name: Update google-services.json
+        shell: bash
         run: |
           echo ${{ vars.GOOGLE_SERVICES_JSON }} | base64 --decode > src/MobileUI/Platforms/Android/google-services.json
 
