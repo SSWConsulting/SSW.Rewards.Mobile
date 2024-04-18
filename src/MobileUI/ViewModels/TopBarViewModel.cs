@@ -92,6 +92,6 @@ public partial class TopBarViewModel : ObservableObject
         ShowDone = true;
         ShowBack = false;
         ShowAvatar = false;
-        ShowScanner = true;
+        ShowScanner = false;
     }
 }
