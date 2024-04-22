@@ -7,22 +7,21 @@
     x:DataType="viewModels:SettingsViewModel"
     ControlTemplate="{DynamicResource PageTemplate}"
     BackgroundColor="{StaticResource Background}">
-    <ContentPage.Content>
-        <TableView Intent="Menu" BackgroundColor="Transparent">
-            <TableRoot>
-                <TableSection Title="Preferences" TextColor="{StaticResource Gray400}">
-                    <TextCell Text="Intro" TextColor="White" Command="{Binding IntroClickedCommand}" />
-                    <TextCell Text="Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
-                </TableSection>
-                
-                <TableSection Title="Your Account" TextColor="{StaticResource Gray400}">
-                    <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
-                </TableSection>
-                
-                <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray400}">
-                    <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
-                </TableSection>
-            </TableRoot>
-        </TableView>
-    </ContentPage.Content>
+    <TableView Intent="Menu" BackgroundColor="Transparent">
+        <TableRoot>
+            <TableSection Title="General" TextColor="{StaticResource Gray400}">
+                <TextCell Text="Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
+            </TableSection>
+
+            <TableSection Title="Your Account" TextColor="{StaticResource Gray400}">
+                <TextCell Text="Add LinkedIn profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+                <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
+                <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
+            </TableSection>
+
+            <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray400}">
+                <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
+            </TableSection>
+        </TableRoot>
+    </TableView>
 </ContentPage>

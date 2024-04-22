@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -9,7 +10,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
-    
+
     public SettingsViewModel(IUserService userService)
     {
         _userService = userService;
@@ -20,7 +21,7 @@ public partial class SettingsViewModel : BaseViewModel
     {
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
     }
-    
+
     [RelayCommand]
     private static async Task IntroClicked()
     {
@@ -28,13 +29,21 @@ public partial class SettingsViewModel : BaseViewModel
         var page = new OnBoardingPage(false, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
-    
+
     [RelayCommand]
     private static async Task ProfileClicked()
     {
         await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
     }
-    
+
+    [RelayCommand]
+    private async Task AddLinkedIn()
+    {
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var page = new AddLinkedInPage(statusBarColor as Color);
+        await MopupService.Instance.PushAsync(page);
+    }
+
     [RelayCommand]
     private async Task DeleteClicked()
     {
@@ -71,7 +80,7 @@ public partial class SettingsViewModel : BaseViewModel
             }
         }
     }
-    
+
     [RelayCommand]
     private static async Task AboutClicked()
     {
