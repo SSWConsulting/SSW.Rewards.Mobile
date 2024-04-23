@@ -102,12 +102,12 @@ public partial class AddLinkedInViewModel : BaseViewModel
                 await ClosePage();
                 break;
             case false:
-                snackbarOptions.Message = "LinkedIn profiles successfully updated";
+                snackbarOptions.Message = "LinkedIn profile has been successfully updated";
                 await _snackbarService.ShowSnackbar(snackbarOptions);
                 await ClosePage();
                 break;
             default:
-                snackbarOptions.Message = "Couldn't connect your LinkedIn profile. Please try again later.";
+                snackbarOptions.Message = "Couldn't connect your LinkedIn profile, please try again later";
                 snackbarOptions.Glyph = "\uf36f"; // cross icon
                 await _snackbarService.ShowSnackbar(snackbarOptions);
                 break;
