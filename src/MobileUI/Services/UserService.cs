@@ -157,6 +157,19 @@ public class UserService : IUserService
         return rewards;
     }
 
+    public async Task<bool?> SaveSocialMediaId(int achievementId, string socialMediaUserId)
+    {
+        try
+        {
+            var achieved = await _userClient.UpsertUserSocialMediaIdAsync(achievementId, socialMediaUserId);
+            return achieved != 0;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public async Task<bool> DeleteProfileAsync()
     {
         try

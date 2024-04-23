@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
            xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
            x:Class="SSW.Rewards.Mobile.Controls.Snackbar"
            VerticalOptions="End"
            Color="Transparent">
-  
+
     <Border StrokeShape="RoundRectangle 3"
             StrokeThickness="0"
             WidthRequest="300"
@@ -24,7 +24,6 @@
                    HeightRequest="40"
                    WidthRequest="40"
                    Margin="10,0"
-                   Padding="{OnPlatform Android='0,5,0,0', iOS='0'}"
                    HorizontalOptions="Start"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
@@ -37,12 +36,13 @@
             </Label>
 
             <!-- Main message or action-->
-            <Label Grid.Column="1" 
+            <Label Grid.Column="1"
                    Margin="10,0"
                    FontSize="Small"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
                    BackgroundColor="Transparent"
+                   VerticalTextAlignment="Center"
                    TextColor="White"
                    x:Name="MessageLabel"/>
 

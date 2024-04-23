@@ -12,13 +12,14 @@
         <mct:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
     </ContentPage.Behaviors>
     <pages:PopupPage.Animation>
-        <animations:MoveAnimation PositionIn="Bottom"
-                                  PositionOut="Bottom"
-                                  DurationIn="300"
-                                  DurationOut="300"
-                                  EasingIn="SinOut"
-                                  EasingOut="SinIn"
-                                  HasBackgroundAnimation="True" />
+        <animations:MoveAnimation
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            DurationIn="300"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
     <Grid>
         <Grid BackgroundColor="#b3000000" IsVisible="{Binding IsOverlayVisible}"/>

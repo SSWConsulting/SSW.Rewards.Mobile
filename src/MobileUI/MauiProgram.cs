@@ -107,6 +107,11 @@ public static class MauiProgram
         {
             handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
         });
+        Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, entry) =>
+        {
+            // color in the underline while preserving the background color
+            handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(((Entry)entry).BackgroundColor.ToPlatform());
+        });
 #endif
 
 #if IOS
