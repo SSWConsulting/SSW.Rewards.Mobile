@@ -1,11 +1,11 @@
 ﻿namespace SSW.Rewards.Application.Users.Commands.UpsertUserSocialMediaId;
-public class UpsertUserSocialMediaId : IRequest<bool>
+public class UpsertUserSocialMediaIdCommand : IRequest<bool>
 {
     public int AchievementId { get; set; }
-    public string SocialMediaPlatformUserId { get; set; } = string.Empty;
+    public string SocialMediaUserId { get; set; } = string.Empty;
 }
 
-public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserSocialMediaId, bool>
+public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserSocialMediaIdCommand, bool>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
@@ -13,7 +13,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
     private readonly IDateTime _dateTimeService;
 
     public UpsertSocialMediaUserIdHandler(
-        IApplicationDbContext context, 
+        IApplicationDbContext context,
         ICurrentUserService currentUserService,
         IUserService userService,
         IDateTime dateTimeService)
@@ -24,7 +24,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
         _dateTimeService = dateTimeService;
     }
 
-    public async Task<bool> Handle(UpsertUserSocialMediaId request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpsertUserSocialMediaIdCommand request, CancellationToken cancellationToken)
     {
         bool isInsert = false;
 
@@ -37,8 +37,8 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
 
         int currentUserId = await _userService.GetUserId(_currentUserService.GetUserEmail(), cancellationToken);
         var record = await _context.UserSocialMediaIds
-                                    .FirstOrDefaultAsync(x => 
-                                                x.UserId == currentUserId 
+                                    .FirstOrDefaultAsync(x =>
+                                                x.UserId == currentUserId
                                             &&  x.SocialMediaPlatformId == platform.Id, cancellationToken);
         if (record == null)
         {
@@ -47,14 +47,14 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
             {
                 SocialMediaPlatformId = platform.Id,
                 UserId                = currentUserId,
-                SocialMediaUserId     = request.SocialMediaPlatformUserId,
-                CreatedUtc            = _dateTimeService.Now  
+                SocialMediaUserId     = request.SocialMediaUserId,
+                CreatedUtc            = _dateTimeService.Now
             };
             _context.UserSocialMediaIds.Add(record);
         }
         else
         {
-            record.SocialMediaUserId = request.SocialMediaPlatformUserId;
+            record.SocialMediaUserId = request.SocialMediaUserId;
             _context.UserSocialMediaIds.Update(record);
         }
         await _context.SaveChangesAsync(cancellationToken);

@@ -10,10 +10,12 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
+    private readonly ISnackbarService _snackbarService;
 
-    public SettingsViewModel(IUserService userService)
+    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService)
     {
         _userService = userService;
+        _snackbarService = snackbarService;
         Title = "Settings";
     }
 
@@ -40,7 +42,7 @@ public partial class SettingsViewModel : BaseViewModel
     private async Task AddLinkedIn()
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new AddLinkedInPage(statusBarColor as Color);
+        var page = new AddLinkedInPage(_userService, _snackbarService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 

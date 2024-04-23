@@ -1,11 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class AddLinkedInViewModel : BaseViewModel
 {
+    private readonly IUserService _userService;
+    private readonly ISnackbarService _snackbarService;
+
     [ObservableProperty]
     private bool _isOverlayVisible;
 
@@ -20,6 +24,12 @@ public partial class AddLinkedInViewModel : BaseViewModel
 
     [ObservableProperty]
     private string _errorText;
+
+    public AddLinkedInViewModel(IUserService userService, ISnackbarService snackbarService)
+    {
+        _userService = userService;
+        _snackbarService = snackbarService;
+    }
 
     [RelayCommand]
     private async Task Connect()
@@ -74,6 +84,35 @@ public partial class AddLinkedInViewModel : BaseViewModel
 
     private async Task AddLinkedInProfile()
     {
+        var linkedInAchievementId = 2; // LinkedIn Achievement
+        IsBusy = true;
+        var result = await _userService.SaveSocialMediaId(linkedInAchievementId, InputText);
+        var snackbarOptions = new SnackbarOptions
+        {
+            Glyph = "\uf297", // tick icon
+            ShowPoints = false,
+        };
+        switch (result)
+        {
+            case true:
+                snackbarOptions.ShowPoints = true;
+                snackbarOptions.Points = 150;
+                snackbarOptions.Message = "Thanks for connecting LinkedIn with SSW Rewards";
+                await _snackbarService.ShowSnackbar(snackbarOptions);
+                await ClosePage();
+                break;
+            case false:
+                snackbarOptions.Message = "LinkedIn profiles successfully updated";
+                await _snackbarService.ShowSnackbar(snackbarOptions);
+                await ClosePage();
+                break;
+            default:
+                snackbarOptions.Message = "Couldn't connect your LinkedIn profile. Please try again later.";
+                snackbarOptions.Glyph = "\uf36f"; // cross icon
+                await _snackbarService.ShowSnackbar(snackbarOptions);
+                break;
+        }
 
+        IsBusy = false;
     }
 }

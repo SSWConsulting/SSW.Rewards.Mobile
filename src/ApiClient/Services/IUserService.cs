@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -19,6 +20,8 @@ public interface IUserService
     Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken = default);
 
     Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default);
+
+    Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService
@@ -161,7 +164,23 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
     }
-    
+
+    public async Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken)
+    {
+        var dto = new UserSocialMediaIdDto { AchievementId = achievementId, SocialMediaUserId = socialMediaUserId };
+        var result = await _httpClient.PostAsJsonAsync(
+            $"{_baseRoute}UpsertUserSocialMediaId", dto, cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<int>(cancellationToken: cancellationToken);
+            return response;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to upsert social media: {responseContent}");
+    }
+
     public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)
     {
         var result = await _httpClient.GetAsync($"{_baseRoute}GetNewUsers?filter={filter}&filterStaff={filterStaff}", cancellationToken);

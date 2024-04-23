@@ -40,7 +40,7 @@
                         <Label HorizontalTextAlignment="Center"
                                Margin="20"
                                TextColor="White"
-                               Text="Receive ⭐️ 500 points for connecting your LinkedIn profile with SSW Rewards"/>
+                               Text="Receive ⭐️ 150 points for connecting your LinkedIn profile with SSW Rewards"/>
                         <Border
                             Margin="20,0"
                             StrokeShape="RoundRectangle 10"
@@ -114,5 +114,12 @@
                 <Image Source="icon_close"/>
             </Border>
         </Grid>
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
     </Grid>
 </pages:PopupPage>
