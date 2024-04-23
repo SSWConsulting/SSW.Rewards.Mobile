@@ -45,19 +45,19 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     private Address? _selectedAddress;
 
     [ObservableProperty]
-    private bool _confirmEnabled = false;
+    private bool _confirmEnabled;
 
     [ObservableProperty]
-    private bool _isAddressEditExpanded = false;
+    private bool _isAddressEditExpanded;
 
     [ObservableProperty]
-    private bool _sendingClaim = false;
+    private bool _sendingClaim;
 
     [ObservableProperty]
-    private bool _claimError = false;
+    private bool _claimError;
 
     [ObservableProperty]
-    private bool _claimSuccess = false;
+    private bool _claimSuccess;
 
     [ObservableProperty]
     private string _closeButtonText = "Cancel";
@@ -103,7 +103,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     }
 
     [RelayCommand]
-    private async Task ClosePopup()
+    private static async Task ClosePopup()
     {
         await MopupService.Instance.PopAsync();
     }
