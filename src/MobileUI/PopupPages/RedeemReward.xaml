@@ -314,9 +314,41 @@
                                          WidthRequest="200"
                                          Scale="1"/>
 
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Margin="0,0,0,30"
+                                         Spacing="15"
+                                         IsVisible="{Binding IsBalanceVisible}">
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                Text="Redeem in-person"
+                                WidthRequest="160"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding RedeemInPersonClickedCommand}"/>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                Text="Ship to my address"
+                                WidthRequest="160"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding NextClickedCommand}"/>
+                    </VerticalStackLayout>
 
-                    <HorizontalStackLayout HorizontalOptions="Center"
-                                           Spacing="10" >
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Spacing="15">
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                WidthRequest="80"
+                                IsVisible="{Binding ConfirmEnabled}"
+                                Text="Confirm"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding ConfirmClickedCommand}"/>
+                        
                         <Button Text="{Binding CloseButtonText}"
                                 Command="{Binding ClosePopupCommand}"
                                 ContentLayout="Left, 10"
@@ -331,36 +363,7 @@
                                                  Size="16"/>
                             </Button.ImageSource>
                         </Button>
-                        
-                        <Button Background="{StaticResource SSWRed}"
-                                CornerRadius="4"
-                                IsVisible="{Binding IsBalanceVisible}"
-                                Text="Redeem at event"
-                                FontAttributes="Bold"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Command="{Binding RedeemInPersonClickedCommand}"/>
-                        
-                        <Button Background="{StaticResource SSWRed}"
-                                CornerRadius="4"
-                                IsVisible="{Binding IsBalanceVisible}"
-                                Text="Next"
-                                WidthRequest="80"
-                                FontAttributes="Bold"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Command="{Binding NextClickedCommand}"/>
-                        
-                        <Button Background="{StaticResource SSWRed}"
-                                CornerRadius="4"
-                                WidthRequest="80"
-                                IsVisible="{Binding ConfirmEnabled}"
-                                Text="Confirm"
-                                FontAttributes="Bold"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Command="{Binding ConfirmClickedCommand}"/>
-                    </HorizontalStackLayout>
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
                 <ActivityIndicator
                     HorizontalOptions="Fill"

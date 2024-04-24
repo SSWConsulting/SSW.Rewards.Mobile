@@ -10,4 +10,5 @@ public class PendingRedemption : BaseEntity
     public User User { get; set; } = null!;
     public bool CancelledByUser { get; set; }
     public bool CancelledByAdmin { get; set; }
+    public bool Completed { get; set; }
 }
