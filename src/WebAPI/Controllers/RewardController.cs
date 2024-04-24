@@ -90,6 +90,16 @@ public class RewardController : ApiControllerBase
             ClaimInPerson = claim.InPerson
         }));
     }
+    
+    [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
+    public async Task<ActionResult<CreatePendingRedemptionResult>> CreatePendingRedemption(ClaimRewardDto claim)
+    {
+        return Ok(await Mediator.Send(new CreatePendingRedemptionCommand()
+        {
+            Id = claim.Id,
+        }));
+    }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = AuthorizationRoles.Admin)]

@@ -26,7 +26,7 @@
 
     <ItemGroup>
       <Folder Include="Network\Queries\" />
-      <Folder Include="PrizeDraw\Commands\" />
+      <Folder Include="PendingRedemptions\Commands\" />
     </ItemGroup>
 
 </Project>

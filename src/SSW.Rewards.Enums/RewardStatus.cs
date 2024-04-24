@@ -5,5 +5,6 @@ public enum RewardStatus
     NotFound,
     Duplicate,
     NotEnoughPoints,
-    Error
+    Error,
+    Pending
 }

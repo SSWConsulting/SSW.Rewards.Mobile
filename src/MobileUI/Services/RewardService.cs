@@ -72,4 +72,25 @@ public class RewardService : IRewardService
 
         return result;
     }
+    
+    public async Task<CreatePendingRedemptionResult> CreatePendingRedemption(ClaimRewardDto claim)
+    {
+        var result = new CreatePendingRedemptionResult { status = RewardStatus.Error };
+
+        try
+        {
+            result = await _rewardClient.CreatePendingRedemption(claim, CancellationToken.None);
+        }
+        catch (Exception e)
+        {
+            // TODO: Handle errors
+            if (! await ExceptionHandler.HandleApiException(e))
+            {
+            }
+        }
+
+        await _userService.UpdateMyDetailsAsync();
+
+        return result;
+    }
 }

@@ -8,6 +8,7 @@
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
                  xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+                 xmlns:controls1="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
@@ -164,6 +165,24 @@
                             </HorizontalStackLayout>
                         </Border>
                     </Grid>
+                    
+                    <!-- Pending redemption QR code -->
+                    <VerticalStackLayout IsVisible="{Binding IsQrCodeVisible}"
+                                         Spacing="10"
+                                         Margin="0,0,0,30">
+                        <Label Text="Please show this code to SSW staff to claim your reward:"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <controls1:BarcodeGeneratorView
+                                                 Format="QrCode"
+                                                 Value="{Binding QrCode}"
+                                                 HorizontalOptions="Center"
+                                                 BackgroundColor="#DDDDDD"
+                                                 ForegroundColor="Transparent"
+                                                 WidthRequest="150"
+                                                 HeightRequest="150"
+                                                 VerticalOptions="Center"/>
+                    </VerticalStackLayout>
 
                     <!-- Address search -->
                     <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
@@ -312,6 +331,15 @@
                                                  Size="16"/>
                             </Button.ImageSource>
                         </Button>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                IsVisible="{Binding IsBalanceVisible}"
+                                Text="Redeem at event"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Command="{Binding RedeemInPersonClickedCommand}"/>
                         
                         <Button Background="{StaticResource SSWRed}"
                                 CornerRadius="4"

@@ -6,4 +6,5 @@ public interface IRewardService
 {
     Task<List<Reward>> GetRewards();
     Task <ClaimRewardResult> ClaimReward(ClaimRewardDto claim);
+    Task<CreatePendingRedemptionResult> CreatePendingRedemption(ClaimRewardDto claim);
 }

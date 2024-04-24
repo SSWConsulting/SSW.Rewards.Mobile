@@ -32,6 +32,9 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
     [ObservableProperty]
     private bool _isBalanceVisible = true;
+    
+    [ObservableProperty]
+    private bool _isQrCodeVisible;
 
     [ObservableProperty]
     private bool _isAddressVisible;
@@ -61,6 +64,9 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
     [ObservableProperty]
     private string _closeButtonText = "Cancel";
+    
+    [ObservableProperty]
+    private string _qrCode;
 
 
     public void Initialise(Reward reward)
@@ -126,6 +132,38 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         }
 
         IsAddressVisible = false;
+    }
+    
+    [RelayCommand]
+    private async Task RedeemInPersonClicked()
+    {
+        IsBalanceVisible = false;
+        ConfirmEnabled = false;
+        SendingClaim = true;
+        Heading = "Claiming reward...";
+
+        var claimResult = await rewardService.CreatePendingRedemption(new ClaimRewardDto
+        {
+            Id = _reward.Id,
+            InPerson = true,
+        });
+
+        SendingClaim = false;
+
+        if (claimResult.status == RewardStatus.Pending)
+        {
+            Heading = "Ready to claim!";
+            QrCode = claimResult.Code;
+            IsQrCodeVisible = true;
+        }
+        else
+        {
+            Heading = "Error";
+            Description = "Something went wrong - please try again later";
+            ClaimError = true;
+        }
+
+        CloseButtonText = "Close";
     }
 
     [RelayCommand]//(CanExecute = nameof(ConfirmClickedIsExecutable))]

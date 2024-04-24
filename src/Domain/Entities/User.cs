@@ -15,4 +15,5 @@ public class User : BaseEntity
     public ICollection<CompletedQuiz> CompletedQuizzes { get; set; } = new HashSet<CompletedQuiz>();
     public ICollection<UserSocialMediaId> SocialMediaIds { get; set; } = new HashSet<UserSocialMediaId>();
     public ICollection<Quiz> CreatedQuizzes { get; set; } = new HashSet<Quiz>();
+    public ICollection<PendingRedemption> PendingRedemptions { get; set; } = new HashSet<PendingRedemption>();
 }
