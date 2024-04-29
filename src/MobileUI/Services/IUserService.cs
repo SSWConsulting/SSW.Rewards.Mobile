@@ -24,6 +24,8 @@ public interface IUserService
     Task<IEnumerable<Achievement>> GetProfileAchievementsAsync(int userId);
     Task<IEnumerable<Reward>> GetRewardsAsync();
     Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
+    Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync();
+    Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync(int userId);
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool> DeleteProfileAsync();

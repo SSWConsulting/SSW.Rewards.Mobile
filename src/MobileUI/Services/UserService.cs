@@ -143,18 +143,43 @@ public class UserService : IUserService
         List<Reward> rewards = [];
         var rewardsList = await _userClient.GetUserRewards(userId);
 
-        foreach (var userReward in rewardsList.UserRewards)
+        rewards.AddRange(rewardsList.UserRewards.Select(userReward => new Reward
         {
-            rewards.Add(new Reward
+            Awarded = userReward.Awarded,
+            Name = userReward.RewardName,
+            Cost = userReward.RewardCost,
+            AwardedAt = userReward.AwardedAt
+        }));
+
+        return rewards;
+    }
+    
+    public async Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync()
+    {
+        return await GetPendingRedemptionsForUserAsync(_myUserId.Value);
+    }
+    
+    public async Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync(int userId)
+    {
+        return await GetPendingRedemptionsForUserAsync(userId);
+    }
+
+    private async Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsForUserAsync(int userId)
+    {
+        List<UserPendingRedemptionDto> redemptions = [];
+        var redemptionsList = await _userClient.GetUserPendingRedemptions(userId);
+
+        foreach (var userRedemption in redemptionsList.PendingRedemptions)
+        {
+            redemptions.Add(new UserPendingRedemptionDto
             {
-                Awarded = userReward.Awarded,
-                Name = userReward.RewardName,
-                Cost = userReward.RewardCost,
-                AwardedAt = userReward.AwardedAt
+                RewardId = userRedemption.RewardId,
+                ClaimedAt = userRedemption.ClaimedAt,
+                Code = userRedemption.Code
             });
         }
 
-        return rewards;
+        return redemptions;
     }
 
     public async Task<bool> DeleteProfileAsync()

@@ -38,12 +38,30 @@ public partial class RewardsViewModel : BaseViewModel
             return;
         }
 
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
         IsBusy = true;
+        
+        Rewards.Clear();
+        CarouselRewards.Clear();
+        
         var rewardList = await _rewardService.GetRewards();
+        var pendingRedemptions = (await _userService.GetPendingRedemptionsAsync()).ToList();
 
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
+            var pendingRedemption = pendingRedemptions.FirstOrDefault(x => x.RewardId == reward.Id);
             reward.CanAfford = reward.Cost <= Credits;
+            
+            if (pendingRedemption != null)
+            {
+                reward.IsPendingRedemption = true;
+                reward.PendingRedemptionCode = pendingRedemption.Code;
+            }
+            
             Rewards.Add(reward);
 
             if (reward.IsCarousel)
@@ -51,7 +69,7 @@ public partial class RewardsViewModel : BaseViewModel
                 CarouselRewards.Add(reward);
             }
         }
-
+        
         IsBusy = false;
         _isLoaded = true;
     }
@@ -63,6 +81,7 @@ public partial class RewardsViewModel : BaseViewModel
         if (reward != null)
         {
             var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
+            popup.CallbackEvent += async (sender, args) => await LoadData();
             await MopupService.Instance.PushAsync(popup);
         }
     }

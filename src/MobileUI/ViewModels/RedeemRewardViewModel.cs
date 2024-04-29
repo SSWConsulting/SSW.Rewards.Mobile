@@ -77,7 +77,22 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         Description = reward.Description;
         Cost = reward.Cost;
 
+        if (reward.IsPendingRedemption)
+        {
+            ShowQrCode(reward.PendingRedemptionCode);
+        }
+
         userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
+    }
+
+    private void ShowQrCode(string code)
+    {
+        IsBalanceVisible = false;
+        ConfirmEnabled = false;
+        Heading = "Ready to claim!";
+        QrCode = code;
+        IsQrCodeVisible = true;
+        CloseButtonText = "Close";
     }
 
     [RelayCommand]

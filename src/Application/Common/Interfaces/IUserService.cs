@@ -54,4 +54,8 @@ public interface IUserService
     // Get user's QR code
     string GetStaffQRCode(string emailAddress);
     Task<string> GetStaffQRCode(string emailAddress, CancellationToken cancellationToken);
+    
+    // Get user's pending redemptions
+    UserPendingRedemptionsViewModel GetUserPendingRedemptions(int userId);
+    Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken);
 }
