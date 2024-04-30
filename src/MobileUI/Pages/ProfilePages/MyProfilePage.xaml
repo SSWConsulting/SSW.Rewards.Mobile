@@ -17,7 +17,6 @@
 
             <!-- Close button -->
             <Border
-                Margin="{OnPlatform iOS='0,15,0,0'}"
                 HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
