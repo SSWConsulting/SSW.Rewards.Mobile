@@ -28,13 +28,21 @@
             FontFamily="FA6Brands"
             Text="&#xf092;"
             FontAutoScalingEnabled="False"
-            FontSize="50"/>
+            FontSize="50">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
         <Label
             Grid.Column="2"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf081;"
             FontAutoScalingEnabled="False"
-            FontSize="50"/>
+            FontSize="50">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
     </Grid>
 </Border>

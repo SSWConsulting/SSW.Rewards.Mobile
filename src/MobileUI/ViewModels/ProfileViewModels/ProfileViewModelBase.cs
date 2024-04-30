@@ -279,6 +279,17 @@ public partial class ProfileViewModelBase : BaseViewModel
     }
 
     [RelayCommand]
+    private async Task ComingSoon()
+    {
+        if (IsMe)
+        {
+            await CommunityToolkit.Maui.Alerts.Snackbar
+                .Make("Coming soon. At that moment you can only add LinkedIn profile", duration: TimeSpan.FromSeconds(5))
+                .Show();
+        }
+    }
+
+    [RelayCommand]
     private async Task ClosePage()
     {
         await Navigation.PopModalAsync();
