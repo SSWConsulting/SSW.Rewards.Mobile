@@ -68,7 +68,7 @@ public class UserController : ApiControllerBase
         {
             return BadRequest("No file received");
         }
-        
+
         return Ok(await Mediator.Send(new UploadProfilePicCommand { File = file.OpenReadStream() }));
     }
 
@@ -86,15 +86,19 @@ public class UserController : ApiControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> UpsertUserSocialMediaId(UpsertUserSocialMediaId command)
+    public async Task<ActionResult<int>> UpsertUserSocialMediaId(UserSocialMediaIdDto dto)
     {
-        int retVal = 0;
         // get the isInsert to save ourselves some db round-trips when possible.
-        bool isInsert = await Mediator.Send(command);
+        bool isInsert = await Mediator.Send(new UpsertUserSocialMediaIdCommand
+        {
+            AchievementId = dto.AchievementId, SocialMediaUserId = dto.SocialMediaUserId
+        });
+
+        int retVal = 0;
         if (isInsert)
         {
             // set achievement and return achievement id
-            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { AchievementId = command.AchievementId });
+            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { AchievementId = dto.AchievementId });
         }
 
         return Ok(retVal);
@@ -107,14 +111,14 @@ public class UserController : ApiControllerBase
 
         return Ok();
     }
-    
+
     [HttpGet]
     [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<ActionResult<UsersViewModel>> GetUsers()
     {
         return await Mediator.Send(new GetUsersQuery());
     }
-    
+
     [HttpPost]
     [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<IActionResult> UpdateUserRoles(UserDto dto)

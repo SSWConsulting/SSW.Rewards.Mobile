@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             x:DataType="viewModels:AddLinkedInViewModel"
+             x:Class="SSW.Rewards.Mobile.PopupPages.AddLinkedInPage">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            DurationIn="300"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <Grid>
+        <Grid BackgroundColor="#b3000000" IsVisible="{Binding IsOverlayVisible}"/>
+        <Grid Padding="30" HeightRequest="500">
+            <Border
+                StrokeThickness="1"
+                BackgroundColor="{StaticResource Background}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <Grid Padding="0" RowDefinitions="*, Auto">
+                    <VerticalStackLayout Spacing="6" Margin="0,30">
+                        <Label HorizontalTextAlignment="Center"
+                               TextColor="{StaticResource SSWRed}"
+                               FontSize="Large"
+                               Text="Add LinkedIn profile"/>
+                        <Label HorizontalTextAlignment="Center"
+                               Margin="20"
+                               TextColor="White"
+                               Text="Receive ⭐️ 150 points for connecting your LinkedIn profile with SSW Rewards"/>
+                        <Border
+                            Margin="20,0"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0"
+                            HeightRequest="45">
+                            <Entry
+                                Text="{Binding InputText}"
+                                Keyboard="Url"
+                                ReturnType="Done"
+                                Placeholder="https://linkedin.com/in/[your-name]"
+                                CursorPosition="{Binding CursorPosition}"
+                                IsSpellCheckEnabled="False"
+                                PlaceholderColor="Grey"
+                                BackgroundColor="White"
+                                TextColor="Black">
+                                <controls:BorderlessEntry.Behaviors>
+                                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding InputFocusedCommand}"/>
+                                </controls:BorderlessEntry.Behaviors>
+                            </Entry>
+                        </Border>
+                        <Label
+                            FontSize="11"
+                            Margin="30,0"
+                            IsVisible="{Binding IsError}"
+                            Text="{Binding ErrorText}"
+                            TextColor="{StaticResource SSWRed}"
+                        />
+                    </VerticalStackLayout>
+                    <Border
+                        BackgroundColor="{StaticResource SSWRed}"
+                        VerticalOptions="End"
+                        Margin="20,30"
+                        StrokeThickness="0"
+                        HeightRequest="60">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                  Command="{Binding ConnectCommand}"/>
+                        </Border.GestureRecognizers>
+                        <Grid>
+                            <Label Text="Connect"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="White"
+                                   VerticalOptions="Center"
+                                   VerticalTextAlignment="Center"
+                                   HorizontalOptions="Center"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Close button -->
+            <Border
+                WidthRequest="40"
+                HeightRequest="40"
+                StrokeThickness="0"
+                TranslationX="20"
+                TranslationY="-20"
+                Padding="10"
+                BackgroundColor="{StaticResource primary}"
+                VerticalOptions="Start"
+                HorizontalOptions="End">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}"/>
+                </Border.GestureRecognizers>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20"/>
+                </Border.StrokeShape>
+                <Image Source="icon_close"/>
+            </Border>
+        </Grid>
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsBusy}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+    </Grid>
+</pages:PopupPage>

@@ -29,6 +29,7 @@ public interface IUserService
     Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync(int userId);
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
+    Task<bool?> SaveSocialMediaId(int achievementId, string socialMediaUserId);
     Task<bool> DeleteProfileAsync();
 }
 
