@@ -19,6 +19,8 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
     private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
 
+    private readonly BehaviorSubject<string> _linkedInProfile = new(null);
+
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
         _userClient = userService;
@@ -34,6 +36,7 @@ public class UserService : IUserService
     public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
     public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
     public IObservable<int> MyAllTimeRankObservable() => _myAllTimeRank.AsObservable();
+    public IObservable<string> LinkedInProfileObservable() => _linkedInProfile.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -157,17 +160,37 @@ public class UserService : IUserService
         return rewards;
     }
 
-    public async Task<bool?> SaveSocialMediaId(int achievementId, string socialMediaUserId)
+    public async Task<bool?> SaveSocialMedia(int achievementId, string socialMediaUserId)
     {
         try
         {
             var achieved = await _userClient.UpsertUserSocialMediaIdAsync(achievementId, socialMediaUserId);
+            _linkedInProfile.OnNext(socialMediaUserId);
             return achieved != 0;
         }
         catch
         {
             return null;
         }
+    }
+
+    public async Task<UserSocialMediaIdDto> LoadSocialMedia(int userId, int socialMediaPlatformId)
+    {
+        try
+        {
+            var socialMediaId = await _userClient.GetSocialMediaId(userId, socialMediaPlatformId);
+            _linkedInProfile.OnNext(socialMediaId?.SocialMediaUserId);
+            return socialMediaId;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public void ClearSocialMedia()
+    {
+        _linkedInProfile.OnNext(null);
     }
 
     public async Task<bool> DeleteProfileAsync()

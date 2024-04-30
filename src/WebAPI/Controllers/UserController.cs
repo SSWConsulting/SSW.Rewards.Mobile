@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection.Users.Queries.GetSocialMediaId;
 using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
@@ -39,6 +40,15 @@ public class UserController : ApiControllerBase
     public async Task<ActionResult<UserAchievementsViewModel>> Achievements([FromQuery] int userId)
     {
         return Ok(await Mediator.Send(new GetUserAchievementsQuery { UserId = userId }));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<UserSocialMediaIdDto>> SocialMediaId(int userId, int socialMediaPlatformId)
+    {
+        return Ok(await Mediator.Send(new GetSocialMediaIdQuery
+        {
+            UserId = userId, SocialMediaPlatformId = socialMediaPlatformId
+        }));
     }
 
     [HttpGet]
