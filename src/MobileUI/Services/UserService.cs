@@ -174,17 +174,16 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<UserSocialMediaIdDto> LoadSocialMedia(int userId, int socialMediaPlatformId)
+    public async Task LoadSocialMedia(int userId, int socialMediaPlatformId)
     {
         try
         {
             var socialMediaId = await _userClient.GetSocialMediaId(userId, socialMediaPlatformId);
             _linkedInProfile.OnNext(socialMediaId?.SocialMediaUserId);
-            return socialMediaId;
         }
         catch (Exception ex)
         {
-            return null;
+            // ignored
         }
     }
 

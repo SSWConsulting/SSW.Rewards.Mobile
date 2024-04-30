@@ -86,7 +86,7 @@ public partial class AddLinkedInViewModel : BaseViewModel
     {
         var linkedInAchievementId = 2; // LinkedIn Achievement
         IsBusy = true;
-        var result = await _userService.SaveSocialMediaId(linkedInAchievementId, InputText);
+        var result = await _userService.SaveSocialMedia(linkedInAchievementId, InputText);
         var snackbarOptions = new SnackbarOptions
         {
             Glyph = "\uf297", // tick icon

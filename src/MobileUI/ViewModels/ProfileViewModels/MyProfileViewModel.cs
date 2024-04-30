@@ -5,8 +5,9 @@ public class MyProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
     IDevService devService,
-    IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService)
+    IPermissionsService permissionsService,
+    ISnackbarService snackbarService)
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService, snackbarService)
 {
     private readonly IUserService _userService = userService;
 

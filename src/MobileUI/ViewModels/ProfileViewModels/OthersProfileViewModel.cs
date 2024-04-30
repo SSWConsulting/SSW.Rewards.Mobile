@@ -7,8 +7,9 @@ public partial class OthersProfileViewModel(
     IRewardService rewardsService,
     IUserService userService,
     IDevService devService,
-    IPermissionsService permissionsService)
-    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService)
+    IPermissionsService permissionsService,
+    ISnackbarService snackbarService)
+    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService, snackbarService)
 {
     public async Task Initialise()
     {

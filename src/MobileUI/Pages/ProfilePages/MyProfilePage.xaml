@@ -13,11 +13,11 @@
     </ContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="15"
-            Margin="15">
-            
+        <VerticalStackLayout Margin="15">
+
+            <!-- Close button -->
             <Border
+                Margin="0,15,0,0"
                 HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
                 StrokeShape="Ellipse"
@@ -34,9 +34,13 @@
                     TextColor="{StaticResource primary}" />
             </Border>
 
-            <controls:ProfileStats />
+            <controls:ProfileStats Margin="0,15,0,0" />
 
-            <controls:ProfileActivity />
+            <controls:SocialMedia
+                Padding="20,10,20,20"
+                Margin="0, -10, 0, 0" />
+
+            <controls:ProfileActivity Margin="0,15,0,0" />
 
         </VerticalStackLayout>
     </ScrollView>
