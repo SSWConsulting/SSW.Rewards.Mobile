@@ -50,6 +50,7 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
         
         User? user = await _context.Users
             .Where(u => u.Email == _currentUserService.GetUserEmail())
+            .Include(pr => pr.PendingRedemptions)
             .Include(u => u.UserAchievements)
             .ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(cancellationToken);
@@ -84,18 +85,27 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
 
         var codeData = Encoding.ASCII.GetBytes($"pnd:{Guid.NewGuid().ToString()}");
         var code = Convert.ToBase64String(codeData);
-        
+
+        var existingPending = user.PendingRedemptions.FirstOrDefault(pr => pr.RewardId == reward.Id && pr is { CancelledByUser: false, CancelledByAdmin: false, Completed: false });
+
         try
         {
-            user.PendingRedemptions.Add(new PendingRedemption
+            if (existingPending == null)
             {
-                Code = code,
-                ClaimedAt = _dateTime.Now,
-                RewardId = reward.Id,
-                UserId = user.Id
-            });
+                user.PendingRedemptions.Add(new PendingRedemption
+                {
+                    Code = code,
+                    ClaimedAt = _dateTime.Now,
+                    RewardId = reward.Id,
+                    UserId = user.Id
+                });
 
-            await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                code = existingPending.Code;
+            }
         }
         catch (Exception e)
         {

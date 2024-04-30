@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Shared.DTOs.Rewards;
 
-public class CreatePendingRedemptionDto
+public class CancelPendingRedemptionDto
 {
     public int Id { get; set; }
 }

@@ -86,16 +86,13 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            // TODO: Handle errors
-            if (! await ExceptionHandler.HandleApiException(e))
-            {
-            }
+            await ExceptionHandler.HandleApiException(e);
         }
 
         return result;
     }
     
-    public async Task<CreatePendingRedemptionResult> CreatePendingRedemption(ClaimRewardDto claim)
+    public async Task<CreatePendingRedemptionResult> CreatePendingRedemption(CreatePendingRedemptionDto claim)
     {
         var result = new CreatePendingRedemptionResult { status = RewardStatus.Error };
 
@@ -105,13 +102,26 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            // TODO: Handle errors
-            if (! await ExceptionHandler.HandleApiException(e))
-            {
-            }
+            await ExceptionHandler.HandleApiException(e);
         }
 
         await _userService.UpdateMyDetailsAsync();
+
+        return result;
+    }
+    
+    public async Task<CancelPendingRedemptionResult> CancelPendingRedemption(CancelPendingRedemptionDto claim)
+    {
+        var result = new CancelPendingRedemptionResult { Status = RewardStatus.Error };
+
+        try
+        {
+            result = await _rewardClient.CancelPendingRedemption(claim, CancellationToken.None);
+        }
+        catch (Exception e)
+        {
+            await ExceptionHandler.HandleApiException(e);
+        }
 
         return result;
     }

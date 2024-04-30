@@ -310,7 +310,7 @@ public class UserService : IUserService, IRolesService
     public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken)
     {
         var pendingRedemptions = await _dbContext.PendingRedemptions
-            .Where(x => x.User.Id == userId && !x.Completed && !x.CancelledByAdmin && !x.CancelledByAdmin)
+            .Where(x => x.User.Id == userId && !x.Completed && !x.CancelledByAdmin && !x.CancelledByUser)
             .ProjectTo<UserPendingRedemptionDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

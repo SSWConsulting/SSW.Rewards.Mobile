@@ -26,7 +26,6 @@
     <pages:PopupPage.Resources>
         <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
-        <toolkit:InvertedBoolConverter x:Key="InverseBool" />
         <Style TargetType="Label" x:Key="SelectedCheckLabelStyle">
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
@@ -348,6 +347,22 @@
                                 VerticalOptions="Center"
                                 HorizontalOptions="Center"
                                 Command="{Binding ConfirmClickedCommand}"/>
+                        
+                        <Button Background="{StaticResource SSWRed}"
+                                CornerRadius="4"
+                                Text="Cancel redemption"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding IsQrCodeVisible}"
+                                Command="{Binding CancelPendingRedemptionClickedCommand}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf00d;" 
+                                                 FontFamily="FA6Solid"
+                                                 FontAutoScalingEnabled="True"
+                                                 Size="16"/>
+                            </Button.ImageSource>
+                        </Button>
                         
                         <Button Text="{Binding CloseButtonText}"
                                 Command="{Binding ClosePopupCommand}"

@@ -93,9 +93,19 @@ public class RewardController : ApiControllerBase
     
     [HttpPost]
     [Authorize(Policy = Policies.MobileApp)]
-    public async Task<ActionResult<CreatePendingRedemptionResult>> CreatePendingRedemption(ClaimRewardDto claim)
+    public async Task<ActionResult<CreatePendingRedemptionResult>> CreatePendingRedemption(CreatePendingRedemptionDto claim)
     {
         return Ok(await Mediator.Send(new CreatePendingRedemptionCommand()
+        {
+            Id = claim.Id,
+        }));
+    }
+    
+    [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
+    public async Task<ActionResult<CancelPendingRedemptionResult>> CancelPendingRedemption(CancelPendingRedemptionDto claim)
+    {
+        return Ok(await Mediator.Send(new CancelPendingRedemptionCommand()
         {
             Id = claim.Id,
         }));

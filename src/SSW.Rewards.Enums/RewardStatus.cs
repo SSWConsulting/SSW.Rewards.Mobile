@@ -7,5 +7,6 @@ public enum RewardStatus
     NotEnoughPoints,
     Error,
     Pending,
-    Confirmed
+    Confirmed,
+    Cancelled
 }

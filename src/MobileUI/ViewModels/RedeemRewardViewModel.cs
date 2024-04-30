@@ -79,18 +79,18 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
         if (reward.IsPendingRedemption)
         {
-            ShowQrCode(reward.PendingRedemptionCode);
+            ShowQrCode(reward);
         }
 
         userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
     }
 
-    private void ShowQrCode(string code)
+    private void ShowQrCode(Reward reward)
     {
         IsBalanceVisible = false;
         ConfirmEnabled = false;
-        Heading = "Ready to claim!";
-        QrCode = code;
+        Heading = $"Ready to claim:{Environment.NewLine}{reward.Name}";
+        QrCode = reward.PendingRedemptionCode;
         IsQrCodeVisible = true;
         CloseButtonText = "Close";
     }
@@ -157,10 +157,9 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         SendingClaim = true;
         Heading = "Claiming reward...";
 
-        var claimResult = await rewardService.CreatePendingRedemption(new ClaimRewardDto
+        var claimResult = await rewardService.CreatePendingRedemption(new CreatePendingRedemptionDto
         {
-            Id = _reward.Id,
-            InPerson = true,
+            Id = _reward.Id
         });
 
         SendingClaim = false;
@@ -179,6 +178,20 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         }
 
         CloseButtonText = "Close";
+    }
+    
+    [RelayCommand]
+    private async Task CancelPendingRedemptionClicked()
+    {
+        IsBusy = true;
+        
+        await rewardService.CancelPendingRedemption(new CancelPendingRedemptionDto
+        {
+            Id = _reward.Id
+        });
+        
+        IsBusy = false;
+        await MopupService.Instance.PopAsync();
     }
 
     [RelayCommand]//(CanExecute = nameof(ConfirmClickedIsExecutable))]

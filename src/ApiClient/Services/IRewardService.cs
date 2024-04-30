@@ -13,7 +13,10 @@ public interface IRewardService
 
     Task<ClaimRewardResult> RedeemReward(ClaimRewardDto claim, CancellationToken cancellationToken);
 
-    Task<CreatePendingRedemptionResult> CreatePendingRedemption(ClaimRewardDto claim,
+    Task<CreatePendingRedemptionResult> CreatePendingRedemption(CreatePendingRedemptionDto claim,
+        CancellationToken cancellationToken);
+
+    Task<CancelPendingRedemptionResult> CancelPendingRedemption(CancelPendingRedemptionDto claim,
         CancellationToken cancellationToken);
 }
 
@@ -123,7 +126,7 @@ public class RewardService : IRewardService
         throw new Exception($"Failed to claim reward: {responseContent}");
     }
     
-    public async Task<CreatePendingRedemptionResult> CreatePendingRedemption(ClaimRewardDto claim, CancellationToken cancellationToken)
+    public async Task<CreatePendingRedemptionResult> CreatePendingRedemption(CreatePendingRedemptionDto claim, CancellationToken cancellationToken)
     {
         var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}CreatePendingRedemption", claim, cancellationToken);
 
@@ -139,6 +142,25 @@ public class RewardService : IRewardService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
-        throw new Exception($"Failed to claim reward: {responseContent}");
+        throw new Exception($"Failed to create pending redemption: {responseContent}");
+    }
+    
+    public async Task<CancelPendingRedemptionResult> CancelPendingRedemption(CancelPendingRedemptionDto claim, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}CancelPendingRedemption", claim, cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<CancelPendingRedemptionResult>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to cancel pending redemption: {responseContent}");
     }
 }
