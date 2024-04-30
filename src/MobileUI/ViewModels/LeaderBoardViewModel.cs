@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
@@ -73,9 +72,9 @@ public partial class LeaderBoardViewModel : BaseViewModel
         {
             Periods = new List<Segment>
             {
-                new() { Name = "This Week", Value = LeaderboardFilter.ThisWeek },
-                new() { Name = "This Month", Value = LeaderboardFilter.ThisMonth },
-                new() { Name = "This Year", Value = LeaderboardFilter.ThisYear },
+                new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
+                new() { Name = "Month", Value = LeaderboardFilter.ThisMonth },
+                new() { Name = "Year", Value = LeaderboardFilter.ThisYear },
                 new() { Name = "All Time", Value = LeaderboardFilter.Forever },
             };
         }
@@ -113,6 +112,14 @@ public partial class LeaderBoardViewModel : BaseViewModel
             await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
         else
             await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+    }
+
+    [RelayCommand]
+    private void ScrollToMe()
+    {
+        var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
+        var myIndex = SearchResults.IndexOf(myCard);
+        ScrollTo(myIndex);
     }
 
     private async Task LoadLeaderboard()
