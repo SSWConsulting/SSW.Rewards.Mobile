@@ -18,6 +18,7 @@ public class UserService : IUserService
     private readonly BehaviorSubject<int> _myBalance = new(0);
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
     private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
+    private readonly BehaviorSubject<bool> _isStaff = new(false);
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
@@ -34,6 +35,7 @@ public class UserService : IUserService
     public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
     public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
     public IObservable<int> MyAllTimeRankObservable() => _myAllTimeRank.AsObservable();
+    public IObservable<bool> IsStaffObservable() => _isStaff.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -63,6 +65,7 @@ public class UserService : IUserService
         _myPoints.OnNext(user.Points);
         _myBalance.OnNext(user.Balance);
         _myQrCode.OnNext(user.QRCode);
+        _isStaff.OnNext(user.IsStaff);
     }
 
     public void UpdateMyAllTimeRank(int newRank)

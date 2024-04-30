@@ -12,6 +12,7 @@ public interface IUserService
     IObservable<int> MyBalanceObservable();
     IObservable<string> MyQrCodeObservable();
     IObservable<int> MyAllTimeRankObservable();
+    IObservable<bool> IsStaffObservable();
 
     // auth methods
 

@@ -113,7 +113,7 @@
                 case AssignReward usr:
                     if (usr?.Id == null) return;
 
-                    await rewardAdminService.ClaimForUser(usr.Code, usr.Id, CancellationToken.None);
+                    await rewardAdminService.ClaimForUser(usr.Code, usr.Id, false, CancellationToken.None);
                     // TODO: Add nice notification for returned status
                     
                     SnackBar.Add($"Reward claimed", Severity.Success);
