@@ -19,7 +19,11 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
     private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
 
-    private readonly BehaviorSubject<string> _linkedInProfile = new(null);
+    /// <summary>
+    /// Stores my profile as well as other users
+    /// </summary>
+    /// <returns></returns>
+    private readonly BehaviorSubject<string> _linkedInProfile = new(string.Empty);
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
@@ -36,6 +40,7 @@ public class UserService : IUserService
     public IObservable<int> MyBalanceObservable() => _myBalance.AsObservable();
     public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
     public IObservable<int> MyAllTimeRankObservable() => _myAllTimeRank.AsObservable();
+
     public IObservable<string> LinkedInProfileObservable() => _linkedInProfile.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
@@ -189,7 +194,7 @@ public class UserService : IUserService
 
     public void ClearSocialMedia()
     {
-        _linkedInProfile.OnNext(null);
+        _linkedInProfile.OnNext(string.Empty);
     }
 
     public async Task<bool> DeleteProfileAsync()
