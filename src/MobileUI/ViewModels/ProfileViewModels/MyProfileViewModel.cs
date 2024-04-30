@@ -20,7 +20,7 @@ public class MyProfileViewModel(
         _userService.MyProfilePicObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);
         _userService.MyPointsObservable().Subscribe(myPoints => Points = myPoints);
         _userService.MyBalanceObservable().Subscribe(myBalance => Balance = myBalance);
-        _userService.MyQrCodeObservable().Subscribe(myQrCode => IsStaff = !string.IsNullOrWhiteSpace(myQrCode));
+        _userService.IsStaffObservable().Subscribe(isStaff => IsStaff = isStaff);
         _userService.MyAllTimeRankObservable().Subscribe(myRank => Rank = myRank);
 
         await _initialise();

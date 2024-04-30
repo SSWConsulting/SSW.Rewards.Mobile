@@ -128,7 +128,7 @@ public class ScannerService : IScannerService
                     
                     case RewardStatus.Confirmed:
                         vm.result = ScanResult.Confirmed;
-                        vm.Title = "Pending redemption confirmed";
+                        vm.Title = response.Reward.Name;
                         break;
 
                     default:

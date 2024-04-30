@@ -81,7 +81,11 @@ public partial class RewardsViewModel : BaseViewModel
         if (reward != null)
         {
             var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
-            popup.CallbackEvent += async (sender, args) => await LoadData();
+            popup.CallbackEvent += async (_, _) =>
+            {
+                await LoadData();
+                await _userService.UpdateMyDetailsAsync();
+            };
             await MopupService.Instance.PushAsync(popup);
         }
     }
