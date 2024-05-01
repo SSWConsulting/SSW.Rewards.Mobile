@@ -24,9 +24,4 @@
         <ProjectReference Include="..\Domain\SSW.Rewards.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Network\Queries\" />
-      <Folder Include="PendingRedemptions\Commands\" />
-    </ItemGroup>
-
 </Project>
