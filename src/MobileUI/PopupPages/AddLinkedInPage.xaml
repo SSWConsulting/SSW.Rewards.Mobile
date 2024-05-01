@@ -50,7 +50,7 @@
                                 Text="{Binding InputText}"
                                 Keyboard="Url"
                                 ReturnType="Done"
-                                Placeholder="https://linkedin.com/in/[your-name]"
+                                Placeholder="{Binding LinkedInPlaceholder}"
                                 CursorPosition="{Binding CursorPosition}"
                                 IsSpellCheckEnabled="False"
                                 PlaceholderColor="Grey"
