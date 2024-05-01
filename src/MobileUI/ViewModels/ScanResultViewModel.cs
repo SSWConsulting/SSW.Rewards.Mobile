@@ -79,6 +79,7 @@ public partial class ScanResultViewModel : BaseViewModel
                 ResultHeading = "Pending redemption confirmed";
                 ResultBody = "Please provide the reward to the user.";
                 AnimationRef = "trophy.json";
+                HeadingColour = Colors.White;
                 AchievementHeading = result.Title;
                 _wonPrize = true;
                 break;
