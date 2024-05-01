@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -29,6 +30,14 @@ public partial class RewardsViewModel : BaseViewModel
         _userService = userService;
         _addressService = addressService;
         _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
+        _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
+    }
+
+    private void OnUserChanged(int userId)
+    {
+        Rewards.Clear();
+        CarouselRewards.Clear();
+        _isLoaded = false;
     }
 
     public async Task Initialise()
