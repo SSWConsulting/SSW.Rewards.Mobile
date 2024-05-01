@@ -9,11 +9,10 @@ public partial class OthersProfileViewModel(
     IDevService devService,
     IPermissionsService permissionsService,
     ISnackbarService snackbarService)
-    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService, snackbarService)
+    : ProfileViewModelBase(false, rewardsService, userService, devService, permissionsService, snackbarService)
 {
     public async Task Initialise()
     {
-        IsMe = false;
         await _initialise();
     }
 

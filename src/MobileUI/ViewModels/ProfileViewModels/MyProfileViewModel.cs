@@ -7,14 +7,12 @@ public class MyProfileViewModel(
     IDevService devService,
     IPermissionsService permissionsService,
     ISnackbarService snackbarService)
-    : ProfileViewModelBase(rewardsService, userService, devService, permissionsService, snackbarService)
+    : ProfileViewModelBase(true, rewardsService, userService, devService, permissionsService, snackbarService)
 {
     private readonly IUserService _userService = userService;
 
     public async Task Initialise()
     {
-        IsMe = true;
-
         _userService.MyUserIdObservable().Subscribe(myUserId => HandleUserIdChange(myUserId));
         _userService.MyNameObservable().Subscribe(myName => Name = myName);
         _userService.MyEmailObservable().Subscribe(myEmail => UserEmail = myEmail);

@@ -10,6 +10,7 @@
         <RoundRectangle CornerRadius="8" />
     </Border.StrokeShape>
     <Grid ColumnDefinitions="*, *, *" >
+        <!-- LinkedIn -->
         <Label
             Grid.Column="0"
             HorizontalOptions="Center"
@@ -22,24 +23,28 @@
                 <TapGestureRecognizer Command="{Binding OpenLinkedInProfileCommand}" />
             </Label.GestureRecognizers>
         </Label>
+        <!-- GitHub -->
         <Label
             Grid.Column="1"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf092;"
             FontAutoScalingEnabled="False"
-            FontSize="50">
+            FontSize="50"
+            TextColor="{Binding GitHubColor}">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
             </Label.GestureRecognizers>
         </Label>
+        <!-- Twitter -->
         <Label
             Grid.Column="2"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf081;"
             FontAutoScalingEnabled="False"
-            FontSize="50">
+            FontSize="50"
+            TextColor="{Binding TwitterColor}">
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
             </Label.GestureRecognizers>

@@ -54,7 +54,13 @@ public partial class ProfileViewModelBase : BaseViewModel
     private bool _isMe;
 
     [ObservableProperty]
-    private Color _linkedInColor = Colors.White;
+    private Color _linkedInColor;
+
+    [ObservableProperty]
+    private Color _gitHubColor = Colors.DimGrey;
+
+    [ObservableProperty]
+    private Color _twitterColor = Colors.DimGrey;
 
     public ObservableCollection<Activity> RecentActivity { get; } = [];
     public ObservableCollection<Activity> LastSeen { get; } = [];
@@ -62,13 +68,14 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
+        bool isMe,
         IRewardService rewardsService,
         IUserService userService,
         IDevService devService,
         IPermissionsService permissionsService,
         ISnackbarService snackbarService)
     {
-        IsLoading = true;
+        IsMe = isMe;
         _rewardsService = rewardsService;
         _userService = userService;
         _devService = devService;
@@ -77,8 +84,13 @@ public partial class ProfileViewModelBase : BaseViewModel
         userService.LinkedInProfileObservable().Subscribe(myLinkedIn =>
         {
             LinkedInUrl = myLinkedIn;
-            App.Current.Resources.TryGetValue("SSWRed", out object sswRed);
-            LinkedInColor = (string.IsNullOrWhiteSpace(myLinkedIn) ? Colors.White : (Color)sswRed)!;
+            App.Current.Resources.TryGetValue("SSWRed", out object color);
+            var sswRed = (Color)color!;
+            LinkedInColor = !string.IsNullOrWhiteSpace(myLinkedIn)
+                ? sswRed
+                : IsMe
+                    ? Colors.White
+                    : Colors.DimGrey;
         });
     }
 
