@@ -39,6 +39,12 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="activityFeed:ActivityFeedItemDto">
                         <Grid Padding="0,0,0,8">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={x:Reference Activity}, Path=BindingContext.ActivityTappedCommand}"
+                                    CommandParameter="{Binding  .}" />
+                            </Grid.GestureRecognizers>
                             <Border
                                 BackgroundColor="{StaticResource MainBackground}"
                                 Stroke="{StaticResource MainBackground}"

@@ -5,6 +5,7 @@ using Mopups.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -97,22 +98,20 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
+        
+        var profile = await _userService.GetUserAsync(userId);
 
-        var rewardListTask = _userService.GetRewardsAsync(userId);
-        var achievementListTask = _userService.GetAchievementsAsync(userId);
-        await Task.WhenAll(rewardListTask, achievementListTask);
-
-        var rewardList = rewardListTask.Result;
-        var achievementList = achievementListTask.Result;
-
-        UpdateLastSeenSection(achievementList);
-        UpdateRecentActivitySection(achievementList, rewardList);
+        Rank = profile.Rank;
+        Points = profile.Points;
+        
+        UpdateLastSeenSection(profile.Achievements);
+        UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
     }
 
-    public string GetMessage(Achievement achievement, bool isActivity = false)
+    public string GetMessage(UserAchievementDto achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
 
@@ -121,11 +120,11 @@ public partial class ProfileViewModelBase : BaseViewModel
             prefix += " not";
         }
 
-        string activity = achievement.Name;
+        string activity = achievement.AchievementName;
         string action = string.Empty;
-        string scored = $"just scored {achievement.Value}pts for";
+        string scored = $"just scored {achievement.AchievementValue}pts for";
 
-        switch (achievement.Type)
+        switch (achievement.AchievementType)
         {
             case AchievementType.Attended:
                 action = "checked into";
@@ -157,33 +156,33 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
     }
 
-    private void UpdateLastSeenSection(IEnumerable<Achievement> achievementList)
+    private void UpdateLastSeenSection(IEnumerable<UserAchievementDto> achievementList)
     {
         LastSeen.Clear(); // it could contain data from another user profile
-        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
         foreach (var achievement in recentLastSeen)
         {
             LastSeen.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
+                Type = achievement.AchievementType.ToActivityType(),
                 TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
     }
 
-    private void UpdateRecentActivitySection(IEnumerable<Achievement> achievementList, IEnumerable<Reward> rewardList)
+    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievementList, IEnumerable<UserRewardDto> rewardList)
     {
         var activityList = new List<Activity>();
-        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        var recentAchievements = achievementList.Where(a => a.AchievementType != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
         foreach (var achievement in recentAchievements)
         {
             activityList.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
+                Type = achievement.AchievementType.ToActivityType(),
                 TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
@@ -196,10 +195,10 @@ public partial class ProfileViewModelBase : BaseViewModel
         {
             activityList.Add(new Activity
             {
-                ActivityName = $"Claimed {reward.Name}",
-                OccurredAt = reward.AwardedAt?.DateTime,
+                ActivityName = $"Claimed {reward.RewardName}",
+                OccurredAt = reward.AwardedAt,
                 Type = ActivityType.Claimed,
-                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
+                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt)
             });
         }
 

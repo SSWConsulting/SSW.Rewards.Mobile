@@ -196,10 +196,19 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var vm = await _dbContext.Users
-                .Where(u => u.Id == userId)
-                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
+        var users = _dbContext.Users
+            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
+            .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
+            .ToList()
+            .OrderByDescending(u => u.Points)
+            .Select((u, i) =>
+            {
+                u.Rank = i + 1;
+                return u;
+            });
+            
+        
+        var vm = users.FirstOrDefault(u => u.Id == userId);
 
         if (vm == null)
         {
@@ -210,21 +219,19 @@ public class UserService : IUserService, IRolesService
                                     .Include(ua => ua.Achievement)
                                     .Where(u => u.UserId == userId)
                                     .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
-                                    .ToListAsync();
+                                    .ToListAsync(cancellationToken);
 
         var userRewards = await _dbContext.UserRewards
                                     .Include(ur => ur.Reward)
                                     .Where(u => u.UserId == userId)
                                     .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
-                                    .ToListAsync();
+                                    .ToListAsync(cancellationToken);
 
         vm.Achievements = userAchievements;
         vm.Rewards = userRewards;
 
-        var points = userAchievements.Sum(a => a.AchievementValue);
         var spent = userRewards.Sum(r => r.RewardCost);
-        vm.Points = points;
-        vm.Balance = points - spent;
+        vm.Balance = vm.Points - spent;
 
         return vm;
     }

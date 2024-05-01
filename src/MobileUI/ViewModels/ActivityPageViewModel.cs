@@ -220,4 +220,10 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
         await RefreshFeed();
         IsRefreshing = false;
     }
+    
+    [RelayCommand]
+    private async Task ActivityTapped(ActivityFeedItemDto item)
+    {
+        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(item);
+    }
 }

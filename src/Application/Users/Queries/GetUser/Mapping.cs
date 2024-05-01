@@ -7,7 +7,7 @@ public class Mapping : Profile
     {
         CreateMap<User, UserProfileDto>()
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
-                .ForMember(dst => dst.Points, opt => opt.Ignore())
+                .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.Balance, opt => opt.Ignore())
                 .ForMember(dst => dst.Rewards, opt => opt.MapFrom(src => src.UserRewards))
                 .ForMember(dst => dst.Achievements, opt => opt.MapFrom(src => src.UserAchievements));
