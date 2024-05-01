@@ -8,7 +8,7 @@
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
                  xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-                 xmlns:controls1="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+                 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
@@ -172,7 +172,7 @@
                         <Label Text="Please show this code to SSW staff to claim your reward:"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"/>
-                        <controls1:BarcodeGeneratorView
+                        <zxing:BarcodeGeneratorView
                                                  Format="QrCode"
                                                  Value="{Binding QrCode}"
                                                  HorizontalOptions="Center"
