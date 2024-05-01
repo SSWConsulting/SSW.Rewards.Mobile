@@ -43,7 +43,10 @@ public class CancelPendingRedemptionCommandHandler : IRequestHandler<CancelPendi
             };
         }
 
-        var pendingRedemption = user.PendingRedemptions.FirstOrDefault(pr => pr.RewardId == request.Id && !pr.CancelledByUser && !pr.CancelledByAdmin && !pr.Completed);
+        var pendingRedemption = user.PendingRedemptions.FirstOrDefault(pr =>
+            pr.RewardId == request.Id &&
+            pr is { CancelledByUser: false, CancelledByAdmin: false, Completed: false }
+        );
 
         if (pendingRedemption == null)
         {
@@ -56,7 +59,7 @@ public class CancelPendingRedemptionCommandHandler : IRequestHandler<CancelPendi
 
         pendingRedemption.CancelledByUser = true;
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         return new CancelPendingRedemptionResult
         {
             Status = RewardStatus.Cancelled

@@ -35,7 +35,7 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
         Reward? reward = null;
         PendingRedemption? pendingRedemption = null;
         var userId = request.UserId;
-        
+
         if (request.IsPendingRedemption)
         {
             pendingRedemption = await _context.PendingRedemptions
@@ -45,6 +45,15 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
 
             if (pendingRedemption != null)
             {
+                if (pendingRedemption.Completed)
+                {
+                    _logger.LogError("Pending reward was already scanned: {0}", request.Code);
+                    return new ClaimRewardResult
+                    {
+                        status = RewardStatus.Duplicate
+                    };
+                }
+
                 reward = pendingRedemption.Reward;
                 userId = pendingRedemption.UserId;
             }
