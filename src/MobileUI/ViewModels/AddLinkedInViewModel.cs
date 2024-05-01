@@ -71,7 +71,7 @@ public partial class AddLinkedInViewModel(IUserService userService, ISnackbarSer
         var isValid = urlParts.Length == 5 &&
                       string.Equals(urlParts[0], "https:", StringComparison.InvariantCultureIgnoreCase) &&
                       urlParts[1] == string.Empty &&
-                      string.Equals(urlParts[2], "linkedin.com", StringComparison.InvariantCultureIgnoreCase) &&
+                      string.Equals(urlParts[2], "www.linkedin.com", StringComparison.InvariantCultureIgnoreCase) &&
                       string.Equals(urlParts[3], "in", StringComparison.InvariantCultureIgnoreCase ) &&
                       !string.IsNullOrWhiteSpace(urlParts[4]);
         return isValid;

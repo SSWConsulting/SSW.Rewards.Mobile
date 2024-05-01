@@ -36,7 +36,7 @@
                         <Label HorizontalTextAlignment="Center"
                                TextColor="{StaticResource SSWRed}"
                                FontSize="Large"
-                               Text="Add LinkedIn profile"/>
+                               Text="LinkedIn profile"/>
                         <Label HorizontalTextAlignment="Center"
                                Margin="20"
                                TextColor="White"
