@@ -14,7 +14,7 @@
             </TableSection>
 
             <TableSection Title="Your Account" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Add LinkedIn profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+                <TextCell Text="Add / Update LinkedIn profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
                 <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
                 <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
             </TableSection>

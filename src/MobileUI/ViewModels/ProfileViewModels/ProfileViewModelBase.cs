@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Enums;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 
@@ -14,6 +15,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IUserService _userService;
     private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
+    private readonly ISnackbarService _snackbarService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -36,10 +38,13 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isStaff;
 
+    [ObservableProperty]
+    private string? _linkedInUrl;
+
     public bool ShowBalance { get; set; } = true;
 
     protected int userId { get; set; }
-    
+
     public bool ShowCloseButton { get; set; } = true;
 
     [ObservableProperty]
@@ -48,39 +53,79 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
+    [ObservableProperty]
+    private Color _linkedInColor;
+
+    [ObservableProperty]
+    private Color _gitHubColor = Colors.DimGrey;
+
+    [ObservableProperty]
+    private Color _twitterColor = Colors.DimGrey;
+
     public ObservableCollection<Activity> RecentActivity { get; } = [];
     public ObservableCollection<Activity> LastSeen { get; } = [];
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
+        bool isMe,
         IRewardService rewardsService,
         IUserService userService,
         IDevService devService,
-        IPermissionsService permissionsService)
+        IPermissionsService permissionsService,
+        ISnackbarService snackbarService)
     {
-        IsLoading = true;
+        IsMe = isMe;
         _rewardsService = rewardsService;
         _userService = userService;
         _devService = devService;
         _permissionsService = permissionsService;
+        _snackbarService = snackbarService;
+        userService.LinkedInProfileObservable().Subscribe(myLinkedIn =>
+        {
+            LinkedInUrl = myLinkedIn;
+            App.Current.Resources.TryGetValue("SSWRed", out object color);
+            var sswRed = (Color)color!;
+            LinkedInColor = !string.IsNullOrWhiteSpace(myLinkedIn)
+                ? sswRed
+                : IsMe
+                    ? Colors.White
+                    : Colors.DimGrey;
+        });
     }
 
     protected async Task _initialise()
     {
-        var rewards = await _rewardsService.GetRewards();
+        IsLoading = true;
+        var rewards = await _rewardsService.GetRewards(); // TODO: do we need this?
+        await LoadProfileSections();
+        IsLoading = false;
+    }
 
-        // TODO: If there is an authentication failure, the RewardsService
-        // will pop a modal login page so the user can reauthenticate. In
-        // that case, do nothing here. We can remove this check when we
-        // implement Polly instead to make this process more robust. See
-        // https://github.com/SSWConsulting/SSW.Rewards/issues/276
-        if (!rewards.Any())
+    protected async Task LoadProfileSections()
+    {
+        if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        await LoadProfileSections();
+        var rewardListTask = _userService.GetRewardsAsync(userId);
+        var achievementListTask = _userService.GetAchievementsAsync(userId);
+        var loadSocialMediaTask = LoadSocialMedia();
+        await Task.WhenAll(rewardListTask, achievementListTask, loadSocialMediaTask);
 
-        IsLoading = false;
+        var rewardList = rewardListTask.Result;
+        var achievementList = achievementListTask.Result;
+
+        UpdateLastSeenSection(achievementList);
+        UpdateRecentActivitySection(achievementList, rewardList);
+        await UpdateSkillsSectionIfRequired();
+
+        _loadingProfileSectionsSemaphore.Release();
+    }
+
+    private async Task LoadSocialMedia()
+    {
+        var linkedInAchievementId = 2; // LinkedIn Achievement
+        await _userService.LoadSocialMedia(userId, linkedInAchievementId);
     }
 
     [RelayCommand]
@@ -93,23 +138,24 @@ public partial class ProfileViewModelBase : BaseViewModel
         await MopupService.Instance.PushAsync(popup);
     }
 
-    protected async Task LoadProfileSections()
+    [RelayCommand]
+    private async Task OpenLinkedInProfile()
     {
-        if (!_loadingProfileSectionsSemaphore.Wait(0))
+        if (string.IsNullOrWhiteSpace(LinkedInUrl))
+        {
+            if (!IsMe)
+            {
+                return;
+            }
+
+            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+            var page = new AddLinkedInPage(_userService, _snackbarService, statusBarColor as Color);
+            await MopupService.Instance.PushAsync(page);
             return;
+        }
 
-        var rewardListTask = _userService.GetRewardsAsync(userId);
-        var achievementListTask = _userService.GetAchievementsAsync(userId);
-        await Task.WhenAll(rewardListTask, achievementListTask);
-
-        var rewardList = rewardListTask.Result;
-        var achievementList = achievementListTask.Result;
-
-        UpdateLastSeenSection(achievementList);
-        UpdateRecentActivitySection(achievementList, rewardList);
-        await UpdateSkillsSectionIfRequired();
-
-        _loadingProfileSectionsSemaphore.Release();
+        var uri = new Uri(LinkedInUrl);
+        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
     }
 
     public string GetMessage(Achievement achievement, bool isActivity = false)
@@ -240,8 +286,21 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         IsBusy = false;
         IsLoading = false;
+        // Clearing LinkedIn profile so that the previous value doesn't display during page loading
+        _userService.ClearSocialMedia();
     }
-    
+
+    [RelayCommand]
+    private async Task ComingSoon()
+    {
+        if (IsMe)
+        {
+            await CommunityToolkit.Maui.Alerts.Snackbar
+                .Make("Coming soon. At that moment you can only add LinkedIn profile", duration: TimeSpan.FromSeconds(5))
+                .Show();
+        }
+    }
+
     [RelayCommand]
     private async Task ClosePage()
     {

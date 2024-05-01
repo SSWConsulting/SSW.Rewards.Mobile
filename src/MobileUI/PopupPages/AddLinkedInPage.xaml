@@ -36,7 +36,7 @@
                         <Label HorizontalTextAlignment="Center"
                                TextColor="{StaticResource SSWRed}"
                                FontSize="Large"
-                               Text="Add LinkedIn profile"/>
+                               Text="LinkedIn profile"/>
                         <Label HorizontalTextAlignment="Center"
                                Margin="20"
                                TextColor="White"
@@ -50,7 +50,7 @@
                                 Text="{Binding InputText}"
                                 Keyboard="Url"
                                 ReturnType="Done"
-                                Placeholder="https://linkedin.com/in/[your-name]"
+                                Placeholder="{Binding LinkedInPlaceholder}"
                                 CursorPosition="{Binding CursorPosition}"
                                 IsSpellCheckEnabled="False"
                                 PlaceholderColor="Grey"

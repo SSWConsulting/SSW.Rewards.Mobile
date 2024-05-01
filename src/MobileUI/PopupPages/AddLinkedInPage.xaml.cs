@@ -8,7 +8,7 @@ public partial class AddLinkedInPage
     private readonly AddLinkedInViewModel _viewModel;
     private readonly Color _parentPageStatusBarColor;
 
-    public AddLinkedInPage(IUserService userService, ISnackbarService snackbarService ,Color parentPageStatusBarColor = null)
+    public AddLinkedInPage(IUserService userService, ISnackbarService snackbarService, Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();

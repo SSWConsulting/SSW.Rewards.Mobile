@@ -13,6 +13,8 @@ public interface IUserService
     IObservable<string> MyQrCodeObservable();
     IObservable<int> MyAllTimeRankObservable();
 
+    IObservable<string> LinkedInProfileObservable();
+
     // auth methods
 
     // user details
@@ -26,7 +28,9 @@ public interface IUserService
     Task<IEnumerable<Reward>> GetRewardsAsync(int userId);
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
-    Task<bool?> SaveSocialMediaId(int achievementId, string socialMediaUserId);
+    Task<bool?> SaveSocialMedia(int achievementId, string socialMediaUserId);
+    Task LoadSocialMedia(int userId, int socialMediaPlatformId);
+    void ClearSocialMedia();
     Task<bool> DeleteProfileAsync();
 }
 

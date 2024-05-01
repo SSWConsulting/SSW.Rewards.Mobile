@@ -1,0 +1,53 @@
+<Border
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    x:Class="SSW.Rewards.Mobile.Controls.SocialMedia"
+    StrokeThickness="0"
+    BackgroundColor="{StaticResource Background}"
+    x:DataType="viewModels:ProfileViewModelBase">
+    <Border.StrokeShape>
+        <RoundRectangle CornerRadius="8" />
+    </Border.StrokeShape>
+    <Grid ColumnDefinitions="*, *, *" >
+        <!-- LinkedIn -->
+        <Label
+            Grid.Column="0"
+            HorizontalOptions="Center"
+            FontFamily="FA6Brands"
+            Text="&#xf08c;"
+            FontAutoScalingEnabled="False"
+            FontSize="50"
+            TextColor="{Binding LinkedInColor}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenLinkedInProfileCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+        <!-- GitHub -->
+        <Label
+            Grid.Column="1"
+            HorizontalOptions="Center"
+            FontFamily="FA6Brands"
+            Text="&#xf092;"
+            FontAutoScalingEnabled="False"
+            FontSize="50"
+            TextColor="{Binding GitHubColor}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+        <!-- Twitter -->
+        <Label
+            Grid.Column="2"
+            HorizontalOptions="Center"
+            FontFamily="FA6Brands"
+            Text="&#xf081;"
+            FontAutoScalingEnabled="False"
+            FontSize="50"
+            TextColor="{Binding TwitterColor}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+    </Grid>
+</Border>
