@@ -72,7 +72,7 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = AuthorizationRoles.Staff)]
+    [Authorize(Roles = "Staff,Admin")]
     public async Task<ActionResult<ClaimRewardResult>> ClaimForUser(ClaimRewardForUserCommand claimRewardForUserCommand)
     {
         return Ok(await Mediator.Send(claimRewardForUserCommand));
