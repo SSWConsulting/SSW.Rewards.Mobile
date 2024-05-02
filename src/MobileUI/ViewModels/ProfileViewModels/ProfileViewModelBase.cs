@@ -110,7 +110,6 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
         
         var profile = await _userService.GetUserAsync(UserId);
-        var loadSocialMediaTask = await LoadSocialMedia();
 
         ProfilePic = profile.ProfilePic ?? "v2sophie";
         Name = profile.FullName;
@@ -119,6 +118,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
         
+        await LoadSocialMedia();
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
@@ -129,7 +129,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private async Task LoadSocialMedia()
     {
         var linkedInAchievementId = 2; // LinkedIn Achievement
-        await _userService.LoadSocialMedia(userId, linkedInAchievementId);
+        await _userService.LoadSocialMedia(UserId, linkedInAchievementId);
     }
 
     [RelayCommand]
