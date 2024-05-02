@@ -3,6 +3,8 @@ public class UserProfileDto
 {
     public int Id { get; set; }
     public string? FullName { get; set; }
+    public string? Email { get; set; }
+    public bool IsStaff { get; set; }
     public string? ProfilePic { get; set; }
     public int Points { get; set; }
     public int Balance { get; set; }

@@ -94,7 +94,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     [RelayCommand]
     private async Task UserTapped(NetworkProfileDto  leader)
     { 
-        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader.UserId);
     }
     
     [RelayCommand]

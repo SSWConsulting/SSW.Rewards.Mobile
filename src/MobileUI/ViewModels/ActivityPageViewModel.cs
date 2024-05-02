@@ -6,6 +6,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
 using SSW.Rewards.Shared.DTOs.Users;
+using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -15,7 +16,7 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel(IActivityFeedService activityService) : BaseViewModel
+public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService) : BaseViewModel
 {
     public ActivityPageSegments CurrentSegment { get; set; }
 
@@ -41,6 +42,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
     private const int _take = 50;
     private int _skip;
     private bool _limitReached;
+    
+    private int _myUserId;
 
     public async Task Initialise()
     {
@@ -56,6 +59,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
                 new Segment { Name = "Friends", Value = ActivityPageSegments.Friends }
             ];
         }
+
+        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
 
         await RefreshFeed();
         
@@ -224,6 +229,9 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService)
     [RelayCommand]
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
-        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(item);
+        if (_myUserId == item.UserId)
+            await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
+        else
+            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(item.UserId);
     }
 }

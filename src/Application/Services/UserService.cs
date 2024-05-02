@@ -196,10 +196,10 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var users = _dbContext.Users
+        var users = (await _dbContext.Users
             .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
             .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-            .ToList()
+            .ToListAsync(cancellationToken))
             .OrderByDescending(u => u.Points)
             .Select((u, i) =>
             {
@@ -229,6 +229,7 @@ public class UserService : IUserService, IRolesService
 
         vm.Achievements = userAchievements;
         vm.Rewards = userRewards;
+        vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
 
         var spent = userRewards.Sum(r => r.RewardCost);
         vm.Balance = vm.Points - spent;

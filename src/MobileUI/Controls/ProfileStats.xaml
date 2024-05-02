@@ -22,7 +22,12 @@
         Spacing="15"
         Padding="0,15">
         <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+            </Grid.GestureRecognizers>
+            
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
+                                Text=""
                                 WidthRequest="120"
                                 HeightRequest="120"
                                 CornerRadius="60"
@@ -37,9 +42,6 @@
                 StrokeShape="Ellipse"
                 StrokeThickness="0"
                 IsVisible="{Binding IsMe}">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
-                </Border.GestureRecognizers>
                 <Label
                     FontFamily="FluentIcons"
                     FontAutoScalingEnabled="False"

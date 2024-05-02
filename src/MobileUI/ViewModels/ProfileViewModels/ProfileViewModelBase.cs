@@ -39,7 +39,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     public bool ShowBalance { get; set; } = true;
 
-    protected int userId { get; set; }
+    protected int UserId { get; set; }
     
     public bool ShowCloseButton { get; set; } = true;
 
@@ -99,10 +99,14 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
         
-        var profile = await _userService.GetUserAsync(userId);
+        var profile = await _userService.GetUserAsync(UserId);
 
+        ProfilePic = profile.ProfilePic ?? "v2sophie";
+        Name = profile.FullName;
         Rank = profile.Rank;
         Points = profile.Points;
+        IsStaff = profile.IsStaff;
+        UserEmail = profile.Email;
         
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
