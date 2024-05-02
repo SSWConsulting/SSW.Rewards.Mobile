@@ -33,4 +33,11 @@ public static class Constants
     public const int AnimationRepeatCount = 3;
 
     public const string AUTHENTICATED_CLIENT = nameof(AUTHENTICATED_CLIENT);
+
+    public static class SocialMediaPlatformIds
+    {
+        public const int GitHub = 1;
+        public const int LinkedIn = 2;
+        public const int Twitter = 3;
+    }
 }

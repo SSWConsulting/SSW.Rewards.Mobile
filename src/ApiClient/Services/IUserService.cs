@@ -24,7 +24,7 @@ public interface IUserService
     Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId,
         CancellationToken cancellationToken = default);
 
-    Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken = default);
+    Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserProfile, CancellationToken cancellationToken = default);
 
     Task<UserSocialMediaIdDto?> GetSocialMediaId(int userId, int socialMediaPlatformId, CancellationToken cancellationToken = default);
 }
@@ -169,7 +169,7 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
     }
-    
+
     public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken = default)
     {
         var result = await _httpClient.GetAsync($"{_baseRoute}GetUserPendingRedemptions?userId={userId}", cancellationToken);
@@ -188,11 +188,11 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user pending redemptions: {responseContent}");
     }
-    
 
-    public async Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken)
+
+    public async Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserProfile, CancellationToken cancellationToken)
     {
-        var dto = new UserSocialMediaIdDto { AchievementId = achievementId, SocialMediaUserId = socialMediaUserId };
+        var dto = new UserSocialMediaIdDto { SocialMediaPlatformId = achievementId, SocialMediaUserId = socialMediaUserProfile };
         var result = await _httpClient.PostAsJsonAsync(
             $"{_baseRoute}UpsertUserSocialMediaId", dto, cancellationToken);
 

@@ -79,9 +79,8 @@ public partial class AddLinkedInViewModel(IUserService userService, ISnackbarSer
 
     private async Task AddLinkedInProfile()
     {
-        var linkedInAchievementId = 2; // LinkedIn Achievement
         IsBusy = true;
-        var result = await userService.SaveSocialMedia(linkedInAchievementId, InputText);
+        var result = await userService.SaveSocialMedia(Constants.SocialMediaPlatformIds.LinkedIn, InputText);
         var snackbarOptions = new SnackbarOptions
         {
             Glyph = "\uf297", // tick icon
