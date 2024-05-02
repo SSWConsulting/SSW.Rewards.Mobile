@@ -8,6 +8,7 @@
     xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
     xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     x:DataType="viewModels:ProfileViewModelBase"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
@@ -114,7 +115,7 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
+
                 <VerticalStackLayout Grid.Column="1"
                                      Spacing="2"
                                      HorizontalOptions="Fill"
@@ -184,7 +185,7 @@
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
                 ColumnDefinitions="*,*">
-                
+
                 <Border Grid.Column="0" StrokeThickness="0">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="8,0,8,0" StrokeThickness="0" />
@@ -214,7 +215,7 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
+
                 <Border Grid.Column="1" StrokeThickness="0">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="0,8,0,8" StrokeThickness="0" />
@@ -244,10 +245,14 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
+
             </Grid>
         </Border>
-        
+
+        <controls:SocialMedia
+            Padding="20,10"
+            Margin="0, 0, 0, 0" />
+
         <Label Text="Skill Set"
                HorizontalOptions="Center"
                FontSize="16"
@@ -261,7 +266,7 @@
                 </DataTrigger>
             </Label.Triggers>
         </Label>
-        
+
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
@@ -278,7 +283,7 @@
                 </MultiTrigger>
             </ActivityIndicator.Triggers>
         </ActivityIndicator>
-        
+
         <HorizontalStackLayout
             BindableLayout.ItemsSource="{Binding Skills}"
             HorizontalOptions="Center"
@@ -293,7 +298,7 @@
                 <DataTemplate x:DataType="staff:StaffSkillDto">
                     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="8">
                         <Border Grid.Row="0"
-                                HeightRequest="64" 
+                                HeightRequest="64"
                                 WidthRequest="64"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                 StrokeThickness="0"
@@ -324,7 +329,7 @@
                                VerticalOptions="Start"
                                FontSize="14"
                                Style="{StaticResource LabelBold}"/>
-                        
+
                         <HorizontalStackLayout
                             Grid.Row="2"
                             HorizontalOptions="Center"
