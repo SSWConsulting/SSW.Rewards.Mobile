@@ -72,7 +72,7 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = AuthorizationRoles.Admin)]
+    [Authorize(Roles = "Staff,Admin")]
     public async Task<ActionResult<ClaimRewardResult>> ClaimForUser(ClaimRewardForUserCommand claimRewardForUserCommand)
     {
         return Ok(await Mediator.Send(claimRewardForUserCommand));
@@ -88,6 +88,26 @@ public class RewardController : ApiControllerBase
             Id = claim.Id,
             Address = claim.Address,
             ClaimInPerson = claim.InPerson
+        }));
+    }
+    
+    [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
+    public async Task<ActionResult<CreatePendingRedemptionResult>> CreatePendingRedemption(CreatePendingRedemptionDto claim)
+    {
+        return Ok(await Mediator.Send(new CreatePendingRedemptionCommand()
+        {
+            Id = claim.Id,
+        }));
+    }
+    
+    [HttpPost]
+    [Authorize(Policy = Policies.MobileApp)]
+    public async Task<ActionResult<CancelPendingRedemptionResult>> CancelPendingRedemption(CancelPendingRedemptionDto claim)
+    {
+        return Ok(await Mediator.Send(new CancelPendingRedemptionCommand()
+        {
+            Id = claim.Id,
         }));
     }
 

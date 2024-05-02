@@ -13,5 +13,7 @@
         public bool IsCarousel { get; set; }
         public bool IsHidden { get; set; }
         public bool CanAfford { get; set; }
+        public bool IsPendingRedemption { get; set; }
+        public string PendingRedemptionCode { get; set; }
     }
 }

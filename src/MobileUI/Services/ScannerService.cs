@@ -11,12 +11,19 @@ public class ScannerService : IScannerService
 {
     private readonly IAchievementService _achievementClient;
 
-    private readonly IApiRewardService _rewardClient;
+    private readonly IRewardService _rewardService;
 
-    public ScannerService(IApiRewardService rewardClient, IAchievementService achievementClient)
+    private readonly IUserService _userService;
+
+    private bool _isStaff;
+
+    public ScannerService(IRewardService rewardService, IAchievementService achievementClient, IUserService userService)
     {
-        _rewardClient = rewardClient;
+        _rewardService = rewardService;
         _achievementClient = achievementClient;
+        _userService = userService;
+
+        _userService.IsStaffObservable().Subscribe(isStaff => _isStaff = isStaff);
     }
 
     private async Task<ScanResponseViewModel> PostAchievementAsync(string achievementString)
@@ -77,18 +84,18 @@ public class ScannerService : IScannerService
         return vm;
     }
 
-    private async Task<ScanResponseViewModel> PostRewardAsync(string rewardString)
+    private async Task<ScanResponseViewModel> PostRewardAsync(string rewardString, bool isPendingRedemption = false)
     {
         ScanResponseViewModel vm = new()
         {
             ScanType = ScanType.Reward
         };
 
-        ClaimRewardDto claim = new() { Code = rewardString, InPerson = true };
+        ClaimRewardDto claim = new() { Code = rewardString, InPerson = true, IsPendingRedemption = isPendingRedemption};
 
         try
         {
-            var response = await _rewardClient.RedeemReward(claim, CancellationToken.None);
+            var response = isPendingRedemption ? await _rewardService.ClaimRewardForUser(claim) : await _rewardService.ClaimReward(claim);
 
             if (response != null)
             {
@@ -117,6 +124,11 @@ public class ScannerService : IScannerService
                     case RewardStatus.NotEnoughPoints:
                         vm.result = ScanResult.InsufficientBalance;
                         vm.Title = "Not enough points";
+                        break;
+                    
+                    case RewardStatus.Confirmed:
+                        vm.result = ScanResult.Confirmed;
+                        vm.Title = response.Reward.Name;
                         break;
 
                     default:
@@ -157,6 +169,20 @@ public class ScannerService : IScannerService
         if (decodedQR.StartsWith("rwd:"))
         {
             return await PostRewardAsync(qrCodeData);
+        }
+        
+        if (decodedQR.StartsWith("pnd:"))
+        {
+            if (!_isStaff)
+            {
+                return new ScanResponseViewModel
+                {
+                    result = ScanResult.Error,
+                    Title = "Only SSW staff can redeem pending rewards"
+                };
+            }
+            
+            return await PostRewardAsync(qrCodeData, true);
         }
 
         return new ScanResponseViewModel

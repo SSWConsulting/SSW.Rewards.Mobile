@@ -9,4 +9,6 @@ public class ClaimRewardDto
     
     public Address Address { get; set; }
     public bool InPerson { get; set; } = true;
+    public int UserId { get; set; }
+    public bool IsPendingRedemption { get; set; }
 }

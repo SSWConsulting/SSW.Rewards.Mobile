@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSW.Rewards.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SSW.Rewards.Infrastructure.Persistence;
 namespace SSW.Rewards.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423044517_AddPendingRedemption")]
+    partial class AddPendingRedemption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,9 +215,6 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Completed")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
@@ -854,7 +854,7 @@ namespace SSW.Rewards.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("SSW.Rewards.Domain.Entities.User", "User")
-                        .WithMany("PendingRedemptions")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1122,8 +1122,6 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Navigation("CompletedQuizzes");
 
                     b.Navigation("CreatedQuizzes");
-
-                    b.Navigation("PendingRedemptions");
 
                     b.Navigation("Roles");
 

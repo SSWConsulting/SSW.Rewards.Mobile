@@ -18,6 +18,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Users.Commands.AdminDeleteProfile;
 using SSW.Rewards.Application.Users.Queries.AdminGetProfileDeletionRequests;
+using SSW.Rewards.Application.Users.Queries.GetUserPendingRedemptions;
 using SSW.Rewards.Application.Users.Queries.GetUsers;
 
 namespace SSW.Rewards.WebAPI.Controllers;
@@ -55,6 +56,12 @@ public class UserController : ApiControllerBase
     public async Task<ActionResult<UserRewardsViewModel>> Rewards([FromQuery] int userId)
     {
         return Ok(await Mediator.Send(new GetUserRewardsQuery { UserId = userId }));
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<UserPendingRedemptionsViewModel>> GetUserPendingRedemptions([FromQuery] int userId)
+    {
+        return Ok(await Mediator.Send(new GetUserPendingRedemptionsQuery() { UserId = userId }));
     }
 
     [HttpGet]

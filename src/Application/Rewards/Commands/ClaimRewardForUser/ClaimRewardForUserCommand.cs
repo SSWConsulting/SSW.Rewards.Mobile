@@ -8,6 +8,7 @@ public class ClaimRewardForUserCommand : IRequest<ClaimRewardResult>
 {
     public int UserId { get; set; }
     public string Code { get; set; }
+    public bool IsPendingRedemption { get; set; }
 }
 
 public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUserCommand, ClaimRewardResult>
@@ -31,10 +32,39 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardForUserCommand request, CancellationToken cancellationToken)
     {
-        var reward = await _context
-            .Rewards
-            .Where(r => r.Code == request.Code)
-            .FirstOrDefaultAsync(cancellationToken);
+        Reward? reward = null;
+        PendingRedemption? pendingRedemption = null;
+        var userId = request.UserId;
+
+        if (request.IsPendingRedemption)
+        {
+            pendingRedemption = await _context.PendingRedemptions
+                .Include(pr => pr.Reward)
+                .Where(pr => pr.Code == request.Code)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (pendingRedemption != null)
+            {
+                if (pendingRedemption.Completed)
+                {
+                    _logger.LogError("Pending reward was already scanned: {0}", request.Code);
+                    return new ClaimRewardResult
+                    {
+                        status = RewardStatus.Duplicate
+                    };
+                }
+
+                reward = pendingRedemption.Reward;
+                userId = pendingRedemption.UserId;
+            }
+        }
+        else
+        {
+            reward = await _context
+                .Rewards
+                .Where(r => r.Code == request.Code)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
 
         if (reward == null)
         {
@@ -46,13 +76,13 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
         }
 
         User? user = await _context.Users
-            .Where(u => u.Id == request.UserId)
+            .Where(u => u.Id == userId)
             .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user == null)
         {
-            _logger.LogError("User with ID {userId} claiming the reward {rewardId}({rewardName}) does not exist!", request.UserId, reward.Id, reward.Name);
+            _logger.LogError("User with ID {UserId} claiming the reward {RewardId}({RewardName}) does not exist!", userId, reward.Id, reward.Name);
             return new ClaimRewardResult
             {
                 status = RewardStatus.Error
@@ -98,6 +128,11 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
                      AwardedAt = _dateTime.Now,
                  });
 
+            if (pendingRedemption != null)
+            {
+                pendingRedemption.Completed = true;
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception e)
@@ -113,7 +148,7 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
 
         return new ClaimRewardResult
         {
-            status = RewardStatus.Claimed,
+            status = request.IsPendingRedemption ? RewardStatus.Confirmed : RewardStatus.Claimed,
             Reward = rewardModel
         };
     }

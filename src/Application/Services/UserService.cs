@@ -301,6 +301,21 @@ public class UserService : IUserService, IRolesService
             UserRewards = vm
         };
     }
+    
+    public UserPendingRedemptionsViewModel GetUserPendingRedemptions(int userId)
+    {
+        return GetUserPendingRedemptions(userId, CancellationToken.None).Result;
+    }
+    
+    public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken)
+    {
+        var pendingRedemptions = await _dbContext.PendingRedemptions
+            .Where(x => x.User.Id == userId && !x.Completed && !x.CancelledByAdmin && !x.CancelledByUser)
+            .ProjectTo<UserPendingRedemptionDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+
+        return new UserPendingRedemptionsViewModel { UserId = userId, PendingRedemptions = pendingRedemptions };
+    }
 
     public IEnumerable<Role> GetUserRoles(int userId)
     {

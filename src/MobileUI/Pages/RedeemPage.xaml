@@ -130,7 +130,16 @@
                                                        ButtonText="GET"
                                                        ThumbnailImage="{Binding ImageUri}"
                                                        PlaceholderGlyph="&#xf06b;"
-                                                       ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/> 
+                                                       ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}">
+                                        <controls:ListItem.Triggers>
+                                            <DataTrigger TargetType="controls:ListItem"
+                                                         Binding="{Binding IsPendingRedemption}"
+                                                         Value="True">
+                                                <Setter Property="ButtonText"
+                                                        Value="QR" />
+                                            </DataTrigger>
+                                        </controls:ListItem.Triggers>
+                                    </controls:ListItem>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
