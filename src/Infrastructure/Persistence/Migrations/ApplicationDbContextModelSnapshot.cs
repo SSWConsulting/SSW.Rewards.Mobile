@@ -193,6 +193,47 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.ToTable("OpenProfileDeletionRequests");
                 });
 
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.PendingRedemption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("CancelledByAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CancelledByUser")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ClaimedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RewardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RewardId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PendingRedemptions");
+                });
+
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.PostalAddress", b =>
                 {
                     b.Property<int>("Id")
@@ -804,6 +845,25 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.PendingRedemption", b =>
+                {
+                    b.HasOne("SSW.Rewards.Domain.Entities.Reward", "Reward")
+                        .WithMany()
+                        .HasForeignKey("RewardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SSW.Rewards.Domain.Entities.User", "User")
+                        .WithMany("PendingRedemptions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reward");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Quiz", b =>
                 {
                     b.HasOne("SSW.Rewards.Domain.Entities.Achievement", "Achievement")
@@ -1062,6 +1122,8 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Navigation("CompletedQuizzes");
 
                     b.Navigation("CreatedQuizzes");
+
+                    b.Navigation("PendingRedemptions");
 
                     b.Navigation("Roles");
 

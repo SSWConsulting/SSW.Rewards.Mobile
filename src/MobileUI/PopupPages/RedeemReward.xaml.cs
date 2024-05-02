@@ -20,4 +20,8 @@ public partial class RedeemReward
         base.OnAppearing();
         _viewModel.Initialise(_reward);
     }
+    
+    public event EventHandler<object> CallbackEvent;
+    
+    protected override void OnDisappearing() => CallbackEvent?.Invoke(this, EventArgs.Empty);
 }

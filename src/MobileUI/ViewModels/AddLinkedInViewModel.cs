@@ -5,10 +5,9 @@ using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class AddLinkedInViewModel : BaseViewModel
+public partial class AddLinkedInViewModel(IUserService userService, ISnackbarService snackbarService) : BaseViewModel
 {
-    private readonly IUserService _userService;
-    private readonly ISnackbarService _snackbarService;
+    private string LinkedInUrl => "https://www.linkedin.com/in/";
 
     [ObservableProperty]
     private bool _isOverlayVisible;
@@ -25,11 +24,7 @@ public partial class AddLinkedInViewModel : BaseViewModel
     [ObservableProperty]
     private string _errorText;
 
-    public AddLinkedInViewModel(IUserService userService, ISnackbarService snackbarService)
-    {
-        _userService = userService;
-        _snackbarService = snackbarService;
-    }
+    public string LinkedInPlaceholder => $"{LinkedInUrl}[your-name]";
 
     [RelayCommand]
     private async Task Connect()
@@ -64,7 +59,7 @@ public partial class AddLinkedInViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(InputText))
         {
-            InputText = "https://linkedin.com/in/";
+            InputText = LinkedInUrl;
         }
 
         CursorPosition = InputText.Length; // For some reason, works only on Android
@@ -76,7 +71,7 @@ public partial class AddLinkedInViewModel : BaseViewModel
         var isValid = urlParts.Length == 5 &&
                       string.Equals(urlParts[0], "https:", StringComparison.InvariantCultureIgnoreCase) &&
                       urlParts[1] == string.Empty &&
-                      string.Equals(urlParts[2], "linkedin.com", StringComparison.InvariantCultureIgnoreCase) &&
+                      string.Equals(urlParts[2], "www.linkedin.com", StringComparison.InvariantCultureIgnoreCase) &&
                       string.Equals(urlParts[3], "in", StringComparison.InvariantCultureIgnoreCase ) &&
                       !string.IsNullOrWhiteSpace(urlParts[4]);
         return isValid;
@@ -86,7 +81,7 @@ public partial class AddLinkedInViewModel : BaseViewModel
     {
         var linkedInAchievementId = 2; // LinkedIn Achievement
         IsBusy = true;
-        var result = await _userService.SaveSocialMediaId(linkedInAchievementId, InputText);
+        var result = await userService.SaveSocialMedia(linkedInAchievementId, InputText);
         var snackbarOptions = new SnackbarOptions
         {
             Glyph = "\uf297", // tick icon
@@ -98,18 +93,18 @@ public partial class AddLinkedInViewModel : BaseViewModel
                 snackbarOptions.ShowPoints = true;
                 snackbarOptions.Points = 150;
                 snackbarOptions.Message = "Thanks for connecting LinkedIn with SSW Rewards";
-                await _snackbarService.ShowSnackbar(snackbarOptions);
+                await snackbarService.ShowSnackbar(snackbarOptions);
                 await ClosePage();
                 break;
             case false:
                 snackbarOptions.Message = "LinkedIn profile has been successfully updated";
-                await _snackbarService.ShowSnackbar(snackbarOptions);
+                await snackbarService.ShowSnackbar(snackbarOptions);
                 await ClosePage();
                 break;
             default:
                 snackbarOptions.Message = "Couldn't connect your LinkedIn profile, please try again later";
                 snackbarOptions.Glyph = "\uf36f"; // cross icon
-                await _snackbarService.ShowSnackbar(snackbarOptions);
+                await snackbarService.ShowSnackbar(snackbarOptions);
                 break;
         }
 

@@ -21,7 +21,12 @@ public interface IUserService
 
     Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken = default);
 
+    Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId,
+        CancellationToken cancellationToken = default);
+
     Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken = default);
+
+    Task<UserSocialMediaIdDto?> GetSocialMediaId(int userId, int socialMediaPlatformId, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService
@@ -164,6 +169,26 @@ public class UserService : IUserService
 
         throw new Exception($"Failed to get user rewards: {responseContent}");
     }
+    
+    public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetUserPendingRedemptions?userId={userId}", cancellationToken);
+
+        if  (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<UserPendingRedemptionsViewModel>(cancellationToken: cancellationToken);
+
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+
+        throw new Exception($"Failed to get user pending redemptions: {responseContent}");
+    }
+    
 
     public async Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserId, CancellationToken cancellationToken)
     {
@@ -171,9 +196,25 @@ public class UserService : IUserService
         var result = await _httpClient.PostAsJsonAsync(
             $"{_baseRoute}UpsertUserSocialMediaId", dto, cancellationToken);
 
-        if  (result.IsSuccessStatusCode)
+        if (result.IsSuccessStatusCode)
         {
             var response = await result.Content.ReadFromJsonAsync<int>(cancellationToken: cancellationToken);
+            return response;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to upsert social media: {responseContent}");
+    }
+
+    public async Task<UserSocialMediaIdDto?> GetSocialMediaId(int userId, int socialMediaPlatformId, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync(
+            $"{_baseRoute}SocialMediaId?userId={userId}&socialMediaPlatformId={socialMediaPlatformId}",
+            cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<UserSocialMediaIdDto>(cancellationToken: cancellationToken);
             return response;
         }
 

@@ -15,4 +15,6 @@ public class CurrentUserDto
     public int Balance { get; set; }
 
     public string? QRCode { get; set; }
+    
+    public bool IsStaff { get; set; }
 }

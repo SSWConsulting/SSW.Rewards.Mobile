@@ -6,6 +6,7 @@
         Duplicate,
         NotFound,
         InsufficientBalance,
-        Error
+        Error,
+        Confirmed
     }
 }

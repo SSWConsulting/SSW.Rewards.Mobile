@@ -244,7 +244,7 @@ else
 
     private async Task ClaimPrizeForWinner(EligibleUserDto winner)
     {
-        var result = await rewardAdminService.ClaimForUser(_selectedRewardCode, winner.UserId ?? 0, CancellationToken.None);
+        var result = await rewardAdminService.ClaimForUser(_selectedRewardCode, winner.UserId ?? 0, false, CancellationToken.None);
 
         if (result.status == RewardStatus.Claimed)
         {

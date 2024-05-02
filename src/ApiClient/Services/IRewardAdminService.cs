@@ -10,7 +10,7 @@ public interface IRewardAdminService
     Task UpdateReward(RewardEditDto reward, CancellationToken cancellationToken);
     Task DeleteReward(int rewardId, CancellationToken cancellationToken);
 
-    Task<ClaimRewardResult> ClaimForUser(string code, int userId, CancellationToken cancellationToken);
+    Task<ClaimRewardResult> ClaimForUser(string code, int userId, bool isPendingRedemption, CancellationToken cancellationToken);
 }
 
 public class RewardAdminService : IRewardAdminService
@@ -87,9 +87,9 @@ public class RewardAdminService : IRewardAdminService
         throw new Exception($"Failed to delete reward: {responseContent}");
     }
 
-    public async Task<ClaimRewardResult> ClaimForUser(string code, int userId, CancellationToken cancellationToken)
+    public async Task<ClaimRewardResult> ClaimForUser(string code, int userId, bool isPendingRedemption, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}ClaimForUser", new { code, userId }, cancellationToken);
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}ClaimForUser", new { code, userId, isPendingRedemption }, cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

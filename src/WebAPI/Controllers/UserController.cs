@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection.Users.Queries.GetSocialMediaId;
 using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
@@ -17,6 +18,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.Application.Users.Commands.AdminDeleteProfile;
 using SSW.Rewards.Application.Users.Queries.AdminGetProfileDeletionRequests;
+using SSW.Rewards.Application.Users.Queries.GetUserPendingRedemptions;
 using SSW.Rewards.Application.Users.Queries.GetUsers;
 
 namespace SSW.Rewards.WebAPI.Controllers;
@@ -42,9 +44,24 @@ public class UserController : ApiControllerBase
     }
 
     [HttpGet]
+    public async Task<ActionResult<UserSocialMediaIdDto>> SocialMediaId(int userId, int socialMediaPlatformId)
+    {
+        return Ok(await Mediator.Send(new GetSocialMediaIdQuery
+        {
+            UserId = userId, SocialMediaPlatformId = socialMediaPlatformId
+        }));
+    }
+
+    [HttpGet]
     public async Task<ActionResult<UserRewardsViewModel>> Rewards([FromQuery] int userId)
     {
         return Ok(await Mediator.Send(new GetUserRewardsQuery { UserId = userId }));
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<UserPendingRedemptionsViewModel>> GetUserPendingRedemptions([FromQuery] int userId)
+    {
+        return Ok(await Mediator.Send(new GetUserPendingRedemptionsQuery() { UserId = userId }));
     }
 
     [HttpGet]

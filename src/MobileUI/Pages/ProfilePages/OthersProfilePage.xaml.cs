@@ -2,10 +2,8 @@
 
 namespace SSW.Rewards.Mobile.Pages;
 
-public partial class OthersProfilePage : ContentPage
+public partial class OthersProfilePage
 {
-    private bool _initialised;
-
     private OthersProfileViewModel viewModel;
     
     public OthersProfilePage(OthersProfileViewModel vm, int userId)
@@ -23,10 +21,7 @@ public partial class OthersProfilePage : ContentPage
 
     protected override async void OnAppearing()
     {
-        if (!_initialised)
-            await viewModel.Initialise();
-
-        _initialised = true;
+        await viewModel.Initialise();
     }
 
     protected override void OnDisappearing()

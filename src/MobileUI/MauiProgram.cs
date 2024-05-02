@@ -11,8 +11,15 @@ using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 using SSW.Rewards.ApiClient;
 using System.Reflection;
 using Microsoft.Maui.Platform;
+using SSW.Rewards.ApiClient.Services;
 using ZXing.Net.Maui.Controls;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IQuizService = SSW.Rewards.Mobile.Services.IQuizService;
+using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
+using IUserService = SSW.Rewards.Mobile.Services.IUserService;
+using QuizService = SSW.Rewards.Mobile.Services.QuizService;
+using RewardService = SSW.Rewards.Mobile.Services.RewardService;
+using UserService = SSW.Rewards.Mobile.Services.UserService;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -87,6 +94,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ISnackbarService, SnackBarService>();
         builder.Services.AddSingleton<IPermissionsService, PermissionsService>();
         builder.Services.AddSingleton<IPushNotificationsService, PushNotificationsService>();
+        builder.Services.AddSingleton<IRewardAdminService, RewardAdminService>();
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
@@ -107,10 +115,17 @@ public static class MauiProgram
         {
             handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToPlatform());
         });
+
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, entry) =>
         {
             // color in the underline while preserving the background color
-            handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(((Entry)entry).BackgroundColor.ToPlatform());
+            var e = (Entry)entry;
+            if (e?.BackgroundColor == null)
+            {
+                return;
+            }
+
+            handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(e.BackgroundColor.ToPlatform());
         });
 #endif
 
@@ -119,6 +134,7 @@ public static class MauiProgram
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
         });
+
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, editor) =>
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);

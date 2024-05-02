@@ -34,6 +34,7 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
         if (user.IsStaff())
         {
             var code = await _userService.GetStaffQRCode(user.Email, cancellationToken);
+            user.IsStaff = true;
 
             if (!string.IsNullOrWhiteSpace(code))
             {

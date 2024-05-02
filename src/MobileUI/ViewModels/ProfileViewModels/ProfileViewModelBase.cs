@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Enums;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 using SSW.Rewards.Shared.DTOs.Users;
@@ -15,6 +16,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IUserService _userService;
     private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
+    private readonly ISnackbarService _snackbarService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -37,6 +39,9 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isStaff;
 
+    [ObservableProperty]
+    private string? _linkedInUrl;
+
     public bool ShowBalance { get; set; } = true;
 
     protected int UserId { get; set; }
@@ -49,50 +54,55 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
+    [ObservableProperty]
+    private Color _linkedInColor;
+
+    [ObservableProperty]
+    private Color _gitHubColor = Colors.DimGrey;
+
+    [ObservableProperty]
+    private Color _twitterColor = Colors.DimGrey;
+
     public ObservableCollection<Activity> RecentActivity { get; } = [];
     public ObservableCollection<Activity> LastSeen { get; } = [];
     public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
+        bool isMe,
         IRewardService rewardsService,
         IUserService userService,
         IDevService devService,
-        IPermissionsService permissionsService)
+        IPermissionsService permissionsService,
+        ISnackbarService snackbarService)
     {
-        IsLoading = true;
+        IsMe = isMe;
         _rewardsService = rewardsService;
         _userService = userService;
         _devService = devService;
         _permissionsService = permissionsService;
+        _snackbarService = snackbarService;
+        userService.LinkedInProfileObservable().Subscribe(myLinkedIn =>
+        {
+            LinkedInUrl = myLinkedIn;
+            App.Current.Resources.TryGetValue("SSWRed", out object color);
+            var sswRed = (Color)color!;
+            LinkedInColor = !string.IsNullOrWhiteSpace(myLinkedIn)
+                ? sswRed
+                : IsMe
+                    ? Colors.White
+                    : Colors.DimGrey;
+        });
     }
 
     protected async Task _initialise()
     {
-        var rewards = await _rewardsService.GetRewards();
-
-        // TODO: If there is an authentication failure, the RewardsService
-        // will pop a modal login page so the user can reauthenticate. In
-        // that case, do nothing here. We can remove this check when we
-        // implement Polly instead to make this process more robust. See
-        // https://github.com/SSWConsulting/SSW.Rewards/issues/276
-        if (!rewards.Any())
-            return;
-
+        IsLoading = true;
+        var rewards = await _rewardsService.GetRewards(); // TODO: do we need this?
         await LoadProfileSections();
-
         IsLoading = false;
     }
-
-    [RelayCommand]
-    private async Task ChangeProfilePicture()
-    {
-        if (IsLoading)
-            return;
-
-        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
-        await MopupService.Instance.PushAsync(popup);
-    }
+    
 
     protected async Task LoadProfileSections()
     {
@@ -100,6 +110,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
         
         var profile = await _userService.GetUserAsync(UserId);
+        var loadSocialMediaTask = await LoadSocialMedia();
 
         ProfilePic = profile.ProfilePic ?? "v2sophie";
         Name = profile.FullName;
@@ -115,6 +126,42 @@ public partial class ProfileViewModelBase : BaseViewModel
         _loadingProfileSectionsSemaphore.Release();
     }
 
+    private async Task LoadSocialMedia()
+    {
+        var linkedInAchievementId = 2; // LinkedIn Achievement
+        await _userService.LoadSocialMedia(userId, linkedInAchievementId);
+    }
+
+    [RelayCommand]
+    private async Task ChangeProfilePicture()
+    {
+        if (IsLoading)
+            return;
+
+        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        await MopupService.Instance.PushAsync(popup);
+    }
+
+    [RelayCommand]
+    private async Task OpenLinkedInProfile()
+    {
+        if (string.IsNullOrWhiteSpace(LinkedInUrl))
+        {
+            if (!IsMe)
+            {
+                return;
+            }
+
+            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+            var page = new AddLinkedInPage(_userService, _snackbarService, statusBarColor as Color);
+            await MopupService.Instance.PushAsync(page);
+            return;
+        }
+
+        var uri = new Uri(LinkedInUrl);
+        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+    }
+    
     public string GetMessage(UserAchievementDto achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
@@ -243,8 +290,21 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         IsBusy = false;
         IsLoading = false;
+        // Clearing LinkedIn profile so that the previous value doesn't display during page loading
+        _userService.ClearSocialMedia();
     }
-    
+
+    [RelayCommand]
+    private async Task ComingSoon()
+    {
+        if (IsMe)
+        {
+            await CommunityToolkit.Maui.Alerts.Snackbar
+                .Make("Coming soon. At that moment you can only add LinkedIn profile", duration: TimeSpan.FromSeconds(5))
+                .Show();
+        }
+    }
+
     [RelayCommand]
     private async Task ClosePage()
     {

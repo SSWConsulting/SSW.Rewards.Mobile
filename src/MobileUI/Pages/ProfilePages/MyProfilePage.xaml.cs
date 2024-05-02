@@ -3,10 +3,8 @@ using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 namespace SSW.Rewards.Mobile.Pages;
 
-public partial class MyProfilePage : ContentPage
+public partial class MyProfilePage
 {
-    private bool _initialised;
-
     private MyProfileViewModel viewModel;
 
     public MyProfilePage(MyProfileViewModel vm)
@@ -19,10 +17,7 @@ public partial class MyProfilePage : ContentPage
 
     protected override async void OnAppearing()
     {
-        if (!_initialised)
-            await viewModel.Initialise();
-
-        _initialised = true;
+        await viewModel.Initialise();
     }
 
     protected override void OnDisappearing()
