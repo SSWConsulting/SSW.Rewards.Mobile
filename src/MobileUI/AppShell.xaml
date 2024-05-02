@@ -3,7 +3,6 @@
     x:Class="SSW.Rewards.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SSW.Rewards.Mobile"
     xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -104,7 +103,7 @@
         <Tab Route="people" Icon="icon_people" Title="Network">
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
         </Tab>
-        
+
         <Tab Route="activity" Icon="icon_bell" Title="Activity">
             <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
         </Tab>
@@ -118,7 +117,7 @@
             ColumnDefinitions="Auto,*,Auto"
             VerticalOptions="End"
             RowSpacing="10">
-            
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="0"
                                  Grid.ColumnSpan="3"
@@ -133,11 +132,12 @@
                          VerticalOptions="Start"/>
             </VerticalStackLayout>
 
-            <!-- Delete account button -->
+            <!-- Settings button -->
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
                 Grid.Row="1"
+                Grid.ColumnSpan="3"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
@@ -161,7 +161,7 @@
                        FontSize="16"
                        Text="Settings" />
             </Grid>
-            
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="2"
                                  Grid.ColumnSpan="3"
@@ -181,12 +181,12 @@
                 VerticalOptions="End"
                 Grid.Column="0"
                 Grid.Row="3"
+                Grid.ColumnSpan="3"
                 ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_LogOutClicked"/>
                 </Grid.GestureRecognizers>
-                <!-- Update to different Icon -->
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
@@ -206,7 +206,7 @@
                        FontSize="16"
                        Text="Log Out" />
             </Grid>
-            
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="4"
                                  Grid.ColumnSpan="3"
@@ -231,13 +231,13 @@
                 FontSize="12"
                 Text="Powered by .NET MAUI" />
 
-            <Label HorizontalOptions="End"
+            <Label Grid.Column="2"
+                   Grid.Row="5"
+                   x:Name="VersionLabel"
+                   HorizontalOptions="End"
                    VerticalTextAlignment="Center"
                    Padding="0,10,0,0"
-                   x:Name="VersionLabel"
                    FontSize="12"
-                   Grid.Column="2"
-                   Grid.Row="5"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->
