@@ -16,6 +16,9 @@
     </Grid.BindingContext>
 
     <Grid Grid.Row="0">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+        </Grid.GestureRecognizers>
         <mct:AvatarView VerticalOptions="End"
                         HorizontalOptions="Start"
                         ImageSource="{Binding ProfilePic}"
@@ -32,9 +35,6 @@
             TranslationY="35"
             StrokeShape="Ellipse"
             StrokeThickness="0">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
-            </Border.GestureRecognizers>
             <Label
                 FontFamily="FluentIcons"
                 FontAutoScalingEnabled="False"
