@@ -17,8 +17,8 @@ public partial class RewardsViewModel : BaseViewModel
     private readonly IAddressService _addressService;
     private bool _isLoaded;
 
-    public ObservableCollection<Reward> Rewards { get; set; } = new ();
-    public ObservableCollection<Reward> CarouselRewards { get; set; } = new ();
+    public ObservableCollection<Reward> Rewards { get; set; } = [];
+    public ObservableCollection<Reward> CarouselRewards { get; set; } = [];
 
     [ObservableProperty]
     private int _credits;
@@ -90,7 +90,10 @@ public partial class RewardsViewModel : BaseViewModel
         if (reward != null)
         {
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var popup = new RedeemRewardPage(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
+            var popup = new RedeemRewardPage(
+                new RedeemRewardViewModel(_userService, _rewardService, _addressService),
+                reward,
+                statusBarColor as Color);
             popup.CallbackEvent += async (_, _) =>
             {
                 await LoadData();

@@ -32,7 +32,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
     [ObservableProperty]
     private bool _isBalanceVisible = true;
-    
+
     [ObservableProperty]
     private bool _isQrCodeVisible;
 
@@ -41,8 +41,6 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
     [ObservableProperty]
     private bool _isSearching;
-
-    public ObservableCollection<Address> SearchResults { get; set; } = [];
 
     [ObservableProperty]
     private Address? _selectedAddress;
@@ -63,11 +61,10 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     private bool _claimSuccess;
 
     [ObservableProperty]
-    private string _closeButtonText = "Cancel";
-    
-    [ObservableProperty]
     private string _qrCode;
 
+    public ObservableCollection<Address> SearchResults { get; set; } = [];
+    public bool ShouldCallCallback { get; set; }
 
     public void Initialise(Reward reward)
     {
@@ -92,7 +89,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         Heading = $"Ready to claim:{Environment.NewLine}{reward.Name}";
         QrCode = reward.PendingRedemptionCode;
         IsQrCodeVisible = true;
-        CloseButtonText = "Close";
+        ShouldCallCallback = true;
     }
 
     [RelayCommand]
@@ -148,7 +145,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
         IsAddressVisible = false;
     }
-    
+
     [RelayCommand]
     private async Task RedeemInPersonClicked()
     {
@@ -169,6 +166,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
             Heading = "Ready to claim!";
             QrCode = claimResult.Code;
             IsQrCodeVisible = true;
+            ShouldCallCallback = true;
         }
         else
         {
@@ -176,25 +174,23 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
             Description = "Something went wrong - please try again later";
             ClaimError = true;
         }
-
-        CloseButtonText = "Close";
     }
-    
+
     [RelayCommand]
     private async Task CancelPendingRedemptionClicked()
     {
         IsBusy = true;
-        
+
         await rewardService.CancelPendingRedemption(new CancelPendingRedemptionDto
         {
             Id = _reward.Id
         });
-        
+
         IsBusy = false;
         await MopupService.Instance.PopAsync();
     }
 
-    [RelayCommand]//(CanExecute = nameof(ConfirmClickedIsExecutable))]
+    [RelayCommand]
     private async Task ConfirmClicked()
     {
         if (SelectedAddress is null)
@@ -227,8 +223,6 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
             Description = "Something went wrong - please try again later";
             ClaimError = true;
         }
-
-        CloseButtonText = "Close";
     }
 
     [RelayCommand]
@@ -243,10 +237,4 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         ConfirmEnabled = false;
         IsAddressVisible = true;
     }
-
-    private bool ConfirmClickedIsExecutable()
-    {
-        return ConfirmEnabled;
-    }
-
 }

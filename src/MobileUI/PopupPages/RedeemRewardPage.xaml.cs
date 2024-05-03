@@ -29,7 +29,8 @@ public partial class RedeemRewardPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        CallbackEvent?.Invoke(this, EventArgs.Empty);
+        if (_viewModel.ShouldCallCallback)
+            CallbackEvent?.Invoke(this, EventArgs.Empty);
 
         // Change status bar back
         this.Behaviors.Clear();
