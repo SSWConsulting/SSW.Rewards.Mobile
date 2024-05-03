@@ -3,28 +3,29 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-                 BackgroundColor="Transparent"
-                 x:Class="SSW.Rewards.PopupPages.AboutSSW">
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 BackgroundColor="#b3000000"
+                 CloseWhenBackgroundIsClicked="False"
+                 x:Class="SSW.Rewards.PopupPages.AboutSswPage">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
-        <animations:ScaleAnimation PositionIn="Center"
-                                   PositionOut="Center"
-                                   ScaleIn="1.2"
-                                   ScaleOut="0.8"
-                                   DurationIn="200"
-                                   DurationOut="200"
-                                   EasingIn="SinOut"
-                                   EasingOut="SinIn"
-                                   HasBackgroundAnimation="True"/>
+        <animations:MoveAnimation
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            DurationIn="300"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
-    <Border
-           Margin="10"
-           Padding="20"
-           StrokeShape="RoundRectangle 3"
-           StrokeThickness="0"
-           HorizontalOptions="Center"
-           VerticalOptions="Center"
-           BackgroundColor="{StaticResource ProfileBackgroundColour}">
-        <Grid Padding="0">
+    <Grid Padding="30,70" VerticalOptions="Center">
+        <Border
+            Padding="20"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 8"
+            BackgroundColor="{StaticResource ProfileBackgroundColour}">
             <VerticalStackLayout Spacing="6">
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
@@ -57,16 +58,26 @@
                     </Grid>
                 </Frame>
             </VerticalStackLayout>
-            <Image Source="icon_close"
-                   Margin="0"
-                   WidthRequest="24"
-                   VerticalOptions="Start"
-                   HorizontalOptions="End">
-                <Image.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1"
-                                          Tapped="Handle_CloseTapped"/>
-                </Image.GestureRecognizers>
-            </Image>
-        </Grid>
-    </Border>
+        </Border>
+
+        <!-- Close button -->
+        <Border
+            WidthRequest="40"
+            HeightRequest="40"
+            StrokeThickness="0"
+            TranslationX="20"
+            TranslationY="-20"
+            Padding="10"
+            BackgroundColor="{StaticResource primary}"
+            VerticalOptions="Start"
+            HorizontalOptions="End">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Handle_CloseTapped"/>
+            </Border.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20"/>
+            </Border.StrokeShape>
+            <Image Source="icon_close"/>
+        </Border>
+    </Grid>
 </pages:PopupPage>
