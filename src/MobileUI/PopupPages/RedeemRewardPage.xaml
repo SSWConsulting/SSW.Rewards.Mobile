@@ -11,9 +11,12 @@
                  xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
-                 x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
-                 BackgroundColor="#80000000"
+                 x:Class="SSW.Rewards.Mobile.PopupPages.RedeemRewardPage"
+                 BackgroundColor="#b3000000"
                  CloseWhenBackgroundIsClicked="False">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation PositionIn="Bottom"
                                   PositionOut="Bottom"
@@ -51,8 +54,7 @@
                 VerticalOptions="Center"
                 Padding="25"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 8"
-                Stroke="{StaticResource BorderDefault}"
+                StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
                 <Grid>
                     <VerticalStackLayout>
@@ -309,27 +311,25 @@
                             IsVisible="{Binding IsBalanceVisible}">
                             <Button Grid.Column="0"
                                     Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Redeem in-person"
                                     FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
+                                    LineBreakMode="WordWrap"
                                     Command="{Binding RedeemInPersonClickedCommand}"/>
 
                             <Button Grid.Column="2"
                                     Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Ship to my address"
                                     FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
+                                    LineBreakMode="WordWrap"
                                     Command="{Binding NextClickedCommand}"/>
                         </Grid>
 
                         <VerticalStackLayout HorizontalOptions="Center"
                                              Spacing="15">
                             <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     WidthRequest="80"
                                     IsVisible="{Binding ConfirmEnabled}"
                                     Text="Confirm"
@@ -339,7 +339,7 @@
                                     Command="{Binding ConfirmClickedCommand}"/>
 
                             <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Cancel redemption"
                                     FontAttributes="Bold"
                                     VerticalOptions="Center"

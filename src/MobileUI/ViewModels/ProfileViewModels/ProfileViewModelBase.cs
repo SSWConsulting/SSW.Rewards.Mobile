@@ -45,7 +45,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     public bool ShowBalance { get; set; } = true;
 
     protected int UserId { get; set; }
-    
+
     public bool ShowCloseButton { get; set; } = true;
 
     [ObservableProperty]
@@ -102,13 +102,12 @@ public partial class ProfileViewModelBase : BaseViewModel
         await LoadProfileSections();
         IsLoading = false;
     }
-    
 
     protected async Task LoadProfileSections()
     {
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
-        
+
         var profile = await _userService.GetUserAsync(UserId);
 
         ProfilePic = profile.ProfilePic ?? "v2sophie";
@@ -117,7 +116,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         Points = profile.Points;
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
-        
+
         await LoadSocialMedia();
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
@@ -128,8 +127,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private async Task LoadSocialMedia()
     {
-        var linkedInAchievementId = 2; // LinkedIn Achievement
-        await _userService.LoadSocialMedia(UserId, linkedInAchievementId);
+        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.LinkedIn);
     }
 
     [RelayCommand]
@@ -138,7 +136,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading)
             return;
 
-        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 
@@ -158,10 +157,12 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
         }
 
-        var uri = new Uri(LinkedInUrl);
-        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        if (Uri.TryCreate(LinkedInUrl, UriKind.Absolute, out Uri uri))
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
     }
-    
+
     public string GetMessage(UserAchievementDto achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";

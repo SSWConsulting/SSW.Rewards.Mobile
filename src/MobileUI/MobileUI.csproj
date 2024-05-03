@@ -149,7 +149,7 @@
 		  <DependentUpon>CarouselItem.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
-		<Compile Update="PopupPages\RedeemReward.xaml.cs">
+		<Compile Update="PopupPages\RedeemRewardPage.xaml.cs">
 		  <DependentUpon>RedeemReward.xaml</DependentUpon>
 		  <SubType>Code</SubType>
 		</Compile>
@@ -205,7 +205,7 @@
 		  <SubType>Designer</SubType>
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="PopupPages\RedeemReward.xaml">
+		<MauiXaml Update="PopupPages\RedeemRewardPage.xaml">
 		  <SubType>Designer</SubType>
         </MauiXaml>
 		<MauiXaml Update="Resources\Styles\Templates.xaml">

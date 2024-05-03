@@ -30,9 +30,6 @@ public partial class OnBoardingViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isLast;
 
-    [ObservableProperty]
-    private bool _isOverlayVisible;
-
     public bool IsFirstRun { get; }
 
     public EventHandler<int> ScrollToRequested;
@@ -81,7 +78,7 @@ public partial class OnBoardingViewModel : BaseViewModel
                 Image = "position.png",
             },
         });
-        
+
         SelectedItem = Items[0];
         SetDetails();
     }
@@ -89,7 +86,6 @@ public partial class OnBoardingViewModel : BaseViewModel
     [RelayCommand]
     private async Task ClosePage()
     {
-        IsOverlayVisible = false;
         await MopupService.Instance.PopAsync();
     }
 
@@ -117,10 +113,9 @@ public partial class OnBoardingViewModel : BaseViewModel
     [RelayCommand]
     private async Task GetStarted()
     {
-        IsOverlayVisible = false;
         await MopupService.Instance.PopAsync();
         Shell.Current.FlyoutIsPresented = false;
-        
+
         if (IsFirstRun)
             await Shell.Current.GoToAsync("//earn");
     }

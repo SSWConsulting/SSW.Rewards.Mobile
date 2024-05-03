@@ -45,11 +45,12 @@ public partial class FlyoutHeaderViewModel : ObservableObject
         userService.MyQrCodeObservable().Subscribe(myQrCode => QrCode = myQrCode);
         userService.MyAllTimeRankObservable().Subscribe(myRank => Rank = myRank);
     }
-    
+
     [RelayCommand]
     private async Task ChangeProfilePicture()
     {
-        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 }

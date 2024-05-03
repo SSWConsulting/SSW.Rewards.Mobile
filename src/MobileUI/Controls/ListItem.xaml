@@ -7,6 +7,7 @@
         x:Class="SSW.Rewards.Mobile.Controls.ListItem"
         x:Name="this"
         StrokeThickness="0"
+        StrokeShape="RoundRectangle 8"
         BackgroundColor="{StaticResource Background}"
         Padding="8">
     <Border.Resources>
@@ -17,19 +18,14 @@
         <TapGestureRecognizer
             Command="{Binding ButtonClickedCommand, Source={x:Reference this}}" NumberOfTapsRequired="1"/>
     </Border.GestureRecognizers>
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
     <Grid ColumnSpacing="12"
           ColumnDefinitions="Auto, *, Auto">
         <Border Grid.Column="0"
                 HeightRequest="64"
                 WidthRequest="64"
                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                StrokeThickness="0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="6" />
-            </Border.StrokeShape>
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 6">
             <Grid>
                 <Image HorizontalOptions="Center"
                        VerticalOptions="Center"

@@ -22,18 +22,14 @@
                 <Border Grid.Row="0"
                         BackgroundColor="{StaticResource Background}"
                         StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
                         Padding="3">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="8" />
-                    </Border.StrokeShape>
                     <Grid ColumnDefinitions="Auto, *, Auto">
                         <Border Grid.Column="0"
                                 StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
                                 HorizontalOptions="End"
                                 VerticalOptions="Fill">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="6" />
-                            </Border.StrokeShape>
                             <Grid Padding="10" Background="{StaticResource ButtonBrush}">
                                 <Label
                                     Text="&#xf290;"
@@ -47,11 +43,9 @@
                         </Border>
                         <Border Grid.Column="2"
                                 StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
                                 HorizontalOptions="End"
                                 VerticalOptions="Fill">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="6" />
-                            </Border.StrokeShape>
                             <HorizontalStackLayout Spacing="5"
                                                    Padding="8"
                                                    Background="{StaticResource ButtonBrush}">

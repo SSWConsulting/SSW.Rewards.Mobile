@@ -17,10 +17,8 @@
         Padding="10"
         Margin="70,0"
         Stroke="{StaticResource BorderDefault}"
+        StrokeShape="RoundRectangle 8"
         BackgroundColor="{StaticResource Background}">
-        <Border.StrokeShape>
-            <RoundRectangle CornerRadius="8" />
-        </Border.StrokeShape>
         <VerticalStackLayout HorizontalOptions="Fill"
                              VerticalOptions="Start">
             <Label TextColor="White"
@@ -39,7 +37,7 @@
                 RepeatCount="100"
                 WidthRequest="200"
                 HeightRequest="200" />
-            <Grid 
+            <Grid
                 ColumnDefinitions="Auto, *"
                 ColumnSpacing="10"
                 Padding="10,0">

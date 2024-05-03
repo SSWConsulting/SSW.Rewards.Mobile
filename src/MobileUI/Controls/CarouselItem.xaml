@@ -5,10 +5,8 @@
         xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
         x:Class="SSW.Rewards.Mobile.Controls.CarouselItem"
         x:Name="this"
-        StrokeThickness="0">
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
+        StrokeThickness="0"
+        StrokeShape="RoundRectangle 8">
     <Border.GestureRecognizers>
         <TapGestureRecognizer
             Command="{Binding ButtonClickedCommand, Source={x:Reference this}}"
@@ -27,10 +25,8 @@
               Margin="20,0,20,30">
             <Border Grid.Row="0"
                     BackgroundColor="#BF000000"
-                    StrokeThickness="0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="6" />
-                </Border.StrokeShape>
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 6">
                 <Grid ColumnDefinitions="*, Auto" Padding="15">
                     <Label Grid.Column="0"
                            Text="{Binding Description, Source={x:Reference this}}"

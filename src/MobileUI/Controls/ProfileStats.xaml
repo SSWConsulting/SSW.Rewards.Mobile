@@ -2,12 +2,14 @@
 
 <Border
     BackgroundColor="{StaticResource Background}"
+    StrokeShape="RoundRectangle 8"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
     xmlns:staff="clr-namespace:SSW.Rewards.Shared.DTOs.Staff;assembly=Shared"
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     x:DataType="viewModels:ProfileViewModelBase"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
@@ -15,9 +17,6 @@
         <converters:StaffToTextConverter x:Key="StaffToText" />
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
     <VerticalStackLayout
         Spacing="15"
         Padding="0,15">
@@ -78,18 +77,16 @@
         <Border IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
                 Margin="20, 0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8" />
-            </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
                 ColumnDefinitions="*,*,*">
-                <Border Grid.Column="0" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="8,0,8,0" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="0"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8,0,8,0">
                     <VerticalStackLayout
                         Spacing="2"
                         HorizontalOptions="Fill"
@@ -114,7 +111,7 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
+
                 <VerticalStackLayout Grid.Column="1"
                                      Spacing="2"
                                      HorizontalOptions="Fill"
@@ -139,10 +136,10 @@
                         TextColor="{StaticResource White}" />
                 </VerticalStackLayout>
 
-                <Border Grid.Column="2" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="0,8,0,8" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="2"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 0,8,0,8">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
@@ -176,19 +173,17 @@
         <Border IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
                 Margin="20, 0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8" />
-            </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
                 ColumnDefinitions="*,*">
-                
-                <Border Grid.Column="0" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="8,0,8,0" StrokeThickness="0" />
-                    </Border.StrokeShape>
+
+                <Border
+                    Grid.Column="0"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8,0,8,0">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
@@ -214,11 +209,11 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
-                <Border Grid.Column="1" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="0,8,0,8" StrokeThickness="0" />
-                    </Border.StrokeShape>
+
+                <Border
+                    Grid.Column="1"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 0,8,0,8">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
@@ -244,10 +239,14 @@
                             TextColor="{StaticResource White}" />
                     </VerticalStackLayout>
                 </Border>
-                
+
             </Grid>
         </Border>
-        
+
+        <controls:SocialMedia
+            Padding="20,10"
+            Margin="0, 0, 0, 0" />
+
         <Label Text="Skill Set"
                HorizontalOptions="Center"
                FontSize="16"
@@ -261,7 +260,7 @@
                 </DataTrigger>
             </Label.Triggers>
         </Label>
-        
+
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
@@ -278,7 +277,7 @@
                 </MultiTrigger>
             </ActivityIndicator.Triggers>
         </ActivityIndicator>
-        
+
         <HorizontalStackLayout
             BindableLayout.ItemsSource="{Binding Skills}"
             HorizontalOptions="Center"
@@ -293,14 +292,12 @@
                 <DataTemplate x:DataType="staff:StaffSkillDto">
                     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="8">
                         <Border Grid.Row="0"
-                                HeightRequest="64" 
+                                HeightRequest="64"
                                 WidthRequest="64"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                 StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8"
                                 Padding="8">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
                             <Image Aspect="AspectFit">
                                 <Image.Source>
                                     <Binding Path="ImageUri" >
@@ -324,7 +321,7 @@
                                VerticalOptions="Start"
                                FontSize="14"
                                Style="{StaticResource LabelBold}"/>
-                        
+
                         <HorizontalStackLayout
                             Grid.Row="2"
                             HorizontalOptions="Center"

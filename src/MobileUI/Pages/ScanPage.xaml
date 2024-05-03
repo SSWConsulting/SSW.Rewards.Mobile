@@ -29,10 +29,8 @@
             BackgroundColor="{StaticResource Background}"
             VerticalOptions="End"
             HeightRequest="60"
-            Margin="20,40">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="20"/>
-            </Border.StrokeShape>
+            Margin="20,40"
+            StrokeShape="RoundRectangle 20">
             <Label Text="Scan a QR Code"
                    Style="{StaticResource LabelBold}"
                    FontSize="Large"
