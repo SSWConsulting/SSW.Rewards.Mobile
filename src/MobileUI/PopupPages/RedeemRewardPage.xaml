@@ -314,8 +314,7 @@
                                     CornerRadius="10"
                                     Text="Redeem in-person"
                                     FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
+                                    LineBreakMode="WordWrap"
                                     Command="{Binding RedeemInPersonClickedCommand}"/>
 
                             <Button Grid.Column="2"
@@ -323,8 +322,7 @@
                                     CornerRadius="10"
                                     Text="Ship to my address"
                                     FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
+                                    LineBreakMode="WordWrap"
                                     Command="{Binding NextClickedCommand}"/>
                         </Grid>
 
