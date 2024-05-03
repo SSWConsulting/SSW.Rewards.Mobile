@@ -26,26 +26,44 @@
             StrokeThickness="1"
             StrokeShape="RoundRectangle 10"
             BackgroundColor="{StaticResource ProfileBackgroundColour}">
-            <VerticalStackLayout Spacing="6">
+            <VerticalStackLayout Spacing="20">
                 <Label HorizontalTextAlignment="Center"
                        TextColor="{StaticResource SSWRed}"
-                       FontSize="Large"
-                       Text="About SSW"/>
+                       FontSize="24"
+                       Text="About"/>
                 <Label HorizontalTextAlignment="Center"
-                       Margin="20"
-                       TextColor="White"
+                       TextColor="#DDDDDD"
+                       FontSize="16"
                        Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."/>
                 <Label HorizontalTextAlignment="Center"
-                       TextColor="White"
-                       Margin="20"
+                       TextColor="#DDDDDD"
+                       FontSize="16"
                        Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."/>
                 <Button
                     Clicked="FindoutMore_Tapped"
                     BackgroundColor="{StaticResource SSWRed}"
                     HeightRequest="60"
                     ImageSource="external_link"
-                    Text="Find out more..."
+                    FontSize="12"
+                    Text="ssw.com.au/company/about-us"
                     CornerRadius="10"/>
+                
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Label
+                        Grid.Column="0"
+                        TextColor="#DDDDDD"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        FontSize="14"
+                        Text="Powered by .NET MAUI" />
+
+                    <Label HorizontalOptions="End"
+                           VerticalTextAlignment="Center"
+                           x:Name="VersionLabel"
+                           FontSize="14"
+                           Grid.Column="2"
+                           TextColor="#DDDDDD"/>
+                </Grid>
             </VerticalStackLayout>
         </Border>
 
