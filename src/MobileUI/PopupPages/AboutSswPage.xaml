@@ -24,7 +24,7 @@
         <Border
             Padding="20"
             StrokeThickness="1"
-            StrokeShape="RoundRectangle 8"
+            StrokeShape="RoundRectangle 10"
             BackgroundColor="{StaticResource ProfileBackgroundColour}">
             <VerticalStackLayout Spacing="6">
                 <Label HorizontalTextAlignment="Center"
@@ -65,6 +65,7 @@
             WidthRequest="40"
             HeightRequest="40"
             StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
             TranslationX="20"
             TranslationY="-20"
             Padding="10"
@@ -74,9 +75,6 @@
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Tapped="Handle_CloseTapped"/>
             </Border.GestureRecognizers>
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="20"/>
-            </Border.StrokeShape>
             <Image Source="icon_close"/>
         </Border>
     </Grid>

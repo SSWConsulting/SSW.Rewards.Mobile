@@ -136,7 +136,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading)
             return;
 
-        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 

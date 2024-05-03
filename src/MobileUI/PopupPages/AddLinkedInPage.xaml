@@ -28,10 +28,9 @@
         <Grid Padding="30" HeightRequest="500">
             <Border
                 StrokeThickness="1"
+                StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10" />
-                </Border.StrokeShape>
+
                 <Grid Padding="0" RowDefinitions="*, Auto">
                     <VerticalStackLayout Spacing="6" Margin="0,30">
                         <Label HorizontalTextAlignment="Center"
@@ -100,6 +99,7 @@
                 WidthRequest="40"
                 HeightRequest="40"
                 StrokeThickness="0"
+                StrokeShape="RoundRectangle 20"
                 TranslationX="20"
                 TranslationY="-20"
                 Padding="10"
@@ -109,9 +109,6 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ClosePageCommand}"/>
                 </Border.GestureRecognizers>
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20"/>
-                </Border.StrokeShape>
                 <Image Source="icon_close"/>
             </Border>
         </Grid>

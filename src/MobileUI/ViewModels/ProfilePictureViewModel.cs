@@ -1,11 +1,10 @@
 ﻿using Mopups.Services;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class CameraPageViewModel(IUserService userService, IPermissionsService permissionsService) : BaseViewModel
+public partial class ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService) : BaseViewModel
 {
     [ObservableProperty]
     private bool _useButtonEnabled;
@@ -115,5 +114,11 @@ public partial class CameraPageViewModel(IUserService userService, IPermissionsS
         {
             await Application.Current.MainPage.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
         }
+    }
+
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await MopupService.Instance.PopAsync();
     }
 }

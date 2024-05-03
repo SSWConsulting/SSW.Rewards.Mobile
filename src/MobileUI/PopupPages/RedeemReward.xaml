@@ -54,8 +54,7 @@
                 VerticalOptions="Center"
                 Padding="25"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 8"
-                Stroke="{StaticResource BorderDefault}"
+                StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
                 <Grid>
                     <VerticalStackLayout>

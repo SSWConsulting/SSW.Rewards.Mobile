@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 BackgroundColor="#b3000000"
+                 CloseWhenBackgroundIsClicked="False"
+                 x:DataType="viewModels:ProfilePictureViewModel"
+                 x:Class="SSW.Rewards.PopupPages.ProfilePicturePage">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </pages:PopupPage.Behaviors>
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            DurationIn="300"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <Grid Padding="30,70" VerticalOptions="Center">
+        <Border
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 10"
+            Padding="20,10,20,20"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="{StaticResource ProfileBackgroundColour}">
+
+            <Grid
+                RowDefinitions="1*, 3*, 3*"
+                WidthRequest="300"
+                HeightRequest="500">
+                <Label Grid.Row="0"
+                       Text="Edit Profile Picture"
+                       FontSize="Medium"
+                       HorizontalTextAlignment="Center"
+                       VerticalOptions="Center"
+                       TextColor="White"/>
+
+                <Ellipse
+                    Grid.Row="1"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Stroke="{StaticResource Gray500}"
+                    StrokeThickness="1"
+                    WidthRequest="200"
+                    HeightRequest="200"/>
+
+                <Image Grid.Row="1"
+                       Source="{Binding ProfilePicture}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="200"
+                       WidthRequest="200"
+                       Aspect="AspectFill">
+                    <Image.Clip>
+                        <EllipseGeometry Center="100,100"
+                                         RadiusX="100"
+                                         RadiusY="100"/>
+                    </Image.Clip>
+                </Image>
+
+                <StackLayout Grid.Row="2"
+                             Spacing="20"
+                             VerticalOptions="Center">
+                    <Button Text="Take a new photo"
+                            Command="{Binding TakePhotoCommand}"/>
+
+                    <Button Text="Choose a new photo"
+                            Command="{Binding ChoosePhotoCommand}"/>
+
+                    <Button Text="Use this picture"
+                            Command="{Binding UsePhotoCommand}"
+                            IsEnabled="{Binding UseButtonEnabled}"/>
+                </StackLayout>
+                <StackLayout Grid.Row="0"
+                             Opacity="0.5"
+                             BackgroundColor="AliceBlue"
+                             IsVisible="{Binding IsUploading}"
+                             Grid.RowSpan="3">
+                    <ActivityIndicator HorizontalOptions="CenterAndExpand"
+                                   HeightRequest="80"
+                                   WidthRequest="80"
+                                   VerticalOptions="CenterAndExpand"
+                                   IsEnabled="{Binding IsUploading}"
+                                   IsRunning="{Binding IsUploading}"
+                                   IsVisible="{Binding IsUploading}"
+                                   Color="{StaticResource SSWRed}"/>
+                    <Label Text="Saving..."
+                           TextColor="{StaticResource SSWRed}"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="End"/>
+                </StackLayout>
+            </Grid>
+        </Border>
+
+        <!-- Close button -->
+        <Border
+            WidthRequest="40"
+            HeightRequest="40"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
+            TranslationX="20"
+            TranslationY="-20"
+            Padding="10"
+            BackgroundColor="{StaticResource primary}"
+            VerticalOptions="Start"
+            HorizontalOptions="End">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ClosePageCommand}"/>
+            </Border.GestureRecognizers>
+            <Image Source="icon_close"/>
+        </Border>
+    </Grid>
+</pages:PopupPage>
