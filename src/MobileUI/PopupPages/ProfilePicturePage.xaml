@@ -42,15 +42,6 @@
                        VerticalOptions="Center"
                        TextColor="White"/>
 
-                <Ellipse
-                    Grid.Row="1"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Stroke="{StaticResource Gray500}"
-                    StrokeThickness="1"
-                    WidthRequest="200"
-                    HeightRequest="200"/>
-
                 <Image Grid.Row="1"
                        Source="{Binding ProfilePicture}"
                        VerticalOptions="Center"
