@@ -3,7 +3,6 @@
     x:Class="SSW.Rewards.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SSW.Rewards.Mobile"
     xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -159,7 +158,7 @@
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
                        FontSize="16"
-                       Text="Settings" />
+                       Text="My Settings" />
             </Grid>
             
             <VerticalStackLayout Grid.Column="0"
