@@ -10,9 +10,6 @@ public partial class AddLinkedInViewModel(IUserService userService, ISnackbarSer
     private string LinkedInUrl => "https://www.linkedin.com/in/";
 
     [ObservableProperty]
-    private bool _isOverlayVisible;
-
-    [ObservableProperty]
     private string _inputText;
 
     [ObservableProperty]
@@ -50,7 +47,6 @@ public partial class AddLinkedInViewModel(IUserService userService, ISnackbarSer
     [RelayCommand]
     private async Task ClosePage()
     {
-        IsOverlayVisible = false;
         await MopupService.Instance.PopAsync();
     }
 

@@ -12,8 +12,11 @@
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
-                 BackgroundColor="#80000000"
+                 BackgroundColor="#b3000000"
                  CloseWhenBackgroundIsClicked="False">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation PositionIn="Bottom"
                                   PositionOut="Bottom"

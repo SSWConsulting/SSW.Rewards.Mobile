@@ -53,10 +53,10 @@ public partial class RewardsViewModel : BaseViewModel
     private async Task LoadData()
     {
         IsBusy = true;
-        
+
         Rewards.Clear();
         CarouselRewards.Clear();
-        
+
         var rewardList = await _rewardService.GetRewards();
         var pendingRedemptions = (await _userService.GetPendingRedemptionsAsync()).ToList();
 
@@ -64,13 +64,13 @@ public partial class RewardsViewModel : BaseViewModel
         {
             var pendingRedemption = pendingRedemptions.FirstOrDefault(x => x.RewardId == reward.Id);
             reward.CanAfford = reward.Cost <= Credits;
-            
+
             if (pendingRedemption != null)
             {
                 reward.IsPendingRedemption = true;
                 reward.PendingRedemptionCode = pendingRedemption.Code;
             }
-            
+
             Rewards.Add(reward);
 
             if (reward.IsCarousel)
@@ -78,7 +78,7 @@ public partial class RewardsViewModel : BaseViewModel
                 CarouselRewards.Add(reward);
             }
         }
-        
+
         IsBusy = false;
         _isLoaded = true;
     }
@@ -89,6 +89,7 @@ public partial class RewardsViewModel : BaseViewModel
         var reward = Rewards.FirstOrDefault(r => r.Id == id);
         if (reward != null)
         {
+            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
             var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
             popup.CallbackEvent += async (_, _) =>
             {

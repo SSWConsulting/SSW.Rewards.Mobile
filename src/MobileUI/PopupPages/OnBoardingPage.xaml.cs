@@ -27,8 +27,6 @@ public partial class OnBoardingPage
         base.OnAppearing();
         _viewModel.Initialise();
         _viewModel.ScrollToRequested += ScrollToIndex;
-        await Task.Delay(300);
-        _viewModel.IsOverlayVisible = true;
     }
 
     protected override void OnDisappearing()
