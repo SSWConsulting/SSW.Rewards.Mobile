@@ -27,6 +27,7 @@
                     TextColor="{StaticResource White}"
                     VerticalOptions="End"
                     Margin="50,0,50,150"
+                    CornerRadius="10"
                     IsEnabled="{Binding LoginButtonEnabled}"
                     BackgroundColor="{StaticResource SSWRed}"/>
 
