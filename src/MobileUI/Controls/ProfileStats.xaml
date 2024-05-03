@@ -83,10 +83,10 @@
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
                 ColumnDefinitions="*,*,*">
-                <Border Grid.Column="0" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="8,0,8,0" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="0"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8,0,8,0">
                     <VerticalStackLayout
                         Spacing="2"
                         HorizontalOptions="Fill"
@@ -136,10 +136,10 @@
                         TextColor="{StaticResource White}" />
                 </VerticalStackLayout>
 
-                <Border Grid.Column="2" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="0,8,0,8" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="2"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 0,8,0,8">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
@@ -180,10 +180,10 @@
                 ColumnSpacing="1"
                 ColumnDefinitions="*,*">
 
-                <Border Grid.Column="0" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="8,0,8,0" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="0"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8,0,8,0">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"
@@ -210,10 +210,10 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border Grid.Column="1" StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="0,8,0,8" StrokeThickness="0" />
-                    </Border.StrokeShape>
+                <Border
+                    Grid.Column="1"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 0,8,0,8">
                     <VerticalStackLayout Spacing="2"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill"

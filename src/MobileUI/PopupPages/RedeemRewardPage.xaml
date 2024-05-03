@@ -311,7 +311,7 @@
                             IsVisible="{Binding IsBalanceVisible}">
                             <Button Grid.Column="0"
                                     Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Redeem in-person"
                                     FontAttributes="Bold"
                                     VerticalOptions="Center"
@@ -320,7 +320,7 @@
 
                             <Button Grid.Column="2"
                                     Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Ship to my address"
                                     FontAttributes="Bold"
                                     VerticalOptions="Center"
@@ -331,7 +331,7 @@
                         <VerticalStackLayout HorizontalOptions="Center"
                                              Spacing="15">
                             <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     WidthRequest="80"
                                     IsVisible="{Binding ConfirmEnabled}"
                                     Text="Confirm"
@@ -341,7 +341,7 @@
                                     Command="{Binding ConfirmClickedCommand}"/>
 
                             <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="4"
+                                    CornerRadius="10"
                                     Text="Cancel redemption"
                                     FontAttributes="Bold"
                                     VerticalOptions="Center"

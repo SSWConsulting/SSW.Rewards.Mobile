@@ -42,7 +42,7 @@
                     HeightRequest="50"
                     FontSize="16"
                     BackgroundColor="{StaticResource SSWRed}"
-                    CornerRadius="4"
+                    CornerRadius="8"
                     Command="{Binding EmailUserCommand}"
                     IsVisible="{Binding IsStaff}">
                 <Button.ImageSource>

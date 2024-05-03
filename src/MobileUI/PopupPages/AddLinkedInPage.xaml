@@ -69,26 +69,14 @@
                             TextColor="{StaticResource SSWRed}"
                         />
                     </VerticalStackLayout>
-                    <Border
+                    <Button
+                        Text="Connect"
+                        Command="{Binding ConnectCommand}"
                         BackgroundColor="{StaticResource SSWRed}"
                         VerticalOptions="End"
                         Margin="20,30"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 10"
-                        HeightRequest="60">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                  Command="{Binding ConnectCommand}"/>
-                        </Border.GestureRecognizers>
-                        <Grid>
-                            <Label Text="Connect"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="White"
-                                   VerticalOptions="Center"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalOptions="Center"/>
-                        </Grid>
-                    </Border>
+                        CornerRadius="10"
+                        HeightRequest="60"/>
                 </Grid>
             </Border>
 

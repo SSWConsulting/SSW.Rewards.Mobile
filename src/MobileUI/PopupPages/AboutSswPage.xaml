@@ -39,24 +39,13 @@
                        TextColor="White"
                        Margin="20"
                        Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."/>
-                <Frame BackgroundColor="{StaticResource SSWRed}" HeightRequest="60" CornerRadius="2">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer NumberOfTapsRequired="1"
-                                              Tapped="FindoutMore_Tapped"/>
-                    </Frame.GestureRecognizers>
-                    <Grid>
-                        <Label Text="Find out more..."
-                               HorizontalTextAlignment="Center"
-                               TextColor="White"
-                               VerticalOptions="Center"
-                               VerticalTextAlignment="Center"
-                               HorizontalOptions="Center"/>
-                        <Image Source="external_link.png"
-                               WidthRequest="24"
-                               VerticalOptions="Center"
-                               HorizontalOptions="End"/>
-                    </Grid>
-                </Frame>
+                <Button
+                    Clicked="FindoutMore_Tapped"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    HeightRequest="60"
+                    ImageSource="external_link"
+                    Text="Find out more..."
+                    CornerRadius="10"/>
             </VerticalStackLayout>
         </Border>
 

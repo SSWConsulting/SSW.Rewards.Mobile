@@ -135,7 +135,9 @@
                     </Grid>
 
                     <!-- Quiz navigation -->
-                    <Grid Grid.Row="6" ColumnDefinitions="*,*" Margin="20,0,20,10"
+                    <Grid Grid.Row="6"
+                          ColumnDefinitions="*,*"
+                          Margin="20,0,20,10"
                           IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
                         <Button Grid.Column="0"
                                 IsVisible="{Binding IsFirstQuestion, Converter={StaticResource InvertedBoolConverter}}"
@@ -147,6 +149,7 @@
                                 VerticalOptions="End"
                                 HorizontalOptions="Start"
                                 Padding="0"
+                                CornerRadius="10"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
 
@@ -160,6 +163,7 @@
                                 VerticalOptions="End"
                                 HorizontalOptions="End"
                                 Padding="0"
+                                CornerRadius="10"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="40" />
 
@@ -174,6 +178,7 @@
                                 VerticalOptions="End"
                                 HorizontalOptions="End"
                                 Padding="0"
+                                CornerRadius="10"
                                 BackgroundColor="{StaticResource SSWRed}"
                                 WidthRequest="80" />
                     </Grid>
