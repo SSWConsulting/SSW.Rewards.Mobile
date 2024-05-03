@@ -1,31 +1,19 @@
 ﻿using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
-using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.Pages;
 
 public partial class OthersProfilePage
 {
     private OthersProfileViewModel viewModel;
-
-    public OthersProfilePage(OthersProfileViewModel vm, LeaderViewModel leader)
-    {
-        InitializeComponent();
-        viewModel = vm;
-
-        viewModel.SetUser(leader);
-
-        viewModel.Navigation = Navigation;
-        BindingContext = viewModel;
-    }
-
-    public OthersProfilePage(OthersProfileViewModel vm, NetworkProfileDto networking)
+    
+    public OthersProfilePage(OthersProfileViewModel vm, int userId)
     {
         InitializeComponent();
         viewModel = vm;
 
         viewModel.ShowBalance = false;
-
-        viewModel.SetUser(networking);
+        
+        viewModel.SetUser(userId);
 
         viewModel.Navigation = Navigation;
         BindingContext = viewModel;

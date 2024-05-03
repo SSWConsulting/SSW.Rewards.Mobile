@@ -111,7 +111,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
         if (leader.IsMe)
             await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
         else
-            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader);
+            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader.UserId);
     }
 
     [RelayCommand]

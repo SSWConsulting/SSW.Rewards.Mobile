@@ -89,6 +89,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
                 UserAvatar = userAchievement.User.Avatar ?? string.Empty,
                 UserName = userAchievement.User.FullName ?? string.Empty,
                 UserTitle = staff?.Title ?? "Community",
+                UserId = userAchievement.User.Id,
                 Achievement = new UserAchievementDto
                 {
                     AchievementName = userAchievement.Achievement.Name ?? string.Empty,

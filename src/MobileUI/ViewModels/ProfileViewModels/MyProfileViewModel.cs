@@ -27,7 +27,7 @@ public class MyProfileViewModel(
 
     private async void HandleUserIdChange(int myUserId)
     {
-        userId = myUserId;
+        UserId = myUserId;
         await LoadProfileSections();
     }
 }
