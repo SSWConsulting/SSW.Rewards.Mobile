@@ -86,7 +86,8 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private static async Task AboutClicked()
     {
-        var popup = new AboutSSW();
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new AboutSswPage(statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 }

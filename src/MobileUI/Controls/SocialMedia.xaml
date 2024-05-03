@@ -4,11 +4,9 @@
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
     x:Class="SSW.Rewards.Mobile.Controls.SocialMedia"
     StrokeThickness="0"
+    StrokeShape="RoundRectangle 8"
     BackgroundColor="{StaticResource Background}"
     x:DataType="viewModels:ProfileViewModelBase">
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
     <Grid ColumnDefinitions="*, *, *" >
         <!-- LinkedIn -->
         <Label

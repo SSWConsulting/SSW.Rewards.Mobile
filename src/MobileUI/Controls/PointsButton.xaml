@@ -6,10 +6,8 @@
              x:Name="this">
     <Border StrokeThickness="0"
             HorizontalOptions="Center"
-            VerticalOptions="Center">
-        <Border.StrokeShape>
-            <RoundRectangle CornerRadius="6" />
-        </Border.StrokeShape>
+            VerticalOptions="Center"
+            StrokeShape="RoundRectangle 6">
         <HorizontalStackLayout Spacing="5"
                                Padding="8,0,0,0"
                                Background="{StaticResource ButtonBrush}">
@@ -30,6 +28,7 @@
                 InputTransparent="True" />
             <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                     StrokeThickness="0"
+                    StrokeShape="RoundRectangle 6"
                     Padding="8">
                 <Border.Triggers>
                     <DataTrigger TargetType="Border"
@@ -38,9 +37,6 @@
                         <Setter Property="Background" Value="{StaticResource BrandBrush}"/>
                     </DataTrigger>
                 </Border.Triggers>
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="6" />
-                </Border.StrokeShape>
                 <Grid>
                     <Label Text="{Binding ButtonText, Source={x:Reference this}}"
                            TextColor="White"

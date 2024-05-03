@@ -6,6 +6,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -43,7 +44,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     public bool ShowBalance { get; set; } = true;
 
-    protected int userId { get; set; }
+    protected int UserId { get; set; }
 
     public bool ShowCloseButton { get; set; } = true;
 
@@ -107,16 +108,18 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        var rewardListTask = _userService.GetRewardsAsync(userId);
-        var achievementListTask = _userService.GetAchievementsAsync(userId);
-        var loadSocialMediaTask = LoadSocialMedia();
-        await Task.WhenAll(rewardListTask, achievementListTask, loadSocialMediaTask);
+        var profile = await _userService.GetUserAsync(UserId);
 
-        var rewardList = rewardListTask.Result;
-        var achievementList = achievementListTask.Result;
+        ProfilePic = profile.ProfilePic ?? "v2sophie";
+        Name = profile.FullName;
+        Rank = profile.Rank;
+        Points = profile.Points;
+        IsStaff = profile.IsStaff;
+        UserEmail = profile.Email;
 
-        UpdateLastSeenSection(achievementList);
-        UpdateRecentActivitySection(achievementList, rewardList);
+        await LoadSocialMedia();
+        UpdateLastSeenSection(profile.Achievements);
+        UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
@@ -124,8 +127,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private async Task LoadSocialMedia()
     {
-        var linkedInAchievementId = 2; // LinkedIn Achievement
-        await _userService.LoadSocialMedia(userId, linkedInAchievementId);
+        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.LinkedIn);
     }
 
     [RelayCommand]
@@ -134,7 +136,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading)
             return;
 
-        var popup = new CameraPage(new CameraPageViewModel(_userService, _permissionsService));
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 
@@ -154,11 +157,13 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
         }
 
-        var uri = new Uri(LinkedInUrl);
-        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        if (Uri.TryCreate(LinkedInUrl, UriKind.Absolute, out Uri uri))
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
     }
 
-    public string GetMessage(Achievement achievement, bool isActivity = false)
+    public string GetMessage(UserAchievementDto achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
 
@@ -167,11 +172,11 @@ public partial class ProfileViewModelBase : BaseViewModel
             prefix += " not";
         }
 
-        string activity = achievement.Name;
+        string activity = achievement.AchievementName;
         string action = string.Empty;
-        string scored = $"just scored {achievement.Value}pts for";
+        string scored = $"just scored {achievement.AchievementValue}pts for";
 
-        switch (achievement.Type)
+        switch (achievement.AchievementType)
         {
             case AchievementType.Attended:
                 action = "checked into";
@@ -203,33 +208,33 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
     }
 
-    private void UpdateLastSeenSection(IEnumerable<Achievement> achievementList)
+    private void UpdateLastSeenSection(IEnumerable<UserAchievementDto> achievementList)
     {
         LastSeen.Clear(); // it could contain data from another user profile
-        var recentLastSeen = achievementList.Where(a => a.Type == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
         foreach (var achievement in recentLastSeen)
         {
             LastSeen.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
+                Type = achievement.AchievementType.ToActivityType(),
                 TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
     }
 
-    private void UpdateRecentActivitySection(IEnumerable<Achievement> achievementList, IEnumerable<Reward> rewardList)
+    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievementList, IEnumerable<UserRewardDto> rewardList)
     {
         var activityList = new List<Activity>();
-        var recentAchievements = achievementList.Where(a => a.Type != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        var recentAchievements = achievementList.Where(a => a.AchievementType != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
         foreach (var achievement in recentAchievements)
         {
             activityList.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
-                Type = achievement.Type.ToActivityType(),
+                Type = achievement.AchievementType.ToActivityType(),
                 TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
@@ -242,10 +247,10 @@ public partial class ProfileViewModelBase : BaseViewModel
         {
             activityList.Add(new Activity
             {
-                ActivityName = $"Claimed {reward.Name}",
-                OccurredAt = reward.AwardedAt?.DateTime,
+                ActivityName = $"Claimed {reward.RewardName}",
+                OccurredAt = reward.AwardedAt,
                 Type = ActivityType.Claimed,
-                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt?.DateTime)
+                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt)
             });
         }
 

@@ -1,12 +1,14 @@
 ﻿using Mopups.Services;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class CameraPageViewModel(IUserService userService, IPermissionsService permissionsService) : BaseViewModel
+public partial class ProfilePictureViewModel : BaseViewModel
 {
+    private readonly IUserService _userService;
+    private readonly IPermissionsService _permissionsService;
+
     [ObservableProperty]
     private bool _useButtonEnabled;
 
@@ -15,19 +17,26 @@ public partial class CameraPageViewModel(IUserService userService, IPermissionsS
 
     private FileResult _imageFile;
 
-    private IUserService _userService { get; } = userService;
 
     [ObservableProperty]
     private bool _isUploading;
 
+
+    public ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService)
+    {
+        _userService = userService;
+        _permissionsService = permissionsService;
+        userService.MyProfilePicObservable().Subscribe(myProfilePic => _profilePicture = myProfilePic);
+    }
+
     [RelayCommand]
     private async Task TakePhoto()
     {
-        var storageGranted = await permissionsService.CheckAndRequestPermission<Permissions.StorageWrite>();
+        var storageGranted = await _permissionsService.CheckAndRequestPermission<Permissions.StorageWrite>();
         if (!storageGranted)
             return;
 
-        var cameraGranted = await permissionsService.CheckAndRequestPermission<Permissions.Camera>();
+        var cameraGranted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
         if (!cameraGranted)
             return;
 
@@ -115,5 +124,11 @@ public partial class CameraPageViewModel(IUserService userService, IPermissionsS
         {
             await Application.Current.MainPage.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
         }
+    }
+
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await MopupService.Instance.PopAsync();
     }
 }

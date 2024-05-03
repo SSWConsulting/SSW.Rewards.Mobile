@@ -103,7 +103,7 @@
         <Tab Route="people" Icon="icon_people" Title="Network">
             <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
         </Tab>
-        
+
         <Tab Route="activity" Icon="icon_bell" Title="Activity">
             <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
         </Tab>
@@ -115,8 +115,9 @@
             Padding="20,0"
             RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
             ColumnDefinitions="Auto,*,Auto"
-            VerticalOptions="End">
-            
+            VerticalOptions="End"
+            RowSpacing="10">
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="0"
                                  Grid.ColumnSpan="3"
@@ -130,15 +131,14 @@
                          Color="#404040"
                          VerticalOptions="Start"/>
             </VerticalStackLayout>
-            
-            <!-- Settings Button -->
+
+            <!-- Settings button -->
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
                 Grid.Row="1"
-                ColumnDefinitions="Auto,*"
-                Margin="0,10,0,10">
+                Grid.ColumnSpan="3"
+                ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_SettingsClicked"/>
@@ -161,7 +161,7 @@
                        FontSize="16"
                        Text="My Settings" />
             </Grid>
-            
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="2"
                                  Grid.ColumnSpan="3"
@@ -180,15 +180,13 @@
             <Grid
                 VerticalOptions="End"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
                 Grid.Row="3"
-                ColumnDefinitions="Auto,*"
-                Margin="0,10,0,10">
+                Grid.ColumnSpan="3"
+                ColumnDefinitions="Auto,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1"
                                           Tapped="Handle_LogOutClicked"/>
                 </Grid.GestureRecognizers>
-                <!-- Update to different Icon -->
                 <Label Grid.Column="0"
                        HeightRequest="30"
                        WidthRequest="30"
@@ -208,7 +206,7 @@
                        FontSize="16"
                        Text="Log Out" />
             </Grid>
-            
+
             <VerticalStackLayout Grid.Column="0"
                                  Grid.Row="4"
                                  Grid.ColumnSpan="3"
@@ -226,20 +224,20 @@
             <Label
                 Grid.Column="0"
                 Grid.Row="5"
-                Margin="0,20,0,10"
+                Padding="0,10,0,0"
                 TextColor="#DDDDDD"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
                 FontSize="12"
                 Text="Powered by .NET MAUI" />
 
-            <Label HorizontalOptions="End"
-                   VerticalTextAlignment="Center"
-                   Margin="0,20,0,10"
-                   x:Name="VersionLabel"
-                   FontSize="12"
-                   Grid.Column="2"
+            <Label Grid.Column="2"
                    Grid.Row="5"
+                   x:Name="VersionLabel"
+                   HorizontalOptions="End"
+                   VerticalTextAlignment="Center"
+                   Padding="0,10,0,0"
+                   FontSize="12"
                    TextColor="#DDDDDD"/>
 
             <!-- workaround for iOS footer safe area -->

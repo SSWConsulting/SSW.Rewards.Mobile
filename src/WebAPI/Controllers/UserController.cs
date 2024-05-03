@@ -57,7 +57,7 @@ public class UserController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new GetUserRewardsQuery { UserId = userId }));
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<UserPendingRedemptionsViewModel>> GetUserPendingRedemptions([FromQuery] int userId)
     {
@@ -101,14 +101,18 @@ public class UserController : ApiControllerBase
         // get the isInsert to save ourselves some db round-trips when possible.
         bool isInsert = await Mediator.Send(new UpsertUserSocialMediaIdCommand
         {
-            AchievementId = dto.AchievementId, SocialMediaUserId = dto.SocialMediaUserId
+            SocialMediaPlatformId = dto.SocialMediaPlatformId,
+            SocialMediaUserId = dto.SocialMediaUserId
         });
 
         int retVal = 0;
         if (isInsert)
         {
             // set achievement and return achievement id
-            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUser { AchievementId = dto.AchievementId });
+            retVal = await Mediator.Send(new ClaimSocialMediaAchievementForUserCommand
+            {
+                SocialMediaPlatformId = dto.SocialMediaPlatformId
+            });
         }
 
         return Ok(retVal);

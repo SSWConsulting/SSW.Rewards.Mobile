@@ -1,17 +1,18 @@
-using CommunityToolkit.Maui.Behaviors;
+﻿using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Core;
 
-namespace SSW.Rewards.Mobile.PopupPages;
+namespace SSW.Rewards.PopupPages;
 
-public partial class AddLinkedInPage
+public partial class ProfilePicturePage
 {
     private readonly Color _parentPageStatusBarColor;
 
-    public AddLinkedInPage(IUserService userService, ISnackbarService snackbarService, Color parentPageStatusBarColor = null)
+    public ProfilePicturePage(ProfilePictureViewModel profilePictureViewModel, Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
-        BindingContext = new AddLinkedInViewModel(userService, snackbarService);
+        profilePictureViewModel.Navigation = Navigation;
+        BindingContext = profilePictureViewModel;
     }
 
     protected override void OnDisappearing()

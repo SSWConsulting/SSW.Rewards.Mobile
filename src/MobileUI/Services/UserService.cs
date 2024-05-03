@@ -164,12 +164,12 @@ public class UserService : IUserService
 
         return rewards;
     }
-    
+
     public async Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync()
     {
         return await GetPendingRedemptionsForUserAsync(_myUserId.Value);
     }
-    
+
     public async Task<IEnumerable<UserPendingRedemptionDto>> GetPendingRedemptionsAsync(int userId)
     {
         return await GetPendingRedemptionsForUserAsync(userId);
@@ -193,12 +193,12 @@ public class UserService : IUserService
         return redemptions;
     }
 
-    public async Task<bool?> SaveSocialMedia(int achievementId, string socialMediaUserId)
+    public async Task<bool?> SaveSocialMedia(int socialMediaPlatformId, string socialMediaUserProfile)
     {
         try
         {
-            var achieved = await _userClient.UpsertUserSocialMediaIdAsync(achievementId, socialMediaUserId);
-            _linkedInProfile.OnNext(socialMediaUserId);
+            var achieved = await _userClient.UpsertUserSocialMediaIdAsync(socialMediaPlatformId, socialMediaUserProfile);
+            _linkedInProfile.OnNext(socialMediaUserProfile);
             return achieved != 0;
         }
         catch

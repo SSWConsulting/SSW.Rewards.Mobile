@@ -3,6 +3,7 @@
 <Border
     BackgroundColor="{StaticResource Background}"
     Stroke="{StaticResource Background}"
+    StrokeShape="RoundRectangle 8"
     Padding="15"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -12,15 +13,12 @@
     <Border.Resources>
         <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </Border.Resources>
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
     <VerticalStackLayout>
         <Label Text="Last Seen"
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
-        
+
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
@@ -50,7 +48,7 @@
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
-        
+
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"

@@ -90,10 +90,8 @@
                             <Border
                                 Grid.Row="0"
                                 Stroke="{Binding IsMe, Converter={StaticResource MeToColor}}"
-                                StrokeThickness="2">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="8" />
-                                </Border.StrokeShape>
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 8">
                                 <Grid
                                     ColumnSpacing="6"
                                     ColumnDefinitions="60, 60, *, Auto"

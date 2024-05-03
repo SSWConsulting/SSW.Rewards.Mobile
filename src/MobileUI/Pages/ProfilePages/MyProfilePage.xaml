@@ -35,10 +35,6 @@
 
             <controls:ProfileStats Margin="0,15,0,0" />
 
-            <controls:SocialMedia
-                Padding="20,10,20,20"
-                Margin="0, -10, 0, 0" />
-
             <controls:ProfileActivity Margin="0,15,0,0" />
 
         </VerticalStackLayout>

@@ -1,17 +1,18 @@
 ﻿namespace SSW.Rewards.Application.Achievements.Commands.ClaimSocialMediaAchievementForUser;
-public class ClaimSocialMediaAchievementForUser : IRequest<int>
+
+public class ClaimSocialMediaAchievementForUserCommand : IRequest<int>
 {
-    public int AchievementId { get; set; }
+    public int SocialMediaPlatformId { get; set; }
 }
 
-public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<ClaimSocialMediaAchievementForUser, int>
+public sealed class ClaimSocialMediaAchievementForUserCommandHandler : IRequestHandler<ClaimSocialMediaAchievementForUserCommand, int>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
     private readonly IDateTime _dateTimeService;
 
-    public ClaimSocialMediaAchievementForUserHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IUserService userService, IDateTime dateTimeService)
+    public ClaimSocialMediaAchievementForUserCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IUserService userService, IDateTime dateTimeService)
     {
         _context = context;
         _currentUserService = currentUserService;
@@ -19,11 +20,11 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
         _dateTimeService = dateTimeService;
     }
 
-    public async Task<int> Handle(ClaimSocialMediaAchievementForUser request, CancellationToken cancellationToken)
+    public async Task<int> Handle(ClaimSocialMediaAchievementForUserCommand request, CancellationToken cancellationToken)
     {
         int? achievementId = await _context.SocialMediaPlatforms
                                           .AsNoTracking()
-                                          .Where(x => x.AchievementId == request.AchievementId)
+                                          .Where(x => x.Id == request.SocialMediaPlatformId)
                                           .Select(x => x.AchievementId)
                                           .FirstOrDefaultAsync(cancellationToken);
         if (achievementId == null)
@@ -46,7 +47,7 @@ public sealed class ClaimSocialMediaAchievementForUserHandler : IRequestHandler<
             userAchievement = new UserAchievement
             {
                 Achievement = achievement,
-                User        = user, 
+                User        = user,
                 AwardedAt   = _dateTimeService.Now,
                 CreatedUtc  = _dateTimeService.Now
             };

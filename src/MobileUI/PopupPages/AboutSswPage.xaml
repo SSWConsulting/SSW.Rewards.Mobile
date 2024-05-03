@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 BackgroundColor="#b3000000"
+                 CloseWhenBackgroundIsClicked="False"
+                 x:Class="SSW.Rewards.PopupPages.AboutSswPage">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+    </pages:PopupPage.Behaviors>
+    <pages:PopupPage.Animation>
+        <animations:MoveAnimation
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            DurationIn="300"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True" />
+    </pages:PopupPage.Animation>
+    <Grid Padding="30,70" VerticalOptions="Center">
+        <Border
+            Padding="20"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 10"
+            BackgroundColor="{StaticResource ProfileBackgroundColour}">
+            <VerticalStackLayout Spacing="6">
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource SSWRed}"
+                       FontSize="Large"
+                       Text="About SSW"/>
+                <Label HorizontalTextAlignment="Center"
+                       Margin="20"
+                       TextColor="White"
+                       Text="SSW's Consulting Services have delivered best of breed Microsoft solutions for more than 1,000 clients in 15 countries. With 50 consultants in 3 countries, SSW's developers are some of the best in the business. We have many Microsoft Certifications, 5 MVPs, and a Microsoft Regional Director."/>
+                <Label HorizontalTextAlignment="Center"
+                       TextColor="White"
+                       Margin="20"
+                       Text="We deliver scalable and extensible custom solutions with the future in mind. Our solutions improve businesses' bottom lines, with real time savings and long term value. We will provide you with the competitive advantage you need."/>
+                <Button
+                    Clicked="FindoutMore_Tapped"
+                    BackgroundColor="{StaticResource SSWRed}"
+                    HeightRequest="60"
+                    ImageSource="external_link"
+                    Text="Find out more..."
+                    CornerRadius="10"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Close button -->
+        <Border
+            WidthRequest="40"
+            HeightRequest="40"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 20"
+            TranslationX="20"
+            TranslationY="-20"
+            Padding="10"
+            BackgroundColor="{StaticResource primary}"
+            VerticalOptions="Start"
+            HorizontalOptions="End">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Handle_CloseTapped"/>
+            </Border.GestureRecognizers>
+            <Image Source="icon_close"/>
+        </Border>
+    </Grid>
+</pages:PopupPage>
