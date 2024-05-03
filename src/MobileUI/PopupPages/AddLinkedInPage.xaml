@@ -74,10 +74,8 @@
                         VerticalOptions="End"
                         Margin="20,30"
                         StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10"
                         HeightRequest="60">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="10" />
-                        </Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1"
                                                   Command="{Binding ConnectCommand}"/>

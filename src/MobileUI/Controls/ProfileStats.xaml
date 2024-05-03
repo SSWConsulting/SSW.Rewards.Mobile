@@ -2,6 +2,7 @@
 
 <Border
     BackgroundColor="{StaticResource Background}"
+    StrokeShape="RoundRectangle 8"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -16,9 +17,6 @@
         <converters:StaffToTextConverter x:Key="StaffToText" />
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
-    <Border.StrokeShape>
-        <RoundRectangle CornerRadius="8" />
-    </Border.StrokeShape>
     <VerticalStackLayout
         Spacing="15"
         Padding="0,15">
@@ -79,10 +77,8 @@
         <Border IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
                 Margin="20, 0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8" />
-            </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
@@ -177,10 +173,8 @@
         <Border IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
                 Margin="20, 0">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8" />
-            </Border.StrokeShape>
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
@@ -302,10 +296,8 @@
                                 WidthRequest="64"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                 StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8"
                                 Padding="8">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
                             <Image Aspect="AspectFit">
                                 <Image.Source>
                                     <Binding Path="ImageUri" >

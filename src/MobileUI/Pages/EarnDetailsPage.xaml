@@ -17,10 +17,11 @@
         <converters:AllTrueConverter x:Key="AllTrueConverter"/>
     </ContentPage.Resources>
     <ScrollView>
-        <Border StrokeThickness="0" Margin="{OnPlatform '15', iOS='15,15,15,95'}" BackgroundColor="{StaticResource Background}">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="8" />
-            </Border.StrokeShape>
+        <Border
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 8"
+            Margin="{OnPlatform '15', iOS='15,15,15,95'}"
+            BackgroundColor="{StaticResource Background}">
             <Grid>
                 <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
                     <Grid.IsVisible>
@@ -34,10 +35,8 @@
                             HeightRequest="80"
                             WidthRequest="80"
                             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 6">
                         <Image Source="{Binding ThumbnailImage}"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
@@ -63,12 +62,10 @@
                     <!-- Reward amount -->
                     <Border Grid.Row="3"
                             StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8"
                             WidthRequest="80"
                             Margin="0,10,0,0"
                             BackgroundColor="{StaticResource FlyoutBackgroundColour}">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="8" />
-                        </Border.StrokeShape>
                         <Grid ColumnDefinitions="30,*">
                             <Label
                                 Grid.Column="0"
@@ -113,10 +110,8 @@
                         <Border
                             Grid.Row="1"
                             Stroke="{StaticResource White}"
+                            StrokeShape="RoundRectangle 8"
                             IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="8" />
-                            </Border.StrokeShape>
                             <Editor
                                 TextColor="{StaticResource White}"
                                 VerticalTextAlignment="Start"
@@ -208,11 +203,9 @@
                             BackgroundColor="{StaticResource SSWRed}"
                             WidthRequest="150"
                             HeightRequest="40"
+                            StrokeShape="RoundRectangle 6"
                             HorizontalOptions="Center"
                             VerticalOptions="Center">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="6" />
-                        </Border.StrokeShape>
                         <Label Text="{Binding Score}"
                                TextColor="White"
                                FontSize="Title"
@@ -231,10 +224,8 @@
                             <DataTemplate x:DataType="quizzes:QuestionResultDto">
                                 <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                         StrokeThickness="2"
+                                        StrokeShape="RoundRectangle 6"
                                         Padding="5,10">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="6" />
-                                    </Border.StrokeShape>
                                     <Border.Triggers>
                                         <DataTrigger TargetType="Border"
                                                      Binding="{Binding Correct}"
