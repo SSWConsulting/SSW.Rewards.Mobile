@@ -9,17 +9,17 @@
     BackgroundColor="{StaticResource Background}">
     <TableView Intent="Menu" BackgroundColor="Transparent">
         <TableRoot>
+            <TableSection Title="Social Media" TextColor="{StaticResource Gray400}">
+                <TextCell Text="Add / Update LinkedIn Profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+            </TableSection>
+            
             <TableSection Title="General" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
-            </TableSection>
-
-            <TableSection Title="Your Account" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Add / Update LinkedIn profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
                 <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
-                <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
+                <TextCell Text="Delete Profile" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
             </TableSection>
 
-            <TableSection Title="Info &amp; Support" TextColor="{StaticResource Gray400}">
+            <TableSection Title="Help" TextColor="{StaticResource Gray400}">
+                <TextCell Text="Replay Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
                 <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
             </TableSection>
         </TableRoot>

@@ -159,7 +159,7 @@
                        HorizontalOptions="Start"
                        VerticalOptions="Center"
                        FontSize="16"
-                       Text="Settings" />
+                       Text="My Settings" />
             </Grid>
 
             <VerticalStackLayout Grid.Column="0"

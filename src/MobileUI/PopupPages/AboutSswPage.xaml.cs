@@ -13,6 +13,12 @@ public partial class AboutSswPage
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
     }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        VersionLabel.Text = $"Version {AppInfo.VersionString}";
+    }
 
     private async void Handle_CloseTapped(object sender, EventArgs args)
     {
