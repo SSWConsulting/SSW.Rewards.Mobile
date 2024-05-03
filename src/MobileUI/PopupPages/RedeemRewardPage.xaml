@@ -11,7 +11,7 @@
                  xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
-                 x:Class="SSW.Rewards.Mobile.PopupPages.RedeemReward"
+                 x:Class="SSW.Rewards.Mobile.PopupPages.RedeemRewardPage"
                  BackgroundColor="#b3000000"
                  CloseWhenBackgroundIsClicked="False">
     <pages:PopupPage.Behaviors>

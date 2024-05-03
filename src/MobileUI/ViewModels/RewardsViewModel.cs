@@ -90,7 +90,7 @@ public partial class RewardsViewModel : BaseViewModel
         if (reward != null)
         {
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var popup = new RedeemReward(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
+            var popup = new RedeemRewardPage(new RedeemRewardViewModel(_userService, _rewardService, _addressService), reward);
             popup.CallbackEvent += async (_, _) =>
             {
                 await LoadData();
