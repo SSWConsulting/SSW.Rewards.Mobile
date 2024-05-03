@@ -61,7 +61,7 @@ public partial class SettingsViewModel : BaseViewModel
 
         // Remove all remaining code in this method after the fix is available
 
-        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "If you no longer want an SSW or SSW Rewards account, you can submit a request to SSW to delete your profile and all associated data. Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "If you no longer want an SSW or SSW Rewards account, you can submit a request to SSW to delete your profile and all associated data. Are you sure you want to delete your profile and all associated data?", "Yes", "Cancel");
 
         if (sure)
         {

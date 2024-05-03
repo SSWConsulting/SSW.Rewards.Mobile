@@ -9,18 +9,18 @@
     BackgroundColor="{StaticResource Background}">
     <TableView Intent="Menu" BackgroundColor="Transparent">
         <TableRoot>
-            <TableSection Title="General" TextColor="{StaticResource Gray400}">
-                <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
-                <TextCell Text="Delete Profile" TextColor="White" Command="{Binding DeleteClickedCommand}" />
-            </TableSection>
-
             <TableSection Title="Social Media" TextColor="{StaticResource Gray400}">
                 <TextCell Text="Add / Update LinkedIn Profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+            </TableSection>
+            
+            <TableSection Title="General" TextColor="{StaticResource Gray400}">
+                <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
+                <TextCell Text="Delete Profile" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
             </TableSection>
 
             <TableSection Title="About" TextColor="{StaticResource Gray400}">
                 <TextCell Text="Replay Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
-                <TextCell Text="About SSW" TextColor="White" Command="{Binding AboutClickedCommand}" />
+                <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
             </TableSection>
         </TableRoot>
     </TableView>
