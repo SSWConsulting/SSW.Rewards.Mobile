@@ -26,6 +26,7 @@
                 <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
             </Grid.GestureRecognizers>
             
+            <!-- Setting Text="" here to prevent "?" from being displayed before image load -->
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
                                 Text=""
                                 WidthRequest="120"
