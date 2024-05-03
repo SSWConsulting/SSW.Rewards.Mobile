@@ -15,10 +15,10 @@
             
             <TableSection Title="General" TextColor="{StaticResource Gray400}">
                 <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
-                <TextCell Text="Delete Profile" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
+                <TextCell Text="Delete Profile ⚠" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
             </TableSection>
 
-            <TableSection Title="About" TextColor="{StaticResource Gray400}">
+            <TableSection Title="Help" TextColor="{StaticResource Gray400}">
                 <TextCell Text="Replay Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
                 <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
             </TableSection>

@@ -9,6 +9,12 @@ public partial class AboutSSW
         InitializeComponent();
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        VersionLabel.Text = $"Version {AppInfo.VersionString}";
+    }
+
     private async void Handle_CloseTapped(object sender, EventArgs args)
     {
         await MopupService.Instance.PopAllAsync();
