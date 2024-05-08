@@ -5,6 +5,7 @@
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
                  BackgroundColor="#b3000000"
                  CloseWhenBackgroundIsClicked="False"
                  x:DataType="viewModels:ProfilePictureViewModel"
@@ -61,21 +62,18 @@
                     RowDefinitions="*,15,*"
                     ColumnDefinitions="*,15,*"
                     VerticalOptions="Center">
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="0"
+                    
+                    <controls:MultiLineButton
                         Text="Take a new photo"
-                        LineBreakMode="WordWrap"
-                        CornerRadius="10"
-                        Command="{Binding TakePhotoCommand}"/>
-
-                    <Button
+                        Command="{Binding TakePhotoCommand}"
                         Grid.Row="0"
-                        Grid.Column="3"
+                        Grid.Column="0" />
+                    
+                    <controls:MultiLineButton
                         Text="Choose a new photo"
-                        LineBreakMode="WordWrap"
-                        CornerRadius="10"
-                        Command="{Binding ChoosePhotoCommand}"/>
+                        Command="{Binding ChoosePhotoCommand}"
+                        Grid.Row="0"
+                        Grid.Column="3" />
 
                     <Button
                         Grid.Row="3"

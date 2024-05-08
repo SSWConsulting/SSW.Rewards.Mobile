@@ -98,6 +98,10 @@
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
         <Compile Update="Platforms\Android\Services\RewardsFirebaseMessagingService.cs">
         </Compile>
+        <Compile Update="Controls\MultiLineButton.xaml.cs">
+          <DependentUpon>MultiLineButton.xaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -228,6 +232,10 @@
 		</MauiXaml>
 		<MauiXaml Update="Pages\SettingsPage.xaml">
 		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\MultiLineButton.xaml">
+		  <SubType>Designer</SubType>
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 
