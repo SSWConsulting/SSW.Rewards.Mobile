@@ -87,6 +87,8 @@
     <Color x:Key="CorrectColor">#52B5AA</Color>
     <Color x:Key="TextSecondary">#A0A0A0</Color>
     
+    <Color x:Key="SuccessGreen">#198754</Color>
+    
     <LinearGradientBrush x:Key="BrandBrush" EndPoint="0,1">
         <GradientStop Offset="0.1" Color="{StaticResource SSWRed}"></GradientStop>
         <GradientStop Offset="1.0" Color="{StaticResource BrandEnd}"></GradientStop>

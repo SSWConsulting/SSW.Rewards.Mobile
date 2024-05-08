@@ -16,7 +16,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly ISnackbarService _snackbarService;
         private readonly IUserService _userService;
         private int _quizId;
-        private string _quizIcon;
         private int _submissionId;
 
         [ObservableProperty]
@@ -34,6 +33,9 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private string _quizDescription;
+        
+        [ObservableProperty]
+        private Color _scoreBackground;
 
         [ObservableProperty]
         private string _score;
@@ -86,11 +88,10 @@ namespace SSW.Rewards.Mobile.ViewModels
             _userService = userService;
         }
 
-        public async Task Initialise(int quizId, string icon)
+        public async Task Initialise(int quizId)
         {
             IsBusy = true;
             _quizId = quizId;
-            _quizIcon = icon;
             IsLoadingQuestions = true;
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
@@ -173,8 +174,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task<bool> AwaitQuizCompletion()
         {
-            var maxAttempts = 30;
-            var delay = 5000;
+            var maxAttempts = 60;
+            var delay = 2000;
             bool isComplete = false;
 
             while (!isComplete)
@@ -200,7 +201,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             ResultsVisible = true;
             WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Done));
 
-            var total = result.Results.Count();
+            var total = result.Results.Count;
 
             var correct = result.Results.Count(r => r.Correct);
 
@@ -215,14 +216,17 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (result.Passed)
             {
+                App.Current.Resources.TryGetValue("SuccessGreen", out object successGreen);
+
+                ScoreBackground = (Color)successGreen!;
                 ResultsTitle = "Test Passed!";
                 TestPassed = true;
                 SnackOptions = new SnackbarOptions
                 {
                     ActionCompleted = true,
-                    GlyphIsBrand = true,
-                    Glyph = _quizIcon,
-                    Message = $"You have completed the {QuizTitle} quiz",
+                    GlyphIsBrand = false,
+                    Glyph = "\uf837", // Trophy icon
+                    Message = $"You have completed the {QuizTitle}",
                     Points = Points,
                     ShowPoints = true
                 };
@@ -232,6 +236,9 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
+                App.Current.Resources.TryGetValue("SSWRed", out object sswRed);
+
+                ScoreBackground = (Color)sswRed!;
                 ResultsTitle = "Test Failed";
                 TestPassed = false;
             }
