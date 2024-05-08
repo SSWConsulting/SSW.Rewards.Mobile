@@ -174,8 +174,8 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task<bool> AwaitQuizCompletion()
         {
-            var maxAttempts = 60;
-            var delay = 2000;
+            var maxAttempts = 30;
+            var delay = 5000;
             bool isComplete = false;
 
             while (!isComplete)
