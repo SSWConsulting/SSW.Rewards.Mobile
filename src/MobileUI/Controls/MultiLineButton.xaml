@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SSW.Rewards.Mobile.Controls.MultiLineButton"
              x:Name="this">
-    <Border BackgroundColor="{StaticResource SSWRed}"
+    <Border BackgroundColor="{Binding BackgroundColor, Source={x:Reference this}}"
             StrokeThickness="0"
             StrokeShape="RoundRectangle 10"
             MinimumWidthRequest="44"
@@ -14,8 +14,8 @@
             <TapGestureRecognizer Command="{Binding Command, Source={x:Reference this}}" />
         </Border.GestureRecognizers>
         <Label Text="{Binding Text, Source={x:Reference this}}"
-               TextColor="White"
-               FontSize="14"
+               TextColor="{Binding TextColor, Source={x:Reference this}}"
+               FontSize="{Binding FontSize, Source={x:Reference this}}"
                HorizontalOptions="Center"
                VerticalOptions="Center"
                HorizontalTextAlignment="Center"
