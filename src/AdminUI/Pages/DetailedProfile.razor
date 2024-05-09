@@ -15,7 +15,7 @@
 @inject ISkillsService skillsService
 
 
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Admin")]
 
 <div class="d-block d-md-flex no-wrap gap-6">
 
