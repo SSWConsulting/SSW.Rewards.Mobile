@@ -65,8 +65,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [RelayCommand]
     private async Task OpenQuiz(int quizId)
     {
-        var quiz = Quizzes.First(q => q.Id == quizId);
-        await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quiz.Id}&QuizIcon={quiz.Icon}");
+        await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}");
     }
 
     private bool CanOpenQuiz(int quizId)

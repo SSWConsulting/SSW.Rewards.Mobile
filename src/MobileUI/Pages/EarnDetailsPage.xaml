@@ -205,7 +205,7 @@
                            Grid.Row="0" />
 
                     <Border Grid.Row="1"
-                            BackgroundColor="{StaticResource SSWRed}"
+                            BackgroundColor="{Binding ScoreBackground}"
                             WidthRequest="150"
                             HeightRequest="40"
                             StrokeShape="RoundRectangle 6"

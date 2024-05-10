@@ -1,14 +1,11 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
 [QueryProperty(nameof(QuizId), nameof(QuizId))]
-[QueryProperty(nameof(QuizIcon), nameof(QuizIcon))]
 public partial class EarnDetailsPage
 {
     private EarnDetailsViewModel _viewModel;
 
     public string QuizId { get; set; }
-
-    public string QuizIcon { get; set; }
 
     public EarnDetailsPage(EarnDetailsViewModel viewModel)
     {
@@ -21,6 +18,6 @@ public partial class EarnDetailsPage
     {
         base.OnAppearing();
         int quizId = int.Parse(QuizId);
-        await _viewModel.Initialise(quizId, QuizIcon);
+        await _viewModel.Initialise(quizId);
     }
 }
