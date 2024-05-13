@@ -76,8 +76,19 @@ public partial class ProfilePictureViewModel : BaseViewModel
     {
         IsUploading = true;
         var imageStream = await _imageFile.OpenReadAsync();
-        await _userService.UploadImageAsync(imageStream, _imageFile.FileName);
-        await MopupService.Instance.PopAllAsync();
+        
+        try
+        {
+            await _userService.UploadImageAsync(imageStream, _imageFile.FileName);
+            await MopupService.Instance.PopAllAsync();
+        }
+        catch (Exception e)
+        {
+            if (!await ExceptionHandler.HandleApiException(e))
+            {
+                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
+            }
+        }
     }
 
     private async Task SetPhoto(FileResult file)
