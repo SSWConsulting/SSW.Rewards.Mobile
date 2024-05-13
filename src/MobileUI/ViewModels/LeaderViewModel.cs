@@ -6,6 +6,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public class LeaderViewModel : BaseViewModel
 {
     public int Rank { get; set; }
+    public int AllTimeRank { get; set; }
     public int UserId { get; set; }
     public string? Name { get; set; }
     public string? Email { get; set; }
@@ -52,7 +53,7 @@ public class LeaderViewModel : BaseViewModel
 
     public void MapFrom(LeaderboardUserDto dto, bool isMe)
     {
-        Rank = dto.Rank;
+        AllTimeRank = dto.Rank;
         UserId = dto.UserId;
         Name = dto.Name;
         ProfilePic = dto.ProfilePic;

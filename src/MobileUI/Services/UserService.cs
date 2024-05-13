@@ -17,7 +17,7 @@ public class UserService : IUserService
     private readonly BehaviorSubject<int> _myPoints = new(0);
     private readonly BehaviorSubject<int> _myBalance = new(0);
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
-    private readonly BehaviorSubject<int> _myAllTimeRank = new(Int32.MaxValue);
+    private readonly BehaviorSubject<int> _myAllTimeRank = new(0);
     private readonly BehaviorSubject<bool> _isStaff = new(false);
 
     /// <summary>

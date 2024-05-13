@@ -190,8 +190,9 @@ public partial class LeaderBoardViewModel : BaseViewModel
         }
 
         await UpdateSearchResults(leaders);
-        UpdateMyRankIfRequired(leaders.FirstOrDefault(l => l.IsMe));
-        UpdateMyAllTimeRank(list.OrderByDescending(l => l.TotalPoints).FirstOrDefault(l => l.IsMe));
+        var myProfile = leaders.FirstOrDefault(l => l.IsMe);
+        UpdateMyRankIfRequired(myProfile);
+        UpdateMyAllTimeRank(myProfile);
 
         // setting to null to trigger PropertyChanged event
         First = null!;
@@ -228,7 +229,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
     {
         if (me is not null)
         {
-            _userService.UpdateMyAllTimeRank(me.Rank);
+            _userService.UpdateMyAllTimeRank(me.AllTimeRank);
         }
     }
 }
