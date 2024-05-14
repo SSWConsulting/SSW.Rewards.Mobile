@@ -98,7 +98,6 @@ public partial class ProfileViewModelBase : BaseViewModel
     protected async Task _initialise()
     {
         IsLoading = true;
-        var rewards = await _rewardsService.GetRewards(); // TODO: do we need this?
         await LoadProfileSections();
         IsLoading = false;
     }
@@ -108,16 +107,21 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        var profile = await _userService.GetUserAsync(UserId);
+        var profileTask = _userService.GetUserAsync(UserId);
+        var socialMediaTask = LoadSocialMedia();
+        
+        await Task.WhenAll(profileTask, socialMediaTask);
+
+        var profile = profileTask.Result;
 
         ProfilePic = profile.ProfilePic ?? "v2sophie";
         Name = profile.FullName;
         Rank = profile.Rank;
         Points = profile.Points;
+        Balance = profile.Balance;
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
-
-        await LoadSocialMedia();
+        
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
