@@ -32,10 +32,14 @@ public partial class ProfilePictureViewModel : BaseViewModel
     [RelayCommand]
     private async Task TakePhoto()
     {
-        var storageGranted = await _permissionsService.CheckAndRequestPermission<Permissions.StorageWrite>();
-        if (!storageGranted)
-            return;
-
+        // Permissions.StorageWrite gone and no longer needed on Android SDK 33 and above
+        if (!OperatingSystem.IsAndroidVersionAtLeast(33))
+        {
+            var storageGranted = await _permissionsService.CheckAndRequestPermission<Permissions.StorageWrite>();
+            if (!storageGranted)
+                return;
+        }
+        
         var cameraGranted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
         if (!cameraGranted)
             return;
