@@ -11,9 +11,10 @@
             MinimumWidthRequest="44"
             MinimumHeightRequest="44"
             Padding="14,10">
-        <Border.GestureRecognizers>
-            <TapGestureRecognizer Command="{Binding Command, Source={x:Reference this}}" />
-        </Border.GestureRecognizers>
+        <Border.Behaviors>
+            <toolkit:TouchBehavior PressedOpacity="0.5"
+                                   Command="{Binding Command, Source={x:Reference this}}"/>
+        </Border.Behaviors>
         <Label Text="{Binding Text, Source={x:Reference this}}"
                TextColor="{Binding TextColor, Source={x:Reference this}}"
                FontSize="{Binding FontSize, Source={x:Reference this}}"
@@ -21,10 +22,6 @@
                VerticalOptions="Center"
                HorizontalTextAlignment="Center"
                VerticalTextAlignment="Center"
-               LineBreakMode="WordWrap">
-            <Label.Behaviors>
-                <toolkit:TouchBehavior PressedOpacity="0.5" />
-            </Label.Behaviors>
-        </Label>
+               LineBreakMode="WordWrap" />
     </Border>
 </ContentView>
