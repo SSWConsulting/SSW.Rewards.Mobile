@@ -8,6 +8,10 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class TopBarViewModel : ObservableObject
 {
     private readonly IPermissionsService _permissionsService;
+    
+    private readonly IUserService _userService;
+
+    private readonly IScannerService _scannerService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -24,9 +28,11 @@ public partial class TopBarViewModel : ObservableObject
     [ObservableProperty]
     private bool _showScanner = true;
 
-    public TopBarViewModel(IPermissionsService permissionsService, IUserService userService)
+    public TopBarViewModel(IPermissionsService permissionsService, IUserService userService, IScannerService scannerService)
     {
         _permissionsService = permissionsService;
+        _userService = userService;
+        _scannerService = scannerService;
         WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (_, m) =>
         {
             switch (m.Value)
@@ -60,7 +66,7 @@ public partial class TopBarViewModel : ObservableObject
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
         if (granted)
         {
-            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+            await App.Current.MainPage.Navigation.PushModalAsync(new ScanPage(new ScanResultViewModel(_userService, _scannerService)));
         }
     }
 
