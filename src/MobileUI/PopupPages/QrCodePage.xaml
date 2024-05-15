@@ -23,42 +23,40 @@
                                   EasingOut="SinIn"
                                   HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
-    <Grid>
-        <Grid Padding="30,70" VerticalOptions="Center">
-            <Border
-                VerticalOptions="Center"
-                Padding="25"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 10"
-                BackgroundColor="{StaticResource Background}">
-                <Grid>
-                    <zxing:BarcodeGeneratorView
-                                             Format="QrCode"
-                                             Value="{Binding QrCode}"
-                                             HorizontalOptions="Center"
-                                             WidthRequest="250"
-                                             HeightRequest="250"
-                                             VerticalOptions="Center"/>
-                </Grid>
-            </Border>
+    <Grid Padding="30,70" VerticalOptions="Center">
+        <Border
+            VerticalOptions="Center"
+            Padding="25"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 10"
+            BackgroundColor="{StaticResource Background}">
+            <Grid>
+                <zxing:BarcodeGeneratorView
+                                         Format="QrCode"
+                                         Value="{Binding QrCode}"
+                                         HorizontalOptions="Center"
+                                         WidthRequest="250"
+                                         HeightRequest="250"
+                                         VerticalOptions="Center"/>
+            </Grid>
+        </Border>
 
-            <!-- Close button -->
-            <Border
-                WidthRequest="40"
-                HeightRequest="40"
-                StrokeThickness="0"
-                TranslationX="20"
-                TranslationY="-20"
-                Padding="10"
-                StrokeShape="RoundRectangle 20"
-                BackgroundColor="{StaticResource primary}"
-                VerticalOptions="Start"
-                HorizontalOptions="End">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClosePopupCommand}"/>
-                </Border.GestureRecognizers>
-                <Image Source="icon_close"/>
-            </Border>
-        </Grid>
+        <!-- Close button -->
+        <Border
+            WidthRequest="40"
+            HeightRequest="40"
+            StrokeThickness="0"
+            TranslationX="20"
+            TranslationY="-20"
+            Padding="10"
+            StrokeShape="RoundRectangle 20"
+            BackgroundColor="{StaticResource primary}"
+            VerticalOptions="Start"
+            HorizontalOptions="End">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ClosePopupCommand}"/>
+            </Border.GestureRecognizers>
+            <Image Source="icon_close"/>
+        </Border>
     </Grid>
 </pages:PopupPage>
