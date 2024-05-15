@@ -101,7 +101,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     
     private static string GetTimeElapsed(DateTime occurredAt)
     {
-        return (DateTime.Now - occurredAt) switch
+        return (DateTime.UtcNow - occurredAt) switch
         {
             { TotalMinutes: < 5 } ts => "Just now",
             { TotalHours: < 1 } ts => $"{ts.Minutes}m ago",

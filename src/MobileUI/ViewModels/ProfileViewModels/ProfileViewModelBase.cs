@@ -283,7 +283,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private static string GetTimeElapsed(DateTime occurredAt)
     {
-        return (DateTime.Now - occurredAt) switch
+        return (DateTime.UtcNow - occurredAt) switch
         {
             { TotalDays: < 1 } ts => $"{ts.Hours}h",
             { TotalDays: < 31 } ts => $"{ts.Days}d",
