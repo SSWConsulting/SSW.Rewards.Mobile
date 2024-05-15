@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using Plugin.Maui.ScreenBrightness;
+using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -9,7 +11,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject
 {
     private readonly IUserService _userService;
     private readonly IPermissionsService _permissionsService;
-
+    
     [ObservableProperty]
     private string _profilePic;
 
@@ -51,6 +53,14 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
         var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
+        await MopupService.Instance.PushAsync(popup);
+    }
+    
+    [RelayCommand]
+    private async Task OpenQrCode()
+    {
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var popup = new QrCodePage(new QrCodeViewModel(_userService), statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 }

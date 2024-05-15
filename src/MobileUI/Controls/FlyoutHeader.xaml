@@ -194,14 +194,18 @@
                FontSize="Small"
                Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"/>
-        <zx:BarcodeGeneratorView x:Name="codeView"
-                                 Format="QrCode"
-                                 Value="{Binding QrCode}"
-                                 HorizontalOptions="Start"
-                                 BackgroundColor="#DDDDDD"
-                                 ForegroundColor="Transparent"
-                                 WidthRequest="150"
-                                 HeightRequest="150"
-                                 VerticalOptions="Center"/>
+        <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenQrCodeCommand}" />
+            </Grid.GestureRecognizers>
+            <zx:BarcodeGeneratorView Format="QrCode"
+                                     Value="{Binding QrCode}"
+                                     HorizontalOptions="Start"
+                                     BackgroundColor="#DDDDDD"
+                                     ForegroundColor="Transparent"
+                                     WidthRequest="150"
+                                     HeightRequest="150"
+                                     VerticalOptions="Center"/>
+        </Grid>
     </VerticalStackLayout>
 </Grid>
