@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Mopups.Services;
-using SSW.Rewards.PopupPages;
+using SSW.Rewards.Mobile.PopupPages;
 
 namespace SSW.Rewards.Mobile;
 
@@ -18,11 +18,10 @@ public partial class AppShell : Shell
         InitializeComponent();
         _userService = userService;
         _authService = authService;
-        VersionLabel.Text = $"Version {AppInfo.VersionString}";
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
     }
-
+    
     private bool _isStaff;
     public bool IsStaff
     {
@@ -34,22 +33,6 @@ public partial class AppShell : Shell
         }
     }
     
-    public async void Handle_SettingsClicked(object sender, EventArgs e)
-    {
-        await Current.Navigation.PushModalAsync<SettingsPage>();
-    }
-    
-    public async void Handle_LogOutClicked(object sender, EventArgs e)
-    {
-        var sure = await App.Current.MainPage.DisplayAlert("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
-
-        if (sure)
-        {
-            await _authService.SignOut();
-            await Navigation.PushModalAsync<LoginPage>();
-        }
-    }
-
     protected override bool OnBackButtonPressed()
     {
         if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())

@@ -107,6 +107,10 @@
           <DependentUpon>QrCodePage.xaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Controls\FlyoutFooter.xaml.cs">
+          <DependentUpon>FlyoutFooter.xaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -243,6 +247,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="PopupPages\QrCodePage.xaml">
+		  <SubType>Designer</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\FlyoutFooter.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 	</ItemGroup>
