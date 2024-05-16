@@ -107,7 +107,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
             { TotalHours: < 1 } ts => $"{ts.Minutes}m ago",
             { TotalDays: < 1 } ts => $"{ts.Hours}h ago",
             { TotalDays: < 31 } ts => $"{ts.Days}d ago",
-            _ => occurredAt.ToString("dd MMMM yyyy"),
+            _ => occurredAt.ToLocalTime().ToString("dd MMMM yyyy"),
         };
     }
 
