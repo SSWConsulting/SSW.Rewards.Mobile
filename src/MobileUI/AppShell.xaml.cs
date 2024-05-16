@@ -1,23 +1,15 @@
 ﻿using System.Diagnostics;
-using Mopups.Services;
-using SSW.Rewards.Mobile.PopupPages;
 
 namespace SSW.Rewards.Mobile;
 
-
-public partial class AppShell : Shell
+public partial class AppShell
 {
-    private readonly IUserService _userService;
-    private readonly IAuthenticationService _authService;
-
-    public AppShell(IUserService userService, IAuthenticationService authService, bool isStaff)
+    public AppShell(bool isStaff)
     {
         IsStaff = isStaff;
 
         BindingContext = this;
         InitializeComponent();
-        _userService = userService;
-        _authService = authService;
         Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
     }
@@ -35,7 +27,7 @@ public partial class AppShell : Shell
     
     protected override bool OnBackButtonPressed()
     {
-        if (Application.Current.MainPage.GetType() == typeof(AppShell) && Shell.Current.Navigation.NavigationStack.Where(x => x != null).Any())
+        if (Application.Current.MainPage.GetType() == typeof(AppShell) && Current.Navigation.NavigationStack.Where(x => x != null).Any())
         {
             return base.OnBackButtonPressed();
         }
