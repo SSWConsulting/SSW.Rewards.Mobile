@@ -137,7 +137,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     [RelayCommand]
     private async Task ChangeProfilePicture()
     {
-        if (IsLoading)
+        if (IsLoading || !IsMe)
             return;
 
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
