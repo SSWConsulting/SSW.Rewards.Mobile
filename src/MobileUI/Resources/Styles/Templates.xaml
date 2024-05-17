@@ -16,18 +16,22 @@
                         Margin="0"
                         BackgroundColor="{StaticResource Background}"
                         x:DataType="vm:TopBarViewModel">
-                <mct:AvatarView ImageSource="{Binding ProfilePic}"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                CornerRadius="20"
-                                BorderColor="White"
-                                BorderWidth="2"
-                                Margin="10,7,10,5"
-                                IsVisible="{Binding ShowAvatar}">
-                    <mct:AvatarView.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />
-                    </mct:AvatarView.GestureRecognizers>
-                </mct:AvatarView>
+                <Grid IsVisible="{Binding ShowAvatar}"
+                      Margin="10,7,10,5"
+                      HeightRequest="40"
+                      WidthRequest="40">
+                    <mct:AvatarView ImageSource="{Binding ProfilePic}"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    CornerRadius="20"
+                                    BorderColor="White"
+                                    BorderWidth="2">
+                        <mct:AvatarView.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleFlyoutCommand}" />
+                        </mct:AvatarView.GestureRecognizers>
+                    </mct:AvatarView>
+                </Grid>
+
 
                 <Button
                     HeightRequest="40"
