@@ -166,13 +166,13 @@
     <!-- Email -->
     <Grid
         Grid.Row="4"
-        ColumnDefinitions="20,*"
+        ColumnDefinitions="Auto,*"
         RowDefinitions="Auto"
         ColumnSpacing="8">
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
-               HorizontalTextAlignment="Center"
+               HorizontalOptions="Center"
                VerticalOptions="Center"
                FontSize="Small"
                FontFamily="FA6Solid"
@@ -183,6 +183,7 @@
                Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"
                VerticalOptions="Center"
+               LineBreakMode="TailTruncation"
                FontSize="Small"
                Text="{Binding Email}"/>
     </Grid>
