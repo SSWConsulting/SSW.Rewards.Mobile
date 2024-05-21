@@ -52,7 +52,6 @@
                                    Margin="0,0,0,25"
                                    x:Name="QuizIndicator" />
                 </Grid>
-                
                 <CollectionView
                     Grid.Row="1"
                     x:Name="QuizListSection"
