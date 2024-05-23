@@ -13,6 +13,9 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private readonly IQuizService _quizService;
 
     private string quizDetailsPageUrl = "earn/details";
+    
+    [ObservableProperty]
+    private bool _isRefreshing;
 
     public ObservableCollection<QuizItemViewModel> Quizzes { get; set; } = new ();
 
@@ -26,11 +29,10 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async Task Initialise()
     {
-        if (!_isLoaded)
-        {
-            IsBusy = true;
-        }
+        if (_isLoaded)
+            return;
 
+        IsBusy = true;
         await UpdateQuizzes();
 
         IsBusy = false;
@@ -40,26 +42,27 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private async Task UpdateQuizzes()
     {
         var quizzes = await _quizService.GetQuizzes();
+        
+        Quizzes.Clear();
+        CarouselQuizzes.Clear();
 
         foreach (var quiz in quizzes)
         {
-            var currentQuiz = Quizzes.FirstOrDefault(x => x.Id == quiz.Id);
-            
-            if (currentQuiz == null)
-            {
-                var vm = new QuizItemViewModel(quiz);
-                Quizzes.Add(vm);
+            var vm = new QuizItemViewModel(quiz);
+            Quizzes.Add(vm);
 
-                if (quiz.IsCarousel)
-                {
-                    CarouselQuizzes.Add(vm);
-                }
-            }
-            else
+            if (quiz.IsCarousel)
             {
-                currentQuiz.Passed = quiz.Passed;
+                CarouselQuizzes.Add(vm);
             }
         }
+    }
+    
+    [RelayCommand]
+    private async Task RefreshQuizzes()
+    {
+        await UpdateQuizzes();
+        IsRefreshing = false;
     }
 
     [RelayCommand]
@@ -75,7 +78,9 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async void Receive(QuizzesUpdatedMessage message)
     {
-        await Initialise();
+        IsBusy = true;
+        await UpdateQuizzes();
+        IsBusy = false;
     }
 }
 
