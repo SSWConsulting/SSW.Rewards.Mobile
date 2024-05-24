@@ -9,7 +9,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject
 {
     private readonly IUserService _userService;
     private readonly IPermissionsService _permissionsService;
-
+    
     [ObservableProperty]
     private string _profilePic;
 
