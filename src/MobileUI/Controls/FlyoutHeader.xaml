@@ -5,12 +5,11 @@
       xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
       xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
       xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-      HeightRequest="668"
+      HeightRequest="420"
       Margin="0"
       Padding="20,0"
-      xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,148,24,40,*">
+      RowDefinitions="100,60,148,24,40">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -167,14 +166,14 @@
     <!-- Email -->
     <Grid
         Grid.Row="4"
-        ColumnDefinitions="20,*"
-        RowDefinitions="*"
+        ColumnDefinitions="Auto,*"
+        RowDefinitions="Auto"
         ColumnSpacing="8">
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
-               HorizontalTextAlignment="Center"
-               VerticalOptions="Start"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
                FontSize="Small"
                FontFamily="FA6Solid"
                Text="&#x2709;"/>
@@ -183,25 +182,9 @@
                Grid.Column="1"
                Style="{StaticResource LabelBold}"
                TextColor="#DDDDDD"
-               VerticalOptions="Start"
+               VerticalOptions="Center"
+               LineBreakMode="TailTruncation"
                FontSize="Small"
                Text="{Binding Email}"/>
     </Grid>
-
-    <!-- QR Code -->
-    <VerticalStackLayout Grid.Row="5" Spacing="10" IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}">
-        <Label Text="Scan me:"
-               FontSize="Small"
-               Style="{StaticResource LabelBold}"
-               TextColor="#DDDDDD"/>
-        <zx:BarcodeGeneratorView x:Name="codeView"
-                                 Format="QrCode"
-                                 Value="{Binding QrCode}"
-                                 HorizontalOptions="Start"
-                                 BackgroundColor="#DDDDDD"
-                                 ForegroundColor="Transparent"
-                                 WidthRequest="150"
-                                 HeightRequest="150"
-                                 VerticalOptions="Center"/>
-    </VerticalStackLayout>
 </Grid>

@@ -54,28 +54,33 @@
                                        Margin="0,0,0,25"
                                        x:Name="QuizIndicator" />
                     </Grid>
-
-                    <VerticalStackLayout
+                    <CollectionView
                         Grid.Row="1"
                         x:Name="QuizListSection"
-                        BindableLayout.ItemsSource="{Binding Quizzes}"
-                        Spacing="6">
-                        <BindableLayout.ItemTemplate>
+                        ItemsSource="{Binding Quizzes}"
+                        ItemsUpdatingScrollMode="KeepItemsInView"
+                        ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:QuizItemViewModel">
-                                <controls:ListItem Title="{Binding Title}"
-                                                   Description="{Binding Description}"
-                                                   Points="{Binding Points}"
-                                                   ButtonText="GO"
-                                                   ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
-                                                   ItemId="{Binding Id}"
-                                                   ThumbnailImage="{Binding ThumbnailImage}"
-                                                   PlaceholderGlyph="&#xf11b;"
-                                                   ShowTick="{Binding Passed}"
-                                                   IsDisabled="{Binding Passed}"
-                                                   IsButtonDisabled="{Binding Passed}"/> 
+                                <Grid Padding="0,0,0,6">
+                                    <controls:ListItem Title="{Binding Title}"
+                                                       Description="{Binding Description}"
+                                                       Points="{Binding Points}"
+                                                       ButtonText="GO"
+                                                       ButtonCommand="{Binding Source={x:Reference QuizList}, Path=BindingContext.OpenQuizCommand}"
+                                                       ItemId="{Binding Id}"
+                                                       ThumbnailImage="{Binding ThumbnailImage}"
+                                                       PlaceholderGlyph="&#xf11b;"
+                                                       ShowTick="{Binding Passed}"
+                                                       IsDisabled="{Binding Passed}"
+                                                       IsButtonDisabled="{Binding Passed}"/> 
+                                </Grid>
                             </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </Grid>
                 <ActivityIndicator
                     HorizontalOptions="Center"

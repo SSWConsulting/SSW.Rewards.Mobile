@@ -112,34 +112,39 @@
                                                Margin="0,0,0,25"
                                                x:Name="QuizIndicator" />
                             </Grid>
-
-                            <VerticalStackLayout
-                                x:Name="QuizListSection"
-                                BindableLayout.ItemsSource="{Binding Rewards}"
-                                Spacing="6">
-                                <BindableLayout.ItemTemplate>
+                            
+                            <CollectionView
+                                ItemsSource="{Binding Rewards}"
+                                ItemsUpdatingScrollMode="KeepItemsInView"
+                                ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}">
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="models:Reward">
-                                        <controls:ListItem Title="{Binding Name}"
-                                                           Description="{Binding Description}"
-                                                           IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
-                                                           ItemId="{Binding Id}"
-                                                           Points="{Binding Cost}"
-                                                           ButtonText="GET"
-                                                           ThumbnailImage="{Binding ImageUri}"
-                                                           PlaceholderGlyph="&#xf06b;"
-                                                           ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}">
-                                            <controls:ListItem.Triggers>
-                                                <DataTrigger TargetType="controls:ListItem"
-                                                             Binding="{Binding IsPendingRedemption}"
-                                                             Value="True">
-                                                    <Setter Property="ButtonText"
-                                                            Value="QR" />
-                                                </DataTrigger>
-                                            </controls:ListItem.Triggers>
-                                        </controls:ListItem>
+                                        <Grid Padding="0,0,0,6">
+                                            <controls:ListItem Title="{Binding Name}"
+                                                               Description="{Binding Description}"
+                                                               IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                                               ItemId="{Binding Id}"
+                                                               Points="{Binding Cost}"
+                                                               ButtonText="GET"
+                                                               ThumbnailImage="{Binding ImageUri}"
+                                                               PlaceholderGlyph="&#xf06b;"
+                                                               ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}">
+                                                <controls:ListItem.Triggers>
+                                                    <DataTrigger TargetType="controls:ListItem"
+                                                                 Binding="{Binding IsPendingRedemption}"
+                                                                 Value="True">
+                                                        <Setter Property="ButtonText"
+                                                                Value="QR" />
+                                                    </DataTrigger>
+                                                </controls:ListItem.Triggers>
+                                            </controls:ListItem>
+                                        </Grid>
                                     </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
                         </VerticalStackLayout>
                     </ScrollView>
                 </RefreshView>

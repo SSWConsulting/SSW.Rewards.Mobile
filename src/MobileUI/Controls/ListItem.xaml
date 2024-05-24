@@ -46,7 +46,7 @@
         <Grid
             Grid.Column="1"
             ColumnDefinitions="*,Auto"
-            RowDefinitions="*,*"
+            RowDefinitions="Auto,*"
             VerticalOptions="Center"
             RowSpacing="2">
             <Label Grid.Row="0"
@@ -54,6 +54,8 @@
                    Text="{Binding Title, Source={x:Reference this}}"
                    TextColor="White"
                    InputTransparent="True"
+                   MaxLines="2"
+                   LineBreakMode="WordWrap"
                    VerticalTextAlignment="End"
                    FontSize="16"
                    Style="{StaticResource LabelBold}">

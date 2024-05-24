@@ -98,6 +98,8 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<FlyoutHeader>();
         builder.Services.AddSingleton<FlyoutHeaderViewModel>();
+        builder.Services.AddSingleton<FlyoutFooter>();
+        builder.Services.AddSingleton<FlyoutFooterViewModel>();
         builder.Services.AddSingleton<TopBarViewModel>();
 
         builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
