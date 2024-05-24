@@ -22,6 +22,9 @@ public partial class RewardsViewModel : BaseViewModel
 
     [ObservableProperty]
     private int _credits;
+    
+    [ObservableProperty]
+    private bool _isRefreshing;
 
     public RewardsViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
     {
@@ -52,14 +55,15 @@ public partial class RewardsViewModel : BaseViewModel
 
     private async Task LoadData()
     {
-        IsBusy = true;
-
-        Rewards.Clear();
-        CarouselRewards.Clear();
+        if (!_isLoaded)
+            IsBusy = true;
 
         var rewardList = await _rewardService.GetRewards();
         var pendingRedemptions = (await _userService.GetPendingRedemptionsAsync()).ToList();
 
+        Rewards.Clear();
+        CarouselRewards.Clear();
+        
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
             var pendingRedemption = pendingRedemptions.FirstOrDefault(x => x.RewardId == reward.Id);
@@ -81,6 +85,13 @@ public partial class RewardsViewModel : BaseViewModel
 
         IsBusy = false;
         _isLoaded = true;
+    }
+    
+    [RelayCommand]
+    private async Task RefreshRewards()
+    {
+        await LoadData();
+        IsRefreshing = false;
     }
 
     [RelayCommand]
