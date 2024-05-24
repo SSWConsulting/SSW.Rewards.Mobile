@@ -16,6 +16,9 @@
                         Margin="0"
                         BackgroundColor="{StaticResource Background}"
                         x:DataType="vm:TopBarViewModel">
+                <!-- Wrapping AvatarView in a Grid where IsVisible can be toggled to work around 
+                     an odd animation that happens on iOS
+                     See bug: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/918 -->
                 <Grid IsVisible="{Binding ShowAvatar}"
                       Margin="10,7,10,5"
                       HeightRequest="40"
