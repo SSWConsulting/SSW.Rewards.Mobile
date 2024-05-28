@@ -9,7 +9,7 @@
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
              ControlTemplate="{DynamicResource PageTemplate}"
-             x:DataType="viewModels:RewardsViewModel"
+             x:DataType="viewModels:RedeemViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
     <ContentPage.Content>
         <Grid>

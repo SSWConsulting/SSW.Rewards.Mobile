@@ -28,8 +28,8 @@ public static class DependencyInjection
             typeof(OthersProfilePage),
             typeof(OthersProfileViewModel),
             typeof(ProfileViewModelBase),
-            typeof(EarnDetailsPage),
-            typeof(EarnDetailsViewModel)
+            typeof(QuizDetailsPage),
+            typeof(QuizDetailsViewModel)
         };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
@@ -42,8 +42,8 @@ public static class DependencyInjection
 
         services.AddTransient<OthersProfilePage>();
         services.AddTransient<OthersProfileViewModel>();
-        services.AddTransient<EarnDetailsPage>();
-        services.AddTransient<EarnDetailsViewModel>();
+        services.AddTransient<QuizDetailsPage>();
+        services.AddTransient<QuizDetailsViewModel>();
 
         services.AddSingleton<ILeaderService, LeaderService>();
         services.AddSingleton<IUserService, UserService>();

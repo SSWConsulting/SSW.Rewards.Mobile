@@ -7,7 +7,7 @@ using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
+public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
 {
     private bool _isLoaded;
     private readonly IQuizService _quizService;
@@ -21,7 +21,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public ObservableCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = new ();
 
-    public EarnViewModel(IQuizService quizService)
+    public QuizViewModel(IQuizService quizService)
     {
         _quizService = quizService;
         WeakReferenceMessenger.Default.Register(this);

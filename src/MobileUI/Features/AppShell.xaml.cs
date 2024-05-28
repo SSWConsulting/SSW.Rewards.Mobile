@@ -10,7 +10,7 @@ public partial class AppShell
 
         BindingContext = this;
         InitializeComponent();
-        Routing.RegisterRoute("earn/details", typeof(EarnDetailsPage));
+        Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
     }
     

@@ -10,7 +10,7 @@ using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels
 {
-    public partial class EarnDetailsViewModel : BaseViewModel
+    public partial class QuizDetailsViewModel : BaseViewModel
     {
         private readonly IQuizService _quizService;
         private readonly ISnackbarService _snackbarService;
@@ -81,7 +81,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public EarnDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;

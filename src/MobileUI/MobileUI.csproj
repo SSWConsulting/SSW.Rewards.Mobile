@@ -123,11 +123,11 @@
           <DependentUpon>ActivityPage.xaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Features\Quiz\EarnPage.xaml.cs">
+        <Compile Update="Features\Quiz\QuizPage.xaml.cs">
           <DependentUpon>EarnPage.xaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Features\Quiz\EarnDetailsPage.xaml.cs">
+        <Compile Update="Features\Quiz\QuizDetailsPage.xaml.cs">
           <DependentUpon>EarnDetailsPage.xaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
@@ -287,10 +287,10 @@
 		<MauiXaml Update="Features\Activity\ActivityPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
-		<MauiXaml Update="Features\Quiz\EarnPage.xaml">
+		<MauiXaml Update="Features\Quiz\QuizPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
-		<MauiXaml Update="Features\Quiz\EarnDetailsPage.xaml">
+		<MauiXaml Update="Features\Quiz\QuizDetailsPage.xaml">
 		  <SubType>Designer</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Features\Network\NetworkPage.xaml">

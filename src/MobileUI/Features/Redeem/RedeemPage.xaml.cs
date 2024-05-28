@@ -2,13 +2,13 @@ namespace SSW.Rewards.Mobile.Pages;
 
 public partial class RedeemPage : ContentPage
 {
-    private readonly RewardsViewModel _viewModel;
+    private readonly RedeemViewModel _viewModel;
 
     private IDispatcherTimer _timer;
     
     private bool _isLoaded;
 
-    public RedeemPage(RewardsViewModel viewModel)
+    public RedeemPage(RedeemViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

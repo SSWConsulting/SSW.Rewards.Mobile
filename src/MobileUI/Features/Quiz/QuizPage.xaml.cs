@@ -1,14 +1,14 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class EarnPage : ContentPage
+public partial class QuizPage : ContentPage
 {
-    private readonly EarnViewModel _viewModel;
+    private readonly QuizViewModel _viewModel;
 
     private IDispatcherTimer _timer;
     
     private bool _isLoaded;
 
-    public EarnPage(EarnViewModel viewModel)
+    public QuizPage(QuizViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

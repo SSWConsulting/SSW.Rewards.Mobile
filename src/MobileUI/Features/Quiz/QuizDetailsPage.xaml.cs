@@ -4,13 +4,13 @@ using SSW.Rewards.Mobile.Messages;
 namespace SSW.Rewards.Mobile.Pages;
 
 [QueryProperty(nameof(QuizId), nameof(QuizId))]
-public partial class EarnDetailsPage
+public partial class QuizDetailsPage
 {
-    private EarnDetailsViewModel _viewModel;
+    private QuizDetailsViewModel _viewModel;
 
     public string QuizId { get; set; }
 
-    public EarnDetailsPage(EarnDetailsViewModel viewModel)
+    public QuizDetailsPage(QuizDetailsViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

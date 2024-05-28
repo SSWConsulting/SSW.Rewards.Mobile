@@ -10,7 +10,7 @@ using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class RewardsViewModel : BaseViewModel
+public partial class RedeemViewModel : BaseViewModel
 {
     private readonly IRewardService _rewardService;
     private readonly IUserService _userService;
@@ -26,7 +26,7 @@ public partial class RewardsViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isRefreshing;
 
-    public RewardsViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
+    public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
     {
         Title = "Rewards";
         _rewardService = rewardService;

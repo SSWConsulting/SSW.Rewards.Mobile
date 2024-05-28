@@ -93,7 +93,7 @@
         </Tab>
 
         <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
-            <ShellContent ContentTemplate="{DataTemplate pages:EarnPage}" />
+            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
         </Tab>
 
         <Tab Route="redeem" Icon="icon_store" Title="Redeem">

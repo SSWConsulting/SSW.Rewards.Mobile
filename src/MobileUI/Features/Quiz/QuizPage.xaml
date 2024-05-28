@@ -7,8 +7,8 @@
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="QuizList"
              ControlTemplate="{DynamicResource PageTemplate}"
-             x:DataType="viewModels:EarnViewModel"
-             x:Class="SSW.Rewards.Mobile.Pages.EarnPage">
+             x:DataType="viewModels:QuizViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.QuizPage">
     <RefreshView Command="{Binding RefreshQuizzesCommand}"
                  IsRefreshing="{Binding IsRefreshing}">
         <ScrollView>
