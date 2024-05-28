@@ -53,6 +53,11 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+        <ProjectReference Include="..\Common\Shared.csproj" />
+    </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
@@ -64,9 +69,6 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.58.1" />
 		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0-preview3" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
@@ -90,265 +92,17 @@
 		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.2.0.6" />
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
-        <Compile Update="Platforms\Android\Services\RewardsFirebaseMessagingService.cs">
-        </Compile>
-        <Compile Update="Controls\MultiLineButton.xaml.cs">
-          <DependentUpon>MultiLineButton.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\App.xaml.cs">
-          <DependentUpon>App.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\AppShell.xaml.cs">
-          <DependentUpon>AppShell.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Leaderboard\LeaderboardPage.xaml.cs">
-          <DependentUpon>LeaderboardPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Login\LoginPage.xaml.cs">
-          <DependentUpon>LoginPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Activity\ActivityPage.xaml.cs">
-          <DependentUpon>ActivityPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Quiz\QuizPage.xaml.cs">
-          <DependentUpon>EarnPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Quiz\QuizDetailsPage.xaml.cs">
-          <DependentUpon>EarnDetailsPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Network\NetworkPage.xaml.cs">
-          <DependentUpon>NetworkPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Settings\SettingsPage.xaml.cs">
-          <DependentUpon>SettingsPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Scanner\ScanPage.xaml.cs">
-          <DependentUpon>ScanPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Redeem\RedeemPage.xaml.cs">
-          <DependentUpon>RedeemPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Profile\MyProfilePage.xaml.cs">
-          <DependentUpon>MyProfilePage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Profile\OthersProfilePage.xaml.cs">
-          <DependentUpon>OthersProfilePage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Scanner\ScanResult.xaml.cs">
-          <DependentUpon>ScanResult.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\AboutSSW\AboutSswPage.xaml.cs">
-          <DependentUpon>AboutSswPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Scanner\QrCodePage.xaml.cs">
-          <DependentUpon>QrCodePage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Redeem\RedeemRewardPage.xaml.cs">
-          <DependentUpon>RedeemRewardPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Profile\ProfilePicturePage.xaml.cs">
-          <DependentUpon>ProfilePicturePage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Quiz\QuizResultPendingPage.xaml.cs">
-          <DependentUpon>QuizResultPendingPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Settings\DeleteProfilePage.xaml.cs">
-          <DependentUpon>DeleteProfilePage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\OnBoarding\OnBoardingPage.xaml.cs">
-          <DependentUpon>OnBoardingPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Flyout\FlyoutFooter.xaml.cs">
-          <DependentUpon>FlyoutFooter.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Flyout\FlyoutHeader.xaml.cs">
-          <DependentUpon>FlyoutHeader.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\Loading\BusyPage.xaml.cs">
-          <DependentUpon>BusyPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Features\LinkedIn\AddLinkedInPage.xaml.cs">
-          <DependentUpon>AddLinkedInPage.xaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
-	  <ProjectReference Include="..\Common\Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Controls\PointsButton.xaml.cs">
-		  <DependentUpon>GoButton.xaml</DependentUpon>
-		  <SubType>Code</SubType>
-		</Compile>
-		<Compile Update="Controls\ProfileActivity.xaml.cs">
-		  <DependentUpon>ProfileActivity.xaml</DependentUpon>
-		  <SubType>Code</SubType>
-		</Compile>
-		<Compile Update="Controls\ProfileActivityItem.xaml.cs">
-		  <DependentUpon>ProfileActivityItem.xaml</DependentUpon>
-		  <SubType>Code</SubType>
-		</Compile>
-		<Compile Update="Controls\ListItem.xaml.cs">
-		  <DependentUpon>ListItem.xaml</DependentUpon>
-		  <SubType>Code</SubType>
-		</Compile>
-		<Compile Update="Controls\CarouselItem.xaml.cs">
-		  <DependentUpon>CarouselItem.xaml</DependentUpon>
-		  <SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
-
-	<!-- TODO: Do we need this? -->
-	<ItemGroup>
-		<MauiXaml Update="Controls\Podium.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Controls\SegmentedControl.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Controls\PointsButton.xaml">
-		  <SubType>Designer</SubType>
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Controls\ProfileActivity.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Controls\ProfileActivityItem.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Controls\ListItem.xaml">
-		  <SubType>Designer</SubType>
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Controls\CarouselItem.xaml">
-		  <SubType>Designer</SubType>
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Resources\Styles\Templates.xaml">
-		  <Generator></Generator>
-		</MauiXaml>
-		<MauiXaml Update="Resources\Styles\Templates.xaml">
-		  <Generator></Generator>
-		</MauiXaml>
-		<MauiXaml Update="Pages\NetworkingPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Controls\MultiLineButton.xaml">
-		  <SubType>Designer</SubType>
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\App.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\AppShell.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Leaderboard\LeaderboardPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Login\LoginPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Activity\ActivityPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Quiz\QuizPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Quiz\QuizDetailsPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Network\NetworkPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Settings\SettingsPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Scanner\ScanPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Redeem\RedeemPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Profile\MyProfilePage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Profile\OthersProfilePage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Scanner\ScanResult.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\AboutSSW\AboutSswPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Scanner\QrCodePage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Redeem\RedeemRewardPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Profile\ProfilePicturePage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Quiz\QuizResultPendingPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Settings\DeleteProfilePage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\OnBoarding\OnBoardingPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Flyout\FlyoutFooter.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Flyout\FlyoutHeader.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\Loading\BusyPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Features\LinkedIn\AddLinkedInPage.xaml">
-		  <SubType>Designer</SubType>
-		</MauiXaml>
-	</ItemGroup>
-
-	<!--https://github.com/dotnet/maui/issues/16514-->
+    
+    <!--https://github.com/dotnet/maui/issues/16514-->
 	<PropertyGroup>
 		<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
 	</PropertyGroup>
+    
     <PropertyGroup Condition="$(Configuration.Contains('Release')) And $(TargetFramework.Contains('ios'))">
         <MtouchInterpreter>-all,System.Collections.Immutable</MtouchInterpreter>
     </PropertyGroup>
+    
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <WarningLevel>4</WarningLevel>
 	  <PlatformTarget>anycpu</PlatformTarget>
