@@ -66,7 +66,7 @@ public partial class TopBarViewModel : ObservableObject
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
         if (granted)
         {
-            await App.Current.MainPage.Navigation.PushModalAsync(new ScanPage(new ScanResultViewModel(_userService, _scannerService)));
+            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
         }
     }
 
