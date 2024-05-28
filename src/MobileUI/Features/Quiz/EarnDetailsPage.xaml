@@ -12,8 +12,6 @@
              x:DataType="viewModels:EarnDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.EarnDetailsPage">
     <ContentPage.Resources>
-        <converters:InverseBoolConverter x:Key="InverseBool" />
-        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:AllTrueConverter x:Key="AllTrueConverter"/>
     </ContentPage.Resources>
     <ScrollView>
@@ -27,7 +25,7 @@
                     <Grid.IsVisible>
                         <MultiBinding Converter="{StaticResource AllTrueConverter}">
                             <Binding Path="QuestionsVisible"/>
-                            <Binding Path="IsLoadingQuestions" Converter="{StaticResource InvertedBoolConverter}"/>
+                            <Binding Path="IsLoadingQuestions" Converter="{toolkit:InvertedBoolConverter}"/>
                         </MultiBinding>
                     </Grid.IsVisible>
 
@@ -111,7 +109,7 @@
                             Grid.Row="1"
                             Stroke="{StaticResource White}"
                             StrokeShape="RoundRectangle 8"
-                            IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={StaticResource InvertedBoolConverter}}">
+                            IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={toolkit:InvertedBoolConverter}}">
                             <Editor
                                 TextColor="{StaticResource White}"
                                 VerticalTextAlignment="Start"
@@ -138,9 +136,9 @@
                     <Grid Grid.Row="6"
                           ColumnDefinitions="*,*"
                           Margin="20,0,20,10"
-                          IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+                          IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
                         <Button Grid.Column="0"
-                                IsVisible="{Binding IsFirstQuestion, Converter={StaticResource InvertedBoolConverter}}"
+                                IsVisible="{Binding IsFirstQuestion, Converter={toolkit:InvertedBoolConverter}}"
                                 Text="&#xf060;"
                                 Command="{Binding MoveBackCommand}"
                                 FontFamily="FA6Solid"
@@ -154,7 +152,7 @@
                                 WidthRequest="40" />
 
                         <Button Grid.Column="1"
-                                IsVisible="{Binding IsLastQuestion, Converter={StaticResource InvertedBoolConverter}}"
+                                IsVisible="{Binding IsLastQuestion, Converter={toolkit:InvertedBoolConverter}}"
                                 Text="&#xf061;"
                                 Command="{Binding MoveForwardCommand}"
                                 FontFamily="FA6Solid"
@@ -240,7 +238,7 @@
                                     </Border.Triggers>
                                     <toolkit:Expander
                                         x:Name="Expander"
-                                        IsExpanded="{Binding Correct, Converter={StaticResource InverseBool}}">
+                                        IsExpanded="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}">
                                         <toolkit:Expander.Header>
                                             <Grid
                                                 ColumnDefinitions="40, *, Auto"
@@ -257,7 +255,7 @@
                                                                      IsAnimationEnabled="True"
                                                                      WidthRequest="30"
                                                                      HeightRequest="30"
-                                                                     IsVisible="{Binding Correct, Converter={StaticResource InverseBool}}" />
+                                                                     IsVisible="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}" />
                                                 <Label Grid.Column="1"
                                                        VerticalTextAlignment="Center"
                                                        Text="{Binding QuestionText}"

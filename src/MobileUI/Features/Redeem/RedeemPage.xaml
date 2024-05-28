@@ -5,15 +5,12 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
-             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:RewardsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
-    <ContentPage.Resources>
-        <converters:InverseBoolConverter x:Key="InverseBool"/>
-    </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
             <Grid RowDefinitions="Auto, *"
@@ -97,7 +94,7 @@
                                                 Points="{Binding Cost}"
                                                 ButtonText="GET"
                                                 ItemId="{Binding Id}"
-                                                IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                                IsButtonDisabled="{Binding CanAfford, Converter={mct:InvertedBoolConverter}}"
                                                 ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/>
                                         </DataTemplate>
                                     </CarouselView.ItemTemplate>
@@ -125,7 +122,7 @@
                                         <Grid Padding="0,0,0,6">
                                             <controls:ListItem Title="{Binding Name}"
                                                                Description="{Binding Description}"
-                                                               IsButtonDisabled="{Binding CanAfford, Converter={StaticResource InverseBool}}"
+                                                               IsButtonDisabled="{Binding CanAfford, Converter={mct:InvertedBoolConverter}}"
                                                                ItemId="{Binding Id}"
                                                                Points="{Binding Cost}"
                                                                ButtonText="GET"
