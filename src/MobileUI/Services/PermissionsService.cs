@@ -1,6 +1,11 @@
 
 namespace SSW.Rewards.Mobile.Services;
 
+public interface IPermissionsService
+{
+    Task<bool> CheckAndRequestPermission<TPermission>() where TPermission : Permissions.BasePermission, new();
+}
+
 public class PermissionsService : IPermissionsService
 {
     public async Task<bool> CheckAndRequestPermission<TPermission>() where TPermission : Permissions.BasePermission, new()
