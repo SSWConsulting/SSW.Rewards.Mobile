@@ -6,7 +6,7 @@ using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class LeaderBoardViewModel : BaseViewModel
+public partial class LeaderboardViewModel : BaseViewModel
 {
     private int _myUserId;
 
@@ -17,7 +17,7 @@ public partial class LeaderBoardViewModel : BaseViewModel
     [ObservableProperty]
     private ObservableCollection<LeaderViewModel> searchResults = new ();
 
-    public LeaderBoardViewModel(ILeaderService leaderService, IUserService userService)
+    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;

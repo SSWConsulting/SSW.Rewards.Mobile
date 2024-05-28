@@ -2,11 +2,11 @@
 
 public partial class LeaderboardPage : ContentPage
 {
-    private readonly LeaderBoardViewModel _viewModel;
+    private readonly LeaderboardViewModel _viewModel;
 
-    public LeaderboardPage(LeaderBoardViewModel leaderBoardViewModel)
+    public LeaderboardPage(LeaderboardViewModel leaderboardViewModel)
     {
-        _viewModel = leaderBoardViewModel;
+        _viewModel = leaderboardViewModel;
         _viewModel.Navigation = Navigation;
         BindingContext = _viewModel;
         InitializeComponent();
