@@ -75,9 +75,14 @@
                             <Grid RowDefinitions="Auto"
                                   x:Name="CarouselSection">
                                 <Grid.Triggers>
-                                    <DataTrigger TargetType="Grid" Binding="{Binding CarouselRewards.Count}" Value="0">
+                                    <MultiTrigger TargetType="Grid">
+                                        <MultiTrigger.Conditions>
+                                            <!-- Check if ready before hiding carousel to work around issue where first slide can show duplicates -->
+                                            <BindingCondition Binding="{Binding CarouselRewards.Count}" Value="0" />
+                                            <BindingCondition Binding="{Binding IsBusy}" Value="False" />
+                                        </MultiTrigger.Conditions>
                                         <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
+                                    </MultiTrigger>
                                 </Grid.Triggers>
                                 <CarouselView Grid.Row="0"
                                               x:Name="Carousel"
@@ -85,7 +90,13 @@
                                               Loop="True"
                                               ItemsSource="{Binding CarouselRewards}"
                                               HorizontalScrollBarVisibility="Never"
-                                              IndicatorView="QuizIndicator">
+                                              IndicatorView="QuizIndicator"
+                                              Position="{Binding CarouselPosition}">
+                                    <CarouselView.Behaviors>
+                                        <mct:EventToCommandBehavior
+                                            EventName="Scrolled"
+                                            Command="{Binding CarouselScrolledCommand}" />
+                                    </CarouselView.Behaviors>
                                     <CarouselView.ItemTemplate>
                                         <DataTemplate x:DataType="models:Reward">
                                             <controls:CarouselItem
