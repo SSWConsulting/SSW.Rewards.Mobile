@@ -3,8 +3,6 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class RedeemPage
 {
     private readonly RedeemViewModel _viewModel;
-    
-    private bool _isLoaded;
 
     public RedeemPage(RedeemViewModel viewModel)
     {

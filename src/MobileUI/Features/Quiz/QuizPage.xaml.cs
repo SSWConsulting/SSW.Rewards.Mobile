@@ -4,8 +4,6 @@ public partial class QuizPage
 {
     private readonly QuizViewModel _viewModel;
     
-    private IDispatcherTimer _timer;
-    
     private bool _isLoaded;
 
     public QuizPage(QuizViewModel viewModel)
