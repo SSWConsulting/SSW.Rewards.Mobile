@@ -8,6 +8,7 @@ using Microsoft.Maui.Platform;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
+using SSW.Rewards.Mobile.Renderers;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -36,7 +37,11 @@ public static class MauiProgram
         .ConfigureMopups()
         .UseSkiaSharp()
         .UsePageResolver()
-        .UseBarcodeReader();
+        .UseBarcodeReader()
+        .ConfigureMauiHandlers((handlers) =>
+        {
+            handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
+        });
 
         AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
                   $"ios={Constants.AppCenterIOSId};",
