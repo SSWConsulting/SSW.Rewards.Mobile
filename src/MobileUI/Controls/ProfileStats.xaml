@@ -13,7 +13,6 @@
     x:DataType="viewModels:ProfileViewModelBase"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
-        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <converters:StaffToTextConverter x:Key="StaffToText" />
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
@@ -170,7 +169,7 @@
         </Border>
 
         <!-- Viewing other User's stats -->
-        <Border IsVisible="{Binding Path=ShowBalance, Converter={StaticResource InvertedBoolConverter}}"
+        <Border IsVisible="{Binding Path=ShowBalance, Converter={toolkit:InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 8"

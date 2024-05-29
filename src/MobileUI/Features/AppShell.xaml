@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SSW.Rewards.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
+    xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="SSW.Rewards"
+    FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
+    Shell.NavBarIsVisible="False"
+    MenuItemTemplate="{StaticResource SSWMenuTemplate}"
+    x:Name="RewardsShell">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="NavigationPrimary">Black</Color>
+            <Style x:Key="BaseStyle" TargetType="ShellItem">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Background}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource TabBarBackground}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
+            </Style>
+            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+
+            <DataTemplate x:Key="SSWMenuTemplate">
+                <Grid
+                    ColumnDefinitions="30,*"
+                    Padding="{OnPlatform Android='5', iOS='0'}"
+                    Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="My QRCode">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
+                        </DataTrigger>
+
+                        <DataTrigger TargetType="Grid"
+                                    Binding="{Binding Text}"
+                                    Value="Join SSW">
+                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
+                        </DataTrigger>
+                    </Grid.Triggers>
+
+                    <Image Grid.Column="0"
+                            HorizontalOptions="Start"
+                            Margin="5"
+                            HeightRequest="30"
+                            WidthRequest="30"
+                            Source="{Binding Icon}">
+                    </Image>
+
+                    <Label Grid.Column="1"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        Margin="20,0,0,0"
+                        Text="{Binding Text}">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">18</On>
+                                <On Platform="Android">18</On>
+                            </OnPlatform>
+                        </Label.FontSize>
+                    </Label>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader />
+    </Shell.FlyoutHeader>
+
+
+    <FlyoutItem Style="{StaticResource BaseStyle}" x:Name="MyTabbar">
+        <Shell.ItemTemplate>
+            <DataTemplate>
+                <VerticalStackLayout HeightRequest="1"
+                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
+            </DataTemplate>
+        </Shell.ItemTemplate>
+        <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
+                    It will need to be updated before we deploy to Android.
+                    See: https://github.com/dotnet/maui/issues/8244 -->
+
+        <Tab Route="main" Icon="icon_star" Title="Leaderboard">
+            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+        </Tab>
+
+        <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
+            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
+        </Tab>
+
+        <Tab Route="redeem" Icon="icon_store" Title="Redeem">
+            <ShellContent ContentTemplate="{DataTemplate pages:RedeemPage}" />
+        </Tab>
+
+        <Tab Route="people" Icon="icon_people" Title="Network">
+            <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
+        </Tab>
+
+        <Tab Route="activity" Icon="icon_bell" Title="Activity">
+            <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
+        </Tab>
+    </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <controls:FlyoutFooter />
+    </Shell.FlyoutFooter>
+
+</Shell>
