@@ -7,6 +7,11 @@ using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
 namespace SSW.Rewards.Mobile.Services;
 
+public interface IScannerService
+{
+    Task<ScanResponseViewModel> ValidateQRCodeAsync(string achievementString);
+}
+
 public class ScannerService : IScannerService
 {
     private readonly IAchievementService _achievementClient;

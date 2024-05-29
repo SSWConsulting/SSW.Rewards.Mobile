@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:LeaderboardViewModel"
+             x:Name="Leaderboard"
+             x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsMeToColorConverter x:Key="MeToColor" />
+            <converters:StaffToTextConverter x:Key="StaffToText" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
+          StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <controls:SegmentedControl
+                Grid.Column="0"
+                Segments="{Binding Periods}"
+                HeightRequest="45"
+                Margin="15,10,10,15"
+                SelectedSegment="{Binding SelectedPeriod, Mode=OneWayToSource}">
+                <controls:SegmentedControl.Behaviors>
+                    <mct:EventToCommandBehavior
+                        EventName="SelectionChanged"
+                        Command="{Binding FilterByPeriodCommand}" />
+                </controls:SegmentedControl.Behaviors>
+            </controls:SegmentedControl>
+
+            <Border
+                Grid.Column="1"
+                Margin="0,10,15,15"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 5"
+                WidthRequest="45"
+                HorizontalOptions="End"
+                BackgroundColor="{StaticResource Background}"
+                Padding="5,1">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ScrollToMeCommand}" />
+                </Border.GestureRecognizers>
+                <Label HorizontalOptions="Fill"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       FontFamily="FluentIcons"
+                       FontSize="20"
+                       Text="&#xe85d;" />
+            </Border>
+        </Grid>
+        <RefreshView
+            Grid.Row="1"
+            Command="{Binding RefreshLeaderboardCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+                ItemsSource="{Binding SearchResults}"
+                x:Name="LeadersCollection"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                ItemSizingStrategy="MeasureFirstItem"
+                IsVisible="False">
+                <CollectionView.Header>
+                    <Grid Grid.Row="1" Padding="15,10,15,0" HeightRequest="320" ColumnDefinitions="6*,14*,6*">
+                        <!-- 2nd -->
+                        <controls:Podium Leader="{Binding Second}" Grid.Column="0" />
+
+                        <!-- 1st -->
+                        <controls:Podium Leader="{Binding First}" Grid.Column="1" />
+
+                        <!-- 3rd -->
+                        <controls:Podium Leader="{Binding Third}" Grid.Column="2" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:LeaderViewModel">
+                        <Grid RowDefinitions="84, 5" Padding="15,0">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.LeaderTappedCommand}"
+                                    CommandParameter="{Binding  .}" />
+                            </Grid.GestureRecognizers>
+                            <Border
+                                Grid.Row="0"
+                                Stroke="{Binding IsMe, Converter={StaticResource MeToColor}}"
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 8">
+                                <Grid
+                                    ColumnSpacing="6"
+                                    ColumnDefinitions="60, 60, *, Auto"
+                                    BackgroundColor="{StaticResource Background}">
+                                    <Border
+                                        Grid.Column="0"
+                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        Stroke="White"
+                                        StrokeShape="Ellipse"
+                                        HorizontalOptions="End"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        StrokeThickness="1.5">
+                                        <Label
+                                            Text="{Binding Rank}"
+                                            TextColor="White"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center"
+                                            HorizontalTextAlignment="Center"
+                                            InputTransparent="True"
+                                            WidthRequest="50" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="1"
+                                        Stroke="White"
+                                        StrokeShape="Ellipse"
+                                        HorizontalOptions="Start"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        StrokeThickness="1.5">
+                                        <Image Source="{Binding ProfilePic}" Aspect="AspectFill" InputTransparent="True">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                            </Image.Clip>
+                                        </Image>
+                                    </Border>
+                                    <Grid
+                                        Grid.Column="2"
+                                        ColumnDefinitions="*"
+                                        RowDefinitions="*,*"
+                                        VerticalOptions="Center"
+                                        RowSpacing="2">
+                                        <Label
+                                            Grid.Row="0"
+                                            Text="{Binding Name}"
+                                            TextColor="White"
+                                            InputTransparent="True"
+                                            VerticalTextAlignment="End"
+                                            FontSize="20"
+                                            Style="{StaticResource LabelBold}"
+                                            LineBreakMode="TailTruncation" />
+                                        <Label Grid.Row="1"
+                                            Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Start"
+                                            InputTransparent="True"
+                                            FontSize="12" />
+                                    </Grid>
+                                    <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
+                                    <Grid
+                                        Grid.Column="3"
+                                        ColumnDefinitions="30,*"
+                                        ColumnSpacing="4"
+                                        Margin="0,0,15,0">
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding DisplayPointsShort}"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="End"
+                                        FontSize="15"
+                                        Style="{StaticResource LabelBold}" InputTransparent="True" />
+                                    <Label
+                                        Grid.Column="1"
+                                        TextColor="{StaticResource Coin}" Text="&#x2b50;"
+                                        FontFamily="FA6Solid"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        FontSize="11"
+                                        Style="{StaticResource LabelBold}"
+                                        InputTransparent="True" />
+                                  </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <ActivityIndicator
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsEnabled="{Binding IsRunning}"
+            IsRunning="{Binding IsRunning}"
+            IsVisible="{Binding IsRunning}" />
+    </Grid>
+</ContentPage>
