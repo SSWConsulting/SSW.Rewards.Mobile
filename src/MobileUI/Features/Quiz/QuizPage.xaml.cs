@@ -33,6 +33,8 @@ public partial class QuizPage
         QuizListSection.Opacity = 0;
         QuizListSection.TranslationY = 400;
         
+        await Task.Delay(100);
+        
         await Task.WhenAll
         (
             CarouselSection.FadeTo(1, 600, Easing.CubicIn),
