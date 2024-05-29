@@ -16,6 +16,9 @@ public partial class RewardsViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IAddressService _addressService;
     private bool _isLoaded;
+    private IDispatcherTimer _timer;
+    
+    private const int AutoScrollInterval = 6;
 
     public ObservableCollection<Reward> Rewards { get; set; } = [];
     public ObservableCollection<Reward> CarouselRewards { get; set; } = [];
@@ -25,6 +28,9 @@ public partial class RewardsViewModel : BaseViewModel
     
     [ObservableProperty]
     private bool _isRefreshing;
+    
+    [ObservableProperty]
+    private int _carouselPosition;
 
     public RewardsViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
     {
@@ -34,6 +40,15 @@ public partial class RewardsViewModel : BaseViewModel
         _addressService = addressService;
         _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
+        
+        _timer = Application.Current.Dispatcher.CreateTimer();
+        _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
+    }
+
+    public void OnDisappearing()
+    {
+        _timer.Stop();
+        _timer.Tick -= OnScrollTick;
     }
 
     private void OnUserChanged(int userId)
@@ -51,6 +66,7 @@ public partial class RewardsViewModel : BaseViewModel
         }
 
         await LoadData();
+        BeginAutoScroll();
     }
 
     private async Task LoadData()
@@ -63,6 +79,7 @@ public partial class RewardsViewModel : BaseViewModel
 
         Rewards.Clear();
         CarouselRewards.Clear();
+        _timer.Stop();
         
         foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
         {
@@ -83,8 +100,38 @@ public partial class RewardsViewModel : BaseViewModel
             }
         }
 
+        CarouselPosition = 0;
+
         IsBusy = false;
         _isLoaded = true;
+        _timer.Start();
+    }
+    
+    private void BeginAutoScroll()
+    {
+        _timer.Tick += OnScrollTick;
+        _timer.Start();
+    }
+    
+    private void OnScrollTick(object sender, object args)
+    {
+        MainThread.BeginInvokeOnMainThread(Scroll);
+    }
+    
+    private void Scroll()
+    {
+        var count = CarouselRewards.Count;
+        
+        if (count > 0)
+            CarouselPosition = (CarouselPosition + 1) % count;
+    }
+    
+    [RelayCommand]
+    private void CarouselScrolled()
+    {
+        // Reset timer when scrolling
+        _timer.Stop();
+        _timer.Start();
     }
     
     [RelayCommand]

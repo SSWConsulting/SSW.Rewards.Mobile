@@ -14,8 +14,15 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     private string quizDetailsPageUrl = "earn/details";
     
+    private IDispatcherTimer _timer;
+    
+    private const int AutoScrollInterval = 6;
+    
     [ObservableProperty]
     private bool _isRefreshing;
+    
+    [ObservableProperty]
+    private int _carouselPosition;
 
     public ObservableCollection<QuizItemViewModel> Quizzes { get; set; } = new ();
 
@@ -25,6 +32,9 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         _quizService = quizService;
         WeakReferenceMessenger.Default.Register(this);
+        
+        _timer = Application.Current.Dispatcher.CreateTimer();
+        _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
     }
 
     public async Task Initialise()
@@ -34,6 +44,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
         IsBusy = true;
         await UpdateQuizzes();
+        BeginAutoScroll();
 
         IsBusy = false;
         _isLoaded = true;
@@ -45,6 +56,7 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         
         Quizzes.Clear();
         CarouselQuizzes.Clear();
+        _timer.Stop();
 
         foreach (var quiz in quizzes)
         {
@@ -56,6 +68,36 @@ public partial class EarnViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
                 CarouselQuizzes.Add(vm);
             }
         }
+        
+        CarouselPosition = 0;
+        _timer.Start();
+    }
+    
+    private void BeginAutoScroll()
+    {
+        _timer.Tick += OnScrollTick;
+        _timer.Start();
+    }
+    
+    private void OnScrollTick(object sender, object args)
+    {
+        MainThread.BeginInvokeOnMainThread(Scroll);
+    }
+    
+    private void Scroll()
+    {
+        var count = CarouselQuizzes.Count;
+        
+        if (count > 0)
+            CarouselPosition = (CarouselPosition + 1) % count;
+    }
+    
+    [RelayCommand]
+    private void CarouselScrolled()
+    {
+        // Reset timer when scrolling
+        _timer.Stop();
+        _timer.Start();
     }
     
     [RelayCommand]

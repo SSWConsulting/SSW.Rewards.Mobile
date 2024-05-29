@@ -101,6 +101,24 @@ public partial class CarouselItem
             false
         );
     
+    private object _cachedBindingContext;
+
+    protected override void OnBindingContextChanged()
+    {
+        base.OnBindingContextChanged();
+        
+        // TECH DEBT: Workaround for the previous item disappearing in CarouselView on iOS
+        // See: https://github.com/dotnet/maui/issues/22015
+        if (BindingContext is not null)
+        {
+            _cachedBindingContext = BindingContext;
+        }
+        else
+        {
+            BindingContext = _cachedBindingContext;
+        }
+    }
+
     public CarouselItem()
     {
         InitializeComponent();
