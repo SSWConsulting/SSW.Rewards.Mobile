@@ -127,20 +127,21 @@ else
         </MudGrid>    
     }
     
-    @if (_prizeWinner != null && !_isDrawingPrize)
-    {
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem>
-                <MudButton
-                    OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))"
-                    Variant="Variant.Filled"
-                    StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
-                    Color="Color.Info">
-                    Claim Prize
-                </MudButton>
-            </MudItem>
-        </MudGrid>
-    }
+    // TODO: Re-enable when this functionality has been completed
+    @* @if (_prizeWinner != null && !_isDrawingPrize) *@
+    @* { *@
+    @*     <MudGrid Spacing="2" Justify="Justify.Center"> *@
+    @*         <MudItem> *@
+    @*             <MudButton *@
+    @*                 OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))" *@
+    @*                 Variant="Variant.Filled" *@
+    @*                 StartIcon="@MudBlazor.Icons.Material.Filled.Celebration" *@
+    @*                 Color="Color.Info"> *@
+    @*                 Claim Prize *@
+    @*             </MudButton> *@
+    @*         </MudItem> *@
+    @*     </MudGrid> *@
+    @* } *@
     
     @if (_players is {Count: > 0 } && !_isDrawingPrize)
     {
