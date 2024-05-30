@@ -19,7 +19,7 @@ public class LeaderService : ILeaderService
 
     public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh)
     {
-        List<LeaderboardUserDto> summaries = new List<LeaderboardUserDto>();
+        List<LeaderboardUserDto> summaries = [];
 
         try
         {
