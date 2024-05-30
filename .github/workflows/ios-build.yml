@@ -22,6 +22,11 @@ jobs:
       - name: Update Build Number
         run: sed -i '' "s|<ApplicationVersion>.*</ApplicationVersion>|<ApplicationVersion>${{ inputs.build_number }}</ApplicationVersion>|g" src/MobileUI/MobileUI.csproj
 
+      - name: Update GoogleService-Info.plist
+        shell: bash
+        run: |
+          echo ${{ vars.GOOGLESERVICE_INFO_PLIST }} | base64 --decode > src/MobileUI/Platforms/iOS/GoogleService-Info.plist
+
       - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v3
         with:
