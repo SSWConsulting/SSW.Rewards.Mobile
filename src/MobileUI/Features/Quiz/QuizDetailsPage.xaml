@@ -116,7 +116,8 @@
                                 AutoSize="TextChanges"
                                 Text="{Binding CurrentQuestion.Answer}"
                                 MinimumHeightRequest="150"
-                                Placeholder="Enter your answer here">
+                                Placeholder="Enter your answer here"
+                                Keyboard="Plain">
                                 <Editor.Behaviors>
                                     <toolkit:EventToCommandBehavior
                                         x:TypeArguments="TextChangedEventArgs"
