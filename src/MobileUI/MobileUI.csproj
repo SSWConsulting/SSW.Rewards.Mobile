@@ -92,7 +92,14 @@
 		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.2.0.6" />
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
+        <PackageReference Include="Xamarin.Firebase.Core" Version="121.1.1.8" />
+        <PackageReference Include="Xamarin.Firebase.Analytics" Version="121.3.0.6" />
 	</ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
+        <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
+        <PackageReference Include="Xamarin.Firebase.iOS.Analytics" Version="8.10.0.3" />
+    </ItemGroup>
     
     <!--https://github.com/dotnet/maui/issues/16514-->
 	<PropertyGroup>
