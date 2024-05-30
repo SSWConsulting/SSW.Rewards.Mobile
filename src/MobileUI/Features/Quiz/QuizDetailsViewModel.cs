@@ -1,6 +1,5 @@
 ﻿using SSW.Rewards.Mobile.Controls;
 using System.Collections.ObjectModel;
-using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -281,15 +280,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         [RelayCommand]
         private void AnswerChanged(TextChangedEventArgs args)
         {
-            // Replace special characters due to Smart Punctuation on the keyboard
-            StringBuilder sb = new(args.NewTextValue);
-            sb.Replace("—", "--");
-            sb.Replace("‘", "'");
-            sb.Replace("’", "'");
-            sb.Replace("“", "\"");
-            sb.Replace("”", "\"");
-
-            CurrentQuestion.Answer = sb.ToString();
+            CurrentQuestion.Answer = args.NewTextValue;
         }
     }
 
