@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Shared.DTOs.Leaderboard;
+﻿using SSW.Rewards.Domain.Entities;
+
+namespace SSW.Rewards.Shared.DTOs.Leaderboard;
 
 public class LeaderboardUserDto
 {
@@ -13,5 +15,33 @@ public class LeaderboardUserDto
     public int PointsThisWeek { get; set; }
     public int PointsThisMonth { get; set; }
     public int PointsThisYear { get; set; }
-    public int Balance { get { return TotalPoints - PointsClaimed; } set { _ = value; } }
+    public int Balance => TotalPoints - PointsClaimed;
+
+    public LeaderboardUserDto(User user, DateTime firstDayOfWeek)
+    {
+        var start = firstDayOfWeek;
+        var end = start.AddDays(7);
+        Rank = 0; // Ignored
+        UserId = user.Id;
+        Name = user.FullName;
+        Email = user.Email;
+        ProfilePic = user.Avatar;
+        TotalPoints = user.UserAchievements.Sum(ua => ua.Achievement.Value);
+        PointsClaimed = user.UserRewards.Sum(ur => ur.Reward.Cost);
+        PointsToday = user.UserAchievements
+            .Where(ua => 
+                ua.AwardedAt.Year == DateTime.Now.Year && 
+                ua.AwardedAt.Month == DateTime.UtcNow.Month && 
+                ua.AwardedAt.Day == DateTime.UtcNow.Day)
+            .Sum(ua => ua.Achievement.Value);
+        PointsThisWeek = user.UserAchievements
+            .Where(ua => start <= ua.AwardedAt && ua.AwardedAt <= end)
+            .Sum(ua => ua.Achievement.Value);
+        PointsThisMonth = user.UserAchievements
+            .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
+            .Sum(ua => ua.Achievement.Value);
+        PointsThisYear = user.UserAchievements
+            .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
+            .Sum(ua => ua.Achievement.Value);
+    }
 }

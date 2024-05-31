@@ -1,4 +1,5 @@
-using AutoMapper.QueryableExtensions;
+using MoreLinq;
+using SSW.Rewards.Application.Common.Extensions;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Shared.DTOs.Network;
 using SSW.Rewards.Shared.DTOs.Users;
@@ -11,16 +12,13 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserService _userService;
-    private readonly IMapper _mapper;
 
     public GetNetworkProfileListHandler(
         IApplicationDbContext dbContext, 
-        IUserService userService, 
-        IMapper mapper)
+        IUserService userService)
     {
         _dbContext = dbContext;
         _userService = userService;
-        _mapper = mapper;
     }
     
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
@@ -54,22 +52,18 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .Where(x => (!x.IsDeleted && x.Activated) && x.UserId != user.Id)
             .ToListAsync(cancellationToken);
         
-        var users = await _dbContext.Users
+        var leaderboardUserDtos = await _dbContext.Users
             .Where(u => u.Activated)
             .Include(u => u.UserAchievements)
             .ThenInclude(ua => ua.Achievement)
-            .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
+            .Where(u => !string.IsNullOrWhiteSpace(u.FullName))
+            .Select(u => new LeaderboardUserDto(u, DateTime.Now.FirstDayOfWeek()))
             .ToListAsync(cancellationToken);
+            
 
-        // need to set rank outside of AutoMapper
-        var leaderboardUserDtos = users
-            .Where(u => !string.IsNullOrWhiteSpace(u.Name))
-            .OrderByDescending(u => u.TotalPoints)
-            .Select((u, i) =>
-            {
-                u.Rank = i + 1;
-                return u;
-            }).ToList();
+        leaderboardUserDtos
+            .OrderByDescending(lud => lud.TotalPoints)
+            .ForEach((u, i) => u.Rank = i + 1);
         
         profiles.AddRange(staffDtos.Select(profile =>
         {

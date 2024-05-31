@@ -131,8 +131,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         foreach (var summary in summaries)
         {
             var isMe = _myUserId == summary.UserId;
-            var vm = new LeaderViewModel();
-            vm.MapFrom(summary, isMe);
+            var vm = new LeaderViewModel(summary, isMe);
 
             Leaders.Add(vm);
         }
