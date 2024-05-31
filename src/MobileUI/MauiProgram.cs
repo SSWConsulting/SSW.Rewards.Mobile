@@ -80,6 +80,8 @@ public static class MauiProgram
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
+            handler.PlatformView.SmartDashesType = UIKit.UITextSmartDashesType.No;
+            handler.PlatformView.SmartQuotesType = UIKit.UITextSmartQuotesType.No;
         });
 
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, editor) =>
