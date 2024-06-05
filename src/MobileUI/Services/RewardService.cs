@@ -6,6 +6,15 @@ using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
 namespace SSW.Rewards.Mobile.Services;
 
+public interface IRewardService
+{
+    Task<List<Reward>> GetRewards();
+    Task <ClaimRewardResult> ClaimReward(ClaimRewardDto claim);
+    Task<CreatePendingRedemptionResult> CreatePendingRedemption(CreatePendingRedemptionDto claim);
+    Task<CancelPendingRedemptionResult> CancelPendingRedemption(CancelPendingRedemptionDto claim);
+    Task<ClaimRewardResult> ClaimRewardForUser(ClaimRewardDto claim);
+}
+
 public class RewardService : IRewardService
 {
     private readonly IApiRewardService _rewardClient;

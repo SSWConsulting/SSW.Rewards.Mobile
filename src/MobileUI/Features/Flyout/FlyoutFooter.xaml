@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<VerticalStackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     x:Class="SSW.Rewards.Mobile.Controls.FlyoutFooter"
+                     xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
+                     xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+                     x:DataType="vm:FlyoutFooterViewModel"
+                     Margin="0,0,0,5"
+                     Padding="20,0"
+                     Spacing="10">
+    <VerticalStackLayout.BindingContext>
+        <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutFooterViewModel"/>
+    </VerticalStackLayout.BindingContext>
+    
+    <VerticalStackLayout Spacing="10">
+        <VerticalStackLayout.Triggers>
+            <!-- Setting Opacity to hide here as using IsVisible can mess up the layout -->
+            <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding IsStaff}" Value="False">
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="InputTransparent" Value="True" />
+            </DataTrigger>
+        </VerticalStackLayout.Triggers>
+        <VerticalStackLayout VerticalOptions="Start">
+            <BoxView HorizontalOptions="FillAndExpand"
+                     HeightRequest="1"
+                     Color="#171717"
+                     VerticalOptions="End"/>
+            <BoxView HorizontalOptions="FillAndExpand"
+                     HeightRequest="1"
+                     Color="#404040"
+                     VerticalOptions="Start"/>
+        </VerticalStackLayout>
+
+        <!-- QR Code button -->
+        <Grid
+            VerticalOptions="End"
+            ColumnDefinitions="Auto,*">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                      Command="{Binding MyQrCodeTappedCommand}"/>
+            </Grid.GestureRecognizers>
+            <Label Grid.Column="0"
+                   HeightRequest="30"
+                   WidthRequest="30"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   FontSize="16"
+                   FontFamily="FluentIcons"
+                   TextColor="#DDDDDD"
+                   Text="&#xf636;">
+            </Label>
+            <Label Grid.Column="1"
+                   Style="{StaticResource LabelBold}"
+                   TextColor="#DDDDDD"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center"
+                   FontSize="16"
+                   Text="My QR Code" />
+        </Grid>
+    </VerticalStackLayout>
+    <VerticalStackLayout VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+
+    <!-- Settings button -->
+    <Grid
+        VerticalOptions="End"
+        ColumnDefinitions="Auto,*">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                  Command="{Binding MySettingsTappedCommand}"/>
+        </Grid.GestureRecognizers>
+        <Label Grid.Column="0"
+               HeightRequest="30"
+               WidthRequest="30"
+               VerticalOptions="Center"
+               VerticalTextAlignment="Center"
+               FontSize="16"
+               FontFamily="FA6Solid"
+               TextColor="#DDDDDD"
+               Text="&#xf013;">
+        </Label>
+        <Label Grid.Column="1"
+               Style="{StaticResource LabelBold}"
+               TextColor="#DDDDDD"
+               HorizontalOptions="Start"
+               VerticalOptions="Center"
+               FontSize="16"
+               Text="My Settings" />
+    </Grid>
+
+    <VerticalStackLayout VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+
+    <!-- Logout Button -->
+    <Grid
+        VerticalOptions="End"
+        ColumnDefinitions="Auto,*">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                  Command="{Binding LogOutTappedCommand}"/>
+        </Grid.GestureRecognizers>
+        <Label Grid.Column="0"
+               HeightRequest="30"
+               WidthRequest="30"
+               VerticalOptions="Center"
+               VerticalTextAlignment="Center"
+               FontSize="16"
+               FontFamily="FA6Solid"
+               TextColor="#DDDDDD"
+               Text="&#xf08b;">
+        </Label>
+
+        <Label Grid.Column="1"
+               Style="{StaticResource LabelBold}"
+               TextColor="#DDDDDD"
+               HorizontalOptions="Start"
+               VerticalOptions="Center"
+               FontSize="16"
+               Text="Log Out" />
+    </Grid>
+
+    <VerticalStackLayout VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+    
+    <FlexLayout JustifyContent="SpaceBetween">
+        <Label
+            Padding="0,10,0,0"
+            TextColor="#DDDDDD"
+            HorizontalOptions="Start"
+            VerticalOptions="Center"
+            FontSize="12"
+            Text="Powered by .NET MAUI" />
+
+        <Label HorizontalOptions="End"
+               VerticalTextAlignment="Center"
+               Padding="0,10,0,0"
+               FontSize="12"
+               TextColor="#DDDDDD"
+               Text="{Binding VersionNumber}"/>
+    </FlexLayout>
+    
+    <!-- workaround for iOS footer safe area -->
+    <Label
+        Text=" "
+        IsVisible="{OnPlatform Android='False', iOS='True'}"/>
+    
+</VerticalStackLayout>

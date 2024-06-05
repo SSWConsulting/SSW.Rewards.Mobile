@@ -3,6 +3,11 @@ using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.Services;
 
+public interface ILeaderService
+{
+    Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh);
+}
+
 public class LeaderService : ILeaderService
 {
     private readonly ILeaderboardService _leaderBoardClient;

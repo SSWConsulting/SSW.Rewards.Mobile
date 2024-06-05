@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="SSW.Rewards.Mobile.Controls.FlyoutHeader"
+      xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
+      xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+      xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+      HeightRequest="420"
+      Margin="0"
+      Padding="20,0"
+      x:DataType="vm:FlyoutHeaderViewModel"
+      RowDefinitions="100,60,148,24,40">
+    <Grid.BindingContext>
+        <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
+    </Grid.BindingContext>
+
+    <Grid Grid.Row="0">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+        </Grid.GestureRecognizers>
+        <mct:AvatarView VerticalOptions="End"
+                        HorizontalOptions="Start"
+                        ImageSource="{Binding ProfilePic}"
+                        HeightRequest="80"
+                        WidthRequest="80"
+                        CornerRadius="40"
+                        BorderColor="White"
+                        BorderWidth="2"/>
+        <Border
+            BackgroundColor="{StaticResource primary}"
+            HorizontalOptions="Start"
+            VerticalOptions="Center"
+            TranslationX="60"
+            TranslationY="35"
+            StrokeShape="Ellipse"
+            StrokeThickness="0">
+            <Label
+                FontFamily="FluentIcons"
+                FontAutoScalingEnabled="False"
+                FontSize="25"
+                Text="&#xe299;"
+                Margin="3"
+                TextColor="White" />
+        </Border>
+    </Grid>
+
+    <!-- User Name -->
+    <HorizontalStackLayout Grid.Row="1"
+                           Margin="0,0,5,0"
+                           Spacing="5"
+                           VerticalOptions="Center">
+        <Label Style="{StaticResource LabelBold}"
+               FontSize="Large"
+               Text="{Binding Name}"
+               TextColor="White"
+               VerticalTextAlignment="End" />
+
+        <Label FontFamily="FA6Brands"
+               TextColor="White"
+               VerticalTextAlignment="Center"
+               TranslationY="1"
+               Text="&#xf3ca;"
+               IsVisible="{Binding QrCode, Converter={mct:IsStringNotNullOrWhiteSpaceConverter}}"/>
+    </HorizontalStackLayout>
+
+    <!-- User Stats -->
+    <Grid Grid.Row="2"
+          RowSpacing="2"
+          RowDefinitions="40,40,40"
+          ColumnDefinitions="40,*">
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+            <Label VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   Margin="10,0,10,0"
+                   FontFamily="FA6Solid"
+                   TextColor="{StaticResource Coin}"
+                   Text="&#xf091;"/>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource LabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Rank, StringFormat='#{0:n0}'}"/>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#x2b50;"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="1"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource LabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4,0,4,0">
+
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Margin="10,0,0,0"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       Text="&#xf51e;"/>
+            </HorizontalStackLayout>
+        </Border>
+
+        <Border Grid.Column="1"
+                Grid.Row="2"
+                BackgroundColor="{StaticResource RankingTableBody}"
+                StrokeShape="RoundRectangle 0,4,0,4"
+                Padding="5">
+            <Label Style="{StaticResource LabelBold}"
+                   VerticalOptions="Center"
+                   VerticalTextAlignment="Center"
+                   TextColor="White"
+                   Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
+        </Border>
+    </Grid>
+
+    <!-- Divider -->
+    <VerticalStackLayout Grid.Row="3"
+                         VerticalOptions="Start">
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#171717"
+                 VerticalOptions="End"/>
+        <BoxView HorizontalOptions="FillAndExpand"
+                 HeightRequest="1"
+                 Color="#404040"
+                 VerticalOptions="Start"/>
+    </VerticalStackLayout>
+
+    <!-- Email -->
+    <Grid
+        Grid.Row="4"
+        ColumnDefinitions="Auto,*"
+        RowDefinitions="Auto"
+        ColumnSpacing="8">
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               TextColor="{StaticResource SSWRed}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               FontSize="Small"
+               FontFamily="FA6Solid"
+               Text="&#x2709;"/>
+
+        <Label Grid.Row="0"
+               Grid.Column="1"
+               Style="{StaticResource LabelBold}"
+               TextColor="#DDDDDD"
+               VerticalOptions="Center"
+               LineBreakMode="TailTruncation"
+               FontSize="Small"
+               Text="{Binding Email}"/>
+    </Grid>
+</Grid>
