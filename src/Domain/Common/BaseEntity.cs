@@ -3,5 +3,5 @@
 public abstract class BaseEntity
 {
     public int Id { get; set; }
-    public System.DateTime CreatedUtc { get; set; }
+    public DateTime CreatedUtc { get; set; }
 }

@@ -131,8 +131,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         foreach (var summary in summaries)
         {
             var isMe = _myUserId == summary.UserId;
-            var vm = new LeaderViewModel();
-            vm.MapFrom(summary, isMe);
+            var vm = new LeaderViewModel(summary, isMe);
 
             Leaders.Add(vm);
         }
@@ -191,7 +190,7 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         await UpdateSearchResults(leaders);
         var myProfile = leaders.FirstOrDefault(l => l.IsMe);
-        UpdateMyRankIfRequired(myProfile);
+        UpdateMyRank(myProfile);
         UpdateMyAllTimeRank(myProfile);
 
         // setting to null to trigger PropertyChanged event
@@ -217,7 +216,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         IsRefreshing = false;
     }
 
-    private void UpdateMyRankIfRequired(LeaderViewModel mySummary)
+    private void UpdateMyRank(LeaderViewModel mySummary)
     {
         if (mySummary is not null)
         {

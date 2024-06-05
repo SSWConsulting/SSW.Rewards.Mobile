@@ -1,4 +1,4 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using MoreLinq;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Application.Common.Extensions;
 
@@ -16,16 +16,13 @@ public class GetFilteredLeaderboardList : IRequest<LeaderboardViewModel>
 public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLeaderboardList, LeaderboardViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly IDateTime _dateTime;
 
     public GetFilteredLeaderboardListHandler(
         IApplicationDbContext context,
-        IMapper mapper,
         IDateTime dateTime)
     {
         _context = context;
-        _mapper = mapper;
         _dateTime = dateTime;
     }
 
@@ -54,23 +51,18 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
             query = query.Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
         }
 
-        var users = await query.Include(u => u.UserAchievements)
+        var users = await query
+            .Include(u => u.UserAchievements)
             .ThenInclude(ua => ua.Achievement)
-            .ProjectTo<LeaderboardUserDto>(_mapper.ConfigurationProvider)
+            .Where(u => !string.IsNullOrWhiteSpace(u.FullName))
+            .Select(u => new LeaderboardUserDto(u, DateTime.Now.FirstDayOfWeek()))
             .ToListAsync(cancellationToken);
-
-        var model = new LeaderboardViewModel
-        {
-            // need to set rank outside of AutoMapper
-            Users = users
-                    .Where(u => !string.IsNullOrWhiteSpace(u.Name))
-                    .OrderByDescending(u => u.TotalPoints)
-                    .Select((u, i) =>
-                    {
-                        u.Rank = i + 1;
-                        return u;
-                    }).ToList()
-        };
+        
+        users
+            .OrderByDescending(lud => lud.TotalPoints)
+            .ForEach((u, i) => u.Rank = i + 1);
+        
+        var model = new LeaderboardViewModel { Users = users };
 
         return model;
     }

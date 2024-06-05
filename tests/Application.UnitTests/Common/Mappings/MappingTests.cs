@@ -28,7 +28,6 @@ public class MappingTests
     }
 
     [Test]
-    [TestCase(typeof(User), typeof(LeaderboardUserDto))]
     [TestCase(typeof(OpenProfileDeletionRequest), typeof(ProfileDeletionRequestDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

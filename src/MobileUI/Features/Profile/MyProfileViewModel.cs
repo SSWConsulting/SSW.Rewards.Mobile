@@ -2,12 +2,11 @@
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 public class MyProfileViewModel(
-    IRewardService rewardsService,
     IUserService userService,
     IDevService devService,
     IPermissionsService permissionsService,
     ISnackbarService snackbarService)
-    : ProfileViewModelBase(true, rewardsService, userService, devService, permissionsService, snackbarService)
+    : ProfileViewModelBase(true, userService, devService, permissionsService, snackbarService)
 {
     private readonly IUserService _userService = userService;
 
