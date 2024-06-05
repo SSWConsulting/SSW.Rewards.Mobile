@@ -211,7 +211,9 @@ else
     {
         var rewards = await rewardService.SearchRewards(value, cancellationToken);
 
-        return rewards.Rewards;
+        // Only show hidden 1-point rewards that were designed for prize draws
+        // TODO: improve the handling of assigning and filtering prize draw items
+        return rewards.Rewards.Where(r => r.Cost == 1);
     }
 
     private async Task LoadEligiblePlayers()
