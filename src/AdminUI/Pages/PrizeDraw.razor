@@ -11,6 +11,7 @@
 
 @inject IAchievementService achievementService
 @inject IPrizeDrawService prizeDrawService
+@inject IRewardService rewardService
 @inject IRewardAdminService rewardAdminService
 @inject ISnackbar SnackBar
 
@@ -30,7 +31,7 @@ else
                 Variant="Variant.Filled"
                 Label="Required Achievement"
                 AnchorOrigin="Origin.BottomCenter"
-                SearchFuncWithCancel="@SearchAchivements"
+                SearchFuncWithCancel="@SearchAchievements"
                 ShowProgressIndicator="true"
                 ToStringFunc="@GetAchievementName"
             />
@@ -127,21 +128,35 @@ else
         </MudGrid>    
     }
     
-    // TODO: Re-enable when this functionality has been completed
-    @* @if (_prizeWinner != null && !_isDrawingPrize) *@
-    @* { *@
-    @*     <MudGrid Spacing="2" Justify="Justify.Center"> *@
-    @*         <MudItem> *@
-    @*             <MudButton *@
-    @*                 OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))" *@
-    @*                 Variant="Variant.Filled" *@
-    @*                 StartIcon="@MudBlazor.Icons.Material.Filled.Celebration" *@
-    @*                 Color="Color.Info"> *@
-    @*                 Claim Prize *@
-    @*             </MudButton> *@
-    @*         </MudItem> *@
-    @*     </MudGrid> *@
-    @* } *@
+    @if (_prizeWinner != null && !_isDrawingPrize)
+    {
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudAutocomplete
+                    T="RewardDto"
+                    @bind-Value="@_selectedReward"
+                    Variant="Variant.Filled"
+                    Label="Reward"
+                    AnchorOrigin="Origin.BottomCenter"
+                    SearchFuncWithCancel="@SearchRewards"
+                    ShowProgressIndicator="true"
+                    ToStringFunc="@GetRewardName"
+                />
+            </MudItem>
+        </MudGrid>
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudButton
+                    OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))"
+                    Disabled="@(_selectedReward == null)"
+                    Variant="Variant.Filled"
+                    StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
+                    Color="Color.Info">
+                    Claim Prize
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    }
     
     @if (_players is {Count: > 0 } && !_isDrawingPrize)
     {
@@ -174,7 +189,7 @@ else
     private IEnumerable<RewardDto>? _rewards = Enumerable.Empty<RewardDto>();
     private List<AchievementDto>? _achievements = new();
     AchievementDto? _selectedAchievement;
-    string? _selectedRewardCode;
+    RewardDto? _selectedReward;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
     private int _top;
     private bool _filterStaff = true;
@@ -185,11 +200,20 @@ else
         await base.OnInitializedAsync();
     }
 
-    private async Task<IEnumerable<AchievementDto>> SearchAchivements(string value, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value, CancellationToken cancellationToken)
     {
         var achievements = await achievementService.SearchAchievements(value, cancellationToken);
 
         return achievements.Achievements;
+    }
+    
+    private async Task<IEnumerable<RewardDto>> SearchRewards(string value, CancellationToken cancellationToken)
+    {
+        var rewards = await rewardService.SearchRewards(value, cancellationToken);
+
+        // Only show hidden 1-point rewards that were designed for prize draws
+        // TODO: improve the handling of assigning and filtering prize draw items
+        return rewards.Rewards.Where(r => r.Cost == 1);
     }
 
     private async Task LoadEligiblePlayers()
@@ -240,16 +264,20 @@ else
     private void Reset()
     {
         _prizeWinner = null;
-        _selectedRewardCode = null;
+        _selectedReward = null;
     }
 
     private async Task ClaimPrizeForWinner(EligibleUserDto winner)
     {
-        var result = await rewardAdminService.ClaimForUser(_selectedRewardCode, winner.UserId ?? 0, false, CancellationToken.None);
-
+        var result = await rewardAdminService.ClaimForUser(_selectedReward?.Code, winner.UserId ?? 0, false, CancellationToken.None);
+        
         if (result.status == RewardStatus.Claimed)
         {
-            SnackBar.Add($"Reward claimed", Severity.Success);
+            SnackBar.Add($"{_selectedReward.Name} successfully claimed for {_prizeWinner.Name}!", Severity.Success, options =>
+            {
+                options.VisibleStateDuration = 10000;
+            });
+            _selectedReward = null;
         }
         else
         {
@@ -262,4 +290,8 @@ else
         return achievement?.Name ?? string.Empty;
     }
 
+    private string GetRewardName(RewardDto? reward)
+    {
+        return reward?.Name ?? string.Empty;
+    }
 }
