@@ -12,7 +12,6 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class ProfileViewModelBase : BaseViewModel
 {
-    private readonly IRewardService _rewardsService;
     private readonly IUserService _userService;
     private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
@@ -70,14 +69,12 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     public ProfileViewModelBase(
         bool isMe,
-        IRewardService rewardsService,
         IUserService userService,
         IDevService devService,
         IPermissionsService permissionsService,
         ISnackbarService snackbarService)
     {
         IsMe = isMe;
-        _rewardsService = rewardsService;
         _userService = userService;
         _devService = devService;
         _permissionsService = permissionsService;
@@ -223,46 +220,69 @@ public partial class ProfileViewModelBase : BaseViewModel
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
                 Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+                TimeElapsed = DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
     }
 
-    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievementList, IEnumerable<UserRewardDto> rewardList)
+    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievements, IEnumerable<UserRewardDto> rewards)
     {
-        var activityList = new List<Activity>();
-        var recentAchievements = achievementList.Where(a => a.AchievementType != AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
+        const int takeSize = 5;
+        List<Activity> activities = [];
+        
+        activities.AddRange(FilterRecentAchievements(achievements, takeSize));
+        activities.AddRange(FilterRecentRewards(rewards, takeSize));
+
+        RecentActivity.Clear(); // it could contain data from another user profile
+        var recentActivity = activities.OrderByDescending(a => a.OccurredAt).Take(takeSize);
+        foreach (var activity in recentActivity)
+        {
+            RecentActivity.Add(activity);
+        }
+    }
+
+    private IEnumerable<Activity> FilterRecentAchievements(IEnumerable<UserAchievementDto> achievementList, int takeSize)
+    {
+        List<Activity> result = [];
+        var recentAchievements = achievementList
+            .Where(a => a.AchievementType != AchievementType.Attended)
+            .OrderByDescending(a => a.AwardedAt)
+            .Take(takeSize);
+        
         foreach (var achievement in recentAchievements)
         {
-            activityList.Add(new Activity
+            result.Add(new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
                 Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = GetTimeElapsed(achievement.AwardedAt.Value)
+                TimeElapsed = DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
             });
         }
 
+        return result;
+    }
+    
+    private static IEnumerable<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
+    {
+        List<Activity> result = [];
         var recentRewards = rewardList
             .Where(r => r.Awarded)
-            .OrderByDescending(r => r.AwardedAt).Take(5);
+            .OrderByDescending(r => r.AwardedAt)
+            .Take(takeSize);
 
         foreach (var reward in recentRewards)
         {
-            activityList.Add(new Activity
+            result.Add(new Activity
             {
                 ActivityName = $"Claimed {reward.RewardName}",
                 OccurredAt = reward.AwardedAt,
                 Type = ActivityType.Claimed,
-                TimeElapsed = GetTimeElapsed((DateTime)reward.AwardedAt)
+                TimeElapsed = DateTimeHelpers.GetTimeElapsed((DateTime)reward.AwardedAt)
             });
         }
 
-        RecentActivity.Clear(); // it could contain data from another user profile
-        foreach (var activity in activityList.OrderByDescending(a => a.OccurredAt).Take(5))
-        {
-            RecentActivity.Add(activity);
-        }
+        return result;
     }
 
     private async Task UpdateSkillsSectionIfRequired()
@@ -279,16 +299,6 @@ public partial class ProfileViewModelBase : BaseViewModel
                 }
             }
         }
-    }
-
-    private static string GetTimeElapsed(DateTime occurredAt)
-    {
-        return (DateTime.UtcNow - occurredAt) switch
-        {
-            { TotalDays: < 1 } ts => $"{ts.Hours}h",
-            { TotalDays: < 31 } ts => $"{ts.Days}d",
-            _ => occurredAt.ToLocalTime().ToString("dd MMMM yyyy"),
-        };
     }
 
     public void OnDisappearing()
