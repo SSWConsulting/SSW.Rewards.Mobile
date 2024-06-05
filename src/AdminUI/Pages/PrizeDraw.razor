@@ -273,7 +273,11 @@ else
         
         if (result.status == RewardStatus.Claimed)
         {
-            SnackBar.Add($"Reward claimed", Severity.Success);
+            SnackBar.Add($"{_selectedReward.Name} successfully claimed for {_prizeWinner.Name}!", Severity.Success, options =>
+            {
+                options.VisibleStateDuration = 10000;
+            });
+            _selectedReward = null;
         }
         else
         {
