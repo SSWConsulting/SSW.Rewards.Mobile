@@ -95,7 +95,7 @@ devtunnel host -p 5001
   Apple Developer Program Team
 
 ### Setting up your own iPhone for testing
-If you want to set up to deploy to your own iPhone, talk to an App Manager, it's hard! :)
+If you want to set up to deploy to your own iPhone, talk to an App Manager (currently Anton and Matt G), it's hard! :)
 Or you can give it a go yourself. For that you will be using 2 portals - App Store Connect and Apple Developer Portal:
 1. Talk to a team member who has either Admin or App Manager role in App Store Connect. Give them your Apple ID (you can provide your personal one) and they will send you an invite to the Apple Developer team. If you've never used Apple products before, you will need to [create an Apple ID](https://support.apple.com/en-au/108647). You need to be granted **at least the App Manager role** to be able to perform some of the steps below; otherwise ask someone with the App Manager Role or higher to assist you.
 2. On your mac create a Certificate Signing Request (CSR) using Keychain. Go to Keychain Access -> Certificate Assistant -> Request a certificate from a certificate authority. Fill the fields and save generated CSR somewhere.
