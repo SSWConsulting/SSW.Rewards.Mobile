@@ -33,7 +33,7 @@ jobs:
           cp appsettings.json appsettings.json.bak
           cp appsettings.${{ inputs.environment }}.json appsettings.json
 
-      - uses: azure/login@v1
+      - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
