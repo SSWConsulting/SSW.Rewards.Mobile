@@ -17,6 +17,8 @@ public class LeaderboardUserDto
     public int PointsThisYear { get; set; }
     public int Balance => TotalPoints - PointsClaimed;
 
+    public LeaderboardUserDto() {}
+
     public LeaderboardUserDto(User user, DateTime firstDayOfWeek)
     {
         var start = firstDayOfWeek;
