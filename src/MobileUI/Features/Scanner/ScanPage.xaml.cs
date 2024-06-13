@@ -15,7 +15,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     {
         InitializeComponent();
         _viewModel = viewModel;
-        Unloaded += (sender, e) => { scannerView?.Handler?.DisconnectHandler(); };
     }
 
     public void Handle_OnScanResult(object sender, BarcodeDetectionEventArgs e)
