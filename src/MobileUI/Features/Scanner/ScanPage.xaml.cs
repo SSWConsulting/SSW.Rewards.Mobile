@@ -69,7 +69,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
-            SetIosCameraZoom();
+            SetCameraZoom();
         }
         else
         {
@@ -77,7 +77,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         }
     }
     
-    private async void SetIosCameraZoom()
+    private async void SetCameraZoom()
     {
 #if IOS15_0_OR_GREATER
         // Delay is required to ensure the camera is ready
