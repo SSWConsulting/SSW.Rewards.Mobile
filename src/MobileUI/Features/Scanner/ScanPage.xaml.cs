@@ -50,7 +50,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
         WeakReferenceMessenger.Default.Register(this);
@@ -88,7 +88,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // Set camera zoom depending on device's minimum focus distance as per Apple's recommendation
         // for scanning barcodes.
         // Adapted from https://stackoverflow.com/questions/74381985/choosing-suitable-camera-for-barcode-scanning-when-using-avcapturedevicetypebuil
-        // and https://developer.apple.com/documentation/avfoundation/capture_setup/avcambarcode_detecting_barcodes_and_faces?language=objc
+        // and https://forums.developer.apple.com/forums/thread/715568
         //
         // Example final VideoZoomFactors:
         // iPhone 15 Pro (20cm focus distance): ~2.0
