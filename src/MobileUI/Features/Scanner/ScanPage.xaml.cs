@@ -95,7 +95,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
         var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
         const float previewFillPercentage = 0.6f; // fill 60% of preview window
-        const float minimumTargetObjectSize = 140.0f; // min width 140mm
+        const float minimumTargetObjectSize = 400.0f; // min width 400mm
         double radians = Double.DegreesToRadians(deviceFieldOfView);
         const float filledTargetObjectSize = minimumTargetObjectSize / previewFillPercentage;
         double minimumSubjectDistance = filledTargetObjectSize / Math.Tan(radians / 2.0); // Field of view
