@@ -70,6 +70,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
+            
 #if IOS15_0_OR_GREATER
             SetIosCameraZoom();
 #endif
