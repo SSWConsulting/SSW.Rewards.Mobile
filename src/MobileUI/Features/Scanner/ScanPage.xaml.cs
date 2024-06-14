@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using AVFoundation;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
@@ -70,10 +69,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
-            
-#if IOS15_0_OR_GREATER
             SetIosCameraZoom();
-#endif
         }
         else
         {
@@ -83,6 +79,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     
     private async void SetIosCameraZoom()
     {
+#if IOS15_0_OR_GREATER
         // Delay is required to ensure the camera is ready
         await Task.Delay(300);
         
@@ -94,7 +91,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // Example final VideoZoomFactors:
         // iPhone 15 Pro (20cm focus distance): ~2.0
         // iPhone 14 Pro (~15cm focus distance): ~1.5
-        var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video);
+        var captureDevice = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
         var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
         var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
         const float previewFillPercentage = 0.6f; // fill 60% of preview window
@@ -109,6 +106,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
             captureDevice.VideoZoomFactor = (float)(focusDistance / minimumSubjectDistance);
             captureDevice.UnlockForConfiguration();
         }
+#endif
     }
 
     /// <summary>
