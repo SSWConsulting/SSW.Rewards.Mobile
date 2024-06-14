@@ -10,6 +10,12 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
+    
+    public BarcodeReaderOptions BarcodeReaderOptions { get; set; } = new()
+    {
+        Formats = BarcodeFormat.QrCode,
+        TryHarder = true,
+    };
 
     public ScanPage(ScanResultViewModel viewModel)
     {
@@ -47,6 +53,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     {
         base.OnAppearing();
         WeakReferenceMessenger.Default.Register(this);
+        
         ToggleScanner(true);
     }
 
@@ -62,11 +69,45 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
+            SetCameraZoom();
         }
         else
         {
             scannerView.IsDetecting = false;
         }
+    }
+    
+    private async void SetCameraZoom()
+    {
+#if IOS15_0_OR_GREATER
+        // Delay is required to ensure the camera is ready
+        await Task.Delay(300);
+        
+        // Set camera zoom depending on device's minimum focus distance as per Apple's recommendation
+        // for scanning barcodes.
+        // Adapted from https://stackoverflow.com/questions/74381985/choosing-suitable-camera-for-barcode-scanning-when-using-avcapturedevicetypebuil
+        // and https://forums.developer.apple.com/forums/thread/715568
+        //
+        // Example final VideoZoomFactors:
+        // iPhone 14 Pro and 15 Pro (20cm focus distance): ~2.0
+        // iPhone 13 Pro (~15cm focus distance): ~1.5
+        // iPhone 12 and below: 1.0 - ~1.2
+        var captureDevice = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
+        var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
+        var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
+        const float previewFillPercentage = 0.6f; // fill 60% of preview window
+        const float minimumTargetObjectSize = 40.0f; // min width 40mm
+        double radians = Double.DegreesToRadians(deviceFieldOfView);
+        const float filledTargetObjectSize = minimumTargetObjectSize / previewFillPercentage;
+        double minimumSubjectDistance = filledTargetObjectSize / Math.Tan(radians / 2.0); // Field of view
+        
+        if (minimumSubjectDistance < focusDistance)
+        {
+            captureDevice.LockForConfiguration(out _);
+            captureDevice.VideoZoomFactor = (float)(focusDistance / minimumSubjectDistance);
+            captureDevice.UnlockForConfiguration();
+        }
+#endif
     }
 
     /// <summary>
