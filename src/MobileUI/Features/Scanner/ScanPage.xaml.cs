@@ -89,8 +89,9 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // and https://forums.developer.apple.com/forums/thread/715568
         //
         // Example final VideoZoomFactors:
-        // iPhone 15 Pro (20cm focus distance): ~2.0
-        // iPhone 14 Pro (~15cm focus distance): ~1.5
+        // iPhone 14 Pro and 15 Pro (20cm focus distance): ~2.0
+        // iPhone 13 Pro (~15cm focus distance): ~1.5
+        // iPhone 12 and below: 1.0 - ~1.2
         var captureDevice = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
         var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
         var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
