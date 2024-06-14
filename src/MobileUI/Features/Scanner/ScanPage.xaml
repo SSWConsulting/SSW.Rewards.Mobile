@@ -8,7 +8,7 @@
     <Grid>
         <zx:CameraBarcodeReaderView x:Name="scannerView"
                                     BarcodesDetected="Handle_OnScanResult"
-                                    IsDetecting="True"/>
+                                    IsDetecting="{Binding BarcodeReaderOptions, Source={x:Reference this}}"/>
 
         <Button Text="Close"
                 ContentLayout="Right, 10"

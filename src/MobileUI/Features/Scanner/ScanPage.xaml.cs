@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AVFoundation;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
@@ -10,6 +11,12 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
+    
+    public BarcodeReaderOptions BarcodeReaderOptions { get; set; } = new()
+    {
+        Formats = BarcodeFormat.QrCode,
+        TryHarder = true,
+    };
 
     public ScanPage(ScanResultViewModel viewModel)
     {
@@ -43,10 +50,11 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         WeakReferenceMessenger.Default.Register(this);
+        
         ToggleScanner(true);
     }
 
@@ -62,11 +70,29 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
+            SetCameraZoom();
         }
         else
         {
             scannerView.IsDetecting = false;
         }
+    }
+    
+    private async void SetCameraZoom()
+    {
+        #if IOS
+        
+        await Task.Delay(300);
+        var captureDevice = AVCaptureDevice.Devices.FirstOrDefault(x => x.Position == AVCaptureDevicePosition.Back);
+
+        if (captureDevice.DeviceType == AVCaptureDeviceType.BuiltInWideAngleCamera)
+        {
+            captureDevice.LockForConfiguration(out _);
+            captureDevice.VideoZoomFactor = 1.5f;
+            captureDevice.UnlockForConfiguration();
+        }
+
+        #endif
     }
 
     /// <summary>
