@@ -17,9 +17,11 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
-    public async Task<bool> SendDigitalRewardEmail(string to, string toName, string subject, DigitalRewardEmail emailProps, CancellationToken cancellationToken)
+    public async Task<bool> SendDigitalRewardEmail(string to, string toName, string subject,
+        DigitalRewardEmail emailProps, CancellationToken cancellationToken)
     {
-        var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please generate a voucher code and send it to @Model.RecipientEmail.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template =
+            "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p>Please generate a voucher code and send it to @Model.RecipientEmail.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
         var result = await _fluentEmail
             .To(to)
@@ -38,9 +40,11 @@ public class EmailService : IEmailService
         }
     }
 
-    public async Task<bool> SendPhysicalRewardEmail(string to, string toName, string subject, PhysicalRewardEmail emailProps, CancellationToken cancellationToken)
+    public async Task<bool> SendPhysicalRewardEmail(string to, string toName, string subject,
+        PhysicalRewardEmail emailProps, CancellationToken cancellationToken)
     {
-        var template = "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p><ol><li>Please organise to send it to @Model.RecipientAddress</li><li>Please send an email with tracking info to @Model.RecipientEmail</li></ol></p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template =
+            "<p>Hi SSW Marketing</p><p>@Model.RecipientName has claimed @Model.RewardName.</p></p><ol><li>Please organise to send it to @Model.RecipientAddress</li><li>Please send an email with tracking info to @Model.RecipientEmail</li></ol></p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
         var result = await _fluentEmail
             .To(to)
@@ -62,7 +66,8 @@ public class EmailService : IEmailService
 
     public async Task<bool> SendProfileDeletionRequest(DeleteProfileEmail model, CancellationToken cancellationToken)
     {
-        var template = "<p><span  style=\"color: CC4141; font-weight: bold;\">Hi {{username}},</span><br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p><p style=\"color: CC4141; font-weight: bold;\">Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template =
+            "<p><span  style=\"color: CC4141; font-weight: bold;\">Hi {{username}},</span><br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p><p style=\"color: CC4141; font-weight: bold;\">Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
         var message = template.Replace("{{username}}", model.UserName);
 
@@ -92,9 +97,11 @@ public class EmailService : IEmailService
         }
     }
 
-    public async Task<bool> SendProfileDeletionConfirmation(DeleteProfileEmail model, string deletionRequestDate, CancellationToken cancellationToken)
+    public async Task<bool> SendProfileDeletionConfirmation(DeleteProfileEmail model, string deletionRequestDate,
+        CancellationToken cancellationToken)
     {
-        var template = "<p style=\"color: CC4141; font-weight: bold;\">Hi {{username}}</p><p><blockquote>&gt; 1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></blockquote>✅ Done - profile has been deleted</p><p><strong>Important: </strong>You can no longer accumulate points and are ineligible to claim rewards or win prizes.</p><p>You can reply to this email if you have any concerns, and feel free to sign up again any time!</p><p>Thanks,</p><p>SSW Rewards Notification Service</p><hr/><strong>From:</strong> Verify [SSW] &lt;verify@ssw.com.au&gt;<br><strong>Date:</strong> {{originalDate}}<br><strong>To: </strong> SSW Rewards &lt;SSWRewards@ssw.com.au&gt;<br><strong>Cc: </strong> {{username}} &lt;{{email}}&gt;<br><strong>Subject:</strong> Profile deletion request<br><br><p><span  style=\"color: CC4141; font-weight: bold;\">Hi {{username}},</span><br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p><p style=\"color: CC4141; font-weight: bold;\">Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
+        var template =
+            "<p style=\"color: CC4141; font-weight: bold;\">Hi {{username}}</p><p><blockquote>&gt; 1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></blockquote>✅ Done - profile has been deleted</p><p><strong>Important: </strong>You can no longer accumulate points and are ineligible to claim rewards or win prizes.</p><p>You can reply to this email if you have any concerns, and feel free to sign up again any time!</p><p>Thanks,</p><p>SSW Rewards Notification Service</p><hr/><strong>From:</strong> Verify [SSW] &lt;verify@ssw.com.au&gt;<br><strong>Date:</strong> {{originalDate}}<br><strong>To: </strong> SSW Rewards &lt;SSWRewards@ssw.com.au&gt;<br><strong>Cc: </strong> {{username}} &lt;{{email}}&gt;<br><strong>Subject:</strong> Profile deletion request<br><br><p><span  style=\"color: CC4141; font-weight: bold;\">Hi {{username}},</span><br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p><p style=\"color: CC4141; font-weight: bold;\">Hi SSW Rewards</p><p>{{username}} has submitted a profile deletion request.</p><p>1. Please delete their profile and all associated data from the following systems:<ul><li>SSW.Rewards</li><li>SSW.Identity</li></ul></p><p>2. Reply all 'done'.</p><p>Thanks,</p><p>SSW Rewards Notification Service</p>";
 
         var message = template.Replace("{{username}}", model.UserName);
 
@@ -124,8 +131,39 @@ public class EmailService : IEmailService
         }
         catch (Exception ex)
         {
-
             throw;
         }
+    }
+
+    public async Task<bool> SendFormCompletionPointsReceivedEmail(string to, FormCompletionPointsReceivedEmail model, CancellationToken cancellationToken)
+    {
+        var result = await _fluentEmail
+            .To(to)
+            .Subject("SSW.Rewards - Points received for form completion!")
+            .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/EmailTemplates/FormCompletionPointsReceived.cshtml", model)
+            .SendAsync();
+
+        if (!result.Successful)
+        {
+            _logger.Log("Error sending email", _fluentEmail);
+        }
+
+        return result.Successful;
+    }
+    
+    public async Task<bool> SendFormCompletionCreateAccountEmail(string to, FormCompletionCreateAccountEmail model, CancellationToken cancellationToken)
+    {
+        var result = await _fluentEmail
+            .To(to)
+            .Subject("SSW.Rewards - Account created for form completion!")
+            .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/EmailTemplates/FormCompletionCreateAccount.cshtml", model)
+            .SendAsync();
+
+        if (!result.Successful)
+        {
+            _logger.Log("Error sending email", _fluentEmail);
+        }
+
+        return result.Successful;
     }
 }
