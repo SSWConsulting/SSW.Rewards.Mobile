@@ -57,298 +57,307 @@
                 StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
                 <Grid>
-                    <VerticalStackLayout>
-                        <Border HeightRequest="80"
-                                WidthRequest="80"
-                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 6"
-                                Margin="0,0,0,30">
-                            <Grid>
-                                <Image HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       Aspect="AspectFill"
-                                       Source="{Binding Image}"
-                                       IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
-                                <Label FontFamily="FA6Solid"
-                                       FontAutoScalingEnabled="False"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center"
-                                       Text="&#xf06b;"
-                                       TextColor="{StaticResource Gray300}"
-                                       FontSize="28"
-                                       IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
-                            </Grid>
-                        </Border>
-
-                        <Label Text="{Binding Heading}"
-                               FontSize="24"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               Style="{StaticResource LabelBold}" />
-
-                        <Label Text="{Binding Description}"
-                               FontSize="18"
-                               TextColor="{StaticResource Gray300}"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               Margin="0,0,0,30" />
-
-                        <!-- Balance section -->
-                        <Grid RowDefinitions="Auto,Auto"
-                              ColumnDefinitions="Auto,Auto"
-                              HorizontalOptions="Center"
-                              RowSpacing="6"
-                              ColumnSpacing="10"
-                              Margin="0,0,0,30"
-                              IsVisible="{Binding IsBalanceVisible}">
-                            <Label Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="Your Balance"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-
-                            <Border Grid.Row="0"
-                                    Grid.Column="1"
+                    <ScrollView>
+                        <VerticalStackLayout>
+                            <Border HeightRequest="80"
+                                    WidthRequest="80"
                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 6"
-                                    Padding="15,4">
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label
-                                        TextColor="{StaticResource Coin}"
-                                        Text="&#xf51e;"
-                                        FontFamily="FA6Solid"
-                                        VerticalOptions="Center"
-                                        FontSize="11"
-                                        InputTransparent="True" />
-                                    <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
+                                    Margin="0,0,0,30">
+                                <Grid>
+                                    <Image HorizontalOptions="Center"
                                            VerticalOptions="Center"
-                                           FontSize="18" />
-                                </HorizontalStackLayout>
+                                           Aspect="AspectFill"
+                                           Source="{Binding Image}"
+                                           IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                                    <Label FontFamily="FA6Solid"
+                                           FontAutoScalingEnabled="False"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center"
+                                           Text="&#xf06b;"
+                                           TextColor="{StaticResource Gray300}"
+                                           FontSize="28"
+                                           IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
+                                </Grid>
                             </Border>
 
-                            <Label Grid.Row="1"
-                                   Grid.Column="0"
-                                   Text="Product Cost"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-
-                            <Border Grid.Row="1"
-                                    Grid.Column="1"
-                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                    StrokeThickness="0"
-                                    StrokeShape="RoundRectangle 6"
-                                    Padding="15,4">
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label
-                                        TextColor="{StaticResource Coin}"
-                                        Text="&#xf51e;"
-                                        FontFamily="FA6Solid"
-                                        VerticalOptions="Center"
-                                        FontSize="11"
-                                        InputTransparent="True" />
-                                    <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
-                                           VerticalOptions="Center"
-                                           FontSize="18" />
-                                </HorizontalStackLayout>
-                            </Border>
-                        </Grid>
-
-                        <!-- Pending redemption QR code -->
-                        <VerticalStackLayout IsVisible="{Binding IsQrCodeVisible}"
-                                             Spacing="10"
-                                             Margin="0,0,0,30">
-                            <Label Text="Please show this code to SSW staff to claim your reward:"
-                                   HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center"/>
-                            <zxing:BarcodeGeneratorView
-                                                     Format="QrCode"
-                                                     Value="{Binding QrCode}"
-                                                     HorizontalOptions="Center"
-                                                     BackgroundColor="#DDDDDD"
-                                                     ForegroundColor="Transparent"
-                                                     WidthRequest="150"
-                                                     HeightRequest="150"
-                                                     VerticalOptions="Center"/>
-                        </VerticalStackLayout>
-
-                        <!-- Address search -->
-                        <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
-                                             Spacing="2"
-                                             Margin="0,0,0,30">
-                            <controls:Search Command="{Binding SearchAddressCommand}"
-                                             IsSearching="{Binding IsSearching}"
-                                             BorderColor="{StaticResource BorderDefault}"
-                                             BackgroundColor="{StaticResource Gray900}"
-                                             Placeholder="Search for an address"/>
-
-                            <CollectionView ItemsSource="{Binding SearchResults}"
-                                            SelectedItem="{Binding SelectedAddress}"
-                                            SelectionChangedCommand="{Binding AddressSelectedCommand}"
-                                            SelectionMode="Single"
-                                            VerticalScrollBarVisibility="Always"
-                                            BackgroundColor="{StaticResource Gray950}"
-                                            MaximumHeightRequest="250">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="addr:Address">
-                                        <Grid HeightRequest="30"
-                                              Margin="5">
-                                            <Label Text="{Binding freeformAddress}"
-                                                   Margin="5"
-                                                   VerticalOptions="Center"
-                                                   VerticalTextAlignment="Center"
-                                                   HorizontalOptions="Center"
-                                                   HorizontalTextAlignment="Center"/>
-
-                                            <Label HorizontalOptions="End"
-                                                   Margin="5,5,10,5"
-                                                   VerticalOptions="Center"
-                                                   VerticalTextAlignment="Center"
-                                                   FontFamily="FA6Solid"
-                                                   TextColor="{StaticResource CorrectColor}"
-                                                   LineBreakMode="WordWrap"
-                                                   Text="&#xf058;"
-                                                   Style="{StaticResource SelectedCheckLabelStyle}">
-
-                                            </Label>
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout IsVisible="{Binding ConfirmEnabled}">
-                            <Label Text="Sending to:"
+                            <Label Text="{Binding Heading}"
+                                   FontSize="24"
                                    HorizontalOptions="Center"
                                    HorizontalTextAlignment="Center"
-                                   Margin="5,10,5,5"/>
+                                   Style="{StaticResource LabelBold}" />
 
-                            <Label Text="{Binding SelectedAddress.freeformAddress}"
-                                     HorizontalOptions="Center"
-                                     HorizontalTextAlignment="Center"
-                                     Margin="5,5,5,10"/>
+                            <Label Text="{Binding Description}"
+                                   FontSize="18"
+                                   TextColor="{StaticResource Gray300}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   Margin="0,0,0,30" />
 
-                            <HorizontalStackLayout HorizontalOptions="Center"
-                                                   Spacing="10"
-                                                   Margin="0,15">
-                                <Label Text="Edit"
-                                       TextColor="{StaticResource SSWRed}"
-                                       VerticalOptions="Center"
-                                       HorizontalOptions="Center">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                              Command="{Binding EditAddressCommand}" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-                                <Label Text="Search again"
-                                       TextColor="{StaticResource SSWRed}"
-                                       VerticalOptions="Center">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer NumberOfTapsRequired="1"
-                                                              Command="{Binding SearchAgainCommand}" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-                            </HorizontalStackLayout>
+                            <!-- Balance section -->
+                            <Grid RowDefinitions="Auto,Auto"
+                                  ColumnDefinitions="Auto,Auto"
+                                  HorizontalOptions="Center"
+                                  RowSpacing="6"
+                                  ColumnSpacing="10"
+                                  Margin="0,0,0,30"
+                                  IsVisible="{Binding IsBalanceVisible}">
+                                <Label Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Your Balance"
+                                       FontSize="18"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
 
-                            <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}"
-                                              Margin="0,0,0,5">
-                                <VerticalStackLayout BindingContext="{Binding Source={x:Reference RedeemRewardPopup}, Path=BindingContext.SelectedAddress}"
-                                                     x:DataType="addr:Address"
-                                                     Spacing="5">
-                                    <Entry Text="{Binding streetNumber}"
-                                           Placeholder="Street Number" />
-                                    <Entry Text="{Binding streetName}"
-                                            Placeholder="Street Name" />
-                                    <Entry Text="{Binding municipalitySubdivision}"
-                                            Placeholder="Suburb" />
-                                    <Entry Text="{Binding municipality}"
-                                            Placeholder="City" />
-                                    <Entry Text="{Binding countrySubdivisionCode}"
-                                            Placeholder="State" />
-                                    <Entry Text="{Binding postalCode}"
-                                            Placeholder="Postcode" />
-                                </VerticalStackLayout>
-                            </toolkit:Expander>
+                                <Border Grid.Row="0"
+                                        Grid.Column="1"
+                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="15,4">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            TextColor="{StaticResource Coin}"
+                                            Text="&#xf51e;"
+                                            FontFamily="FA6Solid"
+                                            VerticalOptions="Center"
+                                            FontSize="11"
+                                            InputTransparent="True" />
+                                        <Label Text="{Binding UserBalance, StringFormat='{0:n0}'}"
+                                               VerticalOptions="Center"
+                                               FontSize="18" />
+                                    </HorizontalStackLayout>
+                                </Border>
+
+                                <Label Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Product Cost"
+                                       FontSize="18"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+
+                                <Border Grid.Row="1"
+                                        Grid.Column="1"
+                                        BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="15,4">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            TextColor="{StaticResource Coin}"
+                                            Text="&#xf51e;"
+                                            FontFamily="FA6Solid"
+                                            VerticalOptions="Center"
+                                            FontSize="11"
+                                            InputTransparent="True" />
+                                        <Label Text="{Binding Cost, StringFormat='{0:n0}'}"
+                                               VerticalOptions="Center"
+                                               FontSize="18" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </Grid>
+
+                            <!-- Pending redemption QR code -->
+                            <VerticalStackLayout IsVisible="{Binding IsQrCodeVisible}"
+                                                 Spacing="10"
+                                                 Margin="0,0,0,30">
+                                <Label Text="Please show this code to SSW staff to claim your reward:"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+                                <zxing:BarcodeGeneratorView
+                                                         Format="QrCode"
+                                                         Value="{Binding QrCode}"
+                                                         HorizontalOptions="Center"
+                                                         BackgroundColor="#DDDDDD"
+                                                         ForegroundColor="Transparent"
+                                                         WidthRequest="150"
+                                                         HeightRequest="150"
+                                                         VerticalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <!-- Address search -->
+                            <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
+                                                 Spacing="2"
+                                                 Margin="0,0,0,30">
+                                <Label Text="Search for an address (Australia only):"
+                                       FontSize="16"
+                                       TextColor="{StaticResource Gray300}"
+                                       Margin="0,0,0,10"/>
+                                <controls:Search Command="{Binding SearchAddressCommand}"
+                                                 IsSearching="{Binding IsSearching}"
+                                                 BorderColor="{StaticResource BorderDefault}"
+                                                 BackgroundColor="{StaticResource Gray900}"
+                                                 Placeholder="Address search"/>
+
+                                <CollectionView ItemsSource="{Binding SearchResults}"
+                                                SelectedItem="{Binding SelectedAddress}"
+                                                SelectionChangedCommand="{Binding AddressSelectedCommand}"
+                                                SelectionMode="Single"
+                                                VerticalScrollBarVisibility="Always"
+                                                BackgroundColor="{StaticResource Gray950}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="addr:Address">
+                                            <Grid HeightRequest="30"
+                                                  Margin="5">
+                                                <Label Text="{Binding freeformAddress}"
+                                                       Margin="5"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       HorizontalOptions="Center"
+                                                       HorizontalTextAlignment="Center"/>
+
+                                                <Label HorizontalOptions="End"
+                                                       Margin="5,5,10,5"
+                                                       VerticalOptions="Center"
+                                                       VerticalTextAlignment="Center"
+                                                       FontFamily="FA6Solid"
+                                                       TextColor="{StaticResource CorrectColor}"
+                                                       LineBreakMode="WordWrap"
+                                                       Text="&#xf058;"
+                                                       Style="{StaticResource SelectedCheckLabelStyle}">
+
+                                                </Label>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout IsVisible="{Binding ConfirmEnabled}">
+                                <Label Text="Sending to:"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="5,10,5,5"/>
+
+                                <Label Text="{Binding Path=SelectedAddress.freeformAddress, StringFormat='{0}, Australia'}"
+                                         HorizontalOptions="Center"
+                                         HorizontalTextAlignment="Center"
+                                         Margin="5,5,5,10"/>
+
+                                <HorizontalStackLayout HorizontalOptions="Center"
+                                                       Spacing="10"
+                                                       Margin="0,15">
+                                    <Label Text="Edit"
+                                           TextColor="{StaticResource SSWRed}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Center">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                                  Command="{Binding EditAddressCommand}" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Text="Search again"
+                                           TextColor="{StaticResource SSWRed}"
+                                           VerticalOptions="Center">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                                  Command="{Binding SearchAgainCommand}" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </HorizontalStackLayout>
+
+                                <toolkit:Expander IsExpanded="{Binding IsAddressEditExpanded}"
+                                                  Margin="0,0,0,5">
+                                    <VerticalStackLayout BindingContext="{Binding Source={x:Reference RedeemRewardPopup}, Path=BindingContext.SelectedAddress}"
+                                                         x:DataType="addr:Address"
+                                                         Spacing="5">
+                                        <Entry Text="{Binding streetNumber}"
+                                               Placeholder="Street Number" />
+                                        <Entry Text="{Binding streetName}"
+                                                Placeholder="Street Name" />
+                                        <Entry Text="{Binding municipalitySubdivision}"
+                                                Placeholder="Suburb" />
+                                        <Entry Text="{Binding municipality}"
+                                                Placeholder="City" />
+                                        <Entry Text="{Binding countrySubdivisionCode}"
+                                                Placeholder="State" />
+                                        <Entry Text="{Binding postalCode}"
+                                                Placeholder="Postcode" />
+                                        <Entry Text="Australia"
+                                               IsEnabled="False"
+                                               Placeholder="Country" />
+                                    </VerticalStackLayout>
+                                </toolkit:Expander>
+                            </VerticalStackLayout>
+
+                            <!-- Technical debt: This should be a single lottie view with a binding to the source, however source binding doesn't work -->
+                            <lottie:SKLottieView Source="delivery2.json"
+                                                 IsVisible="{Binding SendingClaim}"
+                                                 IsAnimationEnabled="True"
+                                                 RepeatCount="-1"
+                                                 VerticalOptions="CenterAndExpand"
+                                                 HorizontalOptions="CenterAndExpand"
+                                                 HeightRequest="200"
+                                                 WidthRequest="200"
+                                                 Scale="1"/>
+
+                            <lottie:SKLottieView Source="delivery1.json"
+                                                 IsVisible="{Binding ClaimSuccess}"
+                                                 IsAnimationEnabled="True"
+                                                 RepeatCount="-1"
+                                                 VerticalOptions="CenterAndExpand"
+                                                 HorizontalOptions="CenterAndExpand"
+                                                 HeightRequest="200"
+                                                 WidthRequest="200"
+                                                 Scale="1"/>
+
+                            <lottie:SKLottieView Source="error.json"
+                                                 IsVisible="{Binding ClaimError}"
+                                                 IsAnimationEnabled="True"
+                                                 RepeatCount="-1"
+                                                 VerticalOptions="CenterAndExpand"
+                                                 HorizontalOptions="CenterAndExpand"
+                                                 HeightRequest="200"
+                                                 WidthRequest="200"
+                                                 Scale="1"/>
+
+                            <Grid
+                                ColumnDefinitions="*,15,*"
+                                Margin="0,0,0,30"
+                                IsVisible="{Binding IsBalanceVisible}">
+                                <controls:MultiLineButton
+                                    Text="Redeem in-person"
+                                    Command="{Binding RedeemInPersonClickedCommand}"
+                                    Grid.Column="0" />
+                                
+                                <controls:MultiLineButton
+                                    Text="Ship to my address (Australia only)"
+                                    Command="{Binding NextClickedCommand}"
+                                    Grid.Column="2" />
+                            </Grid>
+
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 Spacing="15">
+                                <Button Background="{StaticResource SSWRed}"
+                                        CornerRadius="10"
+                                        WidthRequest="80"
+                                        IsVisible="{Binding ConfirmEnabled}"
+                                        Text="Confirm"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        Command="{Binding ConfirmClickedCommand}"/>
+
+                                <Button Background="{StaticResource SSWRed}"
+                                        CornerRadius="10"
+                                        Text="Cancel redemption"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding IsQrCodeVisible}"
+                                        Command="{Binding CancelPendingRedemptionClickedCommand}">
+                                    <Button.ImageSource>
+                                        <FontImageSource Glyph="&#xf00d;"
+                                                         FontFamily="FA6Solid"
+                                                         FontAutoScalingEnabled="True"
+                                                         Size="16"/>
+                                    </Button.ImageSource>
+                                </Button>
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
+                    </ScrollView>
 
-                        <!-- Technical debt: This should be a single lottie view with a binding to the source, however source binding doesn't work -->
-                        <lottie:SKLottieView Source="delivery2.json"
-                                             IsVisible="{Binding SendingClaim}"
-                                             IsAnimationEnabled="True"
-                                             RepeatCount="-1"
-                                             VerticalOptions="CenterAndExpand"
-                                             HorizontalOptions="CenterAndExpand"
-                                             HeightRequest="200"
-                                             WidthRequest="200"
-                                             Scale="1"/>
-
-                        <lottie:SKLottieView Source="delivery1.json"
-                                             IsVisible="{Binding ClaimSuccess}"
-                                             IsAnimationEnabled="True"
-                                             RepeatCount="-1"
-                                             VerticalOptions="CenterAndExpand"
-                                             HorizontalOptions="CenterAndExpand"
-                                             HeightRequest="200"
-                                             WidthRequest="200"
-                                             Scale="1"/>
-
-                        <lottie:SKLottieView Source="error.json"
-                                             IsVisible="{Binding ClaimError}"
-                                             IsAnimationEnabled="True"
-                                             RepeatCount="-1"
-                                             VerticalOptions="CenterAndExpand"
-                                             HorizontalOptions="CenterAndExpand"
-                                             HeightRequest="200"
-                                             WidthRequest="200"
-                                             Scale="1"/>
-
-                        <Grid
-                            ColumnDefinitions="*,15,*"
-                            Margin="0,0,0,30"
-                            IsVisible="{Binding IsBalanceVisible}">
-                            <controls:MultiLineButton
-                                Text="Redeem in-person"
-                                Command="{Binding RedeemInPersonClickedCommand}"
-                                Grid.Column="0" />
-                            
-                            <controls:MultiLineButton
-                                Text="Ship to my address"
-                                Command="{Binding NextClickedCommand}"
-                                Grid.Column="2" />
-                        </Grid>
-
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             Spacing="15">
-                            <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="10"
-                                    WidthRequest="80"
-                                    IsVisible="{Binding ConfirmEnabled}"
-                                    Text="Confirm"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    Command="{Binding ConfirmClickedCommand}"/>
-
-                            <Button Background="{StaticResource SSWRed}"
-                                    CornerRadius="10"
-                                    Text="Cancel redemption"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    IsVisible="{Binding IsQrCodeVisible}"
-                                    Command="{Binding CancelPendingRedemptionClickedCommand}">
-                                <Button.ImageSource>
-                                    <FontImageSource Glyph="&#xf00d;"
-                                                     FontFamily="FA6Solid"
-                                                     FontAutoScalingEnabled="True"
-                                                     Size="16"/>
-                                </Button.ImageSource>
-                            </Button>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
                     <ActivityIndicator
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
