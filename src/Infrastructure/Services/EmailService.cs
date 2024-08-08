@@ -109,7 +109,11 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
                                 </head>
                                 <body>
                                     <div>
-                                        Thanks for completing the form! You have received {{ ONE GORILLION }} points.
+                                        Hi @Model.UserName,
+                                        <br />
+                                        Thanks for completing the form! 
+                                        <br />
+                                        You have received @Model.Points points.
                                     </div>
                                 </body>
                                 </html>
@@ -140,7 +144,11 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
                        </head>
                        <body>
                            <div>
-                                You have points to redeem! Download SSW.Rewards. 
+                                Hi!
+                                <br />
+                                Thanks for completing the form!
+                                <br />
+                                <a href="https://onelink.to/4feu6v">Click here</a> to download SSW.Rewards and claim your achievement! 
                            </div>
                        </body>
                        </html>
