@@ -44,6 +44,15 @@
 	  </Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="wwwroot\EmailTemplates\FormCompletionCreateAccount.cshtml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Include="wwwroot\EmailTemplates\FormCompletionPointsReceived.cshtml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
     <PropertyGroup>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     </PropertyGroup>

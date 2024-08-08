@@ -40,13 +40,4 @@
 		<!-- Note: The following project has been added. Library maintainer has not updated and there is a critical vulnerability. -->
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="Services\EmailTemplates\FormCompletionCreateAccount.cshtml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Services\EmailTemplates\FormCompletionPointsReceived.cshtml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>
