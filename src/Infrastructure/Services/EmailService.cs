@@ -144,7 +144,7 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
                        </head>
                        <body>
                            <div>
-                                Hi!
+                                Hi @Model.Name!
                                 <br />
                                 Thanks for completing the form!
                                 <br />

@@ -5,7 +5,7 @@ namespace SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchieve
 public class ClaimFormCompletedAchievementCommand : IRequest
 {
     public string Email { get; set; }
-
+    public string Name { get; set; }
     public string IntegrationId { get; set; }
 }
 
@@ -53,7 +53,7 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
                         EmailAddress = request.Email,
                     });
 
-                    await _emailService.SendFormCompletionCreateAccountEmail(request.Email.ToLower(), new FormCompletionCreateAccountEmail { Points = achievement.Value},
+                    await _emailService.SendFormCompletionCreateAccountEmail(request.Email.ToLower(), new FormCompletionCreateAccountEmail { Name = request.Name, Points = achievement.Value},
                         cancellationToken);
                 }
             }
