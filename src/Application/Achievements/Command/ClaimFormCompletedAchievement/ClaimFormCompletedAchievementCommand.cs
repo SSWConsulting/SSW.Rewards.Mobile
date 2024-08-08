@@ -1,19 +1,23 @@
-﻿namespace SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchievement;
+﻿using SSW.Rewards.Application.Common.Models;
+
+namespace SSW.Rewards.Application.Achievements.Command.ClaimFormCompletedAchievement;
 
 public class ClaimFormCompletedAchievementCommand : IRequest
 {
     public string Email { get; set; }
-
+    public string Name { get; set; }
     public string IntegrationId { get; set; }
 }
 
 public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<ClaimFormCompletedAchievementCommand>
 {
+    private readonly IEmailService _emailService;
     private readonly IApplicationDbContext _dbContext;
 
-    public ClaimFormCompletedAchievementCommandHandler(IApplicationDbContext dbContext)
+    public ClaimFormCompletedAchievementCommandHandler(IApplicationDbContext dbContext, IEmailService emailService)
     {
         _dbContext = dbContext;
+        _emailService = emailService;
     }
     
     public async Task Handle(ClaimFormCompletedAchievementCommand request, CancellationToken cancellationToken)
@@ -34,7 +38,9 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
                     {
                         AchievementId = achievement.Id,
                         AwardedAt = DateTime.UtcNow,
+                    
                     });
+                    await _emailService.SendFormCompletionPointsReceivedEmail(user.Email, new FormCompletionPointsReceivedEmail { Points = achievement.Value, UserName = user.FullName }, cancellationToken);
                 }
             }
             else
@@ -46,6 +52,9 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
                         AchievementId = achievement.Id,
                         EmailAddress = request.Email,
                     });
+
+                    await _emailService.SendFormCompletionCreateAccountEmail(request.Email.ToLower(), new FormCompletionCreateAccountEmail { Name = request.Name, Points = achievement.Value},
+                        cancellationToken);
                 }
             }
 
