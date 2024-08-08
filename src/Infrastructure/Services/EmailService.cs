@@ -100,10 +100,25 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
 
     public async Task<bool> SendFormCompletionPointsReceivedEmail(string to, FormCompletionPointsReceivedEmail model, CancellationToken cancellationToken)
     {
+        const string template = """
+                                <!DOCTYPE html>
+
+                                <html>
+                                <head>
+                                    <title></title>
+                                </head>
+                                <body>
+                                    <div>
+                                        Thanks for completing the form! You have received {{ ONE GORILLION }} points.
+                                    </div>
+                                </body>
+                                </html>
+                                """;
+        
         var result = await fluentEmail
             .To(to)
             .Subject("SSW.Rewards - Points received for form completion!")
-            .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/EmailTemplates/FormCompletionPointsReceived.cshtml", model)
+            .UsingTemplate(template, model)
             .SendAsync();
 
         if (!result.Successful)
@@ -116,10 +131,26 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
     
     public async Task<bool> SendFormCompletionCreateAccountEmail(string to, FormCompletionCreateAccountEmail model, CancellationToken cancellationToken)
     {
+        const string template = """
+                       <!DOCTYPE html>
+                       
+                       <html>
+                       <head>
+                           <title></title>
+                       </head>
+                       <body>
+                           <div>
+                                You have points to redeem! Download SSW.Rewards. 
+                           </div>
+                       </body>
+                       </html>
+                   """;
+
+
         var result = await fluentEmail
             .To(to)
             .Subject("SSW.Rewards - Account created for form completion!")
-            .UsingTemplateFromFile($"{Directory.GetCurrentDirectory()}/EmailTemplates/FormCompletionCreateAccount.cshtml", model)
+            .UsingTemplate(template, model)
             .SendAsync();
 
         if (!result.Successful)
