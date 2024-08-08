@@ -56,45 +56,48 @@
                 StrokeThickness="1"
                 StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
-                <Grid>
-                    <ScrollView>
+                <Grid RowDefinitions="Auto">
+                    <ScrollView Grid.Row="0">
                         <VerticalStackLayout>
-                            <Border HeightRequest="80"
+                            <!-- Header section -->
+                            <VerticalStackLayout IsVisible="{Binding IsHeaderVisible}">
+                                <Border HeightRequest="80"
                                     WidthRequest="80"
                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 6"
                                     Margin="0,0,0,30">
-                                <Grid>
-                                    <Image HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           Aspect="AspectFill"
-                                           Source="{Binding Image}"
-                                           IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
-                                    <Label FontFamily="FA6Solid"
-                                           FontAutoScalingEnabled="False"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Center"
-                                           Text="&#xf06b;"
-                                           TextColor="{StaticResource Gray300}"
-                                           FontSize="28"
-                                           IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
-                                </Grid>
-                            </Border>
+                                    <Grid>
+                                        <Image HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Aspect="AspectFill"
+                                               Source="{Binding Image}"
+                                               IsVisible="{Binding Image, Converter={StaticResource IsStringNotNullOrEmpty}}" />
+                                        <Label FontFamily="FA6Solid"
+                                               FontAutoScalingEnabled="False"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center"
+                                               Text="&#xf06b;"
+                                               TextColor="{StaticResource Gray300}"
+                                               FontSize="28"
+                                               IsVisible="{Binding Image, Converter={StaticResource IsStringNullOrEmpty}}" />
+                                    </Grid>
+                                </Border>
 
-                            <Label Text="{Binding Heading}"
-                                   FontSize="24"
-                                   HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   Style="{StaticResource LabelBold}" />
+                                <Label Text="{Binding Heading}"
+                                       FontSize="24"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Style="{StaticResource LabelBold}" />
 
-                            <Label Text="{Binding Description}"
-                                   FontSize="18"
-                                   TextColor="{StaticResource Gray300}"
-                                   HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   Margin="0,0,0,30" />
-
+                                <Label Text="{Binding Description}"
+                                       FontSize="18"
+                                       TextColor="{StaticResource Gray300}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0,0,0,30" />
+                            </VerticalStackLayout>
+                            
                             <!-- Balance section -->
                             <Grid RowDefinitions="Auto,Auto"
                                   ColumnDefinitions="Auto,Auto"
@@ -159,22 +162,21 @@
                             </Grid>
 
                             <!-- Pending redemption QR code -->
-                            <VerticalStackLayout IsVisible="{Binding IsQrCodeVisible}"
-                                                 Spacing="10"
-                                                 Margin="0,0,0,30">
-                                <Label Text="Please show this code to SSW staff to claim your reward:"
+                            <Grid IsVisible="{Binding IsQrCodeVisible}"
+                                                 RowSpacing="10"
+                                                 Margin="0,0,0,30"
+                                                 RowDefinitions="Auto,Auto">
+                                <Label Grid.Row="0"
+                                       Text="Please show this code to SSW staff to claim your reward:"
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
-                                <zxing:BarcodeGeneratorView
-                                                         Format="QrCode"
-                                                         Value="{Binding QrCode}"
-                                                         HorizontalOptions="Center"
-                                                         BackgroundColor="#DDDDDD"
-                                                         ForegroundColor="Transparent"
-                                                         WidthRequest="150"
-                                                         HeightRequest="150"
-                                                         VerticalOptions="Center"/>
-                            </VerticalStackLayout>
+                                <zxing:BarcodeGeneratorView Grid.Row="1"
+                                                            Format="QrCode"
+                                                            Value="{Binding QrCode}"
+                                                            WidthRequest="250"
+                                                            HeightRequest="250"
+                                                            VerticalOptions="Center"/>
+                            </Grid>
 
                             <!-- Address search -->
                             <VerticalStackLayout IsVisible="{Binding IsAddressVisible}"
@@ -359,6 +361,7 @@
                     </ScrollView>
 
                     <ActivityIndicator
+                        Grid.Row="0"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         Color="{StaticResource SSWRed}"

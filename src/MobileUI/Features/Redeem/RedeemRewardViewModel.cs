@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using Plugin.Maui.ScreenBrightness;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.AddressTypes;
@@ -14,6 +15,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class RedeemRewardViewModel(IUserService userService, IRewardService rewardService, IAddressService addressService) : BaseViewModel
 {
     private Reward _reward;
+    private float _prevValue;
 
     [ObservableProperty]
     private string _image;
@@ -29,6 +31,9 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
     [ObservableProperty]
     private int _userBalance;
+    
+    [ObservableProperty]
+    private bool _isHeaderVisible = true;
 
     [ObservableProperty]
     private bool _isBalanceVisible = true;
@@ -76,18 +81,27 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
         if (reward.IsPendingRedemption)
         {
-            ShowQrCode(reward);
+            ShowQrCode();
         }
 
         userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
     }
 
-    private void ShowQrCode(Reward reward)
+    public void OnDisappearing()
     {
+        ScreenBrightness.Default.Brightness = _prevValue;
+    }
+
+    private void ShowQrCode(string qrCode = null)
+    {
+        _prevValue = ScreenBrightness.Default.Brightness;
+        ScreenBrightness.Default.Brightness = 1;
+        
+        IsHeaderVisible = false;
         IsBalanceVisible = false;
         ConfirmEnabled = false;
-        Heading = $"Ready to claim:{Environment.NewLine}{reward.Name}";
-        QrCode = reward.PendingRedemptionCode;
+        Heading = $"Ready to claim:{Environment.NewLine}{_reward.Name}";
+        QrCode = qrCode ?? _reward.PendingRedemptionCode;
         IsQrCodeVisible = true;
         ShouldCallCallback = true;
     }
@@ -163,10 +177,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
         if (claimResult.status == RewardStatus.Pending)
         {
-            Heading = "Ready to claim!";
-            QrCode = claimResult.Code;
-            IsQrCodeVisible = true;
-            ShouldCallCallback = true;
+            ShowQrCode(claimResult.Code);
         }
         else
         {
