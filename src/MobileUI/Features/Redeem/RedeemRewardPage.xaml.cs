@@ -29,6 +29,7 @@ public partial class RedeemRewardPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        _viewModel.OnDisappearing();
         if (_viewModel.ShouldCallCallback)
             CallbackEvent?.Invoke(this, EventArgs.Empty);
 
