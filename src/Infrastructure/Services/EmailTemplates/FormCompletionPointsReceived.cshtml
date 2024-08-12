@@ -1,19 +1,18 @@
-@page
-@model SSW.Rewards.Application.Common.Models.FormCompletionPointsReceived;
-
-@{
-    Layout = null;
-}
+@model SSW.Rewards.Application.Common.Models.FormCompletionPointsReceivedEmail;
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
     <title></title>
 </head>
 <body>
-    <div>
-        Thanks for completing the form! You have received {{ ONE GORILLION }} points.
-    </div>
+<div>
+    Hi @Model.UserName!
+    <br/>
+    Thanks for completing the form!
+    <br/>
+    <a href="https://onelink.to/4feu6v">Click here</a> to download SSW.Rewards and claim your achievement!
+</div>
 </body>
 </html>

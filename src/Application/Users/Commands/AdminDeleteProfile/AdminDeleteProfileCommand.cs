@@ -42,7 +42,8 @@ public class AdminDeleteProfileHandler : IRequestHandler<AdminDeleteProfileComma
         {
             RewardsTeamEmail = _emailSender,
             UserEmail = deletionRequest!.User!.Email!,
-            UserName = deletionRequest!.User!.FullName!
+            UserName = deletionRequest!.User!.FullName!,
+            RequestDate = deletionRequest!.CreatedUtc.ToLocalTime()
         };
 
         AnonymiseUserPII(deletionRequest.User);
@@ -53,7 +54,7 @@ public class AdminDeleteProfileHandler : IRequestHandler<AdminDeleteProfileComma
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _emailService.SendProfileDeletionConfirmation(emailModel, deletionRequest.CreatedUtc.ToLocalTime().ToString("f"), cancellationToken);
+        await _emailService.SendProfileDeletionConfirmation(emailModel, cancellationToken);
 
         // TODO: update SSW.Identity. See: https://github.com/SSWConsulting/SSW.IdentityServer/issues/224
     }

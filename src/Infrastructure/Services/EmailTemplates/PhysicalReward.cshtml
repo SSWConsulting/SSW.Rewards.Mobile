@@ -1,0 +1,23 @@
+@model SSW.Rewards.Application.Common.Models.PhysicalRewardEmail;
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+    <p>Hi SSW Marketing</p>
+    <p>@Model.RecipientName has claimed @Model.RewardName.</p>
+
+    <ol>
+        <li>Please organise to send it to @Model.RecipientAddress</li>
+        <li>Please send an email with tracking info to @Model.RecipientEmail</li>
+    </ol>
+
+    <p>Thanks,</p>
+    <p>SSW Rewards Notification Service</p>
+</div>
+</body>
+</html>

@@ -13,8 +13,7 @@ public interface IEmailService
 
     Task<bool> SendProfileDeletionRequest(DeleteProfileEmail model, CancellationToken cancellationToken);
 
-    Task<bool> SendProfileDeletionConfirmation(DeleteProfileEmail model, string deletionRequestDate,
-        CancellationToken cancellationToken);
+    Task<bool> SendProfileDeletionConfirmation(DeleteProfileEmail model, CancellationToken cancellationToken);
 
     Task<bool> SendFormCompletionPointsReceivedEmail(string to, FormCompletionPointsReceivedEmail model, CancellationToken cancellationToken);
 
