@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using FluentEmail.Core;
+﻿using FluentEmail.Core;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
