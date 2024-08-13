@@ -1,0 +1,29 @@
+@model SSW.Rewards.Application.Users.Commands.Common.DeleteProfileEmail;
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div>
+    <p>
+        <span style="color: #CC4141; font-weight: bold;">Hi @Model.UserName,</span>
+        <br>
+        <strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.
+    </p>
+    <p style="color: #CC4141; font-weight: bold;">Hi SSW Rewards</p>
+    <p>@Model.UserName has submitted a profile deletion request.</p>
+
+    1. Please delete their profile and all associated data from the following systems:
+    <ul>
+        <li>SSW.Rewards</li><li>SSW.Identity</li>
+    </ul>
+
+    <p>2. Reply all 'done'.</p>
+    <p>Thanks,</p>
+    <p>SSW Rewards Notification Service</p>
+</div>
+</body>
+</html>

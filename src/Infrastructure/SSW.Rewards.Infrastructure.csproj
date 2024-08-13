@@ -41,12 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Services\EmailTemplates\FormCompletionCreateAccount.cshtml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Services\EmailTemplates\FormCompletionPointsReceived.cshtml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <EmbeddedResource Include="Services\EmailTemplates\**" />
     </ItemGroup>
 
 </Project>

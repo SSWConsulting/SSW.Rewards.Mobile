@@ -7,4 +7,6 @@ public class DeleteProfileEmail
     public string UserEmail { get; set; }
 
     public string RewardsTeamEmail { get; set; }
+
+    public DateTime RequestDate { get; set; }
 }
