@@ -69,7 +69,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
-            SetCameraZoom();
+            ScanPage.SetCameraZoom();
         }
         else
         {
@@ -77,7 +77,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         }
     }
     
-    private async void SetCameraZoom()
+    private static async void SetCameraZoom()
     {
 #if IOS15_0_OR_GREATER
         // Delay is required to ensure the camera is ready
@@ -93,6 +93,12 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // iPhone 13 Pro (~15cm focus distance): ~1.5
         // iPhone 12 and below: 1.0 - ~1.2
         var captureDevice = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
+        
+        if (captureDevice == null)
+        {
+            return;
+        }
+        
         var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
         var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
         const float previewFillPercentage = 0.6f; // fill 60% of preview window
