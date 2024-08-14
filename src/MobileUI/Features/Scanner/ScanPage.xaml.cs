@@ -69,7 +69,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         {
             scannerView.IsDetecting = true;
             FlipCameras();
-            ScanPage.SetCameraZoom();
+            SetCameraZoom();
         }
         else
         {
