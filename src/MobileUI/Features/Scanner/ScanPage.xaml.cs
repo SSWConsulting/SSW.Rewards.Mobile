@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using BarcodeScanning;
+﻿using BarcodeScanning;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
@@ -22,22 +21,17 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
-            if (!scannerView.CameraEnabled)
+            if (!scannerView.CameraEnabled || e.BarcodeResults.Length == 0)
             {
                 return;
             }
-
+            
             ToggleScanner(false);
+            
+            var result = e.BarcodeResults.FirstOrDefault()?.RawValue;
 
-            if (e.BarcodeResults.Length > 0)
-            {
-                var result = e.BarcodeResults.FirstOrDefault().RawValue;
-
-                var popup = new PopupPages.ScanResult(_viewModel, result);
-                MopupService.Instance.PushAsync(popup);
-            }
-
-
+            var popup = new PopupPages.ScanResult(_viewModel, result);
+            MopupService.Instance.PushAsync(popup);
         });
     }
 
@@ -67,8 +61,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         if (toggleOn)
         {
             scannerView.CameraEnabled = true;
-            FlipCameras();
-            //SetCameraZoom();
         }
         else
         {
@@ -76,57 +68,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         }
     }
     
-    private async void SetCameraZoom()
-    {
-#if IOS15_0_OR_GREATER
-        // Delay is required to ensure the camera is ready
-        await Task.Delay(300);
-        
-        // Set camera zoom depending on device's minimum focus distance as per Apple's recommendation
-        // for scanning barcodes.
-        // Adapted from https://stackoverflow.com/questions/74381985/choosing-suitable-camera-for-barcode-scanning-when-using-avcapturedevicetypebuil
-        // and https://forums.developer.apple.com/forums/thread/715568
-        //
-        // Example final VideoZoomFactors:
-        // iPhone 14 Pro and 15 Pro (20cm focus distance): ~2.0
-        // iPhone 13 Pro (~15cm focus distance): ~1.5
-        // iPhone 12 and below: 1.0 - ~1.2
-        var captureDevice = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
-        var focusDistance = captureDevice.MinimumFocusDistance.ToInt32();
-        var deviceFieldOfView = captureDevice.ActiveFormat.VideoFieldOfView;
-        const float previewFillPercentage = 0.6f; // fill 60% of preview window
-        const float minimumTargetObjectSize = 40.0f; // min width 40mm
-        double radians = Double.DegreesToRadians(deviceFieldOfView);
-        const float filledTargetObjectSize = minimumTargetObjectSize / previewFillPercentage;
-        double minimumSubjectDistance = filledTargetObjectSize / Math.Tan(radians / 2.0); // Field of view
-        
-        if (minimumSubjectDistance < focusDistance)
-        {
-            captureDevice.LockForConfiguration(out _);
-            captureDevice.VideoZoomFactor = (float)(focusDistance / minimumSubjectDistance);
-            captureDevice.UnlockForConfiguration();
-        }
-#endif
-    }
-
-    /// <summary>
-    /// There is a bug in ZXing.Net.Maui on Android
-    /// where the preview is displayed as black screen if the user navigates between tabs a few times
-    /// https://github.com/Redth/ZXing.Net.Maui/issues/67
-    /// There are 2 possible workarounds:
-    /// 1. Manually Add/Remove CameraBarcodeReaderView from the page every time we navigate to it
-    /// 2. Switch camera to Front and then back to Rear
-    ///
-    /// Decided to go with the latter as the bug is only on Android 
-    /// and it's inconvenient to build UI in code-behind.
-    /// </summary>
-    [Conditional("ANDROID")]
-    private void FlipCameras()
-    {
-        scannerView.CameraFacing = CameraFacing.Front;
-        scannerView.CameraFacing = CameraFacing.Back;
-    }
-
     [RelayCommand]
     private async Task Dismiss()
     {
