@@ -1,21 +1,15 @@
 ﻿using System.Diagnostics;
+using BarcodeScanning;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Messages;
-using ZXing.Net.Maui;
 
 namespace SSW.Rewards.Mobile.Pages;
 
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
-    
-    public BarcodeReaderOptions BarcodeReaderOptions { get; set; } = new()
-    {
-        Formats = BarcodeFormat.QrCode,
-        TryHarder = true,
-    };
 
     public ScanPage(ScanResultViewModel viewModel)
     {
@@ -23,22 +17,27 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         _viewModel = viewModel;
     }
 
-    public void Handle_OnScanResult(object sender, BarcodeDetectionEventArgs e)
+    public void Handle_OnScanResult(object sender, OnDetectionFinishedEventArg e)
     {
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
-            if (!scannerView.IsDetecting)
+            if (!scannerView.CameraEnabled)
             {
                 return;
             }
 
             ToggleScanner(false);
 
-            var result = e.Results.FirstOrDefault().Value;
+            if (e.BarcodeResults.Length > 0)
+            {
+                var result = e.BarcodeResults.FirstOrDefault().RawValue;
 
-            var popup = new PopupPages.ScanResult(_viewModel, result);
-            MopupService.Instance.PushAsync(popup);
+                var popup = new PopupPages.ScanResult(_viewModel, result);
+                MopupService.Instance.PushAsync(popup);
+            }
+
+
         });
     }
 
@@ -67,13 +66,13 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     {
         if (toggleOn)
         {
-            scannerView.IsDetecting = true;
+            scannerView.CameraEnabled = true;
             FlipCameras();
-            SetCameraZoom();
+            //SetCameraZoom();
         }
         else
         {
-            scannerView.IsDetecting = false;
+            scannerView.CameraEnabled = false;
         }
     }
     
@@ -124,8 +123,8 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     [Conditional("ANDROID")]
     private void FlipCameras()
     {
-        scannerView.CameraLocation = CameraLocation.Front;
-        scannerView.CameraLocation = CameraLocation.Rear;
+        scannerView.CameraFacing = CameraFacing.Front;
+        scannerView.CameraFacing = CameraFacing.Back;
     }
 
     [RelayCommand]

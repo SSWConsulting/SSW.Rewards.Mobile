@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              BackgroundColor="{StaticResource Background}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:Name="this">
     <Grid>
-        <zx:CameraBarcodeReaderView x:Name="scannerView"
-                                    BarcodesDetected="Handle_OnScanResult"
-                                    Options="{Binding BarcodeReaderOptions, Source={x:Reference this}}"/>
+        <scanner:CameraView x:Name="scannerView"
+                            OnDetectionFinished="Handle_OnScanResult"/>
 
         <Button Text="Close"
                 ContentLayout="Right, 10"

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using BarcodeScanning;
+using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
@@ -39,6 +40,7 @@ public static class MauiProgram
         .UseSkiaSharp()
         .UsePageResolver()
         .UseBarcodeReader()
+        .UseBarcodeScanning()
         .RegisterFirebase()
         .ConfigureMauiHandlers((handlers) =>
         {
