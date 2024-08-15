@@ -9,7 +9,7 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
-    private const float ZoomFactorStep = 2.0f;
+    private const float ZoomFactorStep = 1.0f;
 
     public ScanPage(ScanResultViewModel viewModel)
     {
@@ -59,6 +59,12 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
 
     private void ToggleScanner(bool toggleOn)
     {
+        // Reset zoom when exiting camera
+        if (!toggleOn && scannerView.CurrentZoomFactor > -1)
+        {
+            scannerView.RequestZoomFactor = scannerView.MinZoomFactor;
+        }
+        
         scannerView.CameraEnabled = toggleOn;
     }
     
