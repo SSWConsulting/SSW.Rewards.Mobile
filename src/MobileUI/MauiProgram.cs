@@ -9,7 +9,6 @@ using Microsoft.Maui.LifecycleEvents;
 using Microsoft.Maui.Platform;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
-using ZXing.Net.Maui.Controls;
 using SSW.Rewards.Mobile.Renderers;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -39,7 +38,6 @@ public static class MauiProgram
         .ConfigureMopups()
         .UseSkiaSharp()
         .UsePageResolver()
-        .UseBarcodeReader()
         .UseBarcodeScanning()
         .RegisterFirebase()
         .ConfigureMauiHandlers((handlers) =>

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using Plugin.Maui.ScreenBrightness;
+using QRCoder;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.AddressTypes;
@@ -66,7 +67,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     private bool _claimSuccess;
 
     [ObservableProperty]
-    private string _qrCode;
+    private ImageSource _qrCode;
 
     public ObservableCollection<Address> SearchResults { get; set; } = [];
     public bool ShouldCallCallback { get; set; }
@@ -101,9 +102,19 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         IsBalanceVisible = false;
         ConfirmEnabled = false;
         Heading = $"Ready to claim:{Environment.NewLine}{_reward.Name}";
-        QrCode = qrCode ?? _reward.PendingRedemptionCode;
+        QrCode = GenerateQrCode(qrCode ?? _reward.PendingRedemptionCode);
         IsQrCodeVisible = true;
         ShouldCallCallback = true;
+    }
+    
+    private static ImageSource GenerateQrCode(string qrCodeString)
+    {
+        using QRCodeGenerator qrGenerator = new();
+        using QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrCodeString, QRCodeGenerator.ECCLevel.Q);
+        using PngByteQRCode qrCode = new(qrCodeData);
+        
+        byte[] qrCodeBytes = qrCode.GetGraphic(20);
+        return ImageSource.FromStream(() => new MemoryStream(qrCodeBytes));
     }
 
     [RelayCommand]

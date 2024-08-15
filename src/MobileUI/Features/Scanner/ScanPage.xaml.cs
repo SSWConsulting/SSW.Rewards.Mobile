@@ -9,6 +9,7 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
+    private const float ZoomFactorStep = 2.0f;
 
     public ScanPage(ScanResultViewModel viewModel)
     {
@@ -58,14 +59,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
 
     private void ToggleScanner(bool toggleOn)
     {
-        if (toggleOn)
-        {
-            scannerView.CameraEnabled = true;
-        }
-        else
-        {
-            scannerView.CameraEnabled = false;
-        }
+        scannerView.CameraEnabled = toggleOn;
     }
     
     [RelayCommand]
@@ -80,16 +74,11 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     [RelayCommand]
     private void ZoomIn()
     {
-        var currentZoom = scannerView.CurrentZoomFactor;
-        var minZoom = scannerView.MinZoomFactor;
+        // CurrentZoomFactor can default to -1, so we start at the MinZoomFactor in this case
+        var currentZoom = Math.Max(scannerView.CurrentZoomFactor, scannerView.MinZoomFactor);
         var maxZoom = scannerView.MaxZoomFactor;
-
-        if (currentZoom < minZoom)
-        {
-            currentZoom = minZoom;
-        }
         
-        scannerView.RequestZoomFactor = Math.Min(currentZoom + 2f, maxZoom);
+        scannerView.RequestZoomFactor = Math.Min(currentZoom + ZoomFactorStep, maxZoom);
     }
     
     [RelayCommand]
@@ -98,6 +87,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         var currentZoom = scannerView.CurrentZoomFactor;
         var minZoom = scannerView.MinZoomFactor;
         
-        scannerView.RequestZoomFactor = Math.Max(currentZoom - 2f, minZoom);
+        scannerView.RequestZoomFactor = Math.Max(currentZoom - ZoomFactorStep, minZoom);
     }
 }
