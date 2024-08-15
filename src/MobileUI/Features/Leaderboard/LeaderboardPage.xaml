@@ -131,48 +131,49 @@
                                     <Grid
                                         Grid.Column="2"
                                         ColumnDefinitions="*"
-                                        RowDefinitions="*,*"
-                                        VerticalOptions="Center"
                                         RowSpacing="2">
-                                        <Label
-                                            Grid.Row="0"
-                                            Text="{Binding Name}"
-                                            TextColor="White"
-                                            InputTransparent="True"
-                                            VerticalTextAlignment="End"
-                                            FontSize="20"
-                                            Style="{StaticResource LabelBold}"
-                                            LineBreakMode="TailTruncation" />
-                                        <Label Grid.Row="1"
-                                            Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
-                                            TextColor="White"
-                                            VerticalTextAlignment="Start"
-                                            InputTransparent="True"
-                                            FontSize="12" />
+                                        <Grid Grid.Column="0"
+                                              RowDefinitions="Auto,Auto"
+                                              VerticalOptions="Center">
+                                            <Label
+                                                Grid.Row="0"
+                                                Text="{Binding Name}"
+                                                TextColor="White"
+                                                InputTransparent="True"
+                                                FontSize="20"
+                                                Style="{StaticResource LabelBold}"
+                                                LineBreakMode="TailTruncation" />
+                                            <Label Grid.Row="1"
+                                                   Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
+                                                   TextColor="White"
+                                                   InputTransparent="True"
+                                                   FontSize="12" />
+                                        </Grid>
+
                                     </Grid>
                                     <!--TODO: MAUI, without a wrapping layout the label will be trancated on Android if the points have more than 4 digits-->
                                     <Grid
                                         Grid.Column="3"
-                                        ColumnDefinitions="30,*"
+                                        ColumnDefinitions="Auto,Auto"
                                         ColumnSpacing="4"
                                         Margin="0,0,15,0">
-                                    <Label
-                                        Grid.Column="0"
-                                        Text="{Binding DisplayPointsShort}"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Center"
-                                        HorizontalTextAlignment="End"
-                                        FontSize="15"
-                                        Style="{StaticResource LabelBold}" InputTransparent="True" />
-                                    <Label
-                                        Grid.Column="1"
-                                        TextColor="{StaticResource Coin}" Text="&#x2b50;"
-                                        FontFamily="FA6Solid"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Center"
-                                        FontSize="11"
-                                        Style="{StaticResource LabelBold}"
-                                        InputTransparent="True" />
+                                        <Label
+                                            Grid.Column="0"
+                                            Text="{Binding DisplayPointsShort}"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            HorizontalTextAlignment="End"
+                                            FontSize="15"
+                                            Style="{StaticResource LabelBold}" InputTransparent="True" />
+                                        <Label
+                                            Grid.Column="1"
+                                            TextColor="{StaticResource Coin}" Text="&#x2b50;"
+                                            FontFamily="FA6Solid"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            FontSize="11"
+                                            Style="{StaticResource LabelBold}"
+                                            InputTransparent="True" />
                                   </Grid>
                                 </Grid>
                             </Border>
