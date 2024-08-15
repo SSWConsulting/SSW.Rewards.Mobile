@@ -34,7 +34,7 @@
             <Grid Grid.Row="0"
                   ColumnDefinitions="Auto,Auto"
                   HorizontalOptions="Center"
-                  ColumnSpacing="20">
+                  ColumnSpacing="40">
                 <Button Grid.Column="0"
                         CornerRadius="30"
                         WidthRequest="60"
