@@ -76,4 +76,28 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
             await Navigation.PopModalAsync();
         }
     }
+    
+    [RelayCommand]
+    private void ZoomIn()
+    {
+        var currentZoom = scannerView.CurrentZoomFactor;
+        var minZoom = scannerView.MinZoomFactor;
+        var maxZoom = scannerView.MaxZoomFactor;
+
+        if (currentZoom < minZoom)
+        {
+            currentZoom = minZoom;
+        }
+        
+        scannerView.RequestZoomFactor = Math.Min(currentZoom + 2f, maxZoom);
+    }
+    
+    [RelayCommand]
+    private void ZoomOut()
+    {
+        var currentZoom = scannerView.CurrentZoomFactor;
+        var minZoom = scannerView.MinZoomFactor;
+        
+        scannerView.RequestZoomFactor = Math.Max(currentZoom - 2f, minZoom);
+    }
 }
