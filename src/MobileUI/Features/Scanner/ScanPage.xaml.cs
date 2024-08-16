@@ -17,7 +17,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         _viewModel = viewModel;
     }
 
-    public void Handle_OnScanResult(object sender, OnDetectionFinishedEventArg e)
+    private void Handle_OnScanResult(object sender, OnDetectionFinishedEventArg e)
     {
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
@@ -39,6 +39,13 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+        
+        // Reset zoom when exiting camera
+        if (scannerView.CurrentZoomFactor > -1)
+        {
+            scannerView.RequestZoomFactor = scannerView.MinZoomFactor;
+        }
+        
         ToggleScanner(false);
         WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
@@ -59,12 +66,6 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
 
     private void ToggleScanner(bool toggleOn)
     {
-        // Reset zoom when exiting camera
-        if (!toggleOn && scannerView.CurrentZoomFactor > -1)
-        {
-            scannerView.RequestZoomFactor = scannerView.MinZoomFactor;
-        }
-        
         scannerView.CameraEnabled = toggleOn;
     }
     
