@@ -14,6 +14,9 @@ jobs:
     with:
       environment: dev
       resourceGroupName: ssw.rewards.dev
+      frontDoorProfileName: dev-rewards
+      frontDoorEndpointName: dev-rewards.azureedge.net
+      frontDoorDomain: dev.rewards.ssw.com.au
     secrets: inherit
 
   deploy_staging:
@@ -23,6 +26,9 @@ jobs:
      with:
        environment: staging
        resourceGroupName: ssw.rewards.staging
+       frontDoorProfileName: staging-rewards
+       frontDoorEndpointName: staging-rewards.azureedge.net
+       frontDoorDomain: staging.rewards.ssw.com.au
      secrets: inherit
 
   deploy_prod:
@@ -32,4 +38,7 @@ jobs:
      with:
        environment: prod
        resourceGroupName: ssw.rewards.prod
+       frontDoorProfileName: rewards
+       frontDoorEndpointName: sswrewards.azureedge.net
+       frontDoorDomain: rewards.ssw.com.au
      secrets: inherit
