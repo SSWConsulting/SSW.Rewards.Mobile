@@ -84,3 +84,15 @@ jobs:
           account_name: ${{ steps.bicep.outputs.storageAccountName }}
           sas_token: ${{ steps.storage.outputs.sastoken }}
           sync: "true"
+
+      - name: Purge Front Door cache
+        id: purge-front-door
+        shell: pwsh
+        run: |
+          az afd endpoint purge \
+          --resource-group ${{ inputs.resourceGroupName }} `
+          --profile-name ${{ inputs.frontDoorProfileName }} `
+          --endpoint-name ${{ inputs.frontDoorEndpointName }} `
+          --domains ${{ inputs.frontDoorDomain }} `
+          --content-paths '/*' `
+          --no-wait

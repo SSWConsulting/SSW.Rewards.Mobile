@@ -334,7 +334,6 @@
                                                  Spacing="15">
                                 <Button Background="{StaticResource SSWRed}"
                                         CornerRadius="10"
-                                        WidthRequest="80"
                                         IsVisible="{Binding ConfirmEnabled}"
                                         Text="Confirm"
                                         FontAttributes="Bold"

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile;
 
@@ -34,5 +36,10 @@ public partial class AppShell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
+    }
+
+    private void OnNavigating(object sender, ShellNavigatingEventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
     }
 }
