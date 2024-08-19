@@ -5,7 +5,6 @@
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                  x:Name="QrCodePopup"
                  x:DataType="viewModels:QrCodeViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.QrCodePage"
@@ -31,13 +30,10 @@
             StrokeShape="RoundRectangle 10"
             BackgroundColor="{StaticResource Background}">
             <Grid>
-                <zxing:BarcodeGeneratorView
-                                         Format="QrCode"
-                                         Value="{Binding QrCode}"
-                                         HorizontalOptions="Center"
-                                         WidthRequest="250"
-                                         HeightRequest="250"
-                                         VerticalOptions="Center"/>
+                <Image
+                    Source="{Binding QrCode}"
+                    WidthRequest="250"
+                    HeightRequest="250" />
             </Grid>
         </Border>
 

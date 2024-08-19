@@ -8,7 +8,7 @@
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
                  xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-                 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+                 xmlns:s="clr-namespace:System;assembly=System.Runtime"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemRewardPage"
@@ -170,12 +170,12 @@
                                        Text="Please show this code to SSW staff to claim your reward:"
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
-                                <zxing:BarcodeGeneratorView Grid.Row="1"
-                                                            Format="QrCode"
-                                                            Value="{Binding QrCode}"
-                                                            WidthRequest="250"
-                                                            HeightRequest="250"
-                                                            VerticalOptions="Center"/>
+                                <Image
+                                    Grid.Row="1"
+                                    Source="{Binding QrCode}"
+                                    WidthRequest="250"
+                                    HeightRequest="250"
+                                    VerticalOptions="Center" />
                             </Grid>
 
                             <!-- Address search -->
@@ -322,9 +322,10 @@
                                     Text="Redeem in-person"
                                     Command="{Binding RedeemInPersonClickedCommand}"
                                     Grid.Column="0" />
-                                
+
                                 <controls:MultiLineButton
-                                    Text="Ship to my address (Australia only)"
+                                    Text="{Binding StringFormat='Ship to my address{0}(Australia only)',
+                                        Source={x:Static s:Environment.NewLine}}"
                                     Command="{Binding NextClickedCommand}"
                                     Grid.Column="2" />
                             </Grid>

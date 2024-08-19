@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:zx="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              BackgroundColor="{StaticResource Background}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:Name="this">
     <Grid>
-        <zx:CameraBarcodeReaderView x:Name="scannerView"
-                                    BarcodesDetected="Handle_OnScanResult"
-                                    Options="{Binding BarcodeReaderOptions, Source={x:Reference this}}"/>
+        <scanner:CameraView x:Name="scannerView"
+                            OnDetectionFinished="Handle_OnScanResult"
+                            BarcodeSymbologies="QRCode"
+                            ViewfinderMode="True"
+                            TapToFocusEnabled="True"/>
 
         <Button Text="Close"
                 ContentLayout="Right, 10"
@@ -24,22 +26,56 @@
                                  FontFamily="FluentIcons"/>
             </Button.ImageSource>
         </Button>
-
-        <Border
-            BackgroundColor="{StaticResource Background}"
-            VerticalOptions="End"
-            HeightRequest="60"
-            Margin="20,40"
-            StrokeShape="RoundRectangle 20">
-            <Label Text="Scan a QR Code"
-                   Style="{StaticResource LabelBold}"
-                   FontSize="Large"
-                   FontAutoScalingEnabled="False"
-                   HorizontalTextAlignment="Center"
-                   VerticalOptions="Center"
-                   TextColor="#DDDDDD" />
-        </Border>
+        
         <Image Source="qr_reticle"/>
-
+        
+        <Grid VerticalOptions="End"
+              RowDefinitions="Auto,*">
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="Auto,Auto"
+                  HorizontalOptions="Center"
+                  ColumnSpacing="40">
+                <Button Grid.Column="0"
+                        CornerRadius="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        Command="{Binding Path=ZoomOutCommand, Source={x:Reference this}}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf8c6;"
+                                         FontAutoScalingEnabled="False"
+                                         FontFamily="FluentIcons"/>
+                    </Button.ImageSource>
+                </Button>
+                
+                <Button Grid.Column="1"
+                        CornerRadius="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        Command="{Binding Path=ZoomInCommand, Source={x:Reference this}}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf8c4;"
+                                         FontAutoScalingEnabled="False"
+                                         FontFamily="FluentIcons"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            
+            <Border
+                Grid.Row="1"
+                BackgroundColor="{StaticResource Background}"
+                VerticalOptions="End"
+                HeightRequest="60"
+                Margin="20,40"
+                StrokeShape="RoundRectangle 20">
+                <Label Text="Scan a QR Code"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="Large"
+                       FontAutoScalingEnabled="False"
+                       HorizontalTextAlignment="Center"
+                       VerticalOptions="Center"
+                       TextColor="#DDDDDD" />
+            </Border>
+        </Grid>
+        
     </Grid>
 </ContentPage>

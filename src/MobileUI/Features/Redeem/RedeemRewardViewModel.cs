@@ -66,7 +66,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
     private bool _claimSuccess;
 
     [ObservableProperty]
-    private string _qrCode;
+    private ImageSource _qrCode;
 
     public ObservableCollection<Address> SearchResults { get; set; } = [];
     public bool ShouldCallCallback { get; set; }
@@ -101,7 +101,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         IsBalanceVisible = false;
         ConfirmEnabled = false;
         Heading = $"Ready to claim:{Environment.NewLine}{_reward.Name}";
-        QrCode = qrCode ?? _reward.PendingRedemptionCode;
+        QrCode = ImageHelpers.GenerateQrCode(qrCode ?? _reward.PendingRedemptionCode);
         IsQrCodeVisible = true;
         ShouldCallCallback = true;
     }

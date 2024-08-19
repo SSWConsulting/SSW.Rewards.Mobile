@@ -7,11 +7,14 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class QrCodeViewModel : BaseViewModel
 {
     [ObservableProperty]
-    private string _qrCode;
+    private ImageSource _qrCode;
     
     public QrCodeViewModel(IUserService userService)
     {
-        userService.MyQrCodeObservable().Subscribe(myQrCode => QrCode = myQrCode);
+        userService.MyQrCodeObservable().Subscribe((myQrCode) =>
+        {
+            QrCode = ImageHelpers.GenerateQrCode(myQrCode);
+        });
     }
     
     [RelayCommand]

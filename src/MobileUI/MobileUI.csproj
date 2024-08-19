@@ -59,9 +59,10 @@
     </ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
 		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />
@@ -78,19 +79,19 @@
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
-	</ItemGroup>
+    </ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <GoogleServicesJson Include="Platforms/Android/google-services.json" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.6.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.7.1" />
 		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.2.0.6" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.3.0.2" />
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
         <PackageReference Include="Xamarin.Firebase.Core" Version="121.1.1.8" />
         <PackageReference Include="Xamarin.Firebase.Analytics" Version="121.3.0.6" />
