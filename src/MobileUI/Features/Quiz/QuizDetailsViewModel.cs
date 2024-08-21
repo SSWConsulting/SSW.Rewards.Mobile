@@ -155,9 +155,9 @@ namespace SSW.Rewards.Mobile.ViewModels
 
                 if (!isComplete)
                 {
-                    await App.Current.MainPage.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again.", "OK");
                     IsBusy = false;
                     await MopupService.Instance.RemovePageAsync(popup);
+                    await App.Current.MainPage.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
                     return;
                 }
 
@@ -174,7 +174,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task<bool> AwaitQuizCompletion()
         {
-            var maxAttempts = 100;
+            var maxAttempts = 30;
             var delay = 2000;
             bool isComplete = false;
 
@@ -183,7 +183,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 maxAttempts--;
                 var completion = await _quizService.CheckQuizCompletion(_submissionId);
 
-                if (completion == null || maxAttempts == 0)
+                if (completion == null || (completion == false && maxAttempts == 0))
                 {
                     return false;
                 }
