@@ -28,7 +28,7 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
         {
             var user = await _dbContext.Users
                 .Include(u => u.UserAchievements)
-                .FirstOrDefaultAsync(u => u.Email != null && u.Email.Equals(request.Email, StringComparison.CurrentCultureIgnoreCase), cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == request.Email.ToLower(), cancellationToken: cancellationToken);
 
             if (user is not null)
             {
@@ -54,7 +54,7 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
             }
             else
             {
-                if (!_dbContext.UnclaimedAchievements.Any(ua => ua.EmailAddress.Equals(request.Email, StringComparison.CurrentCultureIgnoreCase) && ua.AchievementId == achievement.Id))
+                if (!_dbContext.UnclaimedAchievements.Any(ua => ua.EmailAddress.ToLower() == request.Email.ToLower() && ua.AchievementId == achievement.Id))
                 {
                     _dbContext.UnclaimedAchievements.Add(new UnclaimedAchievement
                     {
