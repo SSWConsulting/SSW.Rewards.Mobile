@@ -83,7 +83,7 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
     {
         var result = await fluentEmail
             .To(to)
-            .Subject("SSW.Rewards - Points received for form completion!")
+            .Subject("Great to see you again, what cool stuff will you pick this time?")
             .UsingTemplateFromEmbedded(string.Format(TemplatePath, "FormCompletionPointsReceived"), model, GetType().Assembly)
             .SendAsync();
 
@@ -99,7 +99,7 @@ public class EmailService(IFluentEmail fluentEmail, ILogger<EmailService> logger
     {
         var result = await fluentEmail
             .To(to)
-            .Subject("SSW.Rewards - Account created for form completion!")
+            .Subject("Welcome to SSW Rewards - start collecting points now to get amazing swag!")
             .UsingTemplateFromEmbedded(string.Format(TemplatePath, "FormCompletionCreateAccount"), model, GetType().Assembly)
             .SendAsync();
 
