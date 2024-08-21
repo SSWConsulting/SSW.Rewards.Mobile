@@ -22,13 +22,13 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
     
     public async Task Handle(ClaimFormCompletedAchievementCommand request, CancellationToken cancellationToken)
     {
-        var achievement = await _dbContext.Achievements.FirstOrDefaultAsync(a => a.IntegrationId == request.IntegrationId);
+        var achievement = await _dbContext.Achievements.FirstOrDefaultAsync(a => a.IntegrationId == request.IntegrationId, cancellationToken: cancellationToken);
 
         if (achievement is not null)
         {
             var user = await _dbContext.Users
                 .Include(u => u.UserAchievements)
-                .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
+                .FirstOrDefaultAsync(u => u.Email != null && u.Email.Equals(request.Email, StringComparison.CurrentCultureIgnoreCase), cancellationToken: cancellationToken);
 
             if (user is not null)
             {
@@ -40,20 +40,37 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
                         AwardedAt = DateTime.UtcNow,
                     
                     });
-                    await _emailService.SendFormCompletionPointsReceivedEmail(user.Email, new FormCompletionPointsReceivedEmail { Points = achievement.Value, UserName = user.FullName }, cancellationToken);
+                    
+                    var firstName = user.FullName?.Split([' '], 2).FirstOrDefault();
+                    
+                    await _emailService.SendFormCompletionPointsReceivedEmail(user.Email!,
+                        new FormCompletionPointsReceivedEmail
+                        {
+                            Points = achievement.Value,
+                            FirstName = firstName,
+                            AchievementName = achievement.Name
+                        }, cancellationToken);
                 }
             }
             else
             {
-                if (!_dbContext.UnclaimedAchievements.Any(ua => ua.EmailAddress.ToLower() == request.Email.ToLower() && ua.AchievementId == achievement.Id))
+                if (!_dbContext.UnclaimedAchievements.Any(ua => ua.EmailAddress.Equals(request.Email, StringComparison.CurrentCultureIgnoreCase) && ua.AchievementId == achievement.Id))
                 {
                     _dbContext.UnclaimedAchievements.Add(new UnclaimedAchievement
                     {
                         AchievementId = achievement.Id,
-                        EmailAddress = request.Email,
+                        EmailAddress = request.Email
                     });
+                    
+                    var firstName = request.Name.Split([' '], 2).FirstOrDefault();
 
-                    await _emailService.SendFormCompletionCreateAccountEmail(request.Email.ToLower(), new FormCompletionCreateAccountEmail { Name = request.Name, Points = achievement.Value},
+                    await _emailService.SendFormCompletionCreateAccountEmail(request.Email.ToLower(),
+                        new FormCompletionCreateAccountEmail
+                        {
+                            Points = achievement.Value,
+                            FirstName = firstName,
+                            AchievementName = achievement.Name
+                        },
                         cancellationToken);
                 }
             }
