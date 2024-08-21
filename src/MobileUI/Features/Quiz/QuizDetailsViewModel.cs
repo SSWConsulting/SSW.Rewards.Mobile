@@ -183,7 +183,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 maxAttempts--;
                 var completion = await _quizService.CheckQuizCompletion(_submissionId);
 
-                if (completion == null || maxAttempts == 0)
+                if (completion == null || (completion == false && maxAttempts == 0))
                 {
                     return false;
                 }
