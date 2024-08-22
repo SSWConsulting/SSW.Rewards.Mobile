@@ -2,6 +2,9 @@ name: API - Main (Build & deploy)
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - Update-Bicep-Add-LAW  
 
 jobs:
   api_build:
@@ -23,18 +26,18 @@ jobs:
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
 
-  deploy_prod:
-    needs: deploy_staging
-    name: Deploy prod
-    uses: ./.github/workflows/api-az-deploy.yml
-    with:
-      ENVIRONMENT: prod
-      RESOURCE_GROUP: SSW.Rewards.Prod
-      APP_SERVICE_PLAN: plan-ssw-shared-prod
-      APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
-      ADMIN_PORTAL_URL: https://rewards.ssw.com.au
-      IDS_URL: https://identity.ssw.com.au
-    secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
-      SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
+  # deploy_prod:
+  #   needs: deploy_staging
+  #   name: Deploy prod
+  #   uses: ./.github/workflows/api-az-deploy.yml
+  #   with:
+  #     ENVIRONMENT: prod
+  #     RESOURCE_GROUP: SSW.Rewards.Prod
+  #     APP_SERVICE_PLAN: plan-ssw-shared-prod
+  #     APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
+  #     ADMIN_PORTAL_URL: https://rewards.ssw.com.au
+  #     IDS_URL: https://identity.ssw.com.au
+  #   secrets:
+  #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  #     SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
+  #     SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
