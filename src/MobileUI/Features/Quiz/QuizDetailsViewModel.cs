@@ -113,7 +113,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             IsBusy = false;
 
-            LogEvent(Constants.AnalyticsEvents.StartQuiz);
+            LogEvent(Constants.AnalyticsEvents.QuizStart);
             
             WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
         }
@@ -226,7 +226,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (result.Passed)
             {
-                LogEvent(Constants.AnalyticsEvents.PassedQuiz);
+                LogEvent(Constants.AnalyticsEvents.QuizPass);
                 App.Current.Resources.TryGetValue("SuccessGreen", out object successGreen);
 
                 ScoreBackground = (Color)successGreen!;
@@ -247,7 +247,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                LogEvent(Constants.AnalyticsEvents.FailedQuiz);
+                LogEvent(Constants.AnalyticsEvents.QuizFail);
                 App.Current.Resources.TryGetValue("SSWRed", out object sswRed);
 
                 ScoreBackground = (Color)sswRed!;
