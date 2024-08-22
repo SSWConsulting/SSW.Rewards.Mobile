@@ -22,6 +22,8 @@ public sealed class GetRewardListHandler : IRequestHandler<GetRewardList, Reward
         var rewards = await _context
                 .Rewards
                 .ProjectTo<RewardDto>(_mapper.ConfigurationProvider)
+                // TODO: Remove this once Copenhagen Developers Festival is over. 
+                .OrderByDescending(x => x.Name.Contains("Tina"))
                 .ToListAsync(cancellationToken);
 
         return new RewardListViewModel
