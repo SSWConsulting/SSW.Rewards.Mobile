@@ -118,6 +118,7 @@ public partial class RedeemRewardViewModel(
         {
             { "reward_id", _reward.Id.ToString() },
             { "reward_name", _reward.Name },
+            { "reward_value", _reward.Cost.ToString() }
         });
     }
     
