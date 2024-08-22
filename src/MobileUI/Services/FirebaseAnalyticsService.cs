@@ -1,4 +1,3 @@
-using Microsoft.Maui.Controls.Compatibility;
 using Firebase.Analytics;
 
 #if IOS
@@ -9,6 +8,8 @@ using Foundation;
 #endif
 
 namespace SSW.Rewards.Mobile.Services;
+
+// From https://gist.github.com/vhugogarcia/abbdafa01d17c754eab747e06d2c7653#file-firebaseanalyticsservice-cs
 
 public interface IFirebaseAnalyticsService
 {
