@@ -47,5 +47,10 @@ public static class Constants
         public const string QuizStart = "quiz_start";
         public const string QuizPass = "quiz_pass";
         public const string QuizFail = "quiz_fail";
+        
+        public const string RewardView = "reward_view";
+        public const string RewardRedemptionPending = "reward_redemption_pending";
+        public const string RewardRedemptionCancelled = "reward_redemption_cancelled";
+        public const string RewardRedeemed = "reward_redeemed";
     }
 }

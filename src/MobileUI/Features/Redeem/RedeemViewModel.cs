@@ -152,7 +152,7 @@ public partial class RedeemViewModel : BaseViewModel
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
             var popup = new RedeemRewardPage(
                 _firebaseAnalyticsService,
-                new RedeemRewardViewModel(_userService, _rewardService, _addressService),
+                new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService),
                 reward,
                 statusBarColor as Color);
             popup.CallbackEvent += async (_, _) =>
