@@ -35,6 +35,15 @@ module keyVault 'modules/keyvault.bicep' = {
   }
 }
 
+module logAnalyticsWorkspace 'modules/law.bicep' = {
+  name: 'law-${now}'
+  params: {
+    projectName: projectName
+    location: location
+    environment: environment
+  }
+}
+
 module sqlServer 'modules/sql.bicep' = {
   name: 'sql-${now}'
   params: {
@@ -77,6 +86,7 @@ module appService 'modules/webapp.bicep' = {
     sqlConnectionStringSecretUriWithVersion: sqlServer.outputs.sqlConnectionStringSecretUriWithVersion
     hangfireSqlConnectionStringSecretUriWithVersion: sqlServer.outputs.hangfireSqlConnectionStringSecretUriWithVersion
     mapsApiKeySecretUriWithVersion: maps.outputs.mapsApiKeySecretUriWithVersion
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
   }
 }
 
