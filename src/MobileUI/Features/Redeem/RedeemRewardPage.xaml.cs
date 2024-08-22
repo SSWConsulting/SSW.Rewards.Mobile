@@ -8,9 +8,11 @@ public partial class RedeemRewardPage
     private readonly RedeemRewardViewModel _viewModel;
     private readonly Reward _reward;
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public RedeemRewardPage(RedeemRewardViewModel viewModel, Reward reward, Color parentPageStatusBarColor = null)
+    public RedeemRewardPage(IFirebaseAnalyticsService firebaseAnalyticsService, RedeemRewardViewModel viewModel, Reward reward, Color parentPageStatusBarColor = null)
     {
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
         _viewModel = viewModel;
@@ -21,6 +23,7 @@ public partial class RedeemRewardPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("RedeemRewardPage");
         _viewModel.Initialise(_reward);
     }
 

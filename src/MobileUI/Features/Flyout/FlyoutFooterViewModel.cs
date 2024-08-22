@@ -9,6 +9,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
 {
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
     [ObservableProperty]
     private bool _isStaff;
@@ -16,10 +17,11 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [ObservableProperty]
     private string _versionNumber;
 
-    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService)
+    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _userService = userService;
         _authService = authService;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         
         VersionNumber = $"Version {AppInfo.VersionString}";
         
@@ -33,7 +35,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
             return;
         
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new QrCodePage(new QrCodeViewModel(_userService), statusBarColor as Color);
+        var popup = new QrCodePage(new QrCodeViewModel(_userService), _firebaseAnalyticsService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
     

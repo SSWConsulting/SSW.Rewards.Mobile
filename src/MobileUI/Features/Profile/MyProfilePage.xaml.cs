@@ -5,24 +5,27 @@ namespace SSW.Rewards.Mobile.Pages;
 
 public partial class MyProfilePage
 {
-    private MyProfileViewModel viewModel;
+    private readonly MyProfileViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public MyProfilePage(MyProfileViewModel vm)
+    public MyProfilePage(MyProfileViewModel vm, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
-        viewModel = vm;
-        viewModel.Navigation = Navigation;
-        BindingContext = viewModel;
+        _viewModel = vm;
+        _viewModel.Navigation = Navigation;
+        BindingContext = _viewModel;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     protected override async void OnAppearing()
     {
-        await viewModel.Initialise();
+        _firebaseAnalyticsService.Log("MyProfilePage");
+        await _viewModel.Initialise();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        viewModel.OnDisappearing();
+        _viewModel.OnDisappearing();
     }
 }

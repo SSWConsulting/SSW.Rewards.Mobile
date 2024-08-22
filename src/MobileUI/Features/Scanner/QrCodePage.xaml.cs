@@ -7,18 +7,21 @@ namespace SSW.Rewards.Mobile.PopupPages;
 public partial class QrCodePage
 {
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
     private float _prevValue;
-    public QrCodePage(QrCodeViewModel viewModel, Color parentPageStatusBarColor = null)
+    public QrCodePage(QrCodeViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
     {
         InitializeComponent();
         BindingContext = viewModel;
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("QrCodePage");
         _prevValue = ScreenBrightness.Default.Brightness;
         ScreenBrightness.Default.Brightness = 1;
     }

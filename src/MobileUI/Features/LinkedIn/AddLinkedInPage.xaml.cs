@@ -6,12 +6,20 @@ namespace SSW.Rewards.Mobile.PopupPages;
 public partial class AddLinkedInPage
 {
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public AddLinkedInPage(IUserService userService, ISnackbarService snackbarService, Color parentPageStatusBarColor = null)
+    public AddLinkedInPage(IUserService userService, ISnackbarService snackbarService, IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
         BindingContext = new AddLinkedInViewModel(userService, snackbarService);
+    }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _firebaseAnalyticsService.Log("AddLinkedInPage");
     }
 
     protected override void OnDisappearing()

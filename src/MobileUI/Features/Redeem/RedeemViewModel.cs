@@ -15,6 +15,7 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IRewardService _rewardService;
     private readonly IUserService _userService;
     private readonly IAddressService _addressService;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private bool _isLoaded;
     private IDispatcherTimer _timer;
     
@@ -32,12 +33,13 @@ public partial class RedeemViewModel : BaseViewModel
     [ObservableProperty]
     private int _carouselPosition;
 
-    public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService)
+    public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         Title = "Rewards";
         _rewardService = rewardService;
         _userService = userService;
         _addressService = addressService;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
         
@@ -149,6 +151,7 @@ public partial class RedeemViewModel : BaseViewModel
         {
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
             var popup = new RedeemRewardPage(
+                _firebaseAnalyticsService,
                 new RedeemRewardViewModel(_userService, _rewardService, _addressService),
                 reward,
                 statusBarColor as Color);
