@@ -73,7 +73,7 @@ jobs:
         run: |
           dotnet nuget locals all --clear
           dotnet workload install maui --ignore-failed-sources
-          dotnet workload install android maui wasm-tools --source https://api.nuget.org/v3/index.json --from-rollback-file ./rollback.json
+          dotnet workload install android maui wasm-tools --source https://api.nuget.org/v3/index.json --from-rollback-file rollback.json
 
       - name: Restore Dependencies
         run: |
