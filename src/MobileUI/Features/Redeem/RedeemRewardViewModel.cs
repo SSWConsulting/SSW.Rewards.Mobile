@@ -19,7 +19,7 @@ public partial class RedeemRewardViewModel(
     IFirebaseAnalyticsService firebaseAnalyticsService) : BaseViewModel
 {
     private Reward _reward;
-    private float _prevValue;
+    private float _defaultBrightness;
 
     [ObservableProperty]
     private string _image;
@@ -78,6 +78,7 @@ public partial class RedeemRewardViewModel(
     public void Initialise(Reward reward)
     {
         _reward = reward;
+        _defaultBrightness = ScreenBrightness.Default.Brightness;
         Image = reward.ImageUri;
         Heading = $"You are about to get:{Environment.NewLine}{reward.Name}";
         Description = reward.Description;
@@ -95,12 +96,11 @@ public partial class RedeemRewardViewModel(
 
     public void OnDisappearing()
     {
-        ScreenBrightness.Default.Brightness = _prevValue;
+        ScreenBrightness.Default.Brightness = _defaultBrightness;
     }
 
     private void ShowQrCode(string qrCode = null)
     {
-        _prevValue = ScreenBrightness.Default.Brightness;
         ScreenBrightness.Default.Brightness = 1;
         
         IsHeaderVisible = false;
