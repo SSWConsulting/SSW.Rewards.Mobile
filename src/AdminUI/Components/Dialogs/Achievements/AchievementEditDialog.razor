@@ -1,18 +1,22 @@
-@using Microsoft.AspNetCore.Components
 @using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.Admin.UI.Models.Interfaces
 @using SSW.Rewards.Enums
 @using SSW.Rewards.Shared.DTOs.Achievements
 @using SSW.Rewards.Shared.DTOs.Leaderboard
 @using SSW.Rewards.ApiClient.Services
+@using Icons = MudBlazor.Icons
 
 @inject ILeaderboardService leaderboardService
 @inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
 
 <MudDialog>
     <TitleContent>
         <div class="d-flex justify-center">
             <AdminQRCode Height="200" QRCodeString="@dto.Code"/>
+        </div>
+        <div class="d-flex justify-center">
+            <MudButton StartIcon="@Icons.TwoTone.CopyAll" OnClick="CopyToClipboard">Copy details</MudButton>
         </div>
     </TitleContent>
     <DialogContent>
@@ -115,5 +119,11 @@
         {
             AchievementId = dto.Id
         }));
+    }
+
+    async Task CopyToClipboard()
+    {
+        var achievementDetails = $"Achievement: {dto.Name} - {dto.Value} points";
+        await JsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", achievementDetails);
     }
 }
