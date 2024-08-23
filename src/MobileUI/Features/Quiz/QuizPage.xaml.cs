@@ -3,19 +3,22 @@
 public partial class QuizPage
 {
     private readonly QuizViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     
     private bool _isLoaded;
 
-    public QuizPage(QuizViewModel viewModel)
+    public QuizPage(QuizViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
         _viewModel = viewModel;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("QuizPage");
         await _viewModel.Initialise();
         await Animate();
     }

@@ -6,13 +6,21 @@ namespace SSW.Rewards.PopupPages;
 public partial class ProfilePicturePage
 {
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public ProfilePicturePage(ProfilePictureViewModel profilePictureViewModel, Color parentPageStatusBarColor = null)
+    public ProfilePicturePage(ProfilePictureViewModel profilePictureViewModel, IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
         profilePictureViewModel.Navigation = Navigation;
         BindingContext = profilePictureViewModel;
+    }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _firebaseAnalyticsService.Log("ProfilePicturePage");
     }
 
     protected override void OnDisappearing()

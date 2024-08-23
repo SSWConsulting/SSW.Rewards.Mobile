@@ -40,5 +40,7 @@
 	<array>
 		<string>mailto</string>
 	</array>
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<false/>
 </dict>
 </plist>

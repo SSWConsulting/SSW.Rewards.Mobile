@@ -15,6 +15,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly IQuizService _quizService;
         private readonly ISnackbarService _snackbarService;
         private readonly IUserService _userService;
+        private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
         private int _quizId;
         private int _submissionId;
 
@@ -81,11 +82,12 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;
             _userService = userService;
+            _firebaseAnalyticsService = firebaseAnalyticsService;
         }
 
         public async Task Initialise(int quizId)
@@ -111,7 +113,15 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             IsBusy = false;
 
+            LogEvent(Constants.AnalyticsEvents.QuizStart);
+            
             WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
+        }
+
+        private void LogEvent(string eventName)
+        {
+            _firebaseAnalyticsService.Log(eventName,
+                new Dictionary<string, string> { { "quiz_id", _quizId.ToString() }, { "quiz_title", QuizTitle } });
         }
 
         private async Task SubmitAnswer()
@@ -195,7 +205,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             return true;
         }
 
-        public async Task ProcessResult(QuizResultDto result)
+        private async Task ProcessResult(QuizResultDto result)
         {
             QuestionsVisible = false;
             ResultsVisible = true;
@@ -216,6 +226,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             if (result.Passed)
             {
+                LogEvent(Constants.AnalyticsEvents.QuizPass);
                 App.Current.Resources.TryGetValue("SuccessGreen", out object successGreen);
 
                 ScoreBackground = (Color)successGreen!;
@@ -236,6 +247,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
+                LogEvent(Constants.AnalyticsEvents.QuizFail);
                 App.Current.Resources.TryGetValue("SSWRed", out object sswRed);
 
                 ScoreBackground = (Color)sswRed!;

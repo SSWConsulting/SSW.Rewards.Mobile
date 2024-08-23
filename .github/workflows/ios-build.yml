@@ -35,8 +35,8 @@ jobs:
       - name: Install MAUI Workload
         run: |
           dotnet nuget locals all --clear
-          dotnet workload install maui --ignore-failed-sources
-          dotnet workload install ios maui wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
+          dotnet workload install maui --ignore-failed-sources --from-rollback-file rollback.json
+          dotnet workload install ios maui wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources --from-rollback-file rollback.json
 
       - name: Set XCode Version
         if: runner.os == 'macOS'

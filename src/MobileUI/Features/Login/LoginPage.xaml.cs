@@ -5,18 +5,21 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class LoginPage : ContentPage
 {
     private readonly LoginPageViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public LoginPage(LoginPageViewModel viewModel)
+    public LoginPage(LoginPageViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("LoginPage");
 
         await Task.WhenAny<bool>
             (
@@ -29,7 +32,7 @@ public partial class LoginPage : ContentPage
         {
             Preferences.Set("FirstRun", false);
             Application.Current.Resources.TryGetValue("SecondaryBackground", out var statusBarColor);
-            await MopupService.Instance.PushAsync(new OnBoardingPage(true, statusBarColor as Color));
+            await MopupService.Instance.PushAsync(new OnBoardingPage(_firebaseAnalyticsService, true, statusBarColor as Color));
         }
         else
         {

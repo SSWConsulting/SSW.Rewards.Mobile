@@ -9,12 +9,14 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class ScanPage : IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private const float ZoomFactorStep = 1.0f;
 
-    public ScanPage(ScanResultViewModel viewModel)
+    public ScanPage(ScanResultViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
         _viewModel = viewModel;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
     }
 
     private void Handle_OnScanResult(object sender, OnDetectionFinishedEventArg e)
@@ -53,6 +55,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("ScanPage");
         WeakReferenceMessenger.Default.Register(this);
         
         ToggleScanner(true);

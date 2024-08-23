@@ -7,9 +7,11 @@ namespace SSW.Rewards.PopupPages;
 public partial class AboutSswPage
 {
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public AboutSswPage(Color parentPageStatusBarColor = null)
+    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
     {
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
     }
@@ -17,6 +19,7 @@ public partial class AboutSswPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("AboutSswPage");
         VersionLabel.Text = $"Version {AppInfo.VersionString}";
     }
 

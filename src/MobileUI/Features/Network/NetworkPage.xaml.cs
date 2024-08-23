@@ -3,11 +3,13 @@
 public partial class NetworkPage : ContentPage
 {
     private readonly NetworkPageViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public NetworkPage(NetworkPageViewModel viewModel)
+    public NetworkPage(NetworkPageViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
         InitializeComponent();
     }
@@ -15,6 +17,7 @@ public partial class NetworkPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("NetworkPage");
         await _viewModel.Initialise();
     }
 }
