@@ -12,7 +12,11 @@ using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class RedeemRewardViewModel(IUserService userService, IRewardService rewardService, IAddressService addressService) : BaseViewModel
+public partial class RedeemRewardViewModel(
+    IUserService userService,
+    IRewardService rewardService,
+    IAddressService addressService,
+    IFirebaseAnalyticsService firebaseAnalyticsService) : BaseViewModel
 {
     private Reward _reward;
     private float _prevValue;
@@ -85,6 +89,8 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         }
 
         userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
+        
+        LogEvent(Constants.AnalyticsEvents.RewardView);
     }
 
     public void OnDisappearing()
@@ -106,6 +112,16 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         ShouldCallCallback = true;
     }
 
+    private void LogEvent(string eventName)
+    {
+        firebaseAnalyticsService.Log(eventName, new Dictionary<string, string>
+        {
+            { "reward_id", _reward.Id.ToString() },
+            { "reward_name", _reward.Name },
+            { "reward_value", _reward.Cost.ToString() }
+        });
+    }
+    
     [RelayCommand]
     private async Task SearchAddress(string addressQuery)
     {
@@ -178,6 +194,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
         if (claimResult.status == RewardStatus.Pending)
         {
             ShowQrCode(claimResult.Code);
+            LogEvent(Constants.AnalyticsEvents.RewardRedemptionPending);
         }
         else
         {
@@ -199,6 +216,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
 
         IsBusy = false;
         await MopupService.Instance.PopAsync();
+        LogEvent(Constants.AnalyticsEvents.RewardRedemptionCancelled);
     }
 
     [RelayCommand]
@@ -227,6 +245,7 @@ public partial class RedeemRewardViewModel(IUserService userService, IRewardServ
             Heading = "Success!";
             Description = "Your reward is on the way!";
             ClaimSuccess = true;
+            LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
         }
         else
         {

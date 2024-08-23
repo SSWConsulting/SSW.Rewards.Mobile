@@ -16,6 +16,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
     private readonly ISnackbarService _snackbarService;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -72,13 +73,15 @@ public partial class ProfileViewModelBase : BaseViewModel
         IUserService userService,
         IDevService devService,
         IPermissionsService permissionsService,
-        ISnackbarService snackbarService)
+        ISnackbarService snackbarService,
+        IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
         _permissionsService = permissionsService;
         _snackbarService = snackbarService;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         userService.LinkedInProfileObservable().Subscribe(myLinkedIn =>
         {
             LinkedInUrl = myLinkedIn;
@@ -138,7 +141,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
 
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), statusBarColor as Color);
+        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), _firebaseAnalyticsService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 
@@ -153,7 +156,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
 
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = new AddLinkedInPage(_userService, _snackbarService, statusBarColor as Color);
+            var page = new AddLinkedInPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
             await MopupService.Instance.PushAsync(page);
             return;
         }

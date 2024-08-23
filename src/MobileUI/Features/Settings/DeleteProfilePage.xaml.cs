@@ -7,10 +7,18 @@ namespace SSW.Rewards.PopupPages;
 public partial class DeleteProfilePage : PopupPage
 {
     private readonly IUserService _userService;
-    public DeleteProfilePage(IUserService userService)
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
         _userService = userService;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
+    }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _firebaseAnalyticsService.Log("DeleteProfilePage");
     }
 
     private async void OnCancelTapped(object sender, System.EventArgs e)

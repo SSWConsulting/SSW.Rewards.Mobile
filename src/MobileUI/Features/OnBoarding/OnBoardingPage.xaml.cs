@@ -7,9 +7,11 @@ public partial class OnBoardingPage
 {
     private readonly OnBoardingViewModel _viewModel;
     private readonly Color _parentPageStatusBarColor;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public OnBoardingPage(bool isFirstRun = false, Color parentPageStatusBarColor = null)
+    public OnBoardingPage(IFirebaseAnalyticsService firebaseAnalyticsService, bool isFirstRun = false, Color parentPageStatusBarColor = null)
     {
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
         _viewModel = new OnBoardingViewModel(isFirstRun);
@@ -22,9 +24,10 @@ public partial class OnBoardingPage
         return true;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("OnBoardingPage");
         _viewModel.Initialise();
         _viewModel.ScrollToRequested += ScrollToIndex;
     }

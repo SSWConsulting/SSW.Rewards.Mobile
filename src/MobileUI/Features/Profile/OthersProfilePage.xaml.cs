@@ -4,29 +4,32 @@ namespace SSW.Rewards.Mobile.Pages;
 
 public partial class OthersProfilePage
 {
-    private OthersProfileViewModel viewModel;
+    private readonly OthersProfileViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     
-    public OthersProfilePage(OthersProfileViewModel vm, int userId)
+    public OthersProfilePage(OthersProfileViewModel vm, IFirebaseAnalyticsService firebaseAnalyticsService, int userId)
     {
         InitializeComponent();
-        viewModel = vm;
+        _viewModel = vm;
 
-        viewModel.ShowBalance = false;
+        _viewModel.ShowBalance = false;
         
-        viewModel.SetUser(userId);
+        _viewModel.SetUser(userId);
 
-        viewModel.Navigation = Navigation;
-        BindingContext = viewModel;
+        _viewModel.Navigation = Navigation;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
+        BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
     {
-        await viewModel.Initialise();
+        _firebaseAnalyticsService.Log("OthersProfilePage");
+        await _viewModel.Initialise();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        viewModel.OnDisappearing();
+        _viewModel.OnDisappearing();
     }
 }

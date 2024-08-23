@@ -3,11 +3,13 @@
 public partial class LeaderboardPage : ContentPage
 {
     private readonly LeaderboardViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public LeaderboardPage(LeaderboardViewModel leaderboardViewModel)
+    public LeaderboardPage(LeaderboardViewModel leaderboardViewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _viewModel = leaderboardViewModel;
         _viewModel.Navigation = Navigation;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
         InitializeComponent();
     }
@@ -15,6 +17,7 @@ public partial class LeaderboardPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("LeaderboardPage");
         await _viewModel.Initialise();
         await Animate();
         _viewModel.ScrollTo += ScrollTo;

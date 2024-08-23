@@ -7,19 +7,22 @@ namespace SSW.Rewards.Mobile.Pages;
 public partial class QuizDetailsPage
 {
     private QuizDetailsViewModel _viewModel;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
     public string QuizId { get; set; }
 
-    public QuizDetailsPage(QuizDetailsViewModel viewModel)
+    public QuizDetailsPage(QuizDetailsViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
         _viewModel = viewModel;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _firebaseAnalyticsService.Log("QuizDetailsPage");
         int quizId = int.Parse(QuizId);
         await _viewModel.Initialise(quizId);
     }

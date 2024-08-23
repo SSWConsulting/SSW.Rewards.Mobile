@@ -58,6 +58,7 @@ public static class DependencyInjection
         services.AddSingleton<IPermissionsService, PermissionsService>();
         services.AddSingleton<IPushNotificationsService, PushNotificationsService>();
         services.AddSingleton<IRewardAdminService, RewardAdminService>();
+        services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
 
         services.AddSingleton<FlyoutHeader>();
         services.AddSingleton<FlyoutHeaderViewModel>();

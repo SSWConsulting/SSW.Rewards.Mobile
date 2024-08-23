@@ -11,11 +11,13 @@ public partial class SettingsViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly ISnackbarService _snackbarService;
+    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService)
+    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _userService = userService;
         _snackbarService = snackbarService;
+        _firebaseAnalyticsService = firebaseAnalyticsService;
         Title = "Settings";
     }
 
@@ -25,10 +27,10 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static async Task IntroClicked()
+    private async Task IntroClicked()
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new OnBoardingPage(false, statusBarColor as Color);
+        var page = new OnBoardingPage(_firebaseAnalyticsService, false, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 
@@ -42,7 +44,7 @@ public partial class SettingsViewModel : BaseViewModel
     private async Task AddLinkedIn()
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new AddLinkedInPage(_userService, _snackbarService, statusBarColor as Color);
+        var page = new AddLinkedInPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 
@@ -84,10 +86,10 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static async Task AboutClicked()
+    private async Task AboutClicked()
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new AboutSswPage(statusBarColor as Color);
+        var popup = new AboutSswPage(_firebaseAnalyticsService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 }
