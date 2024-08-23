@@ -56,7 +56,7 @@ jobs:
           path: test-results.trx
           reporter: dotnet-trx
 
-  build_and_test_mobile:
+  build_and_test_android:
     name: Build & Test Android
     runs-on: windows-latest
     if: ${{ inputs.test_mobile != 'false' && inputs.test_mobile != '' }}
@@ -86,6 +86,65 @@ jobs:
 
       - name: Build and sign Android
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-android --configuration Release
+
+      - name: Test
+        run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+      - name: Check file existence
+        id: check_files
+        if: success() || failure()
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "test-results.trx"
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: steps.check_files.outputs.files_exists == 'true'
+        with:
+          name: Tests Results
+          path: test-results.trx
+          reporter: dotnet-trx
+
+  build_and_test_ios:
+    name: Build & Test iOS
+    runs-on: macos-13
+    if: ${{ inputs.test_mobile != 'false' && inputs.test_mobile != '' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup DotNet Environment
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install MAUI Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install maui --ignore-failed-sources --from-rollback-file rollback.json
+          dotnet workload install ios maui wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources --from-rollback-file rollback.json
+
+      - name: Set XCode Version
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_15.1.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.1.app" >> $GITHUB_ENV
+
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERT }}
+          p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+
+      - name: Import Provisioning Profile
+        run: |
+          echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: Build and sign
+        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net8.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
 
       - name: Test
         run: dotnet test ${{ inputs.project_path }} --no-build --configuration Release --logger "trx;LogFileName=test-results.trx"
