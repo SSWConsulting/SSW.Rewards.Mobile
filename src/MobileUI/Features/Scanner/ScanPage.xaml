@@ -2,11 +2,22 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="{StaticResource Background}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:Name="this">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:Single x:Key="Threshold">1</x:Single>
+
+            <toolkit:CompareConverter
+                x:Key="GreaterThanOne"
+                ComparisonOperator="Greater"
+                ComparingValue="{StaticResource Threshold}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
-        <scanner:CameraView x:Name="scannerView"
+        <scanner:CameraView x:Name="ScannerView"
                             OnDetectionFinished="Handle_OnScanResult"
                             BarcodeSymbologies="QRCode"
                             ViewfinderMode="True"
@@ -32,8 +43,10 @@
         <Grid VerticalOptions="End"
               RowDefinitions="Auto,*">
             <Grid Grid.Row="0"
+                  x:Name="ZoomButtons"
                   ColumnDefinitions="Auto,Auto"
                   HorizontalOptions="Center"
+                  IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}, Source={x:Reference ScannerView}, Path=MaxZoomFactor}"
                   ColumnSpacing="40">
                 <Button Grid.Column="0"
                         CornerRadius="30"

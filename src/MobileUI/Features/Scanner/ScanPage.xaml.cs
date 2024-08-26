@@ -24,7 +24,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
-            if (!scannerView.CameraEnabled || e.BarcodeResults.Length == 0)
+            if (!ScannerView.CameraEnabled || e.BarcodeResults.Length == 0)
             {
                 return;
             }
@@ -43,9 +43,9 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
         base.OnDisappearing();
         
         // Reset zoom when exiting camera
-        if (scannerView.CurrentZoomFactor > -1)
+        if (ScannerView.CurrentZoomFactor > -1)
         {
-            scannerView.RequestZoomFactor = scannerView.MinZoomFactor;
+            ScannerView.RequestZoomFactor = ScannerView.MinZoomFactor;
         }
         
         ToggleScanner(false);
@@ -69,7 +69,7 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
 
     private void ToggleScanner(bool toggleOn)
     {
-        scannerView.CameraEnabled = toggleOn;
+        ScannerView.CameraEnabled = toggleOn;
     }
     
     [RelayCommand]
@@ -85,18 +85,18 @@ public partial class ScanPage : IRecipient<EnableScannerMessage>
     private void ZoomIn()
     {
         // CurrentZoomFactor can default to -1, so we start at the MinZoomFactor in this case
-        var currentZoom = Math.Max(scannerView.CurrentZoomFactor, scannerView.MinZoomFactor);
-        var maxZoom = scannerView.MaxZoomFactor;
+        var currentZoom = Math.Max(ScannerView.CurrentZoomFactor, ScannerView.MinZoomFactor);
+        var maxZoom = ScannerView.MaxZoomFactor;
         
-        scannerView.RequestZoomFactor = Math.Min(currentZoom + ZoomFactorStep, maxZoom);
+        ScannerView.RequestZoomFactor = Math.Min(currentZoom + ZoomFactorStep, maxZoom);
     }
     
     [RelayCommand]
     private void ZoomOut()
     {
-        var currentZoom = scannerView.CurrentZoomFactor;
-        var minZoom = scannerView.MinZoomFactor;
+        var currentZoom = ScannerView.CurrentZoomFactor;
+        var minZoom = ScannerView.MinZoomFactor;
         
-        scannerView.RequestZoomFactor = Math.Max(currentZoom - ZoomFactorStep, minZoom);
+        ScannerView.RequestZoomFactor = Math.Max(currentZoom - ZoomFactorStep, minZoom);
     }
 }
