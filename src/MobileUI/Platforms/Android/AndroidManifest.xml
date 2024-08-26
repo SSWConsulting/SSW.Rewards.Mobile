@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="70" android:versionName="3.0.31">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="71" android:versionName="3.0.32">
 	<application android:allowBackup="false" android:icon="@mipmap/icon_android_dark" android:supportsRtl="true" android:label="SSW Rewards">
     <meta-data android:name="google_analytics_automatic_screen_reporting_enabled" android:value="false" />
   </application>
