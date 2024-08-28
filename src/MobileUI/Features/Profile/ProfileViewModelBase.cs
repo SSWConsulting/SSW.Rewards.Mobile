@@ -40,7 +40,13 @@ public partial class ProfileViewModelBase : BaseViewModel
     private bool _isStaff;
 
     [ObservableProperty]
-    private string? _linkedInUrl;
+    private string _linkedInUrl;
+    
+    [ObservableProperty]
+    private string _gitHubUrl;
+    
+    [ObservableProperty]
+    private string _twitterUrl;
 
     public bool ShowBalance { get; set; } = true;
 
@@ -53,15 +59,6 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     [ObservableProperty]
     private bool _isMe;
-
-    [ObservableProperty]
-    private Color _linkedInColor;
-
-    [ObservableProperty]
-    private Color _gitHubColor = Colors.DimGrey;
-
-    [ObservableProperty]
-    private Color _twitterColor = Colors.DimGrey;
 
     public ObservableCollection<Activity> RecentActivity { get; } = [];
     public ObservableCollection<Activity> LastSeen { get; } = [];
@@ -82,17 +79,10 @@ public partial class ProfileViewModelBase : BaseViewModel
         _permissionsService = permissionsService;
         _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        userService.LinkedInProfileObservable().Subscribe(myLinkedIn =>
-        {
-            LinkedInUrl = myLinkedIn;
-            App.Current.Resources.TryGetValue("SSWRed", out object color);
-            var sswRed = (Color)color!;
-            LinkedInColor = !string.IsNullOrWhiteSpace(myLinkedIn)
-                ? sswRed
-                : IsMe
-                    ? Colors.White
-                    : Colors.DimGrey;
-        });
+        
+        userService.LinkedInProfileObservable().Subscribe(myLinkedIn => LinkedInUrl = myLinkedIn);
+        userService.GitHubProfileObservable().Subscribe(myGitHub => GitHubUrl = myGitHub);
+        userService.TwitterProfileObservable().Subscribe(myTwitter => TwitterUrl = myTwitter);
     }
 
     protected async Task _initialise()
@@ -132,6 +122,8 @@ public partial class ProfileViewModelBase : BaseViewModel
     private async Task LoadSocialMedia()
     {
         await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.LinkedIn);
+        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.GitHub);
+        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.Twitter);
     }
 
     [RelayCommand]
@@ -163,7 +155,51 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         if (Uri.TryCreate(LinkedInUrl, UriKind.Absolute, out Uri uri))
         {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+        }
+    }
+    
+    [RelayCommand]
+    private async Task OpenGitHubProfile()
+    {
+        if (string.IsNullOrWhiteSpace(GitHubUrl))
+        {
+            if (!IsMe)
+            {
+                return;
+            }
+
+            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+            var page = new AddGitHubPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+            await MopupService.Instance.PushAsync(page);
+            return;
+        }
+
+        if (Uri.TryCreate(GitHubUrl, UriKind.Absolute, out Uri uri))
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+        }
+    }
+    
+    [RelayCommand]
+    private async Task OpenTwitterProfile()
+    {
+        if (string.IsNullOrWhiteSpace(TwitterUrl))
+        {
+            if (!IsMe)
+            {
+                return;
+            }
+
+            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+            var page = new AddTwitterPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+            await MopupService.Instance.PushAsync(page);
+            return;
+        }
+
+        if (Uri.TryCreate(TwitterUrl, UriKind.Absolute, out Uri uri))
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
         }
     }
 
@@ -310,17 +346,6 @@ public partial class ProfileViewModelBase : BaseViewModel
         IsLoading = false;
         // Clearing LinkedIn profile so that the previous value doesn't display during page loading
         _userService.ClearSocialMedia();
-    }
-
-    [RelayCommand]
-    private async Task ComingSoon()
-    {
-        if (IsMe)
-        {
-            await CommunityToolkit.Maui.Alerts.Snackbar
-                .Make("Coming soon. At that moment you can only add LinkedIn profile", duration: TimeSpan.FromSeconds(5))
-                .Show();
-        }
     }
 
     [RelayCommand]

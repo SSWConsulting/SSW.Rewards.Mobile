@@ -2,50 +2,82 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SSW.Rewards.Mobile.Controls.SocialMedia"
     StrokeThickness="0"
     StrokeShape="RoundRectangle 8"
     BackgroundColor="{StaticResource Background}"
     x:DataType="viewModels:ProfileViewModelBase">
-    <Grid ColumnDefinitions="*, *, *" >
+    <Border.Resources>
+        <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+    </Border.Resources>
+    <HorizontalStackLayout HorizontalOptions="Center"
+                           Spacing="70">
         <!-- LinkedIn -->
         <Label
-            Grid.Column="0"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf08c;"
             FontAutoScalingEnabled="False"
             FontSize="50"
-            TextColor="{Binding LinkedInColor}">
+            IsVisible="False"
+            TextColor="DimGrey">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding LinkedInUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                </DataTrigger>
+            </Label.Triggers>
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding OpenLinkedInProfileCommand}" />
             </Label.GestureRecognizers>
         </Label>
         <!-- GitHub -->
         <Label
-            Grid.Column="1"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf092;"
             FontAutoScalingEnabled="False"
             FontSize="50"
-            TextColor="{Binding GitHubColor}">
+            IsVisible="False"
+            TextColor="DimGrey">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding GitHubUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                </DataTrigger>
+            </Label.Triggers>
             <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+                <TapGestureRecognizer Command="{Binding OpenGitHubProfileCommand}" />
             </Label.GestureRecognizers>
         </Label>
         <!-- Twitter -->
         <Label
-            Grid.Column="2"
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
             Text="&#xf081;"
             FontAutoScalingEnabled="False"
             FontSize="50"
-            TextColor="{Binding TwitterColor}">
+            IsVisible="False"
+            TextColor="DimGrey">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Label" Binding="{Binding TwitterUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
+                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                </DataTrigger>
+            </Label.Triggers>
             <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ComingSoonCommand}" />
+                <TapGestureRecognizer Command="{Binding OpenTwitterProfileCommand}" />
             </Label.GestureRecognizers>
         </Label>
-    </Grid>
+    </HorizontalStackLayout>
 </Border>
