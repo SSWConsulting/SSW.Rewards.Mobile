@@ -5,7 +5,7 @@ public static class Constants
 #if DEBUG
     // public const string ApiBaseUrl = "https://app-sswrewards-api-staging.azurewebsites.net";
     // public const string ApiBaseUrl = "https://api.rewards.ssw.com.au";
-    public const string ApiBaseUrl = "https://0a88-180-150-47-47.ngrok-free.app";
+    public const string ApiBaseUrl = "https://d285-116-255-43-34.ngrok-free.app";
     public const string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public const string AppCenterIOSId = "71ea37dd-20c5-40ca-9d68-81b743d81337";
 
@@ -21,7 +21,7 @@ public static class Constants
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
 
 #if DEBUG
-    public const string AuthorityUri = "https://identity.ssw.com.au";
+    public const string AuthorityUri = "https://6555-116-255-43-34.ngrok-free.app";//"https://identity.ssw.com.au";
     // public const string AuthorityUri = "https://app-ssw-ident-staging-api.azurewebsites.net";
 #else
     public const string AuthorityUri = "https://identity.ssw.com.au";
@@ -41,13 +41,13 @@ public static class Constants
         public const int LinkedIn = 2;
         public const int Twitter = 3;
     }
-    
+
     public static class AnalyticsEvents
     {
         public const string QuizStart = "quiz_start";
         public const string QuizPass = "quiz_pass";
         public const string QuizFail = "quiz_fail";
-        
+
         public const string RewardView = "reward_view";
         public const string RewardRedemptionPending = "reward_redemption_pending";
         public const string RewardRedemptionCancelled = "reward_redemption_cancelled";

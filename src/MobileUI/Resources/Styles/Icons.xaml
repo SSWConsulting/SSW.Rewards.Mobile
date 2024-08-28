@@ -1,0 +1,6 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <x:String x:Key="IconGoogle">&#xf1a0;</x:String>
+    <x:String x:Key="IconMicrosoft">&#xf3ca;</x:String>
+    <x:String x:Key="IconApple">&#xf179;</x:String>
+</ResourceDictionary>

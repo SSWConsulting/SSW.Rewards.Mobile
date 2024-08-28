@@ -9,6 +9,7 @@ namespace SSW.Rewards.Mobile.Services;
 public interface IAuthenticationService
 {
     Task<ApiStatus> SignInAsync();
+    Task<ApiStatus> SignInAsync(string email, string password, bool? kmsi = false);
     Task<string> GetAccessToken();
     Task SignOut();
     bool HasCachedAccount { get; }
@@ -76,6 +77,53 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
+    public async Task<ApiStatus> SignInAsync(string email, string password, bool? kmsi = false)
+    {
+        try
+        {
+            using var client = new HttpClient();
+        
+            var result = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+            {
+                Address = $"{_options.Authority}/connect/token",
+
+                ClientId = _options.ClientId,
+                ClientSecret = "thisisasecret",
+                Scope = _options.Scope,
+
+                UserName = email,
+                Password = password,
+            });
+
+            if (result.IsError)
+            {
+                Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
+                await SignOut();
+                return ApiStatus.Error;
+            }
+
+            var authResult = GetAuthResult(result);
+            await SetRefreshToken(authResult);
+
+            if (kmsi?? false)
+            {
+                await SaveCredentials(email, password);
+            }
+            
+            return SetLoggedInState(authResult);
+        }
+        catch (TaskCanceledException) // Is thrown when user closes the browser without logging-in
+        {
+            return ApiStatus.CancelledByUser;
+        }
+        catch (Exception ex)
+        {
+            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            await SignOut();
+            return ApiStatus.Error;
+        }
+    }
+
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     public async Task<string> GetAccessToken()
     {
@@ -123,7 +171,13 @@ public class AuthenticationService : IAuthenticationService
 
     private ApiStatus SetLoggedInState(AuthResult loginResult)
     {
-        if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
+        if (string.IsNullOrWhiteSpace(loginResult.AccessToken))
+        {
+            Crashes.TrackError(new Exception(
+                $"AuthDebug: loginResult is missing tokens. Missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
+            return ApiStatus.LoginFailure;
+        }
+        else
         {
             _accessToken = loginResult.AccessToken;
             _tokenExpiry = loginResult.AccessTokenExpiration;
@@ -140,12 +194,6 @@ public class AuthenticationService : IAuthenticationService
             }
 
             return ApiStatus.Success;
-        }
-        else
-        {
-            Crashes.TrackError(new Exception(
-                $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
-            return ApiStatus.LoginFailure;
         }
     }
 
@@ -189,36 +237,59 @@ public class AuthenticationService : IAuthenticationService
                 return signInResult == ApiStatus.Success;
             }
         }
+        
+        var rogUsername = await SecureStorage.GetAsync("ROG_USERNAME");
+        var rogPassword = await SecureStorage.GetAsync("ROG_PASSWORD");
+        
+        if (!string.IsNullOrWhiteSpace(rogUsername) && !string.IsNullOrWhiteSpace(rogPassword))
+        {
+            var signInResult = await SignInAsync(rogUsername, rogPassword);
+            if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
+            {
+                Crashes.TrackError(new Exception(
+                    $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+            }
+
+            return signInResult == ApiStatus.Success;
+        }
 
         return false;
     }
 
+    private async Task SaveCredentials(string email, string password)
+    {
+        await SecureStorage.SetAsync("ROG_USERNAME", email);
+        await SecureStorage.SetAsync("ROG_PASSWORD", password);
+        Preferences.Set(nameof(HasCachedAccount), true);
+    }
+
     private AuthResult GetAuthResult<TResult> (TResult result)
     {
-        if (result is LoginResult loginResult)
+        return result switch
         {
-            return new AuthResult
+            LoginResult loginResult => new AuthResult
             {
                 AccessToken = loginResult.AccessToken,
                 RefreshToken = loginResult.RefreshToken,
                 AccessTokenExpiration = loginResult.AccessTokenExpiration,
                 IdentityToken = loginResult.IdentityToken,
-            };
-        }
-        else if (result is RefreshTokenResult refreshTokenResult)
-        {
-            return new AuthResult
+            },
+            RefreshTokenResult refreshTokenResult => new AuthResult
             {
                 AccessToken = refreshTokenResult.AccessToken,
                 RefreshToken = refreshTokenResult.RefreshToken,
                 AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
                 IdentityToken = refreshTokenResult.IdentityToken,
-            };
-        }
-        else
-        {
-            throw new ArgumentException("Unexpected result type", nameof(result));
-        }
+            },
+            TokenResponse tokenResponse => new AuthResult
+            {
+                AccessToken = tokenResponse.AccessToken,
+                RefreshToken = tokenResponse.RefreshToken,
+                AccessTokenExpiration = DateTimeOffset.Now.AddSeconds(tokenResponse.ExpiresIn),
+                IdentityToken = tokenResponse.IdentityToken,
+            },
+            _ => throw new ArgumentException("Unexpected result type", nameof(result))
+        };
     }
 
     private class AuthResult

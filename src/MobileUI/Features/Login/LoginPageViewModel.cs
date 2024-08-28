@@ -19,6 +19,18 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
+    [ObservableProperty]
+    private string _rogButtonText;
+
+    [ObservableProperty]
+    private string _username;
+    
+    [ObservableProperty]
+    private string _password;
+
+    [ObservableProperty]
+    private bool _kmsi;
+
     bool _isStaff;
 
     public LoginPageViewModel(
@@ -30,7 +42,9 @@ public partial class LoginPageViewModel : BaseViewModel
         _authService = authService;
         _pushNotificationsService = pushNotificationsService;
         _permissionsService = permissionsService;
-        ButtonText = "Sign up / Log in";
+
+        RogButtonText = "Login";
+        ButtonText = "External Login";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
 
@@ -42,6 +56,40 @@ public partial class LoginPageViewModel : BaseViewModel
         bool enableButtonAfterLogin = true;
 
         ApiStatus status = await _authService.SignInAsync();
+
+        var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
+        {
+            { ApiStatus.Unavailable, ("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.") },
+            { ApiStatus.LoginFailure, ("Login Failure", "There seems to have been a problem logging you in. Please try again.") },
+        };
+
+        if (status != ApiStatus.CancelledByUser)
+        {
+            if (status != ApiStatus.Success)
+            {
+                await WaitForWindowClose();
+                var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
+                await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+            }
+            else
+            {
+                enableButtonAfterLogin = false;
+                await OnAfterLogin();
+            }
+        }
+
+        LoginButtonEnabled = enableButtonAfterLogin;
+        IsRunning = false;
+    }
+    
+    [RelayCommand]
+    private async Task LoginRogTapped()
+    {
+        IsRunning = true;
+        LoginButtonEnabled = false;
+        bool enableButtonAfterLogin = true;
+
+        ApiStatus status = await _authService.SignInAsync(Username, Password, Kmsi);
 
         var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {

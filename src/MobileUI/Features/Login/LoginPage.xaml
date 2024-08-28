@@ -21,15 +21,88 @@
                    Aspect="AspectFill"
                    HorizontalOptions="FillAndExpand"
                    VerticalOptions="FillAndExpand"/>
-
-            <Button Text="{Binding ButtonText}"
-                    Command="{Binding LoginTappedCommand}"
-                    TextColor="{StaticResource White}"
-                    VerticalOptions="End"
-                    Margin="50,0,50,150"
-                    CornerRadius="10"
-                    IsEnabled="{Binding LoginButtonEnabled}"
-                    BackgroundColor="{StaticResource SSWRed}"/>
+            
+            <VerticalStackLayout VerticalOptions="End"
+                                 HorizontalOptions="Fill"
+                                 Spacing="15"
+                                 Margin="30,50,30,100">
+                <Entry Keyboard="Email"
+                       HorizontalOptions="Fill"
+                       MinimumWidthRequest="300"
+                       Placeholder="bob@northwind.com..."
+                       VerticalOptions="Center"
+                       Margin="0"
+                       BackgroundColor="LightGray"
+                       IsEnabled="{Binding LoginButtonEnabled}"
+                       TextColor="{StaticResource SSWRed}"
+                       Text="{Binding Username}"/>
+                
+                <Entry Grid.Row="1"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Center"
+                       MinimumWidthRequest="300"
+                          Placeholder="Password..."
+                       BackgroundColor="LightGray"
+                       Margin="0"
+                       Text="{Binding Password}"
+                       TextColor="{StaticResource SSWRed}"
+                       IsEnabled="{Binding LoginButtonEnabled}"
+                       IsPassword="True"/>
+                
+                <Grid Grid.Row="2"
+                      VerticalOptions="Center"
+                      HorizontalOptions="Fill"
+                      ColumnDefinitions="2*,2*,8*">
+                    <Button Grid.Column="2" Text="{Binding RogButtonText}"
+                            Command="{Binding LoginRogTappedCommand}"
+                            TextColor="{StaticResource White}"
+                            VerticalOptions="Center"
+                            CornerRadius="10"
+                            Margin="10,0,0,0"
+                            IsEnabled="{Binding LoginButtonEnabled}"
+                            BackgroundColor="{StaticResource SSWRed}"/>
+                    
+                    <Switch Grid.Column="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            Margin="0,0,10,0"
+                            IsToggled="{Binding Kmsi}" />
+                    
+                    <Label Grid.Column="1"
+                            Text="Save"
+                            LineBreakMode="WordWrap"
+                            FontSize="Small"
+                            TextColor="{StaticResource White}"
+                            HorizontalTextAlignment="Center"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Center"/>
+                </Grid>
+                
+                <HorizontalStackLayout HorizontalOptions="Center"
+                                       Spacing="10"
+                                       Margin="20">
+                    <Label Text="&#xf179;"
+                    FontSize="Large"
+                           FontFamily="FA6Brands"/>
+                    <Label Text="&#xf1a0;"
+                    FontSize="Large"
+                           FontFamily="FA6Brands"/>
+                    <Label Text="&#xf3ca;"
+                           FontSize="Large"
+                           FontFamily="FA6Brands"/>
+                </HorizontalStackLayout>
+                
+                
+                <Button Grid.Row="3"
+                        Text="{Binding ButtonText}"
+                        Command="{Binding LoginTappedCommand}"
+                        TextColor="{StaticResource White}"
+                        VerticalOptions="End"
+                        HorizontalOptions="Fill"
+                        CornerRadius="10"
+                        IsEnabled="{Binding LoginButtonEnabled}"
+                        BackgroundColor="{StaticResource SSWRed}"/>
+            </VerticalStackLayout>
 
             <ActivityIndicator HorizontalOptions="Center"
                                Color="{StaticResource primary}"
