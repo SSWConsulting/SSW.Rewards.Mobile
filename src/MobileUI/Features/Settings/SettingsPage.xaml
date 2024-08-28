@@ -9,8 +9,10 @@
     BackgroundColor="{StaticResource Background}">
     <TableView Intent="Menu" BackgroundColor="Transparent">
         <TableRoot>
-            <TableSection Title="Social Media" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Add / Update LinkedIn Profile" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+            <TableSection Title="Add/Update Social Media Profiles" TextColor="{StaticResource Gray400}">
+                <TextCell Text="LinkedIn" TextColor="White" Command="{Binding AddLinkedInCommand}"/>
+                <TextCell Text="GitHub" TextColor="White" Command="{Binding AddGitHubCommand}"/>
+                <TextCell Text="Twitter" TextColor="White" Command="{Binding AddTwitterCommand}"/>
             </TableSection>
             
             <TableSection Title="General" TextColor="{StaticResource Gray400}">

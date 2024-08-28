@@ -18,7 +18,9 @@ public interface IUserService
     IObservable<bool> IsStaffObservable();
 
     IObservable<string> LinkedInProfileObservable();
-
+    IObservable<string> GitHubProfileObservable();
+    IObservable<string> TwitterProfileObservable();
+    
     // auth methods
 
     // user details
@@ -60,6 +62,8 @@ public class UserService : IUserService
     /// </summary>
     /// <returns></returns>
     private readonly BehaviorSubject<string> _linkedInProfile = new(string.Empty);
+    private readonly BehaviorSubject<string> _gitHubProfile = new(string.Empty);
+    private readonly BehaviorSubject<string> _twitterProfile = new(string.Empty);
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
@@ -79,6 +83,8 @@ public class UserService : IUserService
     public IObservable<bool> IsStaffObservable() => _isStaff.AsObservable();
 
     public IObservable<string> LinkedInProfileObservable() => _linkedInProfile.AsObservable();
+    public IObservable<string> GitHubProfileObservable() => _gitHubProfile.AsObservable();
+    public IObservable<string> TwitterProfileObservable() => _twitterProfile.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -233,7 +239,7 @@ public class UserService : IUserService
         try
         {
             var achieved = await _userClient.UpsertUserSocialMediaIdAsync(socialMediaPlatformId, socialMediaUserProfile);
-            _linkedInProfile.OnNext(socialMediaUserProfile);
+            UpdateSocialMediaProfile(socialMediaPlatformId, socialMediaUserProfile);
             return achieved != 0;
         }
         catch
@@ -247,7 +253,7 @@ public class UserService : IUserService
         try
         {
             var socialMediaId = await _userClient.GetSocialMediaId(userId, socialMediaPlatformId);
-            _linkedInProfile.OnNext(socialMediaId?.SocialMediaUserId);
+            UpdateSocialMediaProfile(socialMediaPlatformId, socialMediaId?.SocialMediaUserId);
         }
         catch (Exception ex)
         {
@@ -258,6 +264,24 @@ public class UserService : IUserService
     public void ClearSocialMedia()
     {
         _linkedInProfile.OnNext(string.Empty);
+        _gitHubProfile.OnNext(string.Empty);
+        _twitterProfile.OnNext(string.Empty);
+    }
+
+    public void UpdateSocialMediaProfile(int socialMediaPlatformId, string socialMediaUserProfile)
+    {
+        switch (socialMediaPlatformId)
+        {
+            case Constants.SocialMediaPlatformIds.LinkedIn:
+                _linkedInProfile.OnNext(socialMediaUserProfile);
+                break;
+            case Constants.SocialMediaPlatformIds.GitHub:
+                _gitHubProfile.OnNext(socialMediaUserProfile);
+                break;
+            case Constants.SocialMediaPlatformIds.Twitter:
+                _twitterProfile.OnNext(socialMediaUserProfile);
+                break;
+        }
     }
 
     public async Task<bool> DeleteProfileAsync()

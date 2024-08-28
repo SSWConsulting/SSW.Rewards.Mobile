@@ -47,6 +47,22 @@ public partial class SettingsViewModel : BaseViewModel
         var page = new AddLinkedInPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
+    
+    [RelayCommand]
+    private async Task AddGitHub()
+    {
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var page = new AddGitHubPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+        await MopupService.Instance.PushAsync(page);
+    }
+    
+    [RelayCommand]
+    private async Task AddTwitter()
+    {
+        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
+        var page = new AddTwitterPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+        await MopupService.Instance.PushAsync(page);
+    }
 
     [RelayCommand]
     private async Task DeleteClicked()

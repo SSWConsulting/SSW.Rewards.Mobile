@@ -85,9 +85,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
                 break;
 
             case AchievementType.Linked:
-                action = $"{scored} following";
-                name = name.Replace("follow", "");
-                name = name.Replace("Follow", "").Trim();
+                action = $"{scored} linking";
+                name = name.Split(' ').Last();
                 break;
 
             case AchievementType.Scanned:
