@@ -227,9 +227,8 @@ public partial class ProfileViewModelBase : BaseViewModel
                 break;
 
             case AchievementType.Linked:
-                action = $"{scored} following";
-                activity = activity.Replace("follow", "");
-                activity = activity.Replace("Follow", "");
+                action = $"{scored} linking";
+                activity = activity.Split(' ').Last();
                 break;
 
             case AchievementType.Scanned:

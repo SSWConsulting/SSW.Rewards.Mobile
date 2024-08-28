@@ -7,7 +7,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class AddTwitterViewModel(IUserService userService, ISnackbarService snackbarService) : BaseViewModel
 {
-    private static string TwitterUrl => "https://twitter.com/";
+    private string TwitterUrl => "https://x.com/";
 
     [ObservableProperty]
     private string _inputText;
@@ -21,7 +21,7 @@ public partial class AddTwitterViewModel(IUserService userService, ISnackbarServ
     [ObservableProperty]
     private string _errorText;
 
-    public static string TwitterPlaceholder => $"{TwitterUrl}[your-username]";
+    public string TwitterPlaceholder => $"{TwitterUrl}[your-username]";
 
     [RelayCommand]
     private async Task Connect()
@@ -67,7 +67,8 @@ public partial class AddTwitterViewModel(IUserService userService, ISnackbarServ
         var isValid = urlParts.Length == 4 &&
                       string.Equals(urlParts[0], "https:", StringComparison.InvariantCultureIgnoreCase) &&
                       urlParts[1] == string.Empty &&
-                      string.Equals(urlParts[2], "twitter.com", StringComparison.InvariantCultureIgnoreCase) &&
+                      (string.Equals(urlParts[2], "twitter.com", StringComparison.InvariantCultureIgnoreCase) ||
+                       string.Equals(urlParts[2], "x.com", StringComparison.InvariantCultureIgnoreCase)) &&
                       !string.IsNullOrWhiteSpace(urlParts[3]);
         return isValid;
     }

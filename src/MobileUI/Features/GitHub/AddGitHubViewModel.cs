@@ -7,7 +7,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class AddGitHubViewModel(IUserService userService, ISnackbarService snackbarService) : BaseViewModel
 {
-    private static string GitHubUrl => "https://github.com/";
+    private string GitHubUrl => "https://github.com/";
 
     [ObservableProperty]
     private string _inputText;
@@ -21,7 +21,7 @@ public partial class AddGitHubViewModel(IUserService userService, ISnackbarServi
     [ObservableProperty]
     private string _errorText;
 
-    public static string GitHubPlaceholder => $"{GitHubUrl}[your-username]";
+    public string GitHubPlaceholder => $"{GitHubUrl}[your-username]";
 
     [RelayCommand]
     private async Task Connect()
