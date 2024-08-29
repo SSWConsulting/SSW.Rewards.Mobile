@@ -24,9 +24,9 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [ObservableProperty]
     private int _carouselPosition;
 
-    public ObservableCollection<QuizItemViewModel> Quizzes { get; set; } = new ();
+    public ObservableRangeCollection<QuizItemViewModel> Quizzes { get; set; } = [];
 
-    public ObservableCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = new ();
+    public ObservableRangeCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = [];
 
     public QuizViewModel(IQuizService quizService)
     {
@@ -52,24 +52,32 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     private async Task UpdateQuizzes()
     {
-        var quizzes = await _quizService.GetQuizzes();
-        
-        Quizzes.Clear();
-        CarouselQuizzes.Clear();
         _timer.Stop();
-
-        foreach (var quiz in quizzes)
-        {
-            var vm = new QuizItemViewModel(quiz);
-            Quizzes.Add(vm);
-
-            if (quiz.IsCarousel)
-            {
-                CarouselQuizzes.Add(vm);
-            }
-        }
+        
+        var quizzes = await _quizService.GetQuizzes();
+        var quizDtos = quizzes.ToList();
         
         CarouselPosition = 0;
+
+        var quizzesList = new List<QuizItemViewModel>();
+        var carouselQuizzesList = new List<QuizItemViewModel>();
+
+        foreach (var quiz in quizDtos)
+        {
+            var quizItem = new QuizItemViewModel(quiz);
+            if (quiz.IsCarousel)
+            {
+                carouselQuizzesList.Add(quizItem);
+            }
+            else
+            {
+                quizzesList.Add(quizItem);
+            }
+        }
+
+        Quizzes.ReplaceRange(quizzesList);
+        CarouselQuizzes.ReplaceRange(carouselQuizzesList);
+
         _timer.Start();
     }
     

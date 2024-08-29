@@ -21,8 +21,8 @@ public partial class RedeemViewModel : BaseViewModel
     
     private const int AutoScrollInterval = 6;
 
-    public ObservableCollection<Reward> Rewards { get; set; } = [];
-    public ObservableCollection<Reward> CarouselRewards { get; set; } = [];
+    public ObservableRangeCollection<Reward> Rewards { get; set; } = [];
+    public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
 
     [ObservableProperty]
     private int _credits;
@@ -75,15 +75,19 @@ public partial class RedeemViewModel : BaseViewModel
     {
         if (!_isLoaded)
             IsBusy = true;
+        
+        _timer.Stop();
 
-        var rewardList = await _rewardService.GetRewards();
+        var allRewards = await _rewardService.GetRewards();
+        var rewards = allRewards.ToList();
         var pendingRedemptions = (await _userService.GetPendingRedemptionsAsync()).ToList();
 
-        Rewards.Clear();
-        CarouselRewards.Clear();
-        _timer.Stop();
+        CarouselPosition = 0;
         
-        foreach (var reward in rewardList.Where(reward => !reward.IsHidden))
+        var rewardsList = new List<Reward>();
+        var carouselRewardsList = new List<Reward>();
+        
+        foreach (var reward in rewards.Where(reward => !reward.IsHidden))
         {
             var pendingRedemption = pendingRedemptions.FirstOrDefault(x => x.RewardId == reward.Id);
             reward.CanAfford = reward.Cost <= Credits;
@@ -94,15 +98,16 @@ public partial class RedeemViewModel : BaseViewModel
                 reward.PendingRedemptionCode = pendingRedemption.Code;
             }
 
-            Rewards.Add(reward);
+            rewardsList.Add(reward);
 
             if (reward.IsCarousel)
             {
-                CarouselRewards.Add(reward);
+                carouselRewardsList.Add(reward);
             }
         }
 
-        CarouselPosition = 0;
+        Rewards.ReplaceRange(rewardsList);
+        CarouselRewards.ReplaceRange(carouselRewardsList);
 
         IsBusy = false;
         _isLoaded = true;
