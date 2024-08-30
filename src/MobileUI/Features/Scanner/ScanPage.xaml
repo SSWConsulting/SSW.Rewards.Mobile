@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              BackgroundColor="{StaticResource Background}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
-             x:Name="this">
+             x:DataType="viewModels:ScanViewModel">
     <ContentPage.Resources>
         <ResourceDictionary>
             <x:Single x:Key="Threshold">1</x:Single>
@@ -16,16 +18,11 @@
                 ComparingValue="{StaticResource Threshold}" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid>
-        <scanner:CameraView x:Name="ScannerView"
-                            OnDetectionFinished="Handle_OnScanResult"
-                            BarcodeSymbologies="QRCode"
-                            ViewfinderMode="True"
-                            TapToFocusEnabled="True"/>
-
-        <Button Text="Close"
+    <Grid RowDefinitions="*,50">
+        <Button Grid.Row="0"
+                Text="Close"
                 ContentLayout="Right, 10"
-                Command="{Binding Path=DismissCommand, Source={x:Reference this}}"
+                Command="{Binding Path=DismissCommand}"
                 Margin="20"
                 HeightRequest="40"
                 VerticalOptions="Start"
@@ -38,21 +35,32 @@
             </Button.ImageSource>
         </Button>
         
-        <Image Source="qr_reticle"/>
-        
-        <Grid VerticalOptions="End"
-              RowDefinitions="Auto,*">
-            <Grid Grid.Row="0"
+        <Grid Grid.Row="0" IsVisible="{Binding IsScanVisible}">
+            <scanner:CameraView x:Name="ScannerView"
+                    OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}"
+                    CameraEnabled="{Binding IsCameraEnabled}"
+                    CurrentZoomFactor="{Binding CurrentZoomFactor, Mode=OneWayToSource}"
+                    RequestZoomFactor="{Binding RequestZoomFactor}"
+                    MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
+                    MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
+                    BarcodeSymbologies="QRCode"
+                    ViewfinderMode="True"
+                    TapToFocusEnabled="True"/>
+            
+            <Image Source="qr_reticle" />
+            
+            <Grid VerticalOptions="End"
                   x:Name="ZoomButtons"
                   ColumnDefinitions="Auto,Auto"
                   HorizontalOptions="Center"
-                  IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}, Source={x:Reference ScannerView}, Path=MaxZoomFactor}"
-                  ColumnSpacing="40">
+                  IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
+                  ColumnSpacing="20"
+                  Margin="0,0,0,50">
                 <Button Grid.Column="0"
                         CornerRadius="30"
                         WidthRequest="60"
                         HeightRequest="60"
-                        Command="{Binding Path=ZoomOutCommand, Source={x:Reference this}}">
+                        Command="{Binding Path=ZoomOutCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf8c6;"
                                          FontAutoScalingEnabled="False"
@@ -64,7 +72,7 @@
                         CornerRadius="30"
                         WidthRequest="60"
                         HeightRequest="60"
-                        Command="{Binding Path=ZoomInCommand, Source={x:Reference this}}">
+                        Command="{Binding Path=ZoomInCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf8c4;"
                                          FontAutoScalingEnabled="False"
@@ -72,23 +80,55 @@
                     </Button.ImageSource>
                 </Button>
             </Grid>
-            
-            <Border
-                Grid.Row="1"
-                BackgroundColor="{StaticResource Background}"
-                VerticalOptions="End"
-                HeightRequest="60"
-                Margin="20,40"
-                StrokeShape="RoundRectangle 20">
-                <Label Text="Scan a QR Code"
+        </Grid>
+        
+        <VerticalStackLayout Grid.Row="0"
+                             IsVisible="{Binding IsScanVisible, Converter={toolkit:InvertedBoolConverter}}"
+                             VerticalOptions="Center"
+                             Margin="30"
+                             Spacing="30">
+            <Grid ColumnDefinitions="40, *"
+                  ColumnSpacing="10"
+                  HorizontalOptions="Center">
+                <toolkit:AvatarView Grid.Column="0"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    ImageSource="{Binding ProfilePic}"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    CornerRadius="20"
+                                    BorderColor="White"
+                                    BorderWidth="2"/>
+                <Label Grid.Column="1"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Text="{Binding UserName}"
                        Style="{StaticResource LabelBold}"
                        FontSize="Large"
-                       FontAutoScalingEnabled="False"
-                       HorizontalTextAlignment="Center"
-                       VerticalOptions="Center"
-                       TextColor="#DDDDDD" />
+                       TextColor="White" />
+            </Grid>
+
+            <Border StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Image Aspect="AspectFit" Source="{Binding QrCode}" />
             </Border>
-        </Grid>
+        </VerticalStackLayout>
+        
+        <controls:SegmentedControl
+            Grid.Row="1"
+            IsVisible="{Binding UserHasQrCode}"
+            Segments="{Binding Segments}"
+            VerticalOptions="End"
+            HeightRequest="50"
+            SelectedSegment="{Binding SelectedSegment, Mode=OneWayToSource}">
+            <controls:SegmentedControl.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="SelectionChanged"
+                    Command="{Binding FilterBySegmentCommand}" />
+            </controls:SegmentedControl.Behaviors>
+        </controls:SegmentedControl>
         
     </Grid>
 </ContentPage>
