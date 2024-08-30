@@ -19,17 +19,23 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
         var skip = request.Skip;
         var take = request.Take;
         List<UserAchievement> userAchievements;
-        
-        var userId = currentUserService.GetUserId();
-        var user = await dbContext.Users.FindAsync(userId);
+
+        var userEmail = currentUserService.GetUserEmail();
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == userEmail, cancellationToken);
 
         var staffDetails = await dbContext.StaffMembers
-            .Select((s) => new 
+            .Where(s => !s.IsDeleted && s.StaffAchievement != null)
+            .Select((s) => new
             {
                 s.Email,
-                s.Title
+                s.Title,
+                AchievmentId = s.StaffAchievement!.Id
             })
             .ToListAsync(cancellationToken);
+
+        var staffAchievementIds = staffDetails.Select(s => s.AchievmentId).ToList();
 
         if (filter == ActivityFeedFilter.Friends)
         {
@@ -46,6 +52,13 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
                 .ToListAsync(cancellationToken);
 
             friendIds.AddRange(haveScannedIds);
+
+            var staffScannedIds = await dbContext.UserAchievements
+                .Where(ua => staffAchievementIds.Contains(ua.AchievementId) && ua.UserId == user.Id)
+                .Select(ua => ua.UserId)
+                .ToListAsync(cancellationToken);
+
+            friendIds.AddRange(staffScannedIds);
 
             var scannedMeIds = await dbContext.UserAchievements
                 .Where(ua => ua.AchievementId == user.AchievementId)

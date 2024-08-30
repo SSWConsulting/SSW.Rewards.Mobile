@@ -70,8 +70,13 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         }
 
         // 4. All staff
+        var staffEmails = await _dbContext.StaffMembers
+            .Where(s => !s.IsDeleted)
+            .Select(s => s.Email)
+            .ToListAsync(cancellationToken);
+
         var staffUsers = await _dbContext.Users
-            .Where(u => u.Email.ToLower().EndsWith("ssw.com.au"))
+            .Where(u => staffEmails.Contains(u.Email))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
