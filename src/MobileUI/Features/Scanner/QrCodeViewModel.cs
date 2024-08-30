@@ -11,7 +11,7 @@ public partial class QrCodeViewModel : BaseViewModel
     
     public QrCodeViewModel(IUserService userService)
     {
-        userService.MyQrCodeObservable().Subscribe((myQrCode) =>
+        userService.MyQrCodeObservable().Subscribe(myQrCode =>
         {
             QrCode = ImageHelpers.GenerateQrCode(myQrCode);
         });
