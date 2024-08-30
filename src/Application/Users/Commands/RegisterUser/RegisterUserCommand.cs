@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
+﻿using SSW.Rewards.Application.Common.Extensions;
+
+namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
 
 public class RegisterUserCommand : IRequest
 {
@@ -25,6 +27,11 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
             Avatar = _currentUserService.GetUserProfilePic(),
             CreatedUtc = DateTime.UtcNow
         };
+
+        if (!newUser.Email.ToLower().Contains("ssw.com.au"))
+        {
+            newUser.GenerateAchievement();
+        }
 
         await _userService.CreateUser(newUser, cancellationToken);
     }

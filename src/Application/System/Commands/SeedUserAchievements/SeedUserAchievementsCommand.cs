@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using SSW.Rewards.Application.Common.Extensions;
 
 namespace SSW.Rewards.Application.System.Commands.SeedUserAchievements;
 
@@ -17,19 +17,7 @@ public class SeedUserAchievementsCommandHandler(IApplicationDbContext dbContext)
 
         foreach (var user in nonStaffUsersWithNoAchievement)
         {
-            var codeData = Encoding.ASCII.GetBytes($"ach:{Guid.NewGuid().ToString()}");
-            var code = Convert.ToBase64String(codeData);
-
-            var achievement = new Achievement
-            {
-                Name                = user.FullName,
-                Value               = 100,
-                Type                = AchievementType.Scanned,
-                IsMultiscanEnabled  = false,
-                Code                = code
-            };
-
-            user.Achievement = achievement;
+            user.GenerateAchievement();
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
