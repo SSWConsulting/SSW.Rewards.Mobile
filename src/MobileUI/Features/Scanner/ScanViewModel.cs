@@ -20,11 +20,21 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private const float ZoomFactorStep = 1.0f;
     
     public ScanPageSegments CurrentSegment { get; set; } = ScanPageSegments.Scan;
-    
+
     public List<Segment> Segments { get; set; } =
     [
-        new Segment { Name = "Scan", Value = ScanPageSegments.Scan },
-        new Segment { Name = "My Code", Value = ScanPageSegments.MyCode }
+        new Segment
+        {
+            Name = "Scan",
+            Value = ScanPageSegments.Scan,
+            Icon = new FontImageSource { FontFamily = "FluentIcons", Glyph = "\uf255" }
+        },
+        new Segment
+        {
+            Name = "My Code",
+            Value = ScanPageSegments.MyCode,
+            Icon = new FontImageSource { FontFamily = "FluentIcons", Glyph = "\uf636" }
+        }
     ];
     
     [ObservableProperty]
@@ -52,12 +62,21 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private bool _isScanVisible = true;
     
     [ObservableProperty]
+    private string _profilePic;
+    
+    [ObservableProperty]
+    private string _userName;
+    
+    [ObservableProperty]
     private ImageSource _qrCode;
 
     public ScanViewModel(IUserService userService, ScanResultViewModel resultViewModel)
     {
         _resultViewModel = resultViewModel;
         
+        userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
+        userService.MyNameObservable().Subscribe(myName => UserName = myName);
+
         userService.MyQrCodeObservable().Subscribe(myQrCode =>
         {
             QrCode = ImageHelpers.GenerateQrCode(myQrCode);

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Name="SegmentedControlParent"
              x:Class="SSW.Rewards.Mobile.Controls.SegmentedControl">
     <ContentView.Resources>
@@ -34,11 +35,15 @@
                                                   Tapped="Segment_Tapped"
                                                   CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
-                        <Label HorizontalOptions="Fill"
-                               VerticalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               VerticalTextAlignment="Center"
-                               Text="{Binding Name}" />
+                        <HorizontalStackLayout HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Spacing="5">
+                            <Image Source="{Binding Icon}"
+                                   IsVisible="{Binding Icon, Converter={toolkit:IsNotNullConverter}}"
+                                   HeightRequest="20"/>
+                            <Label VerticalTextAlignment="Center"
+                                   Text="{Binding Name}" />
+                        </HorizontalStackLayout>
                     </Border>
                 </DataTemplate>
             </BindableLayout.ItemTemplate>

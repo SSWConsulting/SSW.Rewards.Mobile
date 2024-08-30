@@ -50,62 +50,71 @@
             <Image Source="qr_reticle" />
             
             <Grid VerticalOptions="End"
-                  RowDefinitions="Auto,*">
-                <Grid Grid.Row="0"
-                      x:Name="ZoomButtons"
-                      ColumnDefinitions="Auto,Auto"
-                      HorizontalOptions="Center"
-                      IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
-                      ColumnSpacing="40">
-                    <Button Grid.Column="0"
-                            CornerRadius="30"
-                            WidthRequest="60"
-                            HeightRequest="60"
-                            Command="{Binding Path=ZoomOutCommand}">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf8c6;"
-                                             FontAutoScalingEnabled="False"
-                                             FontFamily="FluentIcons"/>
-                        </Button.ImageSource>
-                    </Button>
-                    
-                    <Button Grid.Column="1"
-                            CornerRadius="30"
-                            WidthRequest="60"
-                            HeightRequest="60"
-                            Command="{Binding Path=ZoomInCommand}">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf8c4;"
-                                             FontAutoScalingEnabled="False"
-                                             FontFamily="FluentIcons"/>
-                        </Button.ImageSource>
-                    </Button>
-                </Grid>
+                  x:Name="ZoomButtons"
+                  ColumnDefinitions="Auto,Auto"
+                  HorizontalOptions="Center"
+                  IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
+                  ColumnSpacing="40"
+                  Margin="0,0,0,50">
+                <Button Grid.Column="0"
+                        CornerRadius="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        Command="{Binding Path=ZoomOutCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf8c6;"
+                                         FontAutoScalingEnabled="False"
+                                         FontFamily="FluentIcons"/>
+                    </Button.ImageSource>
+                </Button>
                 
-                <Border
-                    Grid.Row="1"
-                    BackgroundColor="{StaticResource Background}"
-                    VerticalOptions="End"
-                    HeightRequest="60"
-                    Margin="20,40"
-                    StrokeShape="RoundRectangle 20">
-                    <Label Text="Scan a QR Code"
-                           Style="{StaticResource LabelBold}"
-                           FontSize="Large"
-                           FontAutoScalingEnabled="False"
-                           HorizontalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           TextColor="#DDDDDD" />
-                </Border>
+                <Button Grid.Column="1"
+                        CornerRadius="30"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        Command="{Binding Path=ZoomInCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf8c4;"
+                                         FontAutoScalingEnabled="False"
+                                         FontFamily="FluentIcons"/>
+                    </Button.ImageSource>
+                </Button>
             </Grid>
         </Grid>
+        
+        <VerticalStackLayout Grid.Row="0"
+                             IsVisible="{Binding IsScanVisible, Converter={toolkit:InvertedBoolConverter}}"
+                             VerticalOptions="Center"
+                             Margin="30"
+                             Spacing="30">
+            <Grid ColumnDefinitions="40, *"
+                  ColumnSpacing="10"
+                  HorizontalOptions="Center">
+                <toolkit:AvatarView Grid.Column="0"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    ImageSource="{Binding ProfilePic}"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    CornerRadius="20"
+                                    BorderColor="White"
+                                    BorderWidth="2"/>
+                <Label Grid.Column="1"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       Text="{Binding UserName}"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="Large"
+                       TextColor="White" />
+            </Grid>
 
-        <Grid Grid.Row="0"
-              IsVisible="{Binding IsScanVisible, Converter={toolkit:InvertedBoolConverter}}">
-            <Image
-                Source="{Binding QrCode}"
-                Margin="50" />
-        </Grid>
+            <Border>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Image Aspect="AspectFit" Source="{Binding QrCode}" />
+            </Border>
+        </VerticalStackLayout>
         
         <controls:SegmentedControl
             Grid.Row="1"

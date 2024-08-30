@@ -70,6 +70,8 @@ public partial class Segment : ObservableObject
 {
 	public string Name { get; set; } = string.Empty;
 
+    public ImageSource Icon { get; set; } = null;
+
     public object Value { get; set; }
 
     [ObservableProperty]
