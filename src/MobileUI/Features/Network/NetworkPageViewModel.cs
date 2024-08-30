@@ -9,15 +9,15 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public enum NetworkPageSegments
 {
-    Friends,
+    Following,
+    Followers,
     ToMeet,
-    SSW,
-    Other
 }
 
 public partial class NetworkPageViewModel : BaseViewModel
 {
     public NetworkPageSegments CurrentSegment { get; set; }
+    public ObservableRangeCollection<NetworkProfileDto> SearchResults { get; set; } = [];
 
     [ObservableProperty]
     private List<NetworkProfileDto> _profiles;
@@ -25,8 +25,6 @@ public partial class NetworkPageViewModel : BaseViewModel
     private List<Segment> _segments;
     [ObservableProperty]
     private Segment _selectedSegment;
-    [ObservableProperty]
-    private ObservableCollection<NetworkProfileDto> _searchResults;
     [ObservableProperty]
     private bool _isRefreshing;
 
@@ -44,15 +42,15 @@ public partial class NetworkPageViewModel : BaseViewModel
         {
             Segments = new List<Segment>
             {
-                new() { Name = "Friends", Value = NetworkPageSegments.Friends },
-                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet },
-                new() { Name = "All", Value = NetworkPageSegments.SSW }
+                new() { Name = "Following", Value = NetworkPageSegments.Following },
+                new() { Name = "Followers", Value = NetworkPageSegments.Followers },
+                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet }
             };
         }
         
         if(Profiles is null || Profiles.Count() == 0)
         {
-            CurrentSegment = NetworkPageSegments.Friends;
+            CurrentSegment = NetworkPageSegments.Followers;
             await LoadNetwork();
         }
 
@@ -77,16 +75,15 @@ public partial class NetworkPageViewModel : BaseViewModel
         
         switch (CurrentSegment)
         {
-            case NetworkPageSegments.Friends:
-                SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
+            case NetworkPageSegments.Following:
+                SearchResults.ReplaceRange(Profiles.Where(x => x.Scanned));
+                break;
+            case NetworkPageSegments.Followers:
+                SearchResults.ReplaceRange(Profiles.Where(x => x.ScannedMe));
                 break;
             case NetworkPageSegments.ToMeet:
-                SearchResults = Profiles.Where(x => !x.Scanned).ToObservableCollection();
-                break;
-            case NetworkPageSegments.SSW:
-            case NetworkPageSegments.Other:
             default:
-                SearchResults = Profiles.ToObservableCollection();
+                SearchResults.ReplaceRange(Profiles);
                 break;
         }
     }

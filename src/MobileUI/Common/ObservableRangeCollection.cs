@@ -53,13 +53,12 @@ public class ObservableRangeCollection<T> : ObservableCollection<T>
         CheckReentrancy();
 
         var previouslyEmpty = Items.Count == 0;
-
-        var itemsAdded = false;
+        
         Items.Clear();
+        
         foreach (var item in collection)
         {
             Items.Add(item);
-            itemsAdded = true;
         }
 
         var currentlyEmpty = Items.Count == 0;
@@ -67,10 +66,7 @@ public class ObservableRangeCollection<T> : ObservableCollection<T>
         if (previouslyEmpty && currentlyEmpty)
             return;
 
-        if (itemsAdded)
-        {
-            RaiseChangeNotificationEvents(NotifyCollectionChangedAction.Reset);
-        }
+        RaiseChangeNotificationEvents(NotifyCollectionChangedAction.Reset);
     }
 
     public void RemoveRange(IEnumerable<T> collection)

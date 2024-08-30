@@ -12,4 +12,5 @@ public class NetworkProfileDto
     public bool IsExternal { get; set; }
     public int AchievementId { get; set; }
     public bool Scanned { get; set; }
+    public bool ScannedMe { get; set; }
 }
