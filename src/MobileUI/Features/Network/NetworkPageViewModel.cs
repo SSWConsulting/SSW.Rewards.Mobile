@@ -83,7 +83,7 @@ public partial class NetworkPageViewModel : BaseViewModel
                 break;
             case NetworkPageSegments.ToMeet:
             default:
-                SearchResults.ReplaceRange(Profiles.Where(x => !x.IsExternal && !x.Scanned));
+                SearchResults.ReplaceRange(Profiles.Where(x => x.IsStaff && !x.Scanned));
                 break;
         }
     }
