@@ -4,28 +4,6 @@ public partial class App : Application
 {
     public static object UIParent { get; set; }
 
-    #region TECHNICAL_DEBT
-    // TECHNICAL DEBT:  This section is here because of a bug in Xamarin.Forms.
-    //                  It is not possible to dynamically change menu items in
-    //                  Shell at runtime. Instead, we load a version of Shell
-    //                  constructed as required. If this bug has been resolved
-    //                  we can do a fair bit of refactoring. 🤮🤮🤮
-    //                  NOTE: Issue still exists in .NET MAUI
-    private static IServiceProvider _serviceProvider;
-
-    public static void SetScope(IServiceCollection services)
-    {
-        _serviceProvider = services.BuildServiceProvider();
-    }
-
-    public static AppShell ResolveShell(bool isStaff)
-    {
-        var resolvedShell = ActivatorUtilities.CreateInstance<AppShell>(_serviceProvider, isStaff);
-
-        return resolvedShell;
-    }
-    #endregion
-
     public App(LoginPage page)
     {
         InitializeComponent();

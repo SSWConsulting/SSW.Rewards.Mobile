@@ -34,19 +34,6 @@
                     ColumnDefinitions="30,*"
                     Padding="{OnPlatform Android='5', iOS='0'}"
                     Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
-                    <Grid.Triggers>
-                        <DataTrigger TargetType="Grid"
-                                    Binding="{Binding Text}"
-                                    Value="My QRCode">
-                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff}"/>
-                        </DataTrigger>
-
-                        <DataTrigger TargetType="Grid"
-                                    Binding="{Binding Text}"
-                                    Value="Join SSW">
-                            <Setter Property="IsVisible" Value="{Binding Source={x:Reference RewardsShell}, Path=BindingContext.IsStaff, Converter={mct:InvertedBoolConverter}}"/>
-                        </DataTrigger>
-                    </Grid.Triggers>
 
                     <Image Grid.Column="0"
                             HorizontalOptions="Start"

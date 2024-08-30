@@ -119,7 +119,7 @@ public partial class LoginPageViewModel : BaseViewModel
 
     private async Task OnAfterLogin()
     {
-        Application.Current.MainPage = App.ResolveShell(_isStaff);
+        Application.Current.MainPage = new AppShell();
         await Shell.Current.GoToAsync("//main");
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
         if (granted)
