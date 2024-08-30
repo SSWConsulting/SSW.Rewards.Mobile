@@ -49,7 +49,7 @@ public partial class NetworkPageViewModel : BaseViewModel
         
         if(_profiles.Count == 0)
         {
-            CurrentSegment = NetworkPageSegments.Followers;
+            CurrentSegment = NetworkPageSegments.Following;
             await LoadNetwork();
         }
 
