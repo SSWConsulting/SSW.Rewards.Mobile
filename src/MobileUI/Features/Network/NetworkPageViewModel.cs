@@ -9,28 +9,25 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public enum NetworkPageSegments
 {
-    Friends,
+    Following,
+    Followers,
     ToMeet,
-    SSW,
-    Other
 }
 
 public partial class NetworkPageViewModel : BaseViewModel
 {
     public NetworkPageSegments CurrentSegment { get; set; }
-
-    [ObservableProperty]
-    private List<NetworkProfileDto> _profiles;
+    public ObservableRangeCollection<NetworkProfileDto> SearchResults { get; set; } = [];
+    
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
     private Segment _selectedSegment;
     [ObservableProperty]
-    private ObservableCollection<NetworkProfileDto> _searchResults;
-    [ObservableProperty]
     private bool _isRefreshing;
 
-    private IDevService _devService;
+    private List<NetworkProfileDto> _profiles = [];
+    private readonly IDevService _devService;
     
     public NetworkPageViewModel(IDevService devService)
     {
@@ -44,15 +41,15 @@ public partial class NetworkPageViewModel : BaseViewModel
         {
             Segments = new List<Segment>
             {
-                new() { Name = "Friends", Value = NetworkPageSegments.Friends },
-                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet },
-                new() { Name = "All", Value = NetworkPageSegments.SSW }
+                new() { Name = "Following", Value = NetworkPageSegments.Following },
+                new() { Name = "Followers", Value = NetworkPageSegments.Followers },
+                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet }
             };
         }
         
-        if(Profiles is null || Profiles.Count() == 0)
+        if(_profiles.Count == 0)
         {
-            CurrentSegment = NetworkPageSegments.Friends;
+            CurrentSegment = NetworkPageSegments.Following;
             await LoadNetwork();
         }
 
@@ -62,7 +59,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task GetProfiles()
     {
         var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
+        _profiles = profiles.ToList();
     }
 
     [RelayCommand]
@@ -70,23 +67,22 @@ public partial class NetworkPageViewModel : BaseViewModel
     {
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
-        if (Profiles is null || Profiles.Count() == 0)
+        if (_profiles.Count == 0)
         {
             await GetProfiles();
         }
         
         switch (CurrentSegment)
         {
-            case NetworkPageSegments.Friends:
-                SearchResults = Profiles.Where(x => x.Scanned).ToObservableCollection();
+            case NetworkPageSegments.Following:
+                SearchResults.ReplaceRange(_profiles.Where(x => x.Scanned));
+                break;
+            case NetworkPageSegments.Followers:
+                SearchResults.ReplaceRange(_profiles.Where(x => x.ScannedMe));
                 break;
             case NetworkPageSegments.ToMeet:
-                SearchResults = Profiles.Where(x => !x.Scanned).ToObservableCollection();
-                break;
-            case NetworkPageSegments.SSW:
-            case NetworkPageSegments.Other:
             default:
-                SearchResults = Profiles.ToObservableCollection();
+                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned));
                 break;
         }
     }
@@ -107,7 +103,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task LoadNetwork()
     {
         var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
+        _profiles = profiles.ToList();
 
         await FilterBySegment();
     }

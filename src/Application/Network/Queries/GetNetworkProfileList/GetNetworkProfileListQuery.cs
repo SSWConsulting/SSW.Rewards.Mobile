@@ -1,6 +1,4 @@
 using MoreLinq;
-using SSW.Rewards.Application.Common.Extensions;
-using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Shared.DTOs.Network;
 using SSW.Rewards.Shared.DTOs.Users;
 
@@ -14,76 +12,91 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
     private readonly IUserService _userService;
 
     public GetNetworkProfileListHandler(
-        IApplicationDbContext dbContext, 
+        IApplicationDbContext dbContext,
         IUserService userService)
     {
         _dbContext = dbContext;
         _userService = userService;
     }
-    
+
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
         var profiles = new List<NetworkProfileDto>();
         var user = await _userService.GetCurrentUser(cancellationToken);
-        var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
-        
-        var completedAchievements = achievements.UserAchievements
-            .Where(a => a.Complete)
-            .Select(a => a.AchievementId)
-            .ToList();
 
-        // TODO: This may not be the best approach, see https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/759
-        var staffDtos = await _dbContext.StaffMembers
-            .Join(_dbContext.Users,
-                staff => staff.Email, 
-                user => user.Email,
-                (staff, user) =>
-                new
-                {
-                    UserId = user.Id,
-                    staff.Name,
-                    ProfilePicture = user.Avatar,
-                    staff.Title,
-                    staff.Email,
-                    AchievementId = staff.StaffAchievement.Id,
-                    staff.IsDeleted,
-                    user.Activated
-                })
-            .Where(x => (!x.IsDeleted && x.Activated) && x.UserId != user.Id)
+        // 1. All users that I have scanned
+        var userAchievementIds = await _dbContext.Users
+            .Where(u => u.AchievementId.HasValue)
+            .Select(u => u.AchievementId)
             .ToListAsync(cancellationToken);
-        
-        var leaderboardUserDtos = await _dbContext.Users
-            .Where(u => u.Activated)
-            .Include(u => u.UserAchievements)
-            .ThenInclude(ua => ua.Achievement)
-            .Where(u => !string.IsNullOrWhiteSpace(u.FullName))
-            .Select(u => new LeaderboardUserDto(u, DateTime.Now.FirstDayOfWeek()))
-            .ToListAsync(cancellationToken);
-            
 
-        leaderboardUserDtos
-            .OrderByDescending(lud => lud.TotalPoints)
-            .ForEach((u, i) => u.Rank = i + 1);
-        
-        profiles.AddRange(staffDtos.Select(profile =>
+        var usersIHaveScanned = await _dbContext.UserAchievements
+            .Where(ua => userAchievementIds.Contains(ua.AchievementId))
+            .Include(ua => ua.User)
+            .Select(ua => ua.User)
+            .ToListAsync(cancellationToken);
+
+        profiles.AddRange(usersIHaveScanned.Select(u => new NetworkProfileDto
         {
-            var leaderboardUser = leaderboardUserDtos.FirstOrDefault(u => u.UserId == profile.UserId);
-            
-            return new NetworkProfileDto
-            {
-                UserId = profile.UserId,
-                ProfilePicture = profile.ProfilePicture,
-                TotalPoints = leaderboardUser.TotalPoints,
-                Rank = leaderboardUser.Rank,
-                IsExternal = false,
-                Name = profile.Name,
-                Title = profile.Title,
-                Email = profile.Email,
-                AchievementId = profile.AchievementId,
-                Scanned = (bool)(completedAchievements?.Contains(profile.AchievementId)),
-            };
+            Email           = u.Email ?? string.Empty,
+            Name            = u.FullName ?? string.Empty,
+            ProfilePicture  = u.Avatar??string.Empty,
+            Scanned         = true
         }));
-        
+
+        // 2. All users that have scanned me
+        var usersThatHaveScannedMe = await _dbContext.UserAchievements
+            .Where(ua => ua.UserId == user.Id)
+            .Include(ua => ua.User)
+            .Select(ua => ua.User)
+            .ToListAsync(cancellationToken);
+
+        foreach (var scannedMeUser in usersThatHaveScannedMe)
+        {
+            if (profiles.Any(p => p.Email == scannedMeUser.Email))
+            {
+                profiles.First(p => p.Email == scannedMeUser.Email).ScannedMe = true;
+            }
+            else
+            {
+                profiles.Add(new NetworkProfileDto
+                {
+                    Email           = scannedMeUser.Email ?? string.Empty,
+                    Name            = scannedMeUser.FullName ?? string.Empty,
+                    ProfilePicture  = scannedMeUser.Avatar ?? string.Empty,
+                    ScannedMe       = true
+                });
+            }
+        }
+
+        // 4. All staff
+        var staffUsers = await _dbContext.Users
+            .Where(u => u.Email.ToLower().EndsWith("ssw.com.au"))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        foreach (var staffUser in staffUsers)
+        {
+            if (profiles.Any(p => p.Email == staffUser.Email))
+            {
+                profiles.First(p => p.Email == staffUser.Email).IsStaff = true;
+            }
+            else
+            {
+                profiles.Add(new NetworkProfileDto
+                {
+                    Email          = staffUser.Email ?? string.Empty,
+                    Name           = staffUser.FullName ?? string.Empty,
+                    ProfilePicture = staffUser.Avatar ?? string.Empty,
+                    IsStaff        = true
+                });
+            }
+        }
+
+        profiles
+            .OrderByDescending(p => p.TotalPoints)
+            .ForEach(p => p.Rank = profiles.IndexOf(p) + 1);
+
         return new NetworkProfileListViewModel { Profiles = profiles };
     }
 }
