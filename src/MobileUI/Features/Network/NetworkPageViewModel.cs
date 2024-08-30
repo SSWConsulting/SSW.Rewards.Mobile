@@ -18,9 +18,7 @@ public partial class NetworkPageViewModel : BaseViewModel
 {
     public NetworkPageSegments CurrentSegment { get; set; }
     public ObservableRangeCollection<NetworkProfileDto> SearchResults { get; set; } = [];
-
-    [ObservableProperty]
-    private List<NetworkProfileDto> _profiles;
+    
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
@@ -28,7 +26,8 @@ public partial class NetworkPageViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isRefreshing;
 
-    private IDevService _devService;
+    private List<NetworkProfileDto> _profiles = [];
+    private readonly IDevService _devService;
     
     public NetworkPageViewModel(IDevService devService)
     {
@@ -48,7 +47,7 @@ public partial class NetworkPageViewModel : BaseViewModel
             };
         }
         
-        if(Profiles is null || Profiles.Count() == 0)
+        if(_profiles.Count == 0)
         {
             CurrentSegment = NetworkPageSegments.Followers;
             await LoadNetwork();
@@ -60,7 +59,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task GetProfiles()
     {
         var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
+        _profiles = profiles.ToList();
     }
 
     [RelayCommand]
@@ -68,7 +67,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     {
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
-        if (Profiles is null || Profiles.Count() == 0)
+        if (_profiles.Count == 0)
         {
             await GetProfiles();
         }
@@ -76,14 +75,14 @@ public partial class NetworkPageViewModel : BaseViewModel
         switch (CurrentSegment)
         {
             case NetworkPageSegments.Following:
-                SearchResults.ReplaceRange(Profiles.Where(x => x.Scanned));
+                SearchResults.ReplaceRange(_profiles.Where(x => x.Scanned));
                 break;
             case NetworkPageSegments.Followers:
-                SearchResults.ReplaceRange(Profiles.Where(x => x.ScannedMe));
+                SearchResults.ReplaceRange(_profiles.Where(x => x.ScannedMe));
                 break;
             case NetworkPageSegments.ToMeet:
             default:
-                SearchResults.ReplaceRange(Profiles.Where(x => !x.IsExternal && !x.Scanned));
+                SearchResults.ReplaceRange(_profiles.Where(x => !x.IsExternal && !x.Scanned));
                 break;
         }
     }
@@ -104,7 +103,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task LoadNetwork()
     {
         var profiles = await _devService.GetProfilesAsync();
-        Profiles = profiles.ToList();
+        _profiles = profiles.ToList();
 
         await FilterBySegment();
     }
