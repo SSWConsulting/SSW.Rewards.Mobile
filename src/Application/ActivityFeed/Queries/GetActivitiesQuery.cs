@@ -10,16 +10,8 @@ public class GetActivitiesQuery : IRequest<ActivityFeedViewModel>
     public int Take { get; set; }
 }
 
-public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, ActivityFeedViewModel>
+public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService) : IRequestHandler<GetActivitiesQuery, ActivityFeedViewModel>
 {
-    private readonly IApplicationDbContext _dbContext;
-    private readonly IUserService _userService;
-
-    public GetActivitiesQueryHandler(IApplicationDbContext dbContext, IUserService userService)
-    {
-        _dbContext = dbContext;
-        _userService = userService;
-    }
 
     public async Task<ActivityFeedViewModel> Handle(GetActivitiesQuery request, CancellationToken cancellationToken)
     {
@@ -28,40 +20,42 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
         var take = request.Take;
         List<UserAchievement> userAchievements;
         
-        var user = await _userService.GetCurrentUser(cancellationToken);
-        
-        var staffDtos = await _dbContext.StaffMembers
-            .Join(_dbContext.Users,
-                staff => staff.Email, 
-                user => user.Email,
-                (staff, user) =>
-                    new
-                    {
-                        UserId = user.Id,
-                        staff.Name,
-                        ProfilePicture = user.Avatar,
-                        staff.Title,
-                        staff.Email,
-                        AchievementId = staff.StaffAchievement.Id,
-                        staff.IsDeleted,
-                        user.Activated
-                    })
-            .Where(x => !x.IsDeleted && x.Activated)
+        var userId = currentUserService.GetUserId();
+        var user = await dbContext.Users.FindAsync(userId);
+
+        var staffDetails = await dbContext.StaffMembers
+            .Select((s) => new 
+            {
+                s.Email,
+                s.Title
+            })
             .ToListAsync(cancellationToken);
 
         if (filter == ActivityFeedFilter.Friends)
         {
-            var completedAchievements = (await _userService.GetUserAchievements(user.Id, cancellationToken))
-                .UserAchievements
-                .Where(a => a.Complete)
-                .Select(a => a.AchievementId)
-                .ToList();
+            List<int> friendIds = [];
 
-            var friendIds = staffDtos
-                .Where(staff => staff.UserId != user.Id && completedAchievements.Contains(staff.AchievementId))
-                .Select(staff => staff.UserId);
+            var userAchievementIds = await dbContext.Users
+                .Where(u => u.AchievementId.HasValue)
+                .Select(u => u.AchievementId)
+                .ToListAsync(cancellationToken);
 
-            userAchievements = await _dbContext.UserAchievements
+            var haveScannedIds = await dbContext.UserAchievements
+                .Where(ua => userAchievementIds.Contains(ua.AchievementId))
+                .Select(ua => ua.UserId)
+                .ToListAsync(cancellationToken);
+
+            friendIds.AddRange(haveScannedIds);
+
+            var scannedMeIds = await dbContext.UserAchievements
+                .Where(ua => ua.AchievementId == user.AchievementId)
+                .Include(ua => ua.User)
+                .Select(ua => ua.UserId)
+                .ToListAsync(cancellationToken);
+
+            friendIds.AddRange(scannedMeIds);
+
+            userAchievements = await dbContext.UserAchievements
                 .Include(u => u.User)
                 .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
@@ -72,7 +66,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
         }
         else
         {
-            userAchievements = await _dbContext.UserAchievements
+            userAchievements = await dbContext.UserAchievements
                 .Include(u => u.User)
                 .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
@@ -83,7 +77,7 @@ public class GetActivitiesQueryHandler : IRequestHandler<GetActivitiesQuery, Act
 
         var feed = userAchievements.Select(userAchievement =>
         {
-            var staff = staffDtos.FirstOrDefault(s => s.UserId == userAchievement.UserId);
+            var staff = staffDetails.FirstOrDefault(s => s.Email == userAchievement.User.Email);
             return new ActivityFeedItemDto
             {
                 UserAvatar = userAchievement.User.Avatar ?? string.Empty,
