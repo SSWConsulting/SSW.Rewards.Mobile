@@ -54,7 +54,7 @@
                   ColumnDefinitions="Auto,Auto"
                   HorizontalOptions="Center"
                   IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
-                  ColumnSpacing="40"
+                  ColumnSpacing="20"
                   Margin="0,0,0,50">
                 <Button Grid.Column="0"
                         CornerRadius="30"
@@ -108,7 +108,7 @@
                        TextColor="White" />
             </Grid>
 
-            <Border>
+            <Border StrokeThickness="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20" />
                 </Border.StrokeShape>
