@@ -87,7 +87,11 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     public void OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
-        ToggleScanner(true);
+        
+        if (CurrentSegment == ScanPageSegments.Scan)
+        {
+            ToggleScanner(true);
+        }
     }
     
     public void OnDisappearing()
