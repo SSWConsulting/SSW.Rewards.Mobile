@@ -137,6 +137,7 @@ public class UserService : IUserService, IRolesService
 
         var user = await _dbContext.Users
                 .Where(u => u.Email == currentUserEmail)
+                .Include(u => u.Achievement)
                 .Include(u => u.UserAchievements)
                     .ThenInclude(ua => ua.Achievement)
                 .Include(u => u.UserRewards)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.System.Commands.SeedData;
+using SSW.Rewards.Application.System.Commands.SeedUserAchievements;
 using SSW.Rewards.Application.System.Commands.SeedV2Data;
 using SSW.Rewards.WebAPI.Authorisation;
 
@@ -22,6 +23,15 @@ public class SeedController : ApiControllerBase
     public async Task<ActionResult> SeedV2Data()
     {
         await Mediator.Send(new SeedV2DataCommand());
+
+        return Ok();
+    }
+
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    [HttpPost]
+    public async Task<ActionResult> SeedUserAchievemnts()
+    {
+        await Mediator.Send(new SeedUserAchievementsCommand());
 
         return Ok();
     }

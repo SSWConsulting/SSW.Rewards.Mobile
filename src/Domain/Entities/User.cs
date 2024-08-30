@@ -8,6 +8,8 @@ public class User : BaseEntity
     public PostalAddress? Address { get; set; }
     public int? AddressId { get; set; }
     public bool Activated { get; set; }
+    public Achievement? Achievement { get; set; }
+    public int? AchievementId { get; set; }
     public ICollection<UserAchievement> UserAchievements { get; set; } = new HashSet<UserAchievement>();
     public ICollection<UserReward> UserRewards { get; set; } = new HashSet<UserReward>();
     public ICollection<UserRole> Roles { get; set; } = new HashSet<UserRole>();
