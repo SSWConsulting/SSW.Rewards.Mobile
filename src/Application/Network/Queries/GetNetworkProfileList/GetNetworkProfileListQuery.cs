@@ -23,30 +23,69 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
     {
         var profiles = new List<NetworkProfileDto>();
         var user = await _userService.GetCurrentUser(cancellationToken);
+        int currentUserAchievementId;
+
+        if (user.IsStaff)
+        {
+            var staffProfile = await _dbContext.StaffMembers
+                .Include(u => u.StaffAchievement)
+                .FirstOrDefaultAsync(u => u.Email == user.Email, cancellationToken: cancellationToken);
+            
+            currentUserAchievementId = staffProfile?.StaffAchievement?.Id ?? -1;
+        }
+        else
+        {
+            var userProfile = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == user.Email, cancellationToken: cancellationToken);
+            
+            currentUserAchievementId = userProfile?.AchievementId ?? -1;
+        }
 
         // 1. All users that I have scanned
-        var userAchievementIds = await _dbContext.Users
-            .Where(u => u.AchievementId.HasValue)
-            .Select(u => u.AchievementId)
+        var allAchievementIds = await _dbContext.Users.Where(u => u.Achievement != null).Select(u => u.Achievement!.Id)
+            .Union(_dbContext.StaffMembers.Where(s => s.StaffAchievement != null).Select(s => s.StaffAchievement!.Id))
             .ToListAsync(cancellationToken);
 
-        var usersIHaveScanned = await _dbContext.UserAchievements
-            .Where(ua => userAchievementIds.Contains(ua.AchievementId))
+        var scannedUserAchievements = await _dbContext.UserAchievements
+            .Where(ua => ua.UserId == user.Id && allAchievementIds.Contains(ua.AchievementId))
             .Include(ua => ua.User)
-            .Select(ua => ua.User)
+            .Select(ua => ua.Achievement.Id)
             .ToListAsync(cancellationToken);
-
-        profiles.AddRange(usersIHaveScanned.Select(u => new NetworkProfileDto
+        
+        foreach (var scannedUserAchievement in scannedUserAchievements)
         {
-            Email           = u.Email ?? string.Empty,
-            Name            = u.FullName ?? string.Empty,
-            ProfilePicture  = u.Avatar??string.Empty,
-            Scanned         = true
-        }));
+            var userMatch = await _dbContext.Users.Where(u => u.Achievement != null)
+                .FirstOrDefaultAsync(ua => ua.Achievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
+            var staffMatch = await _dbContext.StaffMembers.Where(s => s.StaffAchievement != null)
+                .FirstOrDefaultAsync(ua => ua.StaffAchievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
+            
+            if (userMatch != null)
+            {
+                profiles.Add(new NetworkProfileDto()
+                {
+                    UserId          = userMatch.Id,
+                    Email           = userMatch.Email ?? string.Empty,
+                    Name            = userMatch.FullName ?? string.Empty,
+                    ProfilePicture  = userMatch.Avatar ?? string.Empty,
+                    Scanned         = true
+                });
+            }
+            else if (staffMatch != null)
+            {
+                profiles.Add(new NetworkProfileDto()
+                {
+                    UserId          = staffMatch.Id,
+                    Email           = staffMatch.Email ?? string.Empty,
+                    Name            = staffMatch.Name ?? string.Empty,
+                    ProfilePicture  = staffMatch.ProfilePhoto ?? string.Empty,
+                    Scanned         = true
+                });
+            }
+        }
 
         // 2. All users that have scanned me
         var usersThatHaveScannedMe = await _dbContext.UserAchievements
-            .Where(ua => ua.UserId == user.Id)
+            .Where(ua => ua.AchievementId == currentUserAchievementId)
             .Include(ua => ua.User)
             .Select(ua => ua.User)
             .ToListAsync(cancellationToken);
@@ -61,6 +100,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             {
                 profiles.Add(new NetworkProfileDto
                 {
+                    UserId          = scannedMeUser.Id,
                     Email           = scannedMeUser.Email ?? string.Empty,
                     Name            = scannedMeUser.FullName ?? string.Empty,
                     ProfilePicture  = scannedMeUser.Avatar ?? string.Empty,
@@ -76,7 +116,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .ToListAsync(cancellationToken);
 
         var staffUsers = await _dbContext.Users
-            .Where(u => staffEmails.Contains(u.Email))
+            .Where(u => u.Id != user.Id && staffEmails.Contains(u.Email))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -90,6 +130,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             {
                 profiles.Add(new NetworkProfileDto
                 {
+                    UserId         = staffUser.Id,
                     Email          = staffUser.Email ?? string.Empty,
                     Name           = staffUser.FullName ?? string.Empty,
                     ProfilePicture = staffUser.Avatar ?? string.Empty,
