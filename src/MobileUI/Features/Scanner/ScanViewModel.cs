@@ -19,17 +19,17 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private readonly ScanResultViewModel _resultViewModel;
     private const float ZoomFactorStep = 1.0f;
     
-    public ScanPageSegments CurrentSegment { get; set; } = ScanPageSegments.Scan;
+    public ScanPageSegments CurrentSegment { get; set; }
 
     public List<Segment> Segments { get; set; } =
     [
-        new Segment
+        new()
         {
             Name = "Scan",
             Value = ScanPageSegments.Scan,
             Icon = new FontImageSource { FontFamily = "FluentIcons", Glyph = "\uf255" }
         },
-        new Segment
+        new()
         {
             Name = "My Code",
             Value = ScanPageSegments.MyCode,
@@ -114,6 +114,20 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     public void Receive(EnableScannerMessage message)
     {
         ToggleScanner(true);
+    }
+    
+    public void SetSegment(ScanPageSegments segment)
+    {
+        var matchingSegment = Segments.FirstOrDefault(s => (ScanPageSegments)s.Value == segment);
+
+        if (matchingSegment == null)
+        {
+            return;
+        }
+
+        SelectedSegment = matchingSegment;
+        CurrentSegment = segment;
+        FilterBySegment();
     }
 
     [RelayCommand]

@@ -4,14 +4,17 @@ public partial class ScanPage
 {
     private readonly ScanViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
-    
-    public ScanPage(ScanViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
+
+    public ScanPage(ScanViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService,
+        ScanPageSegments segment = ScanPageSegments.Scan)
     {
         InitializeComponent();
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
+
+        _viewModel.SetSegment(segment);
     }
 
     protected override void OnDisappearing()
