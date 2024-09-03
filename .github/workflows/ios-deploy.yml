@@ -16,7 +16,7 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: artifacts-ios-${{ inputs.build_number }}
 

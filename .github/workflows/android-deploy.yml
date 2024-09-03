@@ -17,7 +17,7 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: artifacts-android-${{ inputs.build_number }}
 
