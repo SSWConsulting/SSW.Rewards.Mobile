@@ -25,7 +25,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         var user = await _userService.GetCurrentUser(cancellationToken);
         int currentUserAchievementId;
         
-        // 1. Get all staff
+        // 1. Get all staff and get user's achievement
         var staff = await _dbContext.StaffMembers
             .Include(u => u.StaffAchievement)
             .Where(s => !s.IsDeleted && s.StaffAchievement != null)
