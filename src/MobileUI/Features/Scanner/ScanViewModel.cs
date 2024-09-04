@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
+using Plugin.Maui.ScreenBrightness;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.Messages;
 
@@ -17,6 +18,7 @@ public enum ScanPageSegments
 public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _resultViewModel;
+    private readonly float _defaultBrightness;
     private const float ZoomFactorStep = 1.0f;
     
     public ScanPageSegments CurrentSegment { get; set; }
@@ -74,6 +76,8 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     {
         _resultViewModel = resultViewModel;
         
+        _defaultBrightness = ScreenBrightness.Default.Brightness;
+        
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
         userService.MyNameObservable().Subscribe(myName => UserName = myName);
 
@@ -87,28 +91,28 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     public void OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
-        
-        if (CurrentSegment == ScanPageSegments.Scan)
-        {
-            ToggleScanner(true);
-        }
     }
     
     public void OnDisappearing()
     {
-        // Reset zoom when exiting camera
-        if (CurrentZoomFactor > -1)
-        {
-            RequestZoomFactor = MinZoomFactor;
-        }
-        
-        ToggleScanner(false);
+        IsCameraEnabled = false;
+        ScreenBrightness.Default.Brightness = _defaultBrightness;
         WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
     
     private void ToggleScanner(bool toggleOn)
     {
+        IsScanVisible = toggleOn;
         IsCameraEnabled = toggleOn;
+        
+        if (toggleOn)
+        {
+            ScreenBrightness.Default.Brightness = _defaultBrightness;
+        }
+        else
+        {
+            ScreenBrightness.Default.Brightness = 1;
+        }
     }
     
     public void Receive(EnableScannerMessage message)
@@ -157,14 +161,12 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
 
         switch (CurrentSegment)
         {
-            case ScanPageSegments.Scan:
-                IsScanVisible = true;
-                ToggleScanner(true);
-                break;
             case ScanPageSegments.MyCode:
-            default:
-                IsScanVisible = false;
                 ToggleScanner(false);
+                break;
+            case ScanPageSegments.Scan:
+            default:
+                ToggleScanner(true);
                 break;
         }
     }
