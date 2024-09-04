@@ -75,7 +75,9 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             }
             else
             {
-                userMatch = await _dbContext.Users.Include(u => u.Achievement).Where(u => u.Achievement != null)
+                userMatch = await _dbContext.Users
+                    .Include(u => u.Achievement)
+                    .Where(u => u.Achievement != null)
                     .FirstOrDefaultAsync(ua => ua.Achievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
             }
             
