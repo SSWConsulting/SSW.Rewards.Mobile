@@ -34,39 +34,51 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
                 AchievmentId = s.StaffAchievement!.Id
             })
             .ToListAsync(cancellationToken);
-
-        var staffAchievementIds = staffDetails.Select(s => s.AchievmentId).ToList();
+        
+        var staffUsers = await dbContext.Users
+            .Where(u => u.Id != user.Id && staffDetails.Select(s => s.Email).Contains(u.Email))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
 
         if (filter == ActivityFeedFilter.Friends)
         {
             List<int> friendIds = [];
 
-            var userAchievementIds = await dbContext.Users
-                .Where(u => u.AchievementId.HasValue)
-                .Select(u => u.AchievementId)
+            var allAchievementIds = await dbContext.Users
+                .Include(u => u.Achievement)
+                .Where(u => u.Achievement != null)
+                .Select(u => u.Achievement!.Id)
+                .Union(staffDetails.Select(s => s.AchievmentId))
                 .ToListAsync(cancellationToken);
 
-            var haveScannedIds = await dbContext.UserAchievements
-                .Where(ua => userAchievementIds.Contains(ua.AchievementId))
-                .Select(ua => ua.UserId)
-                .ToListAsync(cancellationToken);
-
-            friendIds.AddRange(haveScannedIds);
-
-            var staffScannedIds = await dbContext.UserAchievements
-                .Where(ua => staffAchievementIds.Contains(ua.AchievementId) && ua.UserId == user.Id)
-                .Select(ua => ua.UserId)
-                .ToListAsync(cancellationToken);
-
-            friendIds.AddRange(staffScannedIds);
-
-            var scannedMeIds = await dbContext.UserAchievements
-                .Where(ua => ua.AchievementId == user.AchievementId)
+            var scannedUserAchievements = await dbContext.UserAchievements
+                .Where(ua => ua.UserId == user.Id && allAchievementIds.Contains(ua.AchievementId))
                 .Include(ua => ua.User)
-                .Select(ua => ua.UserId)
+                .Select(ua => ua.Achievement.Id)
                 .ToListAsync(cancellationToken);
+        
+            foreach (var scannedUserAchievement in scannedUserAchievements)
+            {
+                User? userMatch;
+                var staffMatch = staffDetails.FirstOrDefault(ua => ua.AchievmentId == scannedUserAchievement);
 
-            friendIds.AddRange(scannedMeIds);
+                if (staffMatch != null)
+                {
+                    userMatch = staffUsers.FirstOrDefault(u => u.Email == staffMatch.Email);
+                }
+                else
+                {
+                    userMatch = await dbContext.Users
+                        .Include(u => u.Achievement)
+                        .Where(u => u.Achievement != null)
+                        .FirstOrDefaultAsync(ua => ua.Achievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
+                }
+            
+                if (userMatch != null)
+                {
+                    friendIds.Add(userMatch.Id);
+                }
+            }
 
             userAchievements = await dbContext.UserAchievements
                 .Include(u => u.User)
