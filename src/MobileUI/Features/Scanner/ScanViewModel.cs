@@ -144,8 +144,8 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
             {
                 return;
             }
-            
-            ToggleScanner(false);
+
+            IsCameraEnabled = false;
             
             var rawValue = result.FirstOrDefault()?.RawValue;
 
