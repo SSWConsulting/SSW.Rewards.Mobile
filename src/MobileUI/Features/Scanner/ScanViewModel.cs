@@ -106,14 +106,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         IsScanVisible = toggleOn;
         IsCameraEnabled = toggleOn;
         
-        if (toggleOn)
-        {
-            ScreenBrightness.Default.Brightness = _defaultBrightness;
-        }
-        else
-        {
-            ScreenBrightness.Default.Brightness = MaxBrightness;
-        }
+        ScreenBrightness.Default.Brightness = toggleOn ? _defaultBrightness : MaxBrightness;
     }
     
     public void Receive(EnableScannerMessage message)
