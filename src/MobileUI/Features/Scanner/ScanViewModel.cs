@@ -20,6 +20,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private readonly ScanResultViewModel _resultViewModel;
     private readonly float _defaultBrightness;
     private const float ZoomFactorStep = 1.0f;
+    private const float MaxBrightness = 1.0f;
     
     public ScanPageSegments CurrentSegment { get; set; }
 
@@ -111,7 +112,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         }
         else
         {
-            ScreenBrightness.Default.Brightness = 1;
+            ScreenBrightness.Default.Brightness = MaxBrightness;
         }
     }
     
