@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.ApiClient.Services;
@@ -19,9 +18,8 @@ public enum ActivityPageSegments
 public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService) : BaseViewModel
 {
     public ActivityPageSegments CurrentSegment { get; set; }
-
-    [ObservableProperty]
-    private ObservableCollection<ActivityFeedItemDto> _feed = [];
+    
+    public ObservableRangeCollection<ActivityFeedItemDto> Feed { get; set; } = [];
 
     [ObservableProperty]
     private List<Segment> _segments = [];
@@ -34,12 +32,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
 
     private bool _loaded;
 
-    private List<ActivityFeedItemDto> _allFeed = [];
-    
-    private List<ActivityFeedItemDto> _friendsFeed = [];
-    private bool _friendsLoaded;
-
-    private const int _take = 50;
+    private const int Take = 50;
     private int _skip;
     private bool _limitReached;
     
@@ -50,7 +43,6 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         if (_loaded)
             return;
         
-        IsBusy = true;
         if (Segments.Count == 0)
         {
             Segments =
@@ -62,13 +54,10 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
 
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
 
-        await RefreshFeed();
-        
-        IsBusy = false;
-        _loaded = true;
+        await LoadFeed();
     }
     
-    private string GetMessage(UserAchievementDto achievement)
+    private static string GetMessage(UserAchievementDto achievement)
     {
         string name = achievement.AchievementName;
         string action = string.Empty;
@@ -94,46 +83,29 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
                 break;
         }
 
-        action = char.ToUpper(action[0]) + action.Substring(1);
+        action = char.ToUpper(action[0]) + action[1..];
         return $"{action} {name}";
     }
 
-    private async Task RefreshFeed()
+    private async Task LoadFeed(bool isRefreshing = false)
     {
-        var feed = await GetFeedData();
-        _skip = 0;
-
-        if (CurrentSegment == ActivityPageSegments.Friends)
+        if (!isRefreshing)
         {
-            _friendsFeed = feed;
-            _friendsLoaded = true;
+            Feed.Clear();
         }
-        else
-        {
-            _allFeed = feed;
-        }
-
-        LoadFeed();
-    }
-
-    private void LoadFeed()
-    {
-        Feed.Clear();
         
-        if (CurrentSegment == ActivityPageSegments.Friends)
+        IsBusy = true;
+        _skip = 0;
+        var feed = await GetFeedData();
+        
+        if (isRefreshing)
         {
-            foreach (var f in _friendsFeed)
-            {
-                Feed.Add(f);
-            }
+            Feed.Clear();
         }
-        else
-        {
-            foreach (var f in _allFeed)
-            {
-                Feed.Add(f);
-            }
-        }
+
+        Feed.AddRange(feed);
+        IsBusy = false;
+        _loaded = true;
     }
     
     private async Task<List<ActivityFeedItemDto>> GetFeedData()
@@ -143,8 +115,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         try
         {
             feed = (CurrentSegment == ActivityPageSegments.Friends
-                ? await activityService.GetFriendsActivities(_take, _skip, CancellationToken.None)
-                : await activityService.GetAllActivities(_take, _skip, CancellationToken.None)).Feed.Select(x =>
+                ? await activityService.GetFriendsActivities(Take, _skip, CancellationToken.None)
+                : await activityService.GetAllActivities(Take, _skip, CancellationToken.None)).Feed.Select(x =>
             {
                 x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
                     ? "v2sophie"
@@ -171,45 +143,37 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         if (_limitReached)
             return;
 
-        _skip += _take;
-        IsBusy = true;
+        _skip += Take;
         var feed = await GetFeedData();
         
         if (feed.Count == 0)
         {
             _limitReached = true;
-            IsBusy = false;
             return;
         }
         
-        foreach (var f in feed)
-        {
-            Feed.Add(f);
-        }
-
-        IsBusy = false;
+        Feed.AddRange(feed);
     }
 
     [RelayCommand]
     private async Task FilterBySegment()
     {
+        if (!_loaded || CurrentSegment == (ActivityPageSegments)SelectedSegment.Value)
+        {
+            return;
+        }
+        
         CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
         _limitReached = false;
         _skip = 0;
         
-        if (CurrentSegment == ActivityPageSegments.Friends && !_friendsLoaded)
-        {
-            await RefreshFeed();
-            return;
-        }
-        
-        LoadFeed();
+        await LoadFeed();
     }
     
     [RelayCommand]
     private async Task Refresh()
     {
-        await RefreshFeed();
+        await LoadFeed(true);
         IsRefreshing = false;
     }
     
