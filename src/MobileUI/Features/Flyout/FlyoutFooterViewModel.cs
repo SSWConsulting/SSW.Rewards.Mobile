@@ -10,6 +10,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
     private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IPermissionsService _permissionsService;
 
     [ObservableProperty]
     private bool _isStaff;
@@ -17,11 +18,12 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [ObservableProperty]
     private string _versionNumber;
 
-    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService, IFirebaseAnalyticsService firebaseAnalyticsService)
+    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService, IFirebaseAnalyticsService firebaseAnalyticsService, IPermissionsService permissionsService)
     {
         _userService = userService;
         _authService = authService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _permissionsService = permissionsService;
         
         VersionNumber = $"Version {AppInfo.VersionString}";
         
@@ -31,12 +33,11 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [RelayCommand]
     private async Task MyQrCodeTapped()
     {
-        if (!IsStaff)
-            return;
-        
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new QrCodePage(new QrCodeViewModel(_userService), _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(popup);
+        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
+        if (granted)
+        {
+            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>(ScanPageSegments.MyCode);
+        }
     }
     
     [RelayCommand]

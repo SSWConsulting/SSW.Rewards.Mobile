@@ -20,6 +20,7 @@ public partial class RedeemRewardViewModel(
 {
     private Reward _reward;
     private float _defaultBrightness;
+    private const float MaxBrightness = 1.0f;
 
     [ObservableProperty]
     private string _image;
@@ -101,7 +102,7 @@ public partial class RedeemRewardViewModel(
 
     private void ShowQrCode(string qrCode = null)
     {
-        ScreenBrightness.Default.Brightness = 1;
+        ScreenBrightness.Default.Brightness = MaxBrightness;
         
         IsHeaderVisible = false;
         IsBalanceVisible = false;

@@ -14,8 +14,13 @@ public partial class SegmentedControl : ContentView
 
 	public event EventHandler<Segment> SelectionChanged;
 
-	[AutoBindable(DefaultBindingMode = "TwoWay")]
+	[AutoBindable(DefaultBindingMode = "TwoWay", OnChanged = nameof(SegmentChanged))]
 	private Segment _selectedSegment;
+
+    private void SegmentChanged(Segment segment)
+    {
+        SetSelected(segment);
+    }
 
     [AutoBindable(OnChanged = nameof(SegmentsChanged))]
     private List<Segment> _segments;
@@ -43,6 +48,14 @@ public partial class SegmentedControl : ContentView
     {
         var segment = e.Parameter as Segment;
         
+        SetSelected(segment);
+        
+        SelectedSegment = segment;
+        SelectionChanged?.Invoke(this, segment);
+    }
+
+    private void SetSelected(Segment segment)
+    {
         if (segment == null)
         {
             return;
@@ -50,19 +63,10 @@ public partial class SegmentedControl : ContentView
         
         foreach (var item in Segments)
         {
-            if (item == segment)
-            {
-                item.IsSelected = true;
-            }
-            else
-            {
-                item.IsSelected = false;
-            }
+            item.IsSelected = item == segment;
         }
 
         segment.IsSelected = true;
-        SelectedSegment = segment;
-        SelectionChanged?.Invoke(this, segment);
     }
 }
 

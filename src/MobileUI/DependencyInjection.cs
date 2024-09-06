@@ -29,7 +29,9 @@ public static class DependencyInjection
             typeof(OthersProfileViewModel),
             typeof(ProfileViewModelBase),
             typeof(QuizDetailsPage),
-            typeof(QuizDetailsViewModel)
+            typeof(QuizDetailsViewModel),
+            typeof(ScanPage),
+            typeof(ScanViewModel)
         };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
@@ -44,6 +46,8 @@ public static class DependencyInjection
         services.AddTransient<OthersProfileViewModel>();
         services.AddTransient<QuizDetailsPage>();
         services.AddTransient<QuizDetailsViewModel>();
+        services.AddTransient<ScanPage>();
+        services.AddTransient<ScanViewModel>();
 
         services.AddSingleton<ILeaderService, LeaderService>();
         services.AddSingleton<IUserService, UserService>();
