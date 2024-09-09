@@ -10,6 +10,14 @@ using Color = Microsoft.Maui.Graphics.Color;
 
 namespace SSW.Rewards.Mobile;
 
+[IntentFilter([Android.Content.Intent.ActionView],
+    Categories =
+    [
+        Android.Content.Intent.ActionView,
+        Android.Content.Intent.CategoryDefault,
+        Android.Content.Intent.CategoryBrowsable
+    ],
+    DataScheme = "sswrewards", DataHost = "", DataPathPrefix = "/")]
 [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density, ScreenOrientation = ScreenOrientation.Portrait)]
 public class MainActivity : MauiAppCompatActivity
 {

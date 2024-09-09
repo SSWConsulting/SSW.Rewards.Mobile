@@ -33,6 +33,16 @@ public partial class App : Application
     {
         // Handle when your app resumes
     }
+    
+    protected override async void OnAppLinkRequestReceived(Uri uri)
+    {
+        base.OnAppLinkRequestReceived(uri);
+
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var code = queryDictionary.Get("code");
+
+        // handle code here
+    }
 
     private async Task CheckApiCompatibilityAsync()
     {
