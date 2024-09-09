@@ -41,7 +41,7 @@ public partial class App : Application
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var code = queryDictionary.Get("code");
 
-        // handle code here
+        // TODO: handle code here
     }
 
     private async Task CheckApiCompatibilityAsync()
