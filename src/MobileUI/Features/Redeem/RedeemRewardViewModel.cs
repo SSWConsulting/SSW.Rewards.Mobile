@@ -208,6 +208,12 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task CancelPendingRedemptionClicked()
     {
+        var isConfirmed = await ViewPage.DisplayAlert("Cancel",
+            "Are you sure you want to cancel the pending redemption?", "Yes", "No");
+
+        if (!isConfirmed)
+            return;
+        
         IsBusy = true;
 
         await rewardService.CancelPendingRedemption(new CancelPendingRedemptionDto

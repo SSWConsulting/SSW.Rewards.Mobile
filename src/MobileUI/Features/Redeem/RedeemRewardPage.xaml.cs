@@ -18,6 +18,7 @@ public partial class RedeemRewardPage
         _viewModel = viewModel;
         _reward = reward;
         BindingContext = _viewModel;
+        _viewModel.ViewPage = this;
     }
 
     protected override void OnAppearing()
