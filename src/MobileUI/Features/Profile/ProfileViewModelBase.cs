@@ -186,7 +186,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         var platform = new SocialMediaPlatform
         {
-            PlatformName = "Company URL",
+            PlatformName = "Company",
             PlatformId = Constants.SocialMediaPlatformIds.Company,
             Url = "https://",
             Placeholder = "https://[your-website]",
