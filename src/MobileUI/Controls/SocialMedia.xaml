@@ -11,7 +11,7 @@
     <Border.Resources>
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
     </Border.Resources>
-    <FlexLayout Direction="Row" JustifyContent="SpaceEvenly" HorizontalOptions="Fill">
+    <FlexLayout Direction="Row" JustifyContent="SpaceAround" HorizontalOptions="Fill">
         <!-- LinkedIn -->
         <Label
             HorizontalOptions="Center"
