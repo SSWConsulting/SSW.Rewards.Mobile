@@ -5,9 +5,9 @@ public class MyProfileViewModel(
     IUserService userService,
     IDevService devService,
     IPermissionsService permissionsService,
-    ISnackbarService snackbarService,
-    IFirebaseAnalyticsService firebaseAnalyticsService)
-    : ProfileViewModelBase(true, userService, devService, permissionsService, snackbarService, firebaseAnalyticsService)
+    IFirebaseAnalyticsService firebaseAnalyticsService,
+    IServiceProvider provider)
+    : ProfileViewModelBase(true, userService, devService, permissionsService, firebaseAnalyticsService, provider)
 {
     private readonly IUserService _userService = userService;
 

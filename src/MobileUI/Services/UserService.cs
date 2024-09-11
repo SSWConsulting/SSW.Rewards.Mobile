@@ -20,6 +20,7 @@ public interface IUserService
     IObservable<string> LinkedInProfileObservable();
     IObservable<string> GitHubProfileObservable();
     IObservable<string> TwitterProfileObservable();
+    IObservable<string> CompanyUrlObservable();
     
     // auth methods
 
@@ -37,7 +38,7 @@ public interface IUserService
     Task<string> UploadImageAsync(Stream image, string fileName);
     Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool?> SaveSocialMedia(int socialMediaPlatformId, string socialMediaUserProfile);
-    Task LoadSocialMedia(int userId, int socialMediaPlatformId);
+    Task LoadSocialMedia(int userId);
     void ClearSocialMedia();
     Task<bool> DeleteProfileAsync();
 }
@@ -64,6 +65,7 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _linkedInProfile = new(string.Empty);
     private readonly BehaviorSubject<string> _gitHubProfile = new(string.Empty);
     private readonly BehaviorSubject<string> _twitterProfile = new(string.Empty);
+    private readonly BehaviorSubject<string> _companyUrl = new(string.Empty);
 
     public UserService(IApiUserService userService, IAuthenticationService authService)
     {
@@ -85,6 +87,7 @@ public class UserService : IUserService
     public IObservable<string> LinkedInProfileObservable() => _linkedInProfile.AsObservable();
     public IObservable<string> GitHubProfileObservable() => _gitHubProfile.AsObservable();
     public IObservable<string> TwitterProfileObservable() => _twitterProfile.AsObservable();
+    public IObservable<string> CompanyUrlObservable() => _companyUrl.AsObservable();
 
     public async Task<UserProfileDto> GetUserAsync(int userId)
     {
@@ -248,12 +251,21 @@ public class UserService : IUserService
         }
     }
 
-    public async Task LoadSocialMedia(int userId, int socialMediaPlatformId)
+    public async Task LoadSocialMedia(int userId)
     {
         try
         {
-            var socialMediaId = await _userClient.GetSocialMediaId(userId, socialMediaPlatformId);
-            UpdateSocialMediaProfile(socialMediaPlatformId, socialMediaId?.SocialMediaUserId);
+            var socialMedia = await _userClient.GetSocialMedia(userId);
+            
+            if (socialMedia == null || socialMedia.SocialMedia.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var social in socialMedia.SocialMedia)
+            {
+                UpdateSocialMediaProfile(social.SocialMediaPlatformId, social.SocialMediaUserId);
+            }
         }
         catch (Exception ex)
         {
@@ -266,6 +278,7 @@ public class UserService : IUserService
         _linkedInProfile.OnNext(string.Empty);
         _gitHubProfile.OnNext(string.Empty);
         _twitterProfile.OnNext(string.Empty);
+        _companyUrl.OnNext(string.Empty);
     }
 
     public void UpdateSocialMediaProfile(int socialMediaPlatformId, string socialMediaUserProfile)
@@ -280,6 +293,9 @@ public class UserService : IUserService
                 break;
             case Constants.SocialMediaPlatformIds.Twitter:
                 _twitterProfile.OnNext(socialMediaUserProfile);
+                break;
+            case Constants.SocialMediaPlatformIds.Company:
+                _companyUrl.OnNext(socialMediaUserProfile);
                 break;
         }
     }
