@@ -11,8 +11,7 @@ public partial class ScanResultViewModel : BaseViewModel
     private readonly IUserService _userService;
 
     private readonly IScannerService _scannerService;
-
-    private bool _wonPrize { get; set; }
+    
     private string data;
 
     [ObservableProperty]
@@ -72,7 +71,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 Application.Current.Resources.TryGetValue("PointsColour", out var color);
                 HeadingColour = (Color)color;
                 AchievementHeading = result.Title;
-                _wonPrize = true;
                 
                 if (result.ScannedUserId != null)
                 {
@@ -87,13 +85,13 @@ public partial class ScanResultViewModel : BaseViewModel
                 AnimationRef = "trophy.json";
                 HeadingColour = Colors.White;
                 AchievementHeading = result.Title;
-                _wonPrize = true;
                 break;
 
             case ScanResult.Duplicate:
                 if (result.ScannedUserId != null)
                 {
-                    await DismissPopups();
+                    // Dismiss popup and go straight to profile
+                    await MopupService.Instance.PopAllAsync();
                     await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(result.ScannedUserId);
                     break;
                 }
@@ -104,7 +102,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 ResultBody = "Did you re-scan that accidentally?";
                 AchievementHeading = string.Empty;
                 HeadingColour = Colors.White;
-                _wonPrize = false;
                 break;
 
             case ScanResult.NotFound:
@@ -112,7 +109,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 ResultHeading = "Unrecognised";
                 ResultBody = "Try scanning this with your phone camera instead.";
                 AchievementHeading = string.Empty;
-                _wonPrize = false;
                 HeadingColour = Colors.White;
                 break;
 
@@ -121,7 +117,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 ResultHeading = "Not Enough Points";
                 ResultBody = "You do not have enough points to claim this reward yet. Try again later.";
                 AchievementHeading = string.Empty;
-                _wonPrize = false;
                 HeadingColour = Colors.White;
                 break;
 
@@ -130,7 +125,6 @@ public partial class ScanResultViewModel : BaseViewModel
                 ResultHeading = "It's not you it's me...";
                 ResultBody = "Something went wrong there. Please try again.";
                 AchievementHeading = string.Empty;
-                _wonPrize = false;
                 HeadingColour = Colors.White;
                 break;
         }
@@ -144,32 +138,6 @@ public partial class ScanResultViewModel : BaseViewModel
     [RelayCommand]
     private async Task Ok()
     {
-        await DismissPopups();
-    }
-
-    private async Task DismissPopups()
-    {
-        if(_wonPrize)
-        {
-            await DismissWithWon();
-        }
-        else
-        {
-            await DismissWithoutWon();
-        }
-    }
-
-    private async Task DismissWithWon()
-    {
-        await MopupService.Instance.PopAllAsync();
-        //await Navigation.PopModalAsync();
-    }
-
-    private async Task DismissWithoutWon()
-    {
-        // Important! We should pop the page before enabling scanner;
-        // otherwise PopAllAsync in some cases might also close the next opening popup
-        // together with the current one disabling the scanner. https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/543
         await MopupService.Instance.PopAllAsync();
         WeakReferenceMessenger.Default.Send(new EnableScannerMessage());
     }
