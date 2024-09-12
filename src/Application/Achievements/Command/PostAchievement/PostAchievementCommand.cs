@@ -39,6 +39,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                 status = ClaimAchievementStatus.NotFound
             };
         }
+        
+        var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
         var user = await _userService.GetCurrentUser(cancellationToken);
 
@@ -46,26 +48,15 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             .UserAchievements
             .Where(ua => ua.UserId == user.Id)
             .ToListAsync(cancellationToken);
-
-        if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
-        {
-            return new ClaimAchievementResult
-            {
-                status = ClaimAchievementStatus.Duplicate
-            };
-        }
-
-        var userAchievement = new UserAchievement
-        {
-            UserId = user.Id,
-            AchievementId = requestedAchievement.Id
-        };
-
-        _context.UserAchievements.Add(userAchievement);
-
+        
         // check for milestone achievements
         if (requestedAchievement.Type == AchievementType.Scanned)
         {
+            var scannedUser = await _context.Users
+                .Where(u => u.AchievementId == requestedAchievement.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+            achievementModel.UserId = scannedUser?.Id;
+            
             if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
             {
                 var meetAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.MeetSSW, cancellationToken);
@@ -79,6 +70,23 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                 _context.UserAchievements.Add(userMeetAchievement);
             }
         }
+
+        if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
+        {
+            return new ClaimAchievementResult
+            {
+                viewModel = achievementModel,
+                status = ClaimAchievementStatus.Duplicate,
+            };
+        }
+
+        var userAchievement = new UserAchievement
+        {
+            UserId = user.Id,
+            AchievementId = requestedAchievement.Id
+        };
+
+        _context.UserAchievements.Add(userAchievement);
 
         if (requestedAchievement.Type == AchievementType.Attended)
         {
@@ -134,8 +142,6 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
         return new ClaimAchievementResult
         {

@@ -73,6 +73,12 @@ public partial class ScanResultViewModel : BaseViewModel
                 HeadingColour = (Color)color;
                 AchievementHeading = result.Title;
                 _wonPrize = true;
+                
+                if (result.ScannedUserId != null)
+                {
+                    await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(result.ScannedUserId);
+                }
+                
                 break;
 
             case ScanResult.Confirmed:
@@ -85,6 +91,13 @@ public partial class ScanResultViewModel : BaseViewModel
                 break;
 
             case ScanResult.Duplicate:
+                if (result.ScannedUserId != null)
+                {
+                    await DismissPopups();
+                    await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(result.ScannedUserId);
+                    break;
+                }
+                
                 AnimationRef = "rapid-scan.json";
                 AnimationLoop = true;
                 ResultHeading = "Already Scanned!";
@@ -149,7 +162,7 @@ public partial class ScanResultViewModel : BaseViewModel
     private async Task DismissWithWon()
     {
         await MopupService.Instance.PopAllAsync();
-        await Navigation.PopModalAsync();
+        //await Navigation.PopModalAsync();
     }
 
     private async Task DismissWithoutWon()
