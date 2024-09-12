@@ -53,9 +53,21 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         if (requestedAchievement.Type == AchievementType.Scanned)
         {
             var scannedUser = await _context.Users
-                .Where(u => u.AchievementId == requestedAchievement.Id)
-                .FirstOrDefaultAsync(cancellationToken);
-            achievementModel.UserId = scannedUser?.Id;
+                .FirstOrDefaultAsync(u => u.AchievementId == requestedAchievement.Id, cancellationToken);
+
+            if (scannedUser == null)
+            {
+                var staffMember = await _context.StaffMembers
+                    .Include(s => s.StaffAchievement)
+                    .Where(s => s.StaffAchievement != null)
+                    .FirstOrDefaultAsync(s => s.StaffAchievement!.Id == requestedAchievement.Id, cancellationToken);
+
+                achievementModel.UserId = staffMember?.Id;
+            }
+            else
+            {
+                achievementModel.UserId = scannedUser.Id;
+            }
             
             if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
             {
