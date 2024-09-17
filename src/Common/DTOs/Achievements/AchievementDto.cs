@@ -8,4 +8,5 @@ public class AchievementDto
     public string Name { get; set; }
     public int Value { get; set; }
     public AchievementType Type { get; set; }
+    public int? UserId { get; set; }
 }
