@@ -89,6 +89,7 @@
             <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
+                   FontSize="14"
                    TextColor="White"
                    Text="{Binding Path=Rank, StringFormat='#{0:n0}'}"/>
         </Border>
@@ -117,6 +118,7 @@
             <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
+                   FontSize="18"
                    TextColor="White"
                    Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
         </Border>
@@ -145,6 +147,7 @@
             <Label Style="{StaticResource LabelBold}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
+                   FontSize="14"
                    TextColor="White"
                    Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
         </Border>
