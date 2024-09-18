@@ -12,6 +12,7 @@ public interface IAuthenticationService
     Task<string> GetAccessToken();
     Task SignOut();
     bool HasCachedAccount { get; }
+    bool IsLoggedIn { get; }
     event EventHandler DetailsUpdated;
 }
 
@@ -26,6 +27,8 @@ public class AuthenticationService : IAuthenticationService
 
     public event EventHandler DetailsUpdated;
     public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
+    
+    public bool IsLoggedIn { get => !string.IsNullOrWhiteSpace(_accessToken); }
 
     public AuthenticationService(IBrowser browser)
     {

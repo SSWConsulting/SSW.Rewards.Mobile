@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
+using Mopups.Services;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -9,6 +10,9 @@ public partial class LoginPageViewModel : BaseViewModel
     private readonly IAuthenticationService _authService;
     private readonly IPushNotificationsService _pushNotificationsService;
     private readonly IPermissionsService _permissionsService;
+    private readonly IServiceProvider _provider;
+
+    private string _pendingScanCode;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -25,13 +29,20 @@ public partial class LoginPageViewModel : BaseViewModel
         IAuthenticationService authService,
         IUserService userService,
         IPushNotificationsService pushNotificationsService,
-        IPermissionsService permissionsService)
+        IPermissionsService permissionsService,
+        IServiceProvider provider)
     {
         _authService = authService;
         _pushNotificationsService = pushNotificationsService;
         _permissionsService = permissionsService;
+        _provider = provider;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
+    }
+    
+    public void QueueCodeScan(string code)
+    {
+        _pendingScanCode = code;
     }
 
     [RelayCommand]
@@ -125,6 +136,15 @@ public partial class LoginPageViewModel : BaseViewModel
         if (granted)
         {
             await UploadDeviceTokenIfRequired();
+        }
+
+        // Handle qr code received before login
+        if (!string.IsNullOrEmpty(_pendingScanCode))
+        {
+            var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
+            var popup = new PopupPages.ScanResult(vm, _pendingScanCode);
+            _pendingScanCode = null;
+            await MopupService.Instance.PushAsync(popup);
         }
     }
 
