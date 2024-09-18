@@ -6,8 +6,11 @@ public static class ImageHelpers
 {
     public static ImageSource GenerateQrCode(string qrCodeString)
     {
+        // Prepend the code with the custom redeem URL
+        var url = "sswrewards://redeem?code=" + qrCodeString;
+        
         using QRCodeGenerator qrGenerator = new();
-        using QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrCodeString, QRCodeGenerator.ECCLevel.Q);
+        using QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
         using PngByteQRCode qrCode = new(qrCodeData);
         
         byte[] qrCodeBytes = qrCode.GetGraphic(20);
