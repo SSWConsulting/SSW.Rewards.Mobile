@@ -10,12 +10,11 @@ public partial class LeaderboardViewModel : BaseViewModel
 {
     private int _myUserId;
 
-    private ILeaderService _leaderService;
+    private readonly ILeaderService _leaderService;
     private readonly IUserService _userService;
     private bool _loaded;
-
-    [ObservableProperty]
-    private ObservableCollection<LeaderViewModel> searchResults = new ();
+    
+    public ObservableRangeCollection<LeaderViewModel> SearchResults { get; set; } = [];
 
     public LeaderboardViewModel(ILeaderService leaderService, IUserService userService)
     {
@@ -144,7 +143,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         var newList = new ObservableCollection<LeaderViewModel>(sortedLeaders);
         await App.Current.MainPage.Dispatcher.DispatchAsync(() =>
         {
-            SearchResults = newList;
+            SearchResults.ReplaceRange(newList);
         });
     }
 

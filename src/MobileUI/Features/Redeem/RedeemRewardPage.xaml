@@ -61,8 +61,8 @@
                         <VerticalStackLayout>
                             <!-- Header section -->
                             <VerticalStackLayout IsVisible="{Binding IsHeaderVisible}">
-                                <Border HeightRequest="80"
-                                    WidthRequest="80"
+                                <Border HeightRequest="250"
+                                    WidthRequest="250"
                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 6"
@@ -163,7 +163,7 @@
 
                             <!-- Pending redemption QR code -->
                             <Grid IsVisible="{Binding IsQrCodeVisible}"
-                                                 RowSpacing="10"
+                                                 RowSpacing="20"
                                                  Margin="0,0,0,30"
                                                  RowDefinitions="Auto,Auto">
                                 <Label Grid.Row="0"
@@ -331,7 +331,7 @@
                             </Grid>
 
                             <VerticalStackLayout HorizontalOptions="Center"
-                                                 Spacing="15">
+                                                 Spacing="20">
                                 <Button Background="{StaticResource SSWRed}"
                                         CornerRadius="10"
                                         IsVisible="{Binding ConfirmEnabled}"
@@ -343,7 +343,23 @@
 
                                 <Button Background="{StaticResource SSWRed}"
                                         CornerRadius="10"
-                                        Text="Cancel redemption"
+                                        Text="Confirm Scanned"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        IsVisible="{Binding IsQrCodeVisible}"
+                                        Command="{Binding ClosePopupCommand}">
+                                    <Button.ImageSource>
+                                        <FontImageSource Glyph="&#xf00c;"
+                                                         FontFamily="FA6Solid"
+                                                         FontAutoScalingEnabled="True"
+                                                         Size="16"/>
+                                    </Button.ImageSource>
+                                </Button>
+                                
+                                <Button Background="{StaticResource SSWRed}"
+                                        CornerRadius="10"
+                                        Text="Cancel"
                                         FontAttributes="Bold"
                                         VerticalOptions="Center"
                                         HorizontalOptions="Center"

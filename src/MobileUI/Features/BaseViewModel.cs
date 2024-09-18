@@ -12,4 +12,6 @@ public partial class BaseViewModel : ObservableObject
     string title = string.Empty;
 
     public INavigation Navigation { get; set; }
+    
+    public Page ViewPage { get; set; }
 }

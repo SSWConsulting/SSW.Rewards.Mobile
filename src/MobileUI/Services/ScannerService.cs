@@ -50,12 +50,14 @@ public class ScannerService : IScannerService
                         vm.result = ScanResult.Added;
                         vm.Title = response.viewModel.Name;
                         vm.Points = response.viewModel.Value;
+                        vm.ScannedUserId = response.viewModel?.UserId;
                         break;
 
                     case Enums.ClaimAchievementStatus.Duplicate:
                         vm.result = ScanResult.Duplicate;
                         vm.Title = "Duplicate";
                         vm.Points = 0;
+                        vm.ScannedUserId = response.viewModel?.UserId;
                         break;
 
                     case Enums.ClaimAchievementStatus.Error:

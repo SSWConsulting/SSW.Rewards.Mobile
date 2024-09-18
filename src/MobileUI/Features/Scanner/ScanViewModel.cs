@@ -92,6 +92,11 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     public void OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
+
+        if (IsScanVisible)
+        {
+            IsCameraEnabled = true;
+        }
     }
     
     public void OnDisappearing()

@@ -52,29 +52,29 @@ public partial class OnBoardingViewModel : BaseViewModel
             },
             new()
             {
-                Heading1 = "EARN CREDITS",
-                Heading2 = "By Taking Quizzes",
-                Image = "credits.png",
-            },
-            new()
-            {
-                Heading1 = "NETWORK",
-                Heading2 = "By Scanning QR Codes",
-                Content = "And earn up to 1000 credits per scan",
+                Heading1 = "EARN POINTS",
+                Heading2 = "and network",
+                Content = "by scanning QR codes",
                 Image = "scan.png",
             },
             new()
             {
-                Heading1 = "GET REWARDED",
-                Heading2 = "Convert Credits to Prizes",
-                Content = "Convert your credits to awesome Prizes",
+                Heading1 = "EARN POINTS",
+                Heading2 = "by taking quizzes",
+                Image = "credits.png",
+            },
+            new()
+            {
+                Heading1 = "EARN PRIZES",
+                Heading2 = "buy swag with your points",
+                Content = "and win prize giveaways",
                 Image = "prizes.png",
             },
             new()
             {
-                Heading1 = "COMPETE!",
-                Heading2 = "Build Your Rank",
-                Content = "Move up the leaderboard",
+                Heading1 = "GET TO THE TOP",
+                Heading2 = "check out the leaderboard",
+                Content = "Can you get to the top 10?",
                 Image = "position.png",
             },
         });
