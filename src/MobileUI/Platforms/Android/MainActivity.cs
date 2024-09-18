@@ -18,7 +18,10 @@ namespace SSW.Rewards.Mobile;
         Android.Content.Intent.CategoryBrowsable
     ],
     DataScheme = "sswrewards", DataHost = "", DataPathPrefix = "/")]
-[Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
+[Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true,
+    ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode |
+                           ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density,
+    ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
 public class MainActivity : MauiAppCompatActivity
 {
     internal static readonly string Channel_ID = "General";
