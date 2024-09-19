@@ -26,14 +26,14 @@ jobs:
           run: dotnet publish $PROJECT --no-build --configuration Release --output out
   
         - name: Upload a UI Artifact
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: ui
             path: out/wwwroot
             if-no-files-found: error
   
         - name: Upload a Infra Artifact
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: infra
             path: infra
