@@ -38,6 +38,9 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     [ObservableProperty]
     private bool _isStaff;
+    
+    [ObservableProperty]
+    private string _title;
 
     [ObservableProperty]
     private string _linkedInUrl;
@@ -83,10 +86,18 @@ public partial class ProfileViewModelBase : BaseViewModel
         _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
         
-        userService.LinkedInProfileObservable().Subscribe(myLinkedIn => LinkedInUrl = myLinkedIn);
-        userService.GitHubProfileObservable().Subscribe(myGitHub => GitHubUrl = myGitHub);
-        userService.TwitterProfileObservable().Subscribe(myTwitter => TwitterUrl = myTwitter);
-        userService.CompanyUrlObservable().Subscribe(myUrl => CompanyUrl = myUrl);
+        userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
+        userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
+        userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
+        userService.CompanyUrlObservable().Subscribe(company =>
+        {
+            CompanyUrl = company;
+
+            if (!IsStaff)
+            {
+                Title = company;
+            }
+        });
     }
 
     protected async Task _initialise()
@@ -115,7 +126,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         Balance = profile.Balance;
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
-        
+        Title = GetTitle();
+
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
@@ -126,6 +138,11 @@ public partial class ProfileViewModelBase : BaseViewModel
     private async Task LoadSocialMedia()
     {
         await _userService.LoadSocialMedia(UserId);
+    }
+
+    private string GetTitle()
+    {
+        return IsStaff ? "SSW" : !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
     }
 
     [RelayCommand]

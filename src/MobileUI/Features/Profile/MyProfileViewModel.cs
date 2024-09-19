@@ -13,7 +13,7 @@ public class MyProfileViewModel(
 
     public async Task Initialise()
     {
-        _userService.MyUserIdObservable().Subscribe(myUserId => HandleUserIdChange(myUserId));
+        _userService.MyUserIdObservable().Subscribe(HandleUserIdChange);
         _userService.MyNameObservable().Subscribe(myName => Name = myName);
         _userService.MyEmailObservable().Subscribe(myEmail => UserEmail = myEmail);
         _userService.MyProfilePicObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);

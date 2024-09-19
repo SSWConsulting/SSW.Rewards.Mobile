@@ -94,9 +94,13 @@
             IsVisible="False"
             TextColor="DimGrey">
             <Label.Triggers>
-                <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
+                <MultiTrigger TargetType="Label">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding IsMe}" Value="True" />
+                        <BindingCondition Binding="{Binding IsStaff}" Value="False" />
+                    </MultiTrigger.Conditions>
                     <Setter Property="IsVisible" Value="True" />
-                </DataTrigger>
+                </MultiTrigger>
                 <DataTrigger TargetType="Label"
                              Binding="{Binding CompanyUrl, Converter={StaticResource IsStringNotNullOrEmpty}}"
                              Value="True">
