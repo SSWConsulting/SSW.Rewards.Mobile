@@ -142,7 +142,12 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private string GetTitle()
     {
-        return IsStaff ? "SSW" : !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
+        if (IsStaff)
+        {
+            return "SSW";
+        }
+
+        return !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
     }
 
     [RelayCommand]
