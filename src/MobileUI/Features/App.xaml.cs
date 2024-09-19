@@ -1,11 +1,18 @@
-﻿namespace SSW.Rewards.Mobile;
+﻿using Mopups.Services;
+
+namespace SSW.Rewards.Mobile;
 
 public partial class App : Application
 {
+    private static IServiceProvider _provider;
+    private static IAuthenticationService _authService;
     public static object UIParent { get; set; }
 
-    public App(LoginPage page)
+    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService)
     {
+        _provider = serviceProvider;
+        _authService = authService;
+        
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
 
@@ -32,6 +39,25 @@ public partial class App : Application
     protected override void OnResume()
     {
         // Handle when your app resumes
+    }
+    
+    protected override async void OnAppLinkRequestReceived(Uri uri)
+    {
+        base.OnAppLinkRequestReceived(uri);
+
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var code = queryDictionary.Get("code");
+        
+        if (_authService.IsLoggedIn)
+        {
+            var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
+            var popup = new PopupPages.ScanResult(vm, code);
+            await MopupService.Instance.PushAsync(popup);
+        }
+        else
+        {
+            ((LoginPage)MainPage)?.QueueCodeScan(code);
+        }
     }
 
     private async Task CheckApiCompatibilityAsync()

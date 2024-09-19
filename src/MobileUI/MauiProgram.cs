@@ -40,6 +40,7 @@ public static class MauiProgram
         .UsePageResolver()
         .UseBarcodeScanning()
         .RegisterFirebase()
+        .RegisterUrlHandling()
         .ConfigureMauiHandlers((handlers) =>
         {
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
@@ -108,5 +109,45 @@ public static class MauiProgram
         });
 
         return builder;
+    }
+
+    private static MauiAppBuilder RegisterUrlHandling(this MauiAppBuilder builder)
+    {
+        builder.ConfigureLifecycleEvents(events =>
+        {
+#if IOS
+            events.AddiOS(ios =>
+            {
+                ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
+            });
+#else
+            events.AddAndroid(android => android.OnCreate((activity, bundle) => {
+                var action = activity.Intent?.Action;
+                var data = activity.Intent?.Data?.ToString();
+
+                if (action != Android.Content.Intent.ActionView || data is null)
+                {
+                    return;
+                }
+
+                activity.Finish();
+                Task.Run(() => HandleAppLink(data));
+            }));
+#endif
+        });
+
+        return builder;
+    }
+
+    static bool HandleAppLink(string url)
+    {
+        if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri))
+        {
+            return false;
+        }
+
+        App.Current?.SendOnAppLinkRequestReceived(uri);
+        return true;
+
     }
 }

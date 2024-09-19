@@ -166,6 +166,13 @@ public class ScannerService : IScannerService
 
     public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string qrCodeData)
     {
+        if (qrCodeData.StartsWith("sswrewards://"))
+        {
+            var uri = new Uri(qrCodeData);
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            qrCodeData = queryDictionary.Get("code");
+        }
+        
         var decodedQR = StringHelpers.Base64Decode(qrCodeData);
         
         if (decodedQR.StartsWith("ach:"))

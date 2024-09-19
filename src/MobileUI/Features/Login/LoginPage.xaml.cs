@@ -39,4 +39,9 @@ public partial class LoginPage : ContentPage
             await _viewModel.Refresh();
         }
     }
+
+    public void QueueCodeScan(string code)
+    {
+        _viewModel.QueueCodeScan(code);
+    }
 }
