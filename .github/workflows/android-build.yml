@@ -67,7 +67,7 @@ jobs:
           /p:AndroidSigningKeyAlias=${{ secrets.ANDROID_KEYSTOREALIAS }} `
           /p:AndroidSigningStorePass=${{ secrets.ANDROID_KEYSTOREPASSWORD }}
 
-      - uses: actions/upload-artifact@v3.1.2
+      - uses: actions/upload-artifact@v4
         with:
           name: artifacts-android-${{ inputs.build_number }}
           path: |

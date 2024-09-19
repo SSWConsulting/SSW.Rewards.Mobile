@@ -61,7 +61,7 @@ jobs:
         run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net8.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
 
       - name: Upload iOS Artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts-ios-${{ inputs.build_number }}
           path: | 
