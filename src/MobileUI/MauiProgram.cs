@@ -101,7 +101,7 @@ public static class MauiProgram
                 Firebase.Core.App.Configure();
                 return false;
             }));
-#else
+#elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, bundle) => {
                 Firebase.FirebaseApp.InitializeApp(activity);
             }));
@@ -120,7 +120,7 @@ public static class MauiProgram
             {
                 ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
             });
-#else
+#elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, bundle) => {
                 var action = activity.Intent?.Action;
                 var data = activity.Intent?.Data?.ToString();
