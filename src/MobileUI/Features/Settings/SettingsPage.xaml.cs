@@ -23,6 +23,7 @@ public partial class SettingsPage
 
     private void SetUpSocialMediaSection()
     {
+        // Section has to be set up in code as cells can't be adjusted dynamically in the XAML
         SocialMediaSection.Add(new TextCell { Text = "LinkedIn", TextColor = Colors.White, Command = _viewModel.AddLinkedInCommand });
         SocialMediaSection.Add(new TextCell { Text = "GitHub", TextColor = Colors.White, Command = _viewModel.AddGitHubCommand });
         SocialMediaSection.Add(new TextCell { Text = "Twitter", TextColor = Colors.White, Command = _viewModel.AddTwitterCommand });
