@@ -164,60 +164,28 @@ public partial class ProfileViewModelBase : BaseViewModel
     [RelayCommand]
     private async Task OpenLinkedInProfile()
     {
-        var platform = new SocialMediaPlatform
-        {
-            PlatformName = "LinkedIn",
-            PlatformId = Constants.SocialMediaPlatformIds.LinkedIn,
-            Url = "https://www.linkedin.com/in/",
-            Placeholder = "https://www.linkedin.com/in/[your-name]",
-            ValidationPattern = "^https://linkedin.com/in/([a-zA-Z0-9._-]+)$"
-        };
-        await OpenProfile(LinkedInUrl, platform);
+        await OpenProfile(LinkedInUrl, Constants.SocialMediaPlatformIds.LinkedIn);
     }
     
     [RelayCommand]
     private async Task OpenGitHubProfile()
     {
-        var platform = new SocialMediaPlatform
-        {
-            PlatformName = "GitHub",
-            PlatformId = Constants.SocialMediaPlatformIds.GitHub,
-            Url = "https://github.com/",
-            Placeholder = "https://github.com/[your-username]",
-            ValidationPattern = "^https://github.com/([a-zA-Z0-9._-]+)$"
-        };
-        await OpenProfile(GitHubUrl, platform);
+        await OpenProfile(GitHubUrl, Constants.SocialMediaPlatformIds.GitHub);
     }
     
     [RelayCommand]
     private async Task OpenTwitterProfile()
     {
-        var platform = new SocialMediaPlatform
-        {
-            PlatformName = "Twitter",
-            PlatformId = Constants.SocialMediaPlatformIds.Twitter,
-            Url = "https://x.com/",
-            Placeholder = "https://x.com/[your-username]",
-            ValidationPattern = "^https://(twitter|x).com/([a-zA-Z0-9._-]+)$"
-        };
-        await OpenProfile(TwitterUrl, platform);
+        await OpenProfile(TwitterUrl, Constants.SocialMediaPlatformIds.Twitter);
     }
     
     [RelayCommand]
     private async Task OpenCompanyUrl()
     {
-        var platform = new SocialMediaPlatform
-        {
-            PlatformName = "Company",
-            PlatformId = Constants.SocialMediaPlatformIds.Company,
-            Url = "https://",
-            Placeholder = "https://[your-website]",
-            ValidationPattern = @"^https://\S+"
-        };
-        await OpenProfile(CompanyUrl, platform);
+        await OpenProfile(CompanyUrl, Constants.SocialMediaPlatformIds.Company);
     }
 
-    private async Task OpenProfile(string userProfile, SocialMediaPlatform platform) {
+    private async Task OpenProfile(string userProfile, int socialMediaPlatformId) {
         if (string.IsNullOrWhiteSpace(userProfile))
         {
             if (!IsMe)
@@ -226,7 +194,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
 
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider,platform, statusBarColor as Color);
+            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, statusBarColor as Color);
             await MopupService.Instance.PushAsync(page);
             return;
         }

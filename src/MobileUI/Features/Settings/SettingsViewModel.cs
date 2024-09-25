@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
@@ -12,13 +13,21 @@ public partial class SettingsViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly ISnackbarService _snackbarService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IServiceProvider _provider;
+    
+    [ObservableProperty]
+    private bool _isStaff;
 
-    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService, IFirebaseAnalyticsService firebaseAnalyticsService)
+    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService,
+        IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
     {
         _userService = userService;
         _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _provider = provider;
         Title = "Settings";
+        
+        _userService.IsStaffObservable().Subscribe(isStaff => IsStaff = isStaff);
     }
 
     public static void Initialise()
@@ -43,24 +52,30 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private async Task AddLinkedIn()
     {
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new AddLinkedInPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(page);
+        await EditProfile(Constants.SocialMediaPlatformIds.LinkedIn);
     }
     
     [RelayCommand]
     private async Task AddGitHub()
     {
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new AddGitHubPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(page);
+        await EditProfile(Constants.SocialMediaPlatformIds.GitHub);
     }
     
     [RelayCommand]
     private async Task AddTwitter()
     {
+        await EditProfile(Constants.SocialMediaPlatformIds.Twitter);
+    }
+    
+    [RelayCommand]
+    private async Task AddCompany()
+    {
+        await EditProfile(Constants.SocialMediaPlatformIds.Company);
+    }
+    
+    private async Task EditProfile(int socialMediaPlatformId) {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new AddTwitterPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+        var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 
