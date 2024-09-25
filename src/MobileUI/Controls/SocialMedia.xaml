@@ -16,7 +16,7 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf08c;"
+            Text="&#xf0e1;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
@@ -40,7 +40,7 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf092;"
+            Text="&#xf09b;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
@@ -64,7 +64,7 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf081;"
+            Text="&#xf099;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
@@ -88,7 +88,7 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Solid"
-            Text="&#xf14c;"
+            Text="&#xf1ad;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"

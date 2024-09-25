@@ -82,6 +82,8 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
 
             userAchievements = await dbContext.UserAchievements
                 .Include(u => u.User)
+                    .ThenInclude(u => u.SocialMediaIds)
+                        .ThenInclude(sm => sm.SocialMediaPlatform)
                 .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
                 .Where(x => friendIds.Contains(x.UserId))
@@ -93,6 +95,8 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
         {
             userAchievements = await dbContext.UserAchievements
                 .Include(u => u.User)
+                    .ThenInclude(u => u.SocialMediaIds)
+                        .ThenInclude(sm => sm.SocialMediaPlatform)
                 .Include(a => a.Achievement)
                 .OrderByDescending(x => x.AwardedAt)
                 .Skip(skip)
@@ -103,11 +107,14 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
         var feed = userAchievements.Select(userAchievement =>
         {
             var staff = staffDetails.FirstOrDefault(s => s.Email == userAchievement.User.Email);
+            var company = userAchievement.User.SocialMediaIds
+                .FirstOrDefault(s => s.SocialMediaPlatform.Name == "Company")?.SocialMediaUserId;
+            
             return new ActivityFeedItemDto
             {
                 UserAvatar = userAchievement.User.Avatar ?? string.Empty,
                 UserName = userAchievement.User.FullName ?? string.Empty,
-                UserTitle = staff?.Title ?? "Community",
+                UserTitle = staff?.Title ?? company ?? "Community",
                 UserId = userAchievement.User.Id,
                 Achievement = new UserAchievementDto
                 {

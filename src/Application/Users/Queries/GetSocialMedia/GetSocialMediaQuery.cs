@@ -14,7 +14,11 @@ public class GetSocialMediaQueryHandler(IApplicationDbContext context) : IReques
         var socialMedia = await context.UserSocialMediaIds
             .Where(x => x.UserId == request.UserId)
             .OrderByDescending(x => x.CreatedUtc)
-            .Select(x => new UserSocialMediaIdDto { SocialMediaUserId = x.SocialMediaUserId })
+            .Select(x => new UserSocialMediaIdDto
+            {
+                SocialMediaUserId = x.SocialMediaUserId,
+                SocialMediaPlatformId = x.SocialMediaPlatformId
+            })
             .ToListAsync(cancellationToken: cancellationToken);
 
         return new UserSocialMediaDto { SocialMedia = socialMedia };

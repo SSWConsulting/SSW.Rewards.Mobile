@@ -212,7 +212,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             PlatformId = Constants.SocialMediaPlatformIds.Company,
             Url = "https://",
             Placeholder = "https://[your-website]",
-            ValidationPattern = @"^https?://\S+"
+            ValidationPattern = @"^https://\S+"
         };
         await OpenProfile(CompanyUrl, platform);
     }

@@ -68,7 +68,7 @@ public partial class AddSocialMediaViewModel(
     private bool IsUrlValid()
     {
         var reg = new Regex(socialMediaPlatform.ValidationPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        return reg.IsMatch(socialMediaPlatform.Url);
+        return reg.IsMatch(InputText);
     }
 
     private async Task AddProfile()

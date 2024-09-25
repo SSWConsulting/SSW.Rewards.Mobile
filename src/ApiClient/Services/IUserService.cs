@@ -227,7 +227,7 @@ public class UserService : IUserService
     public async Task<UserSocialMediaDto?> GetSocialMedia(int userId, CancellationToken cancellationToken = default)
     {
         var result = await _httpClient.GetAsync(
-            $"{_baseRoute}SocialMediaId?userId={userId}",
+            $"{_baseRoute}SocialMedia?userId={userId}",
             cancellationToken);
 
         if (result.IsSuccessStatusCode)
