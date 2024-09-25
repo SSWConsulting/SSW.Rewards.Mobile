@@ -23,7 +23,7 @@
             EasingOut="SinIn"
             HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
-    <Grid Padding="30,70">
+    <Grid Padding="30,70" MaximumWidthRequest="500">
         <Border
             StrokeThickness="1"
             StrokeShape="RoundRectangle 10"

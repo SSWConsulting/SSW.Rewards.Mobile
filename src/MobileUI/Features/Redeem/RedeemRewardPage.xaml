@@ -48,7 +48,7 @@
             </Setter>
         </Style>
     </pages:PopupPage.Resources>
-    <Grid>
+    <Grid MaximumWidthRequest="500">
         <Grid Padding="30,70" VerticalOptions="Center">
             <Border
                 VerticalOptions="Center"

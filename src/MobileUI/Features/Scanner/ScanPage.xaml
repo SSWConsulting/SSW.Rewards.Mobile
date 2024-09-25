@@ -86,7 +86,8 @@
                              IsVisible="{Binding IsScanVisible, Converter={toolkit:InvertedBoolConverter}}"
                              VerticalOptions="Center"
                              Margin="30"
-                             Spacing="30">
+                             Spacing="30"
+                             MaximumWidthRequest="500">
             <Grid ColumnDefinitions="40, *"
                   ColumnSpacing="10"
                   HorizontalOptions="Center">

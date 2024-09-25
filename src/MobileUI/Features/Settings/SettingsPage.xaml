@@ -21,7 +21,7 @@
             </TableSection>
 
             <TableSection Title="Help" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Replay Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
+                <TextCell Text="Getting Started 🎉" TextColor="White" Command="{Binding IntroClickedCommand}"/>
                 <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
             </TableSection>
         </TableRoot>
