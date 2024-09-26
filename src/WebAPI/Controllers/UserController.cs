@@ -51,6 +51,15 @@ public class UserController : ApiControllerBase
             UserId = userId, SocialMediaPlatformId = socialMediaPlatformId
         }));
     }
+    
+    [HttpGet]
+    public async Task<ActionResult<UserSocialMediaIdDto>> SocialMedia(int userId)
+    {
+        return Ok(await Mediator.Send(new GetSocialMediaQuery
+        {
+            UserId = userId
+        }));
+    }
 
     [HttpGet]
     public async Task<ActionResult<UserRewardsViewModel>> Rewards([FromQuery] int userId)

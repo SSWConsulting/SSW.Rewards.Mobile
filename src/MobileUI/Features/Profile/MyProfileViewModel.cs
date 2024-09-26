@@ -5,15 +5,15 @@ public class MyProfileViewModel(
     IUserService userService,
     IDevService devService,
     IPermissionsService permissionsService,
-    ISnackbarService snackbarService,
-    IFirebaseAnalyticsService firebaseAnalyticsService)
-    : ProfileViewModelBase(true, userService, devService, permissionsService, snackbarService, firebaseAnalyticsService)
+    IFirebaseAnalyticsService firebaseAnalyticsService,
+    IServiceProvider provider)
+    : ProfileViewModelBase(true, userService, devService, permissionsService, firebaseAnalyticsService, provider)
 {
     private readonly IUserService _userService = userService;
 
     public async Task Initialise()
     {
-        _userService.MyUserIdObservable().Subscribe(myUserId => HandleUserIdChange(myUserId));
+        _userService.MyUserIdObservable().Subscribe(HandleUserIdChange);
         _userService.MyNameObservable().Subscribe(myName => Name = myName);
         _userService.MyEmailObservable().Subscribe(myEmail => UserEmail = myEmail);
         _userService.MyProfilePicObservable().Subscribe(myProfilePicture => ProfilePic = myProfilePicture);

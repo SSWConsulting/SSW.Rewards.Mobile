@@ -11,24 +11,25 @@
     <Border.Resources>
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
     </Border.Resources>
-    <HorizontalStackLayout HorizontalOptions="Center"
-                           Spacing="70">
+    <FlexLayout Direction="Row" JustifyContent="SpaceAround" HorizontalOptions="Fill">
         <!-- LinkedIn -->
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf08c;"
+            Text="&#xf0e1;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
             TextColor="DimGrey">
             <Label.Triggers>
                 <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="IsVisible" Value="True" />
                 </DataTrigger>
-                <DataTrigger TargetType="Label" Binding="{Binding LinkedInUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
-                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding LinkedInUrl, Converter={StaticResource IsStringNotNullOrEmpty}}"
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
                 </DataTrigger>
             </Label.Triggers>
             <Label.GestureRecognizers>
@@ -39,18 +40,20 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf092;"
+            Text="&#xf09b;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
             TextColor="DimGrey">
             <Label.Triggers>
                 <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="IsVisible" Value="True" />
                 </DataTrigger>
-                <DataTrigger TargetType="Label" Binding="{Binding GitHubUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
-                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding GitHubUrl, Converter={StaticResource IsStringNotNullOrEmpty}}"
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
                 </DataTrigger>
             </Label.Triggers>
             <Label.GestureRecognizers>
@@ -61,23 +64,53 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf081;"
+            Text="&#xf099;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
             TextColor="DimGrey">
             <Label.Triggers>
                 <DataTrigger TargetType="Label" Binding="{Binding IsMe}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="IsVisible" Value="True" />
                 </DataTrigger>
-                <DataTrigger TargetType="Label" Binding="{Binding TwitterUrl, Converter={StaticResource IsStringNotNullOrEmpty}}" Value="True">
-                    <Setter Property="IsVisible" Value="True"/>
-                    <Setter Property="TextColor" Value="{StaticResource SSWRed}"/>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding TwitterUrl, Converter={StaticResource IsStringNotNullOrEmpty}}"
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
                 </DataTrigger>
             </Label.Triggers>
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding OpenTwitterProfileCommand}" />
             </Label.GestureRecognizers>
         </Label>
-    </HorizontalStackLayout>
+        <!-- Company -->
+        <Label
+            HorizontalOptions="Center"
+            FontFamily="FA6Solid"
+            Text="&#xf1ad;"
+            FontAutoScalingEnabled="False"
+            FontSize="50"
+            IsVisible="False"
+            TextColor="DimGrey">
+            <Label.Triggers>
+                <MultiTrigger TargetType="Label">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding IsMe}" Value="True" />
+                        <BindingCondition Binding="{Binding IsStaff}" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True" />
+                </MultiTrigger>
+                <DataTrigger TargetType="Label"
+                             Binding="{Binding CompanyUrl, Converter={StaticResource IsStringNotNullOrEmpty}}"
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                </DataTrigger>
+            </Label.Triggers>
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenCompanyUrlCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+    </FlexLayout>
 </Border>

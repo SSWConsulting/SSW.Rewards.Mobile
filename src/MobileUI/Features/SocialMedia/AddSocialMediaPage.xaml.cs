@@ -3,23 +3,25 @@ using CommunityToolkit.Maui.Core;
 
 namespace SSW.Rewards.Mobile.PopupPages;
 
-public partial class AddTwitterPage
+public partial class AddSocialMediaPage
 {
     private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public AddTwitterPage(IUserService userService, ISnackbarService snackbarService, IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
+    public AddSocialMediaPage(IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider,
+        int socialMediaPlatformId,
+        Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
-        BindingContext = new AddTwitterViewModel(userService, snackbarService);
+        BindingContext = ActivatorUtilities.CreateInstance<AddSocialMediaViewModel>(provider, socialMediaPlatformId);
     }
-    
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _firebaseAnalyticsService.Log("AddTwitterPage");
+        _firebaseAnalyticsService.Log("AddSocialMediaPage");
     }
 
     protected override void OnDisappearing()
@@ -30,8 +32,7 @@ public partial class AddTwitterPage
         this.Behaviors.Clear();
         this.Behaviors.Add(new StatusBarBehavior
         {
-            StatusBarColor = _parentPageStatusBarColor,
-            StatusBarStyle = StatusBarStyle.LightContent,
+            StatusBarColor = _parentPageStatusBarColor, StatusBarStyle = StatusBarStyle.LightContent,
         });
     }
 }

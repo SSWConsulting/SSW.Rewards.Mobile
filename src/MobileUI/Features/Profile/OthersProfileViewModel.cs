@@ -6,9 +6,9 @@ public partial class OthersProfileViewModel(
     IUserService userService,
     IDevService devService,
     IPermissionsService permissionsService,
-    ISnackbarService snackbarService,
-    IFirebaseAnalyticsService firebaseAnalyticsService)
-    : ProfileViewModelBase(false, userService, devService, permissionsService, snackbarService, firebaseAnalyticsService)
+    IFirebaseAnalyticsService firebaseAnalyticsService,
+    IServiceProvider provider)
+    : ProfileViewModelBase(false, userService, devService, permissionsService, firebaseAnalyticsService, provider)
 {
     public async Task Initialise()
     {

@@ -27,6 +27,8 @@ public interface IUserService
     Task<int> UpsertUserSocialMediaIdAsync(int achievementId, string socialMediaUserProfile, CancellationToken cancellationToken = default);
 
     Task<UserSocialMediaIdDto?> GetSocialMediaId(int userId, int socialMediaPlatformId, CancellationToken cancellationToken = default);
+    
+    Task<UserSocialMediaDto?> GetSocialMedia(int userId, CancellationToken cancellationToken = default);
 }
 
 public class UserService : IUserService
@@ -219,7 +221,23 @@ public class UserService : IUserService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to upsert social media: {responseContent}");
+        throw new Exception($"Failed to get social media id: {responseContent}");
+    }
+    
+    public async Task<UserSocialMediaDto?> GetSocialMedia(int userId, CancellationToken cancellationToken = default)
+    {
+        var result = await _httpClient.GetAsync(
+            $"{_baseRoute}SocialMedia?userId={userId}",
+            cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<UserSocialMediaDto>(cancellationToken: cancellationToken);
+            return response;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to get social media: {responseContent}");
     }
 
     public async Task<NewUsersViewModel> GetNewUsers(LeaderboardFilter filter, bool filterStaff, CancellationToken cancellationToken = default)
