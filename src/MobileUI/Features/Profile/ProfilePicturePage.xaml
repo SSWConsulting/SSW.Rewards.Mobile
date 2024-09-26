@@ -23,15 +23,12 @@
             EasingOut="SinIn"
             HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
-    <Grid Padding="30,70" VerticalOptions="Center">
+    <Grid Padding="30,70" VerticalOptions="Center" MaximumWidthRequest="500">
         <Border
             StrokeThickness="1"
             StrokeShape="RoundRectangle 10"
             Padding="20,10,20,20"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
             BackgroundColor="{StaticResource ProfileBackgroundColour}">
-
             <Grid
                 RowDefinitions="1*, 3*, 3*"
                 WidthRequest="300"

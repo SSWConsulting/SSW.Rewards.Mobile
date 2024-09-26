@@ -33,6 +33,7 @@ public partial class SettingsViewModel : BaseViewModel
     public static void Initialise()
     {
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
+        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage("SSW Rewards | My Settings"));
     }
 
     [RelayCommand]

@@ -7,19 +7,32 @@
     x:DataType="viewModels:SettingsViewModel"
     ControlTemplate="{DynamicResource PageTemplate}"
     BackgroundColor="{StaticResource Background}">
-    <TableView Intent="Menu" BackgroundColor="Transparent">
-        <TableRoot>
-            <TableSection x:Name="SocialMediaSection" Title="Add/Update Social Media Profiles" TextColor="{StaticResource Gray400}" />
+    <Grid ColumnDefinitions="50*, 50*">
+        <TableView Grid.Column="0"
+                   Grid.ColumnSpan="{OnIdiom Phone=2, Tablet=1}"
+                   Intent="Menu"
+                   BackgroundColor="Transparent">
+            <TableRoot>
+                <TableSection x:Name="SocialMediaSection" Title="Add/Update Social Media Profiles" TextColor="{StaticResource Gray400}" />
             
-            <TableSection Title="General" TextColor="{StaticResource Gray400}">
-                <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
-                <TextCell Text="Delete Profile" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
-            </TableSection>
+                <TableSection Title="General" TextColor="{StaticResource Gray400}">
+                    <TextCell Text="My Profile" TextColor="White" Command="{Binding ProfileClickedCommand}" />
+                    <TextCell Text="Delete Profile" TextColor="{StaticResource SSWRed}" Command="{Binding DeleteClickedCommand}" />
+                </TableSection>
 
-            <TableSection Title="Help" TextColor="{StaticResource Gray400}">
-                <TextCell Text="Replay Intro" TextColor="White" Command="{Binding IntroClickedCommand}"/>
-                <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
-            </TableSection>
-        </TableRoot>
-    </TableView>
+                <TableSection Title="Help" TextColor="{StaticResource Gray400}">
+                    <TextCell Text="Getting Started 🎉" TextColor="White" Command="{Binding IntroClickedCommand}"/>
+                    <TextCell Text="About" TextColor="White" Command="{Binding AboutClickedCommand}" />
+                </TableSection>
+            </TableRoot>
+        </TableView>
+        <Image Grid.Column="1"
+               IsVisible="{OnIdiom Phone=False, Tablet=True}"
+               VerticalOptions="Start"
+               HorizontalOptions="Center"
+               Source="rewardslogo"
+               WidthRequest="200"
+               Margin="0,20,0,0"
+               x:Name="LogoImage"/>
+    </Grid>
 </ContentPage>

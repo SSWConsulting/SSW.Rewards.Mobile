@@ -27,6 +27,9 @@ public partial class TopBarViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _showScanner = true;
+    
+    [ObservableProperty]
+    private string _title = string.Empty;
 
     public TopBarViewModel(IPermissionsService permissionsService, IUserService userService, IScannerService scannerService)
     {
@@ -48,6 +51,11 @@ public partial class TopBarViewModel : ObservableObject
                     SetDefaultAvatar();
                     break;
             }
+        });
+        
+        WeakReferenceMessenger.Default.Register<TopBarTitleMessage>(this, (_, m) =>
+        {
+            Title = m.Value;
         });
 
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
