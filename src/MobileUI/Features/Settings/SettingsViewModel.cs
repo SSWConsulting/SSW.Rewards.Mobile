@@ -18,12 +18,12 @@ public partial class SettingsViewModel : BaseViewModel
         _userService = userService;
         _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        Title = "Settings";
     }
 
     public static void Initialise()
     {
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
+        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage("SSW Rewards | My Settings"));
     }
 
     [RelayCommand]

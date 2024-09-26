@@ -28,5 +28,6 @@ public partial class AppShell
     private void OnNavigating(object sender, ShellNavigatingEventArgs e)
     {
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
+        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage(string.Empty));
     }
 }

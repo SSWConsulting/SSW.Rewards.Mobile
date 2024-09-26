@@ -15,6 +15,11 @@ public partial class SettingsPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("SettingsPage");
+    }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
         SettingsViewModel.Initialise();
     }
 }
