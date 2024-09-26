@@ -16,6 +16,7 @@ public class LeaderboardUserDto
     public int PointsThisMonth { get; set; }
     public int PointsThisYear { get; set; }
     public int Balance => TotalPoints - PointsClaimed;
+    public string Title { get; set; }
 
     public LeaderboardUserDto() {}
 
@@ -45,5 +46,17 @@ public class LeaderboardUserDto
         PointsThisYear = user.UserAchievements
             .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
             .Sum(ua => ua.Achievement.Value);
+
+        var company = user.SocialMediaIds.FirstOrDefault(s => s.SocialMediaPlatform.Name == "Company")
+            ?.SocialMediaUserId;
+
+        if (!string.IsNullOrEmpty(company))
+        {
+            Title = company;
+        }
+        else
+        {
+            Title = user.Email?.EndsWith("ssw.com.au") == true ? "SSW" : "Community";
+        }
     }
 }

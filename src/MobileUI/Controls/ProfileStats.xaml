@@ -13,7 +13,6 @@
     x:DataType="viewModels:ProfileViewModelBase"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileStats">
     <Border.Resources>
-        <converters:StaffToTextConverter x:Key="StaffToText" />
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <VerticalStackLayout
@@ -66,7 +65,7 @@
                 VerticalOptions="Center"
                 HorizontalTextAlignment="Center"
                 FontAutoScalingEnabled="False"
-                Text="{Binding Path=IsStaff, Converter={StaticResource StaffToText}}"
+                Text="{Binding Title}"
                 Style="{StaticResource LabelBold}"
                 FontSize="Small"
                 TextColor="White" />

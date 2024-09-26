@@ -23,7 +23,9 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
         var users = await _context.Users
             .Where(u => u.Activated)
             .Include(u => u.UserAchievements)
-            .ThenInclude(ua => ua.Achievement)
+                .ThenInclude(ua => ua.Achievement)
+            .Include(u => u.SocialMediaIds)
+                .ThenInclude(s => s.SocialMediaPlatform)
             .Where(u => !string.IsNullOrWhiteSpace(u.FullName))
             .Select(u => new LeaderboardUserDto(u, DateTime.Now.FirstDayOfWeek()))
             .ToListAsync(cancellationToken);

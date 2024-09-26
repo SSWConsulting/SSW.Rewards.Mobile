@@ -15,8 +15,8 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IUserService _userService;
     private readonly IDevService _devService;
     private readonly IPermissionsService _permissionsService;
-    private readonly ISnackbarService _snackbarService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IServiceProvider _provider;
 
     [ObservableProperty]
     private string _profilePic;
@@ -38,6 +38,9 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     [ObservableProperty]
     private bool _isStaff;
+    
+    [ObservableProperty]
+    private string _title;
 
     [ObservableProperty]
     private string _linkedInUrl;
@@ -47,6 +50,9 @@ public partial class ProfileViewModelBase : BaseViewModel
     
     [ObservableProperty]
     private string _twitterUrl;
+    
+    [ObservableProperty]
+    private string _companyUrl;
 
     public bool ShowBalance { get; set; } = true;
 
@@ -70,19 +76,28 @@ public partial class ProfileViewModelBase : BaseViewModel
         IUserService userService,
         IDevService devService,
         IPermissionsService permissionsService,
-        ISnackbarService snackbarService,
-        IFirebaseAnalyticsService firebaseAnalyticsService)
+        IFirebaseAnalyticsService firebaseAnalyticsService,
+        IServiceProvider provider)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
         _permissionsService = permissionsService;
-        _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _provider = provider;
         
-        userService.LinkedInProfileObservable().Subscribe(myLinkedIn => LinkedInUrl = myLinkedIn);
-        userService.GitHubProfileObservable().Subscribe(myGitHub => GitHubUrl = myGitHub);
-        userService.TwitterProfileObservable().Subscribe(myTwitter => TwitterUrl = myTwitter);
+        userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
+        userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
+        userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
+        userService.CompanyUrlObservable().Subscribe(company =>
+        {
+            CompanyUrl = company;
+
+            if (!IsStaff)
+            {
+                Title = company;
+            }
+        });
     }
 
     protected async Task _initialise()
@@ -111,7 +126,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         Balance = profile.Balance;
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
-        
+        Title = GetTitle();
+
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         await UpdateSkillsSectionIfRequired();
@@ -121,9 +137,17 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private async Task LoadSocialMedia()
     {
-        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.LinkedIn);
-        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.GitHub);
-        await _userService.LoadSocialMedia(UserId, Constants.SocialMediaPlatformIds.Twitter);
+        await _userService.LoadSocialMedia(UserId);
+    }
+
+    private string GetTitle()
+    {
+        if (IsStaff)
+        {
+            return "SSW";
+        }
+
+        return !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
     }
 
     [RelayCommand]
@@ -140,51 +164,29 @@ public partial class ProfileViewModelBase : BaseViewModel
     [RelayCommand]
     private async Task OpenLinkedInProfile()
     {
-        if (string.IsNullOrWhiteSpace(LinkedInUrl))
-        {
-            if (!IsMe)
-            {
-                return;
-            }
-
-            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = new AddLinkedInPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
-            await MopupService.Instance.PushAsync(page);
-            return;
-        }
-
-        if (Uri.TryCreate(LinkedInUrl, UriKind.Absolute, out Uri uri))
-        {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
-        }
+        await OpenProfile(LinkedInUrl, Constants.SocialMediaPlatformIds.LinkedIn);
     }
     
     [RelayCommand]
     private async Task OpenGitHubProfile()
     {
-        if (string.IsNullOrWhiteSpace(GitHubUrl))
-        {
-            if (!IsMe)
-            {
-                return;
-            }
-
-            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = new AddGitHubPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
-            await MopupService.Instance.PushAsync(page);
-            return;
-        }
-
-        if (Uri.TryCreate(GitHubUrl, UriKind.Absolute, out Uri uri))
-        {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
-        }
+        await OpenProfile(GitHubUrl, Constants.SocialMediaPlatformIds.GitHub);
     }
     
     [RelayCommand]
     private async Task OpenTwitterProfile()
     {
-        if (string.IsNullOrWhiteSpace(TwitterUrl))
+        await OpenProfile(TwitterUrl, Constants.SocialMediaPlatformIds.Twitter);
+    }
+    
+    [RelayCommand]
+    private async Task OpenCompanyUrl()
+    {
+        await OpenProfile(CompanyUrl, Constants.SocialMediaPlatformIds.Company);
+    }
+
+    private async Task OpenProfile(string userProfile, int socialMediaPlatformId) {
+        if (string.IsNullOrWhiteSpace(userProfile))
         {
             if (!IsMe)
             {
@@ -192,12 +194,12 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
 
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = new AddTwitterPage(_userService, _snackbarService, _firebaseAnalyticsService, statusBarColor as Color);
+            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, statusBarColor as Color);
             await MopupService.Instance.PushAsync(page);
             return;
         }
 
-        if (Uri.TryCreate(TwitterUrl, UriKind.Absolute, out Uri uri))
+        if (Uri.TryCreate(userProfile, UriKind.Absolute, out Uri uri))
         {
             await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
         }

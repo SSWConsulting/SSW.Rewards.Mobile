@@ -20,6 +20,7 @@ public class LeaderViewModel : BaseViewModel
     public int Balance { get; set; }
     public bool IsMe { get; set; }
     public bool IsLeader => Rank == 1;
+    public string Title { get; set; }
     
     public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
     {
@@ -34,22 +35,7 @@ public class LeaderViewModel : BaseViewModel
         Balance = dto.Balance;
         Email = dto.Email;
         IsMe = isMe;
-    }
-
-    public bool IsStaff
-    {
-        get
-        {
-            try
-            {
-                var emailAddress = new MailAddress(Email);
-                return emailAddress.Host == "ssw.com.au";
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
+        Title = dto.Title;
     }
 
     public int DisplayPoints { get; set; }

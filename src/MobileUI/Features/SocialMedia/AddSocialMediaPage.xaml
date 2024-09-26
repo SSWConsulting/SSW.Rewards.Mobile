@@ -9,8 +9,8 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              BackgroundColor="#b3000000"
              CloseWhenBackgroundIsClicked="False"
-             x:DataType="viewModels:AddTwitterViewModel"
-             x:Class="SSW.Rewards.Mobile.PopupPages.AddTwitterPage">
+             x:DataType="viewModels:AddSocialMediaViewModel"
+             x:Class="SSW.Rewards.Mobile.PopupPages.AddSocialMediaPage">
     <pages:PopupPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
     </pages:PopupPage.Behaviors>
@@ -24,7 +24,7 @@
             EasingOut="SinIn"
             HasBackgroundAnimation="True" />
     </pages:PopupPage.Animation>
-    <Grid>
+    <Grid MaximumWidthRequest="500">
         <Grid Padding="30" HeightRequest="500">
             <Border
                 StrokeThickness="1"
@@ -36,11 +36,11 @@
                         <Label HorizontalTextAlignment="Center"
                                TextColor="{StaticResource SSWRed}"
                                FontSize="Large"
-                               Text="Twitter profile"/>
+                               Text="{Binding PlatformName}"/>
                         <Label HorizontalTextAlignment="Center"
                                Margin="20"
                                TextColor="White"
-                               Text="Receive ⭐️ 150 points for connecting your Twitter profile with SSW Rewards"/>
+                               Text="{Binding Path=PlatformName, StringFormat='Receive ⭐️ 150 points for connecting your {0} with SSW Rewards'}"/>
                         <Border
                             Margin="20,0"
                             StrokeShape="RoundRectangle 10"
@@ -50,7 +50,7 @@
                                 Text="{Binding InputText}"
                                 Keyboard="Url"
                                 ReturnType="Done"
-                                Placeholder="{Binding TwitterPlaceholder}"
+                                Placeholder="{Binding Placeholder}"
                                 CursorPosition="{Binding CursorPosition}"
                                 IsSpellCheckEnabled="False"
                                 PlaceholderColor="Grey"

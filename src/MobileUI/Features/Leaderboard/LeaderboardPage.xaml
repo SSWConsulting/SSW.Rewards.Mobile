@@ -13,7 +13,6 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IsMeToColorConverter x:Key="MeToColor" />
-            <converters:StaffToTextConverter x:Key="StaffToText" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Behaviors>
@@ -144,7 +143,7 @@
                                                 Style="{StaticResource LabelBold}"
                                                 LineBreakMode="TailTruncation" />
                                             <Label Grid.Row="1"
-                                                   Text="{Binding IsStaff, Converter={StaticResource StaffToText}}"
+                                                   Text="{Binding Title}"
                                                    TextColor="White"
                                                    InputTransparent="True"
                                                    FontSize="12" />

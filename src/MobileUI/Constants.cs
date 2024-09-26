@@ -40,6 +40,7 @@ public static class Constants
         public const int GitHub = 1;
         public const int LinkedIn = 2;
         public const int Twitter = 3;
+        public const int Company = 4;
     }
     
     public static class AnalyticsEvents
