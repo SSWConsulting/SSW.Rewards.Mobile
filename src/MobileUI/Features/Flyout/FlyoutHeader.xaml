@@ -79,7 +79,7 @@
                        HorizontalOptions="Center"
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
-                       FontSize="18"
+                       FontSize="20"
                        Text="&#xf091;"/>
                 <Label Grid.Row="1"
                        HorizontalOptions="Center"
@@ -106,7 +106,7 @@
                        HorizontalOptions="Center"
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
-                       FontSize="18"
+                       FontSize="20"
                        Text="&#x2b50;"/>
                 <Label Grid.Row="1"
                        HorizontalOptions="Center"
@@ -133,7 +133,7 @@
                        HorizontalOptions="Center"
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
-                       FontSize="18"
+                       FontSize="20"
                        Text="&#xf51e;"/>
                 <Label Grid.Row="1"
                        HorizontalOptions="Center"
