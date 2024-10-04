@@ -144,7 +144,7 @@
                 <Label Grid.Row="2"
                        HorizontalOptions="Center"
                        Style="{StaticResource LabelBold}"
-                       FontSize="16"
+                       FontSize="18"
                        TextColor="White"
                        Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
             </Grid>
