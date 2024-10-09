@@ -431,24 +431,29 @@
                 Padding="15">
             <Grid ColumnDefinitions="Auto, *, Auto">
                 <Button Grid.Column="0"
-                        IsVisible="{Binding TestPassed, Converter={toolkit:InvertedBoolConverter}}"
                         Text="Try Again"
+                        IsVisible="{Binding TestPassed, Converter={toolkit:InvertedBoolConverter}}"
                         Command="{Binding RestartCommand}"
                         Style="{StaticResource LabelBold}"
                         TextColor="White"
-                        HeightRequest="40"
                         VerticalOptions="Center"
                         HorizontalOptions="Start"
                         Padding="10"
                         CornerRadius="6"
-                        BackgroundColor="{StaticResource SSWRed}" />
+                        BackgroundColor="{StaticResource SSWRed}"
+                        ContentLayout="Left">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf01e;"
+                                         FontFamily="FA6Solid"
+                                         Size="12"/>
+                    </Button.ImageSource>
+                </Button>
                 
                 <Button Grid.Column="2"
                         Text="Done"
                         Command="{Binding DoneCommand}"
                         Style="{StaticResource LabelBold}"
                         TextColor="White"
-                        HeightRequest="40"
                         VerticalOptions="Center"
                         HorizontalOptions="Start"
                         Padding="10"
