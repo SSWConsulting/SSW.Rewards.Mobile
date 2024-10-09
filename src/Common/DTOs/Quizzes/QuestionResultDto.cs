@@ -2,6 +2,7 @@
 
 public class QuestionResultDto
 {
+    public int Index { get; set; }
     public int QuestionId { get; set; }
     public bool Correct { get; set; }
 

@@ -212,8 +212,8 @@ namespace SSW.Rewards.Mobile.ViewModels
             WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Done));
 
             var total = result.Results.Count;
-
             var correct = result.Results.Count(r => r.Correct);
+            int index = 1;
 
             Score = $"{correct}/{total}";
 
@@ -221,6 +221,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
             foreach (var questionResult in result.Results.OrderBy(r => r.QuestionId))
             {
+                questionResult.Index = index++;
                 Results.Add(questionResult);
             }
 
@@ -230,7 +231,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 App.Current.Resources.TryGetValue("SuccessGreen", out object successGreen);
 
                 ScoreBackground = (Color)successGreen!;
-                ResultsTitle = "Test Passed!";
+                ResultsTitle = "Good job!";
                 TestPassed = true;
                 SnackOptions = new SnackbarOptions
                 {
@@ -251,7 +252,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 App.Current.Resources.TryGetValue("SSWRed", out object sswRed);
 
                 ScoreBackground = (Color)sswRed!;
-                ResultsTitle = "Test Failed";
+                ResultsTitle = "Don't give up!";
                 TestPassed = false;
             }
         }
