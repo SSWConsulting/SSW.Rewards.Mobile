@@ -23,9 +23,6 @@ public partial class TopBarViewModel : ObservableObject
     private bool _showBack;
 
     [ObservableProperty]
-    private bool _showDone;
-
-    [ObservableProperty]
     private bool _showScanner = true;
     
     [ObservableProperty]
@@ -40,9 +37,6 @@ public partial class TopBarViewModel : ObservableObject
         {
             switch (m.Value)
             {
-                case AvatarOptions.Done:
-                    SetDoneButton();
-                    break;
                 case AvatarOptions.Back:
                     SetBackButton();
                     break;
@@ -87,7 +81,6 @@ public partial class TopBarViewModel : ObservableObject
 
     private void SetDefaultAvatar()
     {
-        ShowDone = false;
         ShowBack = false;
         ShowAvatar = true;
         ShowScanner = true;
@@ -95,16 +88,7 @@ public partial class TopBarViewModel : ObservableObject
 
     private void SetBackButton()
     {
-        ShowDone = false;
         ShowBack = true;
-        ShowAvatar = false;
-        ShowScanner = false;
-    }
-
-    private void SetDoneButton()
-    {
-        ShowDone = true;
-        ShowBack = false;
         ShowAvatar = false;
         ShowScanner = false;
     }

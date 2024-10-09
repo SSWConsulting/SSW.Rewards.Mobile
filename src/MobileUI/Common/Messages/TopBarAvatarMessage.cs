@@ -10,7 +10,6 @@ public class TopBarAvatarMessage : ValueChangedMessage<AvatarOptions>
 
 public enum AvatarOptions
 {
-    Done,
     Back,
     Original
 }

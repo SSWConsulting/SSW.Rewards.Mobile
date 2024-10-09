@@ -7,302 +7,460 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             BackgroundColor="{StaticResource QuizDescriptionBackground}"
+             BackgroundColor="{StaticResource Background}"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:QuizDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
     <ContentPage.Resources>
-        <converters:AllTrueConverter x:Key="AllTrueConverter"/>
+        <converters:AllTrueConverter x:Key="AllTrueConverter" />
     </ContentPage.Resources>
-    <ScrollView>
-        <Border
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 8"
-            Margin="{OnPlatform '15', iOS='15,15,15,95'}"
-            BackgroundColor="{StaticResource Background}">
+    <Grid>
+        <ScrollView>
             <Grid>
-                <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
+                <!-- Questions -->
+                <Grid BackgroundColor="{StaticResource QuizDescriptionBackground}">
                     <Grid.IsVisible>
                         <MultiBinding Converter="{StaticResource AllTrueConverter}">
-                            <Binding Path="QuestionsVisible"/>
-                            <Binding Path="IsLoadingQuestions" Converter="{toolkit:InvertedBoolConverter}"/>
+                            <Binding Path="QuestionsVisible" />
+                            <Binding Path="IsLoadingQuestions" Converter="{toolkit:InvertedBoolConverter}" />
                         </MultiBinding>
                     </Grid.IsVisible>
+                    <Border
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        Margin="{OnPlatform '15', iOS='15,15,15,95'}"
+                        BackgroundColor="{StaticResource Background}">
+                        <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
 
-                    <Border Grid.Row="0"
-                            HeightRequest="80"
-                            WidthRequest="80"
-                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 6">
-                        <Image Source="{Binding ThumbnailImage}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               Aspect="AspectFill" />
-                    </Border>
+                            <Border Grid.Row="0"
+                                    HeightRequest="80"
+                                    WidthRequest="80"
+                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 6">
+                                <Image Source="{Binding ThumbnailImage}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       HeightRequest="80"
+                                       WidthRequest="80"
+                                       Aspect="AspectFill" />
+                            </Border>
 
-                    <Label Grid.Row="1"
-                           Text="{Binding QuizTitle}"
-                           Style="{StaticResource LabelBold}"
-                           Margin="10,0"
-                           FontSize="24"
-                           HorizontalTextAlignment="Center" />
+                            <Label Grid.Row="1"
+                                   Text="{Binding QuizTitle}"
+                                   Style="{StaticResource LabelBold}"
+                                   Margin="10,0"
+                                   FontSize="24"
+                                   HorizontalTextAlignment="Center" />
 
-                    <Label Grid.Row="2"
-                           Text="{Binding QuizDescription}"
-                           TextColor="{StaticResource Gray300}"
-                           Margin="10,0"
-                           FontSize="18"
-                           HorizontalTextAlignment="Center" />
-
-                    <!-- Reward amount -->
-                    <Border Grid.Row="3"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 8"
-                            WidthRequest="80"
-                            Margin="0,10,0,0"
-                            BackgroundColor="{StaticResource FlyoutBackgroundColour}">
-                        <Grid ColumnDefinitions="30,*">
-                            <Label
-                                Grid.Column="0"
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontSize="11"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                            <Label Grid.Column="1" Text="{Binding Points}"
-                                   TextColor="White"
+                            <Label Grid.Row="2"
+                                   Text="{Binding QuizDescription}"
+                                   TextColor="{StaticResource Gray300}"
+                                   Margin="10,0"
                                    FontSize="18"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
+                                   HorizontalTextAlignment="Center" />
+
+                            <!-- Reward amount -->
+                            <Border Grid.Row="3"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8"
+                                    HorizontalOptions="Center"
+                                    Padding="10,8"
+                                    Margin="0,10,0,0"
+                                    BackgroundColor="{StaticResource FlyoutBackgroundColour}">
+                                <Grid ColumnDefinitions="Auto,*"
+                                      ColumnSpacing="10">
+                                    <Label
+                                        Grid.Column="0"
+                                        TextColor="{StaticResource Coin}"
+                                        Text="&#xf51e;"
+                                        FontFamily="FA6Solid"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        FontSize="11"
+                                        Style="{StaticResource LabelBold}"
+                                        InputTransparent="True" />
+                                    <Label Grid.Column="1" Text="{Binding Points}"
+                                           TextColor="White"
+                                           FontSize="18"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+
+                            <IndicatorView Grid.Row="4"
+                                           InputTransparent="True"
+                                           SelectedIndicatorColor="{StaticResource SSWRed}"
+                                           IndicatorColor="{StaticResource IndicatorColor}"
+                                           IndicatorSize="4.5"
+                                           Position="{Binding CurrentQuestionIndex}"
+                                           Count="{Binding Questions.Count}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="End" />
+
+                            <!-- Question & Answer -->
+                            <Grid Grid.Row="5" RowDefinitions="Auto,Auto" Margin="20">
+                                <Label Grid.Row="0"
+                                       HorizontalOptions="FillAndExpand"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalTextAlignment="Start"
+                                       VerticalTextAlignment="End"
+                                       Style="{StaticResource LabelBold}"
+                                       TextColor="White"
+                                       FontSize="Large"
+                                       Margin="0,0,0,40"
+                                       Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
+                                <Border
+                                    Grid.Row="1"
+                                    Stroke="{StaticResource White}"
+                                    StrokeShape="RoundRectangle 8"
+                                    IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={toolkit:InvertedBoolConverter}}">
+                                    <Editor
+                                        TextColor="{StaticResource White}"
+                                        VerticalTextAlignment="Start"
+                                        AutoSize="TextChanges"
+                                        Text="{Binding CurrentQuestion.Answer}"
+                                        MinimumHeightRequest="150"
+                                        Placeholder="Enter your answer here"
+                                        Keyboard="Plain">
+                                        <Editor.Behaviors>
+                                            <toolkit:EventToCommandBehavior
+                                                x:TypeArguments="TextChangedEventArgs"
+                                                EventName="TextChanged"
+                                                Command="{Binding AnswerChangedCommand}" />
+                                        </Editor.Behaviors>
+                                    </Editor>
+                                </Border>
+                                <Label Grid.Row="1"
+                                       IsVisible="{Binding CurrentQuestion.IsSubmitted}"
+                                       Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
+                                       FontSize="Medium"
+                                       TextColor="{StaticResource White}" />
+                            </Grid>
+
+                            <!-- Quiz navigation -->
+                            <Grid Grid.Row="6"
+                                  ColumnDefinitions="*,*"
+                                  Margin="20,0,20,10"
+                                  IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
+                                <Button Grid.Column="0"
+                                        IsVisible="{Binding IsFirstQuestion, Converter={toolkit:InvertedBoolConverter}}"
+                                        Text="&#xf060;"
+                                        Command="{Binding MoveBackCommand}"
+                                        FontFamily="FA6Solid"
+                                        TextColor="White"
+                                        HeightRequest="40"
+                                        VerticalOptions="End"
+                                        HorizontalOptions="Start"
+                                        Padding="0"
+                                        CornerRadius="10"
+                                        BackgroundColor="{StaticResource SSWRed}"
+                                        WidthRequest="40" />
+
+                                <Button Grid.Column="1"
+                                        IsVisible="{Binding IsLastQuestion, Converter={toolkit:InvertedBoolConverter}}"
+                                        Text="&#xf061;"
+                                        Command="{Binding MoveForwardCommand}"
+                                        FontFamily="FA6Solid"
+                                        TextColor="White"
+                                        HeightRequest="40"
+                                        VerticalOptions="End"
+                                        HorizontalOptions="End"
+                                        Padding="0"
+                                        CornerRadius="10"
+                                        BackgroundColor="{StaticResource SSWRed}"
+                                        WidthRequest="40" />
+
+                                <Button Grid.Column="1"
+                                        IsVisible="{Binding IsLastQuestion}"
+                                        Text="Submit"
+                                        Command="{Binding SubmitResponsesCommand}"
+                                        Style="{StaticResource LabelBold}"
+                                        FontSize="12"
+                                        TextColor="White"
+                                        HeightRequest="40"
+                                        VerticalOptions="End"
+                                        HorizontalOptions="End"
+                                        Padding="0"
+                                        CornerRadius="10"
+                                        BackgroundColor="{StaticResource SSWRed}"
+                                        WidthRequest="80" />
+                            </Grid>
+
+                            <ActivityIndicator HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Color="{StaticResource SSWRed}"
+                                               IsVisible="{Binding IsBusy}"
+                                               IsRunning="{Binding IsBusy}"
+                                               Grid.Row="5" />
                         </Grid>
                     </Border>
-
-                    <IndicatorView Grid.Row="4"
-                                   InputTransparent="True"
-                                   SelectedIndicatorColor="{StaticResource SSWRed}"
-                                   IndicatorColor="{StaticResource IndicatorColor}"
-                                   IndicatorSize="4.5"
-                                   Position="{Binding CurrentQuestionIndex}"
-                                   Count="{Binding Questions.Count}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="End"/>
-
-                    <!-- Question & Answer -->
-                    <Grid Grid.Row="5" RowDefinitions="Auto,Auto" Margin="20">
-                        <Label Grid.Row="0"
-                               HorizontalOptions="FillAndExpand"
-                               VerticalOptions="FillAndExpand"
-                               HorizontalTextAlignment="Start"
-                               VerticalTextAlignment="End"
-                               Style="{StaticResource LabelBold}"
-                               TextColor="White"
-                               FontSize="Large"
-                               Margin="0,0,0,40"
-                               Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
-                        <Border
-                            Grid.Row="1"
-                            Stroke="{StaticResource White}"
-                            StrokeShape="RoundRectangle 8"
-                            IsVisible="{Binding CurrentQuestion.IsSubmitted, Converter={toolkit:InvertedBoolConverter}}">
-                            <Editor
-                                TextColor="{StaticResource White}"
-                                VerticalTextAlignment="Start"
-                                AutoSize="TextChanges"
-                                Text="{Binding CurrentQuestion.Answer}"
-                                MinimumHeightRequest="150"
-                                Placeholder="Enter your answer here"
-                                Keyboard="Plain">
-                                <Editor.Behaviors>
-                                    <toolkit:EventToCommandBehavior
-                                        x:TypeArguments="TextChangedEventArgs"
-                                        EventName="TextChanged"
-                                        Command="{Binding AnswerChangedCommand}"/>
-                                </Editor.Behaviors>
-                            </Editor>
-                        </Border>
-                        <Label Grid.Row="1"
-                               IsVisible="{Binding CurrentQuestion.IsSubmitted}"
-                               Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
-                               FontSize="Medium"
-                               TextColor="{StaticResource White}" />
-                    </Grid>
-
-                    <!-- Quiz navigation -->
-                    <Grid Grid.Row="6"
-                          ColumnDefinitions="*,*"
-                          Margin="20,0,20,10"
-                          IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
-                        <Button Grid.Column="0"
-                                IsVisible="{Binding IsFirstQuestion, Converter={toolkit:InvertedBoolConverter}}"
-                                Text="&#xf060;"
-                                Command="{Binding MoveBackCommand}"
-                                FontFamily="FA6Solid"
-                                TextColor="White"
-                                HeightRequest="40"
-                                VerticalOptions="End"
-                                HorizontalOptions="Start"
-                                Padding="0"
-                                CornerRadius="10"
-                                BackgroundColor="{StaticResource SSWRed}"
-                                WidthRequest="40" />
-
-                        <Button Grid.Column="1"
-                                IsVisible="{Binding IsLastQuestion, Converter={toolkit:InvertedBoolConverter}}"
-                                Text="&#xf061;"
-                                Command="{Binding MoveForwardCommand}"
-                                FontFamily="FA6Solid"
-                                TextColor="White"
-                                HeightRequest="40"
-                                VerticalOptions="End"
-                                HorizontalOptions="End"
-                                Padding="0"
-                                CornerRadius="10"
-                                BackgroundColor="{StaticResource SSWRed}"
-                                WidthRequest="40" />
-
-                        <Button Grid.Column="1"
-                                IsVisible="{Binding IsLastQuestion}"
-                                Text="Submit"
-                                Command="{Binding SubmitResponsesCommand}"
-                                Style="{StaticResource LabelBold}"
-                                FontSize="12"
-                                TextColor="White"
-                                HeightRequest="40"
-                                VerticalOptions="End"
-                                HorizontalOptions="End"
-                                Padding="0"
-                                CornerRadius="10"
-                                BackgroundColor="{StaticResource SSWRed}"
-                                WidthRequest="80" />
-                    </Grid>
-
-                    <ActivityIndicator HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       Color="{StaticResource SSWRed}"
-                                       IsVisible="{Binding IsBusy}"
-                                       IsRunning="{Binding IsBusy}"
-                                       Grid.Row="5" />
                 </Grid>
 
                 <!-- Results -->
-                <Grid RowDefinitions="70, 50, *"
-                      IsVisible="{Binding ResultsVisible}">
+                <Grid IsVisible="{Binding ResultsVisible}"
+                      BackgroundColor="{StaticResource QuizDescriptionBackground}"
+                      RowDefinitions="Auto, *"
+                      Padding="0,0,0,80">
+                    <VerticalStackLayout Grid.Row="0"
+                                         BackgroundColor="{StaticResource Background}"
+                                         Padding="0,0,0,20">
+                        <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                HorizontalOptions="Center"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                WidthRequest="50"
+                                HeightRequest="50"
+                                Margin="0,0,0,20">
+                            <Label Text="😥"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   FontSize="26"
+                                   FontAutoScalingEnabled="False">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding TestPassed}"
+                                                 Value="True">
+                                        <Setter Property="Text" Value="🎉" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
 
-                    <Label Text="{Binding ResultsTitle}"
-                           TextTransform="Uppercase"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           FontSize="Title"
-                           TextColor="White"
-                           Grid.Row="0" />
+                        <Label Text="{Binding ResultsTitle}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"
+                               Style="{StaticResource LabelBold}"
+                               FontSize="22"
+                               TextColor="White" />
 
-                    <Border Grid.Row="1"
-                            BackgroundColor="{Binding ScoreBackground}"
-                            WidthRequest="150"
-                            HeightRequest="40"
-                            StrokeShape="RoundRectangle 6"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center">
-                        <Label Text="{Binding Score}"
-                               TextColor="White"
-                               FontSize="Title"
+                        <Label FontSize="14"
+                               TextColor="{StaticResource Gray300}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="You got " />
+                                    <Span Text="{Binding Score}" TextColor="{StaticResource SSWRed}"
+                                          FontAttributes="Bold" />
+                                    <Span Text=" questions right." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label IsVisible="{Binding TestPassed, Converter={toolkit:InvertedBoolConverter}}"
+                               Text="Try again once you are ready!"
+                               FontSize="14"
+                               TextColor="{StaticResource Gray300}"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
                                HorizontalTextAlignment="Center"
                                VerticalTextAlignment="Center" />
-                    </Border>
+                        
+                        <Border IsVisible="{Binding TestPassed}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8"
+                                HorizontalOptions="Center"
+                                Padding="10,8"
+                                Margin="0,10,0,0"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}">
+                            <Grid ColumnDefinitions="Auto,*"
+                                  ColumnSpacing="10">
+                                <Label
+                                    Grid.Column="0"
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                                <Label Grid.Column="1" Text="{Binding Points, StringFormat='+{0}'}"
+                                       TextColor="White"
+                                       FontSize="18"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
 
+                    <lottie:SKConfettiView
+                        Grid.Row="0"
+                        IsAnimationEnabled="{Binding ShowConfetti}" />
 
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
-                                         Margin="10"
-                                         Grid.Row="2"
-                                         Spacing="8">
+                    <VerticalStackLayout Grid.Row="1"
+                                         BindableLayout.ItemsSource="{Binding Results}"
+                                         BackgroundColor="{StaticResource QuizDescriptionBackground}"
+                                         Padding="15"
+                                         Spacing="15">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="quizzes:QuestionResultDto">
-                                <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                                        StrokeThickness="2"
+                                <Border BackgroundColor="{StaticResource Background}"
+                                        StrokeThickness="0"
                                         StrokeShape="RoundRectangle 6"
-                                        Padding="5,10">
+                                        Padding="15">
                                     <Border.Triggers>
                                         <DataTrigger TargetType="Border"
                                                      Binding="{Binding Correct}"
                                                      Value="False">
-                                            <Setter Property="Stroke" Value="{StaticResource SSWRed}"/>
+                                            <Setter Property="Stroke" Value="{StaticResource SSWRed}" />
                                         </DataTrigger>
                                     </Border.Triggers>
-                                    <toolkit:Expander
-                                        x:Name="Expander"
-                                        IsExpanded="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}">
-                                        <toolkit:Expander.Header>
-                                            <Grid
-                                                ColumnDefinitions="40, *, Auto"
-                                                RowDefinitions="Auto"
-                                                ColumnSpacing="6">
-                                                <lottie:SKLottieView Grid.Column="0"
-                                                                     Source="pass.json"
-                                                                     IsAnimationEnabled="True"
-                                                                     WidthRequest="30"
-                                                                     HeightRequest="30"
-                                                                     IsVisible="{Binding Correct}" />
-                                                <lottie:SKLottieView Grid.Column="0"
-                                                                     Source="fail.json"
-                                                                     IsAnimationEnabled="True"
-                                                                     WidthRequest="30"
-                                                                     HeightRequest="30"
-                                                                     IsVisible="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}" />
-                                                <Label Grid.Column="1"
-                                                       VerticalTextAlignment="Center"
-                                                       Text="{Binding QuestionText}"
-                                                       FontSize="Medium" />
-                                                <Image Grid.Column="2"
-                                                       Margin="0,0,10,0"
-                                                       IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded, Converter={toolkit:InvertedBoolConverter}}"
-                                                       HeightRequest="20"
-                                                       WidthRequest="20"
-                                                       Source="icon_chevron_right"/>
-                                                <Image Grid.Column="2"
-                                                       Margin="0,0,10,0"
-                                                       IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded}"
-                                                       HeightRequest="20"
-                                                       WidthRequest="20"
-                                                       Source="icon_chevron_down"/>
-                                            </Grid>
-                                        </toolkit:Expander.Header>
-                                        <VerticalStackLayout Padding="10">
-                                            <Label Text="Your response:"
-                                                   FontSize="Medium"
-                                                   Style="{StaticResource LabelBold}"/>
-                                            <Label Text="{Binding AnswerText}"
-                                                   FontSize="Medium"/>
-                                            <Label Text="Explanation:"
-                                                   Margin="0,8,0,0"
-                                                   FontSize="Medium"
-                                                   Style="{StaticResource LabelBold}"/>
-                                            <Label Text="{Binding ExplanationText}"
-                                                   FontSize="Medium"/>
-                                        </VerticalStackLayout>
-                                    </toolkit:Expander>
+                                    <VerticalStackLayout Spacing="5">
+                                        <Label Text="{Binding Index, StringFormat='Question {0}'}"
+                                               FontSize="12">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Question " />
+                                                    <Span Text="{Binding Index}" />
+                                                    <Span Text="/" />
+                                                    <Span
+                                                        Text="{Binding Source={RelativeSource AncestorType={x:Type viewModels:QuizDetailsViewModel}}, Path=Questions.Count}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <Label Text="{Binding QuestionText}"
+                                               FontSize="16" />
+
+                                        <Border BackgroundColor="{StaticResource QuizDescriptionBackground}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 6"
+                                                Padding="10"
+                                                Margin="0,10,0,0">
+                                            <toolkit:Expander
+                                                x:Name="Expander"
+                                                IsExpanded="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}">
+                                                <toolkit:Expander.Header>
+                                                    <Grid
+                                                        ColumnDefinitions="20, *, 20"
+                                                        RowDefinitions="Auto">
+                                                        <Label Grid.Column="0"
+                                                               FontFamily="FA6Regular"
+                                                               TextColor="{StaticResource QuizCheckColor}"
+                                                               VerticalTextAlignment="Center"
+                                                               VerticalOptions="Center"
+                                                               FontSize="14"
+                                                               Text="&#xf058;"
+                                                               IsVisible="{Binding Correct}" />
+                                                        <Label Grid.Column="0"
+                                                               FontFamily="FA6Regular"
+                                                               TextColor="{StaticResource SSWRed}"
+                                                               VerticalTextAlignment="Center"
+                                                               VerticalOptions="Center"
+                                                               FontSize="14"
+                                                               Text="&#xf057;"
+                                                               IsVisible="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}" />
+
+                                                        <Label Grid.Column="1"
+                                                               VerticalTextAlignment="Center"
+                                                               VerticalOptions="Center"
+                                                               Text="Correct"
+                                                               IsVisible="{Binding Correct}"
+                                                               TextColor="{StaticResource QuizCheckColor}"
+                                                               FontSize="14" />
+                                                        <Label Grid.Column="1"
+                                                               VerticalTextAlignment="Center"
+                                                               VerticalOptions="Center"
+                                                               Text="Incorrect"
+                                                               IsVisible="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}"
+                                                               TextColor="{StaticResource SSWRed}"
+                                                               FontSize="14" />
+
+                                                        <Image Grid.Column="2"
+                                                               IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded, Converter={toolkit:InvertedBoolConverter}}"
+                                                               HeightRequest="12"
+                                                               WidthRequest="12"
+                                                               Source="icon_chevron_right" />
+                                                        <Image Grid.Column="2"
+                                                               IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded}"
+                                                               HeightRequest="12"
+                                                               WidthRequest="12"
+                                                               Source="icon_chevron_down" />
+                                                    </Grid>
+                                                </toolkit:Expander.Header>
+                                                <VerticalStackLayout Padding="20,10">
+                                                    <Label Text="Your response:"
+                                                           FontSize="14"
+                                                           Style="{StaticResource LabelBold}"
+                                                           TextColor="{StaticResource Gray300}" />
+                                                    <Label Text="{Binding AnswerText}"
+                                                           FontSize="14"
+                                                           TextColor="{StaticResource Gray300}" />
+                                                    <Label Text="Explanation:"
+                                                           Margin="0,8,0,0"
+                                                           FontSize="14"
+                                                           Style="{StaticResource LabelBold}"
+                                                           TextColor="{StaticResource Gray300}" />
+                                                    <Label Text="{Binding ExplanationText}"
+                                                           FontSize="14"
+                                                           TextColor="{StaticResource Gray300}" />
+                                                </VerticalStackLayout>
+                                            </toolkit:Expander>
+                                        </Border>
+
+                                    </VerticalStackLayout>
+
                                 </Border>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </Grid>
 
+
                 <ActivityIndicator
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   Color="{StaticResource SSWRed}"
-                   IsEnabled="{Binding IsLoadingQuestions}"
-                   IsRunning="{Binding IsLoadingQuestions}"
-                   IsVisible="{Binding IsLoadingQuestions}" />
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Color="{StaticResource SSWRed}"
+                    IsEnabled="{Binding IsLoadingQuestions}"
+                    IsRunning="{Binding IsLoadingQuestions}"
+                    IsVisible="{Binding IsLoadingQuestions}" />
+            </Grid>
+        </ScrollView>
+
+        <!-- Bottom bar -->
+        <Border IsVisible="{Binding ResultsVisible}"
+                BackgroundColor="{StaticResource Background}"
+                VerticalOptions="End"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 6"
+                Padding="15">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <Button Grid.Column="0"
+                        Text="Try Again"
+                        IsVisible="{Binding TestPassed, Converter={toolkit:InvertedBoolConverter}}"
+                        Command="{Binding RestartCommand}"
+                        Style="{StaticResource LabelBold}"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        Padding="10"
+                        CornerRadius="6"
+                        BackgroundColor="{StaticResource SSWRed}"
+                        ContentLayout="Left">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf01e;"
+                                         FontFamily="FA6Solid"
+                                         Size="12"/>
+                    </Button.ImageSource>
+                </Button>
+                
+                <Button Grid.Column="2"
+                        Text="Done"
+                        Command="{Binding DoneCommand}"
+                        Style="{StaticResource LabelBold}"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        Padding="10"
+                        CornerRadius="6"
+                        BackgroundColor="{StaticResource SSWRed}" />
             </Grid>
         </Border>
-    </ScrollView>
+    </Grid>
+
 </ContentPage>
