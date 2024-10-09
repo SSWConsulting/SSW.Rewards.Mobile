@@ -212,7 +212,6 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             QuestionsVisible = false;
             ResultsVisible = true;
-            WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Done));
 
             var total = result.Results.Count;
             var correct = result.Results.Count(r => r.Correct);
@@ -299,6 +298,22 @@ namespace SSW.Rewards.Mobile.ViewModels
         private void AnswerChanged(TextChangedEventArgs args)
         {
             CurrentQuestion.Answer = args.NewTextValue;
+        }
+        
+        [RelayCommand]
+        private async Task Restart()
+        {
+            Questions.Clear();
+            ResultsVisible = false;
+            QuestionsVisible = true;
+            await Initialise(_quizId);
+            MoveTo(0);
+        }
+        
+        [RelayCommand]
+        private static async Task Done()
+        {
+            await Shell.Current.GoToAsync("..");
         }
     }
 
