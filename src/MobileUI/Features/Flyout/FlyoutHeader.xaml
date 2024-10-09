@@ -7,9 +7,10 @@
       xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
       HeightRequest="420"
       Margin="0"
-      Padding="20,0"
+      Padding="20,20"
       x:DataType="vm:FlyoutHeaderViewModel"
-      RowDefinitions="100,60,148,24,40">
+      RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+      RowSpacing="20">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
@@ -65,91 +66,88 @@
 
     <!-- User Stats -->
     <Grid Grid.Row="2"
-          RowSpacing="2"
-          RowDefinitions="40,40,40"
-          ColumnDefinitions="40,*">
+          ColumnSpacing="4"
+          RowDefinitions="Auto"
+          ColumnDefinitions="*,*,*">
         <Border Grid.Column="0"
                 Grid.Row="0"
                 BackgroundColor="{StaticResource RankingTableHeader}"
                 Stroke="{StaticResource RankingTableHeader}"
-                StrokeShape="RoundRectangle 4,0,4,0">
-            <Label VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="10,0,10,0"
-                   FontFamily="FA6Solid"
-                   TextColor="{StaticResource Coin}"
-                   Text="&#xf091;"/>
-        </Border>
-
-        <Border Grid.Column="1"
-                Grid.Row="0"
-                BackgroundColor="{StaticResource RankingTableBody}"
-                StrokeShape="RoundRectangle 0,4,0,4"
-                Padding="5">
-            <Label Style="{StaticResource LabelBold}"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   FontSize="14"
-                   TextColor="White"
-                   Text="{Binding Path=Rank, StringFormat='#{0:n0}'}"/>
-        </Border>
-
-        <Border Grid.Column="0"
-                Grid.Row="1"
-                BackgroundColor="{StaticResource RankingTableHeader}"
-                Stroke="{StaticResource RankingTableHeader}"
-                StrokeShape="RoundRectangle 4,0,4,0">
-
-            <HorizontalStackLayout>
-                <Label VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       Margin="10,0,0,0"
+                StrokeShape="RoundRectangle 4">
+            <Grid RowSpacing="10" Margin="0,10" RowDefinitions="*,*,*">
+                <Label Grid.Row="0"
+                       HorizontalOptions="Center"
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
+                       FontSize="20"
+                       Text="&#xf091;"/>
+                <Label Grid.Row="1"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       TextColor="{StaticResource Gray200}"
+                       FontSize="14"
+                       Text="Ranking"/>
+                <Label Grid.Row="2"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="18"
+                       TextColor="White"
+                       Text="{Binding Path=Rank, StringFormat='#{0:n0}'}" />
+            </Grid>
+        </Border>
+        
+        <Border Grid.Column="1"
+                Grid.Row="0"
+                BackgroundColor="{StaticResource RankingTableHeader}"
+                Stroke="{StaticResource RankingTableHeader}"
+                StrokeShape="RoundRectangle 4">
+            <Grid RowSpacing="10" Margin="0,10" RowDefinitions="*,*,*">
+                <Label Grid.Row="0"
+                       HorizontalOptions="Center"
+                       FontFamily="FA6Solid"
+                       TextColor="{StaticResource Coin}"
+                       FontSize="20"
                        Text="&#x2b50;"/>
-            </HorizontalStackLayout>
+                <Label Grid.Row="1"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       TextColor="{StaticResource Gray200}"
+                       FontSize="14"
+                       Text="Points"/>
+                <Label Grid.Row="2"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="18"
+                       TextColor="White"
+                       Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
+            </Grid>
         </Border>
-
-        <Border Grid.Column="1"
-                Grid.Row="1"
-                BackgroundColor="{StaticResource RankingTableBody}"
-                StrokeShape="RoundRectangle 0,4,0,4"
-                Padding="5">
-            <Label Style="{StaticResource LabelBold}"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   FontSize="18"
-                   TextColor="White"
-                   Text="{Binding Path=Points, StringFormat='{0:n0}'}" />
-        </Border>
-
-        <Border Grid.Column="0"
-                Grid.Row="2"
+        
+        <Border Grid.Column="2"
+                Grid.Row="0"
                 BackgroundColor="{StaticResource RankingTableHeader}"
                 Stroke="{StaticResource RankingTableHeader}"
-                StrokeShape="RoundRectangle 4,0,4,0">
-
-            <HorizontalStackLayout>
-                <Label VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       Margin="10,0,0,0"
+                StrokeShape="RoundRectangle 4">
+            <Grid RowSpacing="10" Margin="0,10" RowDefinitions="*,*,*">
+                <Label Grid.Row="0"
+                       HorizontalOptions="Center"
                        FontFamily="FA6Solid"
                        TextColor="{StaticResource Coin}"
+                       FontSize="20"
                        Text="&#xf51e;"/>
-            </HorizontalStackLayout>
-        </Border>
-
-        <Border Grid.Column="1"
-                Grid.Row="2"
-                BackgroundColor="{StaticResource RankingTableBody}"
-                StrokeShape="RoundRectangle 0,4,0,4"
-                Padding="5">
-            <Label Style="{StaticResource LabelBold}"
-                   VerticalOptions="Center"
-                   VerticalTextAlignment="Center"
-                   FontSize="14"
-                   TextColor="White"
-                   Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
+                <Label Grid.Row="1"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       TextColor="{StaticResource Gray200}"
+                       FontSize="14"
+                       Text="Coins"/>
+                <Label Grid.Row="2"
+                       HorizontalOptions="Center"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="18"
+                       TextColor="White"
+                       Text="{Binding Path=Credits, StringFormat='{0:n0}'}" />
+            </Grid>
         </Border>
     </Grid>
 
