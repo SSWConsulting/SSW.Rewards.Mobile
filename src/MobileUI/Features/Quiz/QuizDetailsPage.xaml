@@ -195,9 +195,11 @@
             </Grid>
 
             <!-- Results -->
-            <VerticalStackLayout IsVisible="{Binding ResultsVisible}"
-                                 BackgroundColor="{StaticResource QuizDescriptionBackground}">
-                <VerticalStackLayout BackgroundColor="{StaticResource Background}"
+            <Grid IsVisible="{Binding ResultsVisible}"
+                  BackgroundColor="{StaticResource QuizDescriptionBackground}"
+                  RowDefinitions="Auto, *">
+                <VerticalStackLayout Grid.Row="0"
+                                     BackgroundColor="{StaticResource Background}"
                                      Padding="0,0,0,20">
                     <Border BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                             HorizontalOptions="Center"
@@ -206,7 +208,7 @@
                             WidthRequest="50"
                             HeightRequest="50"
                             Margin="0,0,0,20">
-                        <Label Text="😢"
+                        <Label Text="😥"
                                VerticalOptions="Center"
                                HorizontalOptions="Center"
                                FontSize="26"
@@ -253,8 +255,13 @@
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center" />
                 </VerticalStackLayout>
+                
+                <lottie:SKConfettiView
+                    Grid.Row="0"
+                    IsAnimationEnabled="{Binding ShowConfetti}" />
 
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Results}"
+                <VerticalStackLayout Grid.Row="1"
+                                     BindableLayout.ItemsSource="{Binding Results}"
                                      BackgroundColor="{StaticResource QuizDescriptionBackground}"
                                      Padding="15"
                                      Spacing="15">
@@ -285,27 +292,25 @@
                                     </Label>
                                     
                                     <Label Text="{Binding QuestionText}"
-                                           FontSize="14"/>
+                                           FontSize="16"/>
                                     
                                     <Border BackgroundColor="{StaticResource QuizDescriptionBackground}"
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 6"
-                                            Padding="5"
+                                            Padding="10"
                                             Margin="0,10,0,0">
                                         <toolkit:Expander
                                             x:Name="Expander"
                                             IsExpanded="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}">
                                             <toolkit:Expander.Header>
                                                 <Grid
-                                                    ColumnDefinitions="20, *, Auto"
-                                                    RowDefinitions="Auto"
-                                                    ColumnSpacing="6">
+                                                    ColumnDefinitions="20, *, 20"
+                                                    RowDefinitions="Auto">
                                                     <Label Grid.Column="0"
                                                            FontFamily="FA6Regular"
                                                            TextColor="{StaticResource QuizCheckColor}"
                                                            VerticalTextAlignment="Center"
                                                            VerticalOptions="Center"
-                                                           HorizontalOptions="Center"
                                                            FontSize="14"
                                                            Text="&#xf058;"
                                                            IsVisible="{Binding Correct}" />
@@ -314,7 +319,6 @@
                                                            TextColor="{StaticResource SSWRed}"
                                                            VerticalTextAlignment="Center"
                                                            VerticalOptions="Center"
-                                                           HorizontalOptions="Center"
                                                            FontSize="14"
                                                            Text="&#xf057;"
                                                            IsVisible="{Binding Correct, Converter={toolkit:InvertedBoolConverter}}" />
@@ -335,20 +339,18 @@
                                                            FontSize="14" />
 
                                                     <Image Grid.Column="2"
-                                                           Margin="0,0,10,0"
                                                            IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded, Converter={toolkit:InvertedBoolConverter}}"
                                                            HeightRequest="12"
                                                            WidthRequest="12"
                                                            Source="icon_chevron_right" />
                                                     <Image Grid.Column="2"
-                                                           Margin="0,0,10,0"
                                                            IsVisible="{Binding Source={x:Reference Expander}, Path=IsExpanded}"
                                                            HeightRequest="12"
                                                            WidthRequest="12"
                                                            Source="icon_chevron_down" />
                                                 </Grid>
                                             </toolkit:Expander.Header>
-                                            <VerticalStackLayout Padding="26,10,10,10">
+                                            <VerticalStackLayout Padding="20,10">
                                                 <Label Text="Your response:"
                                                        FontSize="14"
                                                        Style="{StaticResource LabelBold}"
@@ -374,7 +376,7 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
-            </VerticalStackLayout>
+            </Grid>
 
             <ActivityIndicator
                 HorizontalOptions="Center"

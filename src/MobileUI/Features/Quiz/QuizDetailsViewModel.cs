@@ -52,6 +52,9 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private bool _testPassed;
+        
+        [ObservableProperty]
+        private bool _showConfetti;
 
         [ObservableProperty]
         private string _icon;
@@ -233,6 +236,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 ScoreBackground = (Color)successGreen!;
                 ResultsTitle = "Good job!";
                 TestPassed = true;
+                ShowConfetti = true;
                 SnackOptions = new SnackbarOptions
                 {
                     ActionCompleted = true,
@@ -254,6 +258,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 ScoreBackground = (Color)sswRed!;
                 ResultsTitle = "Don't give up!";
                 TestPassed = false;
+                ShowConfetti = false;
             }
         }
 
