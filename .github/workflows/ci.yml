@@ -31,6 +31,8 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
 
       - name: Restore Workload
         run: dotnet workload restore
@@ -139,20 +141,8 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          sudo xcode-select -s "/Applications/Xcode_15.1.app"
-          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.1.app" >> $GITHUB_ENV
-
-      - name: Import Code-Signing Certificates
-        uses: Apple-Actions/import-codesign-certs@v2
-        with:
-          p12-file-base64: ${{ secrets.APPLE_CERT }}
-          p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
-
-      - name: Import Provisioning Profile
-        run: |
-          echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          sudo xcode-select -s "/Applications/Xcode_15.4.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.4.app" >> $GITHUB_ENV
 
       - name: Build and sign
         run: dotnet build src/MobileUI/MobileUI.csproj -f:net8.0-ios --configuration Release
