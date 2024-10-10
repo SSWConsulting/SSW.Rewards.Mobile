@@ -28,9 +28,9 @@ jobs:
           echo ${{ vars.GOOGLESERVICE_INFO_PLIST }} | base64 --decode > src/MobileUI/Platforms/iOS/GoogleService-Info.plist
 
       - name: Setup DotNet Environment
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          global-json-file: global.json
 
       - name: Install MAUI Workload
         run: |
