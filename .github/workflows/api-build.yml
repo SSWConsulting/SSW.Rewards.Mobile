@@ -10,9 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          global-json-file: global.json
+          
+      - name: Install Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
       
       - name: Install dependencies
         run: dotnet restore $PROJECT
