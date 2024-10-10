@@ -13,6 +13,11 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '8.0.x'
+          
+      - name: Install Workload
+        run: |
+          dotnet nuget locals all --clear
+          dotnet workload install wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
       
       - name: Install dependencies
         run: dotnet restore $PROJECT

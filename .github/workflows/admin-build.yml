@@ -12,6 +12,11 @@ jobs:
   
         - name: Setup .NET
           uses: actions/setup-dotnet@v3
+
+        - name: Install Workload
+          run: |
+            dotnet nuget locals all --clear
+            dotnet workload install wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
   
         - name: Restore
           shell: bash
