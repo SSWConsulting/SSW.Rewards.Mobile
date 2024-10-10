@@ -53,27 +53,27 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         {
             case Constants.SocialMediaPlatformIds.LinkedIn:
                 PlatformName = "LinkedIn";
-                Url = "https://www.linkedin.com/in/";
-                Placeholder = "https://www.linkedin.com/in/[your-name]";
-                ValidationPattern = "^https://linkedin.com/in/([a-zA-Z0-9._-]+)$";
+                Url = "https://linkedin.com/in/";
+                Placeholder = "https://linkedin.com/in/[your-name]";
+                ValidationPattern = "^https?://(www.)?linkedin.com/in/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.GitHub:
                 PlatformName = "GitHub";
                 Url = "https://github.com/";
                 Placeholder = "https://github.com/[your-username]";
-                ValidationPattern = "^https://github.com/([a-zA-Z0-9._-]+)$";
+                ValidationPattern = "^https?://(www.)?github.com/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.Twitter:
                 PlatformName = "Twitter";
                 Url = "https://x.com/";
                 Placeholder = "https://x.com/[your-username]";
-                ValidationPattern = "^https://(twitter|x).com/([a-zA-Z0-9._-]+)$";
+                ValidationPattern = "^https?://(www.)?(twitter|x).com/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.Company:
                 PlatformName = "Company";
                 Url = "https://";
                 Placeholder = "https://[your-website]";
-                ValidationPattern = @"^https://\S+";
+                ValidationPattern = @"^https?://\S+";
                 break;
         }
     }
