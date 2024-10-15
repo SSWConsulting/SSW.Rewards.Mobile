@@ -13,12 +13,9 @@
             Command="{Binding ButtonClickedCommand, Source={x:Reference this}}"
             CommandParameter="{Binding ItemId, Source={x:Reference this}}" />
     </Border.GestureRecognizers>
-    <Grid HeightRequest="400">
+    <Grid RowDefinitions="*">
         <Image Grid.Row="0"
                Source="{Binding CarouselImage, Source={x:Reference this}}"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               HeightRequest="400"
                Aspect="AspectFill" />
         <Grid Grid.Row="0"
               RowDefinitions="Auto"
