@@ -3,6 +3,7 @@
 <Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         x:Class="SSW.Rewards.Mobile.Controls.CarouselItem"
         x:Name="this"
         StrokeThickness="0"
@@ -41,9 +42,10 @@
             </Border>
         </Grid>
         
-        <Grid HorizontalOptions="End"
-              VerticalOptions="Start"
-              Grid.Row="0">
+        <Grid Grid.Row="0"
+              IsVisible="{Binding RibbonText, Source={x:Reference this}, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+              HorizontalOptions="End"
+              VerticalOptions="Start">
             <Path x:Name="TrianglePath" StrokeThickness="0"
                   Fill="{StaticResource SSWRed}">
                 <Path.Data>
@@ -53,11 +55,11 @@
 
             <Label HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   Text="✨AI Powered"
+                   Text="{Binding RibbonText, Source={x:Reference this}}"
                    TextColor="White"
                    Style="{StaticResource LabelBold}"
                    FontAutoScalingEnabled="False"
-                   FontSize="14"
+                   FontSize="12"
                    Rotation="45"
                    TranslationX="10"
                    TranslationY="-10"/>
