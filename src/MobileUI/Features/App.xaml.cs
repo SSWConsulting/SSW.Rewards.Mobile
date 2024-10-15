@@ -44,6 +44,11 @@ public partial class App : Application
     protected override async void OnAppLinkRequestReceived(Uri uri)
     {
         base.OnAppLinkRequestReceived(uri);
+        
+        if (uri.Scheme != "sswrewards")
+        {
+            return;
+        }
 
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var code = queryDictionary.Get("code");
