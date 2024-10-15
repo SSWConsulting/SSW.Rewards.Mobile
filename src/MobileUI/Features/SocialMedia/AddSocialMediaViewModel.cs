@@ -113,7 +113,10 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             InputText = Url;
         }
 
-        CursorPosition = InputText.Length; // For some reason, works only on Android
+        App.Current.Dispatcher.Dispatch(() =>
+        {
+            CursorPosition = InputText.Length;
+        });
     }
 
     private bool IsUrlValid()
