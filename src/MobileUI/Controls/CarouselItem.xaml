@@ -40,5 +40,27 @@
                 </Grid>
             </Border>
         </Grid>
+        
+        <Grid HorizontalOptions="End"
+              VerticalOptions="Start"
+              Grid.Row="0">
+            <Path x:Name="TrianglePath" StrokeThickness="0"
+                  Fill="{StaticResource SSWRed}">
+                <Path.Data>
+                    <PathGeometry Figures="M 0,0 L 40,0 L 100,60 L 100,100 Z"/>
+                </Path.Data>
+            </Path>
+
+            <Label HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Text="✨AI Powered"
+                   TextColor="White"
+                   Style="{StaticResource LabelBold}"
+                   FontAutoScalingEnabled="False"
+                   FontSize="14"
+                   Rotation="45"
+                   TranslationX="10"
+                   TranslationY="-10"/>
+        </Grid>
     </Grid>
 </Border>
