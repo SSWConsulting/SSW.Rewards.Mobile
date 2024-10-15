@@ -89,7 +89,7 @@ public partial class SettingsViewModel : BaseViewModel
         await EditProfile(Constants.SocialMediaPlatformIds.Company, _companyUrl);
     }
     
-    private async Task EditProfile(int socialMediaPlatformId, string currentUrl = null) {
+    private async Task EditProfile(int socialMediaPlatformId, string currentUrl) {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
         var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, currentUrl, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);

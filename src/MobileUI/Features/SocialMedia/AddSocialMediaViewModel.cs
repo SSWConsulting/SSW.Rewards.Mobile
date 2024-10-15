@@ -42,7 +42,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     public AddSocialMediaViewModel(IUserService userService,
         ISnackbarService snackbarService,
         int socialMediaPlatformId,
-        string currentUrl = null)
+        string currentUrl)
     {
         _userService = userService;
         _snackbarService = snackbarService;

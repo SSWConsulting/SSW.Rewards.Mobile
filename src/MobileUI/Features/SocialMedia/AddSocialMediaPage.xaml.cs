@@ -10,7 +10,7 @@ public partial class AddSocialMediaPage
 
     public AddSocialMediaPage(IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider,
         int socialMediaPlatformId,
-        string currentUrl = null,
+        string currentUrl,
         Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;

@@ -194,7 +194,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
 
             Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, statusBarColor as Color);
+            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty, statusBarColor as Color);
             await MopupService.Instance.PushAsync(page);
             return;
         }
