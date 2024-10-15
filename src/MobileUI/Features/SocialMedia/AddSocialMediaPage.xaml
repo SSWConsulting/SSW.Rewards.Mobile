@@ -40,7 +40,15 @@
                         <Label HorizontalTextAlignment="Center"
                                Margin="20"
                                TextColor="White"
-                               Text="{Binding Path=PlatformName, StringFormat='Receive ⭐️ 150 points for connecting your {0} with SSW Rewards'}"/>
+                               Text="{Binding Path=PlatformName, StringFormat='Receive ⭐️ 150 points for connecting your {0} with SSW Rewards'}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding CurrentUrl, Converter={toolkit:IsStringNullOrEmptyConverter}}"
+                                             Value="False">
+                                    <Setter Property="Text" Value="{Binding Path=PlatformName, StringFormat='Update your {0} connection with SSW Rewards'}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Border
                             Margin="20,0"
                             StrokeShape="RoundRectangle 10"

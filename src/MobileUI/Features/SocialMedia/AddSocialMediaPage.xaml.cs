@@ -10,12 +10,13 @@ public partial class AddSocialMediaPage
 
     public AddSocialMediaPage(IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider,
         int socialMediaPlatformId,
+        string currentUrl = null,
         Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
-        BindingContext = ActivatorUtilities.CreateInstance<AddSocialMediaViewModel>(provider, socialMediaPlatformId);
+        BindingContext = ActivatorUtilities.CreateInstance<AddSocialMediaViewModel>(provider, socialMediaPlatformId, currentUrl);
     }
 
     protected override void OnAppearing()

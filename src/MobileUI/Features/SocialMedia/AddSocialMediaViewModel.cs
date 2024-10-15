@@ -10,7 +10,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly ISnackbarService _snackbarService;
-    private int _platformId;
+    private readonly int _platformId;
 
     [ObservableProperty]
     private string _placeholder;
@@ -35,44 +35,51 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
     [ObservableProperty]
     private string _errorText;
-
+    
+    [ObservableProperty]
+    private string _currentUrl;
+    
     public AddSocialMediaViewModel(IUserService userService,
         ISnackbarService snackbarService,
-        int socialMediaPlatformId)
+        int socialMediaPlatformId,
+        string currentUrl = null)
     {
         _userService = userService;
         _snackbarService = snackbarService;
         _platformId = socialMediaPlatformId;
+        _currentUrl = currentUrl;
         
         Initialise(socialMediaPlatformId);
     }
 
     private void Initialise(int socialMediaPlatformId)
     {
+        var url = !string.IsNullOrEmpty(CurrentUrl) ? CurrentUrl : null;
+        
         switch (socialMediaPlatformId)
         {
             case Constants.SocialMediaPlatformIds.LinkedIn:
                 PlatformName = "LinkedIn";
-                Url = "https://linkedin.com/in/";
-                Placeholder = "https://linkedin.com/in/[your-name]";
+                Url = url ?? "https://linkedin.com/in/";
+                Placeholder = url ?? "https://linkedin.com/in/[your-name]";
                 ValidationPattern = "^https?://(www.)?linkedin.com/in/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.GitHub:
                 PlatformName = "GitHub";
-                Url = "https://github.com/";
-                Placeholder = "https://github.com/[your-username]";
+                Url = url ?? "https://github.com/";
+                Placeholder = url ?? "https://github.com/[your-username]";
                 ValidationPattern = "^https?://(www.)?github.com/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.Twitter:
                 PlatformName = "Twitter";
-                Url = "https://x.com/";
-                Placeholder = "https://x.com/[your-username]";
+                Url = url ?? "https://x.com/";
+                Placeholder = url ?? "https://x.com/[your-username]";
                 ValidationPattern = "^https?://(www.)?(twitter|x).com/([a-zA-Z0-9._-]+)$";
                 break;
             case Constants.SocialMediaPlatformIds.Company:
                 PlatformName = "Company";
-                Url = "https://";
-                Placeholder = "https://[your-website]";
+                Url = url ?? "https://";
+                Placeholder = url ?? "https://[your-website]";
                 ValidationPattern = @"^https?://\S+";
                 break;
         }

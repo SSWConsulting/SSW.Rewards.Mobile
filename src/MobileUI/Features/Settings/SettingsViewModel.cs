@@ -15,6 +15,12 @@ public partial class SettingsViewModel : BaseViewModel
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
     
+    private int _myUserId;
+    private string _linkedInUrl;
+    private string _gitHubUrl;
+    private string _twitterUrl;
+    private string _companyUrl;
+    
     [ObservableProperty]
     private bool _isStaff;
 
@@ -27,7 +33,12 @@ public partial class SettingsViewModel : BaseViewModel
         _provider = provider;
         Title = "Settings";
         
+        _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
         _userService.IsStaffObservable().Subscribe(isStaff => IsStaff = isStaff);
+        _userService.LinkedInProfileObservable().Subscribe(linkedIn => _linkedInUrl = linkedIn);
+        _userService.GitHubProfileObservable().Subscribe(gitHub => _gitHubUrl = gitHub);
+        _userService.TwitterProfileObservable().Subscribe(twitter => _twitterUrl = twitter);
+        _userService.CompanyUrlObservable().Subscribe(company => _companyUrl = company);
     }
 
     public static void Initialise()
@@ -53,30 +64,34 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private async Task AddLinkedIn()
     {
-        await EditProfile(Constants.SocialMediaPlatformIds.LinkedIn);
+        await _userService.LoadSocialMedia(_myUserId);
+        await EditProfile(Constants.SocialMediaPlatformIds.LinkedIn, _linkedInUrl);
     }
     
     [RelayCommand]
     private async Task AddGitHub()
     {
-        await EditProfile(Constants.SocialMediaPlatformIds.GitHub);
+        await _userService.LoadSocialMedia(_myUserId);
+        await EditProfile(Constants.SocialMediaPlatformIds.GitHub, _gitHubUrl);
     }
     
     [RelayCommand]
     private async Task AddTwitter()
     {
-        await EditProfile(Constants.SocialMediaPlatformIds.Twitter);
+        await _userService.LoadSocialMedia(_myUserId);
+        await EditProfile(Constants.SocialMediaPlatformIds.Twitter, _twitterUrl);
     }
     
     [RelayCommand]
     private async Task AddCompany()
     {
-        await EditProfile(Constants.SocialMediaPlatformIds.Company);
+        await _userService.LoadSocialMedia(_myUserId);
+        await EditProfile(Constants.SocialMediaPlatformIds.Company, _companyUrl);
     }
     
-    private async Task EditProfile(int socialMediaPlatformId) {
+    private async Task EditProfile(int socialMediaPlatformId, string currentUrl = null) {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, statusBarColor as Color);
+        var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, currentUrl, statusBarColor as Color);
         await MopupService.Instance.PushAsync(page);
     }
 
