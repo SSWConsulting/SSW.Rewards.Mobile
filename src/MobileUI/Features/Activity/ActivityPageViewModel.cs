@@ -123,6 +123,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
                     : x.UserAvatar;
                 x.AchievementMessage = GetMessage(x.Achievement);
                 x.TimeElapsed = DateTimeHelpers.GetTimeElapsed(x.AwardedAt);
+                x.UserTitle = x.UserTitle.Replace("https://", string.Empty).Replace("http://", string.Empty);
                 return x;
             }).ToList();
         }

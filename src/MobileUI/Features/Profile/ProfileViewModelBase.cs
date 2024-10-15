@@ -147,7 +147,9 @@ public partial class ProfileViewModelBase : BaseViewModel
             return "SSW";
         }
 
-        return !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
+        return !string.IsNullOrEmpty(CompanyUrl)
+            ? CompanyUrl.Replace("https://", string.Empty).Replace("http://", string.Empty)
+            : "Community";
     }
 
     [RelayCommand]

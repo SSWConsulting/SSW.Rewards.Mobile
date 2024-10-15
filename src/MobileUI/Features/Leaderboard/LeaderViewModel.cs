@@ -35,7 +35,7 @@ public class LeaderViewModel : BaseViewModel
         Balance = dto.Balance;
         Email = dto.Email;
         IsMe = isMe;
-        Title = dto.Title;
+        Title = dto.Title.Replace("https://", string.Empty).Replace("http://", string.Empty);
     }
 
     public int DisplayPoints { get; set; }

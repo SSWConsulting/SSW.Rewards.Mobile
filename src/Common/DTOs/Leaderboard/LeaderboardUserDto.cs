@@ -52,7 +52,7 @@ public class LeaderboardUserDto
 
         if (!string.IsNullOrEmpty(company))
         {
-            Title = company;
+            Title = company.Replace("https://", string.Empty).Replace("http://", string.Empty);
         }
         else
         {
