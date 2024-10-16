@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -147,7 +148,9 @@ public partial class ProfileViewModelBase : BaseViewModel
             return "SSW";
         }
 
-        return !string.IsNullOrEmpty(CompanyUrl) ? CompanyUrl : "Community";
+        return !string.IsNullOrEmpty(CompanyUrl)
+            ? Regex.Replace(CompanyUrl, @"^https?://", string.Empty)
+            : "Community";
     }
 
     [RelayCommand]

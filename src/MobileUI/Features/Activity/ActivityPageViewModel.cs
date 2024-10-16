@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.ApiClient.Services;
@@ -123,6 +124,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
                     : x.UserAvatar;
                 x.AchievementMessage = GetMessage(x.Achievement);
                 x.TimeElapsed = DateTimeHelpers.GetTimeElapsed(x.AwardedAt);
+                x.UserTitle = Regex.Replace(x.UserTitle, @"^https?://", string.Empty);
                 return x;
             }).ToList();
         }

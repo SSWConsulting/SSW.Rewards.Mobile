@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Domain.Entities;
+﻿using System.Text.RegularExpressions;
+using SSW.Rewards.Domain.Entities;
 
 namespace SSW.Rewards.Shared.DTOs.Leaderboard;
 
@@ -52,7 +53,7 @@ public class LeaderboardUserDto
 
         if (!string.IsNullOrEmpty(company))
         {
-            Title = company;
+            Title = Regex.Replace(company, @"^https?://", string.Empty);
         }
         else
         {
