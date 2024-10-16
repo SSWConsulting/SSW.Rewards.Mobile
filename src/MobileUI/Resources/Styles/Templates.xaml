@@ -5,16 +5,15 @@
                     xmlns:resolver="clr-namespace:Maui.Plugins.PageResolver;assembly=Maui.Plugins.PageResolver"
                     xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels">
     <ControlTemplate x:Key="PageTemplate">
-        <Grid RowDefinitions="60,*"
+        <Grid RowDefinitions="50,*"
               Margin="0"
-              Padding="0"
-              TranslationY="{OnPlatform iOS=-10, Default=0}">
+              Padding="0">
             <Grid.BindingContext>
                 <resolver:ResolveViewModel x:TypeArguments="vm:TopBarViewModel" />
             </Grid.BindingContext>
             <Grid Grid.Row="0"
-                  ColumnDefinitions="60,*,60"
-                  HeightRequest="60"
+                  ColumnDefinitions="50,*,50"
+                  HeightRequest="50"
                   Padding="10,5"
                   BackgroundColor="{StaticResource Background}"
                   VerticalOptions="Start"
@@ -26,7 +25,7 @@
                       IsVisible="{Binding ShowAvatar}"
                       HeightRequest="40"
                       WidthRequest="40"
-                      VerticalOptions="End">
+                      VerticalOptions="Center">
                     <mct:AvatarView ImageSource="{Binding ProfilePic}"
                                     HeightRequest="40"
                                     WidthRequest="40"
@@ -38,7 +37,6 @@
                         </mct:AvatarView.GestureRecognizers>
                     </mct:AvatarView>
                 </Grid>
-
 
                 <Button
                     Grid.Column="0"
@@ -53,7 +51,7 @@
                     Padding="0"
                     IsVisible="{Binding ShowBack}"
                     Command="{Binding GoBackCommand}"
-                    VerticalOptions="End">
+                    VerticalOptions="Center">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="FluentIcons"
                                          Glyph="&#xf189;"
@@ -62,18 +60,21 @@
                     </Button.ImageSource>
                 </Button>
                 
-                <Label Grid.Column="1"
-                       Text="{Binding Title}"
-                       Style="{StaticResource LabelBold}"
-                       FontSize="18"
-                       VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       HorizontalOptions="Center" />
+                <Grid Grid.Column="1"
+                      VerticalOptions="Center"
+                      HeightRequest="50">
+                    <Label Text="{Binding Title}"
+                           Style="{StaticResource LabelBold}"
+                           FontSize="18"
+                           VerticalOptions="Center"
+                           VerticalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                </Grid>
 
                 <ImageButton Grid.Column="2"
                              Command="{Binding OpenScannerCommand}"
                              IsVisible="{Binding ShowScanner}"
-                             VerticalOptions="End">
+                             VerticalOptions="Center">
                     <ImageButton.Source>
                         <FontImageSource FontFamily="FluentIcons"
                                          Glyph="&#xf636;"/>
