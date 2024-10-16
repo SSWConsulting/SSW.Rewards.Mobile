@@ -62,7 +62,13 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                     .Where(s => s.StaffAchievement != null)
                     .FirstOrDefaultAsync(s => s.StaffAchievement!.Id == requestedAchievement.Id, cancellationToken);
 
-                achievementModel.UserId = staffMember?.Id;
+                if (staffMember != null)
+                {
+                    var staffUser = await _context.Users
+                        .FirstOrDefaultAsync(u => u.Email == staffMember.Email, cancellationToken);
+
+                    achievementModel.UserId = staffUser?.Id;
+                }
             }
             else
             {
