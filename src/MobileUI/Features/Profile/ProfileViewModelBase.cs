@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -148,7 +149,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         return !string.IsNullOrEmpty(CompanyUrl)
-            ? CompanyUrl.Replace("https://", string.Empty).Replace("http://", string.Empty)
+            ? Regex.Replace(CompanyUrl, @"^https?://", string.Empty)
             : "Community";
     }
 

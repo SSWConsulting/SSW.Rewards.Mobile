@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using System.Text.RegularExpressions;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -35,7 +36,7 @@ public class LeaderViewModel : BaseViewModel
         Balance = dto.Balance;
         Email = dto.Email;
         IsMe = isMe;
-        Title = dto.Title.Replace("https://", string.Empty).Replace("http://", string.Empty);
+        Title = Regex.Replace(dto.Title, @"^https?://", string.Empty);
     }
 
     public int DisplayPoints { get; set; }
