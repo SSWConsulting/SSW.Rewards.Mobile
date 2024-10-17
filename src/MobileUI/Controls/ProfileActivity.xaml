@@ -46,13 +46,6 @@
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
 
-        <ActivityIndicator
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            IsRunning="True"
-            Color="{StaticResource primary}"
-            IsVisible="{Binding IsLoading}" />
-
         <VerticalStackLayout
             BindableLayout.ItemsSource="{Binding RecentActivity}"
             Spacing="8">

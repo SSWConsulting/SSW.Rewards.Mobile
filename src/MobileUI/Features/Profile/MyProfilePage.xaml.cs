@@ -19,6 +19,7 @@ public partial class MyProfilePage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         _firebaseAnalyticsService.Log("MyProfilePage");
         await _viewModel.Initialise();
     }
