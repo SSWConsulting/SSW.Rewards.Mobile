@@ -204,7 +204,14 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         if (Uri.TryCreate(userProfile, UriKind.Absolute, out Uri uri))
         {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            try
+            {
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "An unexpected error occurred. No browser may be installed on the device.", "OK");
+            }
         }
     }
 
