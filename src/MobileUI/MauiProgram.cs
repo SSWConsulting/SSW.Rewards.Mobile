@@ -5,8 +5,8 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
+using Microsoft.Maui.Platform;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
@@ -88,7 +88,6 @@ public static class MauiProgram
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
         });
-
 #endif
 
         return builder.Build();

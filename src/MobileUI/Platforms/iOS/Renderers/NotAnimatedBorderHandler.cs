@@ -6,6 +6,7 @@ namespace SSW.Rewards.Mobile.Renderers;
 
 // Workaround for an issue with border animation on iOS
 // See: https://github.com/dotnet/maui/issues/18204
+// TODO: Remove this workaround when the issue is fixed in MAUI (should be version 9.0.0)
 public class NotAnimatedBorderHandler : BorderHandler
 {
     private class BorderContentView : ContentView
