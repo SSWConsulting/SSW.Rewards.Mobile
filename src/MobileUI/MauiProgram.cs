@@ -5,8 +5,8 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
-using Microsoft.Maui.Platform;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
@@ -87,6 +87,11 @@ public static class MauiProgram
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
         });
+        
+        // Workaround for an issue with border animation on iOS
+        // See: https://github.com/dotnet/maui/issues/18204
+        BorderHandler.PlatformViewFactory = (h) => new NoneAnimatedBorderContentView() { CrossPlatformLayout = h.VirtualView };
+
 #endif
 
         return builder.Build();
