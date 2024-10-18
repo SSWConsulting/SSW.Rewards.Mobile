@@ -30,7 +30,14 @@ public partial class AboutSswPage
 
     private async void FindoutMore_Tapped(object sender, EventArgs e)
     {
-        await Browser.OpenAsync("https://www.ssw.com.au/ssw/Company/AboutUs.aspx", BrowserLaunchMode.External);
+        try
+        {
+            await Browser.OpenAsync("https://www.ssw.com.au/ssw/Company/AboutUs.aspx", BrowserLaunchMode.External);
+        }
+        catch (Exception)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+        }
     }
 
     protected override void OnDisappearing()
