@@ -24,6 +24,7 @@ public static class MauiProgram
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             fonts.AddFont("FluentSystemIcons-Regular.ttf", "FluentIcons");
+            fonts.AddFont("FluentSystemIcons-Filled.ttf", "FluentIconsFilled");
             fonts.AddFont("FA6Brands-Regular.otf", "FA6Brands");
             fonts.AddFont("FontAwesome6-Regular.otf", "FA6Regular");
             fonts.AddFont("FontAwesome6-Solid.otf", "FA6Solid");

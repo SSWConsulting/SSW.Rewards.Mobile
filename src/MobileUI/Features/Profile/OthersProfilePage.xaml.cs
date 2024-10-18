@@ -23,6 +23,7 @@ public partial class OthersProfilePage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         _firebaseAnalyticsService.Log("OthersProfilePage");
         await _viewModel.Initialise();
     }

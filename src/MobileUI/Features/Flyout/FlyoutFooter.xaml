@@ -37,7 +37,7 @@
             ColumnDefinitions="Auto,*">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer NumberOfTapsRequired="1"
-                                      Command="{Binding MyQrCodeTappedCommand}"/>
+                                      Command="{Binding MyProfileTappedCommand}"/>
             </Grid.GestureRecognizers>
             <Label Grid.Column="0"
                    HeightRequest="30"
@@ -45,9 +45,9 @@
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center"
                    FontSize="16"
-                   FontFamily="FluentIcons"
+                   FontFamily="FluentIconsFilled"
                    TextColor="#DDDDDD"
-                   Text="&#xf636;">
+                   Text="&#xf5ca;">
             </Label>
             <Label Grid.Column="1"
                    Style="{StaticResource LabelBold}"
@@ -55,7 +55,7 @@
                    HorizontalOptions="Start"
                    VerticalOptions="Center"
                    FontSize="16"
-                   Text="My QR Code" />
+                   Text="My Profile" />
         </Grid>
     </VerticalStackLayout>
     <VerticalStackLayout VerticalOptions="Start">

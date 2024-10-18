@@ -13,47 +13,62 @@
     </ContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout Margin="15">
-
+        <Grid RowDefinitions="Auto, *"
+              Margin="15,0">
+            
             <!-- Close button -->
-            <Border
-                HorizontalOptions="End"
-                BackgroundColor="{StaticResource Background}"
-                StrokeShape="Ellipse"
-                StrokeThickness="0"
-                IsVisible="{Binding ShowCloseButton}">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
-                </Border.GestureRecognizers>
-                <Label
-                    FontFamily="FluentIcons"
-                    Text="&#xe4c3;"
-                    FontSize="35"
-                    FontAutoScalingEnabled="False"
-                    TextColor="{StaticResource primary}" />
-            </Border>
+            <Grid Grid.Row="0"
+                  Margin="0,10">
+                <Border
+                    HorizontalOptions="End"
+                    BackgroundColor="{StaticResource Background}"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0"
+                    IsVisible="{Binding ShowCloseButton}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        Text="&#xe4c3;"
+                        FontSize="35"
+                        FontAutoScalingEnabled="False"
+                        TextColor="{StaticResource primary}" />
+                </Border>
+            </Grid>
 
-            <controls:ProfileStats Margin="0,15,0,0" />
+            <VerticalStackLayout Grid.Row="1"
+                                 Spacing="15"
+                                 IsVisible="{Binding Path=IsLoading, Converter={mct:InvertedBoolConverter}}">
+                <controls:ProfileStats />
 
-            <Button Text="Get in touch"
-                    TextTransform="Uppercase"
-                    Margin="0,15,0,0"
-                    Style="{StaticResource LabelBold}"
-                    HeightRequest="50"
-                    FontSize="16"
-                    BackgroundColor="{StaticResource SSWRed}"
-                    CornerRadius="8"
-                    Command="{Binding EmailUserCommand}"
-                    IsVisible="{Binding IsStaff}">
-                <Button.ImageSource>
-                    <FontImageSource Glyph="&#xf0e0;"
-                                     FontFamily="FA6Solid"
-                                     Size="20"/>
-                </Button.ImageSource>
-            </Button>
+                <Button Text="Get in touch"
+                        TextTransform="Uppercase"
+                        Style="{StaticResource LabelBold}"
+                        HeightRequest="50"
+                        FontSize="16"
+                        BackgroundColor="{StaticResource SSWRed}"
+                        CornerRadius="8"
+                        Command="{Binding EmailUserCommand}"
+                        IsVisible="{Binding IsStaff}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf0e0;"
+                                         FontFamily="FA6Solid"
+                                         Size="20" />
+                    </Button.ImageSource>
+                </Button>
 
-            <controls:ProfileActivity Margin="0,15,0,0" />
+                <controls:ProfileActivity />
+            </VerticalStackLayout>
 
-        </VerticalStackLayout>
+            <ActivityIndicator
+                Grid.Row="1"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsEnabled="{Binding IsLoading}"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}" />
+        </Grid>
     </ScrollView>
 </ContentPage>
