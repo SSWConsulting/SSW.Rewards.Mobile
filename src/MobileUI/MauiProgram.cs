@@ -44,6 +44,7 @@ public static class MauiProgram
         .ConfigureMauiHandlers((handlers) =>
         {
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
+            handlers.AddHandler<Border, NotAnimatedBorderHandler>();
         });
 
         AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
@@ -87,10 +88,6 @@ public static class MauiProgram
         {
             handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
         });
-        
-        // Workaround for an issue with border animation on iOS
-        // See: https://github.com/dotnet/maui/issues/18204
-        BorderHandler.PlatformViewFactory = (h) => new NoneAnimatedBorderContentView() { CrossPlatformLayout = h.VirtualView };
 
 #endif
 
