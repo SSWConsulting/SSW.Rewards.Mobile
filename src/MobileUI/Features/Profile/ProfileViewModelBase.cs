@@ -210,7 +210,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "An unexpected error occurred. No browser may be installed on the device.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
             }
         }
     }
