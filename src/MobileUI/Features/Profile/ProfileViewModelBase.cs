@@ -119,10 +119,10 @@ public partial class ProfileViewModelBase : BaseViewModel
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
         Title = GetTitle();
-
+        
+        await UpdateSkillsSectionIfRequired();
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
-        await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
         IsLoading = false;

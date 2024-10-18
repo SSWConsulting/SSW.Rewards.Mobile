@@ -8,20 +8,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileActivity">
-    <VerticalStackLayout>
+    <VerticalStackLayout >
         <Label Text="Last Seen"
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
-
-        <ActivityIndicator
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            IsRunning="True"
-            Color="{StaticResource primary}"
-            IsVisible="{Binding IsLoading}" />
 
         <VerticalStackLayout
             BindableLayout.ItemsSource="{Binding LastSeen}"
@@ -29,15 +21,14 @@
             Spacing="8">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
-                    <controls:ProfileActivityItem/>
+                    <controls:ProfileActivityItem />
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
             <BindableLayout.EmptyView>
                 <Label Text="No check-ins"
                        TextColor="{StaticResource LeaderCardBackground}"
                        Margin="0, 10"
-                       HorizontalOptions="Center"
-                       IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}}"/>
+                       HorizontalOptions="Center" />
             </BindableLayout.EmptyView>
         </VerticalStackLayout>
 
@@ -51,15 +42,14 @@
             Spacing="8">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
-                    <controls:ProfileActivityItem/>
+                    <controls:ProfileActivityItem />
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
             <BindableLayout.EmptyView>
                 <Label Text="No recent activity"
                        TextColor="{StaticResource LeaderCardBackground}"
                        Margin="0, 10"
-                       HorizontalOptions="Center"
-                       IsVisible="{Binding IsLoading, Converter={toolkit:InvertedBoolConverter}}"/>
+                       HorizontalOptions="Center" />
             </BindableLayout.EmptyView>
         </VerticalStackLayout>
     </VerticalStackLayout>
