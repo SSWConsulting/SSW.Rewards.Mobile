@@ -90,22 +90,12 @@ public partial class ProfileViewModelBase : BaseViewModel
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
         userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
         userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
-        userService.CompanyUrlObservable().Subscribe(company =>
-        {
-            CompanyUrl = company;
-
-            if (!IsStaff)
-            {
-                Title = company;
-            }
-        });
+        userService.CompanyUrlObservable().Subscribe(company => CompanyUrl = company);
     }
 
     protected async Task _initialise()
     {
-        IsLoading = true;
         await LoadProfileSections();
-        IsLoading = false;
     }
 
     protected async Task LoadProfileSections()
@@ -113,6 +103,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
+        IsLoading = true;
         var profileTask = _userService.GetUserAsync(UserId);
         var socialMediaTask = LoadSocialMedia();
         
@@ -128,12 +119,13 @@ public partial class ProfileViewModelBase : BaseViewModel
         IsStaff = profile.IsStaff;
         UserEmail = profile.Email;
         Title = GetTitle();
-
+        
+        await UpdateSkillsSectionIfRequired();
         UpdateLastSeenSection(profile.Achievements);
         UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
-        await UpdateSkillsSectionIfRequired();
 
         _loadingProfileSectionsSemaphore.Release();
+        IsLoading = false;
     }
 
     private async Task LoadSocialMedia()
