@@ -196,7 +196,14 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         if (Uri.TryCreate(userProfile, UriKind.Absolute, out Uri uri))
         {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            try
+            {
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            }
         }
     }
 
