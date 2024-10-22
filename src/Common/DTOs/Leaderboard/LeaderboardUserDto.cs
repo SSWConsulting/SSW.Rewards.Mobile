@@ -21,10 +21,8 @@ public class LeaderboardUserDto
 
     public LeaderboardUserDto() {}
 
-    public LeaderboardUserDto(User user, DateTime firstDayOfWeek)
+    public LeaderboardUserDto(User user)
     {
-        var start = firstDayOfWeek;
-        var end = start.AddDays(7);
         Rank = 0; // Ignored
         UserId = user.Id;
         Name = user.FullName;
@@ -34,18 +32,18 @@ public class LeaderboardUserDto
         PointsClaimed = user.UserRewards.Sum(ur => ur.Reward.Cost);
         PointsToday = user.UserAchievements
             .Where(ua => 
-                ua.AwardedAt.Year == DateTime.Now.Year && 
+                ua.AwardedAt.Year == DateTime.UtcNow.Year && 
                 ua.AwardedAt.Month == DateTime.UtcNow.Month && 
                 ua.AwardedAt.Day == DateTime.UtcNow.Day)
             .Sum(ua => ua.Achievement.Value);
         PointsThisWeek = user.UserAchievements
-            .Where(ua => start <= ua.AwardedAt && ua.AwardedAt <= end)
+            .Where(ua => DateTime.UtcNow.AddDays(-7) <= ua.AwardedAt && ua.AwardedAt <= DateTime.UtcNow)
             .Sum(ua => ua.Achievement.Value);
         PointsThisMonth = user.UserAchievements
-            .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
+            .Where(ua => ua.AwardedAt.Year == DateTime.UtcNow.Year && ua.AwardedAt.Month == DateTime.UtcNow.Month)
             .Sum(ua => ua.Achievement.Value);
         PointsThisYear = user.UserAchievements
-            .Where(ua => ua.AwardedAt.Year == DateTime.Now.Year)
+            .Where(ua => ua.AwardedAt.Year == DateTime.UtcNow.Year)
             .Sum(ua => ua.Achievement.Value);
 
         var company = user.SocialMediaIds.FirstOrDefault(s => s.SocialMediaPlatform.Name == "Company")

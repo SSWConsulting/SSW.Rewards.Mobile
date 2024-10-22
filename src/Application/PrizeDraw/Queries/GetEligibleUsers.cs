@@ -55,8 +55,8 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
         }
         else if (request.Filter == LeaderboardFilter.ThisWeek)
         {
-            var start = _dateTime.Now.FirstDayOfWeek();
-            var end = start.AddDays(7);
+            var start = _dateTime.Now.AddDays(-7);
+            var end = _dateTime.Now;
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisWeek")
