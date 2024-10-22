@@ -90,22 +90,12 @@ public partial class ProfileViewModelBase : BaseViewModel
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
         userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
         userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
-        userService.CompanyUrlObservable().Subscribe(company =>
-        {
-            CompanyUrl = company;
-
-            if (!IsStaff)
-            {
-                Title = company;
-            }
-        });
+        userService.CompanyUrlObservable().Subscribe(company => CompanyUrl = company);
     }
 
     protected async Task _initialise()
     {
-        IsLoading = true;
         await LoadProfileSections();
-        IsLoading = false;
     }
 
     protected async Task LoadProfileSections()
@@ -115,6 +105,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         try
         {
+            IsLoading = true;
             var profileTask = _userService.GetUserAsync(UserId);
             var socialMediaTask = LoadSocialMedia();
         
@@ -130,10 +121,10 @@ public partial class ProfileViewModelBase : BaseViewModel
             IsStaff = profile.IsStaff;
             UserEmail = profile.Email;
             Title = GetTitle();
-
+        
+            await UpdateSkillsSectionIfRequired();
             UpdateLastSeenSection(profile.Achievements);
             UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
-            await UpdateSkillsSectionIfRequired();
         }
         catch (Exception ex)
         {
@@ -146,6 +137,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         _loadingProfileSectionsSemaphore.Release();
+        IsLoading = false;
     }
 
     private async Task LoadSocialMedia()
@@ -216,7 +208,14 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         if (Uri.TryCreate(userProfile, UriKind.Absolute, out Uri uri))
         {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            try
+            {
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            }
         }
     }
 

@@ -31,13 +31,9 @@ public partial class FlyoutFooterViewModel : ObservableObject
     }
     
     [RelayCommand]
-    private async Task MyQrCodeTapped()
+    private async Task MyProfileTapped()
     {
-        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
-        if (granted)
-        {
-            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>(ScanPageSegments.MyCode);
-        }
+        await App.Current.MainPage.Navigation.PushModalAsync<MyProfilePage>();
     }
     
     [RelayCommand]
