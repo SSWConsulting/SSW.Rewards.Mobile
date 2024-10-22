@@ -45,6 +45,7 @@ public static class MauiProgram
         .ConfigureMauiHandlers((handlers) =>
         {
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
+            handlers.AddHandler<Border, NotAnimatedBorderHandler>();
         });
 
         AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
