@@ -126,7 +126,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             UpdateLastSeenSection(profile.Achievements);
             UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await ClosePage();
             await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
