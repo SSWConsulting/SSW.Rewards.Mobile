@@ -129,11 +129,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         catch (Exception ex)
         {
             await ClosePage();
-            
-            if (!await ExceptionHandler.HandleApiException(ex))
-            {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading this profile. Please try again soon.", "OK");
-            }
+            await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
         }
 
         _loadingProfileSectionsSemaphore.Release();
