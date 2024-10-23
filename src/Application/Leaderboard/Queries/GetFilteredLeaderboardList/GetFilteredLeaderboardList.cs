@@ -55,7 +55,7 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
             .Include(u => u.UserAchievements)
             .ThenInclude(ua => ua.Achievement)
             .Where(u => !string.IsNullOrWhiteSpace(u.FullName))
-            .Select(u => new LeaderboardUserDto(u, DateTime.Now.FirstDayOfWeek()))
+            .Select(u => new LeaderboardUserDto(u))
             .ToListAsync(cancellationToken);
         
         users
