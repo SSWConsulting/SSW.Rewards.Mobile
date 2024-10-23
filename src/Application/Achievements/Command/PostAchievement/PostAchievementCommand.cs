@@ -52,23 +52,28 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         // check for milestone achievements
         if (requestedAchievement.Type == AchievementType.Scanned)
         {
-            // TODO: Re-enable when fixed
-            // var scannedUser = await _context.Users
-            //     .FirstOrDefaultAsync(u => u.AchievementId == requestedAchievement.Id, cancellationToken);
-            //
-            // if (scannedUser == null)
-            // {
-            //     var staffMember = await _context.StaffMembers
-            //         .Include(s => s.StaffAchievement)
-            //         .Where(s => s.StaffAchievement != null)
-            //         .FirstOrDefaultAsync(s => s.StaffAchievement!.Id == requestedAchievement.Id, cancellationToken);
-            //
-            //     achievementModel.UserId = staffMember?.Id;
-            // }
-            // else
-            // {
-            //     achievementModel.UserId = scannedUser.Id;
-            // }
+            var scannedUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.AchievementId == requestedAchievement.Id, cancellationToken);
+            
+            if (scannedUser == null)
+            {
+                var staffMember = await _context.StaffMembers
+                    .Include(s => s.StaffAchievement)
+                    .Where(s => s.StaffAchievement != null)
+                    .FirstOrDefaultAsync(s => s.StaffAchievement!.Id == requestedAchievement.Id, cancellationToken);
+
+                if (staffMember != null)
+                {
+                    var staffUser = await _context.Users
+                        .FirstOrDefaultAsync(u => u.Email == staffMember.Email, cancellationToken);
+                    
+                    achievementModel.UserId = staffUser?.Id;
+                }
+            }
+            else
+            {
+                achievementModel.UserId = scannedUser.Id;
+            }
             
             if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
             {

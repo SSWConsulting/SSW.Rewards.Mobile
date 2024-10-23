@@ -103,26 +103,34 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        IsLoading = true;
-        var profileTask = _userService.GetUserAsync(UserId);
-        var socialMediaTask = LoadSocialMedia();
+        try
+        {
+            IsLoading = true;
+            var profileTask = _userService.GetUserAsync(UserId);
+            var socialMediaTask = LoadSocialMedia();
         
-        await Task.WhenAll(profileTask, socialMediaTask);
+            await Task.WhenAll(profileTask, socialMediaTask);
 
-        var profile = profileTask.Result;
+            var profile = profileTask.Result;
 
-        ProfilePic = profile.ProfilePic ?? "v2sophie";
-        Name = profile.FullName;
-        Rank = profile.Rank;
-        Points = profile.Points;
-        Balance = profile.Balance;
-        IsStaff = profile.IsStaff;
-        UserEmail = profile.Email;
-        Title = GetTitle();
+            ProfilePic = profile.ProfilePic ?? "v2sophie";
+            Name = profile.FullName;
+            Rank = profile.Rank;
+            Points = profile.Points;
+            Balance = profile.Balance;
+            IsStaff = profile.IsStaff;
+            UserEmail = profile.Email;
+            Title = GetTitle();
         
-        await UpdateSkillsSectionIfRequired();
-        UpdateLastSeenSection(profile.Achievements);
-        UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
+            await UpdateSkillsSectionIfRequired();
+            UpdateLastSeenSection(profile.Achievements);
+            UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
+        }
+        catch (Exception)
+        {
+            await ClosePage();
+            await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+        }
 
         _loadingProfileSectionsSemaphore.Release();
         IsLoading = false;
