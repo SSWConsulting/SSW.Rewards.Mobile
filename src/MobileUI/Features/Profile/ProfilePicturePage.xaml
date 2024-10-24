@@ -11,7 +11,7 @@
                  x:DataType="viewModels:ProfilePictureViewModel"
                  x:Class="SSW.Rewards.PopupPages.ProfilePicturePage">
     <pages:PopupPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="Transparent" StatusBarStyle="DarkContent" />
     </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation

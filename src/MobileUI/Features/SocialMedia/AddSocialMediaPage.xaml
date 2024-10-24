@@ -12,7 +12,7 @@
              x:DataType="viewModels:AddSocialMediaViewModel"
              x:Class="SSW.Rewards.Mobile.PopupPages.AddSocialMediaPage">
     <pages:PopupPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="Transparent" StatusBarStyle="DarkContent" />
     </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation

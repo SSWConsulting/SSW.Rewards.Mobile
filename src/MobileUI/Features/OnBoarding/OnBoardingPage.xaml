@@ -11,7 +11,7 @@
              x:DataType="viewModels:OnBoardingViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.OnBoardingPage">
     <pages:PopupPage.Behaviors>
-        <mct:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+        <mct:StatusBarBehavior StatusBarColor="Transparent" StatusBarStyle="DarkContent" />
     </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation
