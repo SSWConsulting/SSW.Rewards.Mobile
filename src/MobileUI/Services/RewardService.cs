@@ -1,5 +1,4 @@
-﻿
-using SSW.Rewards.ApiClient.Services;
+﻿using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Rewards;
 using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
@@ -20,12 +19,15 @@ public class RewardService : IRewardService
     private readonly IApiRewardService _rewardClient;
     private readonly IRewardAdminService _adminRewardClient;
     private readonly IUserService _userService;
+    private readonly IAlertService _alertService;
 
-    public RewardService(IApiRewardService rewardClient, IUserService userService, IRewardAdminService adminRewardService)
+    public RewardService(IApiRewardService rewardClient, IUserService userService,
+        IRewardAdminService adminRewardService, IAlertService alertService)
     {
         _rewardClient = rewardClient;
         _userService = userService;
         _adminRewardClient = adminRewardService;
+        _alertService = alertService;
     }
 
     public async Task<List<Reward>> GetRewards()
@@ -57,7 +59,7 @@ public class RewardService : IRewardService
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
             }
         }
 

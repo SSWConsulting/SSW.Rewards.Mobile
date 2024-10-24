@@ -8,11 +8,15 @@ public partial class DeleteProfilePage : PopupPage
 {
     private readonly IUserService _userService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
-    public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
+    private readonly IAlertService _alertService;
+
+    public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService,
+        IAlertService alertService)
     {
         InitializeComponent();
         _userService = userService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _alertService = alertService;
     }
     
     protected override void OnAppearing()
@@ -28,7 +32,7 @@ public partial class DeleteProfilePage : PopupPage
 
     private async void OnDeleteTapped(object sender, System.EventArgs e)
     {
-        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+        var sure = await _alertService.DisplayAlert("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
 
         if (sure)
         {
@@ -38,13 +42,13 @@ public partial class DeleteProfilePage : PopupPage
 
             if (requestSubmitted)
             {
-                await App.Current.MainPage.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                await _alertService.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
                 await Navigation.PushModalAsync<LoginPage>();
                 await MopupService.Instance.PopAllAsync();
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
+                await _alertService.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
             }
         }
     }

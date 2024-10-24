@@ -11,6 +11,7 @@ public partial class LoginPageViewModel : BaseViewModel
     private readonly IPushNotificationsService _pushNotificationsService;
     private readonly IPermissionsService _permissionsService;
     private readonly IServiceProvider _provider;
+    private readonly IAlertService _alertService;
 
     private string _pendingScanCode;
 
@@ -30,12 +31,14 @@ public partial class LoginPageViewModel : BaseViewModel
         IUserService userService,
         IPushNotificationsService pushNotificationsService,
         IPermissionsService permissionsService,
-        IServiceProvider provider)
+        IServiceProvider provider,
+        IAlertService alertService)
     {
         _authService = authService;
         _pushNotificationsService = pushNotificationsService;
         _permissionsService = permissionsService;
         _provider = provider;
+        _alertService = alertService;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
@@ -66,7 +69,7 @@ public partial class LoginPageViewModel : BaseViewModel
             {
                 await WaitForWindowClose();
                 var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-                await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+                await _alertService.DisplayAlert(alert.Title, alert.Message, "OK");
             }
             else
             {
@@ -117,7 +120,7 @@ public partial class LoginPageViewModel : BaseViewModel
             Crashes.TrackError(e);
             Console.WriteLine(e);
             await WaitForWindowClose();
-            await Application.Current.MainPage.DisplayAlert("Login Failure",
+            await _alertService.DisplayAlert("Login Failure",
                 "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
         }
         finally

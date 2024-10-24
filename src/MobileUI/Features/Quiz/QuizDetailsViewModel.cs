@@ -16,6 +16,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly ISnackbarService _snackbarService;
         private readonly IUserService _userService;
         private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+        private readonly IAlertService _alertService;
         private int _quizId;
         private int _submissionId;
 
@@ -85,12 +86,14 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService,
+            IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;
             _userService = userService;
             _firebaseAnalyticsService = firebaseAnalyticsService;
+            _alertService = alertService;
         }
 
         public async Task Initialise(int quizId)
@@ -170,7 +173,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     IsBusy = false;
                     await MopupService.Instance.RemovePageAsync(popup);
-                    await App.Current.MainPage.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
+                    await _alertService.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
                     return;
                 }
 
@@ -181,7 +184,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
+                await _alertService.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
             }
         }
 

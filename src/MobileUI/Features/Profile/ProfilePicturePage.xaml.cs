@@ -8,7 +8,7 @@ public partial class ProfilePicturePage
     private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public ProfilePicturePage(ProfilePictureViewModel profilePictureViewModel, IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
+    public ProfilePicturePage(IFirebaseAnalyticsService firebaseAnalyticsService, ProfilePictureViewModel profilePictureViewModel, Color parentPageStatusBarColor = null)
     {
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         _firebaseAnalyticsService = firebaseAnalyticsService;

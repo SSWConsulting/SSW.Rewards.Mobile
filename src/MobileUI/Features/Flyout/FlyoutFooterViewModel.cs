@@ -1,16 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
-using SSW.Rewards.Mobile.PopupPages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class FlyoutFooterViewModel : ObservableObject
 {
-    private readonly IUserService _userService;
     private readonly IAuthenticationService _authService;
-    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
-    private readonly IPermissionsService _permissionsService;
+    private readonly IAlertService _alertService;
 
     [ObservableProperty]
     private bool _isStaff;
@@ -18,12 +14,10 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [ObservableProperty]
     private string _versionNumber;
 
-    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService, IFirebaseAnalyticsService firebaseAnalyticsService, IPermissionsService permissionsService)
+    public FlyoutFooterViewModel(IUserService userService, IAuthenticationService authService, IFirebaseAnalyticsService firebaseAnalyticsService, IPermissionsService permissionsService, IAlertService alertService)
     {
-        _userService = userService;
         _authService = authService;
-        _firebaseAnalyticsService = firebaseAnalyticsService;
-        _permissionsService = permissionsService;
+        _alertService = alertService;
         
         VersionNumber = $"Version {AppInfo.VersionString}";
         
@@ -45,7 +39,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [RelayCommand]
     private async Task LogOutTapped()
     {
-        var sure = await App.Current.MainPage.DisplayAlert("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
+        var sure = await _alertService.DisplayAlert("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
         
         if (sure)
         {

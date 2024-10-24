@@ -6,13 +6,16 @@ public partial class App : Application
 {
     private static IServiceProvider _provider;
     private static IAuthenticationService _authService;
+    private static IAlertService _alertService;
     public static object UIParent { get; set; }
 
-    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService)
+    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService,
+        IAlertService alertService)
     {
         _provider = serviceProvider;
         _authService = authService;
-        
+        _alertService = alertService;
+
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
 
@@ -75,7 +78,7 @@ public partial class App : Application
 
             if (!compatible)
             {
-                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                await _alertService.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
             }
         }
         catch (Exception ex)

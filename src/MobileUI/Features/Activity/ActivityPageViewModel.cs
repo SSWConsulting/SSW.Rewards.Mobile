@@ -16,7 +16,7 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService) : BaseViewModel
+public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IAlertService alertService) : BaseViewModel
 {
     public ActivityPageSegments CurrentSegment { get; set; }
     
@@ -132,7 +132,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+                await alertService.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
             }
         }
 

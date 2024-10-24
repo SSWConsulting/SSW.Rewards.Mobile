@@ -5,10 +5,9 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public partial class OthersProfileViewModel(
     IUserService userService,
     IDevService devService,
-    IPermissionsService permissionsService,
-    IFirebaseAnalyticsService firebaseAnalyticsService,
-    IServiceProvider provider)
-    : ProfileViewModelBase(false, userService, devService, permissionsService, firebaseAnalyticsService, provider)
+    IServiceProvider provider,
+    IAlertService alertService)
+    : ProfileViewModelBase(false, userService, devService, provider, alertService)
 {
     public async Task Initialise()
     {

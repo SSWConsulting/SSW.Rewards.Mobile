@@ -4,10 +4,9 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public class MyProfileViewModel(
     IUserService userService,
     IDevService devService,
-    IPermissionsService permissionsService,
-    IFirebaseAnalyticsService firebaseAnalyticsService,
-    IServiceProvider provider)
-    : ProfileViewModelBase(true, userService, devService, permissionsService, firebaseAnalyticsService, provider)
+    IServiceProvider provider,
+    IAlertService alertService)
+    : ProfileViewModelBase(true, userService, devService, provider, alertService)
 {
     private readonly IUserService _userService = userService;
 

@@ -23,10 +23,12 @@ public interface IQuizService
 public class QuizService : IQuizService
 {
     private readonly IApiQuizService _quizClient;
+    private readonly IAlertService _alertService;
 
-    public QuizService(IApiQuizService quizService)
+    public QuizService(IApiQuizService quizService, IAlertService alertService)
     {
         _quizClient = quizService;
+        _alertService = alertService;
     }
 
     public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
@@ -39,7 +41,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
             }
 
             return null;
@@ -65,7 +67,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
             }
 
             return null;
@@ -82,7 +84,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
             }
 
             return null;
@@ -99,7 +101,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem beginning the quiz. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem beginning the quiz. Please try again soon.", "OK");
             }
         }
 
@@ -116,7 +118,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem submitting your answer. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem submitting your answer. Please try again soon.", "OK");
             }
         }
     }
@@ -131,7 +133,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
             }
 
             return null;
@@ -148,7 +150,7 @@ public class QuizService : IQuizService
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the quiz results. Please try again soon.", "OK");
+                await _alertService.DisplayAlert("Oops...", "There seems to be a problem loading the quiz results. Please try again soon.", "OK");
             }
 
             return null;

@@ -15,9 +15,8 @@ public partial class ProfileViewModelBase : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly IDevService _devService;
-    private readonly IPermissionsService _permissionsService;
-    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
+    private readonly IAlertService _alertService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -76,16 +75,14 @@ public partial class ProfileViewModelBase : BaseViewModel
         bool isMe,
         IUserService userService,
         IDevService devService,
-        IPermissionsService permissionsService,
-        IFirebaseAnalyticsService firebaseAnalyticsService,
-        IServiceProvider provider)
+        IServiceProvider provider,
+        IAlertService alertService)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
-        _permissionsService = permissionsService;
-        _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
+        _alertService = alertService;
         
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
         userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
@@ -129,7 +126,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         catch (Exception)
         {
             await ClosePage();
-            await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+            await _alertService.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
         }
 
         _loadingProfileSectionsSemaphore.Release();
@@ -160,7 +157,10 @@ public partial class ProfileViewModelBase : BaseViewModel
             return;
 
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), _firebaseAnalyticsService, statusBarColor as Color);
+        
+        var profilePicVm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+        var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, profilePicVm, statusBarColor as Color);
+        
         await MopupService.Instance.PushAsync(popup);
     }
 
@@ -210,7 +210,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+                await _alertService.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
             }
         }
     }

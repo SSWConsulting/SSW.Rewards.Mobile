@@ -11,9 +11,9 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
-    private readonly ISnackbarService _snackbarService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
+    private readonly IAlertService _alertService;
     
     private int _myUserId;
     private string _linkedInUrl;
@@ -24,13 +24,13 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isStaff;
 
-    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService,
-        IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
+    public SettingsViewModel(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider, IAlertService alertService)
     {
         _userService = userService;
-        _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
+        _alertService = alertService;
+        
         Title = "Settings";
         
         _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
@@ -110,7 +110,7 @@ public partial class SettingsViewModel : BaseViewModel
 
         // Remove all remaining code in this method after the fix is available
 
-        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "If you no longer want an SSW or SSW Rewards account, you can submit a request to SSW to delete your profile and all associated data. Are you sure you want to delete your profile and all associated data?", "Yes", "Cancel");
+        var sure = await _alertService.DisplayAlert("Delete Profile", "If you no longer want an SSW or SSW Rewards account, you can submit a request to SSW to delete your profile and all associated data. Are you sure you want to delete your profile and all associated data?", "Yes", "Cancel");
 
         if (sure)
         {
@@ -121,13 +121,13 @@ public partial class SettingsViewModel : BaseViewModel
 
             if (requestSubmitted)
             {
-                await App.Current.MainPage.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                await _alertService.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
                 await Navigation.PushModalAsync<LoginPage>();
                 await MopupService.Instance.PopAllAsync();
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
+                await _alertService.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
             }
         }
     }
@@ -136,7 +136,7 @@ public partial class SettingsViewModel : BaseViewModel
     private async Task AboutClicked()
     {
         Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new AboutSswPage(_firebaseAnalyticsService, statusBarColor as Color);
+        var popup = ActivatorUtilities.CreateInstance<AboutSswPage>(_provider, statusBarColor as Color);
         await MopupService.Instance.PushAsync(popup);
     }
 }

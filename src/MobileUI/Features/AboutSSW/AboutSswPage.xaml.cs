@@ -8,10 +8,12 @@ public partial class AboutSswPage
 {
     private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IAlertService _alertService;
 
-    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
+    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService, Color parentPageStatusBarColor = null)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _alertService = alertService;
         _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
     }
@@ -36,7 +38,7 @@ public partial class AboutSswPage
         }
         catch (Exception)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            await _alertService.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
         }
     }
 
