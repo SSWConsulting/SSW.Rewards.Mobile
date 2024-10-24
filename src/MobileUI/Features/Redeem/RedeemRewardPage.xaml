@@ -15,7 +15,8 @@
                  BackgroundColor="#b3000000"
                  CloseWhenBackgroundIsClicked="False">
     <pages:PopupPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="Transparent" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="{OnPlatform iOS='Transparent', Android={StaticResource Background}}"
+                                   StatusBarStyle="DarkContent" />
     </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation PositionIn="Bottom"
