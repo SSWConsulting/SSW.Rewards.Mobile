@@ -57,6 +57,8 @@ dotnet dev-certs https --trust
 ```bash
 pwsh ./up.ps1
 ```
+
+**Note:** `global.json` must have `version` and `workloadVersion` set to **8.0.402** due to breaking changes in the version **8.0.404**.
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
   
