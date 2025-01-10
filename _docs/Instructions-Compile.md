@@ -58,7 +58,7 @@ dotnet dev-certs https --trust
 pwsh ./up.ps1
 ```
 
-**Note:** We are using a separate `global-ci.json` to ensure simple F5 experince and successful CI builds. There are issues with certain .net sdk workload versions, but current solution is stable.
+**Note:** `global.json` must have `version` and `workloadVersion` set to **8.0.402** due to breaking changes in the version **8.0.404**.
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
   

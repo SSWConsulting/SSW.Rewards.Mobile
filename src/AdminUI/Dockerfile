@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0.402 AS build
 WORKDIR /src
 COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/SSW.Rewards.Application.csproj", "src/Application/"]
@@ -8,9 +8,11 @@ COPY ["src/Common/Shared.csproj", "src/Common/"]
 COPY ["src/Infrastructure/SSW.Rewards.Infrastructure.csproj", "src/Infrastructure/"]
 RUN dotnet restore "src/AdminUI/AdminUI.csproj"
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS development
+FROM mcr.microsoft.com/dotnet/sdk:8.0.402 AS development
 COPY . /src
 WORKDIR /src/src/AdminUI
+RUN dotnet workload update
+RUN dotnet workload restore
 RUN dotnet dev-certs https
 RUN dotnet dev-certs https --trust
 CMD dotnet run --no-launch-profile
