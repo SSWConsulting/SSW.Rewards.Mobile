@@ -28,21 +28,24 @@
 2. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
-3. Create a Developer Certificate https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates
-   1. Create `WebAPI.pfx` with a password of `ThisPassword` (You can change change this, but the `docker-compose.yml` should be updated appropriately)
+3. Create a Developer Certificate with command below
+   1. Make sure you have folder `.aspnet\https` in your home directory
+   1. Run the script below (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
-**Windows**
+**Windows Terminal**
 ```bash
-dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\WebAPI.pfx -p ThisPassword
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\WebAPI.pfx -p ThisPassword
 dotnet dev-certs https --trust
 ```
 
 **Mac**
 ```bash
-   dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
-   dotnet dev-certs https --trust
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
+dotnet dev-certs https --trust
 ```
 
+**NOTE:** If when creating WebAPI.pfx you get "A valid HTTPS certificate is already present." use `dotnet dev-certs https --clean` to remove the existing certificate.
+**NOTE:** See https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates if there are any issues.
 
 4. Cd into the Repo
 5. Run the Docker Containers
@@ -54,6 +57,8 @@ dotnet dev-certs https --trust
 ```bash
 pwsh ./up.ps1
 ```
+
+**Note:** We are using a separate `global-ci.json` to ensure simple F5 experince and successful CI builds. There are issues with certain .net sdk workload versions, but current solution is stable.
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
   
