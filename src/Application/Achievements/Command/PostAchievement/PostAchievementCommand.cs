@@ -42,11 +42,11 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         
         var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
-        var user = await _userService.GetCurrentUser(cancellationToken);
+        var userId = await _userService.GetCurrentUserId(cancellationToken);
 
         var userAchievements = await _context
             .UserAchievements
-            .Where(ua => ua.UserId == user.Id)
+            .Where(ua => ua.UserId == userId)
             .ToListAsync(cancellationToken);
         
         // check for milestone achievements
@@ -81,7 +81,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
                 var userMeetAchievement = new UserAchievement
                 {
-                    UserId = user.Id,
+                    UserId = userId,
                     Achievement = meetAchievement
                 };
 
@@ -100,7 +100,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var userAchievement = new UserAchievement
         {
-            UserId = user.Id,
+            UserId = userId,
             AchievementId = requestedAchievement.Id
         };
 
@@ -108,7 +108,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         if (requestedAchievement.Type == AchievementType.Attended)
         {
-            var milestoneAchievement = new UserAchievement { UserId = user.Id };
+            var milestoneAchievement = new UserAchievement { UserId = userId };
 
             // UG = puzzle, Hackday = lightbulb, Superpowers = lightning, Workshop = certificate
             switch (requestedAchievement.Icon)

@@ -27,9 +27,9 @@ public sealed class Handler : IRequestHandler<GetStaffListQuery, StaffListViewMo
             .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var user = await _userService.GetCurrentUser(cancellationToken);
+        var userId = await _userService.GetCurrentUserId(cancellationToken);
 
-        var achievements = await _userService.GetUserAchievements(user.Id, cancellationToken);
+        var achievements = await _userService.GetUserAchievements(userId, cancellationToken);
 
         var completedAchievements = achievements.UserAchievements
             .Where(a => a.Complete)
