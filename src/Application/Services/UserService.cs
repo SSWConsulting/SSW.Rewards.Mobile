@@ -2,8 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Services;
 
@@ -165,6 +165,26 @@ public class UserService : IUserService, IRolesService
         }
 
         return _mapper.Map<CurrentUserDto>(user);
+    }
+
+    public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)
+    {
+        string currentUserEmail = _currentUserService.GetUserEmail();
+
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Email == currentUserEmail)
+            .Select(x => new { x.Id, x.Activated })
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(User), currentUserEmail);
+
+        if (!user.Activated)
+        {
+            // Only update user active state in DB when needed. This should be rare.
+            await ActivateUser(user.Id, cancellationToken);
+        }
+
+        return user.Id;
     }
 
     public IEnumerable<Role> GetCurrentUserRoles()
@@ -374,5 +394,18 @@ public class UserService : IUserService, IRolesService
     public Task UpdateUser(int UserId, User user, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task ActivateUser(int userId, CancellationToken cancellationToken)
+    {
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId);
+
+        if (!user.Activated)
+        {
+            user.Activated = true;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
