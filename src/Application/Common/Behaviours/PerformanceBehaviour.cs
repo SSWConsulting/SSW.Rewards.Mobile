@@ -35,7 +35,6 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         if (elapsedMilliseconds > 500)
         {
             var requestName = typeof(TRequest).Name;
-            string userName = string.Empty;
             int userId = 0;
 
             var userEmail = _currentUserService.GetUserEmail() ?? string.Empty;
@@ -50,17 +49,10 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                 {
                     userId = 0;
                 }
-
-                if (userId > 0)
-                {
-                    var user = await _userService.GetUser(userId, cancellationToken);
-
-                    userName = user.FullName;
-                }
             }
 
             _logger.LogWarning("SSW.Rewards Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
-                requestName, elapsedMilliseconds, userId, userName, request);
+                requestName, elapsedMilliseconds, userId, userEmail, request);
         }
 
         return response;

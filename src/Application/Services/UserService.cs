@@ -117,13 +117,22 @@ public class UserService : IUserService, IRolesService
 
     public async Task<int> GetUserId(string email, CancellationToken cancellationToken)
     {
-        if (String.IsNullOrWhiteSpace(email))
-            throw new ArgumentNullException("no email provided");
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentNullException(nameof(email), "no email provided");
+        }
+
         email = email.Trim().ToLower();
-        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.ToLower() == email, cancellationToken);
-        if (user == null)
-            throw new NotFoundException("No user found");
-        return user.Id;
+
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Email.ToLower() == email)
+            .Select(x => new { x.Id })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return user != null
+            ? user.Id
+            : throw new NotFoundException("No user found");
     }
 
     public CurrentUserDto GetCurrentUser()
