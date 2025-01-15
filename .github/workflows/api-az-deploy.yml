@@ -39,6 +39,9 @@ on:
       GRAPH_CLIENT_SECRET:
         required: false
 
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
 
