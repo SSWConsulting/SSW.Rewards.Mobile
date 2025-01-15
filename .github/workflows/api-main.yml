@@ -19,9 +19,9 @@ jobs:
       ADMIN_PORTAL_URL: https://staging.rewards.ssw.com.au
       IDS_URL: https://app-ssw-ident-staging-api.azurewebsites.net
     secrets:
-      client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
 
@@ -37,8 +37,8 @@ jobs:
       ADMIN_PORTAL_URL: https://rewards.ssw.com.au
       IDS_URL: https://identity.ssw.com.au
     secrets:
-      client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       SQL_ADMIN_GROUP: ${{ secrets.SQL_ADMIN_GROUP }}
       SQL_ADMIN_GROUP_SID: ${{ secrets.SQL_ADMIN_GROUP_SID }}
