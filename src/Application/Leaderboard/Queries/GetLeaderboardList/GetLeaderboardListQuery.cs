@@ -21,6 +21,7 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
     {
         var users = await _context.Users
+            .TagWithContext()
             .Where(u => u.Activated)
             .Include(u => u.UserAchievements)
                 .ThenInclude(ua => ua.Achievement)

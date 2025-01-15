@@ -39,6 +39,7 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
         if (request.IsPendingRedemption)
         {
             pendingRedemption = await _context.PendingRedemptions
+                .TagWithContext("GetPendingRedemption")
                 .Include(pr => pr.Reward)
                 .Where(pr => pr.Code == request.Code)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -60,8 +61,8 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
         }
         else
         {
-            reward = await _context
-                .Rewards
+            reward = await _context.Rewards
+                .TagWithContext("GetReward")
                 .Where(r => r.Code == request.Code)
                 .FirstOrDefaultAsync(cancellationToken);
         }
@@ -76,8 +77,10 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
         }
 
         User? user = await _context.Users
+            .TagWithContext("GetUser")
             .Where(u => u.Id == userId)
-            .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+            .Include(u => u.UserAchievements)
+                .ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user == null)
@@ -89,8 +92,8 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             };
         }
 
-        var userRewards = await _context
-                .UserRewards
+        var userRewards = await _context.UserRewards
+                .TagWithContext("GetUserRewards")
                 .Include(ur => ur.Reward)
                 .Where(ur => ur.UserId == user.Id)
                 .ToListAsync(cancellationToken);
@@ -113,7 +116,9 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             // award the user an achievement for claiming their first prize
             if (!user.UserRewards.Any())
             {
-                var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
+                var achievement = await _context.Achievements
+                    .TagWithContext("GetClaimPrizeAchievement")
+                    .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
                 if (achievement != null)
                 {
                     user.UserAchievements.Add(new UserAchievement { Achievement = achievement });

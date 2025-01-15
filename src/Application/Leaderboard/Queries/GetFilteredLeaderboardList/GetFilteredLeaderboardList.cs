@@ -29,7 +29,8 @@ public class GetFilteredLeaderboardListHandler : IRequestHandler<GetFilteredLead
     public async Task<LeaderboardViewModel> Handle(GetFilteredLeaderboardList request, CancellationToken cancellationToken)
     {
         var query = _context.Users
-            .Where(u => u.Activated == true);
+            .TagWithContext($"GetUsersFor{request.Filter}")
+            .Where(u => u.Activated);
 
         if (request.Filter == LeaderboardFilter.ThisYear)
         {

@@ -33,7 +33,9 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
     public async Task<EligibleUsersViewModel> Handle(GetEligibleUsers request, CancellationToken cancellationToken)
     {
         // find all the activated users with enough points in the (today/month/year/forever) leaderboard to claim the specific reward 
-        var eligibleUsers = _context.Users.Where(u => u.Activated == true);
+        var eligibleUsers = _context.Users
+            .TagWithContext($"GetUserBy{request.Filter}")
+            .Where(u => u.Activated);
 
         if (request.Filter == LeaderboardFilter.ThisYear)
         {
@@ -82,7 +84,7 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
             achievementName = achievement.Name;
 
             eligibleUsers = eligibleUsers
-                .TagWith("PointsForAchievement")
+                .TagWithContext("PointsForAchievement")
                 .Where(u => u.UserAchievements.Any(a => a.AchievementId == request.AchievementId));
         }
 
