@@ -22,7 +22,11 @@ on:
         required: true
         type: string
     secrets:
-      AZURE_CREDENTIALS:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_TENANT_ID:
         required: true
       SQL_ADMIN_GROUP:
         required: true
