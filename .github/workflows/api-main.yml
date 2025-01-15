@@ -16,7 +16,7 @@ jobs:
       RESOURCE_GROUP: SSW.Rewards.Staging
       APP_SERVICE_PLAN: plan-ssw-shared-dev
       APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
-      ADMIN_PORTAL_URL: https://staging.rewards.ssw.com.au
+      ADMIN_PORTAL_URL: https://stsswrewardsadminstaging.z8.web.core.windows.net
       IDS_URL: https://app-ssw-ident-staging-api.azurewebsites.net
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
