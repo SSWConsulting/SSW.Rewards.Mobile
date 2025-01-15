@@ -22,11 +22,11 @@ on:
         required: true
         type: string
     secrets:
-      client-id:
+      AZURE_CLIENT_ID:
         required: true
-      subscription-id:
+      AZURE_SUBSCRIPTION_ID:
         required: true
-      tenant-id:
+      AZURE_TENANT_ID:
         required: true
       SQL_ADMIN_GROUP:
         required: true
