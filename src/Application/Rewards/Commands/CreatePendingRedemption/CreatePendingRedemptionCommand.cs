@@ -34,8 +34,8 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
 
     public async Task<CreatePendingRedemptionResult> Handle(CreatePendingRedemptionCommand request, CancellationToken cancellationToken)
     {
-        var reward = await _context
-            .Rewards
+        var reward = await _context.Rewards
+            .TagWithContext("GetReward")
             .Where(r => r.Id == request.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -49,6 +49,7 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
         }
         
         User? user = await _context.Users
+            .TagWithContext("GetCurrentUser")
             .Where(u => u.Email == _currentUserService.GetUserEmail())
             .Include(pr => pr.PendingRedemptions)
             .Include(u => u.UserAchievements)
@@ -64,8 +65,8 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
             };
         }
 
-        var userRewards = await _context
-                .UserRewards
+        var userRewards = await _context.UserRewards
+                .TagWithContext("GetUserRewards")
                 .Include(ur => ur.Reward)
                 .Where(ur => ur.UserId == user.Id)
                 .ToListAsync(cancellationToken);
