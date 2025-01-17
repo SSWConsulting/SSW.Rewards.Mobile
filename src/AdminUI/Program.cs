@@ -30,6 +30,7 @@ public class Program
             {
                 o.BaseAddress = new Uri(identityUrl);
                 o.DefaultRequestHeaders.Add("Accept", "application/json");
+                o.DefaultRequestHeaders.Add(Constants.RewardsAppClientNameHeaderKey, Constants.RewardsAppClientName_AdminUI);
             })
             .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
 
