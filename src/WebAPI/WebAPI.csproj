@@ -15,6 +15,9 @@
     <PropertyGroup>
         <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Include="..\ApiClient\Constants.cs" Link="Telemetry\Constants.cs" />
+    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.11.4" />
