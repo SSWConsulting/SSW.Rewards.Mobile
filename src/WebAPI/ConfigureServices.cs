@@ -1,4 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SSW.Rewards.Application.Common.Interfaces;
@@ -6,6 +8,7 @@ using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.WebAPI.Authorisation;
 using SSW.Rewards.WebAPI.Filters;
 using SSW.Rewards.WebAPI.Services;
+using SSW.Rewards.WebAPI.Telemetry;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -83,6 +86,13 @@ public static class ConfigureServices
         });
 
         services.AddApplicationInsightsTelemetry();
+        services.AddSingleton<ITelemetryInitializer, WebApiTelemetryInitializer>();
+        services.Configure<TelemetryConfig>(configuration.GetSection("Telemetry"));
+        services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, options) =>
+        {
+            module.EnableSqlCommandTextInstrumentation = true;
+        });
+
         services.AddDistributedMemoryCache();
 
         //TODO: Remove magic string

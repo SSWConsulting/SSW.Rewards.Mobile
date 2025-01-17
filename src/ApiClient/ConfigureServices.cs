@@ -17,6 +17,9 @@ public static class ConfigureServices
         {
             Console.WriteLine($"Configuring API client with base address: {baseAddress}");
             client.BaseAddress = new Uri(baseAddress);
+
+            var cleintNameHeaderValue = includeAdminServices ? Constants.RewardsAppClientName_AdminUI : Constants.RewardsAppClientName_MobileApp;
+            client.DefaultRequestHeaders.Add(Constants.RewardsAppClientNameHeaderKey, cleintNameHeaderValue);
         })
         .AddHttpMessageHandler<THandler>();
 
