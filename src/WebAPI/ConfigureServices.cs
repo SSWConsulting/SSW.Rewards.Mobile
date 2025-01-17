@@ -1,4 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SSW.Rewards.Application.Common.Interfaces;
@@ -83,6 +84,11 @@ public static class ConfigureServices
         });
 
         services.AddApplicationInsightsTelemetry();
+        services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, options) =>
+        {
+            module.EnableSqlCommandTextInstrumentation = true;
+        });
+
         services.AddDistributedMemoryCache();
 
         //TODO: Remove magic string
