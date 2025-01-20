@@ -9,6 +9,6 @@ public class UserProfileDto
     public int Points { get; set; }
     public int Balance { get; set; }
     public int Rank { get; set; }
-    public IEnumerable<UserRewardDto> Rewards { get; set; } = Enumerable.Empty<UserRewardDto>();
-    public IEnumerable<UserAchievementDto> Achievements { get; set; } = Enumerable.Empty<UserAchievementDto>();
+    public IEnumerable<UserRewardDto> Rewards { get; set; } = [];
+    public IEnumerable<UserAchievementDto> Achievements { get; set; } = [];
 }
