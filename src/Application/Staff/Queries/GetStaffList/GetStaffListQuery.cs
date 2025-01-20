@@ -28,25 +28,19 @@ public sealed class Handler : IRequestHandler<GetStaffListQuery, StaffListViewMo
             .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var userId = await _userService.GetCurrentUserId(cancellationToken);
+        int userId = await _userService.GetCurrentUserId(cancellationToken);
+        List<int> completedAchievements = await _dbContext.UserAchievements
+            .TagWithContext()
+            .Where(x => x.UserId == userId)
+            .Select(x => x.AchievementId)
+            .ToListAsync(cancellationToken);
 
-        var achievements = await _userService.GetUserAchievements(userId, cancellationToken);
-
-        var completedAchievements = achievements.UserAchievements
-            .Where(a => a.Complete)
-            .Select(a => a.AchievementId)
-            .ToList();
-
-        foreach (var dto in staffDtos)
+        foreach (var dto in staffDtos.Where(x => x.StaffAchievement?.Id != null))
         {
-            if (dto?.StaffAchievement?.Id != null)
+            if (completedAchievements.Contains(dto.StaffAchievement!.Id))
             {
-                if ((bool)(completedAchievements?.Contains(dto.StaffAchievement.Id)))
-                {
-                    dto.Scanned = true;
-                }
+                dto.Scanned = true;
             }
-
         }
 
         return new StaffListViewModel
