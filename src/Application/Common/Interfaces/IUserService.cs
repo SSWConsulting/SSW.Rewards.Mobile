@@ -31,7 +31,6 @@ public interface IUserService
 
 
     // Get user
-    UserProfileDto GetUser(int userId);
     Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken);
     Task<int> GetUserId(string email, CancellationToken cancellationToken);
     

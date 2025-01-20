@@ -166,11 +166,7 @@ public class UserService : IUserService, IRolesService
             throw new NotFoundException(nameof(User), currentUserEmail);
         }
 
-        if (!user.Activated)
-        {
-            user.Activated = true;
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
+        await ActivateUserIfNotActive(user, cancellationToken);
 
         return _mapper.Map<CurrentUserDto>(user);
     }
@@ -205,6 +201,7 @@ public class UserService : IUserService, IRolesService
     {
         string email = _currentUserService.GetUserEmail();
         return await _dbContext.UserRoles
+            .AsNoTracking()
             .TagWithContext()
             .Where(x => x.User.Email == email)
             .Select(x => x.Role)
@@ -229,53 +226,42 @@ public class UserService : IUserService, IRolesService
         return code ?? string.Empty;
     }
 
-    public UserProfileDto GetUser(int userId)
-    {
-        return GetUser(userId, CancellationToken.None).Result;
-    }
-
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var users = (await _dbContext.Users
-            .TagWithContext("GenerateLeaderboard")
+        var usersPoints = await _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext("GetRanks")
             .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
-            .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken))
-            .OrderByDescending(u => u.Points)
-            .Select((u, i) =>
+            .Select(x => new
             {
-                u.Rank = i + 1;
-                return u;
+                x.Id,
+                Points = x.UserAchievements.Sum(ua => ua.Achievement.Value)
+            })
+            .ToListAsync(cancellationToken);
+
+        // TODO: Cache these values as they only change when somebody claim an achievement.
+        var usersRanked = usersPoints
+            .OrderByDescending(u => u.Points)
+            .Select((u, i) => new
+            {
+                u.Id,
+                Rank = i + 1,
+                u.Points
             });
-            
-        
-        var vm = users.FirstOrDefault(u => u.Id == userId);
 
-        if (vm == null)
-        {
-            throw new NotFoundException(nameof(User), userId);
-        }
+        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId)
+            ?? throw new NotFoundException(nameof(User), userId);
 
-        var userAchievements = await _dbContext.UserAchievements
-            .TagWithContext("GetUserAchievements")
-            .Include(ua => ua.Achievement)
-            .Where(u => u.UserId == userId)
-            .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+        var vm = await _dbContext.Users
+            .TagWithContext("GetUserProfile")
+            .Where(u => u.Id == userId)
+            .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId);
 
-        var userRewards = await _dbContext.UserRewards
-            .TagWithContext("GetUserRewards")
-            .Include(ur => ur.Reward)
-            .Where(u => u.UserId == userId)
-            .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
-
-        vm.Achievements = userAchievements;
-        vm.Rewards = userRewards;
+        vm.Rank = userRank.Rank;
         vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
-
-        var spent = userRewards.Sum(r => r.RewardCost);
-        vm.Balance = vm.Points - spent;
+        vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
         return vm;
     }
@@ -420,11 +406,16 @@ public class UserService : IUserService, IRolesService
 
     private async Task ActivateUser(int userId, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.Users
+        User user = await _dbContext.Users
             .TagWithContext()
             .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken)
             ?? throw new NotFoundException(nameof(User), userId);
 
+        await ActivateUserIfNotActive(user, cancellationToken);
+    }
+
+    private async Task ActivateUserIfNotActive(User user, CancellationToken cancellationToken)
+    {
         if (!user.Activated)
         {
             user.Activated = true;
