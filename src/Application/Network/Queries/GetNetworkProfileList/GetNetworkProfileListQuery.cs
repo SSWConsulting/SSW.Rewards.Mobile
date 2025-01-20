@@ -10,19 +10,23 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserService _userService;
+    private readonly ICurrentUserService _currentUserService;
 
     public GetNetworkProfileListHandler(
         IApplicationDbContext dbContext,
-        IUserService userService)
+        IUserService userService,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
         _userService = userService;
+        _currentUserService = currentUserService;
     }
 
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
-        var profiles = new List<NetworkProfileDto>();
-        var user = await _userService.GetCurrentUser(cancellationToken);
+        var userEmail = _currentUserService.GetUserEmail();
+        var userId = await _userService.GetUserId(userEmail, cancellationToken);
+
         int currentUserAchievementId;
         
         // 1. Get all staff and get user's achievement
@@ -32,20 +36,20 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .ToListAsync(cancellationToken);
 
         var staffUsers = await _dbContext.Users
-            .Where(u => u.Id != user.Id && staff.Select(s => s.Email).Contains(u.Email))
+            .Where(u => u.Id != userId && staff.Select(s => s.Email).Contains(u.Email))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        if (staff.Any(s => s.Email == user.Email))
+        if (staff.Any(s => s.Email == userEmail))
         {
-            var staffProfile = staff.FirstOrDefault(u => u.Email == user.Email);
+            var staffProfile = staff.FirstOrDefault(u => u.Email == userEmail);
             
             currentUserAchievementId = staffProfile?.StaffAchievement?.Id ?? -1;
         }
         else
         {
             var userProfile = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == user.Email, cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(u => u.Email == userEmail, cancellationToken: cancellationToken);
             
             currentUserAchievementId = userProfile?.AchievementId ?? -1;
         }
@@ -59,11 +63,12 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             .ToListAsync(cancellationToken);
 
         var scannedUserAchievements = await _dbContext.UserAchievements
-            .Where(ua => ua.UserId == user.Id && allAchievementIds.Contains(ua.AchievementId))
+            .Where(ua => ua.UserId == userId && allAchievementIds.Contains(ua.AchievementId))
             .Include(ua => ua.User)
             .Select(ua => ua.Achievement.Id)
             .ToListAsync(cancellationToken);
-        
+
+        List<NetworkProfileDto> profiles = [];
         foreach (var scannedUserAchievement in scannedUserAchievements)
         {
             User? userMatch;
