@@ -10,10 +10,12 @@ public class DeleteRewardCommand : IRequest<Unit>
 public class DeleteRewardCommandHandler : IRequestHandler<DeleteRewardCommand, Unit>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public DeleteRewardCommandHandler(IApplicationDbContext context)
+    public DeleteRewardCommandHandler(IApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     public async Task<Unit> Handle(DeleteRewardCommand request, CancellationToken cancellationToken)
@@ -28,6 +30,8 @@ public class DeleteRewardCommandHandler : IRequestHandler<DeleteRewardCommand, U
 
         _context.Rewards.Remove(findReward);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
 
         return Unit.Value;
 

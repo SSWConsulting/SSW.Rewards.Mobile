@@ -10,14 +10,16 @@ public sealed class ClaimSocialMediaAchievementForUserCommandHandler : IRequestH
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
     private readonly IUserService _userService;
+    private readonly ICacheService _cacheService;
     private readonly IDateTime _dateTimeService;
 
-    public ClaimSocialMediaAchievementForUserCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IUserService userService, IDateTime dateTimeService)
+    public ClaimSocialMediaAchievementForUserCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IUserService userService, IDateTime dateTimeService, ICacheService cacheService = null)
     {
         _context = context;
         _currentUserService = currentUserService;
         _userService = userService;
         _dateTimeService = dateTimeService;
+        _cacheService = cacheService;
     }
 
     public async Task<int> Handle(ClaimSocialMediaAchievementForUserCommand request, CancellationToken cancellationToken)
@@ -41,8 +43,8 @@ public sealed class ClaimSocialMediaAchievementForUserCommandHandler : IRequestH
             //                  in a strange bug. Switching to use the user and
             //                  achievement entities resolved the problem. See:
             //                  https://github.com/SSWConsulting/SSW.Rewards.API/issues/20
-            var user = await _context.Users.FindAsync(currentUserId);
-            var achievement = await _context.Achievements.FindAsync(achievementId);
+            var user = await _context.Users.FindAsync(currentUserId, cancellationToken);
+            var achievement = await _context.Achievements.FindAsync(achievementId, cancellationToken);
 
             userAchievement = new UserAchievement
             {
@@ -53,6 +55,8 @@ public sealed class ClaimSocialMediaAchievementForUserCommandHandler : IRequestH
             };
             _context.UserAchievements.Add(userAchievement);
             await _context.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.UpdatedRanking);
         }
 
         return userAchievement.Id;

@@ -1,6 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Achievements;
-using SSW.Rewards.Application.Achievements.Queries.Common;
-using SSW.Rewards.Application.System.Commands.Common;
+﻿using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -13,15 +12,18 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 {
     private readonly IUserService _userService;
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
 
     public PostAchievementCommandHandler(
         IUserService UserService,
         IApplicationDbContext context,
+        ICacheService cacheService,
         IMapper mapper)
     {
         _userService = UserService;
         _context = context;
+        _cacheService = cacheService;
         _mapper = mapper;
     }
 
@@ -160,6 +162,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedRanking);
 
         return new ClaimAchievementResult
         {
