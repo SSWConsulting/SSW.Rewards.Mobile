@@ -46,8 +46,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
         var userId = await _userService.GetCurrentUserId(cancellationToken);
 
-        var userAchievements = await _context
-            .UserAchievements
+        var userAchievements = await _context.UserAchievements
+            .Include(x => x.Achievement)
             .Where(ua => ua.UserId == userId)
             .ToListAsync(cancellationToken);
         
