@@ -11,6 +11,7 @@ public class UserService : IUserService, IRolesService
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
     private readonly ILogger<UserService> _logger;
     private readonly string _staffSMTPDomain;
@@ -18,12 +19,14 @@ public class UserService : IUserService, IRolesService
     public UserService(
         IApplicationDbContext dbContext,
         ICurrentUserService currentUserService,
+        ICacheService cacheService,
         IMapper mapper,
         IOptions<UserServiceOptions> options,
         ILogger<UserService> logger)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _cacheService = cacheService;
         _mapper = mapper;
         _logger = logger;
 
@@ -117,6 +120,8 @@ public class UserService : IUserService, IRolesService
         _dbContext.Users.Add(newUser);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.NewlyUserCreated);
 
         return newUser.Id;
     }
@@ -228,26 +233,7 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var usersPoints = await _dbContext.Users
-            .AsNoTracking()
-            .TagWithContext("GetRanks")
-            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
-            .Select(x => new
-            {
-                x.Id,
-                Points = x.UserAchievements.Sum(ua => ua.Achievement.Value)
-            })
-            .ToListAsync(cancellationToken);
-
-        // TODO: Cache these values as they only change when somebody claim an achievement.
-        var usersRanked = usersPoints
-            .OrderByDescending(u => u.Points)
-            .Select((u, i) => new
-            {
-                u.Id,
-                Rank = i + 1,
-                u.Points
-            });
+        var usersRanked = await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
 
         var userRank = usersRanked.FirstOrDefault(u => u.Id == userId)
             ?? throw new NotFoundException(nameof(User), userId);
@@ -265,7 +251,27 @@ public class UserService : IUserService, IRolesService
 
         return vm;
     }
-    
+
+    private async Task<List<UserRankingMinimumDto>> GenerateRanking(CancellationToken cancellationToken)
+    {
+        var usersPoints = await _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext("GetRanks")
+            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
+            .Select(x => new
+            {
+                x.Id,
+                Points = x.UserAchievements.Sum(ua => ua.Achievement.Value)
+            })
+            .ToListAsync(cancellationToken);
+
+        // TODO: Cache these values as they only change when somebody claim an achievement.
+        return usersPoints
+            .OrderByDescending(u => u.Points)
+            .Select((u, i) => new UserRankingMinimumDto(u.Id, i + 1, u.Points))
+            .ToList();
+    }
+
     public UsersViewModel GetUsers()
     {
         return GetUsers(CancellationToken.None).Result;
