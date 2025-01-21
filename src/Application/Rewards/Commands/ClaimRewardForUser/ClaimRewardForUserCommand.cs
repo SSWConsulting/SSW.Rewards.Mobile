@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using SSW.Rewards.Shared.DTOs.Rewards;
 using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Shared.DTOs.Rewards;
 
 namespace SSW.Rewards.Application.Rewards.Commands;
 
@@ -17,17 +17,20 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
     private readonly IMapper _mapper;
     private readonly ILogger<ClaimRewardForUserCommandHandler> _logger;
     private readonly IDateTime _dateTime;
+    private readonly ICacheService _cacheService;
 
     public ClaimRewardForUserCommandHandler(
             IApplicationDbContext context,
             IMapper mapper,
             ILogger<ClaimRewardForUserCommandHandler> logger,
-            IDateTime dateTime)
+            IDateTime dateTime,
+            ICacheService cacheService)
     {
         _context = context;
         _mapper = mapper;
         _logger = logger;
         _dateTime = dateTime;
+        _cacheService = cacheService;
     }
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardForUserCommand request, CancellationToken cancellationToken)
@@ -69,7 +72,7 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
 
         if (reward == null)
         {
-            _logger.LogError("Reward not found with code: {0}", request.Code);
+            _logger.LogError("Reward not found with code: {RewardCode}", request.Code);
             return new ClaimRewardResult
             {
                 status = RewardStatus.NotFound
@@ -139,10 +142,12 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
             }
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message, e);
+            _logger.LogError(e, "Unable to claim reward {RewardId} for {UserId} user", reward?.Id, userId);
             return new ClaimRewardResult
             {
                 status = RewardStatus.Error

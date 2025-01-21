@@ -1,6 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Achievements;
-using SSW.Rewards.Application.Achievements.Queries.Common;
-using SSW.Rewards.Application.System.Commands.Common;
+﻿using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -13,22 +12,25 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 {
     private readonly IUserService _userService;
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
 
     public PostAchievementCommandHandler(
         IUserService UserService,
         IApplicationDbContext context,
+        ICacheService cacheService,
         IMapper mapper)
     {
         _userService = UserService;
         _context = context;
+        _cacheService = cacheService;
         _mapper = mapper;
     }
 
     public async Task<ClaimAchievementResult> Handle(PostAchievementCommand request, CancellationToken cancellationToken)
     {
-        var requestedAchievement = await _context
-           .Achievements
+        var requestedAchievement = await _context.Achievements
+           .TagWithContext("GetRelevantAchievement")
            .Where(a => a.Code == request.Code)
            .FirstOrDefaultAsync(cancellationToken);
 
@@ -39,25 +41,28 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                 status = ClaimAchievementStatus.NotFound
             };
         }
-        
+
         var achievementModel = _mapper.Map<AchievementDto>(requestedAchievement);
 
         var userId = await _userService.GetCurrentUserId(cancellationToken);
 
-        var userAchievements = await _context
-            .UserAchievements
+        var userAchievements = await _context.UserAchievements
+            .TagWithContext("GetAllUserAchievement")
+            .Include(x => x.Achievement)
             .Where(ua => ua.UserId == userId)
             .ToListAsync(cancellationToken);
-        
+
         // check for milestone achievements
         if (requestedAchievement.Type == AchievementType.Scanned)
         {
             var scannedUser = await _context.Users
+                .TagWithContext("GetScannedUserByAchievementId")
                 .FirstOrDefaultAsync(u => u.AchievementId == requestedAchievement.Id, cancellationToken);
-            
+
             if (scannedUser == null)
             {
                 var staffMember = await _context.StaffMembers
+                    .TagWithContext("GetScannedStaffMember")
                     .Include(s => s.StaffAchievement)
                     .Where(s => s.StaffAchievement != null)
                     .FirstOrDefaultAsync(s => s.StaffAchievement!.Id == requestedAchievement.Id, cancellationToken);
@@ -65,8 +70,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
                 if (staffMember != null)
                 {
                     var staffUser = await _context.Users
+                        .TagWithContext("GetScannedUserByEmail")
                         .FirstOrDefaultAsync(u => u.Email == staffMember.Email, cancellationToken);
-                    
+
                     achievementModel.UserId = staffUser?.Id;
                 }
             }
@@ -74,10 +80,12 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             {
                 achievementModel.UserId = scannedUser.Id;
             }
-            
+
             if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.MeetSSW))
             {
-                var meetAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.MeetSSW, cancellationToken);
+                var meetAchievement = await _context.Achievements
+                    .TagWithContext("GetMilestone-MeetSSW")
+                    .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.MeetSSW, cancellationToken);
 
                 var userMeetAchievement = new UserAchievement
                 {
@@ -117,7 +125,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG))
                     {
-                        var ugAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
+                        var ugAchievement = await _context.Achievements
+                            .TagWithContext("GetMilestone-AttendUG")
+                            .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendUG, cancellationToken);
                         milestoneAchievement.Achievement = ugAchievement;
                     }
                     break;
@@ -126,7 +136,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday))
                     {
-                        var hdAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
+                        var hdAchievement = await _context.Achievements
+                            .TagWithContext("GetMilestone-AttendHackDay")
+                            .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendHackday, cancellationToken);
                         milestoneAchievement.Achievement = hdAchievement;
                     }
                     break;
@@ -135,7 +147,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers))
                     {
-                        var spAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
+                        var spAchievement = await _context.Achievements
+                            .TagWithContext("GetMilestone-AttendSuperpowers")
+                            .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendSuperpowers, cancellationToken);
                         milestoneAchievement.Achievement = spAchievement;
                     }
                     break;
@@ -144,7 +158,9 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
 
                     if (!userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop))
                     {
-                        var wsAchievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
+                        var wsAchievement = await _context.Achievements
+                            .TagWithContext("GetMilestone-AttendWorkshop")
+                            .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.AttendWorkshop, cancellationToken);
                         milestoneAchievement.Achievement = wsAchievement;
                     }
                     break;
@@ -160,6 +176,8 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedRanking);
 
         return new ClaimAchievementResult
         {

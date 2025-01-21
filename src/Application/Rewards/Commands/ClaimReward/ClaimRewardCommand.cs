@@ -19,17 +19,20 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
     private readonly IMapper _mapper;
     private readonly IRewardSender _rewardSender;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICacheService _cacheService;
 
     public ClaimRewardCommandHandler(
         IApplicationDbContext context,
         IMapper mapper,
         IRewardSender rewardSender,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ICacheService cacheService)
     {
         _context = context;
         _mapper = mapper;
         _rewardSender = rewardSender;
         _currentUserService = currentUserService;
+        _cacheService = cacheService;
     }
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
@@ -87,6 +90,8 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
         });
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
 
         if (!request.ClaimInPerson)
         {
