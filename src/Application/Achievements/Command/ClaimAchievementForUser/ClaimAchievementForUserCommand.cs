@@ -12,13 +12,16 @@ public class ClaimAchievementForUserCommand : IRequest<ClaimAchievementResult>
 public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchievementForUserCommand, ClaimAchievementResult>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
     private readonly ILogger<ClaimAchievementForUserCommand> _logger;
 
     public ClaimAchievementForUserCommandHandler(
             IApplicationDbContext context,
+            ICacheService cacheService,
             ILogger<ClaimAchievementForUserCommand> logger)
     {
         _context = context;
+        _cacheService = cacheService;
         _logger = logger;
     }
 
@@ -31,7 +34,7 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
 
         if (achievement == null)
         {
-            _logger.LogError("Achievement was not found for code: {0}", request.Code);
+            _logger.LogError("Achievement was not found for code: {AchievementCode}", request.Code);
             return new ClaimAchievementResult
             {
                 status = ClaimAchievementStatus.NotFound
@@ -45,7 +48,7 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
 
         if (user == null)
         {
-            _logger.LogError("User was not found for id: {0}", request.UserId);
+            _logger.LogError("User was not found for id: {UserId}", request.UserId);
             return new ClaimAchievementResult
             {
                 status = ClaimAchievementStatus.Error
@@ -59,7 +62,7 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
 
         if (achievementCheck != null)
         {
-            _logger.LogError("User already has achievement: {0}", request.Code);
+            _logger.LogError("User already has achievement: {AchievementCode}", request.Code);
             return new ClaimAchievementResult
             {
                 status = ClaimAchievementStatus.Duplicate
@@ -68,19 +71,20 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
 
         try
         {
-            await _context
-                .UserAchievements
-                .AddAsync(new UserAchievement
+            _context.UserAchievements
+                .Add(new UserAchievement
                 {
                     UserId = user.Id,
                     AchievementId = achievement.Id
-                }, cancellationToken);
+                });
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.UpdatedRanking);
         }
         catch (Exception e)
         {
-            _logger.LogError(e.Message, e);
+            _logger.LogError(e, "Unable to claim achievement {AchievementId} for User {UserId} with error {ErrorMessage}", achievement.Id, user.Id, e.Message);
             return new ClaimAchievementResult
             {
                 status = ClaimAchievementStatus.Error

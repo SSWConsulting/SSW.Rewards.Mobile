@@ -13,10 +13,12 @@ public class UpdateAchievementCommand : IRequest<Unit>
 public sealed class UpdateAchievementCommandHandler : IRequestHandler<UpdateAchievementCommand, Unit>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
-    public UpdateAchievementCommandHandler(IApplicationDbContext context)
+    public UpdateAchievementCommandHandler(IApplicationDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     public async Task<Unit> Handle(UpdateAchievementCommand request, CancellationToken cancellationToken)
@@ -34,6 +36,9 @@ public sealed class UpdateAchievementCommandHandler : IRequestHandler<UpdateAchi
         achievement.IsMultiscanEnabled = request.IsMultiscanEnabled;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedRanking);
+
         return Unit.Value;
     }
 }

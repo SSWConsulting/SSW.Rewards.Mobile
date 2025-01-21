@@ -25,11 +25,13 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
 {
     private readonly IApplicationDbContext _context;
     private readonly IRewardPicStorageProvider _picStorageProvider;
+    private readonly ICacheService _cacheService;
 
-    public UpdateRewardCommandHandler(IApplicationDbContext context , IRewardPicStorageProvider picStorageProvider)
+    public UpdateRewardCommandHandler(IApplicationDbContext context, IRewardPicStorageProvider picStorageProvider, ICacheService cacheService)
     {
         _context = context;
         _picStorageProvider = picStorageProvider;
+        _cacheService = cacheService;
     }
 
     public async Task<Unit> Handle(UpdateRewardCommand request, CancellationToken cancellationToken)
@@ -86,6 +88,9 @@ public class UpdateRewardCommandHandler : IRequestHandler<UpdateRewardCommand, U
         reward.IsHidden = request.IsHidden;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
+
         return Unit.Value;
     }
     

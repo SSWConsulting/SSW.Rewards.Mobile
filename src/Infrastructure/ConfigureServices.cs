@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.AddressLookup;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
+using SSW.Rewards.Application.Common.Options;
 using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Infrastructure.Options;
 using SSW.Rewards.Infrastructure.Persistence;
@@ -21,7 +22,11 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
-        
+
+        services.Configure<CacheOptions>(configuration.GetSection("Cache"));
+        services.AddMemoryCache();
+        services.AddScoped<ICacheService, CacheService>();
+
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
         services.AddScoped<AchievementIntegrationIdInterceptor>();
         services.AddOptions<GPTServiceOptions>()
