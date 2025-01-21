@@ -9,14 +9,23 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
 {
     private readonly IApplicationDbContext _context;
     private readonly IDateTime _dateTime;
+    private readonly ICacheService _cacheService;
 
-    public Handler(IApplicationDbContext context, IDateTime dateTime)
+    public Handler(IApplicationDbContext context, IDateTime dateTime, ICacheService cacheService)
     {
         _context = context;
         _dateTime = dateTime;
+        _cacheService = cacheService;
     }
 
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
+    {
+        var users = await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(cancellationToken));
+
+        return new LeaderboardViewModel { Users = users };
+    }
+
+    private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
     {
         DateTime utcNow = _dateTime.UtcNow;
 
@@ -52,9 +61,9 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
                     .Where(s => s.SocialMediaPlatform.Name == "Company")
                     .Select(s => s.SocialMediaUserId)
                     .FirstOrDefault()
+                    ?? ""
             })
             .ToListAsync(cancellationToken);
-
 
         // Post-processing
         int rank = 0;
@@ -70,6 +79,6 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
             };
         }
 
-        return new LeaderboardViewModel { Users = users };
+        return users;
     }
 }
