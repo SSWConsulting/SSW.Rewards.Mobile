@@ -14,4 +14,5 @@ public class NetworkProfileDto
     public int AchievementId { get; set; }
     public bool Scanned { get; set; }
     public bool ScannedMe { get; set; }
+    public int Value { get; set; } = 0;
 }

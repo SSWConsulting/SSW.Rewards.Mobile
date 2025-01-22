@@ -125,12 +125,16 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
             }
         }
 
-        // 4. Add all staff
+        // 4. Add all staff && set Value
         foreach (var staffUser in staffUsers)
         {
-            if (profiles.Any(p => p.Email == staffUser.Email))
+            var staffValue = staff.FirstOrDefault(x => x.Email == staffUser.Email)?.StaffAchievement?.Value ?? 0;
+
+            var profile = profiles.FirstOrDefault(p => p.Email == staffUser.Email);
+            if (profile != null)
             {
-                profiles.First(p => p.Email == staffUser.Email).IsStaff = true;
+                profile.IsStaff = true;
+                profile.Value = staffValue;
             }
             else
             {
@@ -140,7 +144,8 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
                     Email          = staffUser.Email ?? string.Empty,
                     Name           = staffUser.FullName ?? string.Empty,
                     ProfilePicture = staffUser.Avatar ?? string.Empty,
-                    IsStaff        = true
+                    IsStaff        = true,
+                    Value = staffValue
                 });
             }
         }

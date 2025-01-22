@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Controls;
@@ -41,9 +39,9 @@ public partial class NetworkPageViewModel : BaseViewModel
         {
             Segments = new List<Segment>
             {
-                new() { Name = "Following", Value = NetworkPageSegments.Following },
-                new() { Name = "Followers", Value = NetworkPageSegments.Followers },
-                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet }
+                new() { Name = "Scanned", Value = NetworkPageSegments.Following },
+                new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
+                new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
             };
         }
         
@@ -82,7 +80,7 @@ public partial class NetworkPageViewModel : BaseViewModel
                 break;
             case NetworkPageSegments.ToMeet:
             default:
-                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned));
+                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned).OrderByDescending(x => x.Value));
                 break;
         }
     }
