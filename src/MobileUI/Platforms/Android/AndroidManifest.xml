@@ -42,5 +42,8 @@
 			<action android:name="android.intent.action.SENDTO" />
 			<data android:scheme="mailto" />
 		</intent>
+		<package android:name="com.linkedin.android" /> <!--it will open the LinkedIn links automatically in app -->
+		<package android:name="com.twitter.android" /> <!--it will open the Twitter (X) links automatically in app -->
+		<package android:name="com.github.android" /> <!--it will open the GitHub links automatically in app -->
 	</queries>
 </manifest>
