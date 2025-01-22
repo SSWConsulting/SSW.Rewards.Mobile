@@ -64,7 +64,7 @@
         <Label
             HorizontalOptions="Center"
             FontFamily="FA6Brands"
-            Text="&#xf099;"
+            Text="&#xe61b;"
             FontAutoScalingEnabled="False"
             FontSize="50"
             IsVisible="False"
