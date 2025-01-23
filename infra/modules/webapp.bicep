@@ -66,6 +66,7 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
     serverFarmId: appServicePlanId
     httpsOnly: true
     siteConfig: {
+      healthCheckPath: '/health'
       netFrameworkVersion: 'v6.0'
       alwaysOn: true
       connectionStrings: [
