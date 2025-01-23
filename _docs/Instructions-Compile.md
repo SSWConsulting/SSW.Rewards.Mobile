@@ -93,6 +93,10 @@ devtunnel host -p 5001
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
 
+**NOTE: if the solution fails to load, open a terminal in the SSW.Rewards.Mobile folder and run:
+dotnet workload update
+dotnet workload restore**
+
 1. Open up the iOS project settings by right clicking on SSW.Consulting.iOS and selecting Options.
 1. go to 'iOS Bundle Signing' and select your signing identity and provisioning profile.
 
