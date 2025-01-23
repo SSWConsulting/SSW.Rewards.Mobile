@@ -25,10 +25,11 @@
 ## Setting up the Repo for Development
 ### To work on the API + Admin UI
 1. Clone this Repo https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
-2. Get the Secrets from Keeper 
+2. Download and install the .NET SDK version 8.0.402
+3. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
-3. Create a Developer Certificate with command below
+4. Create a Developer Certificate with command below
    1. Make sure you have folder `.aspnet\https` in your home directory
    1. Run the script below (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
