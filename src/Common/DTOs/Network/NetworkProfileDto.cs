@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace SSW.Rewards.Shared.DTOs.Users;
 
+[DebuggerDisplay("{Name} ({UserId}), Scanned={Scanned}/{ScannedMe}, Staff={IsStaff}, Value={Value}")]
 public class NetworkProfileDto
 {
     public int UserId { get; set; }
