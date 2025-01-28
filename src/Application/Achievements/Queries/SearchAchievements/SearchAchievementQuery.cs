@@ -20,8 +20,14 @@ public class SearchAchievementQueryHandler : IRequestHandler<SearchAchievementQu
 
     public async Task<AchievementListViewModel> Handle(SearchAchievementQuery request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request?.SearchTerm))
+        {
+            return new() { Achievements = [] };
+        }
+
+        string searchTerm = request.SearchTerm.ToLower();
         var achievements = await _context.Achievements
-            .Where(a => a.Name.ToLower().Contains(request.SearchTerm.ToLower()))
+            .Where(x => x.Name != null && x.Name.Contains(searchTerm))
             .ToListAsync(cancellationToken);
 
         return new AchievementListViewModel
