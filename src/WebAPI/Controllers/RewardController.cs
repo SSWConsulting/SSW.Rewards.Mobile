@@ -38,9 +38,9 @@ public class RewardController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<RewardListViewModel>> Search([FromQuery] string searchTerm)
+    public async Task<ActionResult<RewardListViewModel>> Search([FromQuery] string searchTerm, [FromQuery] int page = 0, [FromQuery] int pageSize = 50)
     {
-        return Ok(await Mediator.Send(new SearchRewardsQuery { SearchTerm = searchTerm }));
+        return Ok(await Mediator.Send(new SearchRewardsQuery { SearchTerm = searchTerm, Page = page, PageSize = pageSize }));
     }
 
     [HttpGet]

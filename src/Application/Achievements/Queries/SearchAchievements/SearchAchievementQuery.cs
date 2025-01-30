@@ -1,10 +1,13 @@
-﻿using SSW.Rewards.Shared.DTOs.Achievements;
+﻿using AutoMapper.QueryableExtensions;
+using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Queries.SearchAchievements;
 
-public class SearchAchievementQuery : IRequest<AchievementListViewModel>
+public class SearchAchievementQuery : IRequest<AchievementListViewModel>, IPagedRequest
 {
     public string SearchTerm { get; set; } = string.Empty;
+    public int Page { get; set; }
+    public int PageSize { get; set; }
 }
 
 public class SearchAchievementQueryHandler : IRequestHandler<SearchAchievementQuery, AchievementListViewModel>
@@ -20,19 +23,15 @@ public class SearchAchievementQueryHandler : IRequestHandler<SearchAchievementQu
 
     public async Task<AchievementListViewModel> Handle(SearchAchievementQuery request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request?.SearchTerm))
-        {
-            return new() { Achievements = [] };
-        }
-
-        string searchTerm = request.SearchTerm.ToLower();
+        string searchTerm = request.SearchTerm?.ToLower() ?? string.Empty;
         var achievements = await _context.Achievements
-            .Where(x => x.Name != null && x.Name.Contains(searchTerm))
+            .AsNoTracking()
+            .TagWithContext()
+            .WhenStringNotEmpty(searchTerm, x => x.Name != null && x.Name.Contains(searchTerm))
+            .ProjectTo<AchievementDto>(_mapper.ConfigurationProvider)
+            .ApplyPagination(request)
             .ToListAsync(cancellationToken);
 
-        return new AchievementListViewModel
-        {
-            Achievements = _mapper.Map<IEnumerable<AchievementDto>>(achievements)
-        };
+        return new AchievementListViewModel { Achievements = achievements };
     }
 }
