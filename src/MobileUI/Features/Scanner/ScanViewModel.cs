@@ -144,10 +144,15 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
                 return;
             }
 
+            var rawValue = result.FirstOrDefault()?.RawValue;
+            if (string.IsNullOrWhiteSpace(rawValue) || !rawValue.StartsWith("sswrewards://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // SSW Rewards code not found, keep looking.
+                return;
+            }
+
             IsCameraEnabled = false;
             
-            var rawValue = result.FirstOrDefault()?.RawValue;
-
             var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
             MopupService.Instance.PushAsync(popup);
         });
