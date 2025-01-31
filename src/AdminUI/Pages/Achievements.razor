@@ -28,7 +28,7 @@
                       Placeholder="Search for an achievement"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                       Class="mt-0"/>
-        
+
         <MudCheckBox @bind-Checked="ShowArchived" Label="Show archived"></MudCheckBox>
     </ToolbarContent>
     <HeadingTemplate>
@@ -55,7 +55,10 @@
     </HeadingTemplate>
     <RowTemplate>
         <MudTd DataLabel="Code">
-            <AdminQRCode QRCodeString="@context.Code" Height="100" />
+            @if (!string.IsNullOrWhiteSpace(context.Code))
+            {
+                <AdminQRCode QRCodeString="@context.Code" Height="100" />
+            }
         </MudTd>
         <MudTd DataLabel="Name">
             @context.Name
@@ -80,7 +83,7 @@
     private IEnumerable<AchievementAdminDto> _model = Enumerable.Empty<AchievementAdminDto>();
 
     private IEnumerable<AchievementAdminDto> FilteredAchievementList => _model
-        .Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase) && (ShowArchived || !s.IsArchived.GetValueOrDefault(false)));
+        .Where(s => s.Name?.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase) == true && (ShowArchived || !s.IsArchived.GetValueOrDefault(false)));
 
     private bool ShowArchived { get; set; }
 
