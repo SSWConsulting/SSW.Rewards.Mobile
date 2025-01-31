@@ -113,7 +113,7 @@ jobs:
         id: purge-front-door
         shell: pwsh
         run: |
-          az afd endpoint purge \
+          az afd endpoint purge `
           --resource-group ${{ inputs.resourceGroupName }} `
           --profile-name ${{ inputs.frontDoorProfileName }} `
           --endpoint-name ${{ inputs.frontDoorEndpointName }} `
