@@ -3,6 +3,7 @@ using SSW.Rewards.ApiClient;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
+using SSW.Rewards.Mobile.Config;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 using IQuizService = SSW.Rewards.Mobile.Services.IQuizService;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
@@ -73,7 +74,10 @@ public static class DependencyInjection
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
         services.AddApiClientServices<AuthHandler>(options.BaseUrl);
-        
+
+        // Configuration that in the future will be modifiable by the user or WebAPI
+        services.AddSingleton(new ScannerConfig());
+
         return services;
     }
 }
