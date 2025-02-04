@@ -10,7 +10,7 @@ on:
       frontDoorProfileName:
         type: string
       frontDoorEndpointName:
-        type: string 
+        type: string
       frontDoorDomain:
         type: string
     secrets:
@@ -88,26 +88,16 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
-      - name: Upload UI
-        uses: azure/CLI@v2
-        with:
-          azcliversion: 2.67.0
-          inlineScript: |
-            tdnf install -y azcopy; # this is necessary to make sync command work
-            az storage blob sync \
-              --container '$web' \
-              --source "ui" \
-              --account-name ${{ steps.bicep.outputs.storageAccountName }} \
-              --sas-token ${{ steps.storage.outputs.sastoken }} \
-              --delete-destination true
-      
-        # uses: bacongobbler/azure-blob-storage-upload@main
-        # with:
-        #  source_dir: "ui"
-        #  container_name: "$web"
-        #  account_name: ${{ steps.bicep.outputs.storageAccountName }}
-        #  sas_token: ${{ steps.storage.outputs.sastoken }}
-        #  sync: "true"
+      # Run the sync command using the SAS token.
+      - name: Sync UI folder to Azure Blob Storage ($web)
+        shell: pwsh
+        run: |
+          az storage blob sync `
+            --container '$web' `
+            --source "ui" `
+            --account-name ${{ steps.bicep.outputs.storageAccountName }} `
+            --sas-token "${{ steps.storage.outputs.sastoken }}" `
+            --delete-destination true
 
       ## - name: Purge Front Door cache
       ##  id: purge-front-door
