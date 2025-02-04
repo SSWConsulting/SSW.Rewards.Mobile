@@ -144,10 +144,11 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
                 return;
             }
 
-            var rawValue = result.FirstOrDefault()?.RawValue;
-            if (string.IsNullOrWhiteSpace(rawValue) || !rawValue.StartsWith("sswrewards://", StringComparison.InvariantCultureIgnoreCase))
+            // Go through all detected barcodes and find the first valid QR code.
+            var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
+            string rawValue = validBarCode?.RawValue;
+            if (string.IsNullOrWhiteSpace(rawValue))
             {
-                // SSW Rewards code not found, keep looking.
                 return;
             }
 

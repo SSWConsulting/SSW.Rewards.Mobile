@@ -43,6 +43,8 @@ public partial class ScanResultViewModel : BaseViewModel
         this.data = data;
     }
 
+    public bool IsQRCodeValid(string rawCode) => _scannerService.IsValidQRCodeAsync(rawCode);
+
     public async Task CheckScanData()
     {
         AnimationRef = "qr-code-scanner.json";

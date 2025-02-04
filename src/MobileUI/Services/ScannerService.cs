@@ -1,33 +1,31 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.ApiClient.Services;
+﻿using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Mobile.Messages;
+using SSW.Rewards.Mobile.Config;
 using SSW.Rewards.Shared.DTOs.Rewards;
-using IApiRewardService = SSW.Rewards.ApiClient.Services.IRewardService;
 
 namespace SSW.Rewards.Mobile.Services;
 
 public interface IScannerService
 {
+    bool IsValidQRCodeAsync(string qrCodeData);
     Task<ScanResponseViewModel> ValidateQRCodeAsync(string achievementString);
 }
 
 public class ScannerService : IScannerService
 {
     private readonly IAchievementService _achievementClient;
-
     private readonly IRewardService _rewardService;
-
     private readonly IUserService _userService;
+    private readonly ScannerConfig _scannerConfig;
 
     private bool _isStaff;
 
-    public ScannerService(IRewardService rewardService, IAchievementService achievementClient, IUserService userService)
+    public ScannerService(IRewardService rewardService, IAchievementService achievementClient, IUserService userService, ScannerConfig scannerConfig)
     {
         _rewardService = rewardService;
         _achievementClient = achievementClient;
         _userService = userService;
-
+        _scannerConfig = scannerConfig;
         _userService.IsStaffObservable().Subscribe(isStaff => _isStaff = isStaff);
     }
 
@@ -46,27 +44,27 @@ public class ScannerService : IScannerService
             {
                 switch (response.status)
                 {
-                    case Enums.ClaimAchievementStatus.Claimed:
+                    case ClaimAchievementStatus.Claimed:
                         vm.result = ScanResult.Added;
                         vm.Title = response.viewModel.Name;
                         vm.Points = response.viewModel.Value;
                         vm.ScannedUserId = response.viewModel?.UserId;
                         break;
 
-                    case Enums.ClaimAchievementStatus.Duplicate:
+                    case ClaimAchievementStatus.Duplicate:
                         vm.result = ScanResult.Duplicate;
                         vm.Title = "Duplicate";
                         vm.Points = 0;
                         vm.ScannedUserId = response.viewModel?.UserId;
                         break;
 
-                    case Enums.ClaimAchievementStatus.Error:
+                    case ClaimAchievementStatus.Error:
                         vm.result = ScanResult.Error;
                         vm.Title = "Error";
                         vm.Points = 0;
                         break;
 
-                    case Enums.ClaimAchievementStatus.NotFound:
+                    case ClaimAchievementStatus.NotFound:
                         vm.result = ScanResult.NotFound;
                         vm.Title = "Unrecognised";
                         vm.Points = 0;
@@ -78,14 +76,10 @@ public class ScannerService : IScannerService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
                 vm.result = ScanResult.Error;
             }
-        }
-        catch
-        {
-            vm.result = ScanResult.Error;
         }
 
         return vm;
@@ -151,58 +145,63 @@ public class ScannerService : IScannerService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
                 vm.result = ScanResult.Error;
             }
-        }
-        catch
-        {
-            vm.result = ScanResult.Error;
         }
 
         return vm;
     }
 
-    public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string qrCodeData)
+    public bool IsValidQRCodeAsync(string qrCodeData)
     {
-        if (qrCodeData.StartsWith("sswrewards://"))
+        if (!_scannerConfig.ValidateBeforeProcessingQRCode)
         {
-            var uri = new Uri(qrCodeData);
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            qrCodeData = queryDictionary.Get("code");
+            // Disable QR code validation before processing.
+            return true;
         }
-        
-        var decodedQR = StringHelpers.Base64Decode(qrCodeData);
-        
-        if (decodedQR.StartsWith("ach:"))
+
+        var (decodedQR, _) = DecodeQRCode(qrCodeData);
+        return !string.IsNullOrWhiteSpace(decodedQR)
+            && ApiClientConstants.SupportedQRCodeBodyPrefixes.Any(decodedQR.StartsWith);
+    }
+
+    public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string rawQRCodeData)
+    {
+        var (decodedQR, qrCodeData) = DecodeQRCode(rawQRCodeData);
+        if (decodedQR.StartsWith(ApiClientConstants.RewardsQRCodeAchievementPrefix))
         {
             return await PostAchievementAsync(qrCodeData);
         }
 
-        if (decodedQR.StartsWith("rwd:"))
+        if (decodedQR.StartsWith(ApiClientConstants.RewardsQRCodeRewardPrefix))
         {
             return await PostRewardAsync(qrCodeData);
         }
         
-        if (decodedQR.StartsWith("pnd:"))
+        if (decodedQR.StartsWith(ApiClientConstants.RewardsQRCodePendingRewardPrefix))
         {
-            if (!_isStaff)
+            return _isStaff switch
             {
-                return new ScanResponseViewModel
-                {
-                    result = ScanResult.Error,
-                    Title = "Only SSW staff can redeem pending rewards"
-                };
-            }
-            
-            return await PostRewardAsync(qrCodeData, true);
+                true => await PostRewardAsync(qrCodeData, true),
+                false => ScanResponseViewModel.OnlyStaffCanRedeemPendingRewards()
+            };
         }
 
-        return new ScanResponseViewModel
+        return ScanResponseViewModel.NotFound();
+    }
+
+    private static (string decodedCode, string codeToSend) DecodeQRCode(string qrCodeData)
+    {
+        if (qrCodeData.StartsWith(ApiClientConstants.RewardsQRCodeProtocol))
         {
-            result = ScanResult.NotFound,
-            Title = "Unrecognised"
-        };
+            var uri = new Uri(qrCodeData);
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            qrCodeData = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
+        }
+
+        var decodedQR = StringHelpers.Base64Decode(qrCodeData)?.ToLowerInvariant();
+        return (decodedQR, qrCodeData);
     }
 }
