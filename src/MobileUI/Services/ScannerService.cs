@@ -194,9 +194,8 @@ public class ScannerService : IScannerService
 
     private static (string decodedCode, string codeToSend) DecodeQRCode(string qrCodeData)
     {
-        if (qrCodeData.StartsWith(ApiClientConstants.RewardsQRCodeProtocol))
+        if (qrCodeData.StartsWith(ApiClientConstants.RewardsQRCodeProtocol) && Uri.TryCreate(qrCodeData, UriKind.Absolute, out Uri uri))
         {
-            var uri = new Uri(qrCodeData);
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
             qrCodeData = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
         }

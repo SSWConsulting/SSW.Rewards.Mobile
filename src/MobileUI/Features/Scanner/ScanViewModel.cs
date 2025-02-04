@@ -136,22 +136,22 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [RelayCommand]
     private void DetectionFinished(BarcodeResult[] result)
     {
+        if (!IsCameraEnabled || result.Length == 0)
+        {
+            return;
+        }
+
+        // Go through all detected barcodes and find the first valid QR code.
+        var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
+        string rawValue = validBarCode?.RawValue;
+        if (string.IsNullOrWhiteSpace(rawValue))
+        {
+            return;
+        }
+
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
-            if (!IsCameraEnabled || result.Length == 0)
-            {
-                return;
-            }
-
-            // Go through all detected barcodes and find the first valid QR code.
-            var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
-            string rawValue = validBarCode?.RawValue;
-            if (string.IsNullOrWhiteSpace(rawValue))
-            {
-                return;
-            }
-
             IsCameraEnabled = false;
             
             var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
