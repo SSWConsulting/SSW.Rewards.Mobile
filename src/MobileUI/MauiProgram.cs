@@ -132,7 +132,6 @@ public static class MauiProgram
                     return;
                 }
 
-                activity.Finish();
                 Task.Run(() => HandleAppLink(data));
             }));
 #endif
