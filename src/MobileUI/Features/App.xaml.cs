@@ -45,13 +45,13 @@ public partial class App : Application
     {
         base.OnAppLinkRequestReceived(uri);
         
-        if (uri.Scheme != "sswrewards")
+        if (uri.Scheme != ApiClientConstants.RewardsQRCodeProtocol)
         {
             return;
         }
 
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        var code = queryDictionary.Get("code");
+        var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
         
         if (_authService.IsLoggedIn)
         {
