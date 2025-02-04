@@ -99,7 +99,6 @@ jobs:
               --source "ui" \
               --account-name ${{ steps.bicep.outputs.storageAccountName }} \
               --sas-token ${{ steps.storage.outputs.sastoken }} \
-              --verbose \
               --delete-destination true
       
         # uses: bacongobbler/azure-blob-storage-upload@main
