@@ -9,7 +9,7 @@ public class Constants
     public const string RewardsAppClientName_MobileApp = "MobileApp";
 
     // QR Code Constants (e.g. sswrewards://redeem?code={{ach:123456 in base64}})
-    public const string RewardsQRCodeProtocol = "sswrewards://";
+    public const string RewardsQRCodeProtocol = "sswrewards";
     public const string RewardsQRCodeProtocolQueryName = "code";
 
     public const string RewardsQRCodeAchievementPrefix = "ach:";
