@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="84" android:versionName="3.0.45">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ssw.consulting" android:versionCode="85" android:versionName="3.0.46">
 	<application android:allowBackup="false" android:icon="@mipmap/icon_android_dark" android:supportsRtl="true" android:label="SSW Rewards">
 		<meta-data android:name="google_analytics_automatic_screen_reporting_enabled" android:value="false" />
 	</application>
@@ -42,8 +42,11 @@
 			<action android:name="android.intent.action.SENDTO" />
 			<data android:scheme="mailto" />
 		</intent>
-		<package android:name="com.linkedin.android" /> <!--it will open the LinkedIn links automatically in app -->
-		<package android:name="com.twitter.android" /> <!--it will open the Twitter (X) links automatically in app -->
-		<package android:name="com.github.android" /> <!--it will open the GitHub links automatically in app -->
+		<package android:name="com.linkedin.android" />
+		<!--it will open the LinkedIn links automatically in app -->
+		<package android:name="com.twitter.android" />
+		<!--it will open the Twitter (X) links automatically in app -->
+		<package android:name="com.github.android" />
+		<!--it will open the GitHub links automatically in app -->
 	</queries>
 </manifest>
