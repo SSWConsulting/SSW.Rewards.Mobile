@@ -112,6 +112,11 @@ jobs:
             --delete-destination true
 
       # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
+      - name: Install Azure CLI Extension for Front Door Classic
+        shell: pwsh
+        run: |
+          az extension add --name front-door
+
       - name: Purge Classic Azure Front Door Cache
         shell: pwsh
         run: |
@@ -119,3 +124,4 @@ jobs:
             --resource-group ${{ inputs.resourceGroupName }} `
             --name ${{ inputs.frontDoorProfileName }} `
             --content-paths '/*'
+        
