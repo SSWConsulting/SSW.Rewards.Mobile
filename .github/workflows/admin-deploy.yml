@@ -88,26 +88,6 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
-      - name: Install Azure CLI Extension for Front Door Classic
-        shell: pwsh
-        run: |
-          az extension add --name front-door
-  
-      - name: Debug Azure Front Door Configuration
-        shell: pwsh
-        run: |
-          echo "Listing all Front Doors in Resource Group..."
-          az network front-door list --resource-group ${{ inputs.resourceGroupName }} --output table
-
-          echo "Listing AFD Profiles..."
-          az afd profile list --resource-group ${{ inputs.resourceGroupName }} --output table
-      
-          echo "Listing AFD Endpoints..."
-          az afd endpoint list --resource-group ${{ inputs.resourceGroupName }} --profile-name ${{ inputs.frontDoorProfileName }} --output table
-      
-          echo "Listing All Resources in Resource Group..."
-          az resource list --resource-group ${{ inputs.resourceGroupName }} --output table
-
       # Run the sync command using the SAS token.
       - name: Sync UI folder to Azure Blob Storage ($web)
         shell: pwsh
@@ -120,6 +100,11 @@ jobs:
             --delete-destination true
 
       # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
+      - name: Install Azure CLI Extension for Front Door Classic
+        shell: pwsh
+        run: |
+          az extension add --name front-door
+
       - name: Purge Azure CDN Cache
         shell: pwsh
         run: |
