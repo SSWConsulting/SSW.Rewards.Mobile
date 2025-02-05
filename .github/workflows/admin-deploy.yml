@@ -120,10 +120,11 @@ jobs:
             --delete-destination true
 
       # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
-      - name: Purge Classic Azure Front Door Cache
+      - name: Purge Azure CDN Cache
         shell: pwsh
         run: |
-          az network front-door purge-endpoint `
+          az cdn endpoint purge `
             --resource-group ${{ inputs.resourceGroupName }} `
-            --name ${{ inputs.frontDoorProfileName }} `
+            --profile-name ${{ inputs.frontDoorProfileName }} `
+            --name ${{ inputs.frontDoorEndpointName }} `
             --content-paths '/*'
