@@ -91,6 +91,9 @@ jobs:
       - name: Debug Azure Front Door Configuration
         shell: pwsh
         run: |
+          echo "Listing all Front Doors in Resource Group..."
+          az network front-door list --resource-group ${{ inputs.resourceGroupName }} --output table
+
           echo "Listing AFD Profiles..."
           az afd profile list --resource-group ${{ inputs.resourceGroupName }} --output table
       
