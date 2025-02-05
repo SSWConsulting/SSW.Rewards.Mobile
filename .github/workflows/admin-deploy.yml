@@ -88,6 +88,18 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
+      - name: Debug Azure Front Door Configuration
+        shell: pwsh
+        run: |
+          echo "Listing AFD Profiles..."
+          az afd profile list --resource-group ${{ inputs.resourceGroupName }} --output table
+      
+          echo "Listing AFD Endpoints..."
+          az afd endpoint list --resource-group ${{ inputs.resourceGroupName }} --profile-name ${{ inputs.frontDoorProfileName }} --output table
+      
+          echo "Listing All Resources in Resource Group..."
+          az resource list --resource-group ${{ inputs.resourceGroupName }} --output table
+
       # Run the sync command using the SAS token.
       - name: Sync UI folder to Azure Blob Storage ($web)
         shell: pwsh
