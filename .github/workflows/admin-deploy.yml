@@ -120,8 +120,7 @@ jobs:
       - name: Purge Classic Azure Front Door Cache
         shell: pwsh
         run: |
-          az network front-door purge `
+          az network front-door purge-endpoint `
             --resource-group ${{ inputs.resourceGroupName }} `
             --name ${{ inputs.frontDoorProfileName }} `
             --content-paths '/*'
-        
