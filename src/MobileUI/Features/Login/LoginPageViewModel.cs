@@ -65,8 +65,14 @@ public partial class LoginPageViewModel : BaseViewModel
             if (status != ApiStatus.Success)
             {
                 await WaitForWindowClose();
-                var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-                await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+
+                // Only display error if user is not logged in.
+                // Autologin will fall here, if login page is opened, despite being successfull.
+                if (_authService.IsLoggedIn && _authService.HasCachedAccount)
+                {
+                    var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
+                    await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+                }
             }
             else
             {
