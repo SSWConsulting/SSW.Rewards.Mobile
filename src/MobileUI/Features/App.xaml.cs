@@ -45,24 +45,35 @@ public partial class App : Application
     {
         base.OnAppLinkRequestReceived(uri);
         
-        if (uri.Scheme != ApiClientConstants.RewardsQRCodeProtocol)
+        if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol)
         {
-            return;
-        }
-
-        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
         
-        if (_authService.IsLoggedIn)
-        {
-            var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
-            var popup = new PopupPages.ScanResult(vm, code);
-            await MopupService.Instance.PushAsync(popup);
+            if (_authService.IsLoggedIn)
+            {
+                var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
+                var popup = new PopupPages.ScanResult(vm, code);
+                await MopupService.Instance.PushAsync(popup);
+            }
+            else
+            {
+                ((LoginPage)MainPage)?.QueueCodeScan(code);
+            }
         }
-        else
+        else if ($"{uri.Scheme}://{uri.Host}" == Constants.AuthRedirectUrl)
         {
-            ((LoginPage)MainPage)?.QueueCodeScan(code);
-        }
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var token = queryDictionary.Get("token");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await _authService.SignInSilentlyAsync(token);
+                });
+            }
+        }        
     }
 
     private async Task CheckApiCompatibilityAsync()

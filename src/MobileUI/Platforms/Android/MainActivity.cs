@@ -1,11 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Android.Gms.Extensions;
 using Android.OS;
-using Firebase.Messaging;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using SSW.Rewards.Mobile.Platforms.Android;
 using Color = Microsoft.Maui.Graphics.Color;
 
 namespace SSW.Rewards.Mobile;
