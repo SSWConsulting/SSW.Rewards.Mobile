@@ -9,7 +9,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IAuthenticationService
 {
-    Task SignInSilentlyAsync(string accessToken);
+    Task AutologinAsync(string accessToken);
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     Task SignOut();
@@ -44,7 +44,7 @@ public class AuthenticationService : IAuthenticationService
         };
     }
 
-    public async Task SignInSilentlyAsync(string accessToken)
+    public async Task AutologinAsync(string accessToken)
     {
         try
         {

@@ -68,10 +68,7 @@ public partial class App : Application
 
             if (!string.IsNullOrEmpty(token))
             {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await _authService.SignInSilentlyAsync(token);
-                });
+                await _authService.AutologinAsync(token);
             }
         }        
     }
