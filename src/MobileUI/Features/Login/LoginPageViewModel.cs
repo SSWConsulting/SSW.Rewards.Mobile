@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AppCenter.Crashes;
 using Mopups.Services;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -136,15 +137,8 @@ public partial class LoginPageViewModel : BaseViewModel
 
     private async Task OnAfterLogin()
     {
-        if (!(Application.Current.MainPage is AppShell))
-        {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Application.Current.MainPage = new AppShell();
-            });
-        }
+        await Application.Current.InitializeMainPage();
 
-        await Shell.Current.GoToAsync("//main");
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
         if (granted)
         {

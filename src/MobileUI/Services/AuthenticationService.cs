@@ -3,6 +3,7 @@ using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
 using Microsoft.AppCenter.Crashes;
+using SSW.Rewards.Mobile.Common;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -59,12 +60,7 @@ public class AuthenticationService : IAuthenticationService
                 Preferences.Set(nameof(HasCachedAccount), true);
                 DetailsUpdated?.Invoke(this, EventArgs.Empty);
 
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    Application.Current.MainPage = new AppShell();
-
-                    await Shell.Current.GoToAsync("//main");
-                });
+                await Application.Current.InitializeMainPage();
             }
             catch (Exception ex)
             {
