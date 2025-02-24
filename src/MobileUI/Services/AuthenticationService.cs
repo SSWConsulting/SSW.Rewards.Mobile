@@ -1,13 +1,16 @@
+using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
 using Microsoft.AppCenter.Crashes;
+using SSW.Rewards.Mobile.Common;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services;
 
 public interface IAuthenticationService
 {
+    Task AutologinAsync(string accessToken);
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     Task SignOut();
@@ -40,6 +43,44 @@ public class AuthenticationService : IAuthenticationService
             RedirectUri = Constants.AuthRedirectUrl,
             Browser = browser,
         };
+    }
+
+    public async Task AutologinAsync(string accessToken)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+
+            _accessToken = accessToken;
+            _tokenExpiry = jwtToken.ValidTo;
+
+            try
+            {
+                Preferences.Set(nameof(HasCachedAccount), true);
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
+
+                await Application.Current.InitializeMainPage();
+            }
+            catch (Exception ex)
+            {
+                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
+
+                // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
+                // the process of closing causes the alert to never appear and the await call never returns.
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    await Task.Delay(1000);
+                }
+
+                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            await SignOut();
+        }
     }
 
     public async Task<ApiStatus> SignInAsync()
