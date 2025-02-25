@@ -1,4 +1,7 @@
-﻿using SSW.Rewards.Application.Common.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using SSW.Rewards.Application.Common.Helpers;
+using SSW.Rewards.Application.Common.Interfaces;
+using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
@@ -29,13 +32,16 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
+    private readonly ICacheService _cacheService;
 
     public UpsertStaffMemberProfileCommandHandler(
         IMapper mapper,
-        IApplicationDbContext context)
+        IApplicationDbContext context,
+        ICacheService cacheService)
     {
         _mapper = mapper;
         _context = context;
+        _cacheService = cacheService;
     }
 
     public async Task<StaffMemberDto> Handle(UpsertStaffMemberProfileCommand request, CancellationToken cancellationToken)
@@ -71,6 +77,40 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
             Type = AchievementType.Scanned
         };
         staffMemberEntity.StaffAchievement.Value = request.Points;
+
+        var existingUser = await _context.Users
+            .TagWithContext("GetUserByEmail")
+            .Where(u => u.Email == request.Email)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (existingUser == null)
+        {
+            var newUser = new Domain.Entities.User
+            {
+                Email = request.Email,
+                FullName = request.Name,
+                CreatedUtc = DateTime.UtcNow
+            };
+
+            if (!newUser.Email.ToLower().Contains("ssw.com.au"))
+            {
+                newUser.GenerateAchievement();
+            }
+
+            var roles = await _context.Roles
+                .TagWithContext("GetUserAndStaffRoles")
+                .Where(r => r.Name == "User" || r.Name == "Staff")
+                .ToArrayAsync();
+
+            foreach (var role in roles)
+            {
+                newUser.Roles.Add(new UserRole { Role = role });
+            }
+
+            _context.Users.Add(newUser);
+
+            _cacheService.Remove(CacheTags.NewlyUserCreated);
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<StaffMemberDto>(staffMemberEntity);
