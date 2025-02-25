@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using SSW.Rewards.Application.Common.Helpers;
 using SSW.Rewards.Shared.DTOs.Staff;
 
 namespace SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
@@ -67,7 +67,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         staffMemberEntity.StaffAchievement ??= new Achievement
         {
             Name = staffMemberEntity.Name,
-            Code = GenerateCode(staffMemberEntity.Name),
+            Code = AchievementHelper.GenerateCode(staffMemberEntity.Name),
             Type = AchievementType.Scanned
         };
         staffMemberEntity.StaffAchievement.Value = request.Points;
@@ -139,11 +139,5 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         }
 
         return skill;
-    }
-
-    private static string GenerateCode(string inputValue)
-    {
-        var codeData = Encoding.ASCII.GetBytes($"ach:{inputValue}");
-        return Convert.ToBase64String(codeData);
     }
 }

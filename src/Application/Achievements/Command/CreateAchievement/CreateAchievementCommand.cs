@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using SSW.Rewards.Application.Common.Helpers;
 using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
@@ -25,16 +25,13 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
 
     public async Task<AchievementAdminDto> Handle(CreateAchievementCommand request, CancellationToken cancellationToken)
     {
-        var codeData = Encoding.ASCII.GetBytes($"ach:{Guid.NewGuid().ToString()}");
-        var code = Convert.ToBase64String(codeData);
-        
         var achievement = new Achievement
         {
             Name = request.Name,
             Value = request.Value,
             Type = request.Type,
             IsMultiscanEnabled = request.IsMultiscanEnabled,
-            Code = code
+            Code = AchievementHelper.GenerateCode(Guid.NewGuid().ToString()),
         };
 
         _context.Achievements.Add(achievement);

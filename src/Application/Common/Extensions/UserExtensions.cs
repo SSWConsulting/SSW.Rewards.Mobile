@@ -1,5 +1,5 @@
 ﻿using System.Net.Mail;
-using System.Text;
+using SSW.Rewards.Application.Common.Helpers;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Common.Extensions;
@@ -20,16 +20,13 @@ public static class UserExtensions
 
     public static void GenerateAchievement(this User user)
     {
-        var codeData = Encoding.ASCII.GetBytes($"ach:{Guid.NewGuid().ToString()}");
-        var code = Convert.ToBase64String(codeData);
-
         var achievement = new Achievement
         {
             Name = user.FullName,
             Value = 100,
             Type = AchievementType.Scanned,
             IsMultiscanEnabled = false,
-            Code = code
+            Code = AchievementHelper.GenerateCode(Guid.NewGuid().ToString()),
         };
 
         user.Achievement = achievement;

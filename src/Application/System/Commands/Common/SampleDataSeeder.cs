@@ -2,6 +2,7 @@
 using ExcelDataReader;
 using MoreLinq;
 using SSW.Rewards.Application.Achievements.Common;
+using SSW.Rewards.Application.Common.Helpers;
 
 namespace SSW.Rewards.Application.System.Commands.Common;
 
@@ -83,8 +84,7 @@ public class SampleDataSeeder
 
         foreach (var achievement in achievements)
         {
-            var codeData = Encoding.ASCII.GetBytes($"ach:{achievement.Name}");
-            achievement.Code = Convert.ToBase64String(codeData);
+            achievement.Code = AchievementHelper.GenerateCode(achievement.Name);
 
             sb.AppendLine(achievement.Code);
         }
