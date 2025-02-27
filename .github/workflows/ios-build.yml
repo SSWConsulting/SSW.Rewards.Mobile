@@ -53,7 +53,7 @@ jobs:
 
       - name: Import Provisioning Profile
         run: |
-            printf "%s" ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
+            echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
