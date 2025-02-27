@@ -106,7 +106,7 @@ public class UserService : IUserService, IRolesService
                 var staffMemberEntity = new StaffMember();
 
                 staffMemberEntity.Email = newUser.Email;
-                staffMemberEntity.Name = newUser.FullName ??= string.Empty;
+                staffMemberEntity.Name = newUser.FullName ?? string.Empty;
 
                 await _dbContext.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
 
