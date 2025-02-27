@@ -107,7 +107,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
                 newUser.Roles.Add(new UserRole { Role = role });
             }
 
-            _context.Users.Add(newUser);
+            await _context.Users.AddAsync(newUser);
 
             _cacheService.Remove(CacheTags.NewlyUserCreated);
         }

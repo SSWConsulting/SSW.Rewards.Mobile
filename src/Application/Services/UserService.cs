@@ -97,7 +97,7 @@ public class UserService : IUserService, IRolesService
 
             newUser.Roles.Add(new UserRole { Role = staffRole });
 
-            var existingStaff = _dbContext.StaffMembers
+            var existingStaff = await _dbContext.StaffMembers
                 .TagWithContext("GetExistingStaff")
                 .FirstOrDefaultAsync(r => r.Email == newUser.Email);
 
