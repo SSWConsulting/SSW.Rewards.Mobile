@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SSW.Rewards.Application.Common.Exceptions;
+using SSW.Rewards.Application.Common.Helpers;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Services;
@@ -95,6 +96,28 @@ public class UserService : IUserService, IRolesService
                 .FirstOrDefaultAsync(r => r.Name == "Staff");
 
             newUser.Roles.Add(new UserRole { Role = staffRole });
+
+            var existingStaff = await _dbContext.StaffMembers
+                .TagWithContext("GetExistingStaff")
+                .FirstOrDefaultAsync(r => r.Email == newUser.Email);
+
+            if (existingStaff == null)
+            {
+                var staffMemberEntity = new StaffMember();
+
+                staffMemberEntity.Email = newUser.Email;
+                staffMemberEntity.Name = newUser.FullName ?? string.Empty;
+
+                await _dbContext.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
+
+                staffMemberEntity.StaffAchievement ??= new Achievement
+                {
+                    Name = staffMemberEntity.Name,
+                    Code = AchievementHelper.GenerateCode(staffMemberEntity.Name),
+                    Type = AchievementType.Scanned,
+                    Value = 0
+                };
+            }
         }
 
         var unclaimedAchievements = await _dbContext.UnclaimedAchievements
