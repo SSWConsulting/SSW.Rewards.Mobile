@@ -32,7 +32,6 @@
 		<CodesignProvision>Automatic</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
 		<MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
-		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
@@ -77,9 +76,6 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
-		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
-		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
-		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
@@ -93,16 +89,18 @@
 	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <GoogleServicesJson Include="Platforms/Android/google-services.json" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.7.1" />
-		<PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.3.0.2" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.4.0" />
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
-        <PackageReference Include="Xamarin.Firebase.Core" Version="121.1.1.8" />
-        <PackageReference Include="Xamarin.Firebase.Analytics" Version="121.3.0.6" />
 	</ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
         <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
-        <PackageReference Include="Xamarin.Firebase.iOS.Analytics" Version="8.10.0.3" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' OR '$(TargetFramework)' == 'net8.0-android'">
+        <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.1" />
+        <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
+        <PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.1" />
     </ItemGroup>
     
     <!--https://github.com/dotnet/maui/issues/16514-->
@@ -121,4 +119,20 @@
     <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
         <BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
     </ItemGroup>
+
+    <!-- Target needed until LinkWithSwiftSystemLibraries makes it into the SDK: https://github.com/xamarin/xamarin-macios/pull/20463 -->
+    <Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
+        <PropertyGroup>
+            <_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('iossimulator-'))">iphonesimulator</_SwiftPlatform>
+            <_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('ios-'))">iphoneos</_SwiftPlatform>
+        </PropertyGroup>
+        <ItemGroup>
+            <_CustomLinkFlags Include="-L" />
+            <_CustomLinkFlags Include="/usr/lib/swift" />
+            <_CustomLinkFlags Include="-L" />
+            <_CustomLinkFlags Include="$(_SdkDevPath)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(_SwiftPlatform)" />
+            <_CustomLinkFlags Include="-Wl,-rpath" />
+            <_CustomLinkFlags Include="-Wl,/usr/lib/swift" />
+        </ItemGroup>
+    </Target>
 </Project>
