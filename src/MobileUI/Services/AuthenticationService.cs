@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
-using Microsoft.AppCenter.Crashes;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Mobile.Common;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
@@ -64,7 +64,7 @@ public class AuthenticationService : IAuthenticationService
             }
             catch (Exception ex)
             {
-                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
 
                 // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
                 // the process of closing causes the alert to never appear and the await call never returns.
@@ -78,7 +78,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
-            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
             await SignOut();
         }
     }
@@ -99,7 +99,7 @@ public class AuthenticationService : IAuthenticationService
 
             if (result.IsError)
             {
-                Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
                 await SignOut();
                 return ApiStatus.Error;
             }
@@ -114,7 +114,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
-            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
             await SignOut();
             return ApiStatus.Error;
         }
@@ -179,7 +179,7 @@ public class AuthenticationService : IAuthenticationService
             }
             catch (Exception ex)
             {
-                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
                 return ApiStatus.Unavailable;
             }
 
@@ -187,8 +187,8 @@ public class AuthenticationService : IAuthenticationService
         }
         else
         {
-            Crashes.TrackError(new Exception(
-                $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception(
+                 $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
             return ApiStatus.LoginFailure;
         }
     }
@@ -221,13 +221,13 @@ public class AuthenticationService : IAuthenticationService
             }
             else
             {
-                Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
                 var signInResult = await SignInAsync();
                 if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
                 {
-                    Crashes.TrackError(new Exception(
-                        $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+                    CrossFirebaseCrashlytics.Current.RecordException(new Exception(
+                         $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
                 }
 
                 return signInResult == ApiStatus.Success;

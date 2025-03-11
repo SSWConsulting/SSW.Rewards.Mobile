@@ -1,15 +1,21 @@
 ﻿using BarcodeScanning;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
-using Microsoft.Maui.Platform;
 using Mopups.Hosting;
+using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
+
+#if IOS
+using Plugin.Firebase.Core.Platforms.iOS;
+using Plugin.Firebase.CloudMessaging;
+#elif ANDROID
+using Microsoft.Maui.Platform;
+using Plugin.Firebase.Analytics;
+using Plugin.Firebase.Core.Platforms.Android;
+#endif
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -48,15 +54,17 @@ public static class MauiProgram
             handlers.AddHandler<Border, NotAnimatedBorderHandler>();
         });
 
-        AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
-                  $"ios={Constants.AppCenterIOSId};",
-                  typeof(Analytics), typeof(Crashes));
-
         builder.Services.AddDependencies();
 
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+        
+        // Log all unhandled exceptions
+        MauiExceptions.UnhandledException += (_, args) =>
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(args.ExceptionObject as Exception);
+        };
         
 #if ANDROID
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
@@ -99,13 +107,17 @@ public static class MauiProgram
         builder.ConfigureLifecycleEvents(events =>
         {
 #if IOS
-            events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
-                Firebase.Core.App.Configure();
+            events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) => {
+                CrossFirebase.Initialize();
+                FirebaseCloudMessagingImplementation.Initialize();
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
                 return false;
             }));
 #elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, bundle) => {
-                Firebase.FirebaseApp.InitializeApp(activity);
+                CrossFirebase.Initialize(activity);
+                FirebaseAnalyticsImplementation.Initialize(activity);
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
             }));
 #endif
         });
