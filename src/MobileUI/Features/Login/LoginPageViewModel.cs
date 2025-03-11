@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.AppCenter.Crashes;
 using Mopups.Services;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -121,7 +121,7 @@ public partial class LoginPageViewModel : BaseViewModel
         catch (Exception e)
         {
             // Everything else is fatal
-            Crashes.TrackError(e);
+            CrossFirebaseCrashlytics.Current.RecordException(e);
             Console.WriteLine(e);
             await WaitForWindowClose();
             await Application.Current.MainPage.DisplayAlert("Login Failure",

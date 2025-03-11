@@ -1,5 +1,5 @@
-﻿using Microsoft.AppCenter.Crashes;
-using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
+﻿using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.ApiClient.Services;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -28,7 +28,7 @@ public class PushNotificationsService : IPushNotificationsService
         }
         catch (Exception e)
         {
-            Crashes.TrackError(new Exception($"Couldn't upload device token at {lastTimeUpdated}. Error: {e}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"Couldn't upload device token at {lastTimeUpdated}. Error: {e}"));
             return false;
         }
     }

@@ -124,7 +124,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private void LogEvent(string eventName)
         {
             _firebaseAnalyticsService.Log(eventName,
-                new Dictionary<string, string> { { "quiz_id", _quizId.ToString() }, { "quiz_title", QuizTitle } });
+                new Dictionary<string, object> { { "quiz_id", _quizId.ToString() }, { "quiz_title", QuizTitle } });
         }
 
         private async Task SubmitAnswer()
