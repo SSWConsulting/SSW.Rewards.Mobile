@@ -44,8 +44,18 @@ public partial class App : Application
     protected override async void OnAppLinkRequestReceived(Uri uri)
     {
         base.OnAppLinkRequestReceived(uri);
-        
-        if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol)
+
+        if ($"{uri.Scheme}://{uri.Host}" == Constants.AutologinRedirectUrl)
+        {
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var token = queryDictionary.Get("token");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                await _authService.AutologinAsync(token);
+            }
+        }
+        else if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol)
         {
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
             var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
@@ -61,16 +71,6 @@ public partial class App : Application
                 ((LoginPage)MainPage)?.QueueCodeScan(code);
             }
         }
-        else if ($"{uri.Scheme}://{uri.Host}" == Constants.AuthRedirectUrl)
-        {
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            var token = queryDictionary.Get("token");
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                await _authService.AutologinAsync(token);
-            }
-        }        
     }
 
     private async Task CheckApiCompatibilityAsync()
