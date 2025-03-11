@@ -135,17 +135,37 @@ public static class MauiProgram
                 ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
             });
 #elif ANDROID
-            events.AddAndroid(android => android.OnCreate((activity, bundle) => {
-                var action = activity.Intent?.Action;
-                var data = activity.Intent?.Data?.ToString();
-
-                if (action != Android.Content.Intent.ActionView || data is null)
+            events.AddAndroid(android => 
+            {
+                android.OnCreate((activity, bundle) =>
                 {
-                    return;
-                }
+                    var action = activity.Intent?.Action;
+                    var data = activity.Intent?.Data?.ToString();
 
-                Task.Run(() => HandleAppLink(data));
-            }));
+                    if (action != Android.Content.Intent.ActionView || data is null)
+                    {
+                        return;
+                    }
+
+                    Task.Run(() => HandleAppLink(data));
+                });
+
+                android.OnNewIntent((activity, intent) =>
+                {
+                    if (intent != null)
+                    {
+                        var action = intent.Action;
+                        var data = intent.Data?.ToString();
+                        
+                        if (action != Android.Content.Intent.ActionView || data is null)
+                        {
+                            return;
+                        }
+
+                        Task.Run(() => HandleAppLink(data));
+                    }
+                });
+            });
 #endif
         });
 

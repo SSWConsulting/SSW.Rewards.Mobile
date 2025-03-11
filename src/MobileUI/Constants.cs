@@ -19,6 +19,7 @@ public static class Constants
     public const string MaxApiSupportedVersion = "1.0";
 
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
+    public const string AutologinRedirectUrl = "sswrewards://autologin";
 
 #if DEBUG
     public const string AuthorityUri = "https://identity.ssw.com.au";
