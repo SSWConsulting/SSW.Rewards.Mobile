@@ -115,7 +115,7 @@ public partial class RedeemRewardViewModel(
 
     private void LogEvent(string eventName)
     {
-        firebaseAnalyticsService.Log(eventName, new Dictionary<string, string>
+        firebaseAnalyticsService.Log(eventName, new Dictionary<string, object>
         {
             { "reward_id", _reward.Id.ToString() },
             { "reward_name", _reward.Name },
