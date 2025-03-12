@@ -42,8 +42,8 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          sudo xcode-select -s "/Applications/Xcode_16.0.app"
-          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_16.0.app" >> $GITHUB_ENV
+          sudo xcode-select -s "/Applications/Xcode_16.2.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_16.2.app" >> $GITHUB_ENV
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v2
