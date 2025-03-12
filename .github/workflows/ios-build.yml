@@ -57,10 +57,10 @@ jobs:
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
-      - name: Copy Environment.plist
+      - name: Copy Entitlement.plist
         run: |
           if [ "${{ inputs.environment }}" == "prod" ]; then
-            cp -f src/MobileUI/Platforms/iOS/Environment.production.plist src/MobileUI/Platforms/iOS/Environment.plist
+            cp -f src/MobileUI/Platforms/iOS/Entitlement.production.plist src/MobileUI/Platforms/iOS/Entitlement.plist
           fi
 
       - name: Build and sign
