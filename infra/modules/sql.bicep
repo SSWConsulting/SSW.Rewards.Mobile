@@ -1,6 +1,7 @@
 param projectName string
 param location string = resourceGroup().location
 param environment string
+param databaseSkuName string
 
 param keyVaultName string
 
@@ -8,6 +9,10 @@ param sqlAdministratorsLoginName string
 param sqlAdministratorsObjectId string
 
 param databaseSku object = {
+  name: databaseSkuName
+}
+
+param hangfireDatabaseSku object = {
   name: 'Basic'
 }
 
@@ -57,7 +62,7 @@ resource hangfireSqlDatabase 'Microsoft.Sql/servers/databases@2021-02-01-preview
   parent: sqlServer
   name: hangfireDatabaseName
   location: location
-  sku: databaseSku
+  sku: hangfireDatabaseSku
   properties: databaseProperties
 }
 
