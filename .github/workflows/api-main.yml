@@ -13,6 +13,7 @@ jobs:
     uses: ./.github/workflows/api-az-deploy.yml
     with:
       ENVIRONMENT: staging
+      DATABASE_SKU: Basic
       RESOURCE_GROUP: SSW.Rewards.Staging
       APP_SERVICE_PLAN: plan-ssw-shared-dev
       APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans
@@ -31,6 +32,7 @@ jobs:
     uses: ./.github/workflows/api-az-deploy.yml
     with:
       ENVIRONMENT: prod
+      DATABASE_SKU: S0
       RESOURCE_GROUP: SSW.Rewards.Prod
       APP_SERVICE_PLAN: plan-ssw-shared-prod
       APP_SERVICE_PLAN_RESOURCE_GROUP: SSW.AppServicePlans

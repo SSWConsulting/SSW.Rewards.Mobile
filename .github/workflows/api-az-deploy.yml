@@ -6,6 +6,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
+      DATABASE_SKU:
+        required: true
+        type: string
       RESOURCE_GROUP:
         required: true
         type: string
@@ -83,6 +86,7 @@ jobs:
           --resource-group ${{ inputs.RESOURCE_GROUP }} `
           --template-file .\infra\main.bicep `
           --parameters environment=${{ inputs.ENVIRONMENT }} `
+            databaseSkuName=${{ inputs.DATABASE_SKU }} `
             appServicePlanName=${{ inputs.APP_SERVICE_PLAN }} `
             appServicePlanResourceGroup=${{ inputs.APP_SERVICE_PLAN_RESOURCE_GROUP }} `
             sqlAdministratorsLoginName=$env:sqlAdminGroup `

@@ -4,6 +4,9 @@ on:
       environment:
         required: true
         type: string
+      databaseSku:
+        required: true
+        type: string
       resourceGroupName:
         required: true
         type: string
@@ -58,7 +61,8 @@ jobs:
             --resource-group ${{ inputs.resourceGroupName }} `
             --template-file .\infra\admin-main.bicep `
             --parameters environment=${{ inputs.environment }} `
-            | convertfrom-json | foreach properties | foreach outputs
+              databaseSkuName=${{ inputs.databaseSku }} `
+              | convertfrom-json | foreach properties | foreach outputs
 
           $out.PSObject.Properties | ForEach-Object {
               $name = $_.Name
