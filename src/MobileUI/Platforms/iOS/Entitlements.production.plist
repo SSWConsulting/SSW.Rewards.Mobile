@@ -7,6 +7,6 @@
             <string>B5652JTA7Q.com.companyname.SSW.Consulting</string>
         </array>
         <key>aps-environment</key>
-        <string>development</string>
+        <string>production</string>
     </dict>
 </plist>
