@@ -60,6 +60,8 @@ public class AuthenticationService : IAuthenticationService
                 Preferences.Set(nameof(HasCachedAccount), true);
                 DetailsUpdated?.Invoke(this, EventArgs.Empty);
 
+                await SecureStorage.SetAsync(nameof(_accessToken), _accessToken);
+
                 await Application.Current.InitializeMainPage();
             }
             catch (Exception ex)
@@ -123,6 +125,11 @@ public class AuthenticationService : IAuthenticationService
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     public async Task<string> GetAccessToken()
     {
+        if (string.IsNullOrEmpty(_accessToken))
+        {
+            await GetStoredAccessToken();
+        }
+
         if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
         {
             return _accessToken;
@@ -163,6 +170,29 @@ public class AuthenticationService : IAuthenticationService
         }
 
         Preferences.Set("FirstRun", false);
+    }
+
+    private async Task GetStoredAccessToken()
+    {
+        _accessToken = await SecureStorage.GetAsync(nameof(_accessToken));
+
+        if (!string.IsNullOrEmpty(_accessToken))
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(_accessToken);
+
+            _tokenExpiry = jwtToken.ValidTo;
+
+            if (_tokenExpiry <= DateTimeOffset.Now.AddMinutes(2))
+            {
+                SecureStorage.Remove(nameof(_accessToken));
+            }
+            else
+            {
+                Preferences.Set(nameof(HasCachedAccount), true);
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 
     private ApiStatus SetLoggedInState(AuthResult loginResult)
