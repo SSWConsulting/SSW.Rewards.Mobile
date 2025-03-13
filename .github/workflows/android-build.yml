@@ -24,14 +24,6 @@ jobs:
           $buildNumber=${{ inputs.build_number }}
           echo "Build Number: $buildNumber"
 
-      - name: Update Build Number
-        run: |
-          $content = Get-Content src/MobileUI/MobileUI.csproj -Raw
-
-          $newContent = $content -replace '<ApplicationVersion>.*</ApplicationVersion>', "<ApplicationVersion>$buildNumber</ApplicationVersion>"
-
-          Set-Content src/MobileUI/MobileUI.csproj -Value $newContent
-
       - name: Update google-services.json
         shell: bash
         run: |
@@ -61,7 +53,9 @@ jobs:
 
       - name: Build and sign
         run: dotnet publish src/MobileUI/MobileUI.csproj `
-          -f:net8.0-android -c:Release /p:AndroidKeyStore=True `
+          -f:net8.0-android -c:Release `
+          /p:ApplicationVersion=${{ inputs.build_number }} `
+          /p:AndroidKeyStore=True `
           /p:AndroidSigningKeyStore="${{ github.workspace }}/sswrewards.keystore" `
           /p:AndroidSigningKeyPass=${{ secrets.ANDROID_KEYPASSWORD }} `
           /p:AndroidSigningKeyAlias=${{ secrets.ANDROID_KEYSTOREALIAS }} `
