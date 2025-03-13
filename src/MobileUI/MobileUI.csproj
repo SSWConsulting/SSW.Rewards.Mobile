@@ -37,6 +37,8 @@
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>Automatic</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
+        <MtouchUseLlvm>False</MtouchUseLlvm>
+        <AotAssemblies>True</AotAssemblies>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
