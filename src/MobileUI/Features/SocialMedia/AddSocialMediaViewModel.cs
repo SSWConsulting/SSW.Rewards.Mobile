@@ -31,13 +31,16 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     private int _cursorPosition;
 
     [ObservableProperty]
-    private bool _isError;
-
-    [ObservableProperty]
     private string _errorText;
     
     [ObservableProperty]
+    private string _successText;
+    
+    [ObservableProperty]
     private string _currentUrl;
+    
+    [ObservableProperty]
+    private string _icon;
     
     public AddSocialMediaViewModel(IUserService userService,
         ISnackbarService snackbarService,
@@ -47,7 +50,13 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         _userService = userService;
         _snackbarService = snackbarService;
         _platformId = socialMediaPlatformId;
-        _currentUrl = currentUrl;
+        
+        CurrentUrl = currentUrl;
+        
+        if (!string.IsNullOrWhiteSpace(currentUrl))
+        {
+            InputText = currentUrl;
+        }
         
         Initialise(socialMediaPlatformId);
     }
@@ -61,26 +70,30 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             case Constants.SocialMediaPlatformIds.LinkedIn:
                 PlatformName = "LinkedIn";
                 Url = url ?? "https://linkedin.com/in/";
-                Placeholder = url ?? "https://linkedin.com/in/[your-name]";
+                Placeholder = "https://linkedin.com/in/[your-name]";
                 ValidationPattern = "^https?://(www.)?linkedin.com/in/([a-zA-Z0-9._-]+)$";
+                Icon = "\uf0e1";
                 break;
             case Constants.SocialMediaPlatformIds.GitHub:
                 PlatformName = "GitHub";
                 Url = url ?? "https://github.com/";
-                Placeholder = url ?? "https://github.com/[your-username]";
+                Placeholder = "https://github.com/[your-username]";
                 ValidationPattern = "^https?://(www.)?github.com/([a-zA-Z0-9._-]+)$";
+                Icon = "\uf09b";
                 break;
             case Constants.SocialMediaPlatformIds.Twitter:
                 PlatformName = "Twitter";
                 Url = url ?? "https://x.com/";
-                Placeholder = url ?? "https://x.com/[your-username]";
+                Placeholder = "https://x.com/[your-username]";
                 ValidationPattern = "^https?://(www.)?(twitter|x).com/([a-zA-Z0-9._-]+)$";
+                Icon = "\ue61b";
                 break;
             case Constants.SocialMediaPlatformIds.Company:
                 PlatformName = "Company";
                 Url = url ?? "https://";
-                Placeholder = url ?? "https://[your-website]";
+                Placeholder = "https://[your-website]";
                 ValidationPattern = @"^https?://\S+";
+                Icon = "\uf1ad";
                 break;
         }
     }
@@ -88,20 +101,11 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     [RelayCommand]
     private async Task Connect()
     {
-        IsError = false;
-        if (string.IsNullOrWhiteSpace(InputText))
-        {
-            IsError = true;
-            ErrorText = "URL cannot be empty";
-            return;
-        }
+        var isValid = ValidateForm();
 
-        if (!IsUrlValid())
-        {
-            IsError = true;
-            ErrorText = "The URL is not valid";
-            return;
-        }
+        if (!isValid) return;
+        
+        SuccessText = "✅ Done";
 
         await AddProfile();
     }
@@ -125,11 +129,48 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             CursorPosition = InputText.Length;
         });
     }
+    
+    [RelayCommand]
+    private async Task OpenLink()
+    {
+        var isValid = ValidateForm();
+        
+        if (isValid && Uri.TryCreate(InputText, UriKind.Absolute, out Uri uri))
+        {
+            try
+            {
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            }
+        }
+    }
 
     private bool IsUrlValid()
     {
         var reg = new Regex(ValidationPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         return reg.IsMatch(InputText);
+    }
+
+    private bool ValidateForm()
+    {
+        ErrorText = string.Empty;
+        
+        if (string.IsNullOrWhiteSpace(InputText))
+        {
+            ErrorText = "URL cannot be empty";
+            return false;
+        }
+
+        if (!IsUrlValid())
+        {
+            ErrorText = "The URL is not valid";
+            return false;
+        }
+        
+        return true;
     }
 
     private async Task AddProfile()
