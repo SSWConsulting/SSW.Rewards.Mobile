@@ -22,16 +22,20 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IProfilePicStorageProvider _profilePicStorageProvider;
 
-    public GetNetworkProfileListHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
+    public GetNetworkProfileListHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IProfilePicStorageProvider profilePicStorageProvider)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _profilePicStorageProvider = profilePicStorageProvider;
     }
 
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
         var userEmail = _currentUserService.GetUserEmail();
+
+        var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
 
         // Get user ID, user achievement ID and staff achievement ID.
         // Usually it only has one of the achievement IDs.
@@ -136,7 +140,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
                 UserId = g.Key.UserId,
                 Email = g.Key.Email ?? string.Empty,
                 Name = g.Key.Name ?? string.Empty,
-                ProfilePicture = g.Key.ProfilePicture ?? string.Empty,
+                ProfilePicture = g.Key.ProfilePicture ?? defaultProfilePictureUrl.ToString(),
                 AchievementId = g.Max(x => x.AchievementId),
                 Scanned = g.Any(x => x.Scanned || scannedAchievements.Contains(x.AchievementId)),
                 ScannedMe = g.Any(x => x.ScannedMe),

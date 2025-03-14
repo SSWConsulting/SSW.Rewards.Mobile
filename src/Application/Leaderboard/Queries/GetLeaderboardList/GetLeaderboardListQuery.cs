@@ -10,12 +10,14 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
     private readonly IApplicationDbContext _context;
     private readonly IDateTime _dateTime;
     private readonly ICacheService _cacheService;
+    private readonly IProfilePicStorageProvider _profilePicStorageProvider;
 
-    public Handler(IApplicationDbContext context, IDateTime dateTime, ICacheService cacheService)
+    public Handler(IApplicationDbContext context, IDateTime dateTime, ICacheService cacheService, IProfilePicStorageProvider profilePicStorageProvider)
     {
         _context = context;
         _dateTime = dateTime;
         _cacheService = cacheService;
+        _profilePicStorageProvider = profilePicStorageProvider;
     }
 
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
@@ -65,6 +67,8 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
             })
             .ToListAsync(cancellationToken);
 
+        var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
+
         // Post-processing
         int rank = 0;
         Regex checkHttpRegex = new(@"^https?://", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
@@ -77,6 +81,11 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
                 _ when user.Email?.EndsWith("ssw.com.au") == true => "SSW",
                 _ => "Community"
             };
+
+            if (string.IsNullOrEmpty(user.ProfilePic))
+            {
+                user.ProfilePic = defaultProfilePictureUrl.ToString();
+            }
         }
 
         return users;
