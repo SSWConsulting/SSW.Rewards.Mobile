@@ -20,7 +20,7 @@ public partial class AboutSswPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("AboutSswPage");
-        VersionLabel.Text = $"Version {AppInfo.VersionString}";
+        VersionLabel.Text = $"Version {AppInfo.VersionString} ({AppInfo.BuildString})";
     }
 
     private async void Handle_CloseTapped(object sender, EventArgs args)
