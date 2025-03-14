@@ -82,7 +82,7 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
                 _ => "Community"
             };
 
-            if (string.IsNullOrEmpty(user.ProfilePic))
+            if (string.IsNullOrEmpty(user.ProfilePic) && defaultProfilePictureUrl != null)
             {
                 user.ProfilePic = defaultProfilePictureUrl.ToString();
             }
