@@ -37,6 +37,8 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
 
         var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
 
+        var defaultProfilePictureUrlString = defaultProfilePictureUrl != null ? defaultProfilePictureUrl.ToString() : string.Empty;
+
         // Get user ID, user achievement ID and staff achievement ID.
         // Usually it only has one of the achievement IDs.
         var user = await _dbContext.Users
@@ -140,7 +142,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
                 UserId = g.Key.UserId,
                 Email = g.Key.Email ?? string.Empty,
                 Name = g.Key.Name ?? string.Empty,
-                ProfilePicture = g.Key.ProfilePicture ?? defaultProfilePictureUrl.ToString(),
+                ProfilePicture = g.Key.ProfilePicture ?? defaultProfilePictureUrlString,
                 AchievementId = g.Max(x => x.AchievementId),
                 Scanned = g.Any(x => x.Scanned || scannedAchievements.Contains(x.AchievementId)),
                 ScannedMe = g.Any(x => x.ScannedMe),
