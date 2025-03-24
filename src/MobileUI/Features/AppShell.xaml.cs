@@ -29,6 +29,11 @@ public partial class AppShell
         return true;
     }
     
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+    }
+    
     protected override void OnAppearing()
     {
         base.OnAppearing();

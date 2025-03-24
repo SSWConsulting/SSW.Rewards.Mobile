@@ -24,7 +24,7 @@
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
                 <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource TabBarBackground}" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Gray300}"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
             </Style>
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
@@ -65,37 +65,67 @@
     </Shell.FlyoutHeader>
 
 
-    <FlyoutItem Style="{StaticResource BaseStyle}" x:Name="MyTabbar">
-        <Shell.ItemTemplate>
-            <DataTemplate>
-                <VerticalStackLayout HeightRequest="1"
-                                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"/>
-            </DataTemplate>
-        </Shell.ItemTemplate>
-        <!-- HACK: The following workaround is for a bug with Shell tab icons on iOS.
-                    It will need to be updated before we deploy to Android.
-                    See: https://github.com/dotnet/maui/issues/8244 -->
-
-        <Tab Route="main" Icon="icon_star" Title="Leaderboard">
-            <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" />
+    <controls:CustomTabBar CenterViewText="Scan"
+                        CenterViewVisible="True"
+                        CenterViewBackgroundColor="{StaticResource SSWRed}"
+                        CenterViewTapped="Button_Clicked">
+        <controls:CustomTabBar.CenterViewImageSource>
+            
+            <FontImageSource FontFamily="FluentIcons"
+                             Glyph="&#xf636;"></FontImageSource>
+        </controls:CustomTabBar.CenterViewImageSource>
+        <Tab Title="Leaderboard" Icon="icon_star">
+            <ShellContent
+                Title="Leaderboard"
+                ContentTemplate="{DataTemplate pages:LeaderboardPage}"
+                Route="main" />
         </Tab>
-
-        <Tab Route="earn" Icon="icon_gamepad" Title="Earn">
-            <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" />
+        <Tab Title="Earn" Icon="icon_gamepad">
+            <ShellContent
+                Title="Earn"
+                ContentTemplate="{DataTemplate pages:QuizPage}"
+                Route="earn" />
         </Tab>
-
-        <Tab Route="redeem" Icon="icon_store" Title="Redeem">
-            <ShellContent ContentTemplate="{DataTemplate pages:RedeemPage}" />
+        <Tab Title="Network" Icon="icon_people">
+            <ShellContent
+                Title="Network"
+                ContentTemplate="{DataTemplate pages:NetworkPage}"
+                Route="people" />
         </Tab>
-
-        <Tab Route="people" Icon="icon_people" Title="Network">
-            <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" />
+        <Tab Title="Activity" Icon="icon_gamepad">
+            <ShellContent
+                Title="Activity"
+                ContentTemplate="{DataTemplate pages:ActivityPage}"
+                Route="activity" />
         </Tab>
-
-        <Tab Route="activity" Icon="icon_bell" Title="Activity">
-            <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" />
-        </Tab>
-    </FlyoutItem>
+    </controls:CustomTabBar>
+    <!-- <FlyoutItem Style="{StaticResource BaseStyle}" x:Name="MyTabbar"> -->
+    <!--     <Shell.ItemTemplate> -->
+    <!--         <DataTemplate> -->
+    <!--             <VerticalStackLayout HeightRequest="1" -->
+    <!--                                  BackgroundColor="{StaticResource FlyoutBackgroundColour}"/> -->
+    <!--         </DataTemplate> -->
+    <!--     </Shell.ItemTemplate> -->
+    <!--     <Tab Route="main" Icon="icon_star" Title="Leaderboard"> -->
+    <!--         <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" /> -->
+    <!--     </Tab> -->
+    <!-- -->
+    <!--     <Tab Route="earn" Icon="icon_gamepad" Title="Earn"> -->
+    <!--         <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" /> -->
+    <!--     </Tab> -->
+    <!-- -->
+    <!--     <Tab Route="scan" Icon="icon_qrcode" Title="Scan"> -->
+    <!--         <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" /> -->
+    <!--     </Tab> -->
+    <!-- -->
+    <!--     <Tab Route="people" Icon="icon_people" Title="Network"> -->
+    <!--         <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" /> -->
+    <!--     </Tab> -->
+    <!-- -->
+    <!--     <Tab Route="activity" Icon="icon_bell" Title="Activity"> -->
+    <!--         <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" /> -->
+    <!--     </Tab> -->
+    <!-- </FlyoutItem> -->
 
     <Shell.FlyoutFooter>
         <controls:FlyoutFooter />
