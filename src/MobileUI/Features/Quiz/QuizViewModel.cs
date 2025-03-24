@@ -12,7 +12,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private bool _isLoaded;
     private readonly IQuizService _quizService;
 
-    private string quizDetailsPageUrl = "earn/details";
+    private string quizDetailsPageUrl = "///earn/details";
     
     private IDispatcherTimer _timer;
     

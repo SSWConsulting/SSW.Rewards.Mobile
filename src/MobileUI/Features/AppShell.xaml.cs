@@ -68,6 +68,12 @@ public partial class AppShell
 
     private void OnNavigating(object sender, ShellNavigatingEventArgs e)
     {
+        if (e.Target.Location.OriginalString.Contains("scan"))
+        {
+            e.Cancel();
+            App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+        }
+        
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
         WeakReferenceMessenger.Default.Send(new TopBarTitleMessage(string.Empty));
     }

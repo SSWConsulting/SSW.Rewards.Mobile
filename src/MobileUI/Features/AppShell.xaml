@@ -63,14 +63,12 @@
     <Shell.FlyoutHeader>
         <controls:FlyoutHeader />
     </Shell.FlyoutHeader>
-
-
+    
     <controls:CustomTabBar CenterViewText="Scan"
                         CenterViewVisible="True"
                         CenterViewBackgroundColor="{StaticResource SSWRed}"
                         CenterViewTapped="Button_Clicked">
         <controls:CustomTabBar.CenterViewImageSource>
-            
             <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf636;"></FontImageSource>
         </controls:CustomTabBar.CenterViewImageSource>
@@ -86,6 +84,12 @@
                 ContentTemplate="{DataTemplate pages:QuizPage}"
                 Route="earn" />
         </Tab>
+        <Tab Title="Scan">
+            <ShellContent
+                Title="Scan"
+                ContentTemplate="{DataTemplate pages:ScanPage}"
+                Route="scan" />
+        </Tab>
         <Tab Title="Network" Icon="icon_people">
             <ShellContent
                 Title="Network"
@@ -99,33 +103,6 @@
                 Route="activity" />
         </Tab>
     </controls:CustomTabBar>
-    <!-- <FlyoutItem Style="{StaticResource BaseStyle}" x:Name="MyTabbar"> -->
-    <!--     <Shell.ItemTemplate> -->
-    <!--         <DataTemplate> -->
-    <!--             <VerticalStackLayout HeightRequest="1" -->
-    <!--                                  BackgroundColor="{StaticResource FlyoutBackgroundColour}"/> -->
-    <!--         </DataTemplate> -->
-    <!--     </Shell.ItemTemplate> -->
-    <!--     <Tab Route="main" Icon="icon_star" Title="Leaderboard"> -->
-    <!--         <ShellContent ContentTemplate="{DataTemplate pages:LeaderboardPage}" /> -->
-    <!--     </Tab> -->
-    <!-- -->
-    <!--     <Tab Route="earn" Icon="icon_gamepad" Title="Earn"> -->
-    <!--         <ShellContent ContentTemplate="{DataTemplate pages:QuizPage}" /> -->
-    <!--     </Tab> -->
-    <!-- -->
-    <!--     <Tab Route="scan" Icon="icon_qrcode" Title="Scan"> -->
-    <!--         <ShellContent ContentTemplate="{DataTemplate pages:ScanPage}" /> -->
-    <!--     </Tab> -->
-    <!-- -->
-    <!--     <Tab Route="people" Icon="icon_people" Title="Network"> -->
-    <!--         <ShellContent ContentTemplate="{DataTemplate pages:NetworkPage}" /> -->
-    <!--     </Tab> -->
-    <!-- -->
-    <!--     <Tab Route="activity" Icon="icon_bell" Title="Activity"> -->
-    <!--         <ShellContent ContentTemplate="{DataTemplate pages:ActivityPage}" /> -->
-    <!--     </Tab> -->
-    <!-- </FlyoutItem> -->
 
     <Shell.FlyoutFooter>
         <controls:FlyoutFooter />

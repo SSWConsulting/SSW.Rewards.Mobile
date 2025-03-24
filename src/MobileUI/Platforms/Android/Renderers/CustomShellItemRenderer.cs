@@ -24,13 +24,13 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 			};
 
 			rootLayout.AddView(view);
-			const int middleViewSize = 150;
+			const int middleViewSize = 200;
 			var middleViewLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent,
 																	  ViewGroup.LayoutParams.WrapContent,
 																	  GravityFlags.CenterHorizontal |
 																	  GravityFlags.Bottom)
 			{
-				BottomMargin = 100,
+				BottomMargin = 80,
 				Width = middleViewSize,
 				Height = middleViewSize
 			};
@@ -67,10 +67,10 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 
 				const int padding = 20;
 				middleView.LayoutParameters = new FrameLayout.LayoutParams(
-					drawable.Bitmap.Width - padding, drawable.Bitmap.Height - padding,
+					150, 150,
 					GravityFlags.CenterHorizontal | GravityFlags.Bottom)
 				{
-					BottomMargin = middleViewLayoutParams.BottomMargin + (int)(1.5 * padding)
+					BottomMargin = middleViewLayoutParams.BottomMargin + 25
 				};
 				middleView.SetBackground(drawable);
 				middleView.SetMinimumHeight(0);
