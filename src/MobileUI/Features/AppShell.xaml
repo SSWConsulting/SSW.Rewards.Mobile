@@ -11,6 +11,7 @@
     Shell.NavBarIsVisible="False"
     Navigating="OnNavigating"
     MenuItemTemplate="{StaticResource SSWMenuTemplate}"
+    FlyoutBehavior="Flyout"
     x:Name="RewardsShell">
 
     <Shell.Resources>
