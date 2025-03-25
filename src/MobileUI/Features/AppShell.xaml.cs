@@ -69,6 +69,7 @@ public partial class AppShell
 
     private void OnNavigating(object sender, ShellNavigatingEventArgs e)
     {
+        // Prevent Scan page from being navigated to outside a modal
         if (e.Target.Location.OriginalString.Contains("scan"))
         {
             e.Cancel();

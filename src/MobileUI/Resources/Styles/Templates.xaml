@@ -60,6 +60,13 @@
                     </Button.ImageSource>
                 </Button>
                 
+                <Image Grid.Column="1"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="40"
+                       Source="ssw_logo_darkmode"
+                       IsVisible="{Binding Title, Converter={mct:IsStringNullOrEmptyConverter}}"/>
+                
                 <Grid Grid.Column="1"
                       VerticalOptions="Center"
                       HeightRequest="50">

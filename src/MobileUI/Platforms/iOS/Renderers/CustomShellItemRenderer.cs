@@ -40,6 +40,8 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
                                               UIViewAutoresizing.FlexibleLeftMargin |
                                               UIViewAutoresizing.FlexibleBottomMargin;
                 middleView.Layer.CornerRadius = middleView.Frame.Width / 2;
+                middleView.Layer.BorderWidth = 2;
+                middleView.Layer.BorderColor = UIColor.White.CGColor;
                 middleView.Layer.MasksToBounds = false;
 
                 middleView.TouchUpInside += delegate
