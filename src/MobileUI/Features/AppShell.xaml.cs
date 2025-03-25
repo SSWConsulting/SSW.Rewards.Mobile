@@ -16,6 +16,7 @@ public partial class AppShell
         InitializeComponent();
         Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
+        Routing.RegisterRoute("redeem", typeof(RedeemPage));
     }
     
     protected override bool OnBackButtonPressed()

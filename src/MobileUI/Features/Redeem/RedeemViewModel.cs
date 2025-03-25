@@ -62,12 +62,11 @@ public partial class RedeemViewModel : BaseViewModel
 
     public async Task Initialise()
     {
-        if (_isLoaded)
+        if (!_isLoaded)
         {
-            return;
+            await LoadData();
         }
 
-        await LoadData();
         BeginAutoScroll();
     }
 
@@ -167,5 +166,11 @@ public partial class RedeemViewModel : BaseViewModel
             };
             await MopupService.Instance.PushAsync(popup);
         }
+    }
+    
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await App.Current.MainPage.Navigation.PopModalAsync();
     }
 }

@@ -8,12 +8,30 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
-             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:RedeemViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
     <ContentPage.Content>
-        <Grid>
-            <Grid RowDefinitions="Auto, *"
+        <Grid RowDefinitions="Auto, *">
+            <Grid Grid.Row="0"
+                  Margin="15,0">
+                <Border
+                    HorizontalOptions="End"
+                    BackgroundColor="{StaticResource Background}"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        FontFamily="FluentIcons"
+                        Text="&#xe4c3;"
+                        FontSize="35"
+                        FontAutoScalingEnabled="False"
+                        TextColor="{StaticResource primary}" />
+                </Border>
+            </Grid>
+            <Grid Grid.Row="1"
+                  RowDefinitions="Auto, *"
                   Margin="15"
                   RowSpacing="10">
                 <Border Grid.Row="0"

@@ -71,7 +71,9 @@
                         CenterViewTapped="Button_Clicked">
         <controls:CustomTabBar.CenterViewImageSource>
             <FontImageSource FontFamily="FluentIcons"
-                             Glyph="&#xf636;"></FontImageSource>
+                             Glyph="&#xf636;"
+                             FontAutoScalingEnabled="False"
+                             Size="40"></FontImageSource>
         </controls:CustomTabBar.CenterViewImageSource>
         <Tab Title="Leaderboard" Icon="icon_star">
             <ShellContent
