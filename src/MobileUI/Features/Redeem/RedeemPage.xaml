@@ -11,55 +11,19 @@
              x:DataType="viewModels:RedeemViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
     <ContentPage.Content>
-        <Grid RowDefinitions="Auto, *">
-            <Grid Grid.Row="0"
-                  Margin="15,0">
-                <Border
-                    HorizontalOptions="End"
-                    BackgroundColor="{StaticResource Background}"
-                    StrokeShape="Ellipse"
-                    StrokeThickness="0">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
-                    </Border.GestureRecognizers>
-                    <Label
-                        FontFamily="FluentIcons"
-                        Text="&#xe4c3;"
-                        FontSize="35"
-                        FontAutoScalingEnabled="False"
-                        TextColor="{StaticResource primary}" />
-                </Border>
-            </Grid>
-            <Grid Grid.Row="1"
-                  RowDefinitions="Auto, *"
-                  Margin="15"
+        <Grid>
+            <Grid RowDefinitions="Auto, *"
+                  Margin="15,5,15,0"
                   RowSpacing="10">
                 <Border Grid.Row="0"
-                        BackgroundColor="{StaticResource Background}"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 8"
                         Padding="3">
-                    <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Grid ColumnDefinitions="100, *, 100">
                         <Border Grid.Column="0"
-                                StrokeThickness="0"
+                                StrokeThickness="1"
                                 StrokeShape="RoundRectangle 6"
-                                HorizontalOptions="End"
-                                VerticalOptions="Fill">
-                            <Grid Padding="10" Background="{StaticResource ButtonBrush}">
-                                <Label
-                                    Text="&#xf290;"
-                                    FontFamily="FA6Solid"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    FontSize="14"
-                                    Style="{StaticResource LabelBold}"
-                                    InputTransparent="True" />
-                            </Grid>
-                        </Border>
-                        <Border Grid.Column="2"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 6"
-                                HorizontalOptions="End"
+                                HorizontalOptions="Start"
                                 VerticalOptions="Fill">
                             <HorizontalStackLayout Spacing="5"
                                                    Padding="8"
@@ -75,6 +39,46 @@
                                     InputTransparent="True" />
                                 <Label
                                     Text="{Binding Credits, StringFormat='{0:n0}'}"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        
+                        <Grid Grid.Column="1"
+                              VerticalOptions="Center">
+                            <Label Text="Redeem"
+                                   Style="{StaticResource LabelBold}"
+                                   FontSize="18"
+                                   VerticalOptions="Center"
+                                   VerticalTextAlignment="Center"
+                                   HorizontalOptions="Center" />
+                        </Grid>
+                        
+                        <Border Grid.Column="2"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                HorizontalOptions="End"
+                                VerticalOptions="Fill">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="5"
+                                                   Padding="8"
+                                                   Background="{StaticResource BrandBrush}">
+                                <Label
+                                    TextColor="White"
+                                    Text="&#xf057;"
+                                    FontFamily="FA6Regular"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                                <Label
+                                    Text="Close"
                                     Style="{StaticResource LabelBold}"
                                     HorizontalOptions="Start"
                                     VerticalOptions="Center"
