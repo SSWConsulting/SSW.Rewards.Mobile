@@ -17,8 +17,7 @@
                   RowSpacing="10">
                 <Border Grid.Row="0"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 8"
-                        Padding="3">
+                        StrokeShape="RoundRectangle 8">
                     <Grid ColumnDefinitions="100, *, 100">
                         <Border Grid.Column="0"
                                 StrokeThickness="1"
@@ -34,7 +33,7 @@
                                     FontFamily="FA6Solid"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
-                                    FontSize="11"
+                                    FontSize="14"
                                     Style="{StaticResource LabelBold}"
                                     InputTransparent="True" />
                                 <Label
