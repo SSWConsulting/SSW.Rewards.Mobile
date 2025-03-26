@@ -167,10 +167,4 @@ public partial class RedeemViewModel : BaseViewModel
             await MopupService.Instance.PushAsync(popup);
         }
     }
-    
-    [RelayCommand]
-    private async Task ClosePage()
-    {
-        await App.Current.MainPage.Navigation.PopModalAsync();
-    }
 }

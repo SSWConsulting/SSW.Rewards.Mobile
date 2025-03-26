@@ -23,7 +23,7 @@ public partial class TopBarViewModel : ObservableObject
     private bool _showBack;
 
     [ObservableProperty]
-    private bool _showRedeem = true;
+    private bool _showActivity = true;
     
     [ObservableProperty]
     private string _title = string.Empty;
@@ -63,9 +63,9 @@ public partial class TopBarViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenRedeemPage()
+    private async Task OpenActivityPage()
     {
-        await App.Current.MainPage.Navigation.PushModalAsync<RedeemPage>();
+        await App.Current.MainPage.Navigation.PushModalAsync<ActivityPage>();
     }
 
     [RelayCommand]
@@ -79,13 +79,13 @@ public partial class TopBarViewModel : ObservableObject
     {
         ShowBack = false;
         ShowAvatar = true;
-        ShowRedeem = true;
+        ShowActivity = true;
     }
 
     private void SetBackButton()
     {
         ShowBack = true;
         ShowAvatar = false;
-        ShowRedeem = false;
+        ShowActivity = false;
     }
 }

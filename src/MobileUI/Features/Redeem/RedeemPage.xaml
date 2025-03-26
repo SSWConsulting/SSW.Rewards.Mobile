@@ -8,83 +8,65 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:RedeemViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
     <ContentPage.Content>
         <Grid>
             <Grid RowDefinitions="Auto, *"
-                  Margin="15,5,15,0"
+                  Margin="15"
                   RowSpacing="10">
-                <Grid Grid.Row="0"
-                      ColumnDefinitions="100, *, 100">
-                    <Border Grid.Column="0"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 6"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Fill">
-                        <HorizontalStackLayout Spacing="5"
-                                               Padding="8"
-                                               Background="{StaticResource ButtonBrush}">
-                            <Label
-                                TextColor="{StaticResource Coin}"
-                                Text="&#xf51e;"
-                                FontFamily="FA6Solid"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                            <Label
-                                Text="{Binding Credits, StringFormat='{0:n0}'}"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                        </HorizontalStackLayout>
-                    </Border>
-
-                    <Grid Grid.Column="1"
-                          VerticalOptions="Center">
-                        <Label Text="Redeem"
-                               Style="{StaticResource LabelBold}"
-                               FontSize="18"
-                               VerticalOptions="Center"
-                               VerticalTextAlignment="Center"
-                               HorizontalOptions="Center" />
+                <Border Grid.Row="0"
+                        BackgroundColor="{StaticResource Background}"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="3">
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Border Grid.Column="0"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                HorizontalOptions="End"
+                                VerticalOptions="Fill">
+                            <Grid Padding="10" Background="{StaticResource ButtonBrush}">
+                                <Label
+                                    Text="&#xf290;"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                HorizontalOptions="End"
+                                VerticalOptions="Fill">
+                            <HorizontalStackLayout Spacing="5"
+                                                   Padding="8"
+                                                   Background="{StaticResource ButtonBrush}">
+                                <Label
+                                    TextColor="{StaticResource Coin}"
+                                    Text="&#xf51e;"
+                                    FontFamily="FA6Solid"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontSize="11"
+                                    Style="{StaticResource LabelBold}"
+                                    InputTransparent="True" />
+                                <Label
+                                    Text="{Binding Credits, StringFormat='{0:n0}'}"
+                                    Style="{StaticResource LabelBold}"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center"
+                                    FontSize="14"
+                                    InputTransparent="True" />
+                            </HorizontalStackLayout>
+                        </Border>
                     </Grid>
+                </Border>
 
-                    <Border Grid.Column="2"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 6"
-                            HorizontalOptions="End"
-                            VerticalOptions="Fill">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
-                        </Border.GestureRecognizers>
-                        <HorizontalStackLayout Spacing="5"
-                                               Padding="8"
-                                               Background="{StaticResource BrandBrush}">
-                            <Label
-                                TextColor="White"
-                                Text="&#xf057;"
-                                FontFamily="FA6Regular"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                Style="{StaticResource LabelBold}"
-                                InputTransparent="True" />
-                            <Label
-                                Text="Close"
-                                Style="{StaticResource LabelBold}"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                FontSize="14"
-                                InputTransparent="True" />
-                        </HorizontalStackLayout>
-                    </Border>
-                </Grid>
-                
                 <RefreshView Grid.Row="1"
                              Command="{Binding RefreshRewardsCommand}"
                              IsRefreshing="{Binding IsRefreshing}">
@@ -124,7 +106,7 @@
                                                 ButtonText="GET"
                                                 ItemId="{Binding Id}"
                                                 IsButtonDisabled="{Binding CanAfford, Converter={mct:InvertedBoolConverter}}"
-                                                ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}" />
+                                                ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/>
                                         </DataTemplate>
                                     </CarouselView.ItemTemplate>
                                 </CarouselView>
@@ -138,7 +120,7 @@
                                                Margin="0,0,0,15"
                                                x:Name="QuizIndicator" />
                             </Grid>
-
+                            
                             <CollectionView
                                 ItemsSource="{Binding Rewards}"
                                 ItemsUpdatingScrollMode="KeepItemsInView"

@@ -187,4 +187,10 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         else
             await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(item.UserId);
     }
+    
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await App.Current.MainPage.Navigation.PopModalAsync();
+    }
 }

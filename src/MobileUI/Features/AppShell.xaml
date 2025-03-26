@@ -99,11 +99,11 @@
                 ContentTemplate="{DataTemplate pages:NetworkPage}"
                 Route="people" />
         </Tab>
-        <Tab Title="Activity" Icon="icon_gamepad">
+        <Tab Title="Redeem" Icon="icon_store">
             <ShellContent
-                Title="Activity"
-                ContentTemplate="{DataTemplate pages:ActivityPage}"
-                Route="activity" />
+                Title="Redeem"
+                ContentTemplate="{DataTemplate pages:RedeemPage}"
+                Route="redeem" />
         </Tab>
     </controls:CustomTabBar>
 

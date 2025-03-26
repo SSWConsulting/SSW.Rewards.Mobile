@@ -89,14 +89,14 @@
                     BorderColor="White"
                     BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                     Padding="0"
-                    Command="{Binding OpenRedeemPageCommand}"
-                    IsVisible="{Binding ShowRedeem}"
+                    Command="{Binding OpenActivityPageCommand}"
+                    IsVisible="{Binding ShowActivity}"
                     VerticalOptions="Center">
                     <ImageButton.Behaviors>
                         <mct:IconTintColorBehavior TintColor="White" />
                     </ImageButton.Behaviors>
                     <Button.ImageSource>
-                        <FileImageSource File="icon_store" />
+                        <FileImageSource File="icon_bell" />
                     </Button.ImageSource>
                 </Button>
             </Grid>

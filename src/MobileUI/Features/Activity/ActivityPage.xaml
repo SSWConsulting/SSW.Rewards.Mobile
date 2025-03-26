@@ -7,11 +7,45 @@
              xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
              xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
              x:DataType="viewModels:ActivityPageViewModel"
-             ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
              x:Name="Activity">
-    <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
-        <Grid RowDefinitions="45" Grid.Row="0">
+    <Grid RowDefinitions="Auto, 45, *" Padding="15, 0" RowSpacing="15">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="100, *, 100">
+            <Grid Grid.Column="1"
+                  VerticalOptions="Center">
+                <Label Text="Activity"
+                       Style="{StaticResource LabelBold}"
+                       FontSize="18"
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Center" />
+            </Grid>
+
+            <Border
+                Grid.Column="2"
+                HorizontalOptions="End"
+                VerticalOptions="Center"
+                HeightRequest="30" 
+                WidthRequest="30"
+                StrokeShape="RoundRectangle 15"
+                StrokeThickness="2"
+                Stroke="White">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
+                </Border.GestureRecognizers>
+                <Label
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    FontFamily="FA6Solid"
+                    Text="&#xf00d;"
+                    FontSize="18"
+                    FontAutoScalingEnabled="False"
+                    TextColor="White" />
+            </Border>
+        </Grid>
+        <Grid RowDefinitions="45" Grid.Row="1">
             <controls:SegmentedControl
                 Grid.Row="0"
                 Segments="{Binding Segments}"
@@ -26,7 +60,7 @@
         <RefreshView
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}"
-            Grid.Row="1">
+            Grid.Row="2">
             <CollectionView
                 ItemsSource="{Binding Feed}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
@@ -120,7 +154,7 @@
             </CollectionView>
         </RefreshView>
         <ActivityIndicator
-            Grid.Row="1"
+            Grid.Row="2"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
