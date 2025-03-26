@@ -33,14 +33,14 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
                 if (image is not null)
                 {
                     middleView.SetImage(image.Value, UIControlState.Normal);
-                    middleView.Frame = new CGRect(CGPoint.Empty, image.Value.Size + new CGSize(20, 20));
+                    middleView.Frame = new CGRect(CGPoint.Empty, image.Value.Size + new CGSize(30, 30));
                 }
 
                 middleView.AutoresizingMask = UIViewAutoresizing.FlexibleRightMargin |
                                               UIViewAutoresizing.FlexibleLeftMargin |
                                               UIViewAutoresizing.FlexibleBottomMargin;
                 middleView.Layer.CornerRadius = middleView.Frame.Width / 2;
-                middleView.Layer.BorderWidth = 2;
+                middleView.Layer.BorderWidth = 4;
                 middleView.Layer.BorderColor = UIColor.White.CGColor;
                 middleView.Layer.MasksToBounds = false;
 
@@ -50,7 +50,7 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
                 };;
             }
 
-            middleView.Center = new CGPoint(View.Bounds.GetMidX(), TabBar.Frame.Top);
+            middleView.Center = new CGPoint(View.Bounds.GetMidX(), TabBar.Frame.Top + 4);
 
             View.AddSubview(middleView);
         }

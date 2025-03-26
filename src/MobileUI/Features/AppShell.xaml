@@ -73,7 +73,7 @@
             <FontImageSource FontFamily="FluentIcons"
                              Glyph="&#xf636;"
                              FontAutoScalingEnabled="False"
-                             Size="40"></FontImageSource>
+                             Size="55" />
         </controls:CustomTabBar.CenterViewImageSource>
         <Tab Title="Leaderboard" Icon="icon_star">
             <ShellContent
@@ -87,9 +87,9 @@
                 ContentTemplate="{DataTemplate pages:QuizPage}"
                 Route="earn" />
         </Tab>
-        <Tab Title="Scan">
+        <Tab Title="">
             <ShellContent
-                Title="Scan"
+                Title=""
                 ContentTemplate="{DataTemplate pages:ScanPage}"
                 Route="scan" />
         </Tab>
