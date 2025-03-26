@@ -1,4 +1,5 @@
 using SSW.Rewards.Mobile.Controls;
+using Color = Android.Graphics.Color;
 
 namespace SSW.Rewards.Mobile.Renderers;
 
@@ -24,13 +25,13 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 			};
 
 			rootLayout.AddView(view);
-			const int middleViewSize = 200;
+			const int middleViewSize = 280;
 			var middleViewLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent,
 																	  ViewGroup.LayoutParams.WrapContent,
 																	  GravityFlags.CenterHorizontal |
 																	  GravityFlags.Bottom)
 			{
-				BottomMargin = 80,
+				BottomMargin = 30,
 				Width = middleViewSize,
 				Height = middleViewSize
 			};
@@ -51,6 +52,7 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 				};
 				var backgroundDrawable = new GradientDrawable();
 				backgroundDrawable.SetShape(ShapeType.Rectangle);
+                backgroundDrawable.SetStroke(14, Color.White);
 				backgroundDrawable.SetCornerRadius(middleViewSize / 2f);
 				backgroundDrawable.SetColor(tabBar.CenterViewBackgroundColor.ToPlatform(Colors.Transparent));
 				backgroundView.SetBackground(backgroundDrawable);
@@ -64,13 +66,12 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 				{
 					return;
 				}
-
-				const int padding = 20;
+                
 				middleView.LayoutParameters = new FrameLayout.LayoutParams(
-					150, 150,
+					180, 180,
 					GravityFlags.CenterHorizontal | GravityFlags.Bottom)
 				{
-					BottomMargin = middleViewLayoutParams.BottomMargin + 25
+					BottomMargin = middleViewLayoutParams.BottomMargin + 50
 				};
 				middleView.SetBackground(drawable);
 				middleView.SetMinimumHeight(0);
