@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
     Shell.NavBarIsVisible="False"

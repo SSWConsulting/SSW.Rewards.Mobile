@@ -9,7 +9,7 @@
              x:DataType="viewModels:ActivityPageViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
              x:Name="Activity">
-    <Grid RowDefinitions="Auto, 45, *" Padding="15, 0" RowSpacing="15">
+    <Grid RowDefinitions="Auto, 45, *" Padding="15,10,15,0" RowSpacing="10">
         <Grid Grid.Row="0"
               ColumnDefinitions="100, *, 100">
             <Grid Grid.Column="1"
@@ -21,29 +21,27 @@
                        VerticalTextAlignment="Center"
                        HorizontalOptions="Center" />
             </Grid>
-
-            <Border
+            
+            <Button
                 Grid.Column="2"
+                WidthRequest="40"
+                HeightRequest="40"
+                MinimumHeightRequest="40"
+                MinimumWidthRequest="40"
+                CornerRadius="20"
+                BackgroundColor="Transparent"
+                Padding="0"
+                Command="{Binding ClosePageCommand}"
                 HorizontalOptions="End"
-                VerticalOptions="Center"
-                HeightRequest="30" 
-                WidthRequest="30"
-                StrokeShape="RoundRectangle 15"
-                StrokeThickness="2"
-                Stroke="White">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
-                </Border.GestureRecognizers>
-                <Label
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    HorizontalTextAlignment="Center"
-                    FontFamily="FA6Solid"
-                    Text="&#xf00d;"
-                    FontSize="18"
-                    FontAutoScalingEnabled="False"
-                    TextColor="White" />
-            </Border>
+                VerticalOptions="Center" >
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FA6Regular"
+                                     Glyph="&#xf057;"
+                                     Size="30"
+                                     Color="White"
+                                     FontAutoScalingEnabled="False" />
+                </Button.ImageSource>
+            </Button>
         </Grid>
         <Grid RowDefinitions="45" Grid.Row="1">
             <controls:SegmentedControl

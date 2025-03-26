@@ -16,38 +16,61 @@
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <VerticalStackLayout
-        Spacing="15"
-        Padding="0,15">
+        Spacing="15">
         <Grid>
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
-            </Grid.GestureRecognizers>
+            <Grid>
+                <Button WidthRequest="50"
+                    HeightRequest="50"
+                    MinimumHeightRequest="50"
+                    MinimumWidthRequest="50"
+                    CornerRadius="25"
+                    BackgroundColor="Transparent"
+                    Padding="0"
+                    Command="{Binding ClosePageCommand}"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start" >
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="FA6Regular"
+                                         Glyph="&#xf057;"
+                                         Size="30"
+                                         Color="White"
+                                         FontAutoScalingEnabled="False" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            <Grid WidthRequest="120"
+                  HeightRequest="120"
+                  Margin="0,10,0,0">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+                </Grid.GestureRecognizers>
             
-            <!-- Setting Text="" here to prevent "?" from being displayed before image load -->
-            <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
-                                Text=""
-                                WidthRequest="120"
-                                HeightRequest="120"
-                                CornerRadius="60"
-                                BorderWidth="2" />
+                <!-- Setting Text="" here to prevent "?" from being displayed before image load -->
+                <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
+                                    Text=""
+                                    WidthRequest="120"
+                                    HeightRequest="120"
+                                    CornerRadius="60"
+                                    BorderWidth="2" />
 
-            <Border
-                BackgroundColor="{StaticResource primary}"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                TranslationX="40"
-                TranslationY="35"
-                StrokeShape="Ellipse"
-                StrokeThickness="0"
-                IsVisible="{Binding IsMe}">
-                <Label
-                    FontFamily="FluentIcons"
-                    FontAutoScalingEnabled="False"
-                    FontSize="25"
-                    Text="&#xe299;"
-                    Margin="3"
-                    TextColor="White" />
-            </Border>
+                <Border
+                    BackgroundColor="{StaticResource primary}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    TranslationX="40"
+                    TranslationY="35"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0"
+                    IsVisible="{Binding IsMe}">
+                    <Label
+                        FontFamily="FluentIcons"
+                        FontAutoScalingEnabled="False"
+                        FontSize="25"
+                        Text="&#xe299;"
+                        Margin="3"
+                        TextColor="White" />
+                </Border>
+            </Grid>
         </Grid>
 
         <VerticalStackLayout VerticalOptions="Center">
