@@ -23,7 +23,7 @@ public partial class TopBarViewModel : ObservableObject
     private bool _showBack;
 
     [ObservableProperty]
-    private bool _showScanner = true;
+    private bool _showActivity = true;
     
     [ObservableProperty]
     private string _title = string.Empty;
@@ -63,13 +63,9 @@ public partial class TopBarViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenScanner()
+    private async Task OpenActivityPage()
     {
-        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
-        if (granted)
-        {
-            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
-        }
+        await App.Current.MainPage.Navigation.PushModalAsync<ActivityPage>();
     }
 
     [RelayCommand]
@@ -83,13 +79,13 @@ public partial class TopBarViewModel : ObservableObject
     {
         ShowBack = false;
         ShowAvatar = true;
-        ShowScanner = true;
+        ShowActivity = true;
     }
 
     private void SetBackButton()
     {
         ShowBack = true;
         ShowAvatar = false;
-        ShowScanner = false;
+        ShowActivity = false;
     }
 }

@@ -12,8 +12,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private bool _isLoaded;
     private readonly IQuizService _quizService;
 
-    private string quizDetailsPageUrl = "earn/details";
-    
+    private const string QuizDetailsPageUrl = "///earn/details";
+
     private IDispatcherTimer _timer;
     
     private const int AutoScrollInterval = 6;
@@ -118,7 +118,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [RelayCommand]
     private async Task OpenQuiz(int quizId)
     {
-        await AppShell.Current.GoToAsync($"{quizDetailsPageUrl}?QuizId={quizId}");
+        await AppShell.Current.GoToAsync($"{QuizDetailsPageUrl}?QuizId={quizId}");
     }
 
     private bool CanOpenQuiz(int quizId)

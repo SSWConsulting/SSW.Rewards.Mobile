@@ -89,11 +89,13 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         });
     }
 
-    public void OnAppearing()
+    public async Task OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
+        
+        var hasPermissions = await Methods.AskForRequiredPermissionAsync();
 
-        if (IsScanVisible)
+        if (hasPermissions && IsScanVisible)
         {
             IsCameraEnabled = true;
         }

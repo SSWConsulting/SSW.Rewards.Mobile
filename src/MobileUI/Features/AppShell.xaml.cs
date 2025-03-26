@@ -16,6 +16,7 @@ public partial class AppShell
         InitializeComponent();
         Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
+        Routing.RegisterRoute("activity", typeof(ActivityPage));
     }
     
     protected override bool OnBackButtonPressed()
@@ -27,6 +28,11 @@ public partial class AppShell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
+    }
+    
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
     }
     
     protected override void OnAppearing()
@@ -63,6 +69,13 @@ public partial class AppShell
 
     private void OnNavigating(object sender, ShellNavigatingEventArgs e)
     {
+        // Prevent Scan page from being navigated to outside a modal
+        if (e.Target.Location.OriginalString.Contains("scan"))
+        {
+            e.Cancel();
+            App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+        }
+        
         WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
         WeakReferenceMessenger.Default.Send(new TopBarTitleMessage(string.Empty));
     }

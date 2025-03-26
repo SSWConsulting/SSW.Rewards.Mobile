@@ -62,12 +62,11 @@ public partial class RedeemViewModel : BaseViewModel
 
     public async Task Initialise()
     {
-        if (_isLoaded)
+        if (!_isLoaded)
         {
-            return;
+            await LoadData();
         }
 
-        await LoadData();
         BeginAutoScroll();
     }
 

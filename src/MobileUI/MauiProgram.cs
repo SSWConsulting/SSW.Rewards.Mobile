@@ -52,6 +52,7 @@ public static class MauiProgram
         {
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
             handlers.AddHandler<Border, NotAnimatedBorderHandler>();
+            handlers.AddHandler(typeof(Shell), typeof(CustomShellHandler));
         });
 
         builder.Services.AddDependencies();

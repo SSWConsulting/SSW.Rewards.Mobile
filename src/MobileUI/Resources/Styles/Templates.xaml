@@ -60,6 +60,13 @@
                     </Button.ImageSource>
                 </Button>
                 
+                <Image Grid.Column="1"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="40"
+                       Source="ssw_logo_darkmode"
+                       IsVisible="{Binding Title, Converter={mct:IsStringNullOrEmptyConverter}}"/>
+                
                 <Grid Grid.Column="1"
                       VerticalOptions="Center"
                       HeightRequest="50">
@@ -70,16 +77,28 @@
                            VerticalTextAlignment="Center"
                            HorizontalOptions="Center" />
                 </Grid>
-
-                <ImageButton Grid.Column="2"
-                             Command="{Binding OpenScannerCommand}"
-                             IsVisible="{Binding ShowScanner}"
-                             VerticalOptions="Center">
-                    <ImageButton.Source>
-                        <FontImageSource FontFamily="FluentIcons"
-                                         Glyph="&#xf636;"/>
-                    </ImageButton.Source>
-                </ImageButton>
+                
+                <Button
+                    Grid.Column="2"
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    MinimumHeightRequest="40"
+                    MinimumWidthRequest="40"
+                    CornerRadius="20"
+                    BorderWidth="2"
+                    BorderColor="White"
+                    BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                    Padding="0"
+                    Command="{Binding OpenActivityPageCommand}"
+                    IsVisible="{Binding ShowActivity}"
+                    VerticalOptions="Center">
+                    <ImageButton.Behaviors>
+                        <mct:IconTintColorBehavior TintColor="White" />
+                    </ImageButton.Behaviors>
+                    <Button.ImageSource>
+                        <FileImageSource File="icon_bell" />
+                    </Button.ImageSource>
+                </Button>
             </Grid>
             <ContentPresenter Grid.Row="1" />
         </Grid>
