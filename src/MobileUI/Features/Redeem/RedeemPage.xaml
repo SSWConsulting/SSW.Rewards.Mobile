@@ -15,7 +15,7 @@
     <common:BaseContentPage.Content>
         <Grid>
             <Grid RowDefinitions="Auto, *"
-                  Margin="15"
+                  Margin="15,15,15,0"
                   RowSpacing="10">
                 <Border Grid.Row="0"
                         BackgroundColor="{StaticResource Background}"
