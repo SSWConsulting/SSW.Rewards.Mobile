@@ -1,24 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              x:DataType="viewModels:LeaderboardViewModel"
              x:Name="Leaderboard"
              x:Class="SSW.Rewards.Mobile.Pages.LeaderboardPage"
              ControlTemplate="{DynamicResource PageTemplate}">
-    <ContentPage.Resources>
+    <common:BaseContentPage.Resources>
         <ResourceDictionary>
             <converters:IsMeToColorConverter x:Key="MeToColor" />
         </ResourceDictionary>
-    </ContentPage.Resources>
-    <ContentPage.Behaviors>
+    </common:BaseContentPage.Resources>
+    <common:BaseContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}"
           StatusBarStyle="LightContent" />
-    </ContentPage.Behaviors>
+    </common:BaseContentPage.Behaviors>
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
             <controls:SegmentedControl
@@ -191,4 +192,4 @@
             IsRunning="{Binding IsRunning}"
             IsVisible="{Binding IsRunning}" />
     </Grid>
-</ContentPage>
+</common:BaseContentPage>

@@ -16,41 +16,11 @@ public partial class TopBarViewModel : ObservableObject
     [ObservableProperty]
     private string _profilePic;
 
-    [ObservableProperty]
-    private bool _showAvatar = true;
-
-    [ObservableProperty]
-    private bool _showBack;
-
-    [ObservableProperty]
-    private bool _showActivity = true;
-    
-    [ObservableProperty]
-    private string _title = string.Empty;
-
     public TopBarViewModel(IPermissionsService permissionsService, IUserService userService, IScannerService scannerService)
     {
         _permissionsService = permissionsService;
         _userService = userService;
         _scannerService = scannerService;
-        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (_, m) =>
-        {
-            switch (m.Value)
-            {
-                case AvatarOptions.Back:
-                    SetBackButton();
-                    break;
-                case AvatarOptions.Original:
-                default:
-                    SetDefaultAvatar();
-                    break;
-            }
-        });
-        
-        WeakReferenceMessenger.Default.Register<TopBarTitleMessage>(this, (_, m) =>
-        {
-            Title = m.Value;
-        });
 
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }
@@ -65,27 +35,12 @@ public partial class TopBarViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenActivityPage()
     {
-        await App.Current.MainPage.Navigation.PushModalAsync<ActivityPage>();
+        await Shell.Current.GoToAsync("activity");
     }
 
     [RelayCommand]
     private async Task GoBack()
     {
-        SetDefaultAvatar();
         await Shell.Current.GoToAsync("..");
-    }
-
-    private void SetDefaultAvatar()
-    {
-        ShowBack = false;
-        ShowAvatar = true;
-        ShowActivity = true;
-    }
-
-    private void SetBackButton()
-    {
-        ShowBack = true;
-        ShowAvatar = false;
-        ShowActivity = false;
     }
 }

@@ -1,4 +1,4 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
@@ -6,44 +6,13 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
              xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              x:DataType="viewModels:ActivityPageViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
-             x:Name="Activity">
-    <Grid RowDefinitions="Auto, 45, *" Padding="15,10,15,0" RowSpacing="10">
-        <Grid Grid.Row="0"
-              ColumnDefinitions="100, *, 100">
-            <Grid Grid.Column="1"
-                  VerticalOptions="Center">
-                <Label Text="Activity"
-                       Style="{StaticResource LabelBold}"
-                       FontSize="18"
-                       VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       HorizontalOptions="Center" />
-            </Grid>
-            
-            <Button
-                Grid.Column="2"
-                WidthRequest="40"
-                HeightRequest="40"
-                MinimumHeightRequest="40"
-                MinimumWidthRequest="40"
-                CornerRadius="20"
-                BackgroundColor="Transparent"
-                Padding="0"
-                Command="{Binding ClosePageCommand}"
-                HorizontalOptions="End"
-                VerticalOptions="Center" >
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="FA6Regular"
-                                     Glyph="&#xf057;"
-                                     Size="30"
-                                     Color="White"
-                                     FontAutoScalingEnabled="False" />
-                </Button.ImageSource>
-            </Button>
-        </Grid>
-        <Grid RowDefinitions="45" Grid.Row="1">
+             x:Name="Activity"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <Grid RowDefinitions="45, *" Padding="15,10,15,0" RowSpacing="10">
+        <Grid RowDefinitions="45" Grid.Row="0">
             <controls:SegmentedControl
                 Grid.Row="0"
                 Segments="{Binding Segments}"
@@ -58,7 +27,7 @@
         <RefreshView
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}"
-            Grid.Row="2">
+            Grid.Row="1">
             <CollectionView
                 ItemsSource="{Binding Feed}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
@@ -160,4 +129,4 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}" />
     </Grid>
-</ContentPage>
+</common:BaseContentPage>

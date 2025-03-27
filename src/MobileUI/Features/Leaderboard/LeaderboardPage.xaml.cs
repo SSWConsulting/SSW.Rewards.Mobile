@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class LeaderboardPage : ContentPage
+public partial class LeaderboardPage
 {
     private readonly LeaderboardViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;

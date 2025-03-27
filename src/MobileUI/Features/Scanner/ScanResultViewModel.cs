@@ -76,7 +76,7 @@ public partial class ScanResultViewModel : BaseViewModel
                 
                 if (result.ScannedUserId != null)
                 {
-                    await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(result.ScannedUserId);
+                    await AppShell.Current.GoToAsync($"othersprofile?UserId={result.ScannedUserId}");
                 }
                 
                 break;
@@ -94,7 +94,7 @@ public partial class ScanResultViewModel : BaseViewModel
                 {
                     // Dismiss popup and go straight to profile
                     await MopupService.Instance.PopAllAsync();
-                    await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(result.ScannedUserId);
+                    await AppShell.Current.GoToAsync($"othersprofile?UserId={result.ScannedUserId}");
                     break;
                 }
                 

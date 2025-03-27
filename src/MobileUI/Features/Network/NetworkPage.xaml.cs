@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class NetworkPage : ContentPage
+public partial class NetworkPage
 {
     private readonly NetworkPageViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;

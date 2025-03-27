@@ -2,9 +2,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
@@ -117,8 +115,6 @@ namespace SSW.Rewards.Mobile.ViewModels
             IsBusy = false;
 
             LogEvent(Constants.AnalyticsEvents.QuizStart);
-            
-            WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
         }
 
         private void LogEvent(string eventName)
