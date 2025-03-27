@@ -74,7 +74,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.58.1" />
 		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0-preview3" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />

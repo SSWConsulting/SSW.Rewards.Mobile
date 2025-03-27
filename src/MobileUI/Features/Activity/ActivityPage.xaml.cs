@@ -1,6 +1,6 @@
 ﻿namespace SSW.Rewards.Mobile.Pages;
 
-public partial class ActivityPage : ContentPage
+public partial class ActivityPage
 {
     private readonly ActivityPageViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
@@ -10,7 +10,9 @@ public partial class ActivityPage : ContentPage
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        
         BindingContext = _viewModel;
+        Title = "Activity";
         InitializeComponent();
     }
 

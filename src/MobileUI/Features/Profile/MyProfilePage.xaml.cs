@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
+﻿using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 namespace SSW.Rewards.Mobile.Pages;
 
@@ -10,6 +9,7 @@ public partial class MyProfilePage
 
     public MyProfilePage(MyProfileViewModel vm, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
+        Title = "My Profile";
         InitializeComponent();
         _viewModel = vm;
         _viewModel.Navigation = Navigation;

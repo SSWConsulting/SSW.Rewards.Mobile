@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:quizzes="clr-namespace:SSW.Rewards.Shared.DTOs.Quizzes;assembly=Shared"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              BackgroundColor="{StaticResource Background}"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:QuizDetailsViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.QuizDetailsPage">
-    <ContentPage.Resources>
+    <common:BaseContentPage.Resources>
         <converters:AllTrueConverter x:Key="AllTrueConverter" />
-    </ContentPage.Resources>
+    </common:BaseContentPage.Resources>
     <Grid>
         <ScrollView>
             <Grid>
@@ -463,4 +464,4 @@
         </Border>
     </Grid>
 
-</ContentPage>
+</common:BaseContentPage>

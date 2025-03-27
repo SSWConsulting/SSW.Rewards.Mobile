@@ -10,6 +10,7 @@ public partial class SettingsPage
         _viewModel = viewModel;
         BindingContext = viewModel;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        Title = "SSW Rewards | My Settings";
         InitializeComponent();
         SetUpSocialMediaSection();
     }
@@ -18,12 +19,6 @@ public partial class SettingsPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("SettingsPage");
-    }
-
-    protected override void OnNavigatedTo(NavigatedToEventArgs args)
-    {
-        base.OnNavigatedTo(args);
-        SettingsViewModel.Initialise();
     }
 
     private void SetUpSocialMediaSection()

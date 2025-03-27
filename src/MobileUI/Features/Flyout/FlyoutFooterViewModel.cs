@@ -33,13 +33,15 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [RelayCommand]
     private async Task MyProfileTapped()
     {
-        await App.Current.MainPage.Navigation.PushModalAsync<MyProfilePage>();
+        Shell.Current.FlyoutIsPresented = false;
+        await AppShell.Current.GoToAsync($"myprofile");
     }
     
     [RelayCommand]
     private async Task MySettingsTapped()
     {
-        await App.Current.MainPage.Navigation.PushModalAsync<SettingsPage>();
+        Shell.Current.FlyoutIsPresented = false;
+        await AppShell.Current.GoToAsync($"settings");
     }
     
     [RelayCommand]

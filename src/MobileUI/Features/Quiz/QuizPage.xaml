@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="QuizList"
              ControlTemplate="{DynamicResource PageTemplate}"
@@ -105,4 +106,4 @@
             </Grid>
         </ScrollView>
     </RefreshView>
-</ContentPage>
+</common:BaseContentPage>

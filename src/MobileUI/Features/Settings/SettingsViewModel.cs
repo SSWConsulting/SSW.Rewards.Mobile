@@ -41,12 +41,6 @@ public partial class SettingsViewModel : BaseViewModel
         _userService.CompanyUrlObservable().Subscribe(company => _companyUrl = company);
     }
 
-    public static void Initialise()
-    {
-        WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Back));
-        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage("SSW Rewards | My Settings"));
-    }
-
     [RelayCommand]
     private async Task IntroClicked()
     {
@@ -58,7 +52,7 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private static async Task ProfileClicked()
     {
-        await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
+        await AppShell.Current.GoToAsync($"myprofile");
     }
 
     [RelayCommand]

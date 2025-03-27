@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 
 #if IOS
 using UIKit;
@@ -17,6 +15,9 @@ public partial class AppShell
         Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
         Routing.RegisterRoute("scan", typeof(ScanPage));
         Routing.RegisterRoute("activity", typeof(ActivityPage));
+        Routing.RegisterRoute("settings", typeof(SettingsPage));
+        Routing.RegisterRoute("myprofile", typeof(MyProfilePage));
+        Routing.RegisterRoute("othersprofile", typeof(OthersProfilePage));
     }
     
     protected override bool OnBackButtonPressed()
@@ -75,8 +76,5 @@ public partial class AppShell
             e.Cancel();
             App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
         }
-        
-        WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
-        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage(string.Empty));
     }
 }

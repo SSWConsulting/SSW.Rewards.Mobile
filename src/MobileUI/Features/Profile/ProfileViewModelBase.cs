@@ -362,6 +362,6 @@ public partial class ProfileViewModelBase : BaseViewModel
     [RelayCommand]
     private async Task ClosePage()
     {
-        await Navigation.PopModalAsync();
+        await Shell.Current.GoToAsync("..");
     }
 }

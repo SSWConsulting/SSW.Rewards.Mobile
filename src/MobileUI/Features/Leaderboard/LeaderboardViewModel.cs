@@ -108,9 +108,9 @@ public partial class LeaderboardViewModel : BaseViewModel
     private async Task LeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
-            await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
+            await AppShell.Current.GoToAsync($"myprofile");
         else
-            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader.UserId);
+            await AppShell.Current.GoToAsync($"othersprofile?UserId={leader.UserId}");
     }
 
     [RelayCommand]
