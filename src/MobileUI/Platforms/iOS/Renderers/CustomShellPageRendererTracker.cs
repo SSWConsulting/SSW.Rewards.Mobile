@@ -14,6 +14,7 @@ public class CustomShellPageRendererTracker : ShellPageRendererTracker
     {
         // Fixes MAUI bug where this can return a NullReferenceException
         // TODO: Remove when (hopefully) fixed in .NET MAUI 9
+        // See: https://github.com/dotnet/maui/pull/26786
         if (ViewController is null || Page is null)
         {
             return;
