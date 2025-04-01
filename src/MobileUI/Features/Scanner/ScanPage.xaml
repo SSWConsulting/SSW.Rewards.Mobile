@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:scanner="clr-namespace:BarcodeScanning;assembly=BarcodeScanning.Native.Maui"
@@ -6,6 +7,7 @@
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              BackgroundColor="{StaticResource Background}"
+             ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.ScanPage"
              x:DataType="viewModels:ScanViewModel">
     <ContentPage.Resources>
@@ -18,71 +20,61 @@
                 ComparingValue="{StaticResource Threshold}" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid RowDefinitions="*,50">
-        <Button Grid.Row="0"
-                Text="Close"
-                ContentLayout="Right, 10"
-                Command="{Binding Path=DismissCommand}"
-                Margin="20"
-                HeightRequest="40"
-                VerticalOptions="Start"
-                HorizontalOptions="End"
-                CornerRadius="20"
-                ZIndex="100">
-            <Button.ImageSource>
-                <FontImageSource Glyph="&#xf36e;"
-                                 FontFamily="FluentIcons"/>
-            </Button.ImageSource>
-        </Button>
-        
-        <Grid Grid.Row="0" IsVisible="{Binding IsScanVisible}">
-            <scanner:CameraView x:Name="ScannerView"
-                    OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}"
-                    CameraEnabled="{Binding IsCameraEnabled}"
-                    CurrentZoomFactor="{Binding CurrentZoomFactor, Mode=OneWayToSource}"
-                    RequestZoomFactor="{Binding RequestZoomFactor}"
-                    MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
-                    MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
-                    BarcodeSymbologies="QRCode"
-                    ViewfinderMode="True"
-                    TapToFocusEnabled="True"
-                    VibrationOnDetected="False"/>
-            
-            <Image Source="qr_reticle" />
-            
-            <Grid VerticalOptions="End"
-                  x:Name="ZoomButtons"
-                  ColumnDefinitions="Auto,Auto"
-                  HorizontalOptions="Center"
-                  IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
-                  ColumnSpacing="20"
-                  Margin="0,0,0,50">
-                <Button Grid.Column="0"
-                        CornerRadius="30"
-                        WidthRequest="60"
-                        HeightRequest="60"
-                        Command="{Binding Path=ZoomOutCommand}">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf8c6;"
-                                         FontAutoScalingEnabled="False"
-                                         FontFamily="FluentIcons"/>
-                    </Button.ImageSource>
-                </Button>
-                
-                <Button Grid.Column="1"
-                        CornerRadius="30"
-                        WidthRequest="60"
-                        HeightRequest="60"
-                        Command="{Binding Path=ZoomInCommand}">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf8c4;"
-                                         FontAutoScalingEnabled="False"
-                                         FontFamily="FluentIcons"/>
-                    </Button.ImageSource>
-                </Button>
+    <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource FlyoutBackgroundColour}">
+        <Border Grid.Row="0"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 2"
+                Margin="15"
+                IsVisible="{Binding IsScanVisible}">
+            <Grid>
+                <scanner:CameraView x:Name="ScannerView"
+                                    OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}"
+                                    CameraEnabled="{Binding IsCameraEnabled}"
+                                    CurrentZoomFactor="{Binding CurrentZoomFactor, Mode=OneWayToSource}"
+                                    RequestZoomFactor="{Binding RequestZoomFactor}"
+                                    MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
+                                    MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
+                                    BarcodeSymbologies="QRCode"
+                                    ViewfinderMode="True"
+                                    TapToFocusEnabled="True"
+                                    VibrationOnDetected="False" />
+
+                <Image Source="qr_reticle" />
+
+                <Grid VerticalOptions="End"
+                      x:Name="ZoomButtons"
+                      ColumnDefinitions="Auto,Auto"
+                      HorizontalOptions="Center"
+                      IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
+                      ColumnSpacing="20"
+                      Margin="0,0,0,50">
+                    <Button Grid.Column="0"
+                            CornerRadius="30"
+                            WidthRequest="60"
+                            HeightRequest="60"
+                            Command="{Binding Path=ZoomOutCommand}">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xf8c6;"
+                                             FontAutoScalingEnabled="False"
+                                             FontFamily="FluentIcons" />
+                        </Button.ImageSource>
+                    </Button>
+
+                    <Button Grid.Column="1"
+                            CornerRadius="30"
+                            WidthRequest="60"
+                            HeightRequest="60"
+                            Command="{Binding Path=ZoomInCommand}">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xf8c4;"
+                                             FontAutoScalingEnabled="False"
+                                             FontFamily="FluentIcons" />
+                        </Button.ImageSource>
+                    </Button>
+                </Grid>
             </Grid>
-        </Grid>
-        
+        </Border>
+
         <VerticalStackLayout Grid.Row="0"
                              IsVisible="{Binding IsScanVisible, Converter={toolkit:InvertedBoolConverter}}"
                              VerticalOptions="Center"
@@ -100,7 +92,7 @@
                                     WidthRequest="40"
                                     CornerRadius="20"
                                     BorderColor="White"
-                                    BorderWidth="2"/>
+                                    BorderWidth="2" />
                 <Label Grid.Column="1"
                        VerticalOptions="Center"
                        VerticalTextAlignment="Center"
@@ -117,13 +109,14 @@
                 <Image Aspect="AspectFit" Source="{Binding QrCode}" />
             </Border>
         </VerticalStackLayout>
-        
+
         <controls:SegmentedControl
             Grid.Row="1"
             IsVisible="{Binding UserHasQrCode}"
             Segments="{Binding Segments}"
-            VerticalOptions="End"
+            VerticalOptions="Start"
             HeightRequest="50"
+            Margin="15,0,15,50"
             SelectedSegment="{Binding SelectedSegment}">
             <controls:SegmentedControl.Behaviors>
                 <toolkit:EventToCommandBehavior
@@ -131,6 +124,6 @@
                     Command="{Binding FilterBySegmentCommand}" />
             </controls:SegmentedControl.Behaviors>
         </controls:SegmentedControl>
-        
+
     </Grid>
 </ContentPage>
