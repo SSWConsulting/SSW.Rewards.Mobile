@@ -45,7 +45,8 @@
                     MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
                     BarcodeSymbologies="QRCode"
                     ViewfinderMode="True"
-                    TapToFocusEnabled="True"/>
+                    TapToFocusEnabled="True"
+                    VibrationOnDetected="False"/>
             
             <Image Source="qr_reticle" />
             
