@@ -8,7 +8,6 @@
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
     Shell.NavBarIsVisible="False"
-    Navigating="OnNavigating"
     MenuItemTemplate="{StaticResource SSWMenuTemplate}"
     FlyoutBehavior="Flyout"
     x:Name="RewardsShell">
