@@ -39,8 +39,8 @@ public partial class TopBarViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GoBack()
+    private static void GoBack()
     {
-        await Shell.Current.GoToAsync("..");
+        Shell.Current.SendBackButtonPressed();
     }
 }

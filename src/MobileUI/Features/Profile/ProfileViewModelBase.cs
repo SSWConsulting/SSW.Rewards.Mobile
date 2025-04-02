@@ -15,8 +15,6 @@ public partial class ProfileViewModelBase : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly IDevService _devService;
-    private readonly IPermissionsService _permissionsService;
-    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
 
     [ObservableProperty]
@@ -76,15 +74,11 @@ public partial class ProfileViewModelBase : BaseViewModel
         bool isMe,
         IUserService userService,
         IDevService devService,
-        IPermissionsService permissionsService,
-        IFirebaseAnalyticsService firebaseAnalyticsService,
         IServiceProvider provider)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
-        _permissionsService = permissionsService;
-        _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
         
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
@@ -159,9 +153,12 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading || !IsMe)
             return;
 
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(popup);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+            var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
+            await MopupService.Instance.PushAsync(popup);
+        });
     }
 
     [RelayCommand]
@@ -195,10 +192,13 @@ public partial class ProfileViewModelBase : BaseViewModel
             {
                 return;
             }
-
-            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty, statusBarColor as Color);
-            await MopupService.Instance.PushAsync(page);
+            
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty);
+                await MopupService.Instance.PushAsync(page);
+            });
+            
             return;
         }
 

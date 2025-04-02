@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -153,12 +152,10 @@ public partial class RedeemViewModel : BaseViewModel
         var reward = Rewards.FirstOrDefault(r => r.Id == id);
         if (reward != null)
         {
-            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
             var popup = new RedeemRewardPage(
                 _firebaseAnalyticsService,
                 new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService),
-                reward,
-                statusBarColor as Color);
+                reward);
             popup.CallbackEvent += async (_, _) =>
             {
                 await LoadData();

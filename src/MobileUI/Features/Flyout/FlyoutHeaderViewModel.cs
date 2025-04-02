@@ -10,6 +10,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     private readonly IUserService _userService;
     private readonly IPermissionsService _permissionsService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IServiceProvider _provider;
     
     [ObservableProperty]
     private string _profilePic;
@@ -32,11 +33,12 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     [ObservableProperty]
     private int _rank;
 
-    public FlyoutHeaderViewModel(IUserService userService, IPermissionsService permissionsService, IFirebaseAnalyticsService firebaseAnalyticsService)
+    public FlyoutHeaderViewModel(IUserService userService, IPermissionsService permissionsService, IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
     {
         _userService = userService;
         _permissionsService = permissionsService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _provider = provider;
         Console.WriteLine($"[FlyoutHeaderViewModel] Email: {Email}");
 
         userService.MyNameObservable().Subscribe(myName => Name = myName);
@@ -51,8 +53,11 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     [RelayCommand]
     private async Task ChangeProfilePicture()
     {
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(popup);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+            var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
+            await MopupService.Instance.PushAsync(popup);
+        });
     }
 }

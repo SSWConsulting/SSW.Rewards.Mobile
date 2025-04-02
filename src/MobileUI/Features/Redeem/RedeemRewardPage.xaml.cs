@@ -1,19 +1,14 @@
-﻿using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Core;
-
-namespace SSW.Rewards.Mobile.PopupPages;
+﻿namespace SSW.Rewards.Mobile.PopupPages;
 
 public partial class RedeemRewardPage
 {
     private readonly RedeemRewardViewModel _viewModel;
     private readonly Reward _reward;
-    private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public RedeemRewardPage(IFirebaseAnalyticsService firebaseAnalyticsService, RedeemRewardViewModel viewModel, Reward reward, Color parentPageStatusBarColor = null)
+    public RedeemRewardPage(IFirebaseAnalyticsService firebaseAnalyticsService, RedeemRewardViewModel viewModel, Reward reward)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
         _viewModel = viewModel;
         _reward = reward;
@@ -36,13 +31,5 @@ public partial class RedeemRewardPage
         _viewModel.OnDisappearing();
         if (_viewModel.ShouldCallCallback)
             CallbackEvent?.Invoke(this, EventArgs.Empty);
-
-        // Change status bar back
-        this.Behaviors.Clear();
-        this.Behaviors.Add(new StatusBarBehavior
-        {
-            StatusBarColor = _parentPageStatusBarColor,
-            StatusBarStyle = StatusBarStyle.LightContent,
-        });
     }
 }
