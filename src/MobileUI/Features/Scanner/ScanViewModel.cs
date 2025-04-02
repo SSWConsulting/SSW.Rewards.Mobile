@@ -150,6 +150,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         {
             return;
         }
+        
+        if (Vibration.Default.IsSupported)
+            Vibration.Default.Vibrate();
 
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>

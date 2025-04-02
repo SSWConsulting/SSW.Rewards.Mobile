@@ -33,7 +33,7 @@ public partial class AppShell
     
     private void Button_Clicked(object sender, EventArgs e)
     {
-        App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
+        Current.GoToAsync("//scan");
     }
     
     protected override void OnAppearing()
@@ -66,15 +66,5 @@ public partial class AppShell
             view?.AddSubview(statusBar);
         }
 #endif
-    }
-
-    private void OnNavigating(object sender, ShellNavigatingEventArgs e)
-    {
-        // Prevent Scan page from being navigated to outside a modal
-        if (e.Target.Location.OriginalString.Contains("scan"))
-        {
-            e.Cancel();
-            App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
-        }
     }
 }
