@@ -6,12 +6,14 @@ public partial class App : Application
 {
     private static IServiceProvider _provider;
     private static IAuthenticationService _authService;
+    private static IFirstRunService _firstRunService;
     public static object UIParent { get; set; }
 
-    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService)
+    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
     {
         _provider = serviceProvider;
         _authService = authService;
+        _firstRunService = firstRunService;
         
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
@@ -68,9 +70,14 @@ public partial class App : Application
             }
             else
             {
-                ((LoginPage)MainPage)?.QueueCodeScan(code);
+                _firstRunService.SetPendingScanCode(code);
             }
         }
+    }
+
+    public static async Task InitialiseMainPage()
+    {
+        await _firstRunService.InitialiseAfterLogin();
     }
 
     private async Task CheckApiCompatibilityAsync()

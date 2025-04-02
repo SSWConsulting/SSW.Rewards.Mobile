@@ -3,7 +3,6 @@ using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
 using Plugin.Firebase.Crashlytics;
-using SSW.Rewards.Mobile.Common;
 using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -62,7 +61,7 @@ public class AuthenticationService : IAuthenticationService
 
                 await SecureStorage.SetAsync(nameof(_accessToken), _accessToken);
 
-                await Application.Current.InitializeMainPage();
+                await App.InitialiseMainPage();
             }
             catch (Exception ex)
             {
@@ -168,8 +167,6 @@ public class AuthenticationService : IAuthenticationService
         {
             await SecureStorage.SetAsync("DeviceToken", deviceToken);
         }
-
-        Preferences.Set("FirstRun", false);
     }
 
     private async Task GetStoredAccessToken()
