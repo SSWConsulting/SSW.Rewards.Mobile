@@ -1,8 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
-using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 
@@ -44,9 +42,11 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private async Task IntroClicked()
     {
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var page = new OnBoardingPage(_firebaseAnalyticsService, false, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(page);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            var page = ActivatorUtilities.CreateInstance<OnBoardingPage>(_provider);
+            await MopupService.Instance.PushAsync(page);
+        });
     }
 
     [RelayCommand]

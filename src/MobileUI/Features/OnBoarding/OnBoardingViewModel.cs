@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -30,13 +29,10 @@ public partial class OnBoardingViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isLast;
 
-    public bool IsFirstRun { get; }
-
     public EventHandler<int> ScrollToRequested;
 
-    public OnBoardingViewModel(bool isFirstRun)
+    public OnBoardingViewModel()
     {
-        IsFirstRun = isFirstRun;
         Swiped = new Command(HandleSwiped);
     }
 
@@ -115,9 +111,6 @@ public partial class OnBoardingViewModel : BaseViewModel
     {
         await MopupService.Instance.PopAsync();
         Shell.Current.FlyoutIsPresented = false;
-
-        if (IsFirstRun)
-            await Shell.Current.GoToAsync("//earn");
     }
 
     private void SetDetails()
