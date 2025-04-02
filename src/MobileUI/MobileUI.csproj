@@ -65,8 +65,8 @@
 	<ItemGroup>
 		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.80" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
 		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />

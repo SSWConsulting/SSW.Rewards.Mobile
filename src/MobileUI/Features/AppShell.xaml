@@ -87,7 +87,7 @@
         </Tab>
         <Tab Title="">
             <ShellContent
-                Title=""
+                Title="Scan"
                 ContentTemplate="{DataTemplate pages:ScanPage}"
                 Route="scan" />
         </Tab>

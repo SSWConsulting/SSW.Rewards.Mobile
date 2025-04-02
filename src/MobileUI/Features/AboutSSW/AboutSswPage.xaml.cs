@@ -1,18 +1,14 @@
-﻿using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Core;
-using Mopups.Services;
+﻿using Mopups.Services;
 
 namespace SSW.Rewards.PopupPages;
 
 public partial class AboutSswPage
 {
-    private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
+    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
     }
     
@@ -38,18 +34,5 @@ public partial class AboutSswPage
         {
             await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
         }
-    }
-
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-
-        // Change status bar back
-        this.Behaviors.Clear();
-        this.Behaviors.Add(new StatusBarBehavior
-        {
-            StatusBarColor = _parentPageStatusBarColor,
-            StatusBarStyle = StatusBarStyle.LightContent,
-        });
     }
 }

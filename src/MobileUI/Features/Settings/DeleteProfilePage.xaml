@@ -3,8 +3,14 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-                 BackgroundColor="Transparent"
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 BackgroundColor="#b3000000"
+                 CloseWhenBackgroundIsClicked="False"
                  x:Class="SSW.Rewards.PopupPages.DeleteProfilePage">
+    <pages:PopupPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{OnPlatform iOS='Transparent', Android={StaticResource Background}}"
+                               StatusBarStyle="LightContent" />
+    </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation PositionIn="Center"
                                    PositionOut="Center"
@@ -19,15 +25,16 @@
     <Border
            Margin="10"
            Padding="20"
-           StrokeShape="RoundRectangle 3"
-           StrokeThickness="0"
            HorizontalOptions="Center"
            VerticalOptions="Center"
-           BackgroundColor="{StaticResource ProfileBackgroundColour}">
+           StrokeThickness="1"
+           StrokeShape="RoundRectangle 10"
+           BackgroundColor="{StaticResource Background}">
         <Grid WidthRequest="300"
-              HeightRequest="300"
-              RowDefinitions="2*,5*,3*"
-              ColumnDefinitions="*,*">
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+              ColumnDefinitions="*,*"
+              RowSpacing="20"
+              ColumnSpacing="20">
             <Label Grid.Row="0"
                    Grid.Column="0"
                    Grid.ColumnSpan="2"
@@ -44,20 +51,44 @@
                    HorizontalTextAlignment="Center"
                    VerticalOptions="Center"
                    TextColor="White"/>
+            
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Text="To continue, please enter your email address below:"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   TextColor="White"/>
+            
+            <Entry Grid.Row="3"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   x:Name="EmailEntry"
+                   BackgroundColor="White"
+                   IsSpellCheckEnabled="False"
+                   IsTextPredictionEnabled="False"
+                   TextTransform="None"
+                   Keyboard="Plain"
+                   TextColor="Black"
+                   TextChanged="EmailEntry_OnTextChanged"/>
 
-            <Button Grid.Row="2"
+            <Button Grid.Row="4"
                     Grid.Column="0"
+                    CornerRadius="8"
                     Text="Cancel"
                     Clicked="OnCancelTapped"
-                    BackgroundColor="{StaticResource SSWRed}"
+                    BackgroundColor="{StaticResource ProfileBackgroundColour}"
                     TextColor="White"/>
 
-            <Button Grid.Row="2"
+            <Button Grid.Row="4"
                     Grid.Column="1"
+                    x:Name="DeleteButton"
+                    IsEnabled="False"
+                    CornerRadius="8"
                     Text="Delete"
                     Clicked="OnDeleteTapped"
                     BackgroundColor="{StaticResource ProfileBackgroundColour}"
-                    TextColor="White"/>
+                    TextColor="Grey"/>
 
             <ActivityIndicator Grid.Row="0"
                                Grid.Column="0"

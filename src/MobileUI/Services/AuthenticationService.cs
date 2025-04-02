@@ -167,6 +167,7 @@ public class AuthenticationService : IAuthenticationService
         {
             await SecureStorage.SetAsync("DeviceToken", deviceToken);
         }
+        Preferences.Set("FirstRun", false);
     }
 
     private async Task GetStoredAccessToken()

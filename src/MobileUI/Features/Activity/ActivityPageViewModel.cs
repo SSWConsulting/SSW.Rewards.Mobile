@@ -182,9 +182,9 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     [RelayCommand]
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
-        if (_myUserId == item.UserId)
-           await AppShell.Current.GoToAsync($"myprofile");
-        else
+        if (_myUserId == item.UserId) 
+            await AppShell.Current.GoToAsync($"myprofile");
+        else 
             await AppShell.Current.GoToAsync($"othersprofile?UserId={item.UserId}");
     }
     
