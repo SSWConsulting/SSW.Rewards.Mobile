@@ -9,7 +9,6 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
-    private readonly ISnackbarService _snackbarService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
     
@@ -22,11 +21,9 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isStaff;
 
-    public SettingsViewModel(IUserService userService, ISnackbarService snackbarService,
-        IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
+    public SettingsViewModel(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
     {
         _userService = userService;
-        _snackbarService = snackbarService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
         Title = "Settings";
@@ -50,9 +47,10 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static async Task ProfileClicked()
+    private async Task ProfileClicked()
     {
-        await AppShell.Current.GoToAsync($"myprofile");
+        var page = ActivatorUtilities.CreateInstance<MyProfilePage>(_provider);
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     [RelayCommand]

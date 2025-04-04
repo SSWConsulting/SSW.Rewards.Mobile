@@ -9,8 +9,8 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class ScanResultViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
-
     private readonly IScannerService _scannerService;
+    private readonly IServiceProvider _provider;
     
     private string data;
 
@@ -32,10 +32,11 @@ public partial class ScanResultViewModel : BaseViewModel
     [ObservableProperty]
     private Color _headingColour;
 
-    public ScanResultViewModel(IUserService userService, IScannerService scannerService)
+    public ScanResultViewModel(IUserService userService, IScannerService scannerService, IServiceProvider provider)
     {
         _userService = userService;
         _scannerService = scannerService;
+        _provider = provider;
     }
 
     public void SetScanData(string data)
@@ -76,7 +77,8 @@ public partial class ScanResultViewModel : BaseViewModel
                 
                 if (result.ScannedUserId != null)
                 {
-                    await AppShell.Current.GoToAsync($"othersprofile?UserId={result.ScannedUserId}");
+                    var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, result.ScannedUserId);
+                    await Shell.Current.Navigation.PushAsync(page);
                 }
                 
                 break;
@@ -94,7 +96,8 @@ public partial class ScanResultViewModel : BaseViewModel
                 {
                     // Dismiss popup and go straight to profile
                     await MopupService.Instance.PopAllAsync();
-                    await AppShell.Current.GoToAsync($"othersprofile?UserId={result.ScannedUserId}");
+                    var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, result.ScannedUserId);
+                    await Shell.Current.Navigation.PushAsync(page);
                     break;
                 }
                 

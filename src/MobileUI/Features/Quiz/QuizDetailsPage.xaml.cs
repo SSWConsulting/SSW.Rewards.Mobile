@@ -3,28 +3,27 @@ using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.Pages;
 
-[QueryProperty(nameof(QuizId), nameof(QuizId))]
 public partial class QuizDetailsPage
 {
     private QuizDetailsViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public string QuizId { get; set; }
+    private readonly int _quizId;
 
-    public QuizDetailsPage(QuizDetailsViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
+    public QuizDetailsPage(QuizDetailsViewModel viewModel, IFirebaseAnalyticsService firebaseAnalyticsService, int quizId)
     {
         InitializeComponent();
         _viewModel = viewModel;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
+        _quizId = quizId;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("QuizDetailsPage");
-        int quizId = int.Parse(QuizId);
-        await _viewModel.Initialise(quizId);
+        await _viewModel.Initialise(_quizId);
     }
 
     protected override void OnDisappearing()
