@@ -63,6 +63,7 @@
             <CollectionView
                 ItemsSource="{Binding SearchResults}"
                 x:Name="LeadersCollection"
+                SizeChanged="OnSizeChanged"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 ItemSizingStrategy="MeasureFirstItem"
                 IsVisible="False">

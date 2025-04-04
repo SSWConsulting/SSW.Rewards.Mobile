@@ -12,9 +12,9 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 {
     private UIButton? middleView;
 
-    public override async void ViewWillLayoutSubviews()
+    public override async void ViewDidLayoutSubviews()
     {
-        base.ViewWillLayoutSubviews();
+        base.ViewDidLayoutSubviews();
         if (View is not null && ShellItem is CustomTabBar { CenterViewVisible: true } tabbar)
         {
             if (middleView is not null)
