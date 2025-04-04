@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
@@ -11,8 +10,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 {
     private bool _isLoaded;
     private readonly IQuizService _quizService;
-
-    private const string QuizDetailsPageUrl = "///earn/details";
+    private readonly IServiceProvider _provider;
 
     private IDispatcherTimer _timer;
     
@@ -28,9 +26,10 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public ObservableRangeCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = [];
 
-    public QuizViewModel(IQuizService quizService)
+    public QuizViewModel(IQuizService quizService, IServiceProvider provider)
     {
         _quizService = quizService;
+        _provider = provider;
         WeakReferenceMessenger.Default.Register(this);
         
         _timer = Application.Current.Dispatcher.CreateTimer();
@@ -118,7 +117,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [RelayCommand]
     private async Task OpenQuiz(int quizId)
     {
-        await AppShell.Current.GoToAsync($"{QuizDetailsPageUrl}?QuizId={quizId}");
+        var page = ActivatorUtilities.CreateInstance<QuizDetailsPage>(_provider, quizId);
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     private bool CanOpenQuiz(int quizId)

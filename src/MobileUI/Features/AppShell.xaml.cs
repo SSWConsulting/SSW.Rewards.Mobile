@@ -12,11 +12,6 @@ public partial class AppShell
     {
         BindingContext = this;
         InitializeComponent();
-        Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
-        Routing.RegisterRoute("activity", typeof(ActivityPage));
-        Routing.RegisterRoute("settings", typeof(SettingsPage));
-        Routing.RegisterRoute("myprofile", typeof(MyProfilePage));
-        Routing.RegisterRoute("othersprofile", typeof(OthersProfilePage));
     }
     
     protected override bool OnBackButtonPressed()

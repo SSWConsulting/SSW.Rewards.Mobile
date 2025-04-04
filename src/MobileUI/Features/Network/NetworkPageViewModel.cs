@@ -26,10 +26,12 @@ public partial class NetworkPageViewModel : BaseViewModel
 
     private List<NetworkProfileDto> _profiles = [];
     private readonly IDevService _devService;
+    private readonly IServiceProvider _provider;
     
-    public NetworkPageViewModel(IDevService devService)
+    public NetworkPageViewModel(IDevService devService, IServiceProvider provider)
     {
         _devService = devService;
+        _provider = provider;
     }
     
     public async Task Initialise()
@@ -87,8 +89,9 @@ public partial class NetworkPageViewModel : BaseViewModel
     
     [RelayCommand]
     private async Task UserTapped(NetworkProfileDto leader)
-    { 
-        await AppShell.Current.GoToAsync($"othersprofile?UserId={leader.UserId}");
+    {
+        var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, leader.UserId);
+        await Shell.Current.Navigation.PushAsync(page);
     }
     
     [RelayCommand]

@@ -1,26 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class TopBarViewModel : ObservableObject
 {
-    private readonly IPermissionsService _permissionsService;
-    
-    private readonly IUserService _userService;
-
-    private readonly IScannerService _scannerService;
+    private readonly IServiceProvider _provider;
 
     [ObservableProperty]
     private string _profilePic;
 
-    public TopBarViewModel(IPermissionsService permissionsService, IUserService userService, IScannerService scannerService)
+    public TopBarViewModel(IServiceProvider provider, IUserService userService)
     {
-        _permissionsService = permissionsService;
-        _userService = userService;
-        _scannerService = scannerService;
+        _provider = provider;
 
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }
@@ -35,7 +27,8 @@ public partial class TopBarViewModel : ObservableObject
     [RelayCommand]
     private async Task OpenActivityPage()
     {
-        await Shell.Current.GoToAsync("activity");
+        var page = ActivatorUtilities.CreateInstance<ActivityPage>(_provider);
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     [RelayCommand]

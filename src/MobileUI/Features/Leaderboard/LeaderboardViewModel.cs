@@ -12,15 +12,17 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     private readonly ILeaderService _leaderService;
     private readonly IUserService _userService;
+    private readonly IServiceProvider _provider;
     private bool _loaded;
     
     public ObservableRangeCollection<LeaderViewModel> SearchResults { get; set; } = [];
 
-    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService)
+    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
         _userService = userService;
+        _provider = provider;
         _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
         _userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
         _userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
@@ -108,9 +110,15 @@ public partial class LeaderboardViewModel : BaseViewModel
     private async Task LeaderTapped(LeaderViewModel leader)
     {
         if (leader.IsMe)
-            await AppShell.Current.GoToAsync($"myprofile");
+        {
+            var page = ActivatorUtilities.CreateInstance<MyProfilePage>(_provider);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
         else
-            await AppShell.Current.GoToAsync($"othersprofile?UserId={leader.UserId}");
+        {
+            var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, leader.UserId);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
     }
 
     [RelayCommand]
