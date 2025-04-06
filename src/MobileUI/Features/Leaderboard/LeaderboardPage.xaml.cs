@@ -1,4 +1,6 @@
-﻿namespace SSW.Rewards.Mobile.Pages;
+﻿using Microsoft.Maui.Controls.Internals;
+
+namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LeaderboardPage
 {
@@ -44,5 +46,14 @@ public partial class LeaderboardPage
         await LeadersCollection.FadeTo(1, 800, Easing.CubicIn);
 
         _viewModel.IsRunning = false;
+    }
+    
+    private void OnSizeChanged(object sender, EventArgs e)
+    {
+        // Fix for CollectionView.Header not resizing when window size changes
+        if (DeviceInfo.Current.Platform == DevicePlatform.iOS && LeadersCollection.Header is VisualElement headerVisualElement)
+        {
+            headerVisualElement.InvalidateMeasureNonVirtual(InvalidationTrigger.Undefined);
+        }
     }
 }
