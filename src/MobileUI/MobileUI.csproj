@@ -76,7 +76,7 @@
 		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0-preview3" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="IdentityModel.OidcClient" Version="5.2.1" />
+		<PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -84,7 +84,7 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
     </ItemGroup>
 

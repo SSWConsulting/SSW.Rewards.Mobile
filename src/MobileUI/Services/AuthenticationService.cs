@@ -1,9 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Results;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.OidcClient;
+using Duende.IdentityModel.OidcClient.Results;
 using Plugin.Firebase.Crashlytics;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services;
 

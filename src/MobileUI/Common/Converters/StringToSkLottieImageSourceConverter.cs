@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Microsoft.IdentityModel.Tokens;
 using SkiaSharp.Extended.UI.Controls.Converters;
 
 namespace SSW.Rewards.Mobile.Converters
@@ -10,7 +9,7 @@ namespace SSW.Rewards.Mobile.Converters
         {
             var file = (string)value;
             SKLottieImageSourceConverter _lottieConverter = new();
-            return file.IsNullOrEmpty() ? null : _lottieConverter.ConvertFromString(file);
+            return String.IsNullOrEmpty(file) ? null : _lottieConverter.ConvertFromString(file);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
