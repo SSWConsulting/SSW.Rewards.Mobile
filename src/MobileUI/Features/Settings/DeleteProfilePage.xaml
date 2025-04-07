@@ -5,6 +5,7 @@
                  xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  BackgroundColor="#b3000000"
+                 x:Name="this"
                  CloseWhenBackgroundIsClicked="False"
                  x:Class="SSW.Rewards.PopupPages.DeleteProfilePage">
     <pages:PopupPage.Behaviors>
@@ -55,7 +56,7 @@
             <Label Grid.Row="2"
                    Grid.Column="0"
                    Grid.ColumnSpan="2"
-                   Text="To continue, please enter your email address below:"
+                   Text="{Binding UserEmail, Source={x:Reference this}, StringFormat='To confirm deletion of the account associated with {0}, please enter the email address:'}"
                    HorizontalTextAlignment="Center"
                    VerticalOptions="Center"
                    TextColor="White"/>
