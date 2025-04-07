@@ -1,13 +1,4 @@
-﻿using IdentityModel.Client;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using Microsoft.Maui.Handlers;
-using Microsoft.Maui.Platform;
-using ObjCRuntime;
-using System;
-using System.Runtime.Serialization;
-using System.Text;
-using UIKit;
+﻿using UIKit;
 
 namespace SSW.Rewards.Mobile;
 
