@@ -7,7 +7,21 @@ public partial class DeleteProfilePage
 {
     private readonly IUserService _userService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    
     private string _userEmail;
+
+    public string UserEmail
+    {
+        get
+        {
+            return _userEmail;
+        }
+        set
+        {
+            _userEmail = value;
+            OnPropertyChanged();
+        }
+    }
     
     private Color _profileBackgroundColour;
     private Color _sswRedColour;
@@ -20,7 +34,7 @@ public partial class DeleteProfilePage
 
         GetColors();
         
-        _userService.MyEmailObservable().Subscribe(x => _userEmail = x);
+        _userService.MyEmailObservable().Subscribe(x => UserEmail = x);
     }
     
     protected override void OnAppearing()
@@ -72,7 +86,7 @@ public partial class DeleteProfilePage
 
     private bool IsEmailValid()
     {
-        return string.Equals(EmailEntry.Text, _userEmail, StringComparison.CurrentCultureIgnoreCase);
+        return string.Equals(EmailEntry.Text, UserEmail, StringComparison.CurrentCultureIgnoreCase);
     }
     
     private void GetColors()
