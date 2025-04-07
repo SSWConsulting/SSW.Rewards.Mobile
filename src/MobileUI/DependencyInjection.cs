@@ -4,7 +4,7 @@ using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 using SSW.Rewards.Mobile.Config;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 using IQuizService = SSW.Rewards.Mobile.Services.IQuizService;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
 using IUserService = SSW.Rewards.Mobile.Services.IUserService;
