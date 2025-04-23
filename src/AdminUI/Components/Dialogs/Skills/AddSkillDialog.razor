@@ -1,5 +1,8 @@
 @using SSW.Rewards.Shared.DTOs.Skills
 @using SSW.Rewards.Admin.UI.Helpers
+
+@inject ISnackbar Snackbar
+
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">Add Skill</MudText>    
@@ -40,10 +43,20 @@
     
     private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
-        
-        dto.ImageBytesInBase64 = base64;
-        dto.ImageFileName = name;
+        try
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
+
+            dto.ImageBytesInBase64 = base64;
+            dto.ImageFileName = name;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload the photo - " + ex.Message, Severity.Error);
+        }
     }
     
     private async Task Submit()

@@ -147,11 +147,21 @@
     
     private async Task OnPhotoUploadClick(InputFileChangeEventArgs e)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
-        
-        _imageBase64 = base64;
-        _imageName = name;
-        _selectedItem.ImageUri = $"data:{_imageName};base64,{_imageBase64}";
+        try
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(e);
+
+            _imageBase64 = base64;
+            _imageName = name;
+            _selectedItem.ImageUri = $"data:{_imageName};base64,{_imageBase64}";
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload the photo - " + ex.Message, Severity.Error);
+        }
     }
 
     private async Task OnEditSubmit()

@@ -2,6 +2,7 @@
 @using SSW.Rewards.Admin.UI.Helpers
 @using SSW.Rewards.Enums
 @using Icons = MudBlazor.Icons
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <TitleContent>
@@ -17,10 +18,10 @@
                 <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetThumbnailImage" MaximumFileCount="1">
                     <ButtonTemplate>
                         <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                                   for="@context.Id">
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload"
+                        for="@context.Id">
                             Upload Thumbnail Image
                         </MudButton>
                     </ButtonTemplate>
@@ -30,10 +31,10 @@
                 <MudFileUpload T="IBrowserFile" Accept=".png, .jpg" FilesChanged="SetCarouselImage" MaximumFileCount="1">
                     <ButtonTemplate>
                         <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                                   for="@context.Id">
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        StartIcon="@Icons.Material.Filled.CloudUpload"
+                        for="@context.Id">
                             Upload Carousel Image
                         </MudButton>
                     </ButtonTemplate>
@@ -55,8 +56,8 @@
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="Submit">
+        Color="Color.Primary"
+        OnClick="Submit">
             Create
         </MudButton>
     </DialogActions>
@@ -74,18 +75,38 @@
 
     private async Task SetThumbnailImage(IBrowserFile file)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
-        
-        Dto.ImageBytesInBase64 = base64;
-        Dto.ImageFileName = name;
+        try
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+
+            Dto.ImageBytesInBase64 = base64;
+            Dto.ImageFileName = name;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload Thumbnail Image - " + ex.Message, Severity.Error);
+        }
     }    
-    
+
     private async Task SetCarouselImage(IBrowserFile file)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
-        
-        Dto.CarouselImageBytesInBase64 = base64;
-        Dto.CarouselImageFileName = name;
+        try
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+
+            Dto.CarouselImageBytesInBase64 = base64;
+            Dto.CarouselImageFileName = name;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload Carousel Image - " + ex.Message, Severity.Error);
+        }
     }    
     
     private string IsCarouselImage(bool isCarousel)
