@@ -5,7 +5,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface ILeaderService
 {
-    Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh);
+    Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(int take, int skip, bool forceRefresh);
 }
 
 public class LeaderService : ILeaderService
@@ -17,13 +17,13 @@ public class LeaderService : ILeaderService
         _leaderBoardClient = leaderBoardClient;
     }
 
-    public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh)
+    public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(int take, int skip, bool forceRefresh)
     {
         List<LeaderboardUserDto> summaries = [];
 
         try
         {
-            var apiLeaderList = await _leaderBoardClient.GetLeaderboard(CancellationToken.None);
+            var apiLeaderList = await _leaderBoardClient.GetLeaderboard(CancellationToken.None, take, skip);
 
             foreach (var leader in apiLeaderList.Users)
             {

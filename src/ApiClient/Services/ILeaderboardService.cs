@@ -6,7 +6,7 @@ namespace SSW.Rewards.ApiClient.Services;
 
 public interface ILeaderboardService
 {
-    Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken);
+    Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken, int take = 0, int skip = 0);
     Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter, CancellationToken cancellationToken);
 }
 
@@ -21,9 +21,9 @@ public class LeaderboardService : ILeaderboardService
         _httpClient = clientFactory.CreateClient(Constants.AuthenticatedClient);
     }
 
-    public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken)
+    public async Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken, int take = 0, int skip = 0)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}Get", cancellationToken);
+        var result = await _httpClient.GetAsync($"{_baseRoute}Get?skip={skip}&take={take}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {

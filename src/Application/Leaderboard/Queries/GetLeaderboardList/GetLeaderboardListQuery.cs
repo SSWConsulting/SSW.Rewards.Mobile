@@ -3,7 +3,11 @@ using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 
-public class GetLeaderboardListQuery : IRequest<LeaderboardViewModel> { }
+public class GetLeaderboardListQuery : IRequest<LeaderboardViewModel> 
+{
+    public int Skip { get; set; }
+    public int Take { get; set; }
+}
 
 public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewModel>
 {
@@ -22,16 +26,21 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
 
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
     {
-        var users = await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(cancellationToken));
+        var skip = request.Skip;
+        var take = request.Take;
+
+        var users = take > 0 ? 
+            await GenerateLeaderboard(take, skip, cancellationToken) : 
+            await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(take, skip, cancellationToken));
 
         return new LeaderboardViewModel { Users = users };
     }
 
-    private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
+    private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(int take, int skip, CancellationToken cancellationToken)
     {
         DateTime utcNow = _dateTime.UtcNow;
 
-        var users = await _context.Users
+        var query = _context.Users
             .AsNoTracking()
             .AsSplitQuery()
             .TagWithContext()
@@ -64,8 +73,17 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
                     .Select(s => s.SocialMediaUserId)
                     .FirstOrDefault()
                     ?? ""
-            })
-            .ToListAsync(cancellationToken);
+            });
+            
+        if (take > 0)
+        {
+            query = query
+                .OrderByDescending(lud => lud.TotalPoints)
+                .Skip(skip)
+                .Take(take);
+        }
+
+        var users = await query.ToListAsync(cancellationToken);
 
         var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
 

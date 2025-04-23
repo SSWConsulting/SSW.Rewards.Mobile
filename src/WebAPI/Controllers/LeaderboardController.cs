@@ -10,9 +10,13 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class LeaderboardController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<LeaderboardViewModel>> Get()
+    public async Task<ActionResult<LeaderboardViewModel>> Get([FromQuery] int take = 0, [FromQuery] int skip = 0)
     {
-        return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
+        return Ok(await Mediator.Send(new GetLeaderboardListQuery() 
+        {
+            Take = take,
+            Skip = skip
+        }));
     }
 
     [HttpGet]

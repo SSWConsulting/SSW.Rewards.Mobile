@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Shared.DTOs.ActivityFeed;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -14,7 +16,11 @@ public partial class LeaderboardViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IServiceProvider _provider;
     private bool _loaded;
-    
+
+    private const int Take = 50;
+    private int _skip;
+    private bool _limitReached;
+
     public ObservableRangeCollection<LeaderViewModel> SearchResults { get; set; } = [];
 
     public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider)
@@ -82,7 +88,9 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         if (!_loaded)
         {
+            Leaders.Clear();
             IsRunning = true;
+            _skip = 0;
 
             await LoadLeaderboard();
             _loaded = true;
@@ -94,8 +102,27 @@ public partial class LeaderboardViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshLeaderboard()
     {
+        Leaders.Clear();
+        _skip = 0;
+
         await LoadLeaderboard();
         IsRefreshing = false;
+    }
+
+    [RelayCommand]
+    private async Task LoadMore()
+    {
+        if (_limitReached)
+            return;
+
+        _skip += Take;
+        var feed = await LoadLeaderboard();
+
+        if (feed.Count == 0)
+        {
+            _limitReached = true;
+            return;
+        }
     }
 
     [RelayCommand]
@@ -129,11 +156,9 @@ public partial class LeaderboardViewModel : BaseViewModel
         ScrollTo(myIndex);
     }
 
-    private async Task LoadLeaderboard()
+    private async Task<List<LeaderboardUserDto>> LoadLeaderboard()
     {
-        var summaries = await _leaderService.GetLeadersAsync(false);
-
-        Leaders.Clear();
+        var summaries = await _leaderService.GetLeadersAsync(Take, _skip, false);
 
         foreach (var summary in summaries)
         {
@@ -144,6 +169,8 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
 
         await FilterAndSortLeaders(Leaders, CurrentPeriod);
+
+        return summaries.ToList();
     }
 
     private async Task UpdateSearchResults(IEnumerable<LeaderViewModel> sortedLeaders)
@@ -218,6 +245,9 @@ public partial class LeaderboardViewModel : BaseViewModel
         {
             return;
         }
+
+        Leaders.Clear();
+        _skip = 0;
 
         await LoadLeaderboard();
         IsRefreshing = false;

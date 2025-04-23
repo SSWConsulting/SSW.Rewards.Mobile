@@ -66,7 +66,9 @@
                 SizeChanged="OnSizeChanged"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 ItemSizingStrategy="MeasureFirstItem"
-                IsVisible="False">
+                IsVisible="False"
+                RemainingItemsThreshold="5"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">>
                 <CollectionView.Header>
                     <Grid Grid.Row="1" Padding="15,10,15,0" HeightRequest="320" ColumnDefinitions="6*,14*,6*">
                         <!-- 2nd -->
