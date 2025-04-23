@@ -9,6 +9,7 @@
 @using SSW.Rewards.Enums
 @using Icons = MudBlazor.Icons
 
+@inject ISnackbar Snackbar
 @inject ILeaderboardService leaderboardService
 @inject IDialogService DialogService
 
@@ -162,22 +163,42 @@
 
     private async Task SetThumbnailImage(IBrowserFile file)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+        try 
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 
-        Dto.DeleteThumbnailImage = false;
-        Dto.ImageBytesInBase64 = base64;
-        Dto.ImageFileName = name;
-        Dto.ImageUri = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+
+            Dto.DeleteThumbnailImage = false;
+            Dto.ImageBytesInBase64 = base64;
+            Dto.ImageFileName = name;
+            Dto.ImageUri = $"data:{Dto.ImageFileName};base64,{Dto.ImageBytesInBase64}";
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload Thumbnail Image - " + ex.Message, Severity.Error);
+        }
     }    
     
     private async Task SetCarouselImage(IBrowserFile file)
     {
-        (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
-        
-        Dto.DeleteCarouselImage = false;
-        Dto.CarouselImageBytesInBase64 = base64;
-        Dto.CarouselImageFileName = name;
-        Dto.CarouselImageUri = $"data:{Dto.CarouselImageFileName};base64,{Dto.CarouselImageBytesInBase64}";
+        try
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            
+            (string base64, string name) = await PhotoUploadHelper.UploadPhoto(file);
+
+            Dto.DeleteCarouselImage = false;
+            Dto.CarouselImageBytesInBase64 = base64;
+            Dto.CarouselImageFileName = name;
+            Dto.CarouselImageUri = $"data:{Dto.CarouselImageFileName};base64,{Dto.CarouselImageBytesInBase64}";
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to upload Carousel Image - " + ex.Message, Severity.Error);
+        }
     }    
 
     private string IsCarouselImage(bool isCarousel)
