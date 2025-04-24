@@ -130,7 +130,11 @@ public partial class LeaderboardViewModel : BaseViewModel
     {
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
         ClearSearch = !ClearSearch;
-        await FilterAndSortLeaders(Leaders, CurrentPeriod);
+
+        Leaders.Clear();
+        _skip = 0;
+
+        await LoadLeaderboard();
     }
 
     [RelayCommand]
@@ -158,7 +162,7 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     private async Task<List<LeaderboardUserDto>> LoadLeaderboard()
     {
-        var summaries = await _leaderService.GetLeadersAsync(Take, _skip, false);
+        var summaries = await _leaderService.GetLeadersAsync(Take, _skip, CurrentPeriod, false);
 
         foreach (var summary in summaries)
         {

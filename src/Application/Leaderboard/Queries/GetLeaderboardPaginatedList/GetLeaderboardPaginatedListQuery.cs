@@ -1,37 +1,44 @@
 ﻿using System.Text.RegularExpressions;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
+namespace SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
 
-public class GetLeaderboardListQuery : IRequest<LeaderboardViewModel> { }
+public class GetLeaderboardPaginatedListQuery : IRequest<LeaderboardViewModel> 
+{
+    public int Skip { get; set; }
+    public int Take { get; set; }
+    public LeaderboardFilter currentPeriod { get; set; }
+}
 
-public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewModel>
+public class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, LeaderboardViewModel>
 {
     private readonly IApplicationDbContext _context;
     private readonly IDateTime _dateTime;
-    private readonly ICacheService _cacheService;
     private readonly IProfilePicStorageProvider _profilePicStorageProvider;
 
-    public Handler(IApplicationDbContext context, IDateTime dateTime, ICacheService cacheService, IProfilePicStorageProvider profilePicStorageProvider)
+    public Handler(IApplicationDbContext context, IDateTime dateTime, IProfilePicStorageProvider profilePicStorageProvider)
     {
         _context = context;
         _dateTime = dateTime;
-        _cacheService = cacheService;
         _profilePicStorageProvider = profilePicStorageProvider;
     }
 
-    public async Task<LeaderboardViewModel> Handle(GetLeaderboardListQuery request, CancellationToken cancellationToken)
+    public async Task<LeaderboardViewModel> Handle(GetLeaderboardPaginatedListQuery request, CancellationToken cancellationToken)
     {
-        var users = await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(cancellationToken));
+        var skip = request.Skip;
+        var take = request.Take;
+        var currentPeriod = request.currentPeriod;
+
+        var users = await GenerateLeaderboard(take, skip, currentPeriod, cancellationToken);
 
         return new LeaderboardViewModel { Users = users };
     }
 
-    private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
+    private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(int take, int skip, LeaderboardFilter currentPeriod, CancellationToken cancellationToken)
     {
         DateTime utcNow = _dateTime.UtcNow;
 
-        var users = await _context.Users
+        var query = _context.Users
             .AsNoTracking()
             .AsSplitQuery()
             .TagWithContext()
@@ -64,15 +71,37 @@ public class Handler : IRequestHandler<GetLeaderboardListQuery, LeaderboardViewM
                     .Select(s => s.SocialMediaUserId)
                     .FirstOrDefault()
                     ?? ""
-            })
-            .ToListAsync(cancellationToken);
+            });
+        
+        switch (currentPeriod) {
+            case LeaderboardFilter.ThisMonth:
+                query = query.OrderByDescending(x => x.PointsThisMonth);
+                break;
+            case LeaderboardFilter.ThisYear:
+                query = query.OrderByDescending(x => x.PointsThisYear);
+                break;
+            case LeaderboardFilter.Forever:
+                query = query.OrderByDescending(x => x.TotalPoints);
+                break;
+            case LeaderboardFilter.ThisWeek:
+                query = query.OrderByDescending(x => x.PointsThisWeek);
+                break;
+            default:
+                query = query.OrderByDescending(x => x.TotalPoints);
+                break;
+        }
+
+        var users = await query
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
 
         var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
 
         // Post-processing
         int rank = 0;
         Regex checkHttpRegex = new(@"^https?://", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
-        foreach (LeaderboardUserDto? user in users.OrderByDescending(lud => lud.TotalPoints))
+        foreach (LeaderboardUserDto? user in users)
         {
             user.Rank = ++rank;
             user.Title = user.Title switch
