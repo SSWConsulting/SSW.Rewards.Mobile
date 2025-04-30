@@ -112,6 +112,10 @@ public partial class LeaderboardViewModel : BaseViewModel
     [RelayCommand]
     private async Task LoadMore()
     {
+        // Don't attempt to load more until initial load is complete
+        if (!_loaded)
+            return;
+
         if (_limitReached)
             return;
 
