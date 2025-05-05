@@ -44,14 +44,15 @@
                     <GraphicsView.Drawable>
                         <controls:InvertedSquare
                             SquareSize="200" 
-                            CornerRadius="20"
+                            CornerRadius="15"
                             BackgroundColor="Black"
                             Opacity="0.5"/>
                     </GraphicsView.Drawable>
                 </GraphicsView>
                 <Grid VerticalOptions="Center"
                       HorizontalOptions="Center">
-                    <Image Source="qr_reticle" />
+                    <Image Source="qr_reticle"
+                           WidthRequest="400"/>
                 
                     <Label Text="Scan QR Code"
                            VerticalOptions="Start"
