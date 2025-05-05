@@ -40,7 +40,15 @@
                                     ViewfinderMode="True"
                                     TapToFocusEnabled="True"
                                     VibrationOnDetected="False" />
-                
+                <GraphicsView>
+                    <GraphicsView.Drawable>
+                        <controls:InvertedSquare
+                            SquareSize="200" 
+                            CornerRadius="20"
+                            BackgroundColor="Black"
+                            Opacity="0.5"/>
+                    </GraphicsView.Drawable>
+                </GraphicsView>
                 <Grid VerticalOptions="Center"
                       HorizontalOptions="Center">
                     <Image Source="qr_reticle" />
