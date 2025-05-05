@@ -40,8 +40,21 @@
                                     ViewfinderMode="True"
                                     TapToFocusEnabled="True"
                                     VibrationOnDetected="False" />
-
-                <Image Source="qr_reticle" />
+                
+                <Grid VerticalOptions="Center"
+                      HorizontalOptions="Center">
+                    <Image Source="qr_reticle" />
+                
+                    <Label Text="Scan QR Code"
+                           VerticalOptions="Start"
+                           VerticalTextAlignment="Center"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}"
+                           FontSize="20"
+                           Margin="0,20"
+                           FontAutoScalingEnabled="False"/>
+                </Grid>
 
                 <Grid VerticalOptions="End"
                       x:Name="ZoomButtons"
@@ -54,6 +67,10 @@
                             CornerRadius="30"
                             WidthRequest="60"
                             HeightRequest="60"
+                            BorderWidth="1"
+                            BorderColor="White"
+                            Opacity="0.66"
+                            BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomOutCommand}">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xf8c6;"
@@ -66,6 +83,10 @@
                             CornerRadius="30"
                             WidthRequest="60"
                             HeightRequest="60"
+                            BorderWidth="1"
+                            BorderColor="White"
+                            Opacity="0.66"
+                            BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomInCommand}">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xf8c4;"
