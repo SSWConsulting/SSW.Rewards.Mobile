@@ -67,7 +67,7 @@ public class AchievementAdminService : IAchievementAdminService
 
     public async Task DeleteAchievement(int id, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}?id={id}", cancellationToken);
+        var result = await _httpClient.DeleteAsync($"{_baseRoute}Delete?id={id}", cancellationToken);
 
         if  (result.IsSuccessStatusCode)
         {
