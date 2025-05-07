@@ -26,7 +26,7 @@ public static class UserExtensions
             Value = 100,
             Type = AchievementType.Scanned,
             IsMultiscanEnabled = false,
-            Code = AchievementHelper.GenerateCode(Guid.NewGuid().ToString()),
+            Code = AchievementHelper.GenerateCode(),
         };
 
         user.Achievement = achievement;

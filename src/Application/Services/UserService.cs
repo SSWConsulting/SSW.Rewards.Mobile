@@ -113,7 +113,7 @@ public class UserService : IUserService, IRolesService
                 staffMemberEntity.StaffAchievement ??= new Achievement
                 {
                     Name = staffMemberEntity.Name,
-                    Code = AchievementHelper.GenerateCode(staffMemberEntity.Name),
+                    Code = AchievementHelper.GenerateCode(),
                     Type = AchievementType.Scanned,
                     Value = 0
                 };

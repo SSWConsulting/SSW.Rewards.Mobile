@@ -84,7 +84,7 @@ public class SampleDataSeeder
 
         foreach (var achievement in achievements)
         {
-            achievement.Code = AchievementHelper.GenerateCode(achievement.Name);
+            achievement.Code = AchievementHelper.GenerateCode();
 
             sb.AppendLine(achievement.Code);
         }

@@ -73,7 +73,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         staffMemberEntity.StaffAchievement ??= new Achievement
         {
             Name = staffMemberEntity.Name,
-            Code = AchievementHelper.GenerateCode(staffMemberEntity.Name),
+            Code = AchievementHelper.GenerateCode(),
             Type = AchievementType.Scanned
         };
         staffMemberEntity.StaffAchievement.Value = request.Points;
