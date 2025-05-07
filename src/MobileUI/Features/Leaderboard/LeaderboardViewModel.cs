@@ -154,11 +154,32 @@ public partial class LeaderboardViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void ScrollToMe()
+    private async Task ScrollToMe()
     {
-        var myCard = SearchResults.FirstOrDefault(l => l.IsMe);
-        var myIndex = SearchResults.IndexOf(myCard);
-        ScrollTo(myIndex);
+        LeaderViewModel myCard = null;
+
+        while (myCard == null)
+        {
+            myCard = SearchResults.FirstOrDefault(l => l.IsMe);
+
+            if (myCard != null)
+            {
+                continue;
+            }
+
+            await LoadMore();
+
+            if (_limitReached)
+            {
+                break;
+            }
+        }
+
+        if (myCard != null)
+        {
+            var myIndex = SearchResults.IndexOf(myCard);
+            ScrollTo(myIndex);
+        }
     }
 
     private async Task LoadLeaderboard()
@@ -186,7 +207,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         });
     }
 
-    public async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, LeaderboardFilter period, bool keepRank = false)
+    private async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, LeaderboardFilter period, bool keepRank = false)
     {
         Func<LeaderViewModel, int> sortKeySelector;
 
@@ -207,7 +228,7 @@ public partial class LeaderboardViewModel : BaseViewModel
                 break;
         }
 
-        await FilterAndSortBy(list, sortKeySelector, keepRank);
+        FilterAndSortBy(list, sortKeySelector, keepRank);
 
         LeadersToDisplay.Clear();
         _skip = 0;
@@ -222,7 +243,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         await UpdateSearchResults();
     }
 
-    private async Task FilterAndSortBy(IEnumerable<LeaderViewModel> list, Func<LeaderViewModel, int> sortKeySelector, bool keepRank)
+    private void FilterAndSortBy(IEnumerable<LeaderViewModel> list, Func<LeaderViewModel, int> sortKeySelector, bool keepRank)
     {
         var leaders = list.OrderByDescending(sortKeySelector).ToList();
         int rank = 1;
