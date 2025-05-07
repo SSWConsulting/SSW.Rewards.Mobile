@@ -40,8 +40,30 @@
                                     ViewfinderMode="True"
                                     TapToFocusEnabled="True"
                                     VibrationOnDetected="False" />
-
-                <Image Source="qr_reticle" />
+                <GraphicsView>
+                    <GraphicsView.Drawable>
+                        <controls:InvertedSquare
+                            SquareSize="200" 
+                            CornerRadius="15"
+                            BackgroundColor="Black"
+                            Opacity="0.5"/>
+                    </GraphicsView.Drawable>
+                </GraphicsView>
+                <Grid VerticalOptions="Center"
+                      HorizontalOptions="Center">
+                    <Image Source="qr_reticle"
+                           WidthRequest="400"/>
+                
+                    <Label Text="Scan QR Code"
+                           VerticalOptions="Start"
+                           VerticalTextAlignment="Center"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Style="{StaticResource LabelBold}"
+                           FontSize="20"
+                           Margin="0,20"
+                           FontAutoScalingEnabled="False"/>
+                </Grid>
 
                 <Grid VerticalOptions="End"
                       x:Name="ZoomButtons"
@@ -54,6 +76,10 @@
                             CornerRadius="30"
                             WidthRequest="60"
                             HeightRequest="60"
+                            BorderWidth="1"
+                            BorderColor="White"
+                            Opacity="0.66"
+                            BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomOutCommand}">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xf8c6;"
@@ -66,6 +92,10 @@
                             CornerRadius="30"
                             WidthRequest="60"
                             HeightRequest="60"
+                            BorderWidth="1"
+                            BorderColor="White"
+                            Opacity="0.66"
+                            BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomInCommand}">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xf8c4;"
