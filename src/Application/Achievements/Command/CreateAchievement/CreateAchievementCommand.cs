@@ -31,7 +31,7 @@ public class CreateAchievementCommandHandler : IRequestHandler<CreateAchievement
             Value = request.Value,
             Type = request.Type,
             IsMultiscanEnabled = request.IsMultiscanEnabled,
-            Code = AchievementHelper.GenerateCode(Guid.NewGuid().ToString()),
+            Code = AchievementHelper.GenerateCode(),
         };
 
         _context.Achievements.Add(achievement);

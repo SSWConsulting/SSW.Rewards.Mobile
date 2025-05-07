@@ -3,9 +3,9 @@
 namespace SSW.Rewards.Application.Common.Helpers;
 public static class AchievementHelper
 {
-    public static string GenerateCode(string inputValue)
+    public static string GenerateCode()
     {
-        var codeData = Encoding.ASCII.GetBytes($"ach:{inputValue}");
+        var codeData = Encoding.ASCII.GetBytes($"ach:{Guid.NewGuid().ToString()}");
         return Convert.ToBase64String(codeData);
     }
 }
