@@ -42,6 +42,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
         var record = await _context.UserSocialMediaIds.FirstOrDefaultAsync(x =>
             x.UserId == currentUserId &&
             x.SocialMediaPlatformId == platform.Id, cancellationToken);
+        var socialMediaUrl = request.SocialMediaUserId.Replace("http://", "https://");
 
         if (record == null)
         {
@@ -50,14 +51,14 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
             {
                 SocialMediaPlatformId = platform.Id,
                 UserId                = currentUserId,
-                SocialMediaUserId     = request.SocialMediaUserId,
+                SocialMediaUserId     = socialMediaUrl,
                 CreatedUtc            = _dateTimeService.Now
             };
             _context.UserSocialMediaIds.Add(record);
         }
         else
         {
-            record.SocialMediaUserId = request.SocialMediaUserId;
+            record.SocialMediaUserId = socialMediaUrl;
             _context.UserSocialMediaIds.Update(record);
         }
         await _context.SaveChangesAsync(cancellationToken);
