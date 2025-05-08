@@ -14,6 +14,7 @@
     <common:BaseContentPage.Resources>
         <ResourceDictionary>
             <converters:IsMeToColorConverter x:Key="MeToColor" />
+            <converters:NumberToShorthandConverter x:Key="NumberToShorthand" />
         </ResourceDictionary>
     </common:BaseContentPage.Resources>
     <common:BaseContentPage.Behaviors>
@@ -162,7 +163,7 @@
                                         Margin="0,0,15,0">
                                         <Label
                                             Grid.Column="0"
-                                            Text="{Binding DisplayPointsShort}"
+                                            Text="{Binding DisplayPoints, Converter={StaticResource NumberToShorthand}}"
                                             HorizontalOptions="End"
                                             VerticalOptions="Center"
                                             HorizontalTextAlignment="End"
