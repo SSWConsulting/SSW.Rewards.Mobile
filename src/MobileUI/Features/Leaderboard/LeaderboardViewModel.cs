@@ -32,8 +32,8 @@ public partial class LeaderboardViewModel : BaseViewModel
         _userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
     }
 
-    public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
-    public ObservableCollection<LeaderViewModel> LeadersToDisplay { get; } = [];
+    private ObservableCollection<LeaderViewModel> Leaders { get; } = [];
+    private ObservableCollection<LeaderViewModel> LeadersToDisplay { get; } = [];
 
     [ObservableProperty]
     private List<Segment> _periods;
@@ -46,7 +46,7 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     public Action<int> ScrollTo { get; set; }
 
-    public LeaderboardFilter CurrentPeriod { get; set; }
+    private LeaderboardFilter CurrentPeriod { get; set; }
 
     [ObservableProperty]
     private Segment _selectedPeriod;
