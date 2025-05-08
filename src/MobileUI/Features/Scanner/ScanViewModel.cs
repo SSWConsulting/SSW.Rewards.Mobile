@@ -89,11 +89,13 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         });
     }
 
-    public void OnAppearing()
+    public async Task OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
+        
+        var hasPermissions = await Methods.AskForRequiredPermissionAsync();
 
-        if (IsScanVisible)
+        if (hasPermissions && IsScanVisible)
         {
             IsCameraEnabled = true;
         }
@@ -136,18 +138,27 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [RelayCommand]
     private void DetectionFinished(BarcodeResult[] result)
     {
+        if (!IsCameraEnabled || result.Length == 0)
+        {
+            return;
+        }
+
+        // Go through all detected barcodes and find the first valid QR code.
+        var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
+        string rawValue = validBarCode?.RawValue;
+        if (string.IsNullOrWhiteSpace(rawValue))
+        {
+            return;
+        }
+        
+        if (Vibration.Default.IsSupported)
+            Vibration.Default.Vibrate();
+
         // the handler is called on a thread-pool thread
         App.Current.Dispatcher.Dispatch(() =>
         {
-            if (!IsCameraEnabled || result.Length == 0)
-            {
-                return;
-            }
-
             IsCameraEnabled = false;
             
-            var rawValue = result.FirstOrDefault()?.RawValue;
-
             var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
             MopupService.Instance.PushAsync(popup);
         });

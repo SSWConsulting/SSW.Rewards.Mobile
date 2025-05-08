@@ -1,4 +1,5 @@
 ﻿using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.Services;

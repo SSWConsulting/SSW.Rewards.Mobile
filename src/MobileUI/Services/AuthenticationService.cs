@@ -1,13 +1,15 @@
-using IdentityModel.Client;
-using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Results;
-using Microsoft.AppCenter.Crashes;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using System.IdentityModel.Tokens.Jwt;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.OidcClient;
+using Duende.IdentityModel.OidcClient.Results;
+using Plugin.Firebase.Crashlytics;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services;
 
 public interface IAuthenticationService
 {
+    Task AutologinAsync(string accessToken);
     Task<ApiStatus> SignInAsync();
     Task<string> GetAccessToken();
     Task SignOut();
@@ -42,6 +44,46 @@ public class AuthenticationService : IAuthenticationService
         };
     }
 
+    public async Task AutologinAsync(string accessToken)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+
+            _accessToken = accessToken;
+            _tokenExpiry = jwtToken.ValidTo;
+
+            try
+            {
+                Preferences.Set(nameof(HasCachedAccount), true);
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
+
+                await SecureStorage.SetAsync(nameof(_accessToken), _accessToken);
+
+                await App.InitialiseMainPage();
+            }
+            catch (Exception ex)
+            {
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
+
+                // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
+                // the process of closing causes the alert to never appear and the await call never returns.
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    await Task.Delay(1000);
+                }
+
+                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            await SignOut();
+        }
+    }
+
     public async Task<ApiStatus> SignInAsync()
     {
         try
@@ -58,7 +100,7 @@ public class AuthenticationService : IAuthenticationService
 
             if (result.IsError)
             {
-                Crashes.TrackError(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
                 await SignOut();
                 return ApiStatus.Error;
             }
@@ -73,7 +115,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
-            Crashes.TrackError(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
             await SignOut();
             return ApiStatus.Error;
         }
@@ -82,6 +124,11 @@ public class AuthenticationService : IAuthenticationService
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     public async Task<string> GetAccessToken()
     {
+        if (string.IsNullOrEmpty(_accessToken))
+        {
+            await GetStoredAccessToken();
+        }
+
         if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
         {
             return _accessToken;
@@ -120,8 +167,30 @@ public class AuthenticationService : IAuthenticationService
         {
             await SecureStorage.SetAsync("DeviceToken", deviceToken);
         }
-
         Preferences.Set("FirstRun", false);
+    }
+
+    private async Task GetStoredAccessToken()
+    {
+        _accessToken = await SecureStorage.GetAsync(nameof(_accessToken));
+
+        if (!string.IsNullOrEmpty(_accessToken))
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(_accessToken);
+
+            _tokenExpiry = jwtToken.ValidTo;
+
+            if (_tokenExpiry <= DateTimeOffset.Now.AddMinutes(2))
+            {
+                SecureStorage.Remove(nameof(_accessToken));
+            }
+            else
+            {
+                Preferences.Set(nameof(HasCachedAccount), true);
+                DetailsUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 
     private ApiStatus SetLoggedInState(AuthResult loginResult)
@@ -138,7 +207,7 @@ public class AuthenticationService : IAuthenticationService
             }
             catch (Exception ex)
             {
-                Crashes.TrackError(new Exception("Failed to set a logged-in state"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
                 return ApiStatus.Unavailable;
             }
 
@@ -146,8 +215,8 @@ public class AuthenticationService : IAuthenticationService
         }
         else
         {
-            Crashes.TrackError(new Exception(
-                $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
+            CrossFirebaseCrashlytics.Current.RecordException(new Exception(
+                 $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
             return ApiStatus.LoginFailure;
         }
     }
@@ -180,13 +249,13 @@ public class AuthenticationService : IAuthenticationService
             }
             else
             {
-                Crashes.TrackError(new Exception($"{result.Error}, {result.ErrorDescription}"));
+                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"{result.Error}, {result.ErrorDescription}"));
 
                 var signInResult = await SignInAsync();
                 if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
                 {
-                    Crashes.TrackError(new Exception(
-                        $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
+                    CrossFirebaseCrashlytics.Current.RecordException(new Exception(
+                         $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
                 }
 
                 return signInResult == ApiStatus.Success;

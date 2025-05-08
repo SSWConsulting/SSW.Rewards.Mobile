@@ -33,7 +33,9 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
     public async Task<EligibleUsersViewModel> Handle(GetEligibleUsers request, CancellationToken cancellationToken)
     {
         // find all the activated users with enough points in the (today/month/year/forever) leaderboard to claim the specific reward 
-        var eligibleUsers = _context.Users.Where(u => u.Activated == true);
+        var eligibleUsers = _context.Users
+            .TagWithContext($"GetUserBy{request.Filter}")
+            .Where(u => u.Activated);
 
         if (request.Filter == LeaderboardFilter.ThisYear)
         {
@@ -55,8 +57,8 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
         }
         else if (request.Filter == LeaderboardFilter.ThisWeek)
         {
-            var start = _dateTime.Now.FirstDayOfWeek();
-            var end = start.AddDays(7);
+            var start = _dateTime.Now.AddDays(-7);
+            var end = _dateTime.Now;
             // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
             eligibleUsers = eligibleUsers
                 .TagWith("PointsThisWeek")
@@ -82,7 +84,7 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
             achievementName = achievement.Name;
 
             eligibleUsers = eligibleUsers
-                .TagWith("PointsForAchievement")
+                .TagWithContext("PointsForAchievement")
                 .Where(u => u.UserAchievements.Any(a => a.AchievementId == request.AchievementId));
         }
 

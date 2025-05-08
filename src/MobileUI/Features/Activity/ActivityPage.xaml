@@ -1,4 +1,4 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource PeopleBackground}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
@@ -6,11 +6,12 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
              xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              x:DataType="viewModels:ActivityPageViewModel"
-             ControlTemplate="{DynamicResource PageTemplate}"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
-             x:Name="Activity">
-    <Grid RowDefinitions="45, *" Padding="15,10, 15, 0" RowSpacing="15">
+             x:Name="Activity"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <Grid RowDefinitions="45, *" Padding="15,10,15,0" RowSpacing="10">
         <Grid RowDefinitions="45" Grid.Row="0">
             <controls:SegmentedControl
                 Grid.Row="0"
@@ -120,7 +121,7 @@
             </CollectionView>
         </RefreshView>
         <ActivityIndicator
-            Grid.Row="1"
+            Grid.Row="2"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
@@ -128,4 +129,4 @@
             IsRunning="{Binding IsBusy}"
             IsVisible="{Binding IsBusy}" />
     </Grid>
-</ContentPage>
+</common:BaseContentPage>

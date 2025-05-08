@@ -31,7 +31,6 @@ public interface IUserService
 
 
     // Get user
-    UserProfileDto GetUser(int userId);
     Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken);
     Task<int> GetUserId(string email, CancellationToken cancellationToken);
     
@@ -50,6 +49,8 @@ public interface IUserService
     // Get current user
     CurrentUserDto GetCurrentUser();
     Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken);
+
+    Task<int> GetCurrentUserId(CancellationToken cancellationToken);
 
     // Get user's QR code
     string GetStaffQRCode(string emailAddress);

@@ -15,6 +15,8 @@
 		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
 		<PackageReference Include="morelinq" Version="4.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+        <!-- Required for SQL Server query optimizations -->
+		    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>

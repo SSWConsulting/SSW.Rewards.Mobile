@@ -20,7 +20,7 @@
         }
         
         // Prepend the code with the custom redeem URL
-        var url = "sswrewards://redeem?code=" + QRCodeString;
+        var url = string.Format(ApiClientConstants.RewardsQRCodeUrlFormat, QRCodeString);
         
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
         QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);

@@ -6,6 +6,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
+      DATABASE_SKU:
+        required: true
+        type: string
       RESOURCE_GROUP:
         required: true
         type: string
@@ -22,7 +25,11 @@ on:
         required: true
         type: string
     secrets:
-      AZURE_CREDENTIALS:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_TENANT_ID:
         required: true
       SQL_ADMIN_GROUP:
         required: true
@@ -35,6 +42,9 @@ on:
       GRAPH_CLIENT_SECRET:
         required: false
 
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
 
@@ -51,7 +61,10 @@ jobs:
     - name: Login
       uses: azure/login@v2
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        # creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
     
     # Create Azure infrastructure
     - name: Azure deploy
@@ -73,6 +86,7 @@ jobs:
           --resource-group ${{ inputs.RESOURCE_GROUP }} `
           --template-file .\infra\main.bicep `
           --parameters environment=${{ inputs.ENVIRONMENT }} `
+            databaseSkuName=${{ inputs.DATABASE_SKU }} `
             appServicePlanName=${{ inputs.APP_SERVICE_PLAN }} `
             appServicePlanResourceGroup=${{ inputs.APP_SERVICE_PLAN_RESOURCE_GROUP }} `
             sqlAdministratorsLoginName=$env:sqlAdminGroup `

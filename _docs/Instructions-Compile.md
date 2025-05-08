@@ -25,24 +25,28 @@
 ## Setting up the Repo for Development
 ### To work on the API + Admin UI
 1. Clone this Repo https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
-2. Get the Secrets from Keeper 
+2. Download and install the .NET SDK version 8.0.402
+3. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
-3. Create a Developer Certificate https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates
-   1. Create `WebAPI.pfx` with a password of `ThisPassword` (You can change change this, but the `docker-compose.yml` should be updated appropriately)
+4. Create a Developer Certificate with command below
+   1. Make sure you have folder `.aspnet\https` in your home directory
+   1. Run the script below (You can change change this, but the `docker-compose.yml` should be updated appropriately)
 
-**Windows**
+**Windows Terminal**
 ```bash
-dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\WebAPI.pfx -p ThisPassword
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\WebAPI.pfx -p ThisPassword
 dotnet dev-certs https --trust
 ```
 
 **Mac**
 ```bash
-   dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
-   dotnet dev-certs https --trust
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
+dotnet dev-certs https --trust
 ```
 
+**NOTE:** If when creating WebAPI.pfx you get "A valid HTTPS certificate is already present." use `dotnet dev-certs https --clean` to remove the existing certificate.
+**NOTE:** See https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates if there are any issues.
 
 4. Cd into the Repo
 5. Run the Docker Containers
@@ -54,6 +58,8 @@ dotnet dev-certs https --trust
 ```bash
 pwsh ./up.ps1
 ```
+
+**Note:** `global.json` must have `version` and `workloadVersion` set to **8.0.402** due to breaking changes in the version **8.0.404**.
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
   
@@ -86,6 +92,10 @@ devtunnel host -p 5001
 2. Run the MobileUI, targeting your Android Emulator
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
+
+**NOTE: if the solution fails to load, open a terminal in the SSW.Rewards.Mobile folder and run:
+dotnet workload update
+dotnet workload restore**
 
 1. Open up the iOS project settings by right clicking on SSW.Consulting.iOS and selecting Options.
 1. go to 'iOS Bundle Signing' and select your signing identity and provisioning profile.

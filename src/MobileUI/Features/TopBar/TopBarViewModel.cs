@@ -1,56 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class TopBarViewModel : ObservableObject
 {
-    private readonly IPermissionsService _permissionsService;
-    
-    private readonly IUserService _userService;
-
-    private readonly IScannerService _scannerService;
+    private readonly IServiceProvider _provider;
 
     [ObservableProperty]
     private string _profilePic;
 
-    [ObservableProperty]
-    private bool _showAvatar = true;
-
-    [ObservableProperty]
-    private bool _showBack;
-
-    [ObservableProperty]
-    private bool _showScanner = true;
-    
-    [ObservableProperty]
-    private string _title = string.Empty;
-
-    public TopBarViewModel(IPermissionsService permissionsService, IUserService userService, IScannerService scannerService)
+    public TopBarViewModel(IServiceProvider provider, IUserService userService)
     {
-        _permissionsService = permissionsService;
-        _userService = userService;
-        _scannerService = scannerService;
-        WeakReferenceMessenger.Default.Register<TopBarAvatarMessage>(this, (_, m) =>
-        {
-            switch (m.Value)
-            {
-                case AvatarOptions.Back:
-                    SetBackButton();
-                    break;
-                case AvatarOptions.Original:
-                default:
-                    SetDefaultAvatar();
-                    break;
-            }
-        });
-        
-        WeakReferenceMessenger.Default.Register<TopBarTitleMessage>(this, (_, m) =>
-        {
-            Title = m.Value;
-        });
+        _provider = provider;
 
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }
@@ -63,33 +25,15 @@ public partial class TopBarViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenScanner()
+    private async Task OpenActivityPage()
     {
-        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
-        if (granted)
-        {
-            await App.Current.MainPage.Navigation.PushModalAsync<ScanPage>();
-        }
+        var page = ActivatorUtilities.CreateInstance<ActivityPage>(_provider);
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     [RelayCommand]
-    private async Task GoBack()
+    private static void GoBack()
     {
-        SetDefaultAvatar();
-        await Shell.Current.GoToAsync("..");
-    }
-
-    private void SetDefaultAvatar()
-    {
-        ShowBack = false;
-        ShowAvatar = true;
-        ShowScanner = true;
-    }
-
-    private void SetBackButton()
-    {
-        ShowBack = true;
-        ShowAvatar = false;
-        ShowScanner = false;
+        Shell.Current.SendBackButtonPressed();
     }
 }

@@ -6,12 +6,14 @@ public partial class App : Application
 {
     private static IServiceProvider _provider;
     private static IAuthenticationService _authService;
+    private static IFirstRunService _firstRunService;
     public static object UIParent { get; set; }
 
-    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService)
+    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
     {
         _provider = serviceProvider;
         _authService = authService;
+        _firstRunService = firstRunService;
         
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
@@ -44,25 +46,38 @@ public partial class App : Application
     protected override async void OnAppLinkRequestReceived(Uri uri)
     {
         base.OnAppLinkRequestReceived(uri);
-        
-        if (uri.Scheme != "sswrewards")
-        {
-            return;
-        }
 
-        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        var code = queryDictionary.Get("code");
+        if ($"{uri.Scheme}://{uri.Host}" == Constants.AutologinRedirectUrl)
+        {
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var token = queryDictionary.Get("token");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                await _authService.AutologinAsync(token);
+            }
+        }
+        else if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol)
+        {
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
         
-        if (_authService.IsLoggedIn)
-        {
-            var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
-            var popup = new PopupPages.ScanResult(vm, code);
-            await MopupService.Instance.PushAsync(popup);
+            if (_authService.IsLoggedIn)
+            {
+                var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
+                var popup = new PopupPages.ScanResult(vm, code);
+                await MopupService.Instance.PushAsync(popup);
+            }
+            else
+            {
+                _firstRunService.SetPendingScanCode(code);
+            }
         }
-        else
-        {
-            ((LoginPage)MainPage)?.QueueCodeScan(code);
-        }
+    }
+
+    public static async Task InitialiseMainPage()
+    {
+        await _firstRunService.InitialiseAfterLogin();
     }
 
     private async Task CheckApiCompatibilityAsync()

@@ -16,7 +16,7 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService) : BaseViewModel
+public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider provider) : BaseViewModel
 {
     public ActivityPageSegments CurrentSegment { get; set; }
     
@@ -183,8 +183,20 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
         if (_myUserId == item.UserId)
-            await Shell.Current.Navigation.PushModalAsync<MyProfilePage>();
+        {
+            var page = ActivatorUtilities.CreateInstance<MyProfilePage>(provider);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
         else
-            await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(item.UserId);
+        {
+            var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(provider, item.UserId);
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+    }
+    
+    [RelayCommand]
+    private async Task ClosePage()
+    {
+        await App.Current.MainPage.Navigation.PopModalAsync();
     }
 }

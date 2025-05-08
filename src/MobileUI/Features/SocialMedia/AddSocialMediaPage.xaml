@@ -12,7 +12,8 @@
              x:DataType="viewModels:AddSocialMediaViewModel"
              x:Class="SSW.Rewards.Mobile.PopupPages.AddSocialMediaPage">
     <pages:PopupPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Black}" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="{OnPlatform iOS='Transparent', Android={StaticResource Background}}"
+                                   StatusBarStyle="LightContent" />
     </pages:PopupPage.Behaviors>
     <pages:PopupPage.Animation>
         <animations:MoveAnimation
@@ -49,6 +50,7 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
+                        
                         <Border
                             Margin="20,0"
                             StrokeShape="RoundRectangle 10"
@@ -69,13 +71,40 @@
                                 </controls:BorderlessEntry.Behaviors>
                             </Entry>
                         </Border>
+                        
+                        <VerticalStackLayout HeightRequest="40">
+                            <Label
+                                FontSize="11"
+                                Margin="30,0"
+                                Text="{Binding ErrorText}"
+                                TextColor="{StaticResource SSWRed}"
+                            />
+                            <Label
+                                FontSize="11"
+                                Margin="30,0"
+                                Text="{Binding SuccessText}"
+                                TextColor="White"
+                            />
+                        </VerticalStackLayout>
+                        
                         <Label
-                            FontSize="11"
-                            Margin="30,0"
-                            IsVisible="{Binding IsError}"
-                            Text="{Binding ErrorText}"
-                            TextColor="{StaticResource SSWRed}"
-                        />
+                            HorizontalOptions="Center"
+                            FontFamily="FA6Brands"
+                            Text="{Binding Icon}"
+                            FontAutoScalingEnabled="False"
+                            FontSize="50"
+                            TextColor="DimGrey">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding InputText, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+                                             Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenLinkCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
                     </VerticalStackLayout>
                     <Button
                         Text="Connect"

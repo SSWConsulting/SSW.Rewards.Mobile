@@ -9,20 +9,20 @@ public partial class OthersProfilePage
     
     public OthersProfilePage(OthersProfileViewModel vm, IFirebaseAnalyticsService firebaseAnalyticsService, int userId)
     {
+        Title = "Profile";
         InitializeComponent();
         _viewModel = vm;
-
         _viewModel.ShowBalance = false;
-        
-        _viewModel.SetUser(userId);
-
         _viewModel.Navigation = Navigation;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         BindingContext = _viewModel;
+        
+        _viewModel.SetUser(userId);
     }
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         _firebaseAnalyticsService.Log("OthersProfilePage");
         await _viewModel.Initialise();
     }

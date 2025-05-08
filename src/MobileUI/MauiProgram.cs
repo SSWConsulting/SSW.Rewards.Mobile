@@ -1,15 +1,21 @@
 ﻿using BarcodeScanning;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
-using Microsoft.Maui.Platform;
 using Mopups.Hosting;
+using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
+
+#if IOS
+using Plugin.Firebase.Core.Platforms.iOS;
+using Plugin.Firebase.CloudMessaging;
+#elif ANDROID
+using Microsoft.Maui.Platform;
+using Plugin.Firebase.Analytics;
+using Plugin.Firebase.Core.Platforms.Android;
+#endif
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSW.Rewards.Mobile;
@@ -24,6 +30,7 @@ public static class MauiProgram
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             fonts.AddFont("FluentSystemIcons-Regular.ttf", "FluentIcons");
+            fonts.AddFont("FluentSystemIcons-Filled.ttf", "FluentIconsFilled");
             fonts.AddFont("FA6Brands-Regular.otf", "FA6Brands");
             fonts.AddFont("FontAwesome6-Regular.otf", "FA6Regular");
             fonts.AddFont("FontAwesome6-Solid.otf", "FA6Solid");
@@ -44,17 +51,21 @@ public static class MauiProgram
         .ConfigureMauiHandlers((handlers) =>
         {
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
+            handlers.AddHandler<Border, NotAnimatedBorderHandler>();
+            handlers.AddHandler(typeof(Shell), typeof(CustomShellHandler));
         });
-
-        AppCenter.Start($"android={Constants.AppCenterAndroidId};" +
-                  $"ios={Constants.AppCenterIOSId};",
-                  typeof(Analytics), typeof(Crashes));
 
         builder.Services.AddDependencies();
 
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+        
+        // Log all unhandled exceptions
+        MauiExceptions.UnhandledException += (_, args) =>
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(args.ExceptionObject as Exception);
+        };
         
 #if ANDROID
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
@@ -97,13 +108,17 @@ public static class MauiProgram
         builder.ConfigureLifecycleEvents(events =>
         {
 #if IOS
-            events.AddiOS(iOS => iOS.FinishedLaunching((app, launchOptions) => {
-                Firebase.Core.App.Configure();
+            events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) => {
+                CrossFirebase.Initialize();
+                FirebaseCloudMessagingImplementation.Initialize();
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
                 return false;
             }));
 #elif ANDROID
             events.AddAndroid(android => android.OnCreate((activity, bundle) => {
-                Firebase.FirebaseApp.InitializeApp(activity);
+                CrossFirebase.Initialize(activity);
+                FirebaseAnalyticsImplementation.Initialize(activity);
+                CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
             }));
 #endif
         });
@@ -121,18 +136,37 @@ public static class MauiProgram
                 ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
             });
 #elif ANDROID
-            events.AddAndroid(android => android.OnCreate((activity, bundle) => {
-                var action = activity.Intent?.Action;
-                var data = activity.Intent?.Data?.ToString();
-
-                if (action != Android.Content.Intent.ActionView || data is null)
+            events.AddAndroid(android => 
+            {
+                android.OnCreate((activity, bundle) =>
                 {
-                    return;
-                }
+                    var action = activity.Intent?.Action;
+                    var data = activity.Intent?.Data?.ToString();
 
-                activity.Finish();
-                Task.Run(() => HandleAppLink(data));
-            }));
+                    if (action != Android.Content.Intent.ActionView || data is null)
+                    {
+                        return;
+                    }
+
+                    Task.Run(() => HandleAppLink(data));
+                });
+
+                android.OnNewIntent((activity, intent) =>
+                {
+                    if (intent != null)
+                    {
+                        var action = intent.Action;
+                        var data = intent.Data?.ToString();
+                        
+                        if (action != Android.Content.Intent.ActionView || data is null)
+                        {
+                            return;
+                        }
+
+                        Task.Run(() => HandleAppLink(data));
+                    }
+                });
+            });
 #endif
         });
 

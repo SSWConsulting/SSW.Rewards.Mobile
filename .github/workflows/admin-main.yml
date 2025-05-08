@@ -7,27 +7,27 @@ jobs:
   admin_build:
     uses: ./.github/workflows/admin-build.yml
 
-  deploy_dev:
-    name: Admin - Deploy
-    needs: admin_build
-    uses: ./.github/workflows/admin-deploy.yml
-    with:
-      environment: dev
-      resourceGroupName: ssw.rewards.dev
-      frontDoorProfileName: dev-rewards
-      frontDoorEndpointName: dev-rewards.azureedge.net
-      frontDoorDomain: dev.rewards.ssw.com.au
-    secrets: inherit
+##  deploy_dev:
+##    name: Admin - Deploy
+##    needs: admin_build
+##    uses: ./.github/workflows/admin-deploy.yml
+##    with:
+##      environment: dev
+##      resourceGroupName: ssw.rewards.dev
+##      frontDoorProfileName: dev-rewards
+##      frontDoorEndpointName: dev-rewards.azureedge.net
+##      frontDoorDomain: dev.rewards.ssw.com.au
+##    secrets: inherit
 
   deploy_staging:
      name: Admin - Deploy Staging
-     needs: deploy_dev
+     needs: admin_build
      uses: ./.github/workflows/admin-deploy.yml
      with:
        environment: staging
        resourceGroupName: ssw.rewards.staging
        frontDoorProfileName: staging-rewards
-       frontDoorEndpointName: staging-rewards.azureedge.net
+       frontDoorEndpointName: staging-rewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: staging.rewards.ssw.com.au
      secrets: inherit
 
@@ -39,6 +39,6 @@ jobs:
        environment: prod
        resourceGroupName: ssw.rewards.prod
        frontDoorProfileName: rewards
-       frontDoorEndpointName: sswrewards.azureedge.net
+       frontDoorEndpointName: sswrewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: rewards.ssw.com.au
      secrets: inherit

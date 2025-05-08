@@ -24,13 +24,9 @@ jobs:
           shell: bash
           run: dotnet restore $PROJECT
   
-        - name: Build
-          shell: bash
-          run: dotnet build $PROJECT  --no-restore --configuration Release
-  
         - name: Publish
           shell: bash
-          run: dotnet publish $PROJECT --no-build --configuration Release --output out
+          run: dotnet publish $PROJECT --configuration Release --output out
   
         - name: Upload a UI Artifact
           uses: actions/upload-artifact@v4

@@ -32,6 +32,7 @@ public sealed class Handler : IRequestHandler<GetStaffMemberProfileQuery, StaffM
     public async Task<StaffMemberDto> Handle(GetStaffMemberProfileQuery request, CancellationToken cancellationToken)
     {
         IQueryable<StaffMemberDto> query = _dbContext.StaffMembers
+            .TagWithContext($"GetStaffMemberBy{(request.GetByEmail ? "Email" : "Id")}")
             .Include(s => s.StaffMemberSkills)
             .ThenInclude(sms => sms.Skill)
             .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider);

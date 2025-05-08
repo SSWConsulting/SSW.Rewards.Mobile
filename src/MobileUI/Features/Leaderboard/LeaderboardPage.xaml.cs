@@ -1,6 +1,8 @@
-﻿namespace SSW.Rewards.Mobile.Pages;
+﻿using Microsoft.Maui.Controls.Internals;
 
-public partial class LeaderboardPage : ContentPage
+namespace SSW.Rewards.Mobile.Pages;
+
+public partial class LeaderboardPage
 {
     private readonly LeaderboardViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
@@ -44,5 +46,14 @@ public partial class LeaderboardPage : ContentPage
         await LeadersCollection.FadeTo(1, 800, Easing.CubicIn);
 
         _viewModel.IsRunning = false;
+    }
+    
+    private void OnSizeChanged(object sender, EventArgs e)
+    {
+        // Fix for CollectionView.Header not resizing when window size changes
+        if (DeviceInfo.Current.Platform == DevicePlatform.iOS && LeadersCollection.Header is VisualElement headerVisualElement)
+        {
+            headerVisualElement.InvalidateMeasureNonVirtual(InvalidationTrigger.Undefined);
+        }
     }
 }

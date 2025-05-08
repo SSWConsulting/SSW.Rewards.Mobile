@@ -3,7 +3,8 @@ using SSW.Rewards.ApiClient;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+using SSW.Rewards.Mobile.Config;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 using IQuizService = SSW.Rewards.Mobile.Services.IQuizService;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
 using IUserService = SSW.Rewards.Mobile.Services.IUserService;
@@ -27,11 +28,15 @@ public static class DependencyInjection
         {
             typeof(OthersProfilePage),
             typeof(OthersProfileViewModel),
+            typeof(MyProfilePage),
+            typeof(MyProfileViewModel),
             typeof(ProfileViewModelBase),
             typeof(QuizDetailsPage),
             typeof(QuizDetailsViewModel),
-            typeof(ScanPage),
-            typeof(ScanViewModel)
+            typeof(ActivityPage),
+            typeof(ActivityPageViewModel),
+            typeof(SettingsPage),
+            typeof(SettingsViewModel)
         };
 
         var definedTypes = Assembly.GetExecutingAssembly().DefinedTypes
@@ -44,10 +49,15 @@ public static class DependencyInjection
 
         services.AddTransient<OthersProfilePage>();
         services.AddTransient<OthersProfileViewModel>();
+        services.AddTransient<MyProfilePage>();
+        services.AddTransient<MyProfileViewModel>();
+        services.AddTransient<ProfileViewModelBase>();
         services.AddTransient<QuizDetailsPage>();
         services.AddTransient<QuizDetailsViewModel>();
-        services.AddTransient<ScanPage>();
-        services.AddTransient<ScanViewModel>();
+        services.AddTransient<ActivityPage>();
+        services.AddTransient<ActivityPageViewModel>();
+        services.AddTransient<SettingsPage>();
+        services.AddTransient<SettingsViewModel>();
 
         services.AddSingleton<ILeaderService, LeaderService>();
         services.AddSingleton<IUserService, UserService>();
@@ -63,6 +73,7 @@ public static class DependencyInjection
         services.AddSingleton<IPushNotificationsService, PushNotificationsService>();
         services.AddSingleton<IRewardAdminService, RewardAdminService>();
         services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
+        services.AddSingleton<IFirstRunService, FirstRunService>();
 
         services.AddSingleton<FlyoutHeader>();
         services.AddSingleton<FlyoutHeaderViewModel>();
@@ -73,7 +84,10 @@ public static class DependencyInjection
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
         services.AddApiClientServices<AuthHandler>(options.BaseUrl);
-        
+
+        // Configuration that in the future will be modifiable by the user or WebAPI
+        services.AddSingleton(new ScannerConfig());
+
         return services;
     }
 }

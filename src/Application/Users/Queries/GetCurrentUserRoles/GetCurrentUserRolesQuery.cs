@@ -5,11 +5,11 @@ public class GetCurrentUserRolesQuery : IRequest<string[]>
 
 }
 
-public class GetCurrentUserRolesQuerHandler : IRequestHandler<GetCurrentUserRolesQuery, string[]>
+public class GetCurrentUserRolesQueryHandler : IRequestHandler<GetCurrentUserRolesQuery, string[]>
 {
     private readonly IUserService _userService;
 
-    public GetCurrentUserRolesQuerHandler(IUserService userService, ICurrentUserService currentUserService)
+    public GetCurrentUserRolesQueryHandler(IUserService userService)
     {
         _userService = userService;
     }

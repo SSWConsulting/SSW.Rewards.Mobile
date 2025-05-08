@@ -1,18 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.AppCenter.Crashes;
-using Mopups.Services;
+using Plugin.Firebase.Crashlytics;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
-    private readonly IPushNotificationsService _pushNotificationsService;
-    private readonly IPermissionsService _permissionsService;
-    private readonly IServiceProvider _provider;
-
-    private string _pendingScanCode;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -27,22 +21,11 @@ public partial class LoginPageViewModel : BaseViewModel
 
     public LoginPageViewModel(
         IAuthenticationService authService,
-        IUserService userService,
-        IPushNotificationsService pushNotificationsService,
-        IPermissionsService permissionsService,
-        IServiceProvider provider)
+        IUserService userService)
     {
         _authService = authService;
-        _pushNotificationsService = pushNotificationsService;
-        _permissionsService = permissionsService;
-        _provider = provider;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
-    }
-    
-    public void QueueCodeScan(string code)
-    {
-        _pendingScanCode = code;
     }
 
     [RelayCommand]
@@ -65,13 +48,19 @@ public partial class LoginPageViewModel : BaseViewModel
             if (status != ApiStatus.Success)
             {
                 await WaitForWindowClose();
-                var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-                await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+
+                // Only display error if user is not logged in.
+                // Autologin will fall here, if login page is opened, despite being successfull.
+                if (_authService.IsLoggedIn && _authService.HasCachedAccount)
+                {
+                    var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
+                    await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+                }
             }
             else
             {
                 enableButtonAfterLogin = false;
-                await OnAfterLogin();
+                await App.InitialiseMainPage();
             }
         }
 
@@ -108,13 +97,13 @@ public partial class LoginPageViewModel : BaseViewModel
             {
                 enableButtonAfterLogin = false;
 
-                await OnAfterLogin();
+                await App.InitialiseMainPage();
             }
         }
         catch (Exception e)
         {
             // Everything else is fatal
-            Crashes.TrackError(e);
+            CrossFirebaseCrashlytics.Current.RecordException(e);
             Console.WriteLine(e);
             await WaitForWindowClose();
             await Application.Current.MainPage.DisplayAlert("Login Failure",
@@ -125,52 +114,6 @@ public partial class LoginPageViewModel : BaseViewModel
             IsRunning = false;
             LoginButtonEnabled = enableButtonAfterLogin;
             ButtonText = "Sign up / Log in";
-        }
-    }
-
-    private async Task OnAfterLogin()
-    {
-        Application.Current.MainPage = new AppShell();
-        await Shell.Current.GoToAsync("//main");
-        var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
-        if (granted)
-        {
-            await UploadDeviceTokenIfRequired();
-        }
-
-        // Handle qr code received before login
-        if (!string.IsNullOrEmpty(_pendingScanCode))
-        {
-            var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
-            var popup = new PopupPages.ScanResult(vm, _pendingScanCode);
-            _pendingScanCode = null;
-            await MopupService.Instance.PushAsync(popup);
-        }
-    }
-
-    /// <summary>
-    /// Updates FCM device token on the server every 30 days as per Google's recommendation:
-    /// https://firebase.google.com/docs/cloud-messaging/manage-tokens#update-tokens-on-a-regular-basis
-    /// </summary>
-    private async Task UploadDeviceTokenIfRequired()
-    {
-        var now = DateTime.Now;
-        var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MinValue);
-        if (now <= lastTimeUpdated.AddDays(30)) // do not upload token if we are still in the 30-day period from the previous upload
-        {
-            return;
-        }
-
-        var token = await SecureStorage.GetAsync("DeviceToken");
-        if (string.IsNullOrWhiteSpace(token))
-        {
-            return;
-        }
-
-        var success = await _pushNotificationsService.UploadDeviceToken(token, now, DeviceService.GetDeviceId());
-        if (success)
-        {
-            Preferences.Set("DeviceTokenLastTimeUpdated", now);
         }
     }
 }

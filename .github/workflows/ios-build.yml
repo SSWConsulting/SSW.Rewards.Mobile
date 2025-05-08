@@ -42,8 +42,8 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          sudo xcode-select -s "/Applications/Xcode_15.4.app"
-          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_15.4.app" >> $GITHUB_ENV
+          sudo xcode-select -s "/Applications/Xcode_16.2.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_16.2.app" >> $GITHUB_ENV
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v2
@@ -56,6 +56,12 @@ jobs:
             echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
             mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
             cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+      - name: Copy Entitlements.plist
+        run: |
+          if [ "${{ inputs.environment }}" == "prod" ]; then
+            cp -f src/MobileUI/Platforms/iOS/Entitlements.production.plist src/MobileUI/Platforms/iOS/Entitlements.plist
+          fi
 
       - name: Build and sign
         run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net8.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"

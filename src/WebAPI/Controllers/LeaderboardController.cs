@@ -4,6 +4,7 @@ using SSW.Rewards.Shared.DTOs.PrizeDraw;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.PrizeDraw.Queries;
 using SSW.Rewards.Enums;
+using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -13,6 +14,17 @@ public class LeaderboardController : ApiControllerBase
     public async Task<ActionResult<LeaderboardViewModel>> Get()
     {
         return Ok(await Mediator.Send(new GetLeaderboardListQuery()));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<LeaderboardViewModel>> GetPaginated([FromQuery] int take = 0, [FromQuery] int skip = 0, [FromQuery] LeaderboardFilter currentPeriod = LeaderboardFilter.Forever)
+    {
+        return Ok(await Mediator.Send(new GetLeaderboardPaginatedListQuery()
+        {
+            Take = take,
+            Skip = skip,
+            currentPeriod = currentPeriod
+        }));
     }
 
     [HttpGet]

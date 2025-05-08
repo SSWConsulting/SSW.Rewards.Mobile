@@ -1,10 +1,10 @@
-﻿using System.Net.Mail;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public class LeaderViewModel : BaseViewModel
+public partial class LeaderViewModel : BaseViewModel
 {
     public int Rank { get; set; }
     public int AllTimeRank { get; set; }
@@ -39,12 +39,6 @@ public class LeaderViewModel : BaseViewModel
         Title = Regex.Replace(dto.Title, @"^https?://", string.Empty);
     }
 
-    public int DisplayPoints { get; set; }
-
-    public string DisplayPointsShort
-    {
-        get => DisplayPoints >= 1000
-            ? (DisplayPoints / 1000).ToString("0.#") + "k"
-            : DisplayPoints.ToString("#,0");
-    }
+    [ObservableProperty]
+    private int _displayPoints;
 }

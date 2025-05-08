@@ -1,6 +1,6 @@
 ﻿# Learn about building .NET container images:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.402 AS build
 WORKDIR /src
 COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/SSW.Rewards.Application.csproj", "src/Application/"]
@@ -14,6 +14,8 @@ COPY . .
 WORKDIR "/src/src/WebAPI"
 
 # copy and publish app and libraries
+RUN dotnet workload update
+RUN dotnet workload restore
 RUN dotnet publish "WebAPI.csproj" --no-restore -o /app /p:UseAppHost=false
 
 

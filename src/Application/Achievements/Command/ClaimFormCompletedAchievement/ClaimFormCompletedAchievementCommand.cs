@@ -12,12 +12,14 @@ public class ClaimFormCompletedAchievementCommand : IRequest
 public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<ClaimFormCompletedAchievementCommand>
 {
     private readonly IEmailService _emailService;
+    private readonly ICacheService _cacheService;
     private readonly IApplicationDbContext _dbContext;
 
-    public ClaimFormCompletedAchievementCommandHandler(IApplicationDbContext dbContext, IEmailService emailService)
+    public ClaimFormCompletedAchievementCommandHandler(IApplicationDbContext dbContext, IEmailService emailService, ICacheService cacheService)
     {
         _dbContext = dbContext;
         _emailService = emailService;
+        _cacheService = cacheService;
     }
     
     public async Task Handle(ClaimFormCompletedAchievementCommand request, CancellationToken cancellationToken)
@@ -76,6 +78,8 @@ public class ClaimFormCompletedAchievementCommandHandler : IRequestHandler<Claim
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.UpdatedRanking);
         }
     }
 }

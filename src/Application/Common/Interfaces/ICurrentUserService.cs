@@ -5,5 +5,5 @@ public interface ICurrentUserService
     string GetUserId();
     string GetUserEmail();
     string GetUserFullName();
-    string GetUserProfilePic();
+    string? GetUserProfilePic();
 }

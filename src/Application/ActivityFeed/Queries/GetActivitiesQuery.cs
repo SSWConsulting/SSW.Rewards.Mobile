@@ -23,9 +23,11 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
         var userEmail = currentUserService.GetUserEmail();
         var user = await dbContext.Users
             .AsNoTracking()
+            .TagWithContext("GetUserByEmail")
             .FirstOrDefaultAsync(u => u.Email == userEmail, cancellationToken);
 
         var staffDetails = await dbContext.StaffMembers
+            .TagWithContext("GetActiveStaffMembers")
             .Where(s => !s.IsDeleted && s.StaffAchievement != null)
             .Select((s) => new
             {
@@ -36,6 +38,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
             .ToListAsync(cancellationToken);
         
         var staffUsers = await dbContext.Users
+            .TagWithContext("GetStaffBasedOnEmails")
             .Where(u => u.Id != user.Id && staffDetails.Select(s => s.Email).Contains(u.Email))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
@@ -45,6 +48,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
             List<int> friendIds = [];
 
             var allAchievementIds = await dbContext.Users
+                .TagWithContext("GetAllUserAchievementsUnionWithLocalStaffDetails")
                 .Include(u => u.Achievement)
                 .Where(u => u.Achievement != null)
                 .Select(u => u.Achievement!.Id)
@@ -52,6 +56,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
                 .ToListAsync(cancellationToken);
 
             var scannedUserAchievements = await dbContext.UserAchievements
+                .TagWithContext("GetUserAchievementsBasedOnAllAchievementsExceptTheirOwnUniqueOnes")
                 .Where(ua => ua.UserId == user.Id && allAchievementIds.Contains(ua.AchievementId))
                 .Include(ua => ua.User)
                 .Select(ua => ua.Achievement.Id)
@@ -69,6 +74,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
                 else
                 {
                     userMatch = await dbContext.Users
+                        .TagWithContext("GetUnmatchedStaffMemberForAchievements")
                         .Include(u => u.Achievement)
                         .Where(u => u.Achievement != null)
                         .FirstOrDefaultAsync(ua => ua.Achievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
@@ -81,6 +87,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
             }
 
             userAchievements = await dbContext.UserAchievements
+                .TagWithContext("GetUserAchievementsBasedOnFriends")
                 .Include(u => u.User)
                     .ThenInclude(u => u.SocialMediaIds)
                         .ThenInclude(sm => sm.SocialMediaPlatform)
@@ -94,6 +101,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
         else
         {
             userAchievements = await dbContext.UserAchievements
+                .TagWithContext("GetUserAchievements")
                 .Include(u => u.User)
                     .ThenInclude(u => u.SocialMediaIds)
                         .ThenInclude(sm => sm.SocialMediaPlatform)

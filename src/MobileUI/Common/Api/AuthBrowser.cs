@@ -1,5 +1,5 @@
-﻿using IdentityModel.OidcClient.Browser;
-using IBrowser = IdentityModel.OidcClient.Browser.IBrowser;
+﻿using Duende.IdentityModel.OidcClient.Browser;
+using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Helpers;
 

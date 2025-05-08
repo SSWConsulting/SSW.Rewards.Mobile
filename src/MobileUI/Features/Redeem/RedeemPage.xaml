@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:models="clr-namespace:SSW.Rewards.Models"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              x:Name="RewardList"
              ControlTemplate="{DynamicResource PageTemplate}"
              x:DataType="viewModels:RedeemViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.RedeemPage">
-    <ContentPage.Content>
+    <common:BaseContentPage.Content>
         <Grid>
             <Grid RowDefinitions="Auto, *"
-                  Margin="15"
+                  Margin="15,15,15,0"
                   RowSpacing="10">
                 <Border Grid.Row="0"
                         BackgroundColor="{StaticResource Background}"
@@ -165,5 +166,5 @@
                 IsRunning="{Binding IsBusy}"
                 IsVisible="{Binding IsBusy}" />
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </common:BaseContentPage.Content>
+</common:BaseContentPage>

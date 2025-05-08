@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using CommunityToolkit.Mvvm.Messaging;
-using SSW.Rewards.Mobile.Messages;
 
 #if IOS
 using UIKit;
@@ -14,8 +12,6 @@ public partial class AppShell
     {
         BindingContext = this;
         InitializeComponent();
-        Routing.RegisterRoute("earn/details", typeof(QuizDetailsPage));
-        Routing.RegisterRoute("scan", typeof(ScanPage));
     }
     
     protected override bool OnBackButtonPressed()
@@ -27,6 +23,11 @@ public partial class AppShell
 
         Process.GetCurrentProcess().CloseMainWindow();
         return true;
+    }
+    
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        Current.GoToAsync("//scan");
     }
     
     protected override void OnAppearing()
@@ -59,11 +60,5 @@ public partial class AppShell
             view?.AddSubview(statusBar);
         }
 #endif
-    }
-
-    private void OnNavigating(object sender, ShellNavigatingEventArgs e)
-    {
-        WeakReferenceMessenger.Default.Send(new TopBarAvatarMessage(AvatarOptions.Original));
-        WeakReferenceMessenger.Default.Send(new TopBarTitleMessage(string.Empty));
     }
 }

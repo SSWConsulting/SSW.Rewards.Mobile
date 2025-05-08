@@ -19,7 +19,6 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
-        string userName = string.Empty;
         int userId = 0;
 
         var userEmail = _currentUserService.GetUserEmail() ?? string.Empty;
@@ -34,16 +33,9 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
             {
                 userId = 0;
             }
-
-            if (userId > 0)
-            {
-                var user = await _userService.GetUser(userId, cancellationToken);
-
-                userName = user.FullName;
-            }
         }
 
         _logger.LogInformation("SSW.Rewards Request: {Name} {@UserId} {@UserName} {@Request}",
-            requestName, userId, userName, request);
+            requestName, userId, userEmail, request);
     }
 }

@@ -1,11 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Android.Gms.Extensions;
 using Android.OS;
-using Firebase.Messaging;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using SSW.Rewards.Mobile.Platforms.Android;
+using Plugin.Firebase.CloudMessaging;
 using Color = Microsoft.Maui.Graphics.Color;
 
 namespace SSW.Rewards.Mobile;
@@ -43,6 +40,7 @@ public class MainActivity : MauiAppCompatActivity
 
             var notificationManager = (NotificationManager)GetSystemService(Android.Content.Context.NotificationService);
             notificationManager.CreateNotificationChannel(channel);
+            FirebaseCloudMessagingImplementation.ChannelId = Channel_ID;
         }
     }
 }

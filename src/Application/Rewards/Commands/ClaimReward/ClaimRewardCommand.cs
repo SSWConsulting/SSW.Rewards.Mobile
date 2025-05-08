@@ -19,22 +19,27 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
     private readonly IMapper _mapper;
     private readonly IRewardSender _rewardSender;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICacheService _cacheService;
 
     public ClaimRewardCommandHandler(
         IApplicationDbContext context,
         IMapper mapper,
         IRewardSender rewardSender,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ICacheService cacheService)
     {
         _context = context;
         _mapper = mapper;
         _rewardSender = rewardSender;
         _currentUserService = currentUserService;
+        _cacheService = cacheService;
     }
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
     {
-        var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == request.Code || r.Id == request.Id, cancellationToken);
+        var reward = await _context.Rewards
+            .TagWithContext("GetReward")
+            .FirstOrDefaultAsync(r => r.Code == request.Code || r.Id == request.Id, cancellationToken);
 
         if (reward == null)
         {
@@ -45,6 +50,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
         }
 
         var user = await _context.Users
+            .TagWithContext("GetUser")
             .Where(u => u.Email == _currentUserService.GetUserEmail())
             .Include(u => u.UserRewards)
                 .ThenInclude(ur => ur.Reward)
@@ -69,7 +75,9 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
         // award the user an achievement for claiming their first prize
         if (!user.UserRewards.Any())
         {
-            var achievement = await _context.Achievements.FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
+            var achievement = await _context.Achievements
+                .TagWithContext("GetClaimPrizeAchievement")
+                .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
             if (achievement != null)
             {
                 user.UserAchievements.Add(new UserAchievement { Achievement = achievement });
@@ -82,6 +90,8 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
         });
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
 
         if (!request.ClaimInPerson)
         {

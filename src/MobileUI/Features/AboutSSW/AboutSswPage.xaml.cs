@@ -1,18 +1,14 @@
-﻿using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Core;
-using Mopups.Services;
+﻿using Mopups.Services;
 
 namespace SSW.Rewards.PopupPages;
 
 public partial class AboutSswPage
 {
-    private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService, Color parentPageStatusBarColor = null)
+    public AboutSswPage(IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
     }
     
@@ -20,7 +16,7 @@ public partial class AboutSswPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("AboutSswPage");
-        VersionLabel.Text = $"Version {AppInfo.VersionString}";
+        VersionLabel.Text = $"Version {AppInfo.VersionString} ({AppInfo.BuildString})";
     }
 
     private async void Handle_CloseTapped(object sender, EventArgs args)
@@ -30,19 +26,13 @@ public partial class AboutSswPage
 
     private async void FindoutMore_Tapped(object sender, EventArgs e)
     {
-        await Browser.OpenAsync("https://www.ssw.com.au/ssw/Company/AboutUs.aspx", BrowserLaunchMode.External);
-    }
-
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-
-        // Change status bar back
-        this.Behaviors.Clear();
-        this.Behaviors.Add(new StatusBarBehavior
+        try
         {
-            StatusBarColor = _parentPageStatusBarColor,
-            StatusBarStyle = StatusBarStyle.LightContent,
-        });
+            await Browser.OpenAsync("https://www.ssw.com.au/ssw/Company/AboutUs.aspx", BrowserLaunchMode.External);
+        }
+        catch (Exception)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+        }
     }
 }

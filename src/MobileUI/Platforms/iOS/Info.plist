@@ -30,10 +30,6 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan QR codes to earn points</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>CFBundleShortVersionString</key>
-	<string>3.0.40</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -57,5 +53,9 @@
 			</array>
 		</dict>
 	</array>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
 </dict>
 </plist>

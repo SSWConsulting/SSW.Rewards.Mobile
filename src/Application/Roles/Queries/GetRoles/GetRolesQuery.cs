@@ -18,6 +18,9 @@ public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, IEnumerable<R
 
     public async Task<IEnumerable<RoleDto>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
-        return await _dbContext.Roles.ProjectTo<RoleDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        return await _dbContext.Roles
+            .TagWithContext()
+            .ProjectTo<RoleDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
     }
 }

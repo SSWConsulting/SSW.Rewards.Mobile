@@ -1,20 +1,15 @@
-﻿using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Core;
-
-namespace SSW.Rewards.Mobile.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 public partial class OnBoardingPage
 {
     private readonly OnBoardingViewModel _viewModel;
-    private readonly Color _parentPageStatusBarColor;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
-    public OnBoardingPage(IFirebaseAnalyticsService firebaseAnalyticsService, bool isFirstRun = false, Color parentPageStatusBarColor = null)
+    public OnBoardingPage(IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _parentPageStatusBarColor = parentPageStatusBarColor ?? Colors.Black;
         InitializeComponent();
-        _viewModel = new OnBoardingViewModel(isFirstRun);
+        _viewModel = new OnBoardingViewModel();
         BindingContext = _viewModel;
     }
 
@@ -37,14 +32,6 @@ public partial class OnBoardingPage
         base.OnDisappearing();
         _viewModel.ScrollToRequested -= ScrollToIndex;
         _viewModel.Items.Clear();
-
-        // Change status bar back
-        this.Behaviors.Clear();
-        this.Behaviors.Add(new StatusBarBehavior
-        {
-            StatusBarColor = _parentPageStatusBarColor,
-            StatusBarStyle = StatusBarStyle.LightContent,
-        });
     }
 
     private void ScrollToIndex(object sender, int index)

@@ -15,11 +15,15 @@
     <PropertyGroup>
         <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Include="..\ApiClient\Constants.cs" Link="Telemetry\Constants.cs" />
+    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.11.4" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.22.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.1" />

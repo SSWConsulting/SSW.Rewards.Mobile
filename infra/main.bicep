@@ -8,6 +8,8 @@ param location string = resourceGroup().location
 ])
 param environment string
 
+param databaseSkuName string
+
 param appServicePlanName string
 param appServicePlanResourceGroup string
 
@@ -49,6 +51,7 @@ module sqlServer 'modules/sql.bicep' = {
   params: {
     projectName: projectName
     environment: environment
+    databaseSkuName: databaseSkuName
     location: location
     sqlAdministratorsLoginName: sqlAdministratorsLoginName
     sqlAdministratorsObjectId: sqlAdministratorsObjectId

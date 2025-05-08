@@ -1,4 +1,4 @@
-using MoreLinq;
+using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Shared.DTOs.Network;
 using SSW.Rewards.Shared.DTOs.Users;
 
@@ -6,144 +6,157 @@ namespace SSW.Rewards.Application.Network.Queries;
 
 public class GetNetworkProfileListQuery : IRequest<NetworkProfileListViewModel>;
 
+/// <summary>
+/// This handler has a bit more comments than the usual file as the DB schema
+/// require us to do interesting queries to fetch data without overwhelming SQL Server.
+/// This handler needs to get all user profiles that:
+/// - Has scanned you
+/// - You have scanned them
+/// - Are staff member
+/// 
+/// The challenge is that AchievementId are in Users and StaffMembers table loosely
+/// associated to UserAchievements table. To make things worse, StaffMembers is loosely
+/// associated with Users by Email.
+/// </summary>
 public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileListQuery, NetworkProfileListViewModel>
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly IUserService _userService;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IProfilePicStorageProvider _profilePicStorageProvider;
 
-    public GetNetworkProfileListHandler(
-        IApplicationDbContext dbContext,
-        IUserService userService)
+    public GetNetworkProfileListHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IProfilePicStorageProvider profilePicStorageProvider)
     {
         _dbContext = dbContext;
-        _userService = userService;
+        _currentUserService = currentUserService;
+        _profilePicStorageProvider = profilePicStorageProvider;
     }
 
     public async Task<NetworkProfileListViewModel> Handle(GetNetworkProfileListQuery request, CancellationToken cancellationToken)
     {
-        var profiles = new List<NetworkProfileDto>();
-        var user = await _userService.GetCurrentUser(cancellationToken);
-        int currentUserAchievementId;
-        
-        // 1. Get all staff and get user's achievement
-        var staff = await _dbContext.StaffMembers
-            .Include(u => u.StaffAchievement)
-            .Where(s => !s.IsDeleted && s.StaffAchievement != null)
-            .ToListAsync(cancellationToken);
+        var userEmail = _currentUserService.GetUserEmail();
 
-        var staffUsers = await _dbContext.Users
-            .Where(u => u.Id != user.Id && staff.Select(s => s.Email).Contains(u.Email))
+        var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
+
+        var defaultProfilePictureUrlString = defaultProfilePictureUrl != null ? defaultProfilePictureUrl.ToString() : string.Empty;
+
+        // Get user ID, user achievement ID and staff achievement ID.
+        // Usually it only has one of the achievement IDs.
+        var user = await _dbContext.Users
             .AsNoTracking()
-            .ToListAsync(cancellationToken);
-
-        if (staff.Any(s => s.Email == user.Email))
-        {
-            var staffProfile = staff.FirstOrDefault(u => u.Email == user.Email);
-            
-            currentUserAchievementId = staffProfile?.StaffAchievement?.Id ?? -1;
-        }
-        else
-        {
-            var userProfile = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == user.Email, cancellationToken: cancellationToken);
-            
-            currentUserAchievementId = userProfile?.AchievementId ?? -1;
-        }
-
-        // 2. All users that I have scanned
-        var allAchievementIds = await _dbContext.Users
-            .Include(u => u.Achievement)
-            .Where(u => u.Achievement != null)
-            .Select(u => u.Achievement!.Id)
-            .Union(staff.Select(s => s.StaffAchievement!.Id))
-            .ToListAsync(cancellationToken);
-
-        var scannedUserAchievements = await _dbContext.UserAchievements
-            .Where(ua => ua.UserId == user.Id && allAchievementIds.Contains(ua.AchievementId))
-            .Include(ua => ua.User)
-            .Select(ua => ua.Achievement.Id)
-            .ToListAsync(cancellationToken);
-        
-        foreach (var scannedUserAchievement in scannedUserAchievements)
-        {
-            User? userMatch;
-            var staffMatch = staff.FirstOrDefault(ua => ua.StaffAchievement!.Id == scannedUserAchievement);
-
-            if (staffMatch != null)
+            .TagWithContext("GetUserInfo")
+            .Where(x => x.Email == userEmail)
+            .Select(x => new
             {
-                userMatch = staffUsers.FirstOrDefault(u => u.Email == staffMatch.Email);
-            }
-            else
-            {
-                userMatch = await _dbContext.Users
-                    .Include(u => u.Achievement)
-                    .Where(u => u.Achievement != null)
-                    .FirstOrDefaultAsync(ua => ua.Achievement!.Id == scannedUserAchievement, cancellationToken: cancellationToken);
-            }
-            
-            if (userMatch != null)
-            {
-                profiles.Add(new NetworkProfileDto()
+                x.Id,
+                x.AchievementId,
+                StaffAchievementId = _dbContext.StaffMembers
+                    .Where(x => x.Email == userEmail)
+                    .Select(x => x.StaffAchievementId)
+                    .FirstOrDefault()
+            })
+            .FirstOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("No user found");
+
+        // Get all users for which we have achievements.
+        // We need to reverse search from our achievements to other user's achievement IDs.
+        var scannedUsersQuery = _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext("GetScannedUsers")
+            .Join(
+                _dbContext.UserAchievements.AsNoTracking().Where(ua => ua.UserId == user.Id),
+                user => user.AchievementId,
+                ua => ua.AchievementId,
+                (user, ua) => new NetworkProfileDto
                 {
-                    UserId          = userMatch.Id,
-                    Email           = userMatch.Email ?? string.Empty,
-                    Name            = userMatch.FullName ?? string.Empty,
-                    ProfilePicture  = userMatch.Avatar ?? string.Empty,
-                    Scanned         = true
+                    UserId = user.Id,
+                    Email = user.Email ?? string.Empty,
+                    Name = user.FullName ?? string.Empty,
+                    ProfilePicture = user.Avatar ?? string.Empty,
+                    AchievementId = user.AchievementId ?? 0,
+                    Scanned = true,
+                    ScannedMe = false
                 });
-            }
-        }
 
-        // 3. All users that have scanned me
-        var usersThatHaveScannedMe = await _dbContext.UserAchievements
-            .Where(ua => ua.AchievementId == currentUserAchievementId)
-            .Include(ua => ua.User)
-            .Select(ua => ua.User)
+
+        // Get all users that scanned us.
+        // We need to filter other users achievements based on current user/staff achievement ID.
+        var scannedMeQuery = _dbContext.UserAchievements
+            .AsNoTracking()
+            .TagWithContext("GetUserScannedMe")
+            .Where(x => x.AchievementId == user.AchievementId || x.AchievementId == user.StaffAchievementId)
+            .Select(x => new NetworkProfileDto
+            {
+                UserId = x.User.Id,
+                Email = x.User.Email ?? string.Empty,
+                Name = x.User.FullName ?? string.Empty,
+                ProfilePicture = x.User.Avatar ?? string.Empty,
+                AchievementId = x.User.AchievementId ?? 0,
+                Scanned = false,
+                ScannedMe = true
+            });
+
+        // Merge the 2 queries from DB in 1 go. (a bit more efficient than running them separately)
+        var allScannedUsers = await scannedUsersQuery
+            .Concat(scannedMeQuery)
             .ToListAsync(cancellationToken);
 
-        foreach (var scannedMeUser in usersThatHaveScannedMe)
-        {
-            if (profiles.Any(p => p.Email == scannedMeUser.Email))
-            {
-                profiles.First(p => p.Email == scannedMeUser.Email).ScannedMe = true;
-            }
-            else
-            {
-                profiles.Add(new NetworkProfileDto
+        // Get all staff members that have achievements and a user profile.
+        var staff = await _dbContext.StaffMembers
+            .AsNoTracking()
+            .TagWithContext("GetAllStaff")
+            .Where(x => !x.IsDeleted && x.StaffAchievementId.HasValue)
+            .Join(
+                _dbContext.Users.AsNoTracking().Where(x => x.Activated),
+                user => user.Email,
+                staff => staff.Email,
+                (s, u) => new NetworkProfileDto
                 {
-                    UserId          = scannedMeUser.Id,
-                    Email           = scannedMeUser.Email ?? string.Empty,
-                    Name            = scannedMeUser.FullName ?? string.Empty,
-                    ProfilePicture  = scannedMeUser.Avatar ?? string.Empty,
-                    ScannedMe       = true
-                });
-            }
+                    UserId = u.Id,
+                    Email = u.Email ?? string.Empty,
+                    Name = u.FullName ?? string.Empty,
+                    ProfilePicture = u.Avatar ?? string.Empty,
+                    AchievementId = s.StaffAchievement!.Id,
+                    Value = s.StaffAchievement!.Value,
+                    IsStaff = true
+                })
+            .ToListAsync(cancellationToken);
+
+        // Finding scanned staff users and members at the same time from DB is fairly IO intensive.
+        // Not only we need to check if we scanned staff member, we also then need to join with
+        // their user profile by email and check if they are active.
+        // Since we need to fetch all staff, we'll check scans for them in-memory instead.
+        var scannedAchievements = await _dbContext.UserAchievements
+            .AsNoTracking()
+            .TagWithContext("UserAchievementsForStaff")
+            .Where(x => x.UserId == user.Id && x.Achievement.Type == AchievementType.Scanned)
+            .Select(x => x.AchievementId)
+            .ToListAsync(cancellationToken);
+
+        // Merge all scanned users, scanned by and staff members with user info.
+        // This consolidates them all and correctly sets scanned, scanned me, is staff, etc.
+        var networkList = allScannedUsers
+            .Concat(staff)
+            .GroupBy(x => new { x.UserId, x.Email, x.Name, x.ProfilePicture })
+            .Select(g => new NetworkProfileDto
+            {
+                UserId = g.Key.UserId,
+                Email = g.Key.Email ?? string.Empty,
+                Name = g.Key.Name ?? string.Empty,
+                ProfilePicture = g.Key.ProfilePicture ?? defaultProfilePictureUrlString,
+                AchievementId = g.Max(x => x.AchievementId),
+                Scanned = g.Any(x => x.Scanned || scannedAchievements.Contains(x.AchievementId)),
+                ScannedMe = g.Any(x => x.ScannedMe),
+                IsStaff = g.Any(x => x.IsStaff),
+                Value = g.Max(x => x.Value)
+            })
+            .OrderByDescending(x => x.Value)
+            .ToList();
+
+        for (int i = 0; i < networkList.Count; ++i)
+        {
+            networkList[i].Rank = i + 1;
         }
 
-        // 4. Add all staff
-        foreach (var staffUser in staffUsers)
-        {
-            if (profiles.Any(p => p.Email == staffUser.Email))
-            {
-                profiles.First(p => p.Email == staffUser.Email).IsStaff = true;
-            }
-            else
-            {
-                profiles.Add(new NetworkProfileDto
-                {
-                    UserId         = staffUser.Id,
-                    Email          = staffUser.Email ?? string.Empty,
-                    Name           = staffUser.FullName ?? string.Empty,
-                    ProfilePicture = staffUser.Avatar ?? string.Empty,
-                    IsStaff        = true
-                });
-            }
-        }
-
-        profiles
-            .OrderByDescending(p => p.TotalPoints)
-            .ForEach(p => p.Rank = profiles.IndexOf(p) + 1);
-
-        return new NetworkProfileListViewModel { Profiles = profiles };
+        return new NetworkProfileListViewModel { Profiles = networkList };
     }
 }

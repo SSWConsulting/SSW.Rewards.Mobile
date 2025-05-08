@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Controls;
@@ -28,10 +26,12 @@ public partial class NetworkPageViewModel : BaseViewModel
 
     private List<NetworkProfileDto> _profiles = [];
     private readonly IDevService _devService;
+    private readonly IServiceProvider _provider;
     
-    public NetworkPageViewModel(IDevService devService)
+    public NetworkPageViewModel(IDevService devService, IServiceProvider provider)
     {
         _devService = devService;
+        _provider = provider;
     }
     
     public async Task Initialise()
@@ -41,9 +41,9 @@ public partial class NetworkPageViewModel : BaseViewModel
         {
             Segments = new List<Segment>
             {
-                new() { Name = "Following", Value = NetworkPageSegments.Following },
-                new() { Name = "Followers", Value = NetworkPageSegments.Followers },
-                new() { Name = "To Meet", Value = NetworkPageSegments.ToMeet }
+                new() { Name = "Scanned", Value = NetworkPageSegments.Following },
+                new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
+                new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
             };
         }
         
@@ -82,15 +82,16 @@ public partial class NetworkPageViewModel : BaseViewModel
                 break;
             case NetworkPageSegments.ToMeet:
             default:
-                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned));
+                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned).OrderByDescending(x => x.Value));
                 break;
         }
     }
     
     [RelayCommand]
     private async Task UserTapped(NetworkProfileDto leader)
-    { 
-        await Shell.Current.Navigation.PushModalAsync<OthersProfilePage>(leader.UserId);
+    {
+        var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, leader.UserId);
+        await Shell.Current.Navigation.PushAsync(page);
     }
     
     [RelayCommand]

@@ -1,59 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{StaticResource FlyoutBackgroundColour}"
              xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels.ProfileViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
              x:DataType="viewModels:OthersProfileViewModel"
-             x:Class="SSW.Rewards.Mobile.Pages.OthersProfilePage">
-    <ContentPage.Behaviors>
+             x:Class="SSW.Rewards.Mobile.Pages.OthersProfilePage"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <common:BaseContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="{StaticResource Background}" StatusBarStyle="LightContent" />
-    </ContentPage.Behaviors>
+    </common:BaseContentPage.Behaviors>
 
     <ScrollView>
-        <VerticalStackLayout Margin="15">
+        <Grid Margin="15,15,15,0">
+            <VerticalStackLayout Spacing="15"
+                                 IsVisible="{Binding Path=IsLoading, Converter={mct:InvertedBoolConverter}}">
+                <controls:ProfileStats />
 
-            <!-- Close button -->
-            <Border
-                HorizontalOptions="End"
-                BackgroundColor="{StaticResource Background}"
-                StrokeShape="Ellipse"
-                StrokeThickness="0"
-                IsVisible="{Binding ShowCloseButton}">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
-                </Border.GestureRecognizers>
-                <Label
-                    FontFamily="FluentIcons"
-                    Text="&#xe4c3;"
-                    FontSize="35"
-                    FontAutoScalingEnabled="False"
-                    TextColor="{StaticResource primary}" />
-            </Border>
+                <Button Text="Get in touch"
+                        TextTransform="Uppercase"
+                        Style="{StaticResource LabelBold}"
+                        HeightRequest="50"
+                        FontSize="16"
+                        BackgroundColor="{StaticResource SSWRed}"
+                        CornerRadius="8"
+                        Command="{Binding EmailUserCommand}"
+                        IsVisible="{Binding IsStaff}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf0e0;"
+                                         FontFamily="FA6Solid"
+                                         Size="20" />
+                    </Button.ImageSource>
+                </Button>
 
-            <controls:ProfileStats Margin="0,15,0,0" />
+                <controls:ProfileActivity />
+            </VerticalStackLayout>
 
-            <Button Text="Get in touch"
-                    TextTransform="Uppercase"
-                    Margin="0,15,0,0"
-                    Style="{StaticResource LabelBold}"
-                    HeightRequest="50"
-                    FontSize="16"
-                    BackgroundColor="{StaticResource SSWRed}"
-                    CornerRadius="8"
-                    Command="{Binding EmailUserCommand}"
-                    IsVisible="{Binding IsStaff}">
-                <Button.ImageSource>
-                    <FontImageSource Glyph="&#xf0e0;"
-                                     FontFamily="FA6Solid"
-                                     Size="20"/>
-                </Button.ImageSource>
-            </Button>
-
-            <controls:ProfileActivity Margin="0,15,0,0" />
-
-        </VerticalStackLayout>
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsEnabled="{Binding IsLoading}"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}" />
+        </Grid>
     </ScrollView>
-</ContentPage>
+</common:BaseContentPage>

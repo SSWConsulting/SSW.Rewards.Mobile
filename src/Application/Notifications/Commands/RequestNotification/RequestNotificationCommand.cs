@@ -39,14 +39,14 @@ public class RequestNotificationCommand : IRequest<Unit>
             await _notificationService
                 .RequestNotificationAsync(notification, cancellationToken);
 
-            var user = await _userService.GetCurrentUser(cancellationToken);
+            var userId = await _userService.GetCurrentUserId(cancellationToken);
 
             var notificationEntry = new Notification
             {
                 Message             = notification.Text,
                 NotificationTag     = string.Join(",", notification.Tags),
                 NotificationAction  = notification.Action,
-                SentByStaffMemberId = user.Id
+                SentByStaffMemberId = userId
             };
             await _context.Notifications.AddAsync(notificationEntry, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

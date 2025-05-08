@@ -7,8 +7,18 @@ on:
       resourceGroupName:
         required: true
         type: string
+      frontDoorProfileName:
+        type: string
+      frontDoorEndpointName:
+        type: string
+      frontDoorDomain:
+        type: string
     secrets:
-      AZURE_CREDENTIALS:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      AZURE_TENANT_ID:
         required: true
 
 permissions:
@@ -35,7 +45,9 @@ jobs:
 
       - uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           enable-AzPSSession: true
 
       - name: Deploy Bicep
@@ -46,7 +58,7 @@ jobs:
             --resource-group ${{ inputs.resourceGroupName }} `
             --template-file .\infra\admin-main.bicep `
             --parameters environment=${{ inputs.environment }} `
-            | convertfrom-json | foreach properties | foreach outputs
+              | convertfrom-json | foreach properties | foreach outputs
 
           $out.PSObject.Properties | ForEach-Object {
               $name = $_.Name
@@ -76,23 +88,28 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
-      - name: Upload UI
-        uses: bacongobbler/azure-blob-storage-upload@main
-        with:
-          source_dir: "ui"
-          container_name: "$web"
-          account_name: ${{ steps.bicep.outputs.storageAccountName }}
-          sas_token: ${{ steps.storage.outputs.sastoken }}
-          sync: "true"
-
-      - name: Purge Front Door cache
-        id: purge-front-door
+      # Run the sync command using the SAS token.
+      - name: Sync UI folder to Azure Blob Storage ($web)
         shell: pwsh
         run: |
-          az afd endpoint purge \
-          --resource-group ${{ inputs.resourceGroupName }} `
-          --profile-name ${{ inputs.frontDoorProfileName }} `
-          --endpoint-name ${{ inputs.frontDoorEndpointName }} `
-          --domains ${{ inputs.frontDoorDomain }} `
-          --content-paths '/*' `
-          --no-wait
+          az storage blob sync `
+            --container '$web' `
+            --source "ui" `
+            --account-name ${{ steps.bicep.outputs.storageAccountName }} `
+            --sas-token "${{ steps.storage.outputs.sastoken }}" `
+            --delete-destination true
+
+      # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
+      - name: Install Azure CLI Extension for Front Door Classic
+        shell: pwsh
+        run: |
+          az extension add --name front-door
+
+      - name: Purge Azure CDN Cache
+        shell: pwsh
+        run: |
+          az cdn endpoint purge `
+            --resource-group ${{ inputs.resourceGroupName }} `
+            --profile-name ${{ inputs.frontDoorProfileName }} `
+            --name ${{ inputs.frontDoorEndpointName }} `
+            --content-paths '/*'

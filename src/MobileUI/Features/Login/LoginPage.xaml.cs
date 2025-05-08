@@ -1,8 +1,6 @@
-﻿using Mopups.Services;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
-namespace SSW.Rewards.Mobile.Pages;
-
-public partial class LoginPage : ContentPage
+public partial class LoginPage
 {
     private readonly LoginPageViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
@@ -27,21 +25,6 @@ public partial class LoginPage : ContentPage
                 LogoImage.ScaleTo(1, 1000, Easing.CubicIn)
             );
         _viewModel.LoginButtonEnabled = true;
-
-        if (Preferences.Get("FirstRun", true))
-        {
-            Preferences.Set("FirstRun", false);
-            Application.Current.Resources.TryGetValue("SecondaryBackground", out var statusBarColor);
-            await MopupService.Instance.PushAsync(new OnBoardingPage(_firebaseAnalyticsService, true, statusBarColor as Color));
-        }
-        else
-        {
-            await _viewModel.Refresh();
-        }
-    }
-
-    public void QueueCodeScan(string code)
-    {
-        _viewModel.QueueCodeScan(code);
+        await _viewModel.Refresh();
     }
 }

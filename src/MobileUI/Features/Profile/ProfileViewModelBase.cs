@@ -15,8 +15,6 @@ public partial class ProfileViewModelBase : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly IDevService _devService;
-    private readonly IPermissionsService _permissionsService;
-    private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
 
     [ObservableProperty]
@@ -76,36 +74,22 @@ public partial class ProfileViewModelBase : BaseViewModel
         bool isMe,
         IUserService userService,
         IDevService devService,
-        IPermissionsService permissionsService,
-        IFirebaseAnalyticsService firebaseAnalyticsService,
         IServiceProvider provider)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
-        _permissionsService = permissionsService;
-        _firebaseAnalyticsService = firebaseAnalyticsService;
         _provider = provider;
         
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
         userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
         userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
-        userService.CompanyUrlObservable().Subscribe(company =>
-        {
-            CompanyUrl = company;
-
-            if (!IsStaff)
-            {
-                Title = company;
-            }
-        });
+        userService.CompanyUrlObservable().Subscribe(company => CompanyUrl = company);
     }
 
     protected async Task _initialise()
     {
-        IsLoading = true;
         await LoadProfileSections();
-        IsLoading = false;
     }
 
     protected async Task LoadProfileSections()
@@ -113,27 +97,37 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!_loadingProfileSectionsSemaphore.Wait(0))
             return;
 
-        var profileTask = _userService.GetUserAsync(UserId);
-        var socialMediaTask = LoadSocialMedia();
+        try
+        {
+            IsLoading = true;
+            var profileTask = _userService.GetUserAsync(UserId);
+            var socialMediaTask = LoadSocialMedia();
         
-        await Task.WhenAll(profileTask, socialMediaTask);
+            await Task.WhenAll(profileTask, socialMediaTask);
 
-        var profile = profileTask.Result;
+            var profile = profileTask.Result;
 
-        ProfilePic = profile.ProfilePic ?? "v2sophie";
-        Name = profile.FullName;
-        Rank = profile.Rank;
-        Points = profile.Points;
-        Balance = profile.Balance;
-        IsStaff = profile.IsStaff;
-        UserEmail = profile.Email;
-        Title = GetTitle();
-
-        UpdateLastSeenSection(profile.Achievements);
-        UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
-        await UpdateSkillsSectionIfRequired();
+            ProfilePic = profile.ProfilePic ?? "v2sophie";
+            Name = profile.FullName;
+            Rank = profile.Rank;
+            Points = profile.Points;
+            Balance = profile.Balance;
+            IsStaff = profile.IsStaff;
+            UserEmail = profile.Email;
+            Title = GetTitle();
+        
+            await UpdateSkillsSectionIfRequired();
+            UpdateLastSeenSection(profile.Achievements);
+            UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
+        }
+        catch (Exception)
+        {
+            await ClosePage();
+            await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+        }
 
         _loadingProfileSectionsSemaphore.Release();
+        IsLoading = false;
     }
 
     private async Task LoadSocialMedia()
@@ -159,9 +153,12 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading || !IsMe)
             return;
 
-        Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-        var popup = new ProfilePicturePage(new ProfilePictureViewModel(_userService, _permissionsService), _firebaseAnalyticsService, statusBarColor as Color);
-        await MopupService.Instance.PushAsync(popup);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+            var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
+            await MopupService.Instance.PushAsync(popup);
+        });
     }
 
     [RelayCommand]
@@ -195,16 +192,26 @@ public partial class ProfileViewModelBase : BaseViewModel
             {
                 return;
             }
-
-            Application.Current.Resources.TryGetValue("Background", out var statusBarColor);
-            var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty, statusBarColor as Color);
-            await MopupService.Instance.PushAsync(page);
+            
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty);
+                await MopupService.Instance.PushAsync(page);
+            });
+            
             return;
         }
 
         if (Uri.TryCreate(userProfile, UriKind.Absolute, out Uri uri))
         {
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            try
+            {
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+            }
+            catch (Exception)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            }
         }
     }
 
@@ -355,6 +362,6 @@ public partial class ProfileViewModelBase : BaseViewModel
     [RelayCommand]
     private async Task ClosePage()
     {
-        await Navigation.PopModalAsync();
+        await Shell.Current.GoToAsync("..");
     }
 }

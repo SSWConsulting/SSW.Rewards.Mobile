@@ -2,8 +2,9 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SSW.Rewards.Shared.DTOs.Users;
 using SSW.Rewards.Application.Common.Exceptions;
+using SSW.Rewards.Application.Common.Helpers;
+using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Services;
 
@@ -11,6 +12,7 @@ public class UserService : IUserService, IRolesService
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
     private readonly ILogger<UserService> _logger;
     private readonly string _staffSMTPDomain;
@@ -18,12 +20,14 @@ public class UserService : IUserService, IRolesService
     public UserService(
         IApplicationDbContext dbContext,
         ICurrentUserService currentUserService,
+        ICacheService cacheService,
         IMapper mapper,
         IOptions<UserServiceOptions> options,
         ILogger<UserService> logger)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _cacheService = cacheService;
         _mapper = mapper;
         _logger = logger;
 
@@ -66,7 +70,10 @@ public class UserService : IUserService, IRolesService
 
     public async Task<int> CreateUser(User newUser, CancellationToken cancellationToken)
     {
-        var currentUser = await _dbContext.Users.Where(u => u.Email == newUser.Email).FirstOrDefaultAsync(cancellationToken);
+        var currentUser = await _dbContext.Users
+            .TagWithContext("GetUserByEmail")
+            .Where(u => u.Email == newUser.Email)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (currentUser != null)
         {
@@ -75,6 +82,7 @@ public class UserService : IUserService, IRolesService
         }
 
         var userRole = await _dbContext.Roles
+            .TagWithContext("GetRoleNamedUser")
             .FirstOrDefaultAsync(r => r.Name == "User");
 
         newUser.Roles.Add(new UserRole { Role = userRole });
@@ -84,12 +92,36 @@ public class UserService : IUserService, IRolesService
         if (userEmail.Host == _staffSMTPDomain)
         {
             var staffRole = await _dbContext.Roles
+                .TagWithContext("GetStaffRole")
                 .FirstOrDefaultAsync(r => r.Name == "Staff");
 
             newUser.Roles.Add(new UserRole { Role = staffRole });
+
+            var existingStaff = await _dbContext.StaffMembers
+                .TagWithContext("GetExistingStaff")
+                .FirstOrDefaultAsync(r => r.Email == newUser.Email);
+
+            if (existingStaff == null)
+            {
+                var staffMemberEntity = new StaffMember();
+
+                staffMemberEntity.Email = newUser.Email;
+                staffMemberEntity.Name = newUser.FullName ?? string.Empty;
+
+                await _dbContext.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
+
+                staffMemberEntity.StaffAchievement ??= new Achievement
+                {
+                    Name = staffMemberEntity.Name,
+                    Code = AchievementHelper.GenerateCode(),
+                    Type = AchievementType.Scanned,
+                    Value = 0
+                };
+            }
         }
 
         var unclaimedAchievements = await _dbContext.UnclaimedAchievements
+            .TagWithContext("GetUnclaimedAchievements")
             .Where(ua => ua.EmailAddress.ToLower() == newUser.Email.ToLower())
             .ToListAsync();
 
@@ -112,18 +144,30 @@ public class UserService : IUserService, IRolesService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        _cacheService.Remove(CacheTags.NewlyUserCreated);
+
         return newUser.Id;
     }
 
     public async Task<int> GetUserId(string email, CancellationToken cancellationToken)
     {
-        if (String.IsNullOrWhiteSpace(email))
-            throw new ArgumentNullException("no email provided");
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentNullException(nameof(email), "no email provided");
+        }
+
         email = email.Trim().ToLower();
-        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.ToLower() == email, cancellationToken);
-        if (user == null)
-            throw new NotFoundException("No user found");
-        return user.Id;
+
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext()
+            .Where(u => u.Email.ToLower() == email)
+            .Select(x => new { x.Id })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return user != null
+            ? user.Id
+            : throw new NotFoundException("No user found");
     }
 
     public CurrentUserDto GetCurrentUser()
@@ -136,6 +180,7 @@ public class UserService : IUserService, IRolesService
         string currentUserEmail = _currentUserService.GetUserEmail();
 
         var user = await _dbContext.Users
+                .TagWithContext()
                 .Where(u => u.Email == currentUserEmail)
                 .Include(u => u.Achievement)
                 .Include(u => u.UserAchievements)
@@ -149,13 +194,30 @@ public class UserService : IUserService, IRolesService
             throw new NotFoundException(nameof(User), currentUserEmail);
         }
 
-        if (!user.Activated)
-        {
-            user.Activated = true;
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
+        await ActivateUserIfNotActive(user, cancellationToken);
 
         return _mapper.Map<CurrentUserDto>(user);
+    }
+
+    public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)
+    {
+        string currentUserEmail = _currentUserService.GetUserEmail();
+
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext()
+            .Where(u => u.Email == currentUserEmail)
+            .Select(x => new { x.Id, x.Activated })
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(User), currentUserEmail);
+
+        if (!user.Activated)
+        {
+            // Only update user active state in DB when needed. This should be rare.
+            await ActivateUser(user.Id, cancellationToken);
+        }
+
+        return user.Id;
     }
 
     public IEnumerable<Role> GetCurrentUserRoles()
@@ -167,7 +229,8 @@ public class UserService : IUserService, IRolesService
     {
         string email = _currentUserService.GetUserEmail();
         return await _dbContext.UserRoles
-            .TagWith($"{nameof(UserService)}-{nameof(GetCurrentUserRoles)}")
+            .AsNoTracking()
+            .TagWithContext()
             .Where(x => x.User.Email == email)
             .Select(x => x.Role)
             .ToListAsync(cancellationToken);
@@ -182,6 +245,7 @@ public class UserService : IUserService, IRolesService
     {
         var code = await _dbContext.StaffMembers
                 .AsNoTracking()
+                .TagWithContext()
                 .Include(s => s.StaffAchievement)
                 .Where(s => s.Email == emailAddress && !s.IsDeleted)
                 .Select(s => s.StaffAchievement!.Code)
@@ -190,54 +254,47 @@ public class UserService : IUserService, IRolesService
         return code ?? string.Empty;
     }
 
-    public UserProfileDto GetUser(int userId)
-    {
-        return GetUser(userId, CancellationToken.None).Result;
-    }
-
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var users = (await _dbContext.Users
-            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
+        var usersRanked = await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
+
+        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId)
+            ?? throw new NotFoundException(nameof(User), userId);
+
+        var vm = await _dbContext.Users
+            .TagWithContext("GetUserProfile")
+            .Where(u => u.Id == userId)
             .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken))
-            .OrderByDescending(u => u.Points)
-            .Select((u, i) =>
-            {
-                u.Rank = i + 1;
-                return u;
-            });
-            
-        
-        var vm = users.FirstOrDefault(u => u.Id == userId);
+            .FirstOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId);
 
-        if (vm == null)
-        {
-            throw new NotFoundException(nameof(User), userId);
-        }
-
-        var userAchievements = await _dbContext.UserAchievements
-                                    .Include(ua => ua.Achievement)
-                                    .Where(u => u.UserId == userId)
-                                    .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
-                                    .ToListAsync(cancellationToken);
-
-        var userRewards = await _dbContext.UserRewards
-                                    .Include(ur => ur.Reward)
-                                    .Where(u => u.UserId == userId)
-                                    .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
-                                    .ToListAsync(cancellationToken);
-
-        vm.Achievements = userAchievements;
-        vm.Rewards = userRewards;
+        vm.Rank = userRank.Rank;
         vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
-
-        var spent = userRewards.Sum(r => r.RewardCost);
-        vm.Balance = vm.Points - spent;
+        vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
         return vm;
     }
-    
+
+    private async Task<List<UserRankingMinimumDto>> GenerateRanking(CancellationToken cancellationToken)
+    {
+        var usersPoints = await _dbContext.Users
+            .AsNoTracking()
+            .TagWithContext("GetRanks")
+            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
+            .Select(x => new
+            {
+                x.Id,
+                Points = x.UserAchievements.Sum(ua => ua.Achievement.Value)
+            })
+            .ToListAsync(cancellationToken);
+
+        // TODO: Cache these values as they only change when somebody claim an achievement.
+        return usersPoints
+            .OrderByDescending(u => u.Points)
+            .Select((u, i) => new UserRankingMinimumDto(u.Id, i + 1, u.Points))
+            .ToList();
+    }
+
     public UsersViewModel GetUsers()
     {
         return GetUsers(CancellationToken.None).Result;
@@ -246,6 +303,7 @@ public class UserService : IUserService, IRolesService
     public async Task<UsersViewModel> GetUsers(CancellationToken cancellationToken)
     {
         var vm = await _dbContext.Users
+            .TagWithContext()
             .Include(x => x.Roles)
             .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
@@ -266,6 +324,7 @@ public class UserService : IUserService, IRolesService
     public async Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken)
     {
         var userAchievements = await _dbContext.UserAchievements
+            .TagWithContext()
             .Where(u => u.UserId == userId)
             .ProjectTo<UserAchievementDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
@@ -295,6 +354,7 @@ public class UserService : IUserService, IRolesService
 
         var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
         var userRewards = await _dbContext.UserRewards
+            .TagWithContext()
             .Where(ur => ur.UserId == userId)
             .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
@@ -319,6 +379,7 @@ public class UserService : IUserService, IRolesService
     public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken)
     {
         var pendingRedemptions = await _dbContext.PendingRedemptions
+            .TagWithContext()
             .Where(x => x.User.Id == userId && !x.Completed && !x.CancelledByAdmin && !x.CancelledByUser)
             .ProjectTo<UserPendingRedemptionDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
@@ -335,6 +396,7 @@ public class UserService : IUserService, IRolesService
     {
         return await _dbContext.UserRoles
             .AsNoTracking()
+            .TagWithContext()
             .TagWith($"{nameof(UserService)}-{nameof(GetUserRoles)}")
             .Where(x => x.User.Id == userId)
             .Select(x => x.Role)
@@ -348,9 +410,13 @@ public class UserService : IUserService, IRolesService
 
     public async Task RemoveUserRole(int userId, int roleId, CancellationToken cancellationToken)
     {
-        var userToEdit = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        var userToEdit = await _dbContext.Users
+            .TagWithContext("GetUserToEdit")
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
-        var roleToRemove = await _dbContext.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId, cancellationToken);
+        var roleToRemove = await _dbContext.UserRoles
+            .TagWithContext("GetRolesToRemove")
+            .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId, cancellationToken);
 
         userToEdit.Roles.Remove(roleToRemove);
 
@@ -365,5 +431,24 @@ public class UserService : IUserService, IRolesService
     public Task UpdateUser(int UserId, User user, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task ActivateUser(int userId, CancellationToken cancellationToken)
+    {
+        User user = await _dbContext.Users
+            .TagWithContext()
+            .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId);
+
+        await ActivateUserIfNotActive(user, cancellationToken);
+    }
+
+    private async Task ActivateUserIfNotActive(User user, CancellationToken cancellationToken)
+    {
+        if (!user.Activated)
+        {
+            user.Activated = true;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

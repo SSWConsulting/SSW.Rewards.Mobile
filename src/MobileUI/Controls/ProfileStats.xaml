@@ -16,13 +16,14 @@
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <VerticalStackLayout
-        Spacing="15"
-        Padding="0,15">
-        <Grid>
+        Spacing="15">
+        <Grid WidthRequest="120"
+              HeightRequest="120"
+              Margin="0,10,0,0">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
             </Grid.GestureRecognizers>
-            
+        
             <!-- Setting Text="" here to prevent "?" from being displayed before image load -->
             <toolkit:AvatarView ImageSource="{Binding ProfilePic}"
                                 Text=""
