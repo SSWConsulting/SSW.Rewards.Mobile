@@ -39,7 +39,7 @@ public partial class RedeemViewModel : BaseViewModel
         _userService = userService;
         _addressService = addressService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _userService.MyBalanceObservable().Subscribe(balance => Credits = balance);
+        _userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
         
         _timer = Application.Current.Dispatcher.CreateTimer();
@@ -59,6 +59,25 @@ public partial class RedeemViewModel : BaseViewModel
         _isLoaded = false;
     }
 
+    private void OnBalanceChanged(int balance)
+    {
+        Credits = balance;
+        UpdateRewardsAffordability();
+    }
+
+    private void UpdateRewardsAffordability()
+    {
+        foreach (var reward in Rewards)
+        {
+            reward.CanAfford = reward.Cost <= Credits;
+        }
+        
+        foreach (var reward in CarouselRewards)
+        {
+            reward.CanAfford = reward.Cost <= Credits;
+        }
+    }
+    
     public async Task Initialise()
     {
         if (!_isLoaded)
@@ -147,7 +166,7 @@ public partial class RedeemViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public async Task RedeemReward(int id)
+    private async Task RedeemReward(int id)
     {
         var reward = Rewards.FirstOrDefault(r => r.Id == id);
         if (reward != null)
