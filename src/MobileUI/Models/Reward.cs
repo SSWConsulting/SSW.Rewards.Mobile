@@ -14,11 +14,11 @@ namespace SSW.Rewards.Models
         public string CarouselImageUri { get; set; }
         public bool IsCarousel { get; set; }
         public bool IsHidden { get; set; }
-        
-        [ObservableProperty]
-        private bool _canAfford;
-        
         public bool IsPendingRedemption { get; set; }
         public string PendingRedemptionCode { get; set; }
+        
+                
+        [ObservableProperty]
+        private bool _canAfford;
     }
 }
