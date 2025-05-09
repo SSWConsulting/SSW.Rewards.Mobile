@@ -17,7 +17,6 @@ namespace SSW.Rewards.Models
         public bool IsPendingRedemption { get; set; }
         public string PendingRedemptionCode { get; set; }
         
-                
         [ObservableProperty]
         private bool _canAfford;
     }
