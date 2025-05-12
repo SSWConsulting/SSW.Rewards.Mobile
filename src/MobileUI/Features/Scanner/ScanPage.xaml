@@ -70,35 +70,31 @@
                       ColumnDefinitions="Auto,Auto"
                       HorizontalOptions="Center"
                       IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
-                      ColumnSpacing="20"
-                      Margin="0,0,0,50">
+                      ColumnSpacing="80"
+                      Margin="0,0,0,15">
                     <Button Grid.Column="0"
-                            CornerRadius="30"
-                            WidthRequest="60"
-                            HeightRequest="60"
-                            BorderWidth="1"
+                            BorderWidth="0"
                             BorderColor="White"
                             Opacity="0.66"
                             BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomOutCommand}">
                         <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf8c6;"
+                            <FontImageSource Glyph="&#xf7b1;"
+                                             Size="40"
                                              FontAutoScalingEnabled="False"
                                              FontFamily="FluentIcons" />
                         </Button.ImageSource>
                     </Button>
 
                     <Button Grid.Column="1"
-                            CornerRadius="30"
-                            WidthRequest="60"
-                            HeightRequest="60"
-                            BorderWidth="1"
+                            BorderWidth="0"
                             BorderColor="White"
                             Opacity="0.66"
                             BackgroundColor="Transparent"
                             Command="{Binding Path=ZoomInCommand}">
                         <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf8c4;"
+                            <FontImageSource Glyph="&#xf10d;"
+                                             Size="40"
                                              FontAutoScalingEnabled="False"
                                              FontFamily="FluentIcons" />
                         </Button.ImageSource>
