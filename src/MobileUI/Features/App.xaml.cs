@@ -1,4 +1,5 @@
 ﻿using Mopups.Services;
+using Plugin.Firebase.Crashlytics;
 
 namespace SSW.Rewards.Mobile;
 
@@ -45,33 +46,24 @@ public partial class App : Application
     
     protected override async void OnAppLinkRequestReceived(Uri uri)
     {
-        base.OnAppLinkRequestReceived(uri);
-
-        if ($"{uri.Scheme}://{uri.Host}" == Constants.AutologinRedirectUrl)
+        try
         {
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            var token = queryDictionary.Get("token");
-
-            if (!string.IsNullOrEmpty(token))
+            base.OnAppLinkRequestReceived(uri);
+            
+            if (IsAutoLoginRequest(uri))
             {
-                await _authService.AutologinAsync(token);
+                await HandleAutoLoginRequest(uri);
+                return;
+            }
+
+            if (IsRedeemRequest(uri))
+            {
+                await HandleRedeemRequest(uri);
             }
         }
-        else if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol)
+        catch (Exception ex)
         {
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
-        
-            if (_authService.IsLoggedIn)
-            {
-                var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
-                var popup = new PopupPages.ScanResult(vm, code);
-                await MopupService.Instance.PushAsync(popup);
-            }
-            else
-            {
-                _firstRunService.SetPendingScanCode(code);
-            }
+            CrossFirebaseCrashlytics.Current.Log($"Error processing app link: {ex.Message}");
         }
     }
 
@@ -101,4 +93,50 @@ public partial class App : Application
             Console.WriteLine($"[App {ex.StackTrace}");
         }
     }
+    
+    private static bool IsAutoLoginRequest(Uri uri) =>
+        $"{uri.Scheme}://{uri.Host}" == Constants.AutologinRedirectUrl;
+
+    private static bool IsRedeemRequest(Uri uri) =>
+        uri is { Scheme: ApiClientConstants.RewardsQRCodeProtocol, Host: "redeem" } or
+            { Host: ApiClientConstants.RewardsWebDomain, AbsolutePath: "/redeem" };
+
+    private static async Task HandleAutoLoginRequest(Uri uri)
+    {
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var token = queryDictionary.Get("token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            await _authService.AutologinAsync(token);
+        }
+    }
+
+    private static async Task HandleRedeemRequest(Uri uri)
+    {
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
+
+        if (string.IsNullOrEmpty(code))
+        {
+            return;
+        }
+
+        if (_authService.IsLoggedIn)
+        {
+            await ShowScanResultPopup(code);
+        }
+        else
+        {
+            _firstRunService.SetPendingScanCode(code);
+        }
+    }
+
+    private static async Task ShowScanResultPopup(string code)
+    {
+        var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
+        var popup = new PopupPages.ScanResult(vm, code);
+        await MopupService.Instance.PushAsync(popup);
+    }
+
 }

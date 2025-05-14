@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ssw.consulting",
+      "sha256_cert_fingerprints":
+      ["AA:23:6B:0A:31:9A:00:28:E4:94:83:22:8E:D7:01:69:C7:81:2C:21:17:57:55:2B:EC:61:C0:1E:7F:30:1B:E3"]
+    }
+  }
+]

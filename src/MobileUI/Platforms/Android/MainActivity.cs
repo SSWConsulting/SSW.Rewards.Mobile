@@ -7,14 +7,26 @@ using Color = Microsoft.Maui.Graphics.Color;
 
 namespace SSW.Rewards.Mobile;
 
-[IntentFilter([Android.Content.Intent.ActionView],
-    Categories =
-    [
-        Android.Content.Intent.ActionView,
+[IntentFilter(
+    [Android.Content.Intent.ActionView],
+    AutoVerify = true,
+    Categories = new[]
+    {
         Android.Content.Intent.CategoryDefault,
         Android.Content.Intent.CategoryBrowsable
-    ],
-    DataScheme = "sswrewards", DataHost = "", DataPathPrefix = "/")]
+    },
+    DataScheme = "https",
+    DataHost = "rewards.ssw.com.au"
+)]
+[IntentFilter(
+    [Android.Content.Intent.ActionView],
+    Categories = new[]
+    {
+        Android.Content.Intent.CategoryDefault,
+        Android.Content.Intent.CategoryBrowsable
+    },
+    DataScheme = "sswrewards"
+)]
 [Activity(Theme = "@style/MyTheme.Splash", MainLauncher = true,
     ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode |
                            ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density,

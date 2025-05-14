@@ -1,0 +1,65 @@
+@page "/redeem"
+@using Microsoft.AspNetCore.Authorization
+@layout StandaloneLayout
+@inject NavigationManager NavigationManager
+
+@attribute [AllowAnonymous]
+
+<MudThemeProvider IsDarkMode="true" Theme="AdminPortalMudTheme.Theme"/>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center justify-center" Style="height: 100vh;">
+    <MudPaper Elevation="3" Class="pa-8 d-flex flex-column align-center">
+        <MudImage Src="/images/ssw-rewards-logo.svg" Alt="SSW Logo" Style="width: 100%;" Class="mb-4"/>
+        
+        @if (!string.IsNullOrEmpty(Code))
+        {
+            <div class="d-flex flex-column align-center gap-6">
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           Size="Size.Large"
+                           OnClick="OpenRewardsApp"
+                           Class="px-8">
+                    Open in SSW Rewards App
+                </MudButton>
+
+                <div class="d-flex flex-column align-center">
+                    <MudText Class="mb-4">Don't have the app? Download it now:</MudText>
+                    <div class="d-flex flex-column flex-md-row gap-4">
+                        <MudLink Href="@ApiClientConstants.AppStoreUrl" 
+                                 Target="_blank">
+                            <MudImage Src="/images/app-store-badge.svg" 
+                                      Alt="Download on the App Store" 
+                                      Height="40"/>
+                        </MudLink>
+                        <MudLink Href="@ApiClientConstants.PlayStoreUrl" 
+                                 Target="_blank">
+                            <MudImage Src="/images/google-play-badge.png" 
+                                      Alt="Get it on Google Play" 
+                                      Height="40"/>
+                        </MudLink>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Error">
+                Invalid redemption code
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Code { get; set; }
+
+    private void OpenRewardsApp()
+    {
+        if (!string.IsNullOrEmpty(Code))
+        {
+            NavigationManager.NavigateTo($"{ApiClientConstants.RewardsQRCodeProtocol}://redeem?code={Code}");
+        }
+    }
+}
