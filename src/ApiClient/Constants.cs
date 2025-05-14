@@ -11,6 +11,7 @@ public class Constants
     // QR Code Constants (e.g. sswrewards://redeem?code={{ach:123456 in base64}})
     public const string RewardsQRCodeProtocol = "sswrewards";
     public const string RewardsQRCodeProtocolQueryName = "code";
+    public const string RewardsWebDomain = "rewards.ssw.com.au";
 
     public const string RewardsQRCodeAchievementPrefix = "ach:";
     public const string RewardsQRCodeRewardPrefix = "rwd:";
@@ -23,5 +24,7 @@ public class Constants
         RewardsQRCodePendingRewardPrefix
     ];
 
-    public static readonly string RewardsQRCodeUrlFormat = $"{RewardsQRCodeProtocol}://redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
+    public static readonly string RewardsQRCodeUrlFormat = 
+        $"https://{RewardsWebDomain}/redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
+
 }

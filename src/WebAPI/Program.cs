@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.StaticFiles;
 using SSW.Rewards.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,16 +31,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
-app.UseStaticFiles(new StaticFileOptions
-    {
-        ServeUnknownFileTypes = true,
-        DefaultContentType = "application/json",
-        ContentTypeProvider = new FileExtensionContentTypeProvider(new Dictionary<string, string>
-        {
-            { "", "application/json" }
-        })
-    }
-);
+app.UseStaticFiles();
 
 app.UseSwagger();
 app.UseSwaggerUI();
