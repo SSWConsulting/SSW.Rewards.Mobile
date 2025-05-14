@@ -59,7 +59,7 @@
     {
         if (!string.IsNullOrEmpty(Code))
         {
-            NavigationManager.NavigateTo($"sswrewards://redeem?code={Code}");
+            NavigationManager.NavigateTo($"{ApiClientConstants.RewardsQRCodeProtocol}://redeem?code={Code}");
         }
     }
 }
