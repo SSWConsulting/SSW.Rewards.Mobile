@@ -194,10 +194,14 @@ public class ScannerService : IScannerService
 
     private static (string decodedCode, string codeToSend) DecodeQRCode(string qrCodeData)
     {
-        if (qrCodeData.StartsWith(ApiClientConstants.RewardsQRCodeProtocol) && Uri.TryCreate(qrCodeData, UriKind.Absolute, out Uri uri))
+        if (Uri.TryCreate(qrCodeData, UriKind.Absolute, out Uri uri))
         {
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            qrCodeData = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
+            if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol ||
+                uri.Host == ApiClientConstants.RewardsWebDomain)
+            {
+                var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                qrCodeData = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
+            }
         }
 
         var decodedQR = StringHelpers.Base64Decode(qrCodeData)?.ToLowerInvariant();
