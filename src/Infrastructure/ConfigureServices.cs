@@ -9,6 +9,7 @@ using SSW.Rewards.Application.AddressLookup;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Application.Common.Options;
+using SSW.Rewards.Application.Leaderboard;
 using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Infrastructure.Options;
 using SSW.Rewards.Infrastructure.Persistence;
@@ -76,6 +77,7 @@ public static class ConfigureServices
         services.AddSingleton<IStorageProvider, AzureStorageProvider>();
         services.AddSingleton<INotificationService, NotificationsService>();
 
+        services.AddScoped<ILeaderboardService, LeaderboardService>();
         services.AddScoped<IProfileStorageProvider, ProfileStorageProvider>();
         services.AddScoped<IProfilePicStorageProvider, ProfilePicStorageProvider>();
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();

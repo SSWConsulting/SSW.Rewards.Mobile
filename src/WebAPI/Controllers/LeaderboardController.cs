@@ -23,7 +23,7 @@ public class LeaderboardController : ApiControllerBase
         {
             Take = take,
             Skip = skip,
-            currentPeriod = currentPeriod
+            CurrentPeriod = currentPeriod
         }));
     }
 
