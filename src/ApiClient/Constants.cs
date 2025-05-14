@@ -28,6 +28,6 @@ public class Constants
     ];
 
     public static readonly string RewardsQRCodeUrlFormat = 
-        $"https://{RewardsWebDomain}/redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
+        $"{RewardsQRCodeProtocol}://redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
 
 }
