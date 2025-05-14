@@ -13,7 +13,7 @@ public class Constants
     public const string RewardsQRCodeProtocolQueryName = "code";
     public const string RewardsWebDomain = "rewards.ssw.com.au";
     
-    public const string AppStoreUrl = "https://apps.apple.com/au/app/ssw-rewards/id1634222983";
+    public const string AppStoreUrl = "https://apps.apple.com/app/id1482994853";
     public const string PlayStoreUrl = "https://play.google.com/store/apps/details?id=com.ssw.consulting";
 
     public const string RewardsQRCodeAchievementPrefix = "ach:";
