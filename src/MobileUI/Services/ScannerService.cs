@@ -162,14 +162,14 @@ public class ScannerService : IScannerService
             return true;
         }
 
-        var (decodedQR, _) = DecodeQRCode(qrCodeData);
+        var (decodedQR, _) = DecodeQrCode(qrCodeData);
         return !string.IsNullOrWhiteSpace(decodedQR)
             && ApiClientConstants.SupportedQRCodeBodyPrefixes.Any(decodedQR.StartsWith);
     }
 
     public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string rawQRCodeData)
     {
-        var (decodedQR, qrCodeData) = DecodeQRCode(rawQRCodeData);
+        var (decodedQR, qrCodeData) = DecodeQrCode(rawQRCodeData);
         if (decodedQR.StartsWith(ApiClientConstants.RewardsQRCodeAchievementPrefix))
         {
             return await PostAchievementAsync(qrCodeData);
@@ -192,19 +192,33 @@ public class ScannerService : IScannerService
         return ScanResponseViewModel.NotFound();
     }
 
-    private static (string decodedCode, string codeToSend) DecodeQRCode(string qrCodeData)
+    private static (string decodedCode, string codeToSend) DecodeQrCode(string qrCodeData)
     {
-        if (Uri.TryCreate(qrCodeData, UriKind.Absolute, out Uri uri))
+        if (string.IsNullOrWhiteSpace(qrCodeData))
         {
-            if (uri.Scheme == ApiClientConstants.RewardsQRCodeProtocol ||
-                uri.Host == ApiClientConstants.RewardsWebDomain)
-            {
-                var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                qrCodeData = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
-            }
+            return (string.Empty, string.Empty);
         }
 
-        var decodedQR = StringHelpers.Base64Decode(qrCodeData)?.ToLowerInvariant();
-        return (decodedQR, qrCodeData);
+        var codeToProcess = ExtractCodeFromUrl(qrCodeData) ?? qrCodeData;
+        var decodedQr = StringHelpers.Base64Decode(codeToProcess)?.ToLowerInvariant();
+    
+        return (decodedQr, codeToProcess);
+    }
+
+    private static string ExtractCodeFromUrl(string input)
+    {
+        if (!Uri.TryCreate(input, UriKind.Absolute, out var uri))
+        {
+            return null;
+        }
+
+        if (uri.Scheme != ApiClientConstants.RewardsQRCodeProtocol && 
+            uri.Host != ApiClientConstants.RewardsWebDomain)
+        {
+            return null;
+        }
+
+        var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        return queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
     }
 }
