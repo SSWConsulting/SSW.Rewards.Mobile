@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Authorization
+
+@inherits LayoutComponentBase
+
+<PageTitle>@_title</PageTitle>
+
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="AdminPortalMudTheme.Theme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+@Body
+
+
+@code {
+    private bool _isDarkMode;
+    private MudThemeProvider? _mudThemeProvider;
+
+    private string _title = "Kiosk Mode";
+    
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthStat { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _mudThemeProvider is not null)
+        {
+            _isDarkMode = true;
+            StateHasChanged();
+        }
+    }
+}
