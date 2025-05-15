@@ -94,8 +94,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     
         var leaders = await FetchLeaders();
 
-        var newLeadersList = leaders.ToList();
-        if (newLeadersList.Count == 0)
+        if (leaders.Count == 0)
         {
             _limitReached = true;
             return;
