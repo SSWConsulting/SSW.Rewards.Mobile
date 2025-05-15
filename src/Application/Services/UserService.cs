@@ -196,7 +196,14 @@ public class UserService : IUserService, IRolesService
 
         await ActivateUserIfNotActive(user, cancellationToken);
 
-        return _mapper.Map<CurrentUserDto>(user);
+        var currentUserDto = _mapper.Map<CurrentUserDto>(user);
+        var usersRanked =
+            await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
+        var userRank = usersRanked.FirstOrDefault(u => u.Id == user.Id)
+                       ?? throw new NotFoundException(nameof(User), user.Id);
+        currentUserDto.Rank = userRank.Rank;
+        
+        return currentUserDto;
     }
 
     public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)

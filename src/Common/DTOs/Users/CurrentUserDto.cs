@@ -17,4 +17,6 @@ public class CurrentUserDto
     public string? QRCode { get; set; }
     
     public bool IsStaff { get; set; }
+    
+    public int Rank { get; set; }
 }

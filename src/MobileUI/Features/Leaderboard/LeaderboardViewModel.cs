@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -19,8 +20,6 @@ public partial class LeaderboardViewModel : BaseViewModel
     private int _skip;
     private bool _limitReached;
 
-    public ObservableRangeCollection<LeaderViewModel> SearchResults { get; set; } = [];
-
     public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider)
     {
         Title = "Leaderboard";
@@ -28,15 +27,16 @@ public partial class LeaderboardViewModel : BaseViewModel
         _userService = userService;
         _provider = provider;
         _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
-        _userService.MyPointsObservable().Subscribe(myPoints => MyPoints = myPoints);
-        _userService.MyBalanceObservable().Subscribe(HandleMyBalanceChange);
     }
 
-    private ObservableCollection<LeaderViewModel> Leaders { get; } = [];
-    private ObservableCollection<LeaderViewModel> LeadersToDisplay { get; } = [];
-
-    [ObservableProperty]
-    private List<Segment> _periods;
+    public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
+    
+    public List<Segment> Periods { get; set; } = [
+        new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
+        new() { Name = "Month", Value = LeaderboardFilter.ThisMonth },
+        new() { Name = "Year", Value = LeaderboardFilter.ThisYear },
+        new() { Name = "All Time", Value = LeaderboardFilter.Forever }
+    ];
 
     [ObservableProperty]
     private bool _isRunning;
@@ -46,13 +46,10 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     public Action<int> ScrollTo { get; set; }
 
-    private LeaderboardFilter CurrentPeriod { get; set; }
+    private LeaderboardFilter CurrentPeriod { get; set; } = LeaderboardFilter.ThisWeek;
 
     [ObservableProperty]
     private Segment _selectedPeriod;
-
-    [ObservableProperty]
-    private int _myRank;
 
     [ObservableProperty]
     private LeaderViewModel _first;
@@ -63,32 +60,12 @@ public partial class LeaderboardViewModel : BaseViewModel
     [ObservableProperty]
     private LeaderViewModel _third;
 
-    public int MyPoints { get; set; }
-    public int MyBalance { get; set; }
-
-    /// <summary>
-    /// Flip the value to clear search input field
-    /// </summary>
-    [ObservableProperty]
-    private bool _clearSearch;
-
     public async Task Initialise()
     {
-        if (Periods is null || !Periods.Any())
-        {
-            Periods = new List<Segment>
-            {
-                new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
-                new() { Name = "Month", Value = LeaderboardFilter.ThisMonth },
-                new() { Name = "Year", Value = LeaderboardFilter.ThisYear },
-                new() { Name = "All Time", Value = LeaderboardFilter.Forever },
-            };
-        }
-
         if (!_loaded)
         {
             IsRunning = true;
-
+            
             await LoadLeaderboard();
             _loaded = true;
 
@@ -112,30 +89,26 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         if (_limitReached)
             return;
-
+        
         _skip += Take;
-        var feed = Leaders.Skip(_skip).Take(Take).ToList();
+    
+        var leaders = await FetchLeaders();
 
-        if (feed.Count == 0)
+        var newLeadersList = leaders.ToList();
+        if (newLeadersList.Count == 0)
         {
             _limitReached = true;
             return;
         }
 
-        foreach (var leader in feed)
-        {
-            LeadersToDisplay.Add(leader);
-        }
-
-        await UpdateSearchResults();
+        AddLeadersToLeaderboard(newLeadersList);
     }
 
     [RelayCommand]
     private async Task FilterByPeriod()
     {
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
-        ClearSearch = !ClearSearch;
-        await FilterAndSortLeaders(Leaders, CurrentPeriod);
+        await LoadLeaderboard();
     }
 
     [RelayCommand]
@@ -157,10 +130,11 @@ public partial class LeaderboardViewModel : BaseViewModel
     private async Task ScrollToMe()
     {
         LeaderViewModel myCard = null;
+        IsRunning = true;
 
         while (myCard == null)
         {
-            myCard = SearchResults.FirstOrDefault(l => l.IsMe);
+            myCard = Leaders.FirstOrDefault(l => l.IsMe);
 
             if (myCard != null)
             {
@@ -177,132 +151,72 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         if (myCard != null)
         {
-            var myIndex = SearchResults.IndexOf(myCard);
+            var myIndex = Leaders.IndexOf(myCard);
             ScrollTo(myIndex);
         }
+        
+        IsRunning = false;
     }
 
     private async Task LoadLeaderboard()
     {
         Leaders.Clear();
-
-        var summaries = await _leaderService.GetLeadersAsync(false);
-
-        foreach (var summary in summaries)
-        {
-            var isMe = _myUserId == summary.UserId;
-            var vm = new LeaderViewModel(summary, isMe);
-
-            Leaders.Add(vm);
-        }
-
-        await FilterAndSortLeaders(Leaders, CurrentPeriod);
-    }
-
-    private async Task UpdateSearchResults()
-    {
-        await App.Current.MainPage.Dispatcher.DispatchAsync(() =>
-        {
-            SearchResults.ReplaceRange(LeadersToDisplay);
-        });
-    }
-
-    private async Task FilterAndSortLeaders(IEnumerable<LeaderViewModel> list, LeaderboardFilter period, bool keepRank = false)
-    {
-        Func<LeaderViewModel, int> sortKeySelector;
-
-        switch (period)
-        {
-            case LeaderboardFilter.ThisMonth:
-                sortKeySelector = l => l.PointsThisMonth;
-                break;
-            case LeaderboardFilter.ThisYear:
-                sortKeySelector = l => l.PointsThisYear;
-                break;
-            case LeaderboardFilter.Forever:
-                sortKeySelector = l => l.TotalPoints;
-                break;
-            case LeaderboardFilter.ThisWeek:
-            default:
-                sortKeySelector = l => l.PointsThisWeek;
-                break;
-        }
-
-        FilterAndSortBy(list, sortKeySelector, keepRank);
-
-        LeadersToDisplay.Clear();
+        _limitReached = false;
         _skip = 0;
 
-        var initialLeaders = Leaders.Take(Take).ToList();
+        var leaders = await FetchLeaders();
 
-        foreach (var leader in initialLeaders)
-        {
-            LeadersToDisplay.Add(leader);
-        }
+        AddLeadersToLeaderboard(leaders);
 
-        await UpdateSearchResults();
+        // Update podium positions
+        First = Leaders.FirstOrDefault();
+        Second = Leaders.Skip(1).FirstOrDefault();
+        Third = Leaders.Skip(2).FirstOrDefault();
+        
+        _loaded = true;
+    }
+    
+    private async Task<IEnumerable<LeaderboardUserDto>> FetchLeaders()
+    {
+        return await _leaderService.GetLeadersAsync(
+            false,
+            _skip,
+            Take,
+            CurrentPeriod
+        );
     }
 
-    private void FilterAndSortBy(IEnumerable<LeaderViewModel> list, Func<LeaderViewModel, int> sortKeySelector, bool keepRank)
+
+    private void AddLeadersToLeaderboard(IEnumerable<LeaderboardUserDto> leaders)
     {
-        var leaders = list.OrderByDescending(sortKeySelector).ToList();
-        int rank = 1;
-
-        Leaders.Clear();
-
+        var rank = Leaders.Count + 1;
         foreach (var leader in leaders)
         {
-            if (!keepRank)
-            {
-                leader.Rank = rank;
-                rank++;
-            }
-
-            leader.DisplayPoints = sortKeySelector(leader);
-
-            Leaders.Add(leader);
-        }
-
-        var myProfile = leaders.FirstOrDefault(l => l.IsMe);
-        UpdateMyRank(myProfile);
-        UpdateMyAllTimeRank(myProfile);
-
-        // setting to null to trigger PropertyChanged event
-        First = null!;
-        Second = null!;
-        Third = null!;
-        First = leaders.FirstOrDefault();
-        Second = leaders.Skip(1).FirstOrDefault();
-        Third = leaders.Skip(2).FirstOrDefault();
-    }
-
-    private async void HandleMyBalanceChange(int myBalance)
-    {
-        MyBalance = myBalance;
-
-        // Don't attempt to refresh leaderboard until initial load is complete
-        if (!_loaded)
-        {
-            return;
-        }
-
-        await LoadLeaderboard();
-        IsRefreshing = false;
-    }
-
-    private void UpdateMyRank(LeaderViewModel mySummary)
-    {
-        if (mySummary is not null)
-        {
-            MyRank = mySummary.Rank;
+            var isMe = _myUserId == leader.UserId;
+            var vm = CreateLeaderViewModel(leader, isMe, rank);
+            rank++;
+            Leaders.Add(vm);
         }
     }
-
-    private void UpdateMyAllTimeRank(LeaderViewModel me)
+    
+    private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
     {
-        if (me is not null)
+        return new LeaderViewModel(leader, isMe)
         {
-            _userService.UpdateMyAllTimeRank(me.AllTimeRank);
-        }
+            Rank = rank,
+            DisplayPoints = CalculateDisplayPoints(leader)
+        };
+    }
+
+    
+    private int CalculateDisplayPoints(LeaderboardUserDto leader)
+    {
+        return CurrentPeriod switch
+        {
+            LeaderboardFilter.ThisMonth => leader.PointsThisMonth,
+            LeaderboardFilter.ThisYear => leader.PointsThisYear,
+            LeaderboardFilter.Forever => leader.TotalPoints,
+            _ => leader.PointsThisWeek
+        };
     }
 }
