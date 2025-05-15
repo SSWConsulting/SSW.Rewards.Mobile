@@ -42,22 +42,51 @@
             <MudTablePager PageSizeOptions="@_pageSizeOptions" />
         </PagerContent>
     </MudTable>
+    <div style="text-align: right; margin-top: 2rem; font-size: 1.1rem; color: #bbb;">
+        Last updated: @_lastUpdated?.ToString("yyyy-MM-dd HH:mm:ss")
+    </div>
 </MudPaper>
 
 @code {
     private MudTable<MobileLeaderboardUserDto> table;
     private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
     private readonly int[] _pageSizeOptions = new[] { 5, 10, 25, 50, 100, 250 };
+    private System.Timers.Timer? _refreshTimer;
+    private DateTime? _lastUpdated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLeaderboard();
+
+        _refreshTimer = new System.Timers.Timer(60000); // 1 minute
+        _refreshTimer.Elapsed += async (_, __) => await InvokeAsync(LoadLeaderboard);
+        _refreshTimer.AutoReset = true;
+        _refreshTimer.Start();
+    }
 
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
     {
         var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
+        _lastUpdated = DateTime.Now;
+        StateHasChanged();
         return new TableData<MobileLeaderboardUserDto>() { TotalItems = result.Count, Items = result.Items };
     }
 
     private async Task LoadLeaderboard()
     {
         if (table != null)
+        {
             await table.ReloadServerData();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_refreshTimer != null)
+        {
+            _refreshTimer.Stop();
+            _refreshTimer.Dispose();
+            _refreshTimer = null;
+        }
     }
 }
