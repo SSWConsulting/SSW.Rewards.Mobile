@@ -9,10 +9,10 @@
 @inject ILeaderboardService leaderboardService
 
 <MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; min-height: 100vh; background: #111; color: #fff;">
-    <MudImage Src="/images/ssw-rewards-logo.svg" Align="Align.Center" Class="mb-4" />
-    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-4" Style="font-size: 3rem;">
-        Leaderboard
-    </MudText>
+    <div style="position: relative; margin-bottom: 2rem; height: 60px;">
+        <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-0" Style="height: 60px; position: absolute; left: 0; top: 0;" />
+        <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-0" Style="font-size: 3rem; margin: 0 auto; display: block; width: fit-content; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">Leaderboard</MudText>
+    </div>
     <MudStack Row="true" Spacing="2" Class="mb-4" Justify="Justify.Center">
         <MudSelect @bind-Value="_selectedFilter" Label="Period" Style="min-width: 200px;">
             <MudSelectItem Value="@LeaderboardFilter.ThisWeek">This Week</MudSelectItem>
@@ -39,7 +39,7 @@
             <MudTd DataLabel="Points">@context.Points</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager />
+            <MudTablePager PageSizeOptions="@_pageSizeOptions" />
         </PagerContent>
     </MudTable>
 </MudPaper>
@@ -47,6 +47,7 @@
 @code {
     private MudTable<MobileLeaderboardUserDto> table;
     private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
+    private readonly int[] _pageSizeOptions = new[] { 5, 10, 25, 50, 100, 250 };
 
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
     {
