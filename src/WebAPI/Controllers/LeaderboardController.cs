@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SSW.Rewards.Shared.DTOs.Leaderboard;
-using SSW.Rewards.Shared.DTOs.PrizeDraw;
+using SSW.Rewards.Application.Leaderboard.Queries.GetKioskLeaderbaoard;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
+using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
 using SSW.Rewards.Application.PrizeDraw.Queries;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.DTOs.PrizeDraw;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -23,6 +24,17 @@ public class LeaderboardController : ApiControllerBase
         {
             Take = take,
             Skip = skip,
+            CurrentPeriod = currentPeriod
+        }));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<MobileLeaderboardViewModel>> GetMobilePaginated([FromQuery] int page = 0, [FromQuery] int pageSize = 10, [FromQuery] LeaderboardFilter currentPeriod = LeaderboardFilter.ThisWeek)
+    {
+        return Ok(await Mediator.Send(new GetMobileLeaderboardQuery
+        {
+            Page = page,
+            PageSize = pageSize,
             CurrentPeriod = currentPeriod
         }));
     }
