@@ -30,19 +30,23 @@ public partial class LeaderboardViewModel : BaseViewModel
     }
 
     public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
+    
+    public List<Segment> Periods { get; set; } = [
+        new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
+        new() { Name = "Month", Value = LeaderboardFilter.ThisMonth },
+        new() { Name = "Year", Value = LeaderboardFilter.ThisYear },
+        new() { Name = "All Time", Value = LeaderboardFilter.Forever }
+    ];
 
     [ObservableProperty]
-    private List<Segment> _periods = [];
-
-    [ObservableProperty]
-    private bool _isRunning = true;
+    private bool _isRunning;
 
     [ObservableProperty]
     private bool _isRefreshing;
 
     public Action<int> ScrollTo { get; set; }
 
-    private LeaderboardFilter CurrentPeriod { get; set; }
+    private LeaderboardFilter CurrentPeriod { get; set; } = LeaderboardFilter.ThisWeek;
 
     [ObservableProperty]
     private Segment _selectedPeriod;
@@ -56,17 +60,16 @@ public partial class LeaderboardViewModel : BaseViewModel
     [ObservableProperty]
     private LeaderViewModel _third;
 
-    public void Initialise()
+    public async Task Initialise()
     {
-        if (Periods.Count == 0)
+        if (!_loaded)
         {
-            Periods =
-            [
-                new Segment { Name = "Week", Value = LeaderboardFilter.ThisWeek },
-                new Segment { Name = "Month", Value = LeaderboardFilter.ThisMonth },
-                new Segment { Name = "Year", Value = LeaderboardFilter.ThisYear },
-                new Segment { Name = "All Time", Value = LeaderboardFilter.Forever }
-            ];
+            IsRunning = true;
+            
+            await LoadLeaderboard();
+            _loaded = true;
+
+            IsRunning = false;
         }
     }
 
@@ -89,14 +92,9 @@ public partial class LeaderboardViewModel : BaseViewModel
         
         _skip += Take;
     
-        var newLeaders = await _leaderService.GetLeadersAsync(
-            false, 
-            _skip, 
-            Take, 
-            CurrentPeriod == LeaderboardFilter.Forever ? LeaderboardFilter.Forever : CurrentPeriod
-        );
+        var leaders = await FetchLeaders();
 
-        var newLeadersList = newLeaders.ToList();
+        var newLeadersList = leaders.ToList();
         if (newLeadersList.Count == 0)
         {
             _limitReached = true;
@@ -166,14 +164,9 @@ public partial class LeaderboardViewModel : BaseViewModel
         _limitReached = false;
         _skip = 0;
 
-        var summaries = await _leaderService.GetLeadersAsync(
-            false, 
-            _skip, 
-            Take, 
-            CurrentPeriod == LeaderboardFilter.Forever ? LeaderboardFilter.Forever : CurrentPeriod
-        );
+        var leaders = await FetchLeaders();
 
-        AddLeadersToLeaderboard(summaries);
+        AddLeadersToLeaderboard(leaders);
 
         // Update podium positions
         First = Leaders.FirstOrDefault();
@@ -182,6 +175,17 @@ public partial class LeaderboardViewModel : BaseViewModel
         
         _loaded = true;
     }
+    
+    private async Task<IEnumerable<LeaderboardUserDto>> FetchLeaders()
+    {
+        return await _leaderService.GetLeadersAsync(
+            false,
+            _skip,
+            Take,
+            CurrentPeriod
+        );
+    }
+
 
     private void AddLeadersToLeaderboard(IEnumerable<LeaderboardUserDto> leaders)
     {
@@ -189,19 +193,30 @@ public partial class LeaderboardViewModel : BaseViewModel
         foreach (var leader in leaders)
         {
             var isMe = _myUserId == leader.UserId;
-            var vm = new LeaderViewModel(leader, isMe)
-            {
-                Rank = rank,
-                DisplayPoints = CurrentPeriod switch
-                {
-                    LeaderboardFilter.ThisMonth => leader.PointsThisMonth,
-                    LeaderboardFilter.ThisYear => leader.PointsThisYear,
-                    LeaderboardFilter.Forever => leader.TotalPoints,
-                    _ => leader.PointsThisWeek
-                }
-            };
+            var vm = CreateLeaderViewModel(leader, isMe, rank);
             rank++;
             Leaders.Add(vm);
         }
+    }
+    
+    private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
+    {
+        return new LeaderViewModel(leader, isMe)
+        {
+            Rank = rank,
+            DisplayPoints = CalculateDisplayPoints(leader)
+        };
+    }
+
+    
+    private int CalculateDisplayPoints(LeaderboardUserDto leader)
+    {
+        return CurrentPeriod switch
+        {
+            LeaderboardFilter.ThisMonth => leader.PointsThisMonth,
+            LeaderboardFilter.ThisYear => leader.PointsThisYear,
+            LeaderboardFilter.Forever => leader.TotalPoints,
+            _ => leader.PointsThisWeek
+        };
     }
 }
