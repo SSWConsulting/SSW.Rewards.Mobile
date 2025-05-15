@@ -14,13 +14,12 @@
         <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-0" Style="font-size: 3rem; margin: 0 auto; display: block; width: fit-content; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">Leaderboard</MudText>
     </div>
     <MudStack Row="true" Spacing="2" Class="mb-4" Justify="Justify.Center">
-        <MudSelect @bind-Value="_selectedFilter" Label="Period" Style="min-width: 200px;">
+        <MudSelect Value="_selectedFilter" ValueChanged="@((LeaderboardFilter filter) => OnFilterChanged(filter))" Label="Period" Style="min-width: 200px;">
             <MudSelectItem Value="@LeaderboardFilter.ThisWeek">This Week</MudSelectItem>
             <MudSelectItem Value="@LeaderboardFilter.ThisMonth">This Month</MudSelectItem>
             <MudSelectItem Value="@LeaderboardFilter.ThisYear">This Year</MudSelectItem>
             <MudSelectItem Value="@LeaderboardFilter.Forever">All Time</MudSelectItem>
         </MudSelect>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@LoadLeaderboard">Go</MudButton>
     </MudStack>
     <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem;">
         <HeaderContent>
@@ -78,6 +77,12 @@
         {
             await table.ReloadServerData();
         }
+    }
+
+    private async Task OnFilterChanged(LeaderboardFilter filter)
+    {
+        _selectedFilter = filter;
+        await LoadLeaderboard();
     }
 
     public void Dispose()
