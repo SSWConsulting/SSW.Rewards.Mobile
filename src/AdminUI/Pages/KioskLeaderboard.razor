@@ -1,0 +1,67 @@
+@page "/kiosk-leaderboard"
+
+<h1>Hello World</h1>
+
+@* @layout KioskLayout
+@page "/kiosk-leaderboard"
+
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.ApiClient.Services
+@using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Enums
+
+@inject ILeaderboardService leaderboardService
+
+<MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; min-height: 100vh; background: #111; color: #fff;">
+    <MudImage Src="/images/ssw-rewards-logo.svg" Align="Align.Center" Class="mb-4" />
+    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-4" Style="font-size: 3rem;">
+        Leaderboard
+    </MudText>
+    <MudStack Row="true" Spacing="2" Class="mb-4" Justify="Justify.Center">
+        <MudSelect @bind-Value="_selectedFilter" Label="Period" Style="min-width: 200px;">
+            <MudSelectItem Value="@LeaderboardFilter.ThisWeek">This Week</MudSelectItem>
+            <MudSelectItem Value="@LeaderboardFilter.ThisMonth">This Month</MudSelectItem>
+            <MudSelectItem Value="@LeaderboardFilter.ThisYear">This Year</MudSelectItem>
+            <MudSelectItem Value="@LeaderboardFilter.Forever">All Time</MudSelectItem>
+        </MudSelect>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@LoadLeaderboard">Go</MudButton>
+    </MudStack>
+    <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem;">
+        <HeaderContent>
+            <MudTh>Rank</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Total Points</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Rank">@context.Rank</MudTd>
+            <MudTd DataLabel="Name">
+                <div class="d-flex flex-nowrap gap-2 align-center">
+                    <Avatar Url="@context.ProfilePic"/>
+                    <MudText Typo="Typo.body1">@context.Name</MudText>
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Points">@context.Points</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+@code {
+    private MudTable<MobileLeaderboardUserDto> table;
+    private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
+
+    private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
+    {
+        var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
+        return new TableData<MobileLeaderboardUserDto>() { TotalItems = result.Count, Items = result.Items };
+    }
+
+    private async Task LoadLeaderboard()
+    {
+        if (table != null)
+            await table.ReloadServerData();
+    }
+}
+ *@
