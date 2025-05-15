@@ -20,7 +20,7 @@ public partial class LeaderboardPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("LeaderboardPage");
-        await _viewModel.Initialise();
+        _viewModel.Initialise();
         await Animate();
         _viewModel.ScrollTo += ScrollTo;
     }

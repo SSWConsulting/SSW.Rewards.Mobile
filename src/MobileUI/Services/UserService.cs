@@ -26,7 +26,6 @@ public interface IUserService
 
     // user details
     Task UpdateMyDetailsAsync();
-    void UpdateMyAllTimeRank(int newRank);
     Task<IEnumerable<Achievement>> GetAchievementsAsync();
     Task<IEnumerable<Achievement>> GetAchievementsAsync(int userId);
     Task<IEnumerable<Achievement>> GetProfileAchievementsAsync();
@@ -118,13 +117,9 @@ public class UserService : IUserService
         _myBalance.OnNext(user.Balance);
         _myQrCode.OnNext(user.QRCode);
         _isStaff.OnNext(user.IsStaff);
+        _myAllTimeRank.OnNext(user.Rank);
     }
-
-    public void UpdateMyAllTimeRank(int newRank)
-    {
-        _myAllTimeRank.OnNext(newRank);
-    }
-
+    
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
     {
         return await GetAchievementsForUserAsync(_myUserId.Value);
