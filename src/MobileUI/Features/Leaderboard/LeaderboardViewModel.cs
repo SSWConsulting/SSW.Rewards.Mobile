@@ -29,7 +29,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
-    public ObservableCollection<LeaderViewModel> Leaders { get; } = [];
+    public ObservableRangeCollection<LeaderViewModel> Leaders { get; } = [];
     
     public List<Segment> Periods { get; set; } = [
         new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
@@ -100,8 +100,8 @@ public partial class LeaderboardViewModel : BaseViewModel
             _limitReached = true;
             return;
         }
-
-        AddLeadersToLeaderboard(newLeadersList);
+        
+        Leaders.AddRange(leaders);
     }
 
     [RelayCommand]
@@ -160,13 +160,11 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     private async Task LoadLeaderboard()
     {
-        Leaders.Clear();
         _limitReached = false;
         _skip = 0;
 
         var leaders = await FetchLeaders();
-
-        AddLeadersToLeaderboard(leaders);
+        Leaders.ReplaceRange(leaders);
 
         // Update podium positions
         First = Leaders.FirstOrDefault();
@@ -176,27 +174,27 @@ public partial class LeaderboardViewModel : BaseViewModel
         _loaded = true;
     }
     
-    private async Task<IEnumerable<LeaderboardUserDto>> FetchLeaders()
+    private async Task<List<LeaderViewModel>> FetchLeaders()
     {
-        return await _leaderService.GetLeadersAsync(
+        var rank = _skip + 1;
+        var leaderViewModels = new List<LeaderViewModel>();
+        
+        var leaders = await _leaderService.GetLeadersAsync(
             false,
             _skip,
             Take,
             CurrentPeriod
         );
-    }
-
-
-    private void AddLeadersToLeaderboard(IEnumerable<LeaderboardUserDto> leaders)
-    {
-        var rank = Leaders.Count + 1;
+        
         foreach (var leader in leaders)
         {
             var isMe = _myUserId == leader.UserId;
             var vm = CreateLeaderViewModel(leader, isMe, rank);
             rank++;
-            Leaders.Add(vm);
+            leaderViewModels.Add(vm);
         }
+        
+        return leaderViewModels;
     }
     
     private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
