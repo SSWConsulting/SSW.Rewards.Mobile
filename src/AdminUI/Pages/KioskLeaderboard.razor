@@ -8,7 +8,7 @@
 
 @inject ILeaderboardService leaderboardService
 
-<MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; min-height: 100vh; background: #121212; color: #fafafa;">
+<MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; margin-top: 0.5rem; min-height: 100vh; background: #121212; color: #fafafa;">
     <style>
         .kiosk-tabs .mud-tabs-toolbar {
             justify-content: center;
@@ -17,7 +17,12 @@
             padding: 0.3rem;
             gap: 1.2rem;
         }
+        .kiosk-tabs .mud-tabs-toolbar .mud-tabs-toolbar-inner {
+            min-height: 2.5rem;
+        }
+
         .kiosk-tabs .mud-tab {
+            min-height: 2.5rem;
             min-width: 80px !important;
             padding: 0.4rem 1.2rem !important;
             font-size: 1rem;
@@ -27,23 +32,28 @@
             margin: 0 0.15rem;
             transition: background 0.2s, color 0.2s;
         }
+
         .kiosk-tabs .mud-tab.mud-tab-active {
             background: #CC4141 !important;
             color: #fff !important;
             border-radius: 10px !important;
         }
+
         .kiosk-tabs .mud-tabs-indicator,
         .kiosk-tabs .mud-tab-active .mud-tab-indicator,
         .kiosk-tabs .mud-tab-slider {
             display: none !important;
             height: 0 !important;
         }
+
         .kiosk-tabs .mud-tabs-scroll-button {
             display: none !important;
         }
+
         .kiosk-tabs .mud-tooltip-root {
             width: 100%;
         }
+
         .kiosk-tabs .mud-tabs-toolbar-content .mud-tabs-toolbar-wrapper {
             width: 100%;
             transform: translateX(-2px) !important;
@@ -52,24 +62,28 @@
         .kiosk-leaderboard-table .mud-table {
             font-size: 2.2rem;
         }
-        .kiosk-leaderboard-table .mud-table-row {
-            background-color: #222;
+
+        .kiosk-leaderboard-table .mud-table-head .mud-table-cell {
+            background-color: #525252 !important;
         }
-        .kiosk-leaderboard-table .mud-table-row:nth-child(3n+1) {
-            background-color: #525252;
-        }
-        .kiosk-leaderboard-table .mud-table-row:nth-child(3n+2) {
-            background-color: #222;
-        }
-        .kiosk-leaderboard-table .mud-table-row:nth-child(3n) {
+
+        .kiosk-leaderboard-table .mud-table-row:nth-child(2n) {
             background-color: #333;
         }
+
+        .kiosk-leaderboard-table .mud-table-row:nth-child(2n+1) {
+            background-color: #222;
+        }
+
+        .kiosk-leaderboard-table .mud-table-cell {
+            font-size: 1rem;
+            padding: 0.7rem;
+        }
     </style>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem;">
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.25rem;">
         <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-2" Style="height: 60px; margin: 0 auto; display: block;" />
-        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-0" Style="font-size: 2rem; margin-top: 0.5rem;">Leaderboard</MudText>
     </div>
-    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
         <div style="width: 600px; max-width: 100%;">
             <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs" Style="background: transparent; box-shadow: none; width: 100%;">
                 <MudTabPanel Text="Week" />
@@ -83,19 +97,19 @@
         <div style="width: 600px; max-width: 100%;">
             <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
                 <HeaderContent>
-                    <MudTh Style="width: 80px; text-align: center; background-color: #CC4141;">Rank</MudTh>
-                    <MudTh Style="width: 320px; background-color: #CC4141;">Name</MudTh>
-                    <MudTh Style="width: 160px; text-align: center; background-color: #CC4141;">Total Points</MudTh>
+                    <MudTh Style="width: 80px; text-align: center;">Rank</MudTh>
+                    <MudTh Style="width: 320px;">Name</MudTh>
+                    <MudTh Style="width: 160px; text-align: center;">Total Points</MudTh>
                 </HeaderContent>
                 <RowTemplate Context="row">
                     <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
                     <MudTd Style="width: 320px;" DataLabel="Name">
                         <div class="d-flex flex-nowrap gap-2 align-center">
-                            <Avatar Url="@row.ProfilePic"/>
+                            <Avatar Url="@row.ProfilePic" />
                             <MudText Typo="Typo.body1">@row.Name</MudText>
                             @if (row.Rank == 1)
                             {
-                                <MudText Typo="Typo.body1">👑</MudText>                                
+                                <MudText Typo="Typo.body1">👑</MudText>
                             }
                         </div>
                     </MudTd>
@@ -107,14 +121,18 @@
             </MudTable>
         </div>
     </div>
-    <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
-        Last updated: @_lastUpdated?.ToString("dd MMMM yyyy HH:mm")
-    </div>
-    @if (_hasErrorsOnUpdate)
+    @if (!_hasErrorsOnUpdate)
     {
-    <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
-        ⚠️ Error loading leaderboard data. Retrying in 1 minute.
-    </div>
+        <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
+            Last updated: @(_lastUpdated != null ? _lastUpdated?.ToString("dd MMMM yyyy HH:mm") : "never")
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
+            ⚠️ We couldn't refresh the leaderboard. Retrying in 1 min.<br />
+            Last updated: @(_lastUpdated != null ? _lastUpdated?.ToString("dd MMMM yyyy HH:mm") : "never")
+        </div>
     }
 </MudPaper>
 
