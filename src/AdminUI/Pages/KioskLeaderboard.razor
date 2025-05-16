@@ -14,7 +14,7 @@
             justify-content: center;
             background: #222;
             border-radius: 12px;
-            padding: 0.5rem 0;
+            padding: 0.3rem;
             gap: 1.2rem;
         }
         .kiosk-tabs .mud-tab {
@@ -41,6 +41,13 @@
         .kiosk-tabs .mud-tabs-scroll-button {
             display: none !important;
         }
+        .kiosk-tabs .mud-tooltip-root {
+            width: 100%;
+        }
+        .kiosk-tabs .mud-tabs-toolbar-content .mud-tabs-toolbar-wrapper {
+            width: 100%;
+            transform: translateX(-2px) !important;
+        }
 
         .kiosk-leaderboard-table .mud-table {
             font-size: 2.2rem;
@@ -64,10 +71,10 @@
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs" Style="background: transparent; box-shadow: none;">
-                <MudTabPanel Text="This Week" />
-                <MudTabPanel Text="This Month" />
-                <MudTabPanel Text="This Year" />
+            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs" Style="background: transparent; box-shadow: none; width: 100%;">
+                <MudTabPanel Text="Week" />
+                <MudTabPanel Text="Month" />
+                <MudTabPanel Text="Year" />
                 <MudTabPanel Text="All Time" />
             </MudTabs>
         </div>
