@@ -34,6 +34,7 @@ jobs:
             name: ui
             path: out/wwwroot
             if-no-files-found: error
+            include-hidden-files: true
   
         - name: Upload a Infra Artifact
           uses: actions/upload-artifact@v4

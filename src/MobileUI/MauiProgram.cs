@@ -11,6 +11,7 @@ using SSW.Rewards.Mobile.Renderers;
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 using Plugin.Firebase.CloudMessaging;
+using Foundation;
 #elif ANDROID
 using Microsoft.Maui.Platform;
 using Plugin.Firebase.Analytics;
@@ -134,6 +135,22 @@ public static class MauiProgram
             events.AddiOS(ios =>
             {
                 ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
+                
+                ios.FinishedLaunching((app, data)
+                    => HandleAppLink(app.UserActivity));
+
+                ios.ContinueUserActivity((app, userActivity, handler)
+                    => HandleAppLink(userActivity));
+
+                if (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
+                {
+                    ios.SceneWillConnect((scene, sceneSession, sceneConnectionOptions)
+                        => HandleAppLink(sceneConnectionOptions.UserActivities.ToArray()
+                            .FirstOrDefault(a => a.ActivityType == NSUserActivityType.BrowsingWeb)));
+
+                    ios.SceneContinueUserActivity((scene, userActivity)
+                        => HandleAppLink(userActivity));
+                }
             });
 #elif ANDROID
             events.AddAndroid(android => 
@@ -172,6 +189,19 @@ public static class MauiProgram
 
         return builder;
     }
+
+#if IOS || MACCATALYST
+    static bool HandleAppLink(NSUserActivity? userActivity)
+    {
+        if (userActivity is null || userActivity.ActivityType != NSUserActivityType.BrowsingWeb ||
+            userActivity.WebPageUrl is null)
+        {
+            return false;
+        }
+
+        return HandleAppLink(userActivity.WebPageUrl.ToString());
+    }
+#endif
 
     static bool HandleAppLink(string url)
     {
