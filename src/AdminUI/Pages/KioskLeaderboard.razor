@@ -12,21 +12,59 @@
     <style>
         .kiosk-tabs .mud-tabs-toolbar {
             justify-content: center;
+            background: #222;
+            border-radius: 12px;
+            padding: 0.5rem 0;
+            gap: 1.2rem;
         }
         .kiosk-tabs .mud-tab {
-            min-width: 110px !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
-            font-size: 1.1rem;
+            min-width: 80px !important;
+            padding: 0.4rem 1.2rem !important;
+            font-size: 1rem;
+            color: #fff !important;
+            background: #222 !important;
+            border-radius: 10px !important;
+            margin: 0 0.15rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .kiosk-tabs .mud-tab.mud-tab-active {
+            background: #CC4141 !important;
+            color: #fff !important;
+            border-radius: 10px !important;
+        }
+        .kiosk-tabs .mud-tabs-indicator,
+        .kiosk-tabs .mud-tab-active .mud-tab-indicator,
+        .kiosk-tabs .mud-tab-slider {
+            display: none !important;
+            height: 0 !important;
+        }
+        .kiosk-tabs .mud-tabs-scroll-button {
+            display: none !important;
+        }
+
+        .kiosk-leaderboard-table .mud-table {
+            font-size: 2.2rem;
+        }
+        .kiosk-leaderboard-table .mud-table-row {
+            background-color: #222;
+        }
+        .kiosk-leaderboard-table .mud-table-row:nth-child(3n+1) {
+            background-color: #525252;
+        }
+        .kiosk-leaderboard-table .mud-table-row:nth-child(3n+2) {
+            background-color: #222;
+        }
+        .kiosk-leaderboard-table .mud-table-row:nth-child(3n) {
+            background-color: #333;
         }
     </style>
-    <div style="position: relative; margin-bottom: 2rem; height: 60px;">
-        <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-0" Style="height: 60px; position: absolute; left: 0; top: 0;" />
-        <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-0" Style="font-size: 3rem; margin: 0 auto; display: block; width: fit-content; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">Leaderboard</MudText>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem;">
+        <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-2" Style="height: 60px; margin: 0 auto; display: block;" />
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-0" Style="font-size: 2rem; margin-top: 0.5rem;">Leaderboard</MudText>
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs">
+            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs" Style="background: transparent; box-shadow: none;">
                 <MudTabPanel Text="This Week" />
                 <MudTabPanel Text="This Month" />
                 <MudTabPanel Text="This Year" />
@@ -36,11 +74,11 @@
     </div>
     <div style="display: flex; justify-content: center;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
+            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
                 <HeaderContent>
                     <MudTh Style="width: 80px; text-align: center; background-color: #CC4141;">Rank</MudTh>
                     <MudTh Style="width: 320px; background-color: #CC4141;">Name</MudTh>
-                    <MudTh Style="width: 160px; text-align: right; background-color: #CC4141;">Total Points</MudTh>
+                    <MudTh Style="width: 160px; text-align: center; background-color: #CC4141;">Total Points</MudTh>
                 </HeaderContent>
                 <RowTemplate Context="row">
                     <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
@@ -54,7 +92,7 @@
                             }
                         </div>
                     </MudTd>
-                    <MudTd Style="width: 160px; text-align: right;" DataLabel="Points">@row.Points</MudTd>
+                    <MudTd Style="width: 160px; text-align: center;" DataLabel="Points">@row.Points</MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="@_pageSizeOptions" />
@@ -63,7 +101,7 @@
         </div>
     </div>
     <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
-        Last updated: @_lastUpdated?.ToString("yyyy-MM-dd HH:mm")
+        Last updated: @_lastUpdated?.ToString("dd MMMM yyyy HH:mm")
     </div>
     @if (_hasErrorsOnUpdate)
     {
@@ -131,6 +169,7 @@
             3 => LeaderboardFilter.Forever,
             _ => LeaderboardFilter.ThisWeek
         };
+
         await LoadLeaderboard();
     }
 
