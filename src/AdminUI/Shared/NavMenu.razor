@@ -7,7 +7,8 @@
 
 <MudDivider Style="background-color: black"/>
 <MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
-    <MudStack Spacing="2"  >
+    <MudStack Spacing="2">
+        <!-- For staff and admins -->
         <AuthorizeView Roles="Admin, Staff">
             @foreach (var staffPage in NavigationPages.StaffPages())
             {
@@ -17,6 +18,7 @@
                 <MudDivider Style="background-color: black"/>
             }
         </AuthorizeView>
+
         <!-- Admin only links -->
         <AuthorizeView Roles="Admin" Context="sub_context">
             @foreach (var adminPage in NavigationPages.AdminPages())
@@ -26,6 +28,19 @@
                             Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
                 <MudDivider Style="background-color: black"/>
             }
+        </AuthorizeView>
+
+        <!-- Used for Kiosk mode and does not need roles -->
+        <AuthorizeView>
+            <Authorized>
+                @foreach (var publicPage in NavigationPages.PublicPages())
+                {
+                    <MudNavLink Href="@publicPage.Href"
+                                Match="NavLinkMatch.Prefix"
+                                Icon="@publicPage.Icon">@publicPage.Title</MudNavLink>
+                    <MudDivider Style="background-color: black" />
+                }
+            </Authorized>
         </AuthorizeView>
     </MudStack>
     

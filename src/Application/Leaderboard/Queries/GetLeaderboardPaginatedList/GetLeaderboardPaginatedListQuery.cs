@@ -20,10 +20,6 @@ internal class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, Leade
 
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardPaginatedListQuery request, CancellationToken cancellationToken)
     {
-        var skip = request.Skip;
-        var take = request.Take;
-        var currentPeriod = request.CurrentPeriod;
-
         List<LeaderboardUserDto> users = await _leaderboardService.GetFullLeaderboard(cancellationToken);
         var query = users.AsQueryable();
         query = request.CurrentPeriod switch

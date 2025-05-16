@@ -28,7 +28,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="QRCoder" Version="1.4.3" />
         <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.1.1" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using SSW.Rewards.Domain.Entities;
-
-namespace SSW.Rewards.Shared.DTOs.Leaderboard;
+﻿namespace SSW.Rewards.Shared.DTOs.Leaderboard;
 
 public class LeaderboardUserDto
 {
