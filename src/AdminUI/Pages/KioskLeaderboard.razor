@@ -22,20 +22,27 @@
         </MudSelect>
     </MudStack>
     <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem;">
+    <div style="display: flex; justify-content: center;">
+        <div style="width: 600px; max-width: 100%;">
+            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
         <HeaderContent>
-            <MudTh>Rank</MudTh>
-            <MudTh>Name</MudTh>
-            <MudTh>Total Points</MudTh>
+                    <MudTh Style="width: 80px; text-align: center; background-color: #CC4141;">Rank</MudTh>
+                    <MudTh Style="width: 320px; background-color: #CC4141;">Name</MudTh>
+                    <MudTh Style="width: 160px; text-align: right; background-color: #CC4141;">Total Points</MudTh>
         </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Rank">@context.Rank</MudTd>
-            <MudTd DataLabel="Name">
+                <RowTemplate Context="row">
+                    <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
+                    <MudTd Style="width: 320px;" DataLabel="Name">
                 <div class="d-flex flex-nowrap gap-2 align-center">
-                    <Avatar Url="@context.ProfilePic"/>
-                    <MudText Typo="Typo.body1">@context.Name</MudText>
+                            <Avatar Url="@row.ProfilePic"/>
+                            <MudText Typo="Typo.body1">@row.Name</MudText>
+                            @if (row.Rank == 1)
+                            {
+                                <MudText Typo="Typo.body1">👑</MudText>                                
+                            }
                 </div>
             </MudTd>
-            <MudTd DataLabel="Points">@context.Points</MudTd>
+                    <MudTd Style="width: 160px; text-align: right;" DataLabel="Points">@row.Points</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="@_pageSizeOptions" />
