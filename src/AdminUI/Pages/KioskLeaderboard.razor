@@ -85,11 +85,11 @@
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs" Style="background: transparent; box-shadow: none; width: 100%;">
-                <MudTabPanel Text="Week" />
-                <MudTabPanel Text="Month" />
-                <MudTabPanel Text="Year" />
-                <MudTabPanel Text="All Time" />
+            <MudTabs Rounded="true" Centered="true" Class="kiosk-tabs" Style="background: transparent; box-shadow: none; width: 100%;">
+                <MudTabPanel Text="Week" OnClick="eventArgs => OnTabChanged(0)" />
+                <MudTabPanel Text="Month" OnClick="eventArgs => OnTabChanged(1)" />
+                <MudTabPanel Text="Year" OnClick="eventArgs => OnTabChanged(2)" />
+                <MudTabPanel Text="All Time" OnClick="eventArgs => OnTabChanged(3)" />
             </MudTabs>
         </div>
     </div>
@@ -140,7 +140,7 @@
     private MudTable<MobileLeaderboardUserDto> table;
     private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
     private int _activeTabIndex = 0;
-    private readonly int[] _pageSizeOptions = new[] { 5, 10, 25, 50, 100, 250 };
+    private readonly int[] _pageSizeOptions = new[] { 10, 25, 50, 100, 250 };
     private System.Timers.Timer? _refreshTimer;
     private DateTime? _lastUpdated;
     private bool _hasErrorsOnUpdate = false;
