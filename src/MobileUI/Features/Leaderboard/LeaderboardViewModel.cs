@@ -76,8 +76,8 @@ public partial class LeaderboardViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshLeaderboard()
     {
-        await LoadLeaderboard();
         IsRefreshing = false;
+        await LoadLeaderboard();
     }
 
     [RelayCommand]
