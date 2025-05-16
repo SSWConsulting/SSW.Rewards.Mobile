@@ -1,4 +1,4 @@
-@layout KioskLayout
+﻿@layout KioskLayout
 @page "/kiosk-leaderboard"
 
 @using SSW.Rewards.Shared.DTOs.Leaderboard
@@ -8,46 +8,58 @@
 
 @inject ILeaderboardService leaderboardService
 
-<MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; min-height: 100vh; background: #111; color: #fff;">
+<MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; min-height: 100vh; background: #121212; color: #fafafa;">
+    <style>
+        .kiosk-tabs .mud-tabs-toolbar {
+            justify-content: center;
+        }
+        .kiosk-tabs .mud-tab {
+            min-width: 110px !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            font-size: 1.1rem;
+        }
+    </style>
     <div style="position: relative; margin-bottom: 2rem; height: 60px;">
         <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-0" Style="height: 60px; position: absolute; left: 0; top: 0;" />
         <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-0" Style="font-size: 3rem; margin: 0 auto; display: block; width: fit-content; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center;">Leaderboard</MudText>
     </div>
-    <MudStack Row="true" Spacing="2" Class="mb-4" Justify="Justify.Center">
-        <MudSelect Value="_selectedFilter" ValueChanged="@((LeaderboardFilter filter) => OnFilterChanged(filter))" Label="Period" Style="min-width: 200px;">
-            <MudSelectItem Value="@LeaderboardFilter.ThisWeek">This Week</MudSelectItem>
-            <MudSelectItem Value="@LeaderboardFilter.ThisMonth">This Month</MudSelectItem>
-            <MudSelectItem Value="@LeaderboardFilter.ThisYear">This Year</MudSelectItem>
-            <MudSelectItem Value="@LeaderboardFilter.Forever">All Time</MudSelectItem>
-        </MudSelect>
-    </MudStack>
-    <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem;">
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem;">
+        <div style="width: 600px; max-width: 100%;">
+            <MudTabs @bind-ActivePanelIndex="_activeTabIndex" Rounded="true" Centered="true" OnActivePanelIndexChanged="OnTabChanged" Class="kiosk-tabs">
+                <MudTabPanel Text="This Week" />
+                <MudTabPanel Text="This Month" />
+                <MudTabPanel Text="This Year" />
+                <MudTabPanel Text="All Time" />
+            </MudTabs>
+        </div>
+    </div>
     <div style="display: flex; justify-content: center;">
         <div style="width: 600px; max-width: 100%;">
             <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="true" Style="font-size: 2rem; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
-        <HeaderContent>
+                <HeaderContent>
                     <MudTh Style="width: 80px; text-align: center; background-color: #CC4141;">Rank</MudTh>
                     <MudTh Style="width: 320px; background-color: #CC4141;">Name</MudTh>
                     <MudTh Style="width: 160px; text-align: right; background-color: #CC4141;">Total Points</MudTh>
-        </HeaderContent>
+                </HeaderContent>
                 <RowTemplate Context="row">
                     <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
                     <MudTd Style="width: 320px;" DataLabel="Name">
-                <div class="d-flex flex-nowrap gap-2 align-center">
+                        <div class="d-flex flex-nowrap gap-2 align-center">
                             <Avatar Url="@row.ProfilePic"/>
                             <MudText Typo="Typo.body1">@row.Name</MudText>
                             @if (row.Rank == 1)
                             {
                                 <MudText Typo="Typo.body1">👑</MudText>                                
                             }
-                </div>
-            </MudTd>
+                        </div>
+                    </MudTd>
                     <MudTd Style="width: 160px; text-align: right;" DataLabel="Points">@row.Points</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="@_pageSizeOptions" />
-        </PagerContent>
-    </MudTable>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="@_pageSizeOptions" />
+                </PagerContent>
+            </MudTable>
         </div>
     </div>
     <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
@@ -64,6 +76,7 @@
 @code {
     private MudTable<MobileLeaderboardUserDto> table;
     private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
+    private int _activeTabIndex = 0;
     private readonly int[] _pageSizeOptions = new[] { 5, 10, 25, 50, 100, 250 };
     private System.Timers.Timer? _refreshTimer;
     private DateTime? _lastUpdated;
@@ -85,8 +98,8 @@
     {
         try
         {
-        var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
-        _lastUpdated = DateTime.Now;
+            var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
+            _lastUpdated = DateTime.Now;
             _hasErrorsOnUpdate = false;
             _lastTableCache = new() { TotalItems = result.Count, Items = result.Items };
         }
@@ -107,9 +120,17 @@
         }
     }
 
-    private async Task OnFilterChanged(LeaderboardFilter filter)
+    private async Task OnTabChanged(int tabIndex)
     {
-        _selectedFilter = filter;
+        _activeTabIndex = tabIndex;
+        _selectedFilter = tabIndex switch
+        {
+            0 => LeaderboardFilter.ThisWeek,
+            1 => LeaderboardFilter.ThisMonth,
+            2 => LeaderboardFilter.ThisYear,
+            3 => LeaderboardFilter.Forever,
+            _ => LeaderboardFilter.ThisWeek
+        };
         await LoadLeaderboard();
     }
 
