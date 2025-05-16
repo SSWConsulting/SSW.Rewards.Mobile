@@ -41,9 +41,17 @@
             <MudTablePager PageSizeOptions="@_pageSizeOptions" />
         </PagerContent>
     </MudTable>
-    <div style="text-align: right; margin-top: 2rem; font-size: 1.1rem; color: #bbb;">
-        Last updated: @_lastUpdated?.ToString("yyyy-MM-dd HH:mm:ss")
+        </div>
     </div>
+    <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
+        Last updated: @_lastUpdated?.ToString("yyyy-MM-dd HH:mm")
+    </div>
+    @if (_hasErrorsOnUpdate)
+    {
+    <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
+        ⚠️ Error loading leaderboard data. Retrying in 1 minute.
+    </div>
+    }
 </MudPaper>
 
 @code {
@@ -52,6 +60,9 @@
     private readonly int[] _pageSizeOptions = new[] { 5, 10, 25, 50, 100, 250 };
     private System.Timers.Timer? _refreshTimer;
     private DateTime? _lastUpdated;
+    private bool _hasErrorsOnUpdate = false;
+
+    private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,10 +76,20 @@
 
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
     {
+        try
+        {
         var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
         _lastUpdated = DateTime.Now;
+            _hasErrorsOnUpdate = false;
+            _lastTableCache = new() { TotalItems = result.Count, Items = result.Items };
+        }
+        catch (Exception ex)
+        {
+            _hasErrorsOnUpdate = true;
+            Console.WriteLine($"Error in ServerReload: {ex.Message}");
+        }
         StateHasChanged();
-        return new TableData<MobileLeaderboardUserDto>() { TotalItems = result.Count, Items = result.Items };
+        return _lastTableCache;
     }
 
     private async Task LoadLeaderboard()
