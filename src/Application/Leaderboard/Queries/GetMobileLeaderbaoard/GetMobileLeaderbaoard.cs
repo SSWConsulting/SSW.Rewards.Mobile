@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
 
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetKioskLeaderbaoard;
+namespace SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderbaoard;
 
 public class GetMobileLeaderboardQuery : IRequest<MobileLeaderboardViewModel>, IPagedRequest
 {
@@ -21,7 +21,7 @@ internal class GetMobileLeaderboardQueryHandler(ILeaderboardService leaderboardS
             LeaderboardFilter.ThisMonth => users.Select(x => Map(x, x.PointsThisMonth)),
             LeaderboardFilter.ThisYear => users.Select(x => Map(x, x.PointsThisYear)),
             LeaderboardFilter.ThisWeek => users.Select(x => Map(x, x.PointsThisWeek)),
-            _ => users.OrderByDescending(x => x.TotalPoints).Select(x => Map(x, x.PointsThisMonth)),
+            _ => users.OrderByDescending(x => x.TotalPoints).Select(x => Map(x, x.TotalPoints))
         };
 
         // Sort and recalculate the rank based on the current period.
