@@ -8,13 +8,21 @@ Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win pr
 Connect the outside world with SSW at events through awesome rewards!
 
 ## Some Current Major Features
-- Earn points by scanning SSWers and checking in at events
+- Earn points by scanning company staff (eg. Northwind, SSW)
+- Earn points by going to talks and scanning the QR code
 - Complete AI-driven quizzes for points
 - Redeem points for rewards
-- Create a network of SSW staff you've met
+- Create a network of company staff you've met
 - View leaderboards of highest points-earners
 - Link social media such as LinkedIn and view others' profiles
 - View an activity feed from friends and others in the app
+
+## Roadmap
+
+- Support for TV leaderboard at conferences
+- Offline access
+- Better support for white labelling to allow companies to put their own branding to the app
+- [SSW Rewards Engagement Strategy](https://www.youtube.com/watch?v=qLeeRmg87GY)
 
 ## .NET MAUI migration
 App was upgraded from Xamarin.Forms to .NET MAUI, using initially the .NET Migration assistant (using the .NET CLI) to produce a reference project, but then most of the work was done manually. You can see the resulting PR, which shows all the changes from the previous Xamarin.Forms version, to the .NET MAUI version here: https://github.com/SSWConsulting/SSW.Rewards.Mobile/pull/451.
