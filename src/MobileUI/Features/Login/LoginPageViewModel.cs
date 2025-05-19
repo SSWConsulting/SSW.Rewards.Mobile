@@ -17,11 +17,9 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
-    bool _isStaff;
+    private bool _isStaff;
 
-    public LoginPageViewModel(
-        IAuthenticationService authService,
-        IUserService userService)
+    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
         _authService = authService;
         ButtonText = "Sign up / Log in";
@@ -86,6 +84,13 @@ public partial class LoginPageViewModel : BaseViewModel
             return;
         }
 
+        if (await TryFastAppLoad())
+        {
+            // We are already logged in and no need to refresh token.
+            await App.InitialiseMainPage();
+            return;
+        }
+
         bool enableButtonAfterLogin = true;
         LoginButtonEnabled = false;
         IsRunning = true;
@@ -115,5 +120,18 @@ public partial class LoginPageViewModel : BaseViewModel
             LoginButtonEnabled = enableButtonAfterLogin;
             ButtonText = "Sign up / Log in";
         }
+    }
+
+    private async Task<bool> TryFastAppLoad()
+    {
+        // Try to get access token (will refresh if needed)
+        var token = await _authService.GetAccessToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            await App.InitialiseMainPage();
+            return true;
+        }
+
+        return false;
     }
 }
