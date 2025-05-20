@@ -8,9 +8,8 @@ public partial class App : Application
     private static IServiceProvider _provider;
     private static IAuthenticationService _authService;
     private static IFirstRunService _firstRunService;
-    public static object UIParent { get; set; }
 
-    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
+    public App(IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
     {
         _provider = serviceProvider;
         _authService = authService;
@@ -18,8 +17,12 @@ public partial class App : Application
         
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
-
-        MainPage = page;
+    }
+    
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var loginPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
+        return new Window(loginPage);
     }
 
     protected override async void OnStart()
