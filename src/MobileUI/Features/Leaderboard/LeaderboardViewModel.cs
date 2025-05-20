@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Mobile.Services;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -14,18 +15,20 @@ public partial class LeaderboardViewModel : BaseViewModel
     private readonly ILeaderService _leaderService;
     private readonly IUserService _userService;
     private readonly IServiceProvider _provider;
+    private readonly IFileCacheService _fileCacheService;
     private bool _loaded;
 
     private const int Take = 50;
     private int _skip;
     private bool _limitReached;
 
-    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider)
+    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider, IFileCacheService fileCacheService)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
         _userService = userService;
         _provider = provider;
+        _fileCacheService = fileCacheService;
         _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
@@ -65,10 +68,9 @@ public partial class LeaderboardViewModel : BaseViewModel
         if (!_loaded)
         {
             IsRunning = true;
-            
-            await LoadLeaderboard();
+            var leaders = await FetchLeaders();
+            ProcessLeaders(leaders);
             _loaded = true;
-
             IsRunning = false;
         }
     }
@@ -77,29 +79,22 @@ public partial class LeaderboardViewModel : BaseViewModel
     private async Task RefreshLeaderboard()
     {
         IsRefreshing = false;
-        await LoadLeaderboard();
+        var leaders = await FetchLeaders();
+        ProcessLeaders(leaders);
     }
 
     [RelayCommand]
     private async Task LoadMore()
     {
-        // Don't attempt to load more until initial load is complete
-        if (!_loaded)
-            return;
-
-        if (_limitReached)
-            return;
-        
+        if (!_loaded) return;
+        if (_limitReached) return;
         _skip += Take;
-    
         var leaders = await FetchLeaders();
-
         if (leaders.Count == 0)
         {
             _limitReached = true;
             return;
         }
-        
         Leaders.AddRange(leaders);
     }
 
@@ -107,7 +102,8 @@ public partial class LeaderboardViewModel : BaseViewModel
     private async Task FilterByPeriod()
     {
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
-        await LoadLeaderboard();
+        var leaders = await FetchLeaders();
+        ProcessLeaders(leaders);
     }
 
     [RelayCommand]
@@ -161,39 +157,47 @@ public partial class LeaderboardViewModel : BaseViewModel
     {
         _limitReached = false;
         _skip = 0;
-
         var leaders = await FetchLeaders();
-        Leaders.ReplaceRange(leaders);
-
-        // Update podium positions
-        First = Leaders.FirstOrDefault();
-        Second = Leaders.Skip(1).FirstOrDefault();
-        Third = Leaders.Skip(2).FirstOrDefault();
-        
+        ProcessLeaders(leaders);
         _loaded = true;
     }
     
     private async Task<List<LeaderViewModel>> FetchLeaders()
     {
-        var rank = _skip + 1;
-        var leaderViewModels = new List<LeaderViewModel>();
-        
-        var leaders = await _leaderService.GetLeadersAsync(
-            false,
-            _skip,
-            Take,
-            CurrentPeriod
-        );
-        
-        foreach (var leader in leaders)
-        {
-            var isMe = _myUserId == leader.UserId;
-            var vm = CreateLeaderViewModel(leader, isMe, rank);
-            rank++;
-            leaderViewModels.Add(vm);
-        }
-        
+        var cacheKey = $"leaderboard_{CurrentPeriod}_{_skip}_{Take}";
+        List<LeaderViewModel> leaderViewModels = new();
+        await _fileCacheService.FetchAndRefresh(
+            cacheKey,
+            async () =>
+            {
+                var rank = _skip + 1;
+                var leaders = await _leaderService.GetLeadersAsync(false, _skip, Take, CurrentPeriod);
+                var vms = new List<LeaderViewModel>();
+                foreach (var leader in leaders)
+                {
+                    var isMe = _myUserId == leader.UserId;
+                    var vm = CreateLeaderViewModel(leader, isMe, rank);
+                    rank++;
+                    vms.Add(vm);
+                }
+                return vms;
+            },
+            (result, isFromCache) =>
+            {
+                if (result != null && result.Count > 0 && leaderViewModels.Count == 0)
+                {
+                    leaderViewModels.AddRange(result);
+                }
+            });
         return leaderViewModels;
+    }
+
+    private void ProcessLeaders(List<LeaderViewModel> leaders)
+    {
+        Leaders.ReplaceRange(leaders);
+        First = Leaders.FirstOrDefault();
+        Second = Leaders.Skip(1).FirstOrDefault();
+        Third = Leaders.Skip(2).FirstOrDefault();
     }
     
     private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
