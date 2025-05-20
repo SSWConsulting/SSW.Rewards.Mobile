@@ -32,7 +32,7 @@ public partial class AboutSswPage
         }
         catch (Exception)
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
         }
     }
 }

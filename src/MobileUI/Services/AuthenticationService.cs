@@ -74,7 +74,7 @@ public class AuthenticationService : IAuthenticationService
                     await Task.Delay(1000);
                 }
 
-                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                await Shell.Current.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
             }
         }
         catch (Exception ex)

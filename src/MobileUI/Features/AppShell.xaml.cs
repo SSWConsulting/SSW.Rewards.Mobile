@@ -16,7 +16,7 @@ public partial class AppShell
     
     protected override bool OnBackButtonPressed()
     {
-        if (Application.Current.MainPage.GetType() == typeof(AppShell) && Current.Navigation.NavigationStack.Where(x => x != null).Any())
+        if (Current.GetType() == typeof(AppShell) && Current.Navigation.NavigationStack.Where(x => x != null).Any())
         {
             return base.OnBackButtonPressed();
         }
