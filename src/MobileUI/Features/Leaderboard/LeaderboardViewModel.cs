@@ -1,10 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Shared.DTOs.Leaderboard;
-using SSW.Rewards.Mobile.Services;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -63,47 +61,23 @@ public partial class LeaderboardViewModel : BaseViewModel
     [ObservableProperty]
     private LeaderViewModel _third;
 
-    public async Task Initialise()
-    {
-        if (!_loaded)
-        {
-            IsRunning = true;
-            var leaders = await FetchLeaders();
-            ProcessLeaders(leaders);
-            _loaded = true;
-            IsRunning = false;
-        }
-    }
+    public async Task Initialise() => await UpdateLeaderboardByAction(LeaderboardAction.InitialLoad);
 
     [RelayCommand]
-    private async Task RefreshLeaderboard()
-    {
-        IsRefreshing = false;
-        var leaders = await FetchLeaders();
-        ProcessLeaders(leaders);
-    }
+    private async Task RefreshLeaderboard() => await UpdateLeaderboardByAction(LeaderboardAction.ManualRefresh);
 
     [RelayCommand]
-    private async Task LoadMore()
-    {
-        if (!_loaded) return;
-        if (_limitReached) return;
-        _skip += Take;
-        var leaders = await FetchLeaders();
-        if (leaders.Count == 0)
-        {
-            _limitReached = true;
-            return;
-        }
-        Leaders.AddRange(leaders);
-    }
+    private async Task LoadMore() => await UpdateLeaderboardByAction(LeaderboardAction.LoadMore);
+
+    [RelayCommand]
+    private async Task ScrollToMe() => await UpdateLeaderboardByAction(LeaderboardAction.ScrollToMe);
 
     [RelayCommand]
     private async Task FilterByPeriod()
     {
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
-        var leaders = await FetchLeaders();
-        ProcessLeaders(leaders);
+
+        await UpdateLeaderboardByAction(LeaderboardAction.FullRefresh);
     }
 
     [RelayCommand]
@@ -121,103 +95,135 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    private async Task ScrollToMe()
+    private async Task UpdateLeaderboardByAction(LeaderboardAction leaderboardAction)
     {
-        LeaderViewModel myCard = null;
+        if (leaderboardAction is LeaderboardAction.InitialLoad && _loaded)
+        {
+            // Should only happen on the first load.
+            return;
+        }
+
+        if (leaderboardAction is LeaderboardAction.LoadMore)
+        {
+            if (_limitReached || !_loaded)
+            {
+                // Not yet loaded or limit reached.
+                return;
+            }
+
+            _skip += Take;
+        }
+
         IsRunning = true;
 
-        while (myCard == null)
+        if (leaderboardAction is LeaderboardAction.ShouldDoFullRefresh)
         {
-            myCard = Leaders.FirstOrDefault(l => l.IsMe);
-
-            if (myCard != null)
-            {
-                continue;
-            }
-
-            await LoadMore();
-
-            if (_limitReached)
-            {
-                break;
-            }
+            // Manual refresh, changing period or first load.
+            _skip = 0;
+            _limitReached = false;
         }
 
-        if (myCard != null)
+        try
         {
-            var myIndex = Leaders.IndexOf(myCard);
+            if (leaderboardAction is LeaderboardAction.InitialLoad)
+            {
+                // Load from cache on first load.
+                var cacheKey = $"leaderboard_{CurrentPeriod}_{_skip}_{Take}";
+
+                await _fileCacheService.FetchAndRefresh(
+                    cacheKey,
+                    async () => await FetchLeaderboard(CurrentPeriod, _skip, Take),
+                    (result, isFromCache, _) => ProcessLeaders(result));
+            }
+            else if (leaderboardAction is LeaderboardAction.ScrollToMe)
+            {
+                LeaderViewModel myCard = Leaders.FirstOrDefault(l => l.IsMe);
+                while (myCard == null)
+                {
+                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
+
+                    if (myCard != null)
+                    {
+                        continue;
+                    }
+
+                    _skip += Take;
+
+                    var result = await FetchLeaderboard(CurrentPeriod, _skip, Take);
+                    ProcessLeaders(result);
+
+                    if (_limitReached)
+                    {
+                        break;
+                    }
+                }
+
+                ScrollToCard(myCard);
+            }
+            else
+            {
+                var result = await FetchLeaderboard(CurrentPeriod, _skip, Take);
+                ProcessLeaders(result);
+            }
+        }
+        catch (Exception ex)
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(ex);
+        }
+
+        IsRunning = false;
+        _loaded = true;
+
+        if (leaderboardAction is LeaderboardAction.ManualRefresh)
+        {
+            // IsRefreshing is controlled by the RefreshView, we only need to set it to false here on manual refresh.
+            IsRefreshing = false;
+        }
+    }
+
+    private void ScrollToCard(LeaderViewModel card)
+    {
+        if (card != null)
+        {
+            int myIndex = Leaders.IndexOf(card);
             ScrollTo(myIndex);
         }
-        
-        IsRunning = false;
-    }
-
-    private async Task LoadLeaderboard()
-    {
-        _limitReached = false;
-        _skip = 0;
-        var leaders = await FetchLeaders();
-        ProcessLeaders(leaders);
-        _loaded = true;
-    }
-    
-    private async Task<List<LeaderViewModel>> FetchLeaders()
-    {
-        var cacheKey = $"leaderboard_{CurrentPeriod}_{_skip}_{Take}";
-        List<LeaderViewModel> leaderViewModels = new();
-        await _fileCacheService.FetchAndRefresh(
-            cacheKey,
-            async () =>
-            {
-                var rank = _skip + 1;
-                var leaders = await _leaderService.GetLeadersAsync(false, _skip, Take, CurrentPeriod);
-                var vms = new List<LeaderViewModel>();
-                foreach (var leader in leaders)
-                {
-                    var isMe = _myUserId == leader.UserId;
-                    var vm = CreateLeaderViewModel(leader, isMe, rank);
-                    rank++;
-                    vms.Add(vm);
-                }
-                return vms;
-            },
-            (result, isFromCache) =>
-            {
-                if (result != null && result.Count > 0 && leaderViewModels.Count == 0)
-                {
-                    leaderViewModels.AddRange(result);
-                }
-            });
-        return leaderViewModels;
     }
 
     private void ProcessLeaders(List<LeaderViewModel> leaders)
     {
+        if (leaders.Count == 0)
+        {
+            _limitReached = true;
+            return;
+        }
+
         Leaders.ReplaceRange(leaders);
         First = Leaders.FirstOrDefault();
         Second = Leaders.Skip(1).FirstOrDefault();
         Third = Leaders.Skip(2).FirstOrDefault();
     }
     
-    private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
+    private async Task<List<LeaderViewModel>> FetchLeaderboard(LeaderboardFilter period, int skip, int take)
     {
-        return new LeaderViewModel(leader, isMe)
-        {
-            Rank = rank,
-            DisplayPoints = CalculateDisplayPoints(leader)
-        };
+        var leaders = await _leaderService.GetLeadersAsync(false, skip, take, period);
+        return leaders
+            .Select((x, rank) =>
+            {
+                bool isMe = _myUserId == x.UserId;
+                return new LeaderViewModel(x, isMe, rank + 1 + skip, CurrentPeriod);
+            })
+            .ToList();
     }
 
-    
-    private int CalculateDisplayPoints(LeaderboardUserDto leader)
+    // Add flags like "ShouldDoFullRefresh" if InitialLoad, FullRefresh or ManualRefresh flag.
+    public enum LeaderboardAction
     {
-        return CurrentPeriod switch
-        {
-            LeaderboardFilter.ThisMonth => leader.PointsThisMonth,
-            LeaderboardFilter.ThisYear => leader.PointsThisYear,
-            LeaderboardFilter.Forever => leader.TotalPoints,
-            _ => leader.PointsThisWeek
-        };
+        InitialLoad = 0b0000,
+        FullRefresh = 0b0001,
+        LoadMore = 0b0010,
+        ManualRefresh = 0b0100,
+        ScrollToMe = 0b1000,
+        ShouldDoFullRefresh = InitialLoad | FullRefresh | ManualRefresh
     }
 }
