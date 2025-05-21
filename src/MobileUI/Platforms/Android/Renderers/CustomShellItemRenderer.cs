@@ -14,11 +14,11 @@ namespace SSW.Rewards.Mobile.Renderers;
 
 internal class CustomShellItemRenderer(IShellContext context) : ShellItemRenderer(context)
 {
-    private const int MiddleViewSizeDp = 80;
-    private const int ButtonSizeDp = 50;
-    private const int StrokeWidthDp = 4;
-    private const int BottomMarginAdjustmentDp = 15;
-    private const int BaseBottomMarginDp = 8;
+    private const int MiddleViewSize = 80;
+    private const int ButtonSize = 50;
+    private const int StrokeWidth = 4;
+    private const int BottomMarginAdjustment = 15;
+    private const int BaseBottomMargin = 8;
 
     public override View? OnCreateView(LayoutInflater inflater, ViewGroup? container, Bundle? savedInstanceState)
     {
@@ -59,9 +59,9 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
             ViewGroup.LayoutParams.WrapContent,
             GravityFlags.CenterHorizontal | GravityFlags.Bottom)
         {
-            BottomMargin = (int)(BaseBottomMarginDp * density),
-            Width = (int)(MiddleViewSizeDp * density),
-            Height = (int)(MiddleViewSizeDp * density)
+            BottomMargin = (int)(BaseBottomMargin * density),
+            Width = (int)(MiddleViewSize * density),
+            Height = (int)(MiddleViewSize * density)
         };
 
     private Button CreateMiddleView(CustomTabBar tabBar, FrameLayout.LayoutParams layoutParams)
@@ -79,9 +79,9 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
         var backgroundDrawable = new GradientDrawable();
         backgroundDrawable.SetShape(ShapeType.Rectangle);
         
-        var strokeWidthPx = (int)(StrokeWidthDp * density);
+        var strokeWidthPx = (int)(StrokeWidth * density);
         backgroundDrawable.SetStroke(strokeWidthPx, Color.White);
-        backgroundDrawable.SetCornerRadius((MiddleViewSizeDp * density) / 2f);
+        backgroundDrawable.SetCornerRadius((MiddleViewSize * density) / 2f);
         backgroundDrawable.SetColor(backgroundColor.ToPlatform(Colors.Transparent));
         
         backgroundView.SetBackground(backgroundDrawable);
@@ -99,12 +99,12 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
             if (result?.Value is not BitmapDrawable drawable || drawable.Bitmap is null)
                 return;
 
-            var buttonSizePx = (int)(ButtonSizeDp * density);
+            var buttonSizePx = (int)(ButtonSize * density);
             middleView.LayoutParameters = new FrameLayout.LayoutParams(
                 buttonSizePx, buttonSizePx,
                 GravityFlags.CenterHorizontal | GravityFlags.Bottom)
             {
-                BottomMargin = originalLayoutParams.BottomMargin + (int)(BottomMarginAdjustmentDp * density)
+                BottomMargin = originalLayoutParams.BottomMargin + (int)(BottomMarginAdjustment * density)
             };
             
             middleView.SetBackground(drawable);
