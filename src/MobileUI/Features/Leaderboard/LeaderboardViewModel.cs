@@ -116,7 +116,7 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         IsRunning = true;
 
-        if (leaderboardAction is LeaderboardAction.ShouldDoFullRefresh)
+        if (ShouldDoFullRefresh(leaderboardAction))
         {
             // Manual refresh, changing period or first load.
             _skip = 0;
@@ -198,10 +198,17 @@ public partial class LeaderboardViewModel : BaseViewModel
             return;
         }
 
-        Leaders.ReplaceRange(leaders);
-        First = Leaders.FirstOrDefault();
-        Second = Leaders.Skip(1).FirstOrDefault();
-        Third = Leaders.Skip(2).FirstOrDefault();
+        if (_skip == 0)
+        {
+            Leaders.ReplaceRange(leaders);
+            First = Leaders.FirstOrDefault();
+            Second = Leaders.Skip(1).FirstOrDefault();
+            Third = Leaders.Skip(2).FirstOrDefault();
+        }
+        else
+        {
+            Leaders.AddRange(leaders);
+        }
     }
     
     private async Task<List<LeaderViewModel>> FetchLeaderboard(LeaderboardFilter period, int skip, int take)
@@ -216,14 +223,18 @@ public partial class LeaderboardViewModel : BaseViewModel
             .ToList();
     }
 
-    // Add flags like "ShouldDoFullRefresh" if InitialLoad, FullRefresh or ManualRefresh flag.
+    private static bool ShouldDoFullRefresh(LeaderboardAction action)
+        => action is LeaderboardAction.InitialLoad or LeaderboardAction.FullRefresh or LeaderboardAction.ManualRefresh;
+
+    /// <summary>
+    /// Add flags like "ShouldDoFullRefresh" if InitialLoad, FullRefresh or ManualRefresh flag.
+    /// </summary>
     public enum LeaderboardAction
     {
         InitialLoad = 0b0000,
         FullRefresh = 0b0001,
         LoadMore = 0b0010,
         ManualRefresh = 0b0100,
-        ScrollToMe = 0b1000,
-        ShouldDoFullRefresh = InitialLoad | FullRefresh | ManualRefresh
+        ScrollToMe = 0b1000
     }
 }
