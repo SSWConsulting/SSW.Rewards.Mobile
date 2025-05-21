@@ -25,13 +25,13 @@
                                    EasingOut="SinIn"
                                    HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
-    <Frame WidthRequest="400"
-           HeightRequest="450"
-           Margin="10"
-           Padding="10"
-           BackgroundColor="{StaticResource ProfileBackgroundColour}"
-           HorizontalOptions="Center"
-           VerticalOptions="Center">
+    <Border WidthRequest="400"
+            HeightRequest="450"
+            Margin="10"
+            Padding="10"
+            BackgroundColor="{StaticResource ProfileBackgroundColour}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
         <StackLayout>
             <Label 
                    Text="{Binding ResultHeading}"
@@ -64,5 +64,5 @@
                     Margin="0,0,0,20"
                     Command="{Binding OkCommand}"/>
         </StackLayout>
-    </Frame>
+    </Border>
 </pages:PopupPage>

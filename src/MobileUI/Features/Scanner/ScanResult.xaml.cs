@@ -11,7 +11,7 @@ public partial class ScanResult : PopupPage
         InitializeComponent();
         _viewModel = vm;
         _viewModel.SetScanData(scanData);
-        _viewModel.Navigation = App.Current.MainPage.Navigation;
+        _viewModel.Navigation = Shell.Current.Navigation;
         BindingContext = _viewModel;
 
         _ = _viewModel.CheckScanData();
