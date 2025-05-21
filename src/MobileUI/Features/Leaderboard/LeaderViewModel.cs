@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Shared.Utils;
 
@@ -23,21 +22,19 @@ public partial class LeaderViewModel : BaseViewModel
         Title = RegexHelpers.TitleRegex().Replace(dto.Title, string.Empty);
     }
 
-    public LeaderViewModel(LeaderboardUserDto dto, bool isMe, int rank, LeaderboardFilter period)
-        : this(dto, isMe)
+    public LeaderViewModel(MobileLeaderboardUserDto user)
     {
-        Rank = rank;
-        _displayPoints = CalculateDisplayPoints(dto, period);
-    }
+        IsMe = user.IsMe;
+        Rank = user.Rank;
+        Name = user.Name;
+        UserId = user.UserId;
+        ProfilePic = user.ProfilePic;
+        _displayPoints = user.Points;
 
-    private static int CalculateDisplayPoints(LeaderboardUserDto user, LeaderboardFilter period)
-        => period switch
-        {
-            LeaderboardFilter.ThisMonth => user.PointsThisMonth,
-            LeaderboardFilter.ThisYear => user.PointsThisYear,
-            LeaderboardFilter.Forever => user.TotalPoints,
-            _ => user.PointsThisWeek
-        };
+        Title = !string.IsNullOrWhiteSpace(user.Title)
+            ? RegexHelpers.TitleRegex().Replace(user.Title, string.Empty)
+            : string.Empty;
+    }
 
     [ObservableProperty]
     private int _displayPoints;

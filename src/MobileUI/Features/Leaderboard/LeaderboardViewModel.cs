@@ -8,26 +8,21 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LeaderboardViewModel : BaseViewModel
 {
-    private int _myUserId;
-
     private readonly ILeaderService _leaderService;
-    private readonly IUserService _userService;
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
     private bool _loaded;
 
-    private const int Take = 50;
-    private int _skip;
+    private const int PageSize = 50;
+    private int _page;
     private bool _limitReached;
 
-    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider, IFileCacheService fileCacheService)
+    public LeaderboardViewModel(ILeaderService leaderService, IServiceProvider provider, IFileCacheService fileCacheService)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
-        _userService = userService;
         _provider = provider;
         _fileCacheService = fileCacheService;
-        _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
     public ObservableRangeCollection<LeaderViewModel> Leaders { get; } = [];
@@ -111,7 +106,7 @@ public partial class LeaderboardViewModel : BaseViewModel
                 return;
             }
 
-            _skip += Take;
+            ++_page;
         }
 
         IsRunning = true;
@@ -119,7 +114,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         if (ShouldDoFullRefresh(leaderboardAction))
         {
             // Manual refresh, changing period or first load.
-            _skip = 0;
+            _page = 0;
             _limitReached = false;
         }
 
@@ -128,11 +123,11 @@ public partial class LeaderboardViewModel : BaseViewModel
             if (leaderboardAction is LeaderboardAction.InitialLoad)
             {
                 // Load from cache on first load.
-                var cacheKey = $"leaderboard_{CurrentPeriod}_{_skip}_{Take}";
+                var cacheKey = $"leaderboard_{CurrentPeriod}_{_page}_{PageSize}";
 
                 await _fileCacheService.FetchAndRefresh(
                     cacheKey,
-                    async () => await FetchLeaderboard(CurrentPeriod, _skip, Take),
+                    async () => await FetchLeaderboard(CurrentPeriod, _page, PageSize),
                     (result, isFromCache, _) => ProcessLeaders(result));
             }
             else if (leaderboardAction is LeaderboardAction.ScrollToMe)
@@ -147,9 +142,9 @@ public partial class LeaderboardViewModel : BaseViewModel
                         continue;
                     }
 
-                    _skip += Take;
+                    ++_page;
 
-                    var result = await FetchLeaderboard(CurrentPeriod, _skip, Take);
+                    var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
                     ProcessLeaders(result);
 
                     if (_limitReached)
@@ -162,7 +157,7 @@ public partial class LeaderboardViewModel : BaseViewModel
             }
             else
             {
-                var result = await FetchLeaderboard(CurrentPeriod, _skip, Take);
+                var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
                 ProcessLeaders(result);
             }
         }
@@ -198,7 +193,7 @@ public partial class LeaderboardViewModel : BaseViewModel
             return;
         }
 
-        if (_skip == 0)
+        if (_page == 0)
         {
             Leaders.ReplaceRange(leaders);
             First = Leaders.FirstOrDefault();
@@ -211,15 +206,13 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
     }
     
-    private async Task<List<LeaderViewModel>> FetchLeaderboard(LeaderboardFilter period, int skip, int take)
+    private async Task<List<LeaderViewModel>> FetchLeaderboard(LeaderboardFilter period, int page, int pageSize)
     {
-        var leaders = await _leaderService.GetLeadersAsync(false, skip, take, period);
-        return leaders
-            .Select((x, rank) =>
-            {
-                bool isMe = _myUserId == x.UserId;
-                return new LeaderViewModel(x, isMe, rank + 1 + skip, CurrentPeriod);
-            })
+        var leaders = await _leaderService.GetLeadersAsync(false, page, pageSize, period);
+        _limitReached = leaders.IsLastPage;
+
+        return leaders.Items
+            .Select(x => new LeaderViewModel(x))
             .ToList();
     }
 
