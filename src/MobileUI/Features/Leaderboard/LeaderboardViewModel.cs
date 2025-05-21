@@ -134,9 +134,6 @@ public partial class LeaderboardViewModel : BaseViewModel
                         ProcessLeaders(result);
 
                         await ReadyEarly();
-
-                        // Small delay so that UI can update.
-                        await Task.Delay(5000);
                     });
             }
             else if (leaderboardAction is LeaderboardAction.ScrollToMe)
@@ -204,10 +201,30 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         if (_page == 0)
         {
-            Leaders.ReplaceRange(leaders);
-            First = Leaders.FirstOrDefault();
-            Second = Leaders.Skip(1).FirstOrDefault();
-            Third = Leaders.Skip(2).FirstOrDefault();
+            bool shouldUpdate = true;
+            if (Leaders.Count == leaders.Count)
+            {
+                // When loading data from cache, we highly likely have same data as from web.
+                // This prevents refreshing page if nothing changed.
+                shouldUpdate = false;
+                for (int i = 0; i < Leaders.Count; i++)
+                {
+                    LeaderViewModel item = Leaders[i];
+                    if (item.Name != leaders[i].Name || item.DisplayPoints != leaders[i].DisplayPoints)
+                    {
+                        shouldUpdate = true;
+                        break;
+                    }
+                }
+            }
+
+            if (shouldUpdate)
+            {
+                Leaders.ReplaceRange(leaders);
+                First = Leaders.FirstOrDefault();
+                Second = Leaders.Skip(1).FirstOrDefault();
+                Third = Leaders.Skip(2).FirstOrDefault();
+            }
         }
         else
         {
