@@ -131,7 +131,7 @@ public partial class LeaderboardViewModel : BaseViewModel
                     async () => await FetchLeaderboard(CurrentPeriod, _page, PageSize),
                     async (result, isFromCache, _) =>
                     {
-                        ProcessLeaders(result);
+                        ProcessLeaders(result, true);
 
                         await ReadyEarly();
                     });
@@ -191,7 +191,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
     }
 
-    private void ProcessLeaders(List<LeaderViewModel> leaders)
+    private void ProcessLeaders(List<LeaderViewModel> leaders, bool skipRefreshIfNotChanged = false)
     {
         if (leaders.Count == 0)
         {
@@ -202,7 +202,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         if (_page == 0)
         {
             bool shouldUpdate = true;
-            if (Leaders.Count == leaders.Count)
+            if (Leaders.Count == leaders.Count && skipRefreshIfNotChanged)
             {
                 // When loading data from cache, we highly likely have same data as from web.
                 // This prevents refreshing page if nothing changed.
