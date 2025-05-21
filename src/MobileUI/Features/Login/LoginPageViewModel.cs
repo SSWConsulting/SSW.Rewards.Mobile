@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Firebase.Crashlytics;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -84,13 +85,6 @@ public partial class LoginPageViewModel : BaseViewModel
             return;
         }
 
-        if (await TryFastAppLoad())
-        {
-            // We are already logged in and no need to refresh token.
-            await App.InitialiseMainPage();
-            return;
-        }
-
         bool enableButtonAfterLogin = true;
         LoginButtonEnabled = false;
         IsRunning = true;
@@ -98,12 +92,21 @@ public partial class LoginPageViewModel : BaseViewModel
 
         try
         {
-            if (!string.IsNullOrEmpty(await _authService.GetAccessToken()))
-            {
-                enableButtonAfterLogin = false;
+            // Load token in background.
+            var _ = _authService.GetAccessToken();
 
-                await App.InitialiseMainPage();
-            }
+            await WaitForWindowClose();
+            await App.InitialiseMainPage();
+        }
+        catch (HttpRequestException e)
+        {
+            // Everything else is fatal
+            CrossFirebaseCrashlytics.Current.RecordException(e);
+            Console.WriteLine(e);
+            await WaitForWindowClose();
+
+            // Skip logic for initial setup as the above might have failed on updating device ID.
+            await Application.Current.InitializeMainPage();
         }
         catch (Exception e)
         {
@@ -120,18 +123,5 @@ public partial class LoginPageViewModel : BaseViewModel
             LoginButtonEnabled = enableButtonAfterLogin;
             ButtonText = "Sign up / Log in";
         }
-    }
-
-    private async Task<bool> TryFastAppLoad()
-    {
-        // Try to get access token (will refresh if needed)
-        var token = await _authService.GetAccessToken();
-        if (!string.IsNullOrEmpty(token))
-        {
-            await App.InitialiseMainPage();
-            return true;
-        }
-
-        return false;
     }
 }
