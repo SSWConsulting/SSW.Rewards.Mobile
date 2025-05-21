@@ -1,8 +1,5 @@
 using SSW.Rewards.Mobile.Controls;
 using Color = Android.Graphics.Color;
-
-namespace SSW.Rewards.Mobile.Renderers;
-
 using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Views;
@@ -10,78 +7,109 @@ using Android.Widget;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;
+using Button = Android.Widget.Button;
+using View = Android.Views.View;
+
+namespace SSW.Rewards.Mobile.Renderers;
 
 internal class CustomShellItemRenderer(IShellContext context) : ShellItemRenderer(context)
 {
-	public override View? OnCreateView(LayoutInflater inflater, ViewGroup? container, Bundle? savedInstanceState)
-	{
-		var view = base.OnCreateView(inflater, container, savedInstanceState);
-		if (Context is not null && ShellItem is CustomTabBar { CenterViewVisible: true } tabBar)
-		{
-			var rootLayout = new FrameLayout(Context)
-			{
-				LayoutParameters =
-					new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
-			};
+    private const int MiddleViewSize = 80;
+    private const int ButtonSize = 50;
+    private const int StrokeWidth = 4;
+    private const int BottomMarginAdjustment = 15;
+    private const int BaseBottomMargin = 8;
 
-			rootLayout.AddView(view);
-			const int middleViewSize = 280;
-			var middleViewLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent,
-																	  ViewGroup.LayoutParams.WrapContent,
-																	  GravityFlags.CenterHorizontal |
-																	  GravityFlags.Bottom)
-			{
-				BottomMargin = 30,
-				Width = middleViewSize,
-				Height = middleViewSize
-			};
-			var middleView = new Button(Context)
-			{
-				LayoutParameters = middleViewLayoutParams
-			};
-			middleView.Click += delegate
+    public override View? OnCreateView(LayoutInflater inflater, ViewGroup? container, Bundle? savedInstanceState)
+    {
+        var view = base.OnCreateView(inflater, container, savedInstanceState);
+        
+        if (Context is null || ShellItem is not CustomTabBar { CenterViewVisible: true } tabBar)
+            return view;
+
+        var density = Context.Resources?.DisplayMetrics?.Density ?? 1.0f;
+        var rootLayout = CreateRootLayout();
+        rootLayout.AddView(view);
+
+        var middleViewLayoutParams = CreateMiddleViewLayoutParams(density);
+        var middleView = CreateMiddleView(tabBar, middleViewLayoutParams);
+        
+        if (tabBar.CenterViewBackgroundColor is not null)
+        {
+            AddBackgroundView(rootLayout, tabBar.CenterViewBackgroundColor, middleViewLayoutParams, density);
+        }
+
+        LoadCenterViewImage(tabBar, middleView, density, middleViewLayoutParams);
+        rootLayout.AddView(middleView);
+        
+        return rootLayout;
+    }
+
+    private FrameLayout CreateRootLayout() =>
+        new(Context)
+        {
+            LayoutParameters = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MatchParent, 
+                ViewGroup.LayoutParams.MatchParent)
+        };
+
+    private static FrameLayout.LayoutParams CreateMiddleViewLayoutParams(float density) =>
+        new(
+            ViewGroup.LayoutParams.WrapContent,
+            ViewGroup.LayoutParams.WrapContent,
+            GravityFlags.CenterHorizontal | GravityFlags.Bottom)
+        {
+            BottomMargin = (int)(BaseBottomMargin * density),
+            Width = (int)(MiddleViewSize * density),
+            Height = (int)(MiddleViewSize * density)
+        };
+
+    private Button CreateMiddleView(CustomTabBar tabBar, FrameLayout.LayoutParams layoutParams)
+    {
+        var button = new Button(Context) { LayoutParameters = layoutParams };
+        button.Click += delegate { tabBar.CenterView_Tapped(); };
+        button.SetPadding(0, 0, 0, 0);
+        return button;
+    }
+
+    private void AddBackgroundView(FrameLayout rootLayout, Microsoft.Maui.Graphics.Color backgroundColor,
+        FrameLayout.LayoutParams layoutParams, float density)
+    {
+        var backgroundView = new View(Context) { LayoutParameters = layoutParams };
+        var backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.SetShape(ShapeType.Rectangle);
+        
+        var strokeWidthPx = (int)(StrokeWidth * density);
+        backgroundDrawable.SetStroke(strokeWidthPx, Color.White);
+        backgroundDrawable.SetCornerRadius((MiddleViewSize * density) / 2f);
+        backgroundDrawable.SetColor(backgroundColor.ToPlatform(Colors.Transparent));
+        
+        backgroundView.SetBackground(backgroundDrawable);
+        rootLayout.AddView(backgroundView);
+    }
+
+    private static void LoadCenterViewImage(CustomTabBar tabBar, Button middleView, float density, 
+        FrameLayout.LayoutParams originalLayoutParams)
+    {
+        var context = tabBar.Window?.Page?.Handler?.MauiContext ?? 
+                     Application.Current?.Windows.LastOrDefault()?.Page?.Handler?.MauiContext;
+                     
+        tabBar.CenterViewImageSource?.LoadImage(context!, result =>
+        {
+            if (result?.Value is not BitmapDrawable drawable || drawable.Bitmap is null)
+                return;
+
+            var buttonSizePx = (int)(ButtonSize * density);
+            middleView.LayoutParameters = new FrameLayout.LayoutParams(
+                buttonSizePx, buttonSizePx,
+                GravityFlags.CenterHorizontal | GravityFlags.Bottom)
             {
-                tabBar.CenterView_Tapped();
+                BottomMargin = originalLayoutParams.BottomMargin + (int)(BottomMarginAdjustment * density)
             };
-			middleView.SetPadding(0, 0, 0, 0);
-			if (tabBar.CenterViewBackgroundColor is not null)
-			{
-				var backgroundView = new View(Context)
-				{
-					LayoutParameters = middleViewLayoutParams
-				};
-				var backgroundDrawable = new GradientDrawable();
-				backgroundDrawable.SetShape(ShapeType.Rectangle);
-                backgroundDrawable.SetStroke(14, Color.White);
-				backgroundDrawable.SetCornerRadius(middleViewSize / 2f);
-				backgroundDrawable.SetColor(tabBar.CenterViewBackgroundColor.ToPlatform(Colors.Transparent));
-				backgroundView.SetBackground(backgroundDrawable);
-				rootLayout.AddView(backgroundView);
-			}
-
-			var context = tabBar.Window?.Page?.Handler?.MauiContext ?? Application.Current?.Windows.LastOrDefault()?.Page?.Handler?.MauiContext;
-			tabBar.CenterViewImageSource?.LoadImage(context!, result =>
-			{
-				if (result?.Value is not BitmapDrawable drawable || drawable.Bitmap is null)
-				{
-					return;
-				}
-                
-				middleView.LayoutParameters = new FrameLayout.LayoutParams(
-					180, 180,
-					GravityFlags.CenterHorizontal | GravityFlags.Bottom)
-				{
-					BottomMargin = middleViewLayoutParams.BottomMargin + 50
-				};
-				middleView.SetBackground(drawable);
-				middleView.SetMinimumHeight(0);
-				middleView.SetMinimumWidth(0);
-			});
-
-			rootLayout.AddView(middleView);
-			return rootLayout;
-		}
-
-		return view;
-	}
+            
+            middleView.SetBackground(drawable);
+            middleView.SetMinimumHeight(0);
+            middleView.SetMinimumWidth(0);
+        });
+    }
 }
