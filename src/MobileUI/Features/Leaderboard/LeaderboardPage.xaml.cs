@@ -7,6 +7,8 @@ public partial class LeaderboardPage
     private readonly LeaderboardViewModel _viewModel;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
+    private bool _animationComplete = false;
+
     public LeaderboardPage(LeaderboardViewModel leaderboardViewModel, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         _viewModel = leaderboardViewModel;
@@ -20,8 +22,14 @@ public partial class LeaderboardPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("LeaderboardPage");
+
+        // Page might be ready a bit earlier due to cached leaderboard
+        // while data is refreshed in the background.
+        _viewModel.ReadyEarly += Animate;
         await _viewModel.Initialise();
+
         await Animate();
+
         _viewModel.ScrollTo += ScrollTo;
     }
 
@@ -32,20 +40,23 @@ public partial class LeaderboardPage
 
     private async Task Animate()
     {
+        if (_animationComplete)
+        {
+            return;
+        }
+
         if (!_viewModel.IsRunning)
         {
             LeadersCollection.IsVisible = true;
             return;
         }
 
-        _viewModel.IsRunning = true;
+        _animationComplete = true;
 
         await Task.Delay(1000);
         LeadersCollection.Opacity = 0;
         LeadersCollection.IsVisible = true;
         await LeadersCollection.FadeTo(1, 800, Easing.CubicIn);
-
-        _viewModel.IsRunning = false;
     }
     
     private void OnSizeChanged(object sender, EventArgs e)

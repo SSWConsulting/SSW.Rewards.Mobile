@@ -22,6 +22,19 @@ public class FileCacheService : IFileCacheService
     /// <param name="tag">Used to check the context of the callback. If multiple callbacks are possible, this can help to determine which callbacks to ignore (eg. not latest)</param>
     public async Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Action<T, bool, object> dataCallback, object tag = null)
     {
+        if (!Directory.Exists(CacheDirectory))
+        {
+            try
+            {
+                Directory.CreateDirectory(CacheDirectory);
+            }
+            catch (Exception e)
+            {
+                // Log the error to Firebase Crashlytics and keep going.
+                CrossFirebaseCrashlytics.Current.RecordException(e);
+            }
+        }
+
         var filePath = Path.Combine(CacheDirectory, cacheKey + ".json");
         if (File.Exists(filePath))
         {

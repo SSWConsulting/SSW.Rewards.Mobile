@@ -13,14 +13,8 @@ public partial class LeaderViewModel : BaseViewModel
     public bool IsMe { get; set; }
     public bool IsLeader => Rank == 1;
     
-    public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
-    {
-        UserId = dto.UserId;
-        Name = dto.Name;
-        ProfilePic = dto.ProfilePic;
-        IsMe = isMe;
-        Title = RegexHelpers.TitleRegex().Replace(dto.Title, string.Empty);
-    }
+    // Used for file cache JSON serialization!
+    public LeaderViewModel() { }
 
     public LeaderViewModel(MobileLeaderboardUserDto user)
     {

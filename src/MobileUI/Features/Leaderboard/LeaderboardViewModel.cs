@@ -41,6 +41,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     private bool _isRefreshing;
 
     public Action<int> ScrollTo { get; set; }
+    public Func<Task> ReadyEarly { get; set; }
 
     private LeaderboardFilter CurrentPeriod { get; set; } = LeaderboardFilter.ThisWeek;
 
@@ -128,7 +129,15 @@ public partial class LeaderboardViewModel : BaseViewModel
                 await _fileCacheService.FetchAndRefresh(
                     cacheKey,
                     async () => await FetchLeaderboard(CurrentPeriod, _page, PageSize),
-                    (result, isFromCache, _) => ProcessLeaders(result));
+                    async (result, isFromCache, _) =>
+                    {
+                        ProcessLeaders(result);
+
+                        await ReadyEarly();
+
+                        // Small delay so that UI can update.
+                        await Task.Delay(5000);
+                    });
             }
             else if (leaderboardAction is LeaderboardAction.ScrollToMe)
             {
