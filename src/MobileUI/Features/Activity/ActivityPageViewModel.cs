@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.ApiClient.Services;
@@ -6,6 +5,7 @@ using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
 using SSW.Rewards.Shared.DTOs.Users;
+using SSW.Rewards.Shared.Utils;
 using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -124,7 +124,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
                     : x.UserAvatar;
                 x.AchievementMessage = GetMessage(x.Achievement);
                 x.TimeElapsed = DateTimeHelpers.GetTimeElapsed(x.AwardedAt);
-                x.UserTitle = Regex.Replace(x.UserTitle, @"^https?://", string.Empty);
+                x.UserTitle = RegexHelpers.TitleRegex().Replace(x.UserTitle, string.Empty);
                 return x;
             }).ToList();
         }
