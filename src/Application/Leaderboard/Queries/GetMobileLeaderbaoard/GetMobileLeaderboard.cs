@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
 
-namespace SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderbaoard;
+namespace SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderboard;
 
 public class GetMobileLeaderboardQuery : IRequest<MobileLeaderboardViewModel>, IPagedRequest
 {

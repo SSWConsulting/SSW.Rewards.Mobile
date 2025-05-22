@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
-using SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderbaoard;
+using SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderboard;
 using SSW.Rewards.Application.PrizeDraw.Queries;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
