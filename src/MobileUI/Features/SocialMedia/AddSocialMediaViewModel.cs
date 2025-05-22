@@ -92,8 +92,8 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             case Constants.SocialMediaPlatformIds.Company:
                 PlatformName = "Company";
                 Url = url ?? "https://";
-                Placeholder = RegexHelpers.CompanyValidationPattern;
-                ValidationPattern = @"^https?://\S+";
+                Placeholder = "https://[your-website]";
+                ValidationPattern = RegexHelpers.CompanyValidationPattern;
                 Icon = "\uf1ad";
                 break;
         }
