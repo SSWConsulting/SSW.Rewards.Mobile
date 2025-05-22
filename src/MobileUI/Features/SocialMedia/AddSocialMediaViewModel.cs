@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Mobile.Controls;
+using SSW.Rewards.Shared.Utils;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -71,28 +72,28 @@ public partial class AddSocialMediaViewModel : BaseViewModel
                 PlatformName = "LinkedIn";
                 Url = url ?? "https://linkedin.com/in/";
                 Placeholder = "https://linkedin.com/in/[your-name]";
-                ValidationPattern = "^https?://(www.)?linkedin.com/in/([a-zA-Z0-9._-]+)$";
+                ValidationPattern = RegexHelpers.LinkedInValidationPattern;
                 Icon = "\uf0e1";
                 break;
             case Constants.SocialMediaPlatformIds.GitHub:
                 PlatformName = "GitHub";
                 Url = url ?? "https://github.com/";
                 Placeholder = "https://github.com/[your-username]";
-                ValidationPattern = "^https?://(www.)?github.com/([a-zA-Z0-9._-]+)$";
+                ValidationPattern = RegexHelpers.GitHubValidationPattern;
                 Icon = "\uf09b";
                 break;
             case Constants.SocialMediaPlatformIds.Twitter:
                 PlatformName = "Twitter";
                 Url = url ?? "https://x.com/";
                 Placeholder = "https://x.com/[your-username]";
-                ValidationPattern = "^https?://(www.)?(twitter|x).com/([a-zA-Z0-9._-]+)$";
+                ValidationPattern = RegexHelpers.TwitterValidationPattern;
                 Icon = "\ue61b";
                 break;
             case Constants.SocialMediaPlatformIds.Company:
                 PlatformName = "Company";
                 Url = url ?? "https://";
                 Placeholder = "https://[your-website]";
-                ValidationPattern = @"^https?://\S+";
+                ValidationPattern = RegexHelpers.CompanyValidationPattern;
                 Icon = "\uf1ad";
                 break;
         }
@@ -150,7 +151,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
     private bool IsUrlValid()
     {
-        var reg = new Regex(ValidationPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        var reg = RegexHelpers.SocialRegexByPattern(ValidationPattern);
         return reg.IsMatch(InputText);
     }
 

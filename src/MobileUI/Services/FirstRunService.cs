@@ -1,4 +1,5 @@
 using Mopups.Services;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -29,9 +30,11 @@ public class FirstRunService : IFirstRunService
         await Application.Current.InitializeMainPage();
 
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
+
+        Task uploadDeviceTokenTask = null;
         if (granted)
         {
-            await UploadDeviceTokenIfRequired();
+            uploadDeviceTokenTask = UploadDeviceTokenIfRequired();
         }
 
         if (Preferences.Get("FirstRun", true))
@@ -49,6 +52,19 @@ public class FirstRunService : IFirstRunService
             var popup = new PopupPages.ScanResult(vm, _pendingScanCode);
             await MopupService.Instance.PushAsync(popup);
             _pendingScanCode = null;
+        }
+
+        if (uploadDeviceTokenTask != null)
+        {
+            try
+            {
+                await uploadDeviceTokenTask;
+            }
+            catch (Exception ex)
+            {
+                CrossFirebaseCrashlytics.Current.RecordException(ex);
+                CrossFirebaseCrashlytics.Current.Log($"Error uploading device token: {ex.Message}");
+            }
         }
     }
     

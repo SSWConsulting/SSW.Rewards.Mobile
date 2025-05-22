@@ -1,32 +1,28 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
-using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LeaderboardViewModel : BaseViewModel
 {
-    private int _myUserId;
-
     private readonly ILeaderService _leaderService;
-    private readonly IUserService _userService;
     private readonly IServiceProvider _provider;
+    private readonly IFileCacheService _fileCacheService;
     private bool _loaded;
 
-    private const int Take = 50;
-    private int _skip;
+    private const int PageSize = 50;
+    private int _page;
     private bool _limitReached;
 
-    public LeaderboardViewModel(ILeaderService leaderService, IUserService userService, IServiceProvider provider)
+    public LeaderboardViewModel(ILeaderService leaderService, IServiceProvider provider, IFileCacheService fileCacheService)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
-        _userService = userService;
         _provider = provider;
-        _userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
+        _fileCacheService = fileCacheService;
     }
 
     public ObservableRangeCollection<LeaderViewModel> Leaders { get; } = [];
@@ -45,6 +41,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     private bool _isRefreshing;
 
     public Action<int> ScrollTo { get; set; }
+    public Func<Task> ReadyEarly { get; set; }
 
     private LeaderboardFilter CurrentPeriod { get; set; } = LeaderboardFilter.ThisWeek;
 
@@ -60,54 +57,23 @@ public partial class LeaderboardViewModel : BaseViewModel
     [ObservableProperty]
     private LeaderViewModel _third;
 
-    public async Task Initialise()
-    {
-        if (!_loaded)
-        {
-            IsRunning = true;
-            
-            await LoadLeaderboard();
-            _loaded = true;
-
-            IsRunning = false;
-        }
-    }
+    public async Task Initialise() => await UpdateLeaderboardByAction(LeaderboardAction.InitialLoad);
 
     [RelayCommand]
-    private async Task RefreshLeaderboard()
-    {
-        IsRefreshing = false;
-        await LoadLeaderboard();
-    }
+    private async Task RefreshLeaderboard() => await UpdateLeaderboardByAction(LeaderboardAction.ManualRefresh);
 
     [RelayCommand]
-    private async Task LoadMore()
-    {
-        // Don't attempt to load more until initial load is complete
-        if (!_loaded)
-            return;
+    private async Task LoadMore() => await UpdateLeaderboardByAction(LeaderboardAction.LoadMore);
 
-        if (_limitReached)
-            return;
-        
-        _skip += Take;
-    
-        var leaders = await FetchLeaders();
-
-        if (leaders.Count == 0)
-        {
-            _limitReached = true;
-            return;
-        }
-        
-        Leaders.AddRange(leaders);
-    }
+    [RelayCommand]
+    private async Task ScrollToMe() => await UpdateLeaderboardByAction(LeaderboardAction.ScrollToMe);
 
     [RelayCommand]
     private async Task FilterByPeriod()
     {
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
-        await LoadLeaderboard();
+
+        await UpdateLeaderboardByAction(LeaderboardAction.FullRefresh);
     }
 
     [RelayCommand]
@@ -125,95 +91,169 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    private async Task ScrollToMe()
+    private async Task UpdateLeaderboardByAction(LeaderboardAction leaderboardAction)
     {
-        LeaderViewModel myCard = null;
+        if (leaderboardAction is LeaderboardAction.InitialLoad && _loaded)
+        {
+            // Should only happen on the first load.
+            return;
+        }
+
+        if (leaderboardAction is LeaderboardAction.LoadMore)
+        {
+            if (_limitReached || !_loaded)
+            {
+                // Not yet loaded or limit reached.
+                return;
+            }
+
+            ++_page;
+        }
+
         IsRunning = true;
 
-        while (myCard == null)
+        if (ShouldDoFullRefresh(leaderboardAction))
         {
-            myCard = Leaders.FirstOrDefault(l => l.IsMe);
-
-            if (myCard != null)
-            {
-                continue;
-            }
-
-            await LoadMore();
-
-            if (_limitReached)
-            {
-                break;
-            }
+            // Manual refresh, changing period or first load.
+            _page = 0;
+            _limitReached = false;
         }
 
-        if (myCard != null)
+        try
         {
-            var myIndex = Leaders.IndexOf(myCard);
+            if (leaderboardAction is LeaderboardAction.InitialLoad)
+            {
+                // Load from cache on first load.
+                var cacheKey = $"leaderboard_{CurrentPeriod}_{_page}_{PageSize}";
+
+                await _fileCacheService.FetchAndRefresh(
+                    cacheKey,
+                    async () => await FetchLeaderboard(CurrentPeriod, _page, PageSize),
+                    async (result, isFromCache, _) =>
+                    {
+                        ProcessLeaders(result, true);
+
+                        await ReadyEarly();
+                    });
+            }
+            else if (leaderboardAction is LeaderboardAction.ScrollToMe)
+            {
+                LeaderViewModel myCard = Leaders.FirstOrDefault(l => l.IsMe);
+                while (myCard == null)
+                {
+                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
+
+                    if (myCard != null)
+                    {
+                        continue;
+                    }
+
+                    ++_page;
+
+                    var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
+                    ProcessLeaders(result);
+
+                    if (_limitReached)
+                    {
+                        break;
+                    }
+                }
+
+                ScrollToCard(myCard);
+            }
+            else
+            {
+                var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
+                ProcessLeaders(result);
+            }
+        }
+        catch (Exception ex)
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(ex);
+        }
+
+        IsRunning = false;
+        _loaded = true;
+
+        if (leaderboardAction is LeaderboardAction.ManualRefresh)
+        {
+            // IsRefreshing is controlled by the RefreshView, we only need to set it to false here on manual refresh.
+            IsRefreshing = false;
+        }
+    }
+
+    private void ScrollToCard(LeaderViewModel card)
+    {
+        if (card != null)
+        {
+            int myIndex = Leaders.IndexOf(card);
             ScrollTo(myIndex);
         }
-        
-        IsRunning = false;
     }
 
-    private async Task LoadLeaderboard()
+    private void ProcessLeaders(List<LeaderViewModel> leaders, bool skipRefreshIfNotChanged = false)
     {
-        _limitReached = false;
-        _skip = 0;
-
-        var leaders = await FetchLeaders();
-        Leaders.ReplaceRange(leaders);
-
-        // Update podium positions
-        First = Leaders.FirstOrDefault();
-        Second = Leaders.Skip(1).FirstOrDefault();
-        Third = Leaders.Skip(2).FirstOrDefault();
-        
-        _loaded = true;
-    }
-    
-    private async Task<List<LeaderViewModel>> FetchLeaders()
-    {
-        var rank = _skip + 1;
-        var leaderViewModels = new List<LeaderViewModel>();
-        
-        var leaders = await _leaderService.GetLeadersAsync(
-            false,
-            _skip,
-            Take,
-            CurrentPeriod
-        );
-        
-        foreach (var leader in leaders)
+        if (leaders.Count == 0)
         {
-            var isMe = _myUserId == leader.UserId;
-            var vm = CreateLeaderViewModel(leader, isMe, rank);
-            rank++;
-            leaderViewModels.Add(vm);
+            _limitReached = true;
+            return;
         }
-        
-        return leaderViewModels;
+
+        if (_page == 0)
+        {
+            bool shouldUpdate = true;
+            if (Leaders.Count == leaders.Count && skipRefreshIfNotChanged)
+            {
+                // When loading data from cache, we highly likely have same data as from web.
+                // This prevents refreshing page if nothing changed.
+                shouldUpdate = false;
+                for (int i = 0; i < Leaders.Count; i++)
+                {
+                    LeaderViewModel item = Leaders[i];
+                    if (item.Name != leaders[i].Name || item.DisplayPoints != leaders[i].DisplayPoints)
+                    {
+                        shouldUpdate = true;
+                        break;
+                    }
+                }
+            }
+
+            if (shouldUpdate)
+            {
+                Leaders.ReplaceRange(leaders);
+                First = Leaders.FirstOrDefault();
+                Second = Leaders.Skip(1).FirstOrDefault();
+                Third = Leaders.Skip(2).FirstOrDefault();
+            }
+        }
+        else
+        {
+            Leaders.AddRange(leaders);
+        }
     }
     
-    private LeaderViewModel CreateLeaderViewModel(LeaderboardUserDto leader, bool isMe, int rank)
+    private async Task<List<LeaderViewModel>> FetchLeaderboard(LeaderboardFilter period, int page, int pageSize)
     {
-        return new LeaderViewModel(leader, isMe)
-        {
-            Rank = rank,
-            DisplayPoints = CalculateDisplayPoints(leader)
-        };
+        var leaders = await _leaderService.GetLeadersAsync(false, page, pageSize, period);
+        _limitReached = leaders.IsLastPage;
+
+        return leaders.Items
+            .Select(x => new LeaderViewModel(x))
+            .ToList();
     }
 
-    
-    private int CalculateDisplayPoints(LeaderboardUserDto leader)
+    private static bool ShouldDoFullRefresh(LeaderboardAction action)
+        => action is LeaderboardAction.InitialLoad or LeaderboardAction.FullRefresh or LeaderboardAction.ManualRefresh;
+
+    /// <summary>
+    /// Add flags like "ShouldDoFullRefresh" if InitialLoad, FullRefresh or ManualRefresh flag.
+    /// </summary>
+    public enum LeaderboardAction
     {
-        return CurrentPeriod switch
-        {
-            LeaderboardFilter.ThisMonth => leader.PointsThisMonth,
-            LeaderboardFilter.ThisYear => leader.PointsThisYear,
-            LeaderboardFilter.Forever => leader.TotalPoints,
-            _ => leader.PointsThisWeek
-        };
+        InitialLoad = 0b0000,
+        FullRefresh = 0b0001,
+        LoadMore = 0b0010,
+        ManualRefresh = 0b0100,
+        ScrollToMe = 0b1000
     }
 }

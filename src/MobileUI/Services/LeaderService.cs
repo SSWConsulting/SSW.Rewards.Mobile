@@ -1,12 +1,13 @@
 ﻿using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
+using System.Linq;
 
 namespace SSW.Rewards.Mobile.Services;
 
 public interface ILeaderService
 {
-    Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh, int skip = 0, int take = 50, LeaderboardFilter currentPeriod = LeaderboardFilter.Forever);
+    Task<MobileLeaderboardViewModel> GetLeadersAsync(bool forceRefresh, int page = 0, int pageSize = 50, LeaderboardFilter currentPeriod = LeaderboardFilter.Forever);
 }
 
 public class LeaderService : ILeaderService
@@ -18,25 +19,21 @@ public class LeaderService : ILeaderService
         _leaderBoardClient = leaderBoardClient;
     }
 
-    public async Task<IEnumerable<LeaderboardUserDto>> GetLeadersAsync(bool forceRefresh, int skip = 0, int take = 50, LeaderboardFilter currentPeriod = LeaderboardFilter.Forever)
+    public async Task<MobileLeaderboardViewModel> GetLeadersAsync(bool forceRefresh, int page = 0, int pageSize = 50, LeaderboardFilter currentPeriod = LeaderboardFilter.Forever)
     {
-        List<LeaderboardUserDto> summaries = [];
+        MobileLeaderboardViewModel apiLeaderList = null;
 
         try
         {
-            var apiLeaderList = await _leaderBoardClient.GetPaginatedLeaderboard(take, skip, currentPeriod, CancellationToken.None);
+            apiLeaderList = await _leaderBoardClient.GetMobilePaginatedLeaderboard(page, pageSize, currentPeriod, CancellationToken.None);
 
-            foreach (var leader in apiLeaderList.Users)
+            // Update any empty profile pic.
+            foreach (var leader in apiLeaderList.Items.Where(leader => string.IsNullOrWhiteSpace(leader.ProfilePic)))
             {
-                if (string.IsNullOrWhiteSpace(leader.ProfilePic))
-                {
-                    leader.ProfilePic = "v2sophie";
-                }
-
-                summaries.Add(leader);
+                leader.ProfilePic = "v2sophie";
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
@@ -44,6 +41,6 @@ public class LeaderService : ILeaderService
             }
         }
 
-        return summaries;
+        return apiLeaderList;
     }
 }
