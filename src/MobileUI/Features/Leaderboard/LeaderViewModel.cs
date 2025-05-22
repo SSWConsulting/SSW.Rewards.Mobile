@@ -11,7 +11,6 @@ public partial class LeaderViewModel : BaseViewModel
     public string? Name { get; set; }
     public string? ProfilePic { get; set; }
     public bool IsMe { get; set; }
-    public bool IsLeader => Rank == 1;
     
     // Used for file cache JSON serialization!
     public LeaderViewModel() { }
