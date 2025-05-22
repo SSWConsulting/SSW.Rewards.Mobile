@@ -8,7 +8,6 @@ public partial class App : Application
     private static IServiceProvider _provider;
     private static IAuthenticationService _authService;
     private static IFirstRunService _firstRunService;
-    public static object UIParent { get; set; }
 
     public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
     {
@@ -70,6 +69,11 @@ public partial class App : Application
     public static async Task InitialiseMainPage()
     {
         await _firstRunService.InitialiseAfterLogin();
+    }
+
+    public static void NavigateToLoginPage()
+    {
+        _authService.NavigateToLoginPage();
     }
 
     private async Task CheckApiCompatibilityAsync()
