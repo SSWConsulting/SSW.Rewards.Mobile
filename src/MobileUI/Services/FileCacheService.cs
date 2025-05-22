@@ -5,7 +5,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IFileCacheService
 {
-    Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Action<T, bool, object> callback = null, object tag = null);
+    Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Action<T, bool, object> dataCallback, object tag = null);
 }
 
 public class FileCacheService : IFileCacheService
