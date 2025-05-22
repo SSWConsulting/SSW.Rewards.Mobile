@@ -5,7 +5,7 @@ namespace SSW.Rewards.Mobile.Services;
 
 public interface IFileCacheService
 {
-    Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Action<T, bool, object> dataCallback, object tag = null);
+    Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Func<T, bool, object, Task> dataCallback, object tag = null);
 }
 
 public class FileCacheService : IFileCacheService
@@ -20,7 +20,7 @@ public class FileCacheService : IFileCacheService
     /// <param name="fetchCallback">Callback for fetching data which are also going to be serialized into file</param>
     /// <param name="dataCallback">Callback for when we read data from storage as well as when we get fresh data from web.</param>
     /// <param name="tag">Used to check the context of the callback. If multiple callbacks are possible, this can help to determine which callbacks to ignore (eg. not latest)</param>
-    public async Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Action<T, bool, object> dataCallback, object tag = null)
+    public async Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Func<T, bool, object, Task> dataCallback, object tag = null)
     {
         if (!Directory.Exists(CacheDirectory))
         {
@@ -44,7 +44,7 @@ public class FileCacheService : IFileCacheService
                 var cached = await JsonSerializer.DeserializeAsync<T>(stream);
                 if (cached != null)
                 {
-                    dataCallback?.Invoke(cached, true, tag);
+                    await dataCallback?.Invoke(cached, true, tag);
                 }
             }
             catch (Exception e)
