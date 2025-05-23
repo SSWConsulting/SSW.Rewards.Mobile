@@ -21,10 +21,10 @@
     <Grid ColumnSpacing="12"
           ColumnDefinitions="Auto, *, Auto">
         <Border Grid.Column="0"
-                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
-                StrokeThickness="0"
                 WidthRequest="64"
                 HeightRequest="64"
+                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                StrokeThickness="0"
                 StrokeShape="RoundRectangle 6">
             <Grid>
                 <Image HorizontalOptions="Center"
