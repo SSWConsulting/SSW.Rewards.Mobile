@@ -30,6 +30,8 @@
                 <Image HorizontalOptions="Center"
                        VerticalOptions="Center"
                        Aspect="AspectFill"
+                       WidthRequest="64"
+                       HeightRequest="64"
                        Source="{Binding ThumbnailImage, Source={x:Reference this}}"
                        IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNotNullOrEmpty}}" />
                 <Label FontFamily="FA6Solid"
