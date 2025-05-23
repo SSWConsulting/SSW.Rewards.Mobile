@@ -16,11 +16,13 @@ public interface IAuthenticationService
     bool HasCachedAccount { get; }
     bool IsLoggedIn { get; }
     event EventHandler DetailsUpdated;
+    void NavigateToLoginPage();
 }
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly OidcClientOptions _options;
+    private readonly IServiceProvider _provider;
 
     private string RefreshToken;
 
@@ -32,7 +34,7 @@ public class AuthenticationService : IAuthenticationService
     
     public bool IsLoggedIn { get => !string.IsNullOrWhiteSpace(_accessToken); }
 
-    public AuthenticationService(IBrowser browser)
+    public AuthenticationService(IBrowser browser, IServiceProvider provider)
     {
         _options = new OidcClientOptions
         {
@@ -42,6 +44,7 @@ public class AuthenticationService : IAuthenticationService
             RedirectUri = Constants.AuthRedirectUrl,
             Browser = browser,
         };
+        _provider = provider;
     }
 
     public async Task AutologinAsync(string accessToken)
@@ -263,6 +266,11 @@ public class AuthenticationService : IAuthenticationService
         }
 
         return false;
+    }
+
+    public void NavigateToLoginPage()
+    {
+        App.Current.MainPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
     }
 
     private AuthResult GetAuthResult<TResult> (TResult result)
