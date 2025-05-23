@@ -21,15 +21,17 @@
     <Grid ColumnSpacing="12"
           ColumnDefinitions="Auto, *, Auto">
         <Border Grid.Column="0"
-                HeightRequest="64"
-                WidthRequest="64"
                 BackgroundColor="{StaticResource FlyoutBackgroundColour}"
                 StrokeThickness="0"
+                WidthRequest="64"
+                HeightRequest="64"
                 StrokeShape="RoundRectangle 6">
             <Grid>
                 <Image HorizontalOptions="Center"
                        VerticalOptions="Center"
                        Aspect="AspectFill"
+                       WidthRequest="64"
+                       HeightRequest="64"
                        Source="{Binding ThumbnailImage, Source={x:Reference this}}"
                        IsVisible="{Binding ThumbnailImage, Source={x:Reference this}, Converter={StaticResource IsStringNotNullOrEmpty}}" />
                 <Label FontFamily="FA6Solid"
