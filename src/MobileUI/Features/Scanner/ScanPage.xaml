@@ -29,76 +29,104 @@
                 Margin="15"
                 IsVisible="{Binding IsScanVisible}">
             <Grid>
-                <scanner:CameraView x:Name="ScannerView"
-                                    OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}"
-                                    CameraEnabled="{Binding IsCameraEnabled}"
-                                    CurrentZoomFactor="{Binding CurrentZoomFactor, Mode=OneWayToSource}"
-                                    RequestZoomFactor="{Binding RequestZoomFactor}"
-                                    MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
-                                    MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
-                                    BarcodeSymbologies="QRCode"
-                                    ViewfinderMode="True"
-                                    TapToFocusEnabled="True"
-                                    VibrationOnDetected="False" />
-                <GraphicsView>
-                    <GraphicsView.Drawable>
-                        <controls:InvertedSquare
-                            SquareSize="200" 
-                            CornerRadius="15"
-                            BackgroundColor="Black"
-                            Opacity="0.5"/>
-                    </GraphicsView.Drawable>
-                </GraphicsView>
-                <Grid VerticalOptions="Center"
-                      HorizontalOptions="Center">
-                    <Image Source="qr_reticle"
-                           WidthRequest="400"/>
-                
-                    <Label Text="Scan QR Code"
-                           VerticalOptions="Start"
-                           VerticalTextAlignment="Center"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"
+                <!-- Show warning if camera permissions not enabled -->
+                <VerticalStackLayout Grid.Row="0"
+                                     IsVisible="{Binding HasScanPermissions, Converter={toolkit:InvertedBoolConverter}}"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="20"
+                                     Margin="20">
+                    <Image Source="camera_permission"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalOptions="Center" />
+                    <Label Text="Camera Access Required"
                            Style="{StaticResource LabelBold}"
-                           FontSize="20"
-                           Margin="0,20"
-                           FontAutoScalingEnabled="False"/>
-                </Grid>
+                           FontSize="24"
+                           HorizontalOptions="Center" />
+                    <Label
+                        Text="This app needs camera access to scan QR codes. Please enable it in your device settings to continue."
+                        HorizontalTextAlignment="Center"
+                        FontSize="16" />
+                    <Button Text="Open Settings"
+                            Command="{Binding OpenSettingsCommand}"
+                            Margin="0,20,0,0"
+                            HorizontalOptions="Center" />
+                </VerticalStackLayout>
 
-                <Grid VerticalOptions="End"
-                      x:Name="ZoomButtons"
-                      ColumnDefinitions="Auto,Auto"
-                      HorizontalOptions="Center"
-                      IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
-                      ColumnSpacing="80"
-                      Margin="0,0,0,15">
-                    <Button Grid.Column="0"
-                            BorderWidth="0"
-                            BorderColor="White"
-                            Opacity="0.66"
-                            BackgroundColor="Transparent"
-                            Command="{Binding Path=ZoomOutCommand}">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf7b1;"
-                                             Size="40"
-                                             FontAutoScalingEnabled="False"
-                                             FontFamily="FluentIcons" />
-                        </Button.ImageSource>
-                    </Button>
+                <!-- Otherwise show all camera controls if permissions enabled -->
+                <Grid IsVisible="{Binding HasScanPermissions}">
+                    <scanner:CameraView x:Name="ScannerView"
+                                        OnDetectionFinishedCommand="{Binding DetectionFinishedCommand}"
+                                        CameraEnabled="{Binding IsCameraEnabled}"
+                                        CurrentZoomFactor="{Binding CurrentZoomFactor, Mode=OneWayToSource}"
+                                        RequestZoomFactor="{Binding RequestZoomFactor}"
+                                        MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
+                                        MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
+                                        BarcodeSymbologies="QRCode"
+                                        ViewfinderMode="True"
+                                        TapToFocusEnabled="True"
+                                        VibrationOnDetected="False" />
+                    <GraphicsView>
+                        <GraphicsView.Drawable>
+                            <controls:InvertedSquare
+                                SquareSize="200"
+                                CornerRadius="15"
+                                BackgroundColor="Black"
+                                Opacity="0.5" />
+                        </GraphicsView.Drawable>
+                    </GraphicsView>
+                    <Grid VerticalOptions="Center"
+                          HorizontalOptions="Center">
+                        <Image Source="qr_reticle"
+                               WidthRequest="400" />
 
-                    <Button Grid.Column="1"
-                            BorderWidth="0"
-                            BorderColor="White"
-                            Opacity="0.66"
-                            BackgroundColor="Transparent"
-                            Command="{Binding Path=ZoomInCommand}">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xf10d;"
-                                             Size="40"
-                                             FontAutoScalingEnabled="False"
-                                             FontFamily="FluentIcons" />
-                        </Button.ImageSource>
-                    </Button>
+                        <Label Text="Scan QR Code"
+                               VerticalOptions="Start"
+                               VerticalTextAlignment="Center"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Style="{StaticResource LabelBold}"
+                               FontSize="20"
+                               Margin="0,20"
+                               FontAutoScalingEnabled="False" />
+                    </Grid>
+
+                    <Grid VerticalOptions="End"
+                          x:Name="ZoomButtons"
+                          ColumnDefinitions="Auto,Auto"
+                          HorizontalOptions="Center"
+                          IsVisible="{Binding MaxZoomFactor, Converter={StaticResource GreaterThanOne}}"
+                          ColumnSpacing="80"
+                          Margin="0,0,0,15">
+                        <Button Grid.Column="0"
+                                BorderWidth="0"
+                                BorderColor="White"
+                                Opacity="0.66"
+                                BackgroundColor="Transparent"
+                                Command="{Binding Path=ZoomOutCommand}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf7b1;"
+                                                 Size="40"
+                                                 FontAutoScalingEnabled="False"
+                                                 FontFamily="FluentIcons" />
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Button Grid.Column="1"
+                                BorderWidth="0"
+                                BorderColor="White"
+                                Opacity="0.66"
+                                BackgroundColor="Transparent"
+                                Command="{Binding Path=ZoomInCommand}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf10d;"
+                                                 Size="40"
+                                                 FontAutoScalingEnabled="False"
+                                                 FontFamily="FluentIcons" />
+                            </Button.ImageSource>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
         </Border>
