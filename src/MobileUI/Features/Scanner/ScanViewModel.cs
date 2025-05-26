@@ -73,6 +73,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [ObservableProperty]
     private ImageSource _qrCode;
 
+    [ObservableProperty]
+    private bool _hasScanPermissions;
+
     public ScanViewModel(IUserService userService, ScanResultViewModel resultViewModel)
     {
         _resultViewModel = resultViewModel;
@@ -93,9 +96,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     {
         WeakReferenceMessenger.Default.Register(this);
         
-        var hasPermissions = await Methods.AskForRequiredPermissionAsync();
+        HasScanPermissions = await Methods.AskForRequiredPermissionAsync();
 
-        if (hasPermissions && IsScanVisible)
+        if (HasScanPermissions && IsScanVisible)
         {
             IsCameraEnabled = true;
         }
@@ -207,5 +210,11 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         var minZoom = MinZoomFactor;
         
         RequestZoomFactor = Math.Max(currentZoom - ZoomFactorStep, minZoom);
+    }
+    
+    [RelayCommand]
+    private static void OpenSettings()
+    {
+        AppInfo.Current.ShowSettingsUI();
     }
 }
