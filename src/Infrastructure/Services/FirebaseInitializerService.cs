@@ -1,8 +1,9 @@
 ﻿using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Options;
+using SSW.Rewards.Infrastructure.Options;
 
-namespace SSW.Rewards.Application.Services;
+namespace SSW.Rewards.Infrastructure.Services;
 
 public interface IFirebaseInitializerService
 {

@@ -10,6 +10,7 @@ using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
 using SSW.Rewards.Application.Common.Options;
 using SSW.Rewards.Application.Leaderboard;
+using SSW.Rewards.Application.Services;
 using SSW.Rewards.Infrastructure;
 using SSW.Rewards.Infrastructure.Options;
 using SSW.Rewards.Infrastructure.Persistence;
@@ -30,9 +31,16 @@ public static class ConfigureServices
 
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
         services.AddScoped<AchievementIntegrationIdInterceptor>();
+
+        // ChatGPT config
         services.AddOptions<GPTServiceOptions>()
             .Configure(configuration.GetSection(nameof(GPTServiceOptions)).Bind);
         services.AddScoped<IQuizGPTService, QuizGPTService>();
+
+        // Firebase config
+        services.Configure<FirebaseNotificationServiceOptions>(configuration.GetSection(nameof(FirebaseNotificationServiceOptions)));
+        services.AddScoped<IFirebaseInitializerService, FirebaseInitializerService>();
+        services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
         // HangFire config
         services.AddHangfire(options => options

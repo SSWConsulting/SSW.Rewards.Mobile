@@ -20,12 +20,9 @@ public static class ConfigureServices
 
         services.Configure<UserServiceOptions>(configuration.GetSection(nameof(UserServiceOptions)));
         services.Configure<DeleteProfileOptions>(configuration.GetSection(nameof(DeleteProfileOptions)));
-        services.Configure<FirebaseNotificationServiceOptions>(configuration.GetSection(nameof(FirebaseNotificationServiceOptions)));
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRolesService, UserService>();
-        services.AddScoped<IFirebaseInitializerService, FirebaseInitializerService>();
-        services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
         return services;
     }
