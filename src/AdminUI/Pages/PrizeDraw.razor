@@ -59,9 +59,15 @@ else
         </MudItem>
         <MudItem>
             <MudCheckBox T="bool"
-                         Checked="_filterStaff"
+                         Value="_filterStaff"
                          Label="Filter staff"
-                         CheckedChanged="(e) => _filterStaff = (bool)e!"/>
+                         ValueChanged="(e) => _filterStaff = e!"/>
+        </MudItem>
+        <MudItem>
+            <MudCheckBox T="bool"
+                         Value="_excludePreviousWinners"
+                         Label="Exclude today's previous winners"
+                         ValueChanged="(e) => _excludePreviousWinners = e!"/>
         </MudItem>
         <MudItem>
             <MudButton
@@ -194,6 +200,8 @@ else
     private int _top;
     private bool _filterStaff = true;
     private EligibleUserDto? _prizeWinner;
+    private readonly HashSet<string> _previousWinners = [];
+    private bool _excludePreviousWinners = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -247,8 +255,25 @@ else
         _isDrawingPrize = true;
         await InvokeAsync(StateHasChanged);
         await Task.Delay(PrizeDrawSuspenseDelay);
+
+        var eligiblePlayers = _players?.ToList() ?? new();
+
+        if (_excludePreviousWinners)
+        {
+            eligiblePlayers = eligiblePlayers
+                .Where(p => !_previousWinners.Contains(p.UserId.ToString()))
+                .ToList();
+        }
+
+        if (!eligiblePlayers.Any())
+        {
+            SnackBar.Add("No eligible players remaining!", Severity.Warning);
+            _isDrawingPrize = false;
+            return;
+        }
+
         Random rand = new();
-        _prizeWinner = _players?.ElementAt(rand.Next(_players.Count()));
+        _prizeWinner = eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
         _isDrawingPrize = false;
     }
 
@@ -273,6 +298,11 @@ else
         
         if (result.status == RewardStatus.Claimed)
         {
+            if (_excludePreviousWinners && winner.UserId != null)
+            {
+                _previousWinners.Add(winner.UserId.ToString());
+            }
+
             SnackBar.Add($"{_selectedReward.Name} successfully claimed for {_prizeWinner.Name}!", Severity.Success, options =>
             {
                 options.VisibleStateDuration = 10000;
