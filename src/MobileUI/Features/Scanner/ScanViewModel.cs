@@ -139,9 +139,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     }
 
     [RelayCommand]
-    private void DetectionFinished(BarcodeResult[] result)
+    private void DetectionFinished(IReadOnlySet<BarcodeResult> result)
     {
-        if (!IsCameraEnabled || result.Length == 0)
+        if (!IsCameraEnabled || result.Count == 0)
         {
             return;
         }
