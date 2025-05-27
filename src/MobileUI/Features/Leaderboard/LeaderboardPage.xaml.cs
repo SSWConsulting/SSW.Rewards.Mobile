@@ -35,7 +35,7 @@ public partial class LeaderboardPage
 
     private void ScrollTo(int i)
     {
-        LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center);
+        LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center, animate: false);
     }
 
     private async Task Animate()
