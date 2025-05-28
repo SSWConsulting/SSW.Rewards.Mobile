@@ -126,11 +126,12 @@
                                         WidthRequest="50"
                                         HeightRequest="50"
                                         StrokeThickness="1.5">
-                                        <Image Source="{Binding ProfilePic}" Aspect="AspectFill" InputTransparent="True">
-                                            <Image.Clip>
-                                                <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
-                                            </Image.Clip>
-                                        </Image>
+                                        <mct:AvatarView
+                                            ImageSource="{Binding ProfilePic}"
+                                            WidthRequest="50"
+                                            HeightRequest="50"
+                                            CornerRadius="25"
+                                            BorderWidth="2" />
                                     </Border>
                                     <Grid
                                         Grid.Column="2"

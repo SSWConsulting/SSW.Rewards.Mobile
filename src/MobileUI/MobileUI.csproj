@@ -17,7 +17,7 @@
 		<ApplicationIdGuid>fb3c30ce-ab0c-4155-b244-e49513e45a94</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>3.0.56</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.57</ApplicationDisplayVersion>
 		<ApplicationVersion>2</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
@@ -63,7 +63,7 @@
     </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.5.7" />
+		<PackageReference Include="BarcodeScanning.Native.Maui" Version="1.7.9" />
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
@@ -90,8 +90,8 @@
 
 	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <GoogleServicesJson Include="Platforms/Android/google-services.json" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.7.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.4.0" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.1" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.7.0.1" />
         <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
 	</ItemGroup>
 
