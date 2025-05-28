@@ -9,11 +9,12 @@
 
 @attribute [Authorize (Roles = "Admin")]
 
-@inject IAchievementService achievementService
-@inject IPrizeDrawService prizeDrawService
-@inject IRewardService rewardService
-@inject IRewardAdminService rewardAdminService
+@inject IAchievementService AchievementService
+@inject IPrizeDrawService PrizeDrawService
+@inject IRewardService RewardService
+@inject IRewardAdminService RewardAdminService
 @inject ISnackbar SnackBar
+@inject IJSRuntime JsRuntime
 
 <MudText Typo="Typo.h2">Prize Draw</MudText>
 
@@ -63,12 +64,17 @@ else
                          Label="Filter staff"
                          ValueChanged="(e) => _filterStaff = e!"/>
         </MudItem>
-        <MudItem>
-            <MudCheckBox T="bool"
-                         Value="_excludePreviousWinners"
-                         Label="Exclude today's previous winners"
-                         ValueChanged="(e) => _excludePreviousWinners = e!"/>
-        </MudItem>
+
+        @if (_previousWinners.Count > 0)
+        {
+            <MudItem>
+                <MudCheckBox T="bool"
+                             Value="_excludePreviousWinners"
+                             Label="Exclude previous winners from this session"
+                             ValueChanged="(e) => _excludePreviousWinners = e!"/>
+            </MudItem>
+        }
+
         <MudItem>
             <MudButton
                 OnClick="@(async () => await LoadEligiblePlayers())"
@@ -78,6 +84,19 @@ else
                 Get eligible winners
             </MudButton>
         </MudItem>
+
+        @if (_previousWinners.Count > 0)
+        {
+            <MudItem>
+                <MudButton
+                    OnClick="@(async () => await ClearPreviousWinners())"
+                    Variant="Variant.Outlined"
+                    StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
+                    Color="Color.Error">
+                    Clear Previous Winners
+                </MudButton>
+            </MudItem>
+        }
     </MudGrid>
     
     <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
@@ -153,7 +172,7 @@ else
         <MudGrid Spacing="2" Justify="Justify.Center">
             <MudItem>
                 <MudButton
-                    OnClick="@(async e => await ClaimPrizeForWinner(_prizeWinner))"
+                    OnClick="@(async _ => await ClaimPrizeForWinner(_prizeWinner))"
                     Disabled="@(_selectedReward == null)"
                     Variant="Variant.Filled"
                     StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
@@ -161,10 +180,19 @@ else
                     Claim Prize
                 </MudButton>
             </MudItem>
+            <MudItem>
+                <MudButton
+                    OnClick="@(async _ => await SkipWinner(_prizeWinner))"
+                    Variant="Variant.Outlined"
+                    StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
+                    Color="Color.Info">
+                    Skip
+                </MudButton>
+            </MudItem>
         </MudGrid>
     }
     
-    @if (_players is {Count: > 0 } && !_isDrawingPrize)
+    @if (_players is {Count: > 0 } && !_isDrawingPrize && _prizeWinner == null)
     {
         <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
         
@@ -185,39 +213,40 @@ else
 
 @code {
     private readonly Color[] _colors = { Color.Primary, Color.Secondary, Color.Tertiary, Color.Info, Color.Warning, Color.Success, Color.Error };
+    private SessionStorage _storage;
 
     private static int PrizeDrawSuspenseDelay => 2500;
 
     private bool _loading = false;
     private bool _isDrawingPrize = false;
 
-    private List<EligibleUserDto>? _players = new();
-    private IEnumerable<RewardDto>? _rewards = Enumerable.Empty<RewardDto>();
-    private List<AchievementDto>? _achievements = new();
+    private List<EligibleUserDto>? _players = [];
     AchievementDto? _selectedAchievement;
     RewardDto? _selectedReward;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
     private int _top;
     private bool _filterStaff = true;
     private EligibleUserDto? _prizeWinner;
-    private readonly HashSet<string> _previousWinners = [];
+    private HashSet<string> _previousWinners = [];
     private bool _excludePreviousWinners = true;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        _storage = new SessionStorage(JsRuntime);
+        _previousWinners = await _storage.LoadWinners();
     }
 
     private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value, CancellationToken cancellationToken)
     {
-        var achievements = await achievementService.SearchAchievements(value, cancellationToken);
+        var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
 
         return achievements.Achievements;
     }
     
     private async Task<IEnumerable<RewardDto>> SearchRewards(string value, CancellationToken cancellationToken)
     {
-        var rewards = await rewardService.SearchRewards(value, cancellationToken);
+        var rewards = await RewardService.SearchRewards(value, cancellationToken);
 
         // Only show hidden 1-point rewards that were designed for prize draws
         // TODO: improve the handling of assigning and filtering prize draw items
@@ -239,9 +268,17 @@ else
                 Top = _top,
             };
 
-            var eligibleUsersVm = await prizeDrawService.GetEligibleUsers(filter, CancellationToken.None);
-            
-            _players = eligibleUsersVm?.EligibleUsers?.ToList() ?? new List<EligibleUserDto>();
+            var eligibleUsersVm = await PrizeDrawService.GetEligibleUsers(filter, CancellationToken.None);
+            var eligiblePlayers = eligibleUsersVm.EligibleUsers.ToList();
+
+            if (_excludePreviousWinners)
+            {
+                eligiblePlayers = eligiblePlayers
+                    .Where(p => !_previousWinners.Contains(p.UserId.ToString()))
+                    .ToList();
+            }
+
+            _players = eligiblePlayers;
             _loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -255,15 +292,8 @@ else
         _isDrawingPrize = true;
         await InvokeAsync(StateHasChanged);
         await Task.Delay(PrizeDrawSuspenseDelay);
-
-        var eligiblePlayers = _players?.ToList() ?? new();
-
-        if (_excludePreviousWinners)
-        {
-            eligiblePlayers = eligiblePlayers
-                .Where(p => !_previousWinners.Contains(p.UserId.ToString()))
-                .ToList();
-        }
+        
+        var eligiblePlayers = _players?.ToList() ?? [];
 
         if (!eligiblePlayers.Any())
         {
@@ -294,34 +324,87 @@ else
 
     private async Task ClaimPrizeForWinner(EligibleUserDto winner)
     {
-        var result = await rewardAdminService.ClaimForUser(_selectedReward?.Code, winner.UserId ?? 0, false, CancellationToken.None);
-        
-        if (result.status == RewardStatus.Claimed)
+        if (_selectedReward != null)
         {
-            if (_excludePreviousWinners && winner.UserId != null)
-            {
-                _previousWinners.Add(winner.UserId.ToString());
-            }
+            var result = await RewardAdminService.ClaimForUser(_selectedReward.Code, winner.UserId ?? 0, false, CancellationToken.None);
 
-            SnackBar.Add($"{_selectedReward.Name} successfully claimed for {_prizeWinner.Name}!", Severity.Success, options =>
+            if (result.status == RewardStatus.Claimed)
             {
-                options.VisibleStateDuration = 10000;
-            });
-            _selectedReward = null;
+                if (_excludePreviousWinners && winner.UserId != null)
+                {
+                    _previousWinners.Add(winner.UserId.ToString());
+                    await _storage.SaveWinner(winner.UserId.ToString());
+                }
+
+                SnackBar.Add($"{_selectedReward.Name} successfully claimed for {winner.Name}!", Severity.Success, options =>
+                {
+                    options.VisibleStateDuration = 10000;
+                });
+
+                _players?.RemoveAll(p => p.UserId == winner.UserId);
+
+                Reset();
+            }
+            else
+            {
+                SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
+            }
         }
         else
         {
-            SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
+            SnackBar.Add($"Reward not valid", Severity.Error);
         }
     }
 
-    private string GetAchievementName(AchievementDto? achievement)
+    private async Task SkipWinner(EligibleUserDto winner)
+    {
+        _players?.RemoveAll(p => p.UserId == winner.UserId);
+        Reset();
+        await DrawPrizeWinner();
+    }
+
+    private static string GetAchievementName(AchievementDto? achievement)
     {
         return achievement?.Name ?? string.Empty;
     }
 
-    private string GetRewardName(RewardDto? reward)
+    private static string GetRewardName(RewardDto? reward)
     {
         return reward?.Name ?? string.Empty;
+    }
+
+    private async Task ClearPreviousWinners()
+    {
+        await _storage.ClearWinners();
+        _previousWinners.Clear();
+        SnackBar.Add("Previous winners cleared!", Severity.Success);
+    }
+
+    private class SessionStorage(IJSRuntime jsRuntime)
+    {
+        private const string PreviousWinnersKey = "ssw-rewards-previous-winners";
+
+        public async Task<HashSet<string>> LoadWinners()
+        {
+            var winnersJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", PreviousWinnersKey);
+            if (string.IsNullOrEmpty(winnersJson))
+                return [];
+
+            var winners = System.Text.Json.JsonSerializer.Deserialize<List<string>>(winnersJson);
+            return [..winners ?? []];
+        }
+
+        public async Task SaveWinner(string userId)
+        {
+            var winners = await LoadWinners();
+            winners.Add(userId);
+            var winnersJson = System.Text.Json.JsonSerializer.Serialize(winners.ToList());
+            await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", PreviousWinnersKey, winnersJson);
+        }
+
+        public async Task ClearWinners()
+        {
+            await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", PreviousWinnersKey);
+        }
     }
 }
