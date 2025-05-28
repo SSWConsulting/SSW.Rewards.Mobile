@@ -25,13 +25,13 @@ public class FirebaseNotificationService : IFirebaseNotificationService
         _logger = logger;
     }
 
-    public async Task SendNotificationAsync<T>(T messagePayload, int userId, string notificationTitle, string notificationMessage, CancellationToken cancellationToken)
+    public async Task<bool> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, T messagePayload, CancellationToken cancellationToken)
     {
         string payloadJson = JsonSerializer.Serialize(messagePayload);
-        await SendNotificationAsync(payloadJson, userId, notificationTitle, notificationMessage, cancellationToken);
+        return await SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, cancellationToken);
     }
 
-    public async Task SendNotificationAsync(string payloadJson, int userId, string notificationTitle, string notificationMessage, CancellationToken cancellationToken)
+    public async Task<bool> SendNotificationAsync(int userId, string notificationTitle, string notificationMessage, string payloadJson, CancellationToken cancellationToken)
     {
         var deviceTokens = await _dbContext.DeviceTokens
             .Where(dt => dt.User.Id == userId && !string.IsNullOrEmpty(dt.Token))
@@ -43,11 +43,12 @@ public class FirebaseNotificationService : IFirebaseNotificationService
         if (!deviceTokens.Any())
         {
             _logger.LogWarning("No device tokens found for User ID {UserId}. Notification not sent.", userId);
-            return;
+            return false;
         }
 
         _logger.LogInformation("Preparing to send notification titled '{NotificationTitle}' to User ID {UserId} for {DeviceCount} device(s).", notificationTitle, userId, deviceTokens.Count);
 
+        bool atLeastOneSent = false;
         foreach (var deviceToken in deviceTokens)
         {
             var message = new Message()
@@ -66,6 +67,8 @@ public class FirebaseNotificationService : IFirebaseNotificationService
                  _logger.LogDebug("Sending notification to token {DeviceToken} for User ID {UserId}", deviceToken, userId);
 
                 await SendNotificationToDevice(message, cancellationToken);
+
+                atLeastOneSent = true;
             }
             catch (FirebaseMessagingException ex)
             {
@@ -93,6 +96,8 @@ public class FirebaseNotificationService : IFirebaseNotificationService
                 _logger.LogError(ex, "Unexpected error sending notification to token {DeviceToken} for User ID {UserId}", deviceToken, userId);
             }
         }
+
+        return atLeastOneSent;
     }
 
     private async Task SendNotificationToDevice(Message message, CancellationToken cancellationToken)

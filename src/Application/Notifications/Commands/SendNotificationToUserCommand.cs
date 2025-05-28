@@ -2,7 +2,7 @@
 
 namespace SSW.Rewards.Application.Notifications.Commands;
 
-public class SendNotificationToUserCommand : IRequest
+public class SendNotificationToUserCommand : IRequest<NotificationSentResponse>
 {
     public int UserId { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -10,7 +10,7 @@ public class SendNotificationToUserCommand : IRequest
     public string? DataPayload { get; set; }
 }
 
-public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotificationToUserCommand>
+public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotificationToUserCommand, NotificationSentResponse>
 {
     private readonly IFirebaseNotificationService _firebaseNotificationService;
 
@@ -19,14 +19,20 @@ public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotifica
         _firebaseNotificationService = firebaseNotificationService;
     }
 
-    public async Task Handle(SendNotificationToUserCommand request, CancellationToken cancellationToken)
+    public async Task<NotificationSentResponse> Handle(SendNotificationToUserCommand request, CancellationToken cancellationToken)
     {
         request.DataPayload ??= string.Empty;
-        await _firebaseNotificationService.SendNotificationAsync(
+        bool wasSent = await _firebaseNotificationService.SendNotificationAsync(
             request.UserId,
             request.Title,
             request.Message,
             request.DataPayload,
             cancellationToken);
+
+        return new NotificationSentResponse
+        {
+            UsersToNotify = 1,
+            NotificationsSent = wasSent ? 1 : 0
+        };
     }
 }

@@ -38,7 +38,7 @@ public static class ConfigureServices
         services.AddScoped<IQuizGPTService, QuizGPTService>();
 
         // Firebase config
-        services.Configure<FirebaseNotificationServiceOptions>(configuration.GetSection(nameof(FirebaseNotificationServiceOptions)));
+        services.Configure<FirebaseNotificationServiceOptions>(configuration.GetSection("Firebase"));
         services.AddScoped<IFirebaseInitializerService, FirebaseInitializerService>();
         services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
