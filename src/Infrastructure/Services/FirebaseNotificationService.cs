@@ -27,6 +27,12 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 
     public async Task SendNotificationAsync<T>(T messagePayload, int userId, string notificationTitle, string notificationMessage, CancellationToken cancellationToken)
     {
+        string payloadJson = JsonSerializer.Serialize(messagePayload);
+        await SendNotificationAsync(payloadJson, userId, notificationTitle, notificationMessage, cancellationToken);
+    }
+
+    public async Task SendNotificationAsync(string payloadJson, int userId, string notificationTitle, string notificationMessage, CancellationToken cancellationToken)
+    {
         var deviceTokens = await _dbContext.DeviceTokens
             .Where(dt => dt.User.Id == userId && !string.IsNullOrEmpty(dt.Token))
             .OrderByDescending(dt => dt.LastTimeUpdated)
@@ -42,7 +48,6 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 
         _logger.LogInformation("Preparing to send notification titled '{NotificationTitle}' to User ID {UserId} for {DeviceCount} device(s).", notificationTitle, userId, deviceTokens.Count);
 
-        string payloadJson = JsonSerializer.Serialize(messagePayload);
         foreach (var deviceToken in deviceTokens)
         {
             var message = new Message()
