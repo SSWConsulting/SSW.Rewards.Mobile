@@ -6,7 +6,7 @@ public class SendNotificationToUserCommand : IRequest
 {
     public int UserId { get; set; }
     public string Title { get; set; } = string.Empty;
-    public string Body { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
     public string? DataPayload { get; set; }
 }
 
@@ -23,10 +23,10 @@ public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotifica
     {
         request.DataPayload ??= string.Empty;
         await _firebaseNotificationService.SendNotificationAsync(
-            request.DataPayload,
             request.UserId,
             request.Title,
-            request.Body,
+            request.Message,
+            request.DataPayload,
             cancellationToken);
     }
 }
