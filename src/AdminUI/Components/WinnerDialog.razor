@@ -1,0 +1,106 @@
+@using Microsoft.AspNetCore.Components
+@using SSW.Rewards.Shared.DTOs.PrizeDraw
+@using SSW.Rewards.Shared.DTOs.Rewards
+@using SSW.Rewards.ApiClient.Services
+
+@inject IRewardService RewardService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Class="mr-2" />
+            @Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Style="max-height: 500px; overflow-y: auto">
+            <MudText Align="Align.Center" Class="mt-4 mb-2">The Winner is:</MudText>
+            <MudText Align="Align.Center" Typo="Typo.h3" Color="Color.Success" Class="mb-4">
+                <b>@(Winner?.Name)</b>
+            </MudText>
+
+            <MudDivider Class="my-4" />
+
+            <MudAutocomplete
+                T="RewardDto"
+                @bind-Value="@_selectedReward"
+                Variant="Variant.Filled"
+                Label="Select a Reward"
+                AnchorOrigin="Origin.BottomCenter"
+                SearchFuncWithCancel="@SearchRewards"
+                ShowProgressIndicator="true"
+                ToStringFunc="@(r => r?.Name ?? string.Empty)"
+                Class="mb-4"
+            />
+
+            <MudText Typo="Typo.body2" Color="Color.Info" Class="mb-3">
+                Choose a reward to give to the winner, or skip this winner to draw another.
+            </MudText>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Warning"
+                   StartIcon="@(_isSkipping ? null : MudBlazor.Icons.Material.Filled.SkipNext)"
+                   OnClick="SkipCurrentWinner"
+                   Disabled="@_isSkipping">
+            @if (_isSkipping)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                <span class="ms-2">Skipping...</span>
+            }
+            else
+            {
+                <span>Skip Winner</span>
+            }
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   Disabled="@(_selectedReward == null || _isSkipping)"
+                   StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
+                   OnClick="ClaimPrize">
+            Claim Prize
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    
+    [Parameter] public string Title { get; set; } = "Prize Winner!";
+    [Parameter] public EligibleUserDto? Winner { get; set; }
+    [Parameter] public EventCallback<(EligibleUserDto, RewardDto)> OnClaimPrize { get; set; }
+    [Parameter] public EventCallback<EligibleUserDto> OnSkipWinner { get; set; }
+    
+    private RewardDto? _selectedReward;
+    private bool _isSkipping = false;
+    
+    private async Task<IEnumerable<RewardDto>> SearchRewards(string value, CancellationToken cancellationToken)
+    {
+        var rewards = await RewardService.SearchRewards(value, cancellationToken);
+        
+        // Only show hidden 1-point rewards that were designed for prize draws
+        return rewards.Rewards.Where(r => r.Cost == 1);
+    }
+    
+    private async Task ClaimPrize()
+    {
+        if (Winner != null && _selectedReward != null)
+        {
+            await OnClaimPrize.InvokeAsync((Winner, _selectedReward));
+            MudDialog.Close();
+        }
+    }
+    
+    private async Task SkipCurrentWinner()
+    {
+        if (Winner != null)
+        {
+            _isSkipping = true;
+            await InvokeAsync(StateHasChanged);
+            
+            await OnSkipWinner.InvokeAsync(Winner);
+            MudDialog.Close();
+        }
+    }
+}

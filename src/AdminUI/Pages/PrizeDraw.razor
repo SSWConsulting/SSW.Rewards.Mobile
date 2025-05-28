@@ -1,6 +1,7 @@
 @page "/Prizedraw"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SSW.Rewards.Admin.UI.Components
 @using SSW.Rewards.Enums
 @using SSW.Rewards.Shared.DTOs.Achievements
 @using SSW.Rewards.Shared.DTOs.PrizeDraw
@@ -15,6 +16,7 @@
 @inject IRewardAdminService RewardAdminService
 @inject ISnackbar SnackBar
 @inject IJSRuntime JsRuntime
+@inject IDialogService DialogService
 
 <MudText Typo="Typo.h2">Prize Draw</MudText>
 
@@ -24,191 +26,177 @@
 }
 else
 {
-    <MudGrid Spacing="2">
-        <MudItem>
-            <MudAutocomplete
-                T="AchievementDto"
-                @bind-Value="@_selectedAchievement"
-                Variant="Variant.Filled"
-                Label="Required Achievement"
-                AnchorOrigin="Origin.BottomCenter"
-                SearchFuncWithCancel="@SearchAchievements"
-                ShowProgressIndicator="true"
-                ToStringFunc="@GetAchievementName"
-            />
-        </MudItem>
-        <MudItem>
-            <MudSelect
-                Style="width: 250px;"
-                T="LeaderboardFilter"
-                @bind-Value="@_filter"
-                Label="Players with Points Since"
-                Variant="Variant.Filled"
-                AnchorOrigin="Origin.BottomCenter">
-                @foreach (var when in Enum.GetValues<LeaderboardFilter>())
-                {
-                    <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
-                }
-            </MudSelect>
-        </MudItem>        
-        <MudItem>
-            <MudTextField
-                Label="Leaderboard Top X"
-                Variant="Variant.Filled"
-                Type="InputType.Number"
-                @bind-Value="_top"/>
-        </MudItem>
-        <MudItem>
-            <MudCheckBox T="bool"
-                         Value="_filterStaff"
-                         Label="Filter staff"
-                         ValueChanged="(e) => _filterStaff = e!"/>
-        </MudItem>
+    <MudPaper Elevation="2" Class="pa-4 mb-4">
 
-        @if (_previousWinners.Count > 0)
-        {
-            <MudItem>
-                <MudCheckBox T="bool"
-                             Value="_excludePreviousWinners"
-                             Label="Exclude previous winners from this session"
-                             ValueChanged="(e) => _excludePreviousWinners = e!"/>
-            </MudItem>
-        }
-
-        <MudItem>
-            <MudButton
-                OnClick="@(async () => await LoadEligiblePlayers())"
-                Variant="Variant.Filled"
-                StartIcon="@MudBlazor.Icons.Material.Filled.Search"
-                Color="Color.Primary">
-                Get eligible winners
-            </MudButton>
-        </MudItem>
-
-        @if (_previousWinners.Count > 0)
-        {
-            <MudItem>
-                <MudButton
-                    OnClick="@(async () => await ClearPreviousWinners())"
-                    Variant="Variant.Outlined"
-                    StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
-                    Color="Color.Error">
-                    Clear Previous Winners
-                </MudButton>
-            </MudItem>
-        }
-    </MudGrid>
-    
-    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
-    
-    <MudGrid Justify="Justify.Center">
-        <MudItem>
-            <MudText Align="Align.Left">Eligible Players: @(_players?.Count ?? 0)</MudText>
-        </MudItem>
-    </MudGrid>
-    
-    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
-    
-    <MudGrid Spacing="2">
-        <MudItem>
-            <MudChipSet MultiSelection="false">
-                @if (_players != null)
-                {
-                    @foreach (var player in _players.Select((p, index) => new { p, index }))
-                    {
-                        <MudChip
-                            Size="@(IsWinner(player.p) ? Size.Large : Size.Small)"
-                            Variant="@(IsWinner(player.p) ? Variant.Filled : Variant.Text)"
-                            Icon="@(IsWinner(player.p) ? MudBlazor.Icons.Material.Filled.Celebration : null)"
-                            Color="@_colors[player.index % _colors.Length]">@(player.p.Name)</MudChip>
-                    }   
-                }
-            </MudChipSet>
-        </MudItem>
-    </MudGrid>
-    
-    <MudDivider DividerType="DividerType.Middle" Class="my-12"/>
-    
-    @if (_isDrawingPrize || _prizeWinner != null)
-    {
-        <MudGrid Justify="Justify.Center">
-            <MudItem>
-                @if (_isDrawingPrize)
-                {
-                    <MudText Align="Align.Center">
-                        Shuffling things around...
-                    </MudText>
-                    <MudText Align="Align.Center">
-                        <MudProgressCircular Color="Color.Success" Indeterminate="true"/>
-                    </MudText>
-                }
-                else if(_prizeWinner != null)
-                {
-                    <MudText Align="Align.Center">The Winner is:</MudText>
-                    <MudText Align="Align.Center" Typo="Typo.h3">
-                        <b>@(_prizeWinner.Name)</b>
-                    </MudText>    
-                }
-            </MudItem>
-        </MudGrid>    
-    }
-    
-    @if (_prizeWinner != null && !_isDrawingPrize)
-    {
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem>
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="6" md="4">
                 <MudAutocomplete
-                    T="RewardDto"
-                    @bind-Value="@_selectedReward"
-                    Variant="Variant.Filled"
-                    Label="Reward"
+                    T="AchievementDto"
+                    @bind-Value="@_selectedAchievement"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"
+                    Dense="true"
+                    Label="Required Achievement"
                     AnchorOrigin="Origin.BottomCenter"
-                    SearchFuncWithCancel="@SearchRewards"
+                    SearchFuncWithCancel="@SearchAchievements"
                     ShowProgressIndicator="true"
-                    ToStringFunc="@GetRewardName"
+                    ToStringFunc="@GetAchievementName"
+                    FullWidth="true"
                 />
             </MudItem>
-        </MudGrid>
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem>
-                <MudButton
-                    OnClick="@(async _ => await ClaimPrizeForWinner(_prizeWinner))"
-                    Disabled="@(_selectedReward == null)"
-                    Variant="Variant.Filled"
-                    StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
-                    Color="Color.Info">
-                    Claim Prize
-                </MudButton>
-            </MudItem>
-            <MudItem>
-                <MudButton
-                    OnClick="@(async _ => await SkipWinner(_prizeWinner))"
+
+            <MudItem xs="12" sm="6" md="4">
+                <MudSelect
+                    T="LeaderboardFilter"
+                    @bind-Value="@_filter"
+                    Margin="Margin.Dense"
+                    Dense="true"
+                    Label="Players with Points Since"
                     Variant="Variant.Outlined"
-                    StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
-                    Color="Color.Info">
-                    Skip
-                </MudButton>
+                    AnchorOrigin="Origin.BottomCenter"
+                    FullWidth="true">
+                    @foreach (var when in Enum.GetValues<LeaderboardFilter>())
+                    {
+                        <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
+                    }
+                </MudSelect>
             </MudItem>
-        </MudGrid>
-    }
-    
-    @if (_players is {Count: > 0 } && !_isDrawingPrize && _prizeWinner == null)
-    {
-        <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
-        
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem>
+
+            <MudItem xs="12" sm="6" md="4">
+                <MudTextField
+                    Label="Leaderboard Top X"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"
+                    Dense="true"
+                    Type="InputType.Number"
+                    @bind-Value="_top"
+                    FullWidth="true"/>
+            </MudItem>
+
+            <MudItem xs="8">
+                <MudPaper Elevation="0" Class="d-flex flex-wrap gap-4">
+                    <MudCheckBox T="bool"
+                                 Color="Color.Primary"
+                                 Value="_excludeStaff"
+                                 Label="Exclude staff"
+                                 ValueChanged="(e) => _excludeStaff = e!"/>
+
+                    @if (_previousWinners.Count > 0)
+                    {
+                        <MudCheckBox T="bool"
+                                     Color="Color.Primary"
+                                     Value="_excludePreviousWinners"
+                                     Label="Exclude previous winners"
+                                     ValueChanged="(e) => _excludePreviousWinners = e!"/>
+                    }
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="4" Class="d-flex justify-end">
                 <MudButton
-                    OnClick="DrawPrizeWinner"
+                    OnClick="@(async () => await LoadEligiblePlayers())"
                     Variant="Variant.Filled"
-                    StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
-                    Color="Color.Primary"
-                    Style="width: 400px; height: 60px;">
-                    Draw prize winner!
+                    StartIcon="@MudBlazor.Icons.Material.Filled.Search"
+                    Size="Size.Medium"
+                    Color="Color.Primary">
+                    Get eligible winners
                 </MudButton>
             </MudItem>
         </MudGrid>
-    }
+    </MudPaper>
+    
+    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+    
+    <MudGrid>
+        <MudItem xs="12" sm="@(_previousWinners.Count > 0 ? 8 : 12)">
+            <MudGrid Justify="Justify.Center">
+                <MudItem>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Eligible Players</MudText>
+                    <MudText Align="Align.Center">Total: @(_players?.Count ?? 0)</MudText>
+                </MudItem>
+            </MudGrid>
+            
+            <MudGrid Spacing="2">
+                <MudItem>
+                    <MudChipSet MultiSelection="false">
+                        @if (_players != null)
+                        {
+                            @foreach (var player in _players.Select((p, index) => new { p, index }))
+                            {
+                                <MudChip
+                                    Size="Size.Small"
+                                    Variant="Variant.Text"
+                                    Color="@_colors[player.index % _colors.Length]">@(player.p.Name)</MudChip>
+                            }   
+                        }
+                    </MudChipSet>
+                </MudItem>
+            </MudGrid>
+
+            @if (_isDrawingPrize)
+            {
+                <MudDivider DividerType="DividerType.Middle" Class="my-12"/>
+            
+                <MudGrid Justify="Justify.Center">
+                    <MudItem>
+                        <MudText Align="Align.Center">
+                            Shuffling things around...
+                        </MudText>
+                        <MudText Align="Align.Center">
+                            <MudProgressCircular Color="Color.Success" Indeterminate="true"/>
+                        </MudText>
+                    </MudItem>
+                </MudGrid>    
+            }
+            
+            @if (_players is {Count: > 0 } && !_isDrawingPrize)
+            {
+                <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
+
+                <MudGrid Spacing="2" Justify="Justify.Center">
+                    <MudItem>
+                        <MudButton
+                            OnClick="DrawPrizeWinner"
+                            Variant="Variant.Filled"
+                            StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
+                            Color="Color.Primary"
+                            Style="width: 400px; height: 60px;">
+                            Draw prize winner!
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>    
+            }
+        </MudItem>
+        
+        @if (_previousWinners.Count > 0)
+        {
+            <MudItem xs="12" sm="4">
+                <MudPaper Elevation="3" Class="pa-4 ml-2 mb-2">
+                    <div class="d-flex justify-space-between align-center mb-2">
+                        <MudText Typo="Typo.h5">Previous Winners</MudText>
+                        <MudButton
+                            StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
+                            Color="Color.Error"
+                            Size="Size.Small"
+                            Variant="Variant.Outlined"
+                            OnClick="@(async () => await ClearPreviousWinners())">
+                            Clear
+                        </MudButton>
+                    </div>
+                    <MudDivider Class="mb-3"/>
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var winner in _previousWinners)
+                        {
+                            <div class="d-flex align-center pa-1 gap-2">
+                                <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Color="Color.Success" Size="Size.Small" />
+                                <MudText Typo="Typo.body1" Color="Color.Success">@winner.Name</MudText>
+                            </div>
+                        }
+                    </div>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
 }
 
 @code {
@@ -216,24 +204,26 @@ else
     private SessionStorage _storage;
 
     private static int PrizeDrawSuspenseDelay => 2500;
-
     private bool _loading = false;
     private bool _isDrawingPrize = false;
 
     private List<EligibleUserDto>? _players = [];
     AchievementDto? _selectedAchievement;
-    RewardDto? _selectedReward;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
     private int _top;
-    private bool _filterStaff = true;
-    private EligibleUserDto? _prizeWinner;
-    private HashSet<string> _previousWinners = [];
+    private bool _excludeStaff = true;
+    private List<Winner> _previousWinners = [];
     private bool _excludePreviousWinners = true;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _storage = new SessionStorage(JsRuntime);
+        await LoadPreviousWinners();
+    }
+
+    private async Task LoadPreviousWinners()
+    {
         _previousWinners = await _storage.LoadWinners();
     }
 
@@ -258,13 +248,12 @@ else
         try
         {
             _loading = true;
-            Reset();
 
             var filter = new GetEligibleUsersFilter
             {
                 AchievementId = _selectedAchievement?.Id,
                 Filter = _filter,
-                FilterStaff = _filterStaff,
+                FilterStaff = _excludeStaff,
                 Top = _top,
             };
 
@@ -273,8 +262,9 @@ else
 
             if (_excludePreviousWinners)
             {
+                var previousWinnerIds = _previousWinners.Select(w => w.Id).ToHashSet();
                 eligiblePlayers = eligiblePlayers
-                    .Where(p => !_previousWinners.Contains(p.UserId.ToString()))
+                    .Where(p => !previousWinnerIds.Contains(p.UserId.ToString()))
                     .ToList();
             }
 
@@ -303,74 +293,73 @@ else
         }
 
         Random rand = new();
-        _prizeWinner = eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
+        var winner = eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
         _isDrawingPrize = false;
-    }
-
-    private bool IsWinner(EligibleUserDto? player) 
-    {
-        if (player == null || _prizeWinner == null)
+        
+        var parameters = new DialogParameters
         {
-            return false;
-        }
-        return player.UserId == _prizeWinner.UserId;
-    }
-
-    private void Reset()
-    {
-        _prizeWinner = null;
-        _selectedReward = null;
-    }
-
-    private async Task ClaimPrizeForWinner(EligibleUserDto winner)
-    {
-        if (_selectedReward != null)
+            ["Winner"] = winner,
+            ["OnClaimPrize"] = EventCallback.Factory.Create<(EligibleUserDto, RewardDto)>(this,
+                async args => await ClaimPrizeForWinner(args.Item1, args.Item2)),
+            ["OnSkipWinner"] = EventCallback.Factory.Create<EligibleUserDto>(this,
+                async user => await SkipWinner(user))
+        };
+        
+        var options = new DialogOptions
         {
-            var result = await RewardAdminService.ClaimForUser(_selectedReward.Code, winner.UserId ?? 0, false, CancellationToken.None);
+            CloseOnEscapeKey = false,
+            DisableBackdropClick = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+        
+        var dialog = await DialogService.ShowAsync<WinnerDialog>("Prize Winner!", parameters, options);
+        await dialog.Result;
+    }
 
-            if (result.status == RewardStatus.Claimed)
+    private async Task ClaimPrizeForWinner(EligibleUserDto winner, RewardDto reward)
+    {
+        var result = await RewardAdminService.ClaimForUser(reward.Code, winner.UserId ?? 0, false, CancellationToken.None);
+    
+        if (result.status == RewardStatus.Claimed)
+        {
+            if (_excludePreviousWinners && winner.UserId != null)
             {
-                if (_excludePreviousWinners && winner.UserId != null)
-                {
-                    _previousWinners.Add(winner.UserId.ToString());
-                    await _storage.SaveWinner(winner.UserId.ToString());
-                }
-
-                SnackBar.Add($"{_selectedReward.Name} successfully claimed for {winner.Name}!", Severity.Success, options =>
-                {
-                    options.VisibleStateDuration = 10000;
-                });
-
-                _players?.RemoveAll(p => p.UserId == winner.UserId);
-
-                Reset();
+                await _storage.SaveWinner(winner.UserId.ToString(), winner.Name ?? string.Empty);
+                await LoadPreviousWinners();
             }
-            else
+    
+            SnackBar.Add($"{reward.Name} successfully claimed for {winner.Name}!", Severity.Success, options =>
             {
-                SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
-            }
+                options.VisibleStateDuration = 10000;
+            });
+    
+            _players?.RemoveAll(p => p.UserId == winner.UserId);
         }
         else
         {
-            SnackBar.Add($"Reward not valid", Severity.Error);
+            SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
         }
     }
-
+    
     private async Task SkipWinner(EligibleUserDto winner)
     {
         _players?.RemoveAll(p => p.UserId == winner.UserId);
-        Reset();
-        await DrawPrizeWinner();
+        
+        // Only auto-draw another winner if there are still players left
+        if (_players?.Count > 0)
+        {
+            await DrawPrizeWinner();
+        }
+        else
+        {
+            SnackBar.Add("No eligible players remaining!", Severity.Warning);
+        }
     }
 
     private static string GetAchievementName(AchievementDto? achievement)
     {
         return achievement?.Name ?? string.Empty;
-    }
-
-    private static string GetRewardName(RewardDto? reward)
-    {
-        return reward?.Name ?? string.Empty;
     }
 
     private async Task ClearPreviousWinners()
@@ -380,25 +369,31 @@ else
         SnackBar.Add("Previous winners cleared!", Severity.Success);
     }
 
+    private class Winner
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+    }
+    
     private class SessionStorage(IJSRuntime jsRuntime)
     {
         private const string PreviousWinnersKey = "ssw-rewards-previous-winners";
-
-        public async Task<HashSet<string>> LoadWinners()
+    
+        public async Task<List<Winner>> LoadWinners()
         {
             var winnersJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", PreviousWinnersKey);
             if (string.IsNullOrEmpty(winnersJson))
                 return [];
-
-            var winners = System.Text.Json.JsonSerializer.Deserialize<List<string>>(winnersJson);
-            return [..winners ?? []];
+    
+            var winners = System.Text.Json.JsonSerializer.Deserialize<List<Winner>>(winnersJson);
+            return winners ?? [];
         }
-
-        public async Task SaveWinner(string userId)
+    
+        public async Task SaveWinner(string userId, string name)
         {
             var winners = await LoadWinners();
-            winners.Add(userId);
-            var winnersJson = System.Text.Json.JsonSerializer.Serialize(winners.ToList());
+            winners.Add(new Winner { Id = userId, Name = name });
+            var winnersJson = System.Text.Json.JsonSerializer.Serialize(winners);
             await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", PreviousWinnersKey, winnersJson);
         }
 
