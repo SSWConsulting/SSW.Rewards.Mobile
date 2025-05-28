@@ -80,15 +80,11 @@ else
                                  Value="_excludeStaff"
                                  Label="Exclude staff"
                                  ValueChanged="(e) => _excludeStaff = e!"/>
-
-                    @if (_previousWinners.Count > 0)
-                    {
-                        <MudCheckBox T="bool"
-                                     Color="Color.Primary"
-                                     Value="_excludePreviousWinners"
-                                     Label="Exclude previous winners"
-                                     ValueChanged="(e) => _excludePreviousWinners = e!"/>
-                    }
+                    <MudCheckBox T="bool"
+                                 Color="Color.Primary"
+                                 Value="_excludePreviousWinners"
+                                 Label="Exclude previous winners"
+                                 ValueChanged="(e) => _excludePreviousWinners = e!"/>
                 </MudPaper>
             </MudItem>
 
@@ -105,10 +101,8 @@ else
         </MudGrid>
     </MudPaper>
     
-    <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
-    
     <MudGrid>
-        <MudItem xs="12" sm="@(_previousWinners.Count > 0 ? 8 : 12)">
+        <MudItem xs="12" sm="8">
             <MudGrid Justify="Justify.Center">
                 <MudItem>
                     <MudText Typo="Typo.h5" Align="Align.Center">Eligible Players</MudText>
@@ -167,13 +161,13 @@ else
                 </MudGrid>    
             }
         </MudItem>
-        
-        @if (_previousWinners.Count > 0)
-        {
-            <MudItem xs="12" sm="4">
-                <MudPaper Elevation="3" Class="pa-4 ml-2 mb-2">
-                    <div class="d-flex justify-space-between align-center mb-2">
-                        <MudText Typo="Typo.h5">Previous Winners</MudText>
+
+        <MudItem xs="12" sm="4">
+            <MudPaper Elevation="3" Class="pa-4 ml-2 mb-2">
+                <div class="d-flex justify-space-between align-center mb-2">
+                    <MudText Typo="Typo.h5">Previous Winners</MudText>
+                    @if (_previousWinners.Count > 0)
+                    {
                         <MudButton
                             StartIcon="@MudBlazor.Icons.Material.Filled.Clear"
                             Color="Color.Error"
@@ -182,20 +176,29 @@ else
                             OnClick="@(async () => await ClearPreviousWinners())">
                             Clear
                         </MudButton>
-                    </div>
-                    <MudDivider Class="mb-3"/>
-                    <div class="d-flex flex-column gap-2">
-                        @foreach (var winner in _previousWinners)
+                    }
+                </div>
+                <MudDivider Class="mb-3"/>
+                <div class="d-flex flex-column gap-2">
+                    @if (_previousWinners.Count > 0)
+                    {
+                        foreach (var winner in _previousWinners)
                         {
                             <div class="d-flex align-center pa-1 gap-2">
-                                <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Color="Color.Success" Size="Size.Small" />
+                                <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Color="Color.Success" Size="Size.Small"/>
                                 <MudText Typo="Typo.body1" Color="Color.Success">@winner.Name</MudText>
                             </div>
                         }
-                    </div>
-                </MudPaper>
-            </MudItem>
-        }
+                    } else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Info" Class="pa-2 text-center">
+                            No previous winners recorded
+                        </MudText>
+                    }
+                </div>
+            </MudPaper>
+        </MudItem>
+
     </MudGrid>
 }
 
@@ -232,15 +235,6 @@ else
         var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
 
         return achievements.Achievements;
-    }
-    
-    private async Task<IEnumerable<RewardDto>> SearchRewards(string value, CancellationToken cancellationToken)
-    {
-        var rewards = await RewardService.SearchRewards(value, cancellationToken);
-
-        // Only show hidden 1-point rewards that were designed for prize draws
-        // TODO: improve the handling of assigning and filtering prize draw items
-        return rewards.Rewards.Where(r => r.Cost == 1);
     }
 
     private async Task LoadEligiblePlayers()
@@ -323,7 +317,7 @@ else
     
         if (result.status == RewardStatus.Claimed)
         {
-            if (_excludePreviousWinners && winner.UserId != null)
+            if (winner.UserId != null)
             {
                 await _storage.SaveWinner(winner.UserId.ToString(), winner.Name ?? string.Empty);
                 await LoadPreviousWinners();
