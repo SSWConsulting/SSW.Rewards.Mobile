@@ -65,7 +65,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 
             try
             {
-                 _logger.LogDebug("Sending notification to token {DeviceToken} for User ID {UserId}", deviceToken, userId);
+                 _logger.LogDebug("Sending notification to token {DeviceToken} for User ID {UserId}", deviceToken.Token, userId);
 
                 await SendNotificationToDevice(message, cancellationToken);
 
