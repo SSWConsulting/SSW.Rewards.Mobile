@@ -37,7 +37,8 @@ public class FirebaseNotificationService : IFirebaseNotificationService
             .Where(dt => dt.User.Id == userId && !string.IsNullOrEmpty(dt.Token))
             .OrderByDescending(dt => dt.LastTimeUpdated)
             .Select(dt => new { dt.Id, dt.Token })
-            .Distinct()
+            .GroupBy(dt => dt.Token)
+            .Select(g => g.First())
             .ToListAsync(cancellationToken);
 
         if (!deviceTokens.Any())
