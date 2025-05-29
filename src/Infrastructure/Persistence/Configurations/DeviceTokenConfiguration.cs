@@ -8,6 +8,8 @@ public class DeviceTokenConfiguration : IEntityTypeConfiguration<DeviceToken>
 {
     public void Configure(EntityTypeBuilder<DeviceToken> builder)
     {
-        builder.HasOne<User>(dt => dt.User);
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasOne(dt => dt.User);
     }
 }
