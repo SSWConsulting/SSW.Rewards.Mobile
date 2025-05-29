@@ -41,11 +41,11 @@ public class LeaderboardController : ApiControllerBase
 
     [HttpGet]
     public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers(
-        int? achievementId = null,
-        bool filterStaff = false, 
-        int top = 0,
-        DateTime? dateFrom = null,
-        DateTime? dateTo = null)
+        [FromQuery] int? achievementId = null,
+        [FromQuery] bool filterStaff = false,
+        [FromQuery] int top = 0,
+        [FromQuery] DateTime? dateFrom = null,
+        [FromQuery] DateTime? dateTo = null)
     {
         var request = new GetEligibleUsers
         {
@@ -56,7 +56,6 @@ public class LeaderboardController : ApiControllerBase
             DateTo = dateTo
         };
 
-        var result = await Mediator.Send(request);
-        return Ok(result);
+        return Ok(await Mediator.Send(request));
     }
 }
