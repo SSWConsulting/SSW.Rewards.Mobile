@@ -7,16 +7,17 @@
 @using SSW.Rewards.Shared.DTOs.PrizeDraw
 @using SSW.Rewards.Shared.DTOs.Rewards
 @using SSW.Rewards.ApiClient.Services
+@using SSW.Rewards.Application.Common.Interfaces
 
 @attribute [Authorize (Roles = "Admin")]
 
 @inject IAchievementService AchievementService
 @inject IPrizeDrawService PrizeDrawService
-@inject IRewardService RewardService
 @inject IRewardAdminService RewardAdminService
 @inject ISnackbar SnackBar
 @inject IJSRuntime JsRuntime
 @inject IDialogService DialogService
+@inject IDateTime DateTimeService
 
 <MudText Typo="Typo.h2">Prize Draw</MudText>
 
@@ -366,9 +367,9 @@ else
         SnackBar.Add("Previous winners cleared!", Severity.Success);
     }
 
-    private static (DateTime? from, DateTime? to) GetDateRangeForFilter(LeaderboardFilter filter)
+    private (DateTime? from, DateTime? to) GetDateRangeForFilter(LeaderboardFilter filter)
     {
-        var now = DateTime.Now; // Client's local timezone
+        var now = DateTimeService.Now; // Client's local timezone
 
         var (localFrom, localTo) = filter switch
         {
