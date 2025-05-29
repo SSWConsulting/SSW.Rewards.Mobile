@@ -22,7 +22,25 @@ public class PrizeDrawService : IPrizeDrawService
 
     public async Task<EligibleUsersViewModel> GetEligibleUsers(GetEligibleUsersFilter filter, CancellationToken cancellationToken)
     {
-        var result = await _httpClient.GetAsync($"{_baseRoute}GetEligibleUsers?filter={filter.Filter}&achievementId={filter.AchievementId}&filterStaff={filter.FilterStaff}&top={filter.Top}", cancellationToken);
+        var queryParams = new List<string>();
+        
+        if (filter.AchievementId.HasValue)
+            queryParams.Add($"achievementId={filter.AchievementId}");
+            
+        if (filter.FilterStaff.HasValue)
+            queryParams.Add($"filterStaff={filter.FilterStaff.Value}");
+            
+        if (filter.Top > 0)
+            queryParams.Add($"top={filter.Top}");
+            
+        if (filter.DateFrom.HasValue)
+            queryParams.Add($"dateFrom={filter.DateFrom.Value:yyyy-MM-ddTHH:mm:ss.fffZ}");
+            
+        if (filter.DateTo.HasValue)
+            queryParams.Add($"dateTo={filter.DateTo.Value:yyyy-MM-ddTHH:mm:ss.fffZ}");
+
+        var queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
+        var result = await _httpClient.GetAsync($"{_baseRoute}GetEligibleUsers{queryString}", cancellationToken);
 
         if (result.IsSuccessStatusCode)
         {

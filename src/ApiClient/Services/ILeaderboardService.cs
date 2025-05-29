@@ -8,7 +8,6 @@ public interface ILeaderboardService
 {
     Task<LeaderboardViewModel> GetLeaderboard(CancellationToken cancellationToken);
     Task<LeaderboardViewModel> GetPaginatedLeaderboard(int take, int skip, LeaderboardFilter currentPeriod, CancellationToken cancellationToken);
-    Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter, CancellationToken cancellationToken);
     Task<MobileLeaderboardViewModel> GetMobilePaginatedLeaderboard(int page, int pageSize, LeaderboardFilter currentPeriod, CancellationToken cancellationToken);
 }
 
@@ -62,24 +61,6 @@ public class LeaderboardService : ILeaderboardService
         var result = await _httpClient.GetAsync($"{_baseRoute}GetPaginated?skip={skip}&take={take}&currentPeriod={currentPeriod}", cancellationToken);
 
         if (result.IsSuccessStatusCode)
-        {
-            var response = await result.Content.ReadFromJsonAsync<LeaderboardViewModel>(cancellationToken: cancellationToken);
-
-            if (response is not null)
-            {
-                return response;
-            }
-        }
-
-        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get leaderboard: {responseContent}");
-    }
-
-    public async Task<LeaderboardViewModel> GetLeaderboard(LeaderboardFilter filter, CancellationToken cancellationToken)
-    {
-        var result = await _httpClient.GetAsync($"{_baseRoute}GetEligibleUsers?filter={filter}", cancellationToken);
-
-        if  (result.IsSuccessStatusCode)
         {
             var response = await result.Content.ReadFromJsonAsync<LeaderboardViewModel>(cancellationToken: cancellationToken);
 

@@ -243,10 +243,13 @@ else
         {
             _loading = true;
 
+            var (dateFrom, dateTo) = GetDateRangeForFilter(_filter);
+
             var filter = new GetEligibleUsersFilter
             {
                 AchievementId = _selectedAchievement?.Id,
-                Filter = _filter,
+                DateFrom = dateFrom,
+                DateTo = dateTo,
                 FilterStaff = _excludeStaff,
                 Top = _top,
             };
@@ -361,6 +364,32 @@ else
         await _storage.ClearWinners();
         _previousWinners.Clear();
         SnackBar.Add("Previous winners cleared!", Severity.Success);
+    }
+
+    private static (DateTime? from, DateTime? to) GetDateRangeForFilter(LeaderboardFilter filter)
+    {
+        var now = DateTime.Now; // Client's local timezone
+
+        var (localFrom, localTo) = filter switch
+        {
+            LeaderboardFilter.Today => (now.Date, now.Date.AddDays(1).AddTicks(-1)),
+            LeaderboardFilter.ThisWeek => (now.Date.AddDays(-(int)now.DayOfWeek),
+                now.Date.AddDays(7 - (int)now.DayOfWeek).AddTicks(-1)),
+            LeaderboardFilter.ThisMonth => (new DateTime(now.Year, now.Month, 1),
+                new DateTime(now.Year, now.Month, 1).AddMonths(1).AddTicks(-1)),
+            LeaderboardFilter.ThisYear => (new DateTime(now.Year, 1, 1),
+                new DateTime(now.Year + 1, 1, 1).AddTicks(-1)),
+            LeaderboardFilter.Forever => (null, null),
+            _ => ((DateTime?)null, (DateTime?)null)
+        };
+
+        // Convert local times to UTC for server processing
+        if (localFrom.HasValue && localTo.HasValue)
+        {
+            return (localFrom.Value.ToUniversalTime(), localTo.Value.ToUniversalTime());
+        }
+
+        return (null, null);
     }
 
     private class Winner
