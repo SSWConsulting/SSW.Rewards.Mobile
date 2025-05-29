@@ -40,7 +40,7 @@ public class UpsertSkillCommandHandler : IRequestHandler<UpsertSkillCommand, int
             {
                 Name = request.Skill,
                 ImageUri = imageUri?.AbsoluteUri,
-                CreatedUtc = _dateTime.Now
+                CreatedUtc = _dateTime.UtcNow
             };
 
             _context.Skills.Add(found);

@@ -39,7 +39,7 @@ public class LeaderboardController : ApiControllerBase
         }));
     }
 
-    [HttpGet("GetEligibleUsers")]
+    [HttpGet]
     public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers(
         int? achievementId = null,
         bool filterStaff = false, 

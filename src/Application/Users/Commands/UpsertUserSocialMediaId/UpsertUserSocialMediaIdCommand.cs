@@ -52,7 +52,7 @@ public sealed class UpsertSocialMediaUserIdHandler : IRequestHandler<UpsertUserS
                 SocialMediaPlatformId = platform.Id,
                 UserId                = currentUserId,
                 SocialMediaUserId     = socialMediaUrl,
-                CreatedUtc            = _dateTimeService.Now
+                CreatedUtc            = _dateTimeService.UtcNow
             };
             _context.UserSocialMediaIds.Add(record);
         }
