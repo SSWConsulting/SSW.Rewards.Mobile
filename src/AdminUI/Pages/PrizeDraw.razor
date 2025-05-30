@@ -416,7 +416,6 @@
     private void ShowError(string message)
     {
         SnackBar.Add(message, Severity.Error);
-        StateHasChanged();
     }
 
     private static LeaderboardFilter[] GetOrderedFilters() =>
