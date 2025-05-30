@@ -373,12 +373,12 @@
             }
             else
             {
-                SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
+                ShowError($"Could not claim reward!\n\n{result.status}");
             }
         }
         catch (Exception)
         {
-            SnackBar.Add("Failed to claim prize. Please try again.", Severity.Error);
+            ShowError("Failed to claim prize. Please try again.");
         }
     }
 
