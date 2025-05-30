@@ -21,7 +21,6 @@
 
 <MudText Typo="Typo.h2">Prize Draw</MudText>
 
-
 <MudPaper Elevation="2" Class="pa-4 mb-4">
     <MudGrid Spacing="2">
         <MudItem xs="12" sm="6" md="4">
@@ -132,22 +131,6 @@
                 </MudItem>
             </MudGrid>
 
-            @if (_isDrawingPrize)
-            {
-                <MudDivider DividerType="DividerType.Middle" Class="my-12"/>
-
-                <MudGrid Justify="Justify.Center">
-                    <MudItem>
-                        <MudText Align="Align.Center">
-                            Shuffling things around...
-                        </MudText>
-                        <MudText Align="Align.Center">
-                            <MudProgressCircular Color="Color.Success" Indeterminate="true"/>
-                        </MudText>
-                    </MudItem>
-                </MudGrid>
-            }
-
             @if (_players is { Count: > 0 } && !_isDrawingPrize)
             {
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
@@ -209,7 +192,6 @@
     </MudItem>
 
 </MudGrid>
-
 
 @code {
     private readonly Color[] _colors = { Color.Primary, Color.Secondary, Color.Tertiary, Color.Info, Color.Warning, Color.Success, Color.Error };
@@ -285,23 +267,63 @@
 
     private async Task DrawPrizeWinner()
     {
-        _isDrawingPrize = true;
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(PrizeDrawSuspenseDelay);
+        var loadingDialog = ShowLoadingDialog();
+        
+        try
+        {
+            _isDrawingPrize = true;
+            await InvokeAsync(StateHasChanged);
+            await Task.Delay(PrizeDrawSuspenseDelay);
 
+            var winner = SelectRandomWinner();
+            if (winner == null)
+            {
+                SnackBar.Add("No eligible players remaining!", Severity.Warning);
+                return;
+            }
+
+            await ShowWinnerDialog(winner);
+        }
+        finally
+        {
+            loadingDialog.Close();
+            _isDrawingPrize = false;
+        }
+    }
+
+    private IDialogReference ShowLoadingDialog()
+    {
+        var loadingParameters = new DialogParameters
+        {
+            ["LoadingText"] = "Shuffling things around..."
+        };
+
+        var loadingOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = false,
+            DisableBackdropClick = true,
+            NoHeader = true,
+            MaxWidth = MaxWidth.Small
+        };
+
+        return DialogService.Show<LoadingDialog>("", loadingParameters, loadingOptions);
+    }
+
+    private EligibleUserDto? SelectRandomWinner()
+    {
         var eligiblePlayers = _players?.ToList() ?? [];
-
+        
         if (!eligiblePlayers.Any())
         {
-            SnackBar.Add("No eligible players remaining!", Severity.Warning);
-            _isDrawingPrize = false;
-            return;
+            return null;
         }
 
         Random rand = new();
-        var winner = eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
-        _isDrawingPrize = false;
+        return eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
+    }
 
+    private async Task ShowWinnerDialog(EligibleUserDto winner)
+    {
         var parameters = new DialogParameters
         {
             ["Winner"] = winner,
@@ -319,8 +341,7 @@
             FullWidth = true
         };
 
-        var dialog = await DialogService.ShowAsync<WinnerDialog>("Prize Winner!", parameters, options);
-        await dialog.Result;
+        await DialogService.ShowAsync<WinnerDialog>("Prize Winner!", parameters, options);
     }
 
     private async Task ClaimPrizeForWinner(EligibleUserDto winner, RewardDto reward)
@@ -431,5 +452,4 @@
             await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", PreviousWinnersKey);
         }
     }
-
 }
