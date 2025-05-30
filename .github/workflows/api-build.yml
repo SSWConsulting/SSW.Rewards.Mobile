@@ -13,16 +13,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Update appsettings.json with Firebase credentials
-        shell: pwsh
-        run: |
-          $settingsPath = "src/WebAPI/appsettings.json"
-          $settings = Get-Content $settingsPath | ConvertFrom-Json
-          $firebaseCredentials = '${{ secrets.FIREBASE_CREDENTIALS }}' | ConvertFrom-Json
-          $settings.Firebase.FirebaseCredentials = $firebaseCredentials
-          $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
-
+          
       - name: Install Workload
         run: |
           dotnet nuget locals all --clear
