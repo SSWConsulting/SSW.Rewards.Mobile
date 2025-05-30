@@ -21,6 +21,9 @@ public class Program
 
         builder.Services.AddTransient<IDateTime, DateTimeService>();
 
+        builder.Services.AddScoped<IPrizeDrawManager, PrizeDrawManager>();
+        builder.Services.AddScoped<IWinnerStorageService, WinnerStorageService>();
+
         string? identityUrl = builder.Configuration["Local:Authority"];
         if (identityUrl == null)
         {
