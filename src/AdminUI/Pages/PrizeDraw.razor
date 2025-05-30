@@ -24,22 +24,6 @@
 <MudPaper Elevation="2" Class="pa-4 mb-4">
     <MudGrid Spacing="2">
         <MudItem xs="12" sm="6" md="4">
-            <MudAutocomplete
-                T="AchievementDto"
-                @bind-Value="@_selectedAchievement"
-                Variant="Variant.Outlined"
-                Margin="Margin.Dense"
-                Dense="true"
-                Label="Required Achievement"
-                AnchorOrigin="Origin.BottomCenter"
-                SearchFuncWithCancel="@SearchAchievements"
-                ShowProgressIndicator="true"
-                ToStringFunc="@GetAchievementName"
-                FullWidth="true"
-            />
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="4">
             <MudSelect
                 T="LeaderboardFilter"
                 @bind-Value="@_filter"
@@ -49,20 +33,38 @@
                 Variant="Variant.Outlined"
                 AnchorOrigin="Origin.BottomCenter"
                 FullWidth="true">
-                @foreach (var when in Enum.GetValues<LeaderboardFilter>())
+                @foreach (var filter in GetOrderedFilters())
                 {
-                    <MudSelectItem T="LeaderboardFilter" Value="@when">@when.ToString()</MudSelectItem>
+                    <MudSelectItem T="LeaderboardFilter" Value="@filter">@GetFilterDisplayName(filter)</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4">
+            <MudAutocomplete
+                T="AchievementDto"
+                @bind-Value="@_selectedAchievement"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                Dense="true"
+                Label="Required Achievement (Optional)"
+                AnchorOrigin="Origin.BottomCenter"
+                SearchFuncWithCancel="@SearchAchievements"
+                ShowProgressIndicator="true"
+                ToStringFunc="@GetAchievementName"
+                FullWidth="true"
+                Clearable="true"
+                ResetValueOnEmptyText="true"/>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
             <MudTextField
-                Label="Leaderboard Top X"
+                Label="Leaderboard Top X (Optional)"
                 Variant="Variant.Outlined"
                 Margin="Margin.Dense"
                 Dense="true"
                 Type="InputType.Number"
+                Clearable="true"
                 @bind-Value="_top"
                 FullWidth="true"/>
         </MudItem>
@@ -198,13 +200,13 @@
     private SessionStorage _storage;
 
     private static int PrizeDrawSuspenseDelay => 2500;
-    private bool _loading = false;
-    private bool _isDrawingPrize = false;
+    private bool _loading;
+    private bool _isDrawingPrize;
 
     private List<EligibleUserDto>? _players = [];
     AchievementDto? _selectedAchievement;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
-    private int _top;
+    private int? _top;
     private bool _excludeStaff = true;
     private List<Winner> _previousWinners = [];
     private bool _excludePreviousWinners = true;
@@ -451,5 +453,30 @@
         {
             await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", PreviousWinnersKey);
         }
+    }
+
+    private static LeaderboardFilter[] GetOrderedFilters()
+    {
+        return
+        [
+            LeaderboardFilter.Today,
+            LeaderboardFilter.ThisWeek,
+            LeaderboardFilter.ThisMonth,
+            LeaderboardFilter.ThisYear,
+            LeaderboardFilter.Forever
+        ];
+    }
+
+    private static string GetFilterDisplayName(LeaderboardFilter filter)
+    {
+        return filter switch
+        {
+            LeaderboardFilter.Today => "Today",
+            LeaderboardFilter.ThisWeek => "This Week",
+            LeaderboardFilter.ThisMonth => "This Month",
+            LeaderboardFilter.ThisYear => "This Year",
+            LeaderboardFilter.Forever => "All Time",
+            _ => filter.ToString()
+        };
     }
 }

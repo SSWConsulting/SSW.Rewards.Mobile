@@ -7,5 +7,5 @@ public class GetEligibleUsersFilter
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
     public bool? FilterStaff { get; set; }
-    public int Top { get; set; }
+    public int? Top { get; set; }
 }
