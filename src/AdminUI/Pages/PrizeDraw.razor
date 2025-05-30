@@ -104,23 +104,24 @@
 
 <MudGrid>
     <MudItem xs="12" sm="8">
+
+        <MudGrid Justify="Justify.Center">
+            <MudItem>
+                <MudText Typo="Typo.h5" Align="Align.Center">Eligible Players</MudText>
+                <MudText Align="Align.Center">@EligiblePlayersCountText</MudText>
+            </MudItem>
+        </MudGrid>
+
         @if (_loading)
         {
             <MudGrid Justify="Justify.Center">
                 <MudItem>
-                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/>
                 </MudItem>
             </MudGrid>
         }
         else
         {
-            <MudGrid Justify="Justify.Center">
-                <MudItem>
-                    <MudText Typo="Typo.h5" Align="Align.Center">Eligible Players</MudText>
-                    <MudText Align="Align.Center">@EligiblePlayersCountText</MudText>
-                </MudItem>
-            </MudGrid>
-
             <MudGrid Spacing="2">
                 <MudItem>
                     <MudChipSet MultiSelection="false">
