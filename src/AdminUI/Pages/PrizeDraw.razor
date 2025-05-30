@@ -124,7 +124,7 @@
         {
             <MudGrid Spacing="2">
                 <MudItem>
-                    <MudChipSet MultiSelection="false">
+                    <MudChipSet MultiSelection="false" Filter="false" ReadOnly="true">
                         @if (_players != null)
                         {
                             @foreach (var player in _players.Select((p, index) => new { p, index }))
