@@ -40,15 +40,22 @@ public class LeaderboardController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromQuery] int achievementId, LeaderboardFilter filter, bool filterStaff, int top)
+    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers(
+        [FromQuery] int? achievementId = null,
+        [FromQuery] bool filterStaff = false,
+        [FromQuery] int top = 0,
+        [FromQuery] DateTime? dateFrom = null,
+        [FromQuery] DateTime? dateTo = null)
     {
-        var getEligibleUsers = new GetEligibleUsers
+        var request = new GetEligibleUsers
         {
             AchievementId = achievementId,
-            Filter = filter,
             FilterStaff = filterStaff,
-            Top = top
+            Top = top,
+            DateFrom = dateFrom,
+            DateTo = dateTo
         };
-        return Ok(await Mediator.Send(getEligibleUsers));
+
+        return Ok(await Mediator.Send(request));
     }
 }

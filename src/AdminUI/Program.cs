@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
+using SSW.Rewards.Admin.UI.Services;
 using SSW.Rewards.ApiClient;
+using SSW.Rewards.Application.Common.Interfaces;
 
 namespace SSW.Rewards.Admin.UI;
 
@@ -16,6 +18,8 @@ public class Program
 
         // MessageHandler for adding the JWT to outbound requests to the API
         builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
+
+        builder.Services.AddTransient<IDateTime, DateTimeService>();
 
         string? identityUrl = builder.Configuration["Local:Authority"];
         if (identityUrl == null)

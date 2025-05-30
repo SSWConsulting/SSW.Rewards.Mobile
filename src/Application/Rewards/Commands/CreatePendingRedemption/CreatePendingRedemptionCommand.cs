@@ -96,7 +96,7 @@ public class CreatePendingRedemptionCommandHandler : IRequestHandler<CreatePendi
                 user.PendingRedemptions.Add(new PendingRedemption
                 {
                     Code = code,
-                    ClaimedAt = _dateTime.Now,
+                    ClaimedAt = _dateTime.UtcNow,
                     RewardId = reward.Id,
                     UserId = user.Id
                 });

@@ -55,6 +55,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+      <ProjectReference Include="..\Application\SSW.Rewards.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
