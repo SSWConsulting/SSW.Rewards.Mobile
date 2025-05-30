@@ -56,6 +56,11 @@ resource graphClientIdSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' exis
   name: 'GraphClientId'
 }
 
+resource firebaseApiCredentialsJsonSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' existing = {
+  parent: kv
+  name: 'FirebaseApiCredentialsJson'
+}
+
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: 'app-${projectName}-api-${environment}'
   location: location
@@ -177,6 +182,10 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'AzureMaps__Key'
           value: '@Microsoft.KeyVault(SecretUri=${mapsApiKeySecretUriWithVersion})'
+        }
+        {
+          name: 'Firebase__FirebaseCredentials'
+          value: '@Microsoft.KeyVault(SecretUri=${firebaseApiCredentialsJsonSecret.properties.secretUri})'
         }
       ]
     }
