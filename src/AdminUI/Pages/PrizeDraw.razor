@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.Admin.UI.Models
+@using SSW.Rewards.Admin.UI.Services
 @using SSW.Rewards.Enums
 @using SSW.Rewards.Shared.DTOs.Achievements
 @using SSW.Rewards.Shared.DTOs.PrizeDraw
@@ -12,10 +14,10 @@
 @attribute [Authorize(Roles = "Admin")]
 
 @inject IAchievementService AchievementService
-@inject IPrizeDrawService PrizeDrawService
+@inject IPrizeDrawManager PrizeDrawManager
 @inject IRewardAdminService RewardAdminService
+@inject IWinnerStorageService WinnerStorageService
 @inject ISnackbar SnackBar
-@inject IJSRuntime JsRuntime
 @inject IDialogService DialogService
 @inject IDateTime DateTimeService
 
@@ -58,12 +60,12 @@
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4">
-            <MudTextField
+            <MudNumericField
                 Label="Leaderboard Top X (Optional)"
                 Variant="Variant.Outlined"
                 Margin="Margin.Dense"
                 Dense="true"
-                Type="InputType.Number"
+                Min="1"
                 Clearable="true"
                 @bind-Value="_top"
                 FullWidth="true"/>
@@ -73,24 +75,27 @@
             <MudPaper Elevation="0" Class="d-flex flex-wrap gap-4">
                 <MudCheckBox T="bool"
                              Color="Color.Primary"
-                             Value="_excludeStaff"
-                             Label="Exclude staff"
-                             ValueChanged="(e) => _excludeStaff = e!"/>
+                             @bind-Value="_excludeStaff"
+                             Label="Exclude staff"/>
                 <MudCheckBox T="bool"
                              Color="Color.Primary"
-                             Value="_excludePreviousWinners"
-                             Label="Exclude previous winners"
-                             ValueChanged="(e) => _excludePreviousWinners = e!"/>
+                             @bind-Value="_excludePreviousWinners"
+                             Label="Exclude previous winners"/>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="4" Class="d-flex justify-end">
             <MudButton
-                OnClick="@(async () => await LoadEligiblePlayers())"
+                OnClick="@LoadEligiblePlayersAsync"
                 Variant="Variant.Filled"
                 StartIcon="@MudBlazor.Icons.Material.Filled.Search"
                 Size="Size.Medium"
-                Color="Color.Primary">
+                Color="Color.Primary"
+                Disabled="@_loading">
+                @if (_loading)
+                {
+                    <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true"/>
+                }
                 Get eligible winners
             </MudButton>
         </MudItem>
@@ -107,12 +112,19 @@
                 </MudItem>
             </MudGrid>
         }
+        else if (_errorMessage != null)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-4">
+                @_errorMessage
+                <MudButton Class="ml-2" Size="Size.Small" OnClick="ClearError">Dismiss</MudButton>
+            </MudAlert>
+        }
         else
         {
             <MudGrid Justify="Justify.Center">
                 <MudItem>
                     <MudText Typo="Typo.h5" Align="Align.Center">Eligible Players</MudText>
-                    <MudText Align="Align.Center">Total: @(_players?.Count ?? 0)</MudText>
+                    <MudText Align="Align.Center">@EligiblePlayersCountText</MudText>
                 </MudItem>
             </MudGrid>
 
@@ -133,25 +145,25 @@
                 </MudItem>
             </MudGrid>
 
-            @if (_players is { Count: > 0 } && !_isDrawingPrize)
+            @if (HasEligiblePlayers)
             {
                 <MudDivider DividerType="DividerType.Middle" Class="my-6"/>
 
                 <MudGrid Spacing="2" Justify="Justify.Center">
                     <MudItem>
                         <MudButton
-                            OnClick="DrawPrizeWinner"
+                            OnClick="DrawPrizeWinnerAsync"
                             Variant="Variant.Filled"
                             StartIcon="@MudBlazor.Icons.Material.Filled.Celebration"
                             Color="Color.Primary"
-                            Style="width: 400px; height: 60px;">
+                            Style="width: 400px; height: 60px;"
+                            Disabled="@(!CanDrawPrize)">
                             Draw prize winner!
                         </MudButton>
                     </MudItem>
                 </MudGrid>
             }
         }
-
     </MudItem>
 
     <MudItem xs="12" sm="4">
@@ -165,7 +177,7 @@
                         Color="Color.Error"
                         Size="Size.Small"
                         Variant="Variant.Outlined"
-                        OnClick="@(async () => await ClearPreviousWinners())">
+                        OnClick="@ClearPreviousWinnersAsync">
                         Clear
                     </MudButton>
                 }
@@ -177,8 +189,7 @@
                     foreach (var winner in _previousWinners)
                     {
                         <div class="d-flex align-center pa-1 gap-2">
-                            <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Color="Color.Success"
-                                     Size="Size.Small"/>
+                            <MudIcon Icon="@MudBlazor.Icons.Material.Filled.EmojiEvents" Color="Color.Success" Size="Size.Small"/>
                             <MudText Typo="Typo.body1" Color="Color.Success">@winner.Name</MudText>
                         </div>
                     }
@@ -192,51 +203,68 @@
             </div>
         </MudPaper>
     </MudItem>
-
 </MudGrid>
 
 @code {
-    private readonly Color[] _colors = { Color.Primary, Color.Secondary, Color.Tertiary, Color.Info, Color.Warning, Color.Success, Color.Error };
-    private SessionStorage _storage;
-
+    private readonly Color[] _colors = [Color.Primary, Color.Secondary, Color.Tertiary, Color.Info, Color.Warning, Color.Success, Color.Error];
+    
     private static int PrizeDrawSuspenseDelay => 2500;
     private bool _loading;
     private bool _isDrawingPrize;
+    private string? _errorMessage;
 
     private List<EligibleUserDto>? _players = [];
-    AchievementDto? _selectedAchievement;
+    private AchievementDto? _selectedAchievement;
     private LeaderboardFilter _filter = LeaderboardFilter.Today;
     private int? _top;
     private bool _excludeStaff = true;
     private List<Winner> _previousWinners = [];
     private bool _excludePreviousWinners = true;
 
+    private bool CanDrawPrize => _players is { Count: > 0 } && !_isDrawingPrize && !_loading;
+    private bool HasEligiblePlayers => _players?.Count > 0;
+    private string EligiblePlayersCountText => $"Total: {_players?.Count ?? 0}";
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _storage = new SessionStorage(JsRuntime);
-        await LoadPreviousWinners();
+        await LoadPreviousWinnersAsync();
     }
 
-    private async Task LoadPreviousWinners()
+    private async Task LoadPreviousWinnersAsync()
     {
-        _previousWinners = await _storage.LoadWinners();
+        try
+        {
+            _previousWinners = await WinnerStorageService.LoadWinnersAsync();
+        }
+        catch (Exception)
+        {
+            ShowError("Failed to load previous winners");
+        }
     }
 
     private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value, CancellationToken cancellationToken)
     {
-        var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
-
-        return achievements.Achievements;
+        try
+        {
+            var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
+            return achievements.Achievements;
+        }
+        catch (Exception)
+        {
+            ShowError("Failed to search achievements");
+            return [];
+        }
     }
 
-    private async Task LoadEligiblePlayers()
+    private async Task LoadEligiblePlayersAsync()
     {
         try
         {
             _loading = true;
+            _errorMessage = null;
 
-            var (dateFrom, dateTo) = GetDateRangeForFilter(_filter);
+            var (dateFrom, dateTo) = PrizeDrawManager.GetDateRangeForFilter(_filter, DateTimeService);
 
             var filter = new GetEligibleUsersFilter
             {
@@ -247,27 +275,23 @@
                 Top = _top,
             };
 
-            var eligibleUsersVm = await PrizeDrawService.GetEligibleUsers(filter, CancellationToken.None);
-            var eligiblePlayers = eligibleUsersVm.EligibleUsers.ToList();
-
-            if (_excludePreviousWinners)
-            {
-                var previousWinnerIds = _previousWinners.Select(w => w.Id).ToHashSet();
-                eligiblePlayers = eligiblePlayers
-                    .Where(p => !previousWinnerIds.Contains(p.UserId.ToString()))
-                    .ToList();
-            }
-
-            _players = eligiblePlayers;
-            _loading = false;
+            _players = await PrizeDrawManager.GetEligiblePlayersAsync(filter, _previousWinners, _excludePreviousWinners);
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
+        catch (Exception)
+        {
+            ShowError("Failed to load eligible players. Please try again.");
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 
-    private async Task DrawPrizeWinner()
+    private async Task DrawPrizeWinnerAsync()
     {
         var loadingDialog = ShowLoadingDialog();
         
@@ -277,7 +301,7 @@
             await InvokeAsync(StateHasChanged);
             await Task.Delay(PrizeDrawSuspenseDelay);
 
-            var winner = SelectRandomWinner();
+            var winner = PrizeDrawManager.SelectRandomWinner(_players?.ToList() ?? new List<EligibleUserDto>());
             if (winner == null)
             {
                 SnackBar.Add("No eligible players remaining!", Severity.Warning);
@@ -285,6 +309,10 @@
             }
 
             await ShowWinnerDialog(winner);
+        }
+        catch (Exception)
+        {
+            ShowError("Failed to draw prize winner. Please try again.");
         }
         finally
         {
@@ -311,28 +339,15 @@
         return DialogService.Show<LoadingDialog>("", loadingParameters, loadingOptions);
     }
 
-    private EligibleUserDto? SelectRandomWinner()
-    {
-        var eligiblePlayers = _players?.ToList() ?? [];
-        
-        if (!eligiblePlayers.Any())
-        {
-            return null;
-        }
-
-        Random rand = new();
-        return eligiblePlayers.ElementAt(rand.Next(eligiblePlayers.Count()));
-    }
-
     private async Task ShowWinnerDialog(EligibleUserDto winner)
     {
         var parameters = new DialogParameters
         {
             ["Winner"] = winner,
             ["OnClaimPrize"] = EventCallback.Factory.Create<(EligibleUserDto, RewardDto)>(this,
-                async args => await ClaimPrizeForWinner(args.Item1, args.Item2)),
+                async args => await ClaimPrizeForWinnerAsync(args.Item1, args.Item2)),
             ["OnSkipWinner"] = EventCallback.Factory.Create<EligibleUserDto>(this,
-                async user => await SkipWinner(user))
+                async user => await SkipWinnerAsync(user))
         };
 
         var options = new DialogOptions
@@ -346,36 +361,44 @@
         await DialogService.ShowAsync<WinnerDialog>("Prize Winner!", parameters, options);
     }
 
-    private async Task ClaimPrizeForWinner(EligibleUserDto winner, RewardDto reward)
+    private async Task ClaimPrizeForWinnerAsync(EligibleUserDto winner, RewardDto reward)
     {
-        var result = await RewardAdminService.ClaimForUser(reward.Code, winner.UserId ?? 0, false, CancellationToken.None);
-
-        if (result.status == RewardStatus.Claimed)
+        try
         {
-            if (winner.UserId != null)
+            var result = await RewardAdminService.ClaimForUser(reward.Code, winner.UserId ?? 0, false, CancellationToken.None);
+
+            if (result.status == RewardStatus.Claimed)
             {
-                await _storage.SaveWinner(winner.UserId.ToString(), winner.Name ?? string.Empty);
-                await LoadPreviousWinners();
+                if (winner.UserId != null)
+                {
+                    await WinnerStorageService.SaveWinnerAsync(winner.UserId.ToString(), winner.Name ?? string.Empty);
+                    await LoadPreviousWinnersAsync();
+                }
+
+                SnackBar.Add($"{reward.Name} successfully claimed for {winner.Name}!", Severity.Success, 
+                    options => { options.VisibleStateDuration = 10000; });
+
+                _players?.RemoveAll(p => p.UserId == winner.UserId);
             }
-
-            SnackBar.Add($"{reward.Name} successfully claimed for {winner.Name}!", Severity.Success, options => { options.VisibleStateDuration = 10000; });
-
-            _players?.RemoveAll(p => p.UserId == winner.UserId);
+            else
+            {
+                SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
+            }
         }
-        else
+        catch (Exception)
         {
-            SnackBar.Add($"Could not claim reward!\n\n{result.status}", Severity.Error);
+            SnackBar.Add("Failed to claim prize. Please try again.", Severity.Error);
         }
     }
 
-    private async Task SkipWinner(EligibleUserDto winner)
+    private async Task SkipWinnerAsync(EligibleUserDto winner)
     {
         _players?.RemoveAll(p => p.UserId == winner.UserId);
 
         // Only auto-draw another winner if there are still players left
         if (_players?.Count > 0)
         {
-            await DrawPrizeWinner();
+            await DrawPrizeWinnerAsync();
         }
         else
         {
@@ -383,93 +406,44 @@
         }
     }
 
-    private static string GetAchievementName(AchievementDto? achievement)
-    {
-        return achievement?.Name ?? string.Empty;
-    }
+    private static string GetAchievementName(AchievementDto? achievement) => achievement?.Name ?? string.Empty;
 
-    private async Task ClearPreviousWinners()
+    private async Task ClearPreviousWinnersAsync()
     {
-        await _storage.ClearWinners();
-        _previousWinners.Clear();
-        SnackBar.Add("Previous winners cleared!", Severity.Success);
-    }
-
-    private (DateTime? from, DateTime? to) GetDateRangeForFilter(LeaderboardFilter filter)
-    {
-        var now = DateTimeService.Now; // Client's local timezone
-
-        var (localFrom, localTo) = filter switch
+        try
         {
-            LeaderboardFilter.Today => (now.Date, now.Date.AddDays(1).AddTicks(-1)),
-            LeaderboardFilter.ThisWeek => (now.Date.AddDays(-(int)now.DayOfWeek),
-                now.Date.AddDays(7 - (int)now.DayOfWeek).AddTicks(-1)),
-            LeaderboardFilter.ThisMonth => (new DateTime(now.Year, now.Month, 1),
-                new DateTime(now.Year, now.Month, 1).AddMonths(1).AddTicks(-1)),
-            LeaderboardFilter.ThisYear => (new DateTime(now.Year, 1, 1),
-                new DateTime(now.Year + 1, 1, 1).AddTicks(-1)),
-            LeaderboardFilter.Forever => (null, null),
-            _ => ((DateTime?)null, (DateTime?)null)
-        };
-
-        // Convert local times to UTC for server processing
-        if (localFrom.HasValue && localTo.HasValue)
-        {
-            return (localFrom.Value.ToUniversalTime(), localTo.Value.ToUniversalTime());
+            await WinnerStorageService.ClearWinnersAsync();
+            _previousWinners.Clear();
+            SnackBar.Add("Previous winners cleared!", Severity.Success);
         }
-
-        return (null, null);
-    }
-
-    private class Winner
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-    }
-
-    private class SessionStorage(IJSRuntime jsRuntime)
-    {
-        private const string PreviousWinnersKey = "ssw-rewards-previous-winners";
-
-        public async Task<List<Winner>> LoadWinners()
+        catch (Exception)
         {
-            var winnersJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", PreviousWinnersKey);
-            if (string.IsNullOrEmpty(winnersJson))
-                return [];
-
-            var winners = System.Text.Json.JsonSerializer.Deserialize<List<Winner>>(winnersJson);
-            return winners ?? [];
-        }
-
-        public async Task SaveWinner(string userId, string name)
-        {
-            var winners = await LoadWinners();
-            winners.Add(new Winner { Id = userId, Name = name });
-            var winnersJson = System.Text.Json.JsonSerializer.Serialize(winners);
-            await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", PreviousWinnersKey, winnersJson);
-        }
-
-        public async Task ClearWinners()
-        {
-            await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", PreviousWinnersKey);
+            ShowError("Failed to clear previous winners");
         }
     }
 
-    private static LeaderboardFilter[] GetOrderedFilters()
+    private void ShowError(string message)
     {
-        return
-        [
-            LeaderboardFilter.Today,
-            LeaderboardFilter.ThisWeek,
-            LeaderboardFilter.ThisMonth,
-            LeaderboardFilter.ThisYear,
-            LeaderboardFilter.Forever
-        ];
+        _errorMessage = message;
+        StateHasChanged();
     }
 
-    private static string GetFilterDisplayName(LeaderboardFilter filter)
+    private void ClearError()
     {
-        return filter switch
+        _errorMessage = null;
+    }
+
+    private static LeaderboardFilter[] GetOrderedFilters() =>
+    [
+        LeaderboardFilter.Today,
+        LeaderboardFilter.ThisWeek,
+        LeaderboardFilter.ThisMonth,
+        LeaderboardFilter.ThisYear,
+        LeaderboardFilter.Forever
+    ];
+
+    private static string GetFilterDisplayName(LeaderboardFilter filter) =>
+        filter switch
         {
             LeaderboardFilter.Today => "Today",
             LeaderboardFilter.ThisWeek => "This Week",
@@ -478,5 +452,4 @@
             LeaderboardFilter.Forever => "All Time",
             _ => filter.ToString()
         };
-    }
 }
