@@ -112,13 +112,6 @@
                 </MudItem>
             </MudGrid>
         }
-        else if (_errorMessage != null)
-        {
-            <MudAlert Severity="Severity.Error" Class="mb-4">
-                @_errorMessage
-                <MudButton Class="ml-2" Size="Size.Small" OnClick="ClearError">Dismiss</MudButton>
-            </MudAlert>
-        }
         else
         {
             <MudGrid Justify="Justify.Center">
@@ -211,7 +204,6 @@
     private static int PrizeDrawSuspenseDelay => 2500;
     private bool _loading;
     private bool _isDrawingPrize;
-    private string? _errorMessage;
 
     private List<EligibleUserDto>? _players = [];
     private AchievementDto? _selectedAchievement;
@@ -262,7 +254,6 @@
         try
         {
             _loading = true;
-            _errorMessage = null;
 
             var (dateFrom, dateTo) = PrizeDrawManager.GetDateRangeForFilter(_filter, DateTimeService);
 
@@ -424,13 +415,8 @@
 
     private void ShowError(string message)
     {
-        _errorMessage = message;
+        SnackBar.Add(message, Severity.Error);
         StateHasChanged();
-    }
-
-    private void ClearError()
-    {
-        _errorMessage = null;
     }
 
     private static LeaderboardFilter[] GetOrderedFilters() =>
