@@ -99,6 +99,12 @@ public partial class LeaderboardViewModel : BaseViewModel
             return;
         }
 
+        if (leaderboardAction is LeaderboardAction.ManualRefresh)
+        {
+            // IsRefreshing is controlled by the RefreshView, we only need to set it to false here on manual refresh.
+            IsRefreshing = false;
+        }
+
         if (leaderboardAction is LeaderboardAction.LoadMore)
         {
             if (_limitReached || !_loaded)
@@ -174,12 +180,6 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         IsRunning = false;
         _loaded = true;
-
-        if (leaderboardAction is LeaderboardAction.ManualRefresh)
-        {
-            // IsRefreshing is controlled by the RefreshView, we only need to set it to false here on manual refresh.
-            IsRefreshing = false;
-        }
     }
 
     private void ScrollToCard(LeaderViewModel card)
