@@ -31,7 +31,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         new() { Name = "Week", Value = LeaderboardFilter.ThisWeek },
         new() { Name = "Month", Value = LeaderboardFilter.ThisMonth },
         new() { Name = "Year", Value = LeaderboardFilter.ThisYear },
-        new() { Name = "All Time", Value = LeaderboardFilter.Forever }
+        new() { Name = "All", Value = LeaderboardFilter.Forever }
     ];
 
     [ObservableProperty]
