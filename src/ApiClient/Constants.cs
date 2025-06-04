@@ -27,7 +27,7 @@ public class Constants
         RewardsQRCodePendingRewardPrefix
     ];
 
-    public static readonly string RewardsQRCodeUrlFormat = 
-        $"{RewardsQRCodeProtocol}://redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
+    public static readonly string RewardsQRCodeUrlFormat =
+        $"https://{RewardsWebDomain}/redeem?{RewardsQRCodeProtocolQueryName}={{0}}";
 
 }
