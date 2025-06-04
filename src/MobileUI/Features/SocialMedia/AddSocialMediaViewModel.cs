@@ -102,6 +102,8 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     [RelayCommand]
     private async Task Connect()
     {
+        InputText = InputText.Trim();
+
         var isValid = ValidateForm();
 
         if (!isValid) return;
@@ -129,6 +131,12 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         {
             CursorPosition = InputText.Length;
         });
+    }
+
+    [RelayCommand]
+    private void InputUnfocused()
+    {
+        InputText = InputText.Trim();
     }
     
     [RelayCommand]
