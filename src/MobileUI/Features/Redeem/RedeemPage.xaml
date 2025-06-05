@@ -20,32 +20,38 @@
                 <Border Grid.Row="0"
                         BackgroundColor="{StaticResource Background}"
                         StrokeThickness="0"
-                        StrokeShape="RoundRectangle 8"
-                        Padding="3">
-                    <Grid ColumnDefinitions="Auto, *, Auto">
-                        <Border Grid.Column="0"
+                        StrokeShape="RoundRectangle 8">
+                    <Grid ColumnDefinitions="*, Auto"
+                          ColumnSpacing="4">
+                        <Grid Grid.Column="0"
+                              ColumnDefinitions="Auto, *"
+                              ColumnSpacing="10"
+                              Margin="10,0,0,0">
+                            <Label
+                                Grid.Column="0"
+                                Text="&#xf002;"
+                                FontFamily="FA6Solid"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                FontSize="14"
+                                Style="{StaticResource LabelBold}"/>
+                            <controls:BorderlessEntry
+                                Grid.Column="1"
+                                Text="{Binding SearchText}"
+                                Placeholder="Filter..."
+                                HeightRequest="42"
+                                ClearButtonVisibility="WhileEditing"
+                                TextColor="White"/>
+                        </Grid>
+
+                        <Border Grid.Column="1"
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 6"
-                                HorizontalOptions="End"
-                                VerticalOptions="Fill">
-                            <Grid Padding="10" Background="{StaticResource ButtonBrush}">
-                                <Label
-                                    Text="&#xf290;"
-                                    FontFamily="FA6Solid"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    FontSize="14"
-                                    Style="{StaticResource LabelBold}"
-                                    InputTransparent="True" />
-                            </Grid>
-                        </Border>
-                        <Border Grid.Column="2"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 6"
-                                HorizontalOptions="End"
-                                VerticalOptions="Fill">
+                                HeightRequest="34"
+                                VerticalOptions="Center"
+                                Margin="0,0,4,0">
                             <HorizontalStackLayout Spacing="5"
-                                                   Padding="8"
+                                                   Padding="8,0"
                                                    Background="{StaticResource ButtonBrush}">
                                 <Label
                                     TextColor="{StaticResource Coin}"
@@ -84,7 +90,14 @@
                                         </MultiTrigger.Conditions>
                                         <Setter Property="IsVisible" Value="False" />
                                     </MultiTrigger>
+                                    <!-- Hide carousel when searching -->
+                                    <DataTrigger TargetType="Grid"
+                                                 Binding="{Binding IsSearching}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
                                 </Grid.Triggers>
+                                <!-- Rest of your carousel content -->
                                 <CarouselView Grid.Row="0"
                                               x:Name="Carousel"
                                               HeightRequest="400"

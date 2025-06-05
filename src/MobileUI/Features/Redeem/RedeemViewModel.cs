@@ -16,9 +16,10 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IAddressService _addressService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private bool _isLoaded;
-    private IDispatcherTimer _timer;
-    
+    private readonly IDispatcherTimer _timer;
     private const int AutoScrollInterval = 6;
+    private const int DebounceInterval = 300;
+    private CancellationTokenSource _searchCancellationTokenSource;
 
     public ObservableRangeCollection<Reward> Rewards { get; set; } = [];
     public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
@@ -31,6 +32,14 @@ public partial class RedeemViewModel : BaseViewModel
     
     [ObservableProperty]
     private int _carouselPosition;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
+    private bool _isSearching;
+
+    private readonly ObservableRangeCollection<Reward> _allRewards = [];
 
     public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
@@ -45,6 +54,28 @@ public partial class RedeemViewModel : BaseViewModel
         _timer = Application.Current.Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
     }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        // Cancel any existing search
+        _searchCancellationTokenSource?.Cancel();
+        _searchCancellationTokenSource = new CancellationTokenSource();
+
+        // Debounce the search
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(DebounceInterval, _searchCancellationTokenSource.Token);
+                await MainThread.InvokeOnMainThreadAsync(FilterRewards);
+            }
+            catch (TaskCanceledException)
+            {
+                // Search was canceled, ignore
+            }
+        });
+    }
+
 
     public void OnDisappearing()
     {
@@ -123,7 +154,8 @@ public partial class RedeemViewModel : BaseViewModel
             }
         }
 
-        Rewards.ReplaceRange(rewardsList);
+        _allRewards.ReplaceRange(rewardsList);
+        FilterRewards();
         CarouselRewards.ReplaceRange(carouselRewardsList);
 
         IsBusy = false;
@@ -182,5 +214,45 @@ public partial class RedeemViewModel : BaseViewModel
             };
             await MopupService.Instance.PushAsync(popup);
         }
+    }
+    
+    private void FilterRewards()
+    {
+        IsSearching = !string.IsNullOrWhiteSpace(SearchText);
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            // Reset to show all rewards
+            if (Rewards.Count != _allRewards.Count)
+            {
+                Rewards.ReplaceRange(_allRewards);
+            }
+            return;
+        }
+
+        var searchTerms = SearchText.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        var filtered = _allRewards.Where(reward =>
+        {
+            var name = reward.Name?.ToLowerInvariant() ?? string.Empty;
+            var description = reward.Description?.ToLowerInvariant() ?? string.Empty;
+            
+            return searchTerms.All(term => name.Contains(term) || description.Contains(term));
+        });
+
+        Rewards.ReplaceRange(filtered);
+    }
+
+    [RelayCommand]
+    private void Search()
+    {
+        FilterRewards();
+    }
+
+    [RelayCommand]
+    private void ClearSearch()
+    {
+        SearchText = string.Empty;
+        FilterRewards();
     }
 }
