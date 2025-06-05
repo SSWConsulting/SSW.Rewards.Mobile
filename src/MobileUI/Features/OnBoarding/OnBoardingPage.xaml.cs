@@ -13,12 +13,6 @@ public partial class OnBoardingPage
         BindingContext = _viewModel;
     }
 
-    protected override bool OnBackButtonPressed()
-    {
-        _viewModel.ClosePageCommand.ExecuteAsync(null);
-        return true;
-    }
-
     protected override void OnAppearing()
     {
         base.OnAppearing();
