@@ -6,6 +6,7 @@ using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.PopupPages;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
 using IUserService = SSW.Rewards.Mobile.Services.IUserService;
+using System.Reactive.Subjects;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -17,9 +18,11 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private bool _isLoaded;
     private readonly IDispatcherTimer _timer;
+    private readonly ObservableRangeCollection<Reward> _allRewards = [];
+    private readonly Subject<string> _searchSubject = new();
+
     private const int AutoScrollInterval = 6;
     private const int DebounceInterval = 300;
-    private CancellationTokenSource _searchCancellationTokenSource;
 
     public ObservableRangeCollection<Reward> Rewards { get; set; } = [];
     public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
@@ -39,8 +42,6 @@ public partial class RedeemViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isSearching;
 
-    private readonly ObservableRangeCollection<Reward> _allRewards = [];
-
     public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         Title = "Rewards";
@@ -53,29 +54,19 @@ public partial class RedeemViewModel : BaseViewModel
         
         _timer = Application.Current.Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
+        
+        // Set up reactive search with debouncing
+        _searchSubject
+            .DistinctUntilChanged()
+            .Throttle(TimeSpan.FromMilliseconds(DebounceInterval))
+            .ObserveOn(SynchronizationContext.Current)
+            .Subscribe(_ => FilterRewards());
     }
 
     partial void OnSearchTextChanged(string value)
     {
-        // Cancel any existing search
-        _searchCancellationTokenSource?.Cancel();
-        _searchCancellationTokenSource = new CancellationTokenSource();
-
-        // Debounce the search
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await Task.Delay(DebounceInterval, _searchCancellationTokenSource.Token);
-                await MainThread.InvokeOnMainThreadAsync(FilterRewards);
-            }
-            catch (TaskCanceledException)
-            {
-                // Search was canceled, ignore
-            }
-        });
+        _searchSubject.OnNext(value);
     }
-
 
     public void OnDisappearing()
     {
