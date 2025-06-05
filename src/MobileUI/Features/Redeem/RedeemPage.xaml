@@ -38,7 +38,7 @@
                             <controls:BorderlessEntry
                                 Grid.Column="1"
                                 Text="{Binding SearchText}"
-                                Placeholder="Filter..."
+                                Placeholder="Search..."
                                 HeightRequest="42"
                                 ClearButtonVisibility="WhileEditing"
                                 TextColor="White"/>
