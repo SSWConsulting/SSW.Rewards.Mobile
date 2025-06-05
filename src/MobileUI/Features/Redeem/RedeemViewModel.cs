@@ -233,17 +233,4 @@ public partial class RedeemViewModel : BaseViewModel
 
         Rewards.ReplaceRange(filtered);
     }
-
-    [RelayCommand]
-    private void Search()
-    {
-        FilterRewards();
-    }
-
-    [RelayCommand]
-    private void ClearSearch()
-    {
-        SearchText = string.Empty;
-        FilterRewards();
-    }
 }
