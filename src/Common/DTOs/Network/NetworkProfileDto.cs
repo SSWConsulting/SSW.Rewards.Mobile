@@ -19,7 +19,7 @@ public class NetworkProfileDto
     public bool ScannedMe { get; set; }
     public int Value { get; set; } = 0;
 
-    public static bool AreIndentical(NetworkProfileDto? a, NetworkProfileDto? b)
+    public static bool IsEqual(NetworkProfileDto? a, NetworkProfileDto? b)
     {
         if (a is null && b is null) return true;
         if (a is null || b is null) return false;

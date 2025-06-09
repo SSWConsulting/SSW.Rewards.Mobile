@@ -50,13 +50,11 @@ public partial class NetworkPageViewModel : BaseViewModel
                     new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
                 ];
 
-            AdvancedSearchResults.InitializeInitialCaching(_fileCacheService, "NetworkProfilesCache");
-
             // Always use cache first because all tabs have same endpoint but different local filtering logic.
-            AdvancedSearchResults.OnUseCache += () => true;
+            AdvancedSearchResults.InitializeInitialCaching(_fileCacheService, "NetworkProfilesCache", () => true);
 
             // Tabs have different filtering logic instead of different endpoints or parameters.
-            AdvancedSearchResults.OnFilterItem += x =>
+            AdvancedSearchResults.FilterItem = x =>
                 CurrentSegment switch
                 {
                     NetworkPageSegments.Following => x.Scanned,
@@ -69,7 +67,7 @@ public partial class NetworkPageViewModel : BaseViewModel
             AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsBusy = IsRefreshing = false;
 
             // This is to reduce flickering when loading data.
-            AdvancedSearchResults.OnCompareItems += NetworkProfileDto.AreIndentical;
+            AdvancedSearchResults.CompareItems = NetworkProfileDto.IsEqual;
 
             // Handle errors silently, e.g., log them or show a message.
             AdvancedSearchResults.OnError += ex =>
