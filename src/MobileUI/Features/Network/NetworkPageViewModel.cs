@@ -29,9 +29,6 @@ public partial class NetworkPageViewModel : BaseViewModel
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
 
-    private List<NetworkProfileDto> _profiles;
-    private DateTime _lastRefresh = DateTime.MinValue;
-
     private bool _pageLoaded;
     
     public NetworkPageViewModel(IFileCacheService fileCacheService, IDevService devService, IServiceProvider provider)
@@ -68,11 +65,8 @@ public partial class NetworkPageViewModel : BaseViewModel
                     _ => false
                 };
 
-            // Update cache, so we don't update all of the time.
-            AdvancedSearchResults.OnDataReceived += (result, _) => _profiles = result;
-
             // Disable refreshing when done.
-            AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsRefreshing = false;
+            AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsBusy = IsRefreshing = false;
 
             // This is to reduce flickering when loading data.
             AdvancedSearchResults.OnCompareItems += NetworkProfileDto.AreIndentical;
@@ -86,20 +80,19 @@ public partial class NetworkPageViewModel : BaseViewModel
         }
 
         _pageLoaded = true;
-        await RefreshNetwork();
 
-        IsBusy = false;
+        await RefreshNetwork();
     }
 
     [RelayCommand]
-    private async Task FilterBySegment()
+    private void FilterBySegment()
     {
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
         // This may trigger before the page is ready.
         if (_pageLoaded)
         {
-            await RefreshNetwork();
+            AdvancedSearchResults.RefreshCollectionWithOfflineFilter();
         }
     }
     
@@ -118,25 +111,7 @@ public partial class NetworkPageViewModel : BaseViewModel
 
     private async Task<List<NetworkProfileDto>> LoadData(CancellationToken ct)
     {
-        IEnumerable<NetworkProfileDto> profiles = _profiles;
-        if (profiles == null || DateTime.UtcNow.Subtract(_lastRefresh) > TimeSpan.FromMinutes(1))
-        {
-            try
-            {
-                profiles = await _devService.GetProfilesAsync();
-            }
-            finally
-            {
-                if (_profiles != null)
-                {
-                    // If we fail to fetch data and have cached data, don't refresh it for a minute.
-                    _lastRefresh = DateTime.UtcNow;
-                }
-            }
-
-            _profiles = profiles.ToList();
-        }
-        
-        return _profiles;
+        IEnumerable<NetworkProfileDto> profiles = await _devService.GetProfilesAsync();
+        return profiles.ToList();
     }
 }

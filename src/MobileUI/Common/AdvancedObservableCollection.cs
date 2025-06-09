@@ -7,6 +7,7 @@ public class AdvancedObservableCollection<T>
     private IFileCacheService _fileCacheService;
     private CancellationTokenSource _cts;
     private string _cacheKey;
+    private List<T> _fullList;
 
     public ObservableRangeCollection<T> Collection { get; } = [];
     public bool IsLoaded { get; private set; }
@@ -23,6 +24,11 @@ public class AdvancedObservableCollection<T>
     {
         _fileCacheService = fileCacheService;
         _cacheKey = cacheKey;
+    }
+
+    public void RefreshCollectionWithOfflineFilter()
+    {
+        UpdateCollectionAndNotify(_fullList, true, true, default);
     }
 
     public async Task LoadAsync(Func<CancellationToken, Task<List<T>>> fetchCallback, bool reload = false)
@@ -97,6 +103,15 @@ public class AdvancedObservableCollection<T>
         if (ct.IsCancellationRequested)
         {
             return;
+        }
+
+        if (reload)
+        {
+            _fullList = result;
+        }
+        else
+        {
+            _fullList.AddRange(result);
         }
 
         OnDataReceived?.Invoke(result, isFromCache);
