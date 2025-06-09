@@ -16,7 +16,6 @@ public enum NetworkPageSegments
 public partial class NetworkPageViewModel : BaseViewModel
 {
     public NetworkPageSegments CurrentSegment { get; set; }
-    //public ObservableRangeCollection<NetworkProfileDto> SearchResults { get; set; } = [];
     public AdvancedObservableCollection<NetworkProfileDto> AdvancedSearchResults { get; set; } = new();
 
     [ObservableProperty] 
@@ -26,10 +25,14 @@ public partial class NetworkPageViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isRefreshing;
 
-    //private List<NetworkProfileDto> _profiles = [];
     private readonly IFileCacheService _fileCacheService;
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
+
+    private List<NetworkProfileDto> _profiles;
+    private DateTime _lastRefresh = DateTime.MinValue;
+
+    private bool _pageLoaded;
     
     public NetworkPageViewModel(IFileCacheService fileCacheService, IDevService devService, IServiceProvider provider)
     {
@@ -44,11 +47,11 @@ public partial class NetworkPageViewModel : BaseViewModel
         if (Segments is null || Segments.Count == 0)
         {
             Segments =
-            [
-                new() { Name = "Scanned", Value = NetworkPageSegments.Following },
-                new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
-                new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
-            ];
+                [
+                    new() { Name = "Scanned", Value = NetworkPageSegments.Following },
+                    new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
+                    new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
+                ];
 
             AdvancedSearchResults.InitializeInitialCaching(_fileCacheService, "NetworkProfilesCache");
 
@@ -65,20 +68,25 @@ public partial class NetworkPageViewModel : BaseViewModel
                     _ => false
                 };
 
+            // Update cache, so we don't update all of the time.
+            AdvancedSearchResults.OnDataReceived += (result, _) => _profiles = result;
+
             // Disable refreshing when done.
-            AdvancedSearchResults.OnDataReceived += (_, _) => IsRefreshing = false;
+            AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsRefreshing = false;
 
             // This is to reduce flickering when loading data.
             AdvancedSearchResults.OnCompareItems += NetworkProfileDto.AreIndentical;
+
+            // Handle errors silently, e.g., log them or show a message.
+            AdvancedSearchResults.OnError += ex =>
+                {
+                    IsRefreshing = IsBusy = false;
+                    return true;
+                };
         }
 
+        _pageLoaded = true;
         await RefreshNetwork();
-
-        //if (_profiles.Count == 0)
-        //{
-        //    CurrentSegment = NetworkPageSegments.Following;
-        //    await LoadNetwork();
-        //}
 
         IsBusy = false;
     }
@@ -88,26 +96,11 @@ public partial class NetworkPageViewModel : BaseViewModel
     {
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
-        await RefreshNetwork();
-
-        //if (_profiles.Count == 0)
-        //{
-        //    await GetProfiles();
-        //}
-        
-        //switch (CurrentSegment)
-        //{
-        //    case NetworkPageSegments.Following:
-        //        SearchResults.ReplaceRange(_profiles.Where(x => x.Scanned));
-        //        break;
-        //    case NetworkPageSegments.Followers:
-        //        SearchResults.ReplaceRange(_profiles.Where(x => x.ScannedMe));
-        //        break;
-        //    case NetworkPageSegments.ToMeet:
-        //    default:
-        //        SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned).OrderByDescending(x => x.Value));
-        //        break;
-        //}
+        // This may trigger before the page is ready.
+        if (_pageLoaded)
+        {
+            await RefreshNetwork();
+        }
     }
     
     [RelayCommand]
@@ -121,22 +114,29 @@ public partial class NetworkPageViewModel : BaseViewModel
     private async Task RefreshNetwork()
     {
         await AdvancedSearchResults.LoadAsync(LoadData, true);
-
-        //await LoadNetwork();
-        //IsRefreshing = false;
     }
-
-    //private async Task LoadNetwork()
-    //{
-    //    var profiles = await _devService.GetProfilesAsync();
-    //    _profiles = profiles.ToList();
-
-    //    await FilterBySegment();
-    //}
 
     private async Task<List<NetworkProfileDto>> LoadData(CancellationToken ct)
     {
-        IEnumerable<NetworkProfileDto> profiles = await _devService.GetProfilesAsync();
-        return profiles.ToList();
+        IEnumerable<NetworkProfileDto> profiles = _profiles;
+        if (profiles == null || DateTime.UtcNow.Subtract(_lastRefresh) > TimeSpan.FromMinutes(1))
+        {
+            try
+            {
+                profiles = await _devService.GetProfilesAsync();
+            }
+            finally
+            {
+                if (_profiles != null)
+                {
+                    // If we fail to fetch data and have cached data, don't refresh it for a minute.
+                    _lastRefresh = DateTime.UtcNow;
+                }
+            }
+
+            _profiles = profiles.ToList();
+        }
+        
+        return _profiles;
     }
 }

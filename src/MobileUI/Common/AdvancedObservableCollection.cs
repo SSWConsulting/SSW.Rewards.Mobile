@@ -1,17 +1,21 @@
-﻿namespace SSW.Rewards.Mobile.Common;
+﻿using Plugin.Firebase.Crashlytics;
+
+namespace SSW.Rewards.Mobile.Common;
 
 public class AdvancedObservableCollection<T>
 {
     private IFileCacheService _fileCacheService;
     private CancellationTokenSource _cts;
     private string _cacheKey;
-    private bool _loaded;
 
     public ObservableRangeCollection<T> Collection { get; } = [];
-    public bool IsLoaded => _loaded;
+    public bool IsLoaded { get; private set; }
+    public bool HasLoadedFromCache { get; private set; }
 
+    public event Action<List<T>, bool> OnCollectionUpdated;
     public event Action<List<T>, bool> OnDataReceived;
     public event Func<T, T, bool> OnCompareItems;
+    public event Func<Exception, bool> OnError;
     public event Func<T, bool> OnFilterItem;
     public event Func<bool> OnUseCache;
 
@@ -25,13 +29,14 @@ public class AdvancedObservableCollection<T>
     {
         try
         {
-            await _cts?.CancelAsync();
+            CancelPreviousFetch();
 
             using (_cts = new())
             {
                 CancellationToken ct = _cts.Token;
                 if (_fileCacheService != null && OnUseCache != null && OnUseCache())
                 {
+                    HasLoadedFromCache = true;
                     await _fileCacheService.FetchAndRefresh(
                         _cacheKey,
                         async () => await fetchCallback(ct),
@@ -47,16 +52,44 @@ public class AdvancedObservableCollection<T>
                     UpdateCollectionAndNotify(result, false, reload, ct);
                 }
             }
+
+            _cts = null;
         }
-        catch (OperationCanceledException)
+        catch (Exception ex) when (ex is OperationCanceledException || ex is ObjectDisposedException)
         {
             // Handle cancellation gracefully, if needed
         }
+        catch (Exception ex)
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(ex);
+
+            // Ask ViewModel if it wants to handle the error. Otherwise, rethrow it.
+            if (OnError == null || !OnError(ex))
+            {
+                throw;
+            }
+        }
         finally
         {
-            await _cts?.CancelAsync();
+            CancelPreviousFetch();
         }
-        
+    }
+
+    private void CancelPreviousFetch()
+    {
+        CancellationTokenSource cts = _cts;
+        if (cts != null && !cts.IsCancellationRequested)
+        {
+            try
+            {
+                cts.Cancel();
+            }
+            catch (Exception ex) when (ex is OperationCanceledException || ex is ObjectDisposedException)
+            {
+                // This is expected if the cancellation was already requested.
+                // We can ignore this exception as it means the operation was canceled successfully.
+            }
+        }
     }
 
     private void UpdateCollectionAndNotify(List<T> result, bool isFromCache, bool reload, CancellationToken ct)
@@ -66,6 +99,7 @@ public class AdvancedObservableCollection<T>
             return;
         }
 
+        OnDataReceived?.Invoke(result, isFromCache);
         if (OnFilterItem != null)
         {
             result = result.Where(OnFilterItem).ToList();
@@ -100,18 +134,13 @@ public class AdvancedObservableCollection<T>
             Collection.AddRange(result);
         }
 
-        _loaded = true;
-        OnDataReceived?.Invoke(result, isFromCache);
-    }
-
-    public void CancelCurrentFetch()
-    {
-        _cts?.Cancel();
+        IsLoaded = true;
+        OnCollectionUpdated?.Invoke(result, isFromCache);
     }
 
     public void Reset()
     {
-        CancelCurrentFetch();
+        CancelPreviousFetch();
         Collection.Clear();
     }
 }

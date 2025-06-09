@@ -27,15 +27,14 @@ public class DevService : IDevService
             var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
 
             return vm.Profiles
+                .OrderBy(x => x.Name)
                 .Select(x =>
                 {
                     x.ProfilePicture = string.IsNullOrWhiteSpace(x.ProfilePicture)
                         ? "v2sophie"
                         : x.ProfilePicture;
                     return x;
-                })
-                .ToList()
-                .OrderBy(x => x.Name);
+                });
         }
         catch (Exception e)
         {
@@ -45,7 +44,7 @@ public class DevService : IDevService
             }
         }
         
-        return new List<NetworkProfileDto>(0);
+        return [];
     }
     
     public async Task<DevProfile> GetProfileAsync(string email)
