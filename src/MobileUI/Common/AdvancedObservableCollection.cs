@@ -49,25 +49,25 @@ public class AdvancedObservableCollection<T> : IDisposable
 
             using (_cts = new())
             {
-            CancellationToken ct = _cts.Token;
-            if (_fileCacheService != null && _shouldUseCache != null && _shouldUseCache())
-            {
-                HasLoadedFromCache = true;
-                await _fileCacheService.FetchAndRefresh(
-                    _cacheKey,
-                    async () => await fetchCallback(ct),
-                    (result, isFromCache, _) =>
-                    {
-                        LoadDataAndNotify(result, isFromCache, reload, ct);
-                        return Task.CompletedTask;
-                    });
+                CancellationToken ct = _cts.Token;
+                if (_fileCacheService != null && _shouldUseCache != null && _shouldUseCache())
+                {
+                    HasLoadedFromCache = true;
+                    await _fileCacheService.FetchAndRefresh(
+                        _cacheKey,
+                        async () => await fetchCallback(ct),
+                        (result, isFromCache, _) =>
+                        {
+                            LoadDataAndNotify(result, isFromCache, reload, ct);
+                            return Task.CompletedTask;
+                        });
+                }
+                else
+                {
+                    var result = await fetchCallback(ct);
+                    LoadDataAndNotify(result, false, reload, ct);
+                }
             }
-            else
-            {
-                var result = await fetchCallback(ct);
-                LoadDataAndNotify(result, false, reload, ct);
-            }
-        }
 
             _cts = null;
         }
@@ -99,6 +99,9 @@ public class AdvancedObservableCollection<T> : IDisposable
             try
             {
                 cts.Cancel();
+                cts.Dispose();
+
+                _cts = null;
             }
             catch (Exception ex) when (ex is OperationCanceledException || ex is ObjectDisposedException)
             {

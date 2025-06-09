@@ -34,7 +34,8 @@ public class DevService : IDevService
                         ? "v2sophie"
                         : x.ProfilePicture;
                     return x;
-                });
+                })
+                .ToArray();
         }
         catch (Exception e)
         {
