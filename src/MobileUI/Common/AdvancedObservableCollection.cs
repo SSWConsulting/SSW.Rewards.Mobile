@@ -8,13 +8,14 @@ namespace SSW.Rewards.Mobile.Common;
 /// Performance is achieved by not updating the collection when not needed.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class AdvancedObservableCollection<T>
+public class AdvancedObservableCollection<T> : IDisposable
 {
     private IFileCacheService _fileCacheService;
     private CancellationTokenSource _cts;
     private string _cacheKey;
-    private List<T> _fullList;
+    private List<T> _fullList = [];
     private Func<bool> _shouldUseCache;
+    private bool _disposed;
 
     public ObservableRangeCollection<T> Collection { get; } = [];
     public bool IsLoaded { get; private set; }
@@ -40,31 +41,33 @@ public class AdvancedObservableCollection<T>
 
     public async Task LoadAsync(Func<CancellationToken, Task<List<T>>> fetchCallback, bool reload = false)
     {
+        ThrowIfDisposed();
+
         try
         {
             CancelPreviousFetch();
 
             using (_cts = new())
             {
-                CancellationToken ct = _cts.Token;
-                if (_fileCacheService != null && _shouldUseCache != null && _shouldUseCache())
-                {
-                    HasLoadedFromCache = true;
-                    await _fileCacheService.FetchAndRefresh(
-                        _cacheKey,
-                        async () => await fetchCallback(ct),
-                        (result, isFromCache, _) =>
-                        {
-                            LoadDataAndNotify(result, isFromCache, reload, ct);
-                            return Task.CompletedTask;
-                        });
-                }
-                else
-                {
-                    var result = await fetchCallback(ct);
-                    LoadDataAndNotify(result, false, reload, ct);
-                }
+            CancellationToken ct = _cts.Token;
+            if (_fileCacheService != null && _shouldUseCache != null && _shouldUseCache())
+            {
+                HasLoadedFromCache = true;
+                await _fileCacheService.FetchAndRefresh(
+                    _cacheKey,
+                    async () => await fetchCallback(ct),
+                    (result, isFromCache, _) =>
+                    {
+                        LoadDataAndNotify(result, isFromCache, reload, ct);
+                        return Task.CompletedTask;
+                    });
             }
+            else
+            {
+                var result = await fetchCallback(ct);
+                LoadDataAndNotify(result, false, reload, ct);
+            }
+        }
 
             _cts = null;
         }
@@ -112,6 +115,7 @@ public class AdvancedObservableCollection<T>
             return;
         }
 
+        result ??= [];
         List<T> filteredResult = ApplyFilter(result, isFromCache);
         if (reload)
         {
@@ -171,5 +175,32 @@ public class AdvancedObservableCollection<T>
     {
         CancelPreviousFetch();
         Collection.Clear();
+        _fullList.Clear();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                CancelPreviousFetch();
+                OnCollectionUpdated = null;
+                OnDataReceived = null;
+                OnError = null;
+            }
+            _disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(AdvancedObservableCollection<T>));
     }
 }
