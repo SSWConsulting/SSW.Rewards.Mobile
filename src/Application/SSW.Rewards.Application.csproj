@@ -19,6 +19,7 @@
 		    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+        <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using SSW.Rewards.Shared.DTOs.Leaderboard;
+﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.Utils;
 
 namespace SSW.Rewards.Application.Leaderboard;
 
@@ -74,13 +74,12 @@ public class LeaderboardService : ILeaderboardService
 
         // Post-processing
         int rank = 0;
-        Regex checkHttpRegex = new(@"^https?://", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
         foreach (LeaderboardUserDto? user in users.OrderByDescending(lud => lud.TotalPoints))
         {
             user.Rank = ++rank;
             user.Title = user.Title switch
             {
-                _ when !string.IsNullOrEmpty(user.Title) => checkHttpRegex.Replace(user.Title, string.Empty),
+                _ when !string.IsNullOrEmpty(user.Title) => RegexHelpers.TitleRegex().Replace(user.Title, string.Empty),
                 _ when user.Email?.EndsWith("ssw.com.au") == true => "SSW",
                 _ => "Community"
             };

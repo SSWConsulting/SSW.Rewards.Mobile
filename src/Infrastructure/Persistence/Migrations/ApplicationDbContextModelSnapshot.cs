@@ -820,7 +820,7 @@ namespace SSW.Rewards.Persistence.Migrations
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.DeviceToken", b =>
                 {
                     b.HasOne("SSW.Rewards.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("DeviceTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1133,6 +1133,8 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Navigation("CompletedQuizzes");
 
                     b.Navigation("CreatedQuizzes");
+
+                    b.Navigation("DeviceTokens");
 
                     b.Navigation("PendingRedemptions");
 

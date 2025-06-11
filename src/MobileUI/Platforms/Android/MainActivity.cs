@@ -16,7 +16,8 @@ namespace SSW.Rewards.Mobile;
         Android.Content.Intent.CategoryBrowsable
     },
     DataScheme = "https",
-    DataHost = "rewards.ssw.com.au"
+    DataHost = "rewards.ssw.com.au",
+    DataPath = "/redeem"
 )]
 [IntentFilter(
     [Android.Content.Intent.ActionView],

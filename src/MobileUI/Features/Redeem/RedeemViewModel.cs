@@ -6,6 +6,7 @@ using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.PopupPages;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
 using IUserService = SSW.Rewards.Mobile.Services.IUserService;
+using System.Reactive.Subjects;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -16,9 +17,12 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IAddressService _addressService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private bool _isLoaded;
-    private IDispatcherTimer _timer;
-    
+    private readonly IDispatcherTimer _timer;
+    private readonly ObservableRangeCollection<Reward> _allRewards = [];
+    private readonly Subject<string> _searchSubject = new();
+
     private const int AutoScrollInterval = 6;
+    private const int DebounceInterval = 300;
 
     public ObservableRangeCollection<Reward> Rewards { get; set; } = [];
     public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
@@ -32,6 +36,12 @@ public partial class RedeemViewModel : BaseViewModel
     [ObservableProperty]
     private int _carouselPosition;
 
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    [ObservableProperty]
+    private bool _isSearching;
+
     public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         Title = "Rewards";
@@ -44,6 +54,18 @@ public partial class RedeemViewModel : BaseViewModel
         
         _timer = Application.Current.Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
+        
+        // Set up reactive search with debouncing
+        _searchSubject
+            .DistinctUntilChanged()
+            .Throttle(TimeSpan.FromMilliseconds(DebounceInterval))
+            .ObserveOn(SynchronizationContext.Current)
+            .Subscribe(_ => FilterRewards());
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        _searchSubject.OnNext(value);
     }
 
     public void OnDisappearing()
@@ -123,7 +145,8 @@ public partial class RedeemViewModel : BaseViewModel
             }
         }
 
-        Rewards.ReplaceRange(rewardsList);
+        _allRewards.ReplaceRange(rewardsList);
+        FilterRewards();
         CarouselRewards.ReplaceRange(carouselRewardsList);
 
         IsBusy = false;
@@ -182,5 +205,32 @@ public partial class RedeemViewModel : BaseViewModel
             };
             await MopupService.Instance.PushAsync(popup);
         }
+    }
+    
+    private void FilterRewards()
+    {
+        IsSearching = !string.IsNullOrWhiteSpace(SearchText);
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            // Reset to show all rewards
+            if (Rewards.Count != _allRewards.Count)
+            {
+                Rewards.ReplaceRange(_allRewards);
+            }
+            return;
+        }
+
+        var searchTerms = SearchText.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        var filtered = _allRewards.Where(reward =>
+        {
+            var name = reward.Name?.ToLowerInvariant() ?? string.Empty;
+            var description = reward.Description?.ToLowerInvariant() ?? string.Empty;
+            
+            return searchTerms.All(term => name.Contains(term) || description.Contains(term));
+        });
+
+        Rewards.ReplaceRange(filtered);
     }
 }

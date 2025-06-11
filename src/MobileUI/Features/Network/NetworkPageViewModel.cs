@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.DTOs.Users;
 
@@ -15,8 +16,8 @@ public enum NetworkPageSegments
 public partial class NetworkPageViewModel : BaseViewModel
 {
     public NetworkPageSegments CurrentSegment { get; set; }
-    public ObservableRangeCollection<NetworkProfileDto> SearchResults { get; set; } = [];
-    
+    public AdvancedObservableCollection<NetworkProfileDto> AdvancedSearchResults { get; set; } = new();
+
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
@@ -24,12 +25,15 @@ public partial class NetworkPageViewModel : BaseViewModel
     [ObservableProperty]
     private bool _isRefreshing;
 
-    private List<NetworkProfileDto> _profiles = [];
+    private readonly IFileCacheService _fileCacheService;
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
+
+    private bool _pageLoaded;
     
-    public NetworkPageViewModel(IDevService devService, IServiceProvider provider)
+    public NetworkPageViewModel(IFileCacheService fileCacheService, IDevService devService, IServiceProvider provider)
     {
+        _fileCacheService = fileCacheService;
         _devService = devService;
         _provider = provider;
     }
@@ -37,53 +41,56 @@ public partial class NetworkPageViewModel : BaseViewModel
     public async Task Initialise()
     {
         IsBusy = true;
-        if (Segments is null || Segments.Count() == 0)
+        if (Segments is null || Segments.Count == 0)
         {
-            Segments = new List<Segment>
-            {
-                new() { Name = "Scanned", Value = NetworkPageSegments.Following },
-                new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
-                new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
-            };
-        }
-        
-        if(_profiles.Count == 0)
-        {
-            CurrentSegment = NetworkPageSegments.Following;
-            await LoadNetwork();
+            Segments =
+                [
+                    new() { Name = "Scanned", Value = NetworkPageSegments.Following },
+                    new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
+                    new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
+                ];
+
+            // Always use cache first because all tabs have same endpoint but different local filtering logic.
+            AdvancedSearchResults.InitializeInitialCaching(_fileCacheService, "NetworkProfilesCache", () => true);
+
+            // Tabs have different filtering logic instead of different endpoints or parameters.
+            AdvancedSearchResults.FilterItem = x =>
+                CurrentSegment switch
+                {
+                    NetworkPageSegments.Following => x.Scanned,
+                    NetworkPageSegments.Followers => x.ScannedMe,
+                    NetworkPageSegments.ToMeet => x.IsStaff && !x.Scanned,
+                    _ => false
+                };
+
+            // Disable refreshing when done.
+            AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsBusy = IsRefreshing = false;
+
+            // This is to reduce flickering when loading data.
+            AdvancedSearchResults.CompareItems = NetworkProfileDto.IsEqual;
+
+            // Handle errors silently, e.g., log them or show a message.
+            AdvancedSearchResults.OnError += ex =>
+                {
+                    IsRefreshing = IsBusy = false;
+                    return true;
+                };
         }
 
-        IsBusy = false;
-    }
+        _pageLoaded = true;
 
-    private async Task GetProfiles()
-    {
-        var profiles = await _devService.GetProfilesAsync();
-        _profiles = profiles.ToList();
+        await RefreshNetwork();
     }
 
     [RelayCommand]
-    private async Task FilterBySegment()
+    private void FilterBySegment()
     {
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
-        if (_profiles.Count == 0)
+        // This may trigger before the page is ready.
+        if (_pageLoaded)
         {
-            await GetProfiles();
-        }
-        
-        switch (CurrentSegment)
-        {
-            case NetworkPageSegments.Following:
-                SearchResults.ReplaceRange(_profiles.Where(x => x.Scanned));
-                break;
-            case NetworkPageSegments.Followers:
-                SearchResults.ReplaceRange(_profiles.Where(x => x.ScannedMe));
-                break;
-            case NetworkPageSegments.ToMeet:
-            default:
-                SearchResults.ReplaceRange(_profiles.Where(x => x.IsStaff && !x.Scanned).OrderByDescending(x => x.Value));
-                break;
+            AdvancedSearchResults.RefreshCollectionWithOfflineFilter();
         }
     }
     
@@ -97,15 +104,12 @@ public partial class NetworkPageViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshNetwork()
     {
-        await LoadNetwork();
-        IsRefreshing = false;
+        await AdvancedSearchResults.LoadAsync(LoadData, true);
     }
 
-    private async Task LoadNetwork()
+    private async Task<List<NetworkProfileDto>> LoadData(CancellationToken ct)
     {
-        var profiles = await _devService.GetProfilesAsync();
-        _profiles = profiles.ToList();
-
-        await FilterBySegment();
+        IEnumerable<NetworkProfileDto> profiles = await _devService.GetProfilesAsync();
+        return profiles.ToList();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Plugin.Firebase.Crashlytics;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -17,11 +18,9 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
-    bool _isStaff;
+    private bool _isStaff;
 
-    public LoginPageViewModel(
-        IAuthenticationService authService,
-        IUserService userService)
+    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
     {
         _authService = authService;
         ButtonText = "Sign up / Log in";
@@ -93,12 +92,21 @@ public partial class LoginPageViewModel : BaseViewModel
 
         try
         {
-            if (!string.IsNullOrEmpty(await _authService.GetAccessToken()))
-            {
-                enableButtonAfterLogin = false;
+            // Load token in background.
+            var _ = _authService.GetAccessToken();
 
-                await App.InitialiseMainPage();
-            }
+            await WaitForWindowClose();
+            await App.InitialiseMainPage();
+        }
+        catch (HttpRequestException e)
+        {
+            // Everything else is fatal
+            CrossFirebaseCrashlytics.Current.RecordException(e);
+            Console.WriteLine(e);
+            await WaitForWindowClose();
+
+            // Skip logic for initial setup as the above might have failed on updating device ID.
+            await Application.Current.InitializeMainPage();
         }
         catch (Exception e)
         {

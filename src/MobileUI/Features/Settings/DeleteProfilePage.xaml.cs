@@ -67,7 +67,7 @@ public partial class DeleteProfilePage
             if (requestSubmitted)
             {
                 await Shell.Current.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
-                await Shell.Current.Navigation.PushModalAsync<LoginPage>();
+                App.NavigateToLoginPage();
             }
             else
             {

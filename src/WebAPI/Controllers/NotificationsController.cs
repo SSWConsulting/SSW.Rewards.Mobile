@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
+using SSW.Rewards.Application.Notifications.Commands;
 using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
@@ -12,7 +12,6 @@ using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 namespace SSW.Rewards.WebAPI.Controllers;
 
 //TODO: Pending V2 admin portal
-[AllowAnonymous]
 public class NotificationsController : ApiControllerBase
 {
     [HttpGet]
@@ -27,6 +26,24 @@ public class NotificationsController : ApiControllerBase
     public async Task<ActionResult<Unit>> RequestPush([Required]RequestNotificationCommand notificationRequest)
     {
         return Ok(await Mediator.Send(notificationRequest));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(NotificationSentResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<NotificationSentResponse>> SendToUsersWithAchievements([FromBody][Required] SendNotificationToUsersWithAchievementsCommand command)
+    {
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(NotificationSentResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<NotificationSentResponse>> SendToUser([FromBody][Required] SendNotificationToUserCommand command)
+    {
+        var result = await Mediator.Send(command);
+        return Ok(result);
     }
 
     [HttpPut]

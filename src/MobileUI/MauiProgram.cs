@@ -7,6 +7,7 @@ using Mopups.Hosting;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
+using SSW.Rewards.Mobile.Services;
 
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
@@ -56,6 +57,7 @@ public static class MauiProgram
         });
 
         builder.Services.AddDependencies();
+        builder.Services.AddSingleton<IFileCacheService, FileCacheService>();
 
 #if DEBUG
         builder.Logging.AddDebug();

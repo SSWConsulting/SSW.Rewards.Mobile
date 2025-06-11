@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SSW.Rewards.Domain.Entities;
 
-namespace SSW.Rewards.Persistence.Configurations;
+namespace SSW.Rewards.Infrastructure.Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -21,5 +21,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMany(u => u.CreatedQuizzes)
             .WithOne(q => q.CreatedBy)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasMany(x => x.DeviceTokens)
+            .WithOne(x => x.User)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

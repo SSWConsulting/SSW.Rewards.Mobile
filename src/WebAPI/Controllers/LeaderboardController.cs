@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardList;
 using SSW.Rewards.Application.Leaderboard.Queries.GetLeaderboardPaginatedList;
-using SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderbaoard;
+using SSW.Rewards.Application.Leaderboard.Queries.GetMobileLeaderboard;
 using SSW.Rewards.Application.PrizeDraw.Queries;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
@@ -40,15 +40,22 @@ public class LeaderboardController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers([FromQuery] int achievementId, LeaderboardFilter filter, bool filterStaff, int top)
+    public async Task<ActionResult<EligibleUsersViewModel>> GetEligibleUsers(
+        [FromQuery] int? achievementId = null,
+        [FromQuery] bool filterStaff = false,
+        [FromQuery] int top = 0,
+        [FromQuery] DateTime? dateFrom = null,
+        [FromQuery] DateTime? dateTo = null)
     {
-        var getEligibleUsers = new GetEligibleUsers
+        var request = new GetEligibleUsers
         {
             AchievementId = achievementId,
-            Filter = filter,
             FilterStaff = filterStaff,
-            Top = top
+            Top = top,
+            DateFrom = dateFrom,
+            DateTo = dateTo
         };
-        return Ok(await Mediator.Send(getEligibleUsers));
+
+        return Ok(await Mediator.Send(request));
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -8,6 +7,7 @@ using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
 using SSW.Rewards.Shared.DTOs.Users;
+using SSW.Rewards.Shared.Utils;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -143,7 +143,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         return !string.IsNullOrEmpty(CompanyUrl)
-            ? Regex.Replace(CompanyUrl, @"^https?://", string.Empty)
+            ? RegexHelpers.TitleRegex().Replace(CompanyUrl, string.Empty)
             : "Community";
     }
 

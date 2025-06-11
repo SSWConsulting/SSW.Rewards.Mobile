@@ -133,7 +133,7 @@ public class ClaimRewardForUserCommandHandler : IRequestHandler<ClaimRewardForUs
                  {
                      UserId = user.Id,
                      RewardId = reward.Id,
-                     AwardedAt = _dateTime.Now,
+                     AwardedAt = _dateTime.UtcNow,
                  });
 
             if (pendingRedemption != null)

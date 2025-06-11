@@ -69,6 +69,11 @@ public partial class App : Application
         await _firstRunService.InitialiseAfterLogin();
     }
 
+    public static void NavigateToLoginPage()
+    {
+        _authService.NavigateToLoginPage();
+    }
+
     private async Task CheckApiCompatibilityAsync()
     {
         try

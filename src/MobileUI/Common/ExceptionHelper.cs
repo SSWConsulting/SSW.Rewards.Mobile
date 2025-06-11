@@ -28,6 +28,6 @@ public static class ExceptionHandler
     private static async Task NavigateToLoginPage()
     {
         await Shell.Current.DisplayAlert("Authentication Failure", "Your session has expired. Please log in again.", "OK");
-        await Shell.Current.Navigation.PushModalAsync<LoginPage>();
+        App.NavigateToLoginPage();
     }
 }

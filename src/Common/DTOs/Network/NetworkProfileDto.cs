@@ -18,4 +18,23 @@ public class NetworkProfileDto
     public bool Scanned { get; set; }
     public bool ScannedMe { get; set; }
     public int Value { get; set; } = 0;
+
+    public static bool IsEqual(NetworkProfileDto? a, NetworkProfileDto? b)
+    {
+        if (a is null && b is null) return true;
+        if (a is null || b is null) return false;
+        return a.UserId == b.UserId &&
+               a.Name == b.Name &&
+               a.Email == b.Email &&
+               a.Title == b.Title &&
+               a.ProfilePicture == b.ProfilePicture &&
+               a.TotalPoints == b.TotalPoints &&
+               a.Rank == b.Rank &&
+               a.IsExternal == b.IsExternal &&
+               a.IsStaff == b.IsStaff &&
+               a.AchievementId == b.AchievementId &&
+               a.Scanned == b.Scanned &&
+               a.ScannedMe == b.ScannedMe &&
+               a.Value == b.Value;
+    }
 }

@@ -8,8 +8,9 @@ namespace SSW.Rewards.Application.PrizeDraw.Queries;
 // TODO: something went wrong with this query. It should just be returning users based on the filter, nothing to do with staff or achievements
 public class GetEligibleUsers : IRequest<EligibleUsersViewModel>
 {
-    public int AchievementId { get; set; }
-    public LeaderboardFilter Filter { get; set; }
+    public int? AchievementId { get; set; }
+    public DateTime? DateFrom { get; set; }
+    public DateTime? DateTo { get; set; }
     public bool FilterStaff { get; set; }
     public int Top { get; set; }
 }
@@ -32,56 +33,30 @@ public class GetEligibleUsersHandler : IRequestHandler<GetEligibleUsers, Eligibl
 
     public async Task<EligibleUsersViewModel> Handle(GetEligibleUsers request, CancellationToken cancellationToken)
     {
-        // find all the activated users with enough points in the (today/month/year/forever) leaderboard to claim the specific reward 
         var eligibleUsers = _context.Users
-            .TagWithContext($"GetUserBy{request.Filter}")
+            .TagWithContext("GetUserByDateRange")
             .Where(u => u.Activated);
 
-        if (request.Filter == LeaderboardFilter.ThisYear)
+        if (request is { DateFrom: not null, DateTo: not null })
         {
             eligibleUsers = eligibleUsers
-                .TagWith("PointsThisYear")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year));
-        }
-        else if (request.Filter == LeaderboardFilter.ThisMonth)
-        {
-            eligibleUsers = eligibleUsers
-                .TagWith("PointsThisMonth")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month));
-        }
-        else if (request.Filter == LeaderboardFilter.Today)
-        {
-            eligibleUsers = eligibleUsers
-                .TagWith("PointsToday")
-                .Where(u => u.UserAchievements.Any(a => a.AwardedAt.Year == _dateTime.Now.Year && a.AwardedAt.Month == _dateTime.Now.Month && a.AwardedAt.Day == _dateTime.Now.Day));
-        }
-        else if (request.Filter == LeaderboardFilter.ThisWeek)
-        {
-            var start = _dateTime.Now.AddDays(-7);
-            var end = _dateTime.Now;
-            // TODO: Find a better way - EF Can't translate our extension method -- so writing the date range comparison directly in linq for now
-            eligibleUsers = eligibleUsers
-                .TagWith("PointsThisWeek")
-                .Where(u => u.UserAchievements.Any(a => start <= a.AwardedAt && a.AwardedAt <= end));
-        }
-        else if (request.Filter == LeaderboardFilter.Forever)
-        {
-            // no action
+                .TagWith("PointsInDateRange")
+                .Where(u => u.UserAchievements.Any(a => a.AwardedAt >= request.DateFrom && a.AwardedAt <= request.DateTo));
         }
 
         eligibleUsers = eligibleUsers
             .Include(u => u.UserAchievements);
 
         string achievementName = string.Empty;
-        if (request.AchievementId != 0)
+        if (request.AchievementId is > 0)
         {
-            var achievement = await _context.Achievements.FindAsync(request.AchievementId);
+            var achievement = await _context.Achievements.FindAsync([request.AchievementId], cancellationToken);
             if (achievement == null)
             {
                 throw new NotFoundException(nameof(Achievement), request.AchievementId);
             }
 
-            achievementName = achievement.Name;
+            achievementName = achievement.Name ?? string.Empty;
 
             eligibleUsers = eligibleUsers
                 .TagWithContext("PointsForAchievement")

@@ -48,7 +48,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
         if (sure)
         {
             await _authService.SignOut();
-            await Shell.Current.Navigation.PushModalAsync<LoginPage>();
+            App.NavigateToLoginPage();
         }
     }
 }

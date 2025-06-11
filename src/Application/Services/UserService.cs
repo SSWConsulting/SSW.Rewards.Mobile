@@ -456,6 +456,8 @@ public class UserService : IUserService, IRolesService
         {
             user.Activated = true;
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.NewlyUserCreated);
         }
     }
 }

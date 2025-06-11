@@ -41,20 +41,31 @@
                 Margin="0,10,15,15"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 5"
-                WidthRequest="45"
+                WidthRequest="65"
                 HorizontalOptions="End"
                 BackgroundColor="{StaticResource Background}"
                 Padding="5,1">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ScrollToMeCommand}" />
                 </Border.GestureRecognizers>
-                <Label HorizontalOptions="Fill"
+                <StackLayout Orientation="Horizontal" 
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center"
+                 Spacing="3">
+                    <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"
                        FontFamily="FluentIcons"
-                       FontSize="20"
+                       FontSize="16"
                        Text="&#xe85d;" />
+                    <Label HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       FontSize="14"
+                       Text="Me" />
+                </StackLayout>
             </Border>
         </Grid>
         <RefreshView
@@ -126,11 +137,12 @@
                                         WidthRequest="50"
                                         HeightRequest="50"
                                         StrokeThickness="1.5">
-                                        <Image Source="{Binding ProfilePic}" Aspect="AspectFill" InputTransparent="True">
-                                            <Image.Clip>
-                                                <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
-                                            </Image.Clip>
-                                        </Image>
+                                        <mct:AvatarView
+                                            ImageSource="{Binding ProfilePic}"
+                                            WidthRequest="50"
+                                            HeightRequest="50"
+                                            CornerRadius="25"
+                                            BorderWidth="2" />
                                     </Border>
                                     <Grid
                                         Grid.Column="2"

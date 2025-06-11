@@ -1,42 +1,32 @@
-﻿using System.Text.RegularExpressions;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
+using SSW.Rewards.Shared.Utils;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LeaderViewModel : BaseViewModel
 {
     public int Rank { get; set; }
-    public int AllTimeRank { get; set; }
     public int UserId { get; set; }
     public string? Name { get; set; }
-    public string? Email { get; set; }
     public string? ProfilePic { get; set; }
-    public int TotalPoints { get; set; }
-    public int PointsClaimed { get; set; }
-    public int PointsToday { get; set; }
-    public int PointsThisWeek { get; set; }
-    public int PointsThisMonth { get; set; }
-    public int PointsThisYear { get; set; }
-    public int Balance { get; set; }
     public bool IsMe { get; set; }
-    public bool IsLeader => Rank == 1;
-    public string Title { get; set; }
     
-    public LeaderViewModel(LeaderboardUserDto dto, bool isMe)
+    // Used for file cache JSON serialization!
+    public LeaderViewModel() { }
+
+    public LeaderViewModel(MobileLeaderboardUserDto user)
     {
-        AllTimeRank = dto.Rank;
-        UserId = dto.UserId;
-        Name = dto.Name;
-        ProfilePic = dto.ProfilePic;
-        TotalPoints = dto.TotalPoints;
-        PointsThisMonth = dto.PointsThisMonth;
-        PointsThisYear = dto.PointsThisYear;
-        PointsThisWeek = dto.PointsThisWeek;
-        Balance = dto.Balance;
-        Email = dto.Email;
-        IsMe = isMe;
-        Title = Regex.Replace(dto.Title, @"^https?://", string.Empty);
+        IsMe = user.IsMe;
+        Rank = user.Rank;
+        Name = user.Name;
+        UserId = user.UserId;
+        ProfilePic = user.ProfilePic;
+        _displayPoints = user.Points;
+
+        Title = !string.IsNullOrWhiteSpace(user.Title)
+            ? RegexHelpers.TitleRegex().Replace(user.Title, string.Empty)
+            : string.Empty;
     }
 
     [ObservableProperty]

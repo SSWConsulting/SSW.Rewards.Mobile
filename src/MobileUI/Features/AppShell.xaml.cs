@@ -16,13 +16,21 @@ public partial class AppShell
     
     protected override bool OnBackButtonPressed()
     {
-        if (Current.GetType() == typeof(AppShell) && Current.Navigation.NavigationStack.Where(x => x != null).Any())
+        // Close the flyout if it's open instead of closing the app
+        if (Current.FlyoutIsPresented)
         {
-            return base.OnBackButtonPressed();
+            Current.FlyoutIsPresented = false;
+            return true;
         }
 
-        Process.GetCurrentProcess().CloseMainWindow();
-        return true;
+        // Don't attempt to navigate back if there are open popups as this makes it go back twice.
+        // This is due to this being called on both the main page and the popup page.
+        if (Mopups.Services.MopupService.Instance.PopupStack.Any())
+        {
+            return false;
+        }
+
+        return base.OnBackButtonPressed();
     }
     
     private void Button_Clicked(object sender, EventArgs e)
