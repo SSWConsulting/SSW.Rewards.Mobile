@@ -119,6 +119,11 @@ public class UserService : IUserService, IRolesService
                 };
             }
         }
+        else
+        {
+            // Generate user achievement if user not staff
+            newUser.GenerateAchievement();
+        }
 
         var unclaimedAchievements = await _dbContext.UnclaimedAchievements
             .TagWithContext("GetUnclaimedAchievements")
@@ -177,33 +182,63 @@ public class UserService : IUserService, IRolesService
 
     public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken)
     {
-        string currentUserEmail = _currentUserService.GetUserEmail();
+        var currentUserEmail = _currentUserService.GetUserEmail();
 
-        var user = await _dbContext.Users
-                .TagWithContext()
-                .Where(u => u.Email == currentUserEmail)
-                .Include(u => u.Achievement)
-                .Include(u => u.UserAchievements)
-                    .ThenInclude(ua => ua.Achievement)
-                .Include(u => u.UserRewards)
-                    .ThenInclude(ur => ur.Reward)
-                .SingleOrDefaultAsync(cancellationToken);
-
-        if (user == null)
-        {
-            throw new NotFoundException(nameof(User), currentUserEmail);
-        }
+        var user = await GetOrCreateUserAsync(currentUserEmail, cancellationToken);
 
         await ActivateUserIfNotActive(user, cancellationToken);
 
         var currentUserDto = _mapper.Map<CurrentUserDto>(user);
-        var usersRanked =
-            await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
-        var userRank = usersRanked.FirstOrDefault(u => u.Id == user.Id)
-                       ?? throw new NotFoundException(nameof(User), user.Id);
-        currentUserDto.Rank = userRank.Rank;
+        currentUserDto.Rank = await GetUserRankAsync(user.Id, cancellationToken);
         
         return currentUserDto;
+    }
+
+    private async Task<User> GetOrCreateUserAsync(string email, CancellationToken cancellationToken)
+    {
+        var user = await GetUserByEmailAsync(email, cancellationToken);
+
+        if (user != null)
+            return user;
+
+        // Create a new user if they don't exist
+        var newUser = new User
+        {
+            Email = email,
+            FullName = _currentUserService.GetUserFullName(),
+            Avatar = _currentUserService.GetUserProfilePic(),
+            CreatedUtc = DateTime.UtcNow
+        };
+
+        await CreateUser(newUser, cancellationToken);
+
+        user = await GetUserByEmailAsync(email, cancellationToken);
+
+        return user ?? throw new NotFoundException(nameof(User), email);
+    }
+
+    private async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .TagWithContext("GetUserByEmail")
+            .Where(u => u.Email == email)
+            .Include(u => u.Achievement)
+            .Include(u => u.UserAchievements)
+                .ThenInclude(ua => ua.Achievement)
+            .Include(u => u.UserRewards)
+                .ThenInclude(ur => ur.Reward)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private async Task<int> GetUserRankAsync(int userId, CancellationToken cancellationToken)
+    {
+        var usersRanked = await _cacheService.GetOrAddAsync(
+            CacheKeys.UserRanking, 
+            () => GenerateRanking(cancellationToken));
+    
+        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId);
+    
+        return userRank?.Rank ?? 0;
     }
 
     public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)
@@ -263,11 +298,6 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var usersRanked = await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
-
-        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId)
-            ?? throw new NotFoundException(nameof(User), userId);
-
         var vm = await _dbContext.Users
             .TagWithContext("GetUserProfile")
             .Where(u => u.Id == userId)
@@ -275,7 +305,7 @@ public class UserService : IUserService, IRolesService
             .FirstOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException(nameof(User), userId);
 
-        vm.Rank = userRank.Rank;
+        vm.Rank = await GetUserRankAsync(userId, cancellationToken);
         vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
         vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
