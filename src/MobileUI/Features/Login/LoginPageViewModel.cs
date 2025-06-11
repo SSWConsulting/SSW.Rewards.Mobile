@@ -106,7 +106,7 @@ public partial class LoginPageViewModel : BaseViewModel
             await WaitForWindowClose();
 
             // Skip logic for initial setup as the above might have failed on updating device ID.
-            await Application.Current.InitializeMainPage();
+            Application.Current.InitializeMainPage();
         }
         catch (Exception e)
         {
