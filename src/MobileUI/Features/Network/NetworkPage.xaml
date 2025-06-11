@@ -30,7 +30,7 @@
             Margin="10,0"
             Grid.Row="1">
             <CollectionView
-                ItemsSource="{Binding SearchResults}"
+                ItemsSource="{Binding AdvancedSearchResults.Collection}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}"
                 IsVisible="True">
