@@ -21,8 +21,8 @@ public interface IUserService
 
 
     // Create user
-    int CreateUser(User user);
-    Task<int> CreateUser(User user, CancellationToken cancellationToken);
+    User CreateUser(User user);
+    Task<User> CreateUser(User user, CancellationToken cancellationToken);
 
 
     // Update user
