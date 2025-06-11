@@ -416,29 +416,18 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken)
     {
-        // This throws NRE. Original code below for now, but this should work.
-        // TODO: figure out why this doesn't work.
-        //return await _dbContext.Users.Where(u => u.Id == userId)
-        //            .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
-        //            .FirstOrDefaultAsync(cancellationToken);
-
-        var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
         var userRewards = await _dbContext.UserRewards
             .TagWithContext()
             .Where(ur => ur.UserId == userId)
             .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        // Currently using in-memory join because the expected returned records are very low (max 10 or so)
-        var vm = new List<UserRewardDto>();
-
-        vm.AddRange(userRewards);
-
         return new UserRewardsViewModel
         {
             UserId = userId,
-            UserRewards = vm
+            UserRewards = userRewards
         };
+
     }
     
     public UserPendingRedemptionsViewModel GetUserPendingRedemptions(int userId)
