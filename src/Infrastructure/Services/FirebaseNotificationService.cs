@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FirebaseAdmin.Messaging;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Extensions;
@@ -14,15 +15,18 @@ public class FirebaseNotificationService : IFirebaseNotificationService
     private readonly IApplicationDbContext _dbContext;
     private readonly IFirebaseInitializerService _firebaseInitializerService;
     private readonly ILogger<FirebaseNotificationService> _logger;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
     public FirebaseNotificationService(
         IApplicationDbContext dbContext,
         IFirebaseInitializerService firebaseInitializerService,
-        ILogger<FirebaseNotificationService> logger)
+        ILogger<FirebaseNotificationService> logger,
+        IBackgroundJobClient backgroundJobClient)
     {
         _dbContext = dbContext;
         _firebaseInitializerService = firebaseInitializerService;
         _logger = logger;
+        _backgroundJobClient = backgroundJobClient;
     }
 
     public async Task<bool> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, T messagePayload, CancellationToken cancellationToken)
@@ -106,5 +110,16 @@ public class FirebaseNotificationService : IFirebaseNotificationService
         // Ensure Firebase is initialized
         _firebaseInitializerService.Initialize();
         await FirebaseMessaging.DefaultInstance.SendAsync(message, cancellationToken);
+    }
+
+    public string ScheduleNotification<T>(int userId, string notificationTitle, string notificationMessage, T messagePayload, DateTimeOffset scheduleAtDateTime)
+    {
+        string payloadJson = JsonSerializer.Serialize(messagePayload);
+        return _backgroundJobClient.Schedule(() => SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, CancellationToken.None), scheduleAtDateTime);
+    }
+
+    public string ScheduleNotification(int userId, string notificationTitle, string notificationMessage, string payloadJson, DateTimeOffset scheduleAtDateTime)
+    {
+        return _backgroundJobClient.Schedule(() => SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, CancellationToken.None), scheduleAtDateTime);
     }
 }

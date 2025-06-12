@@ -74,4 +74,11 @@ public class NotificationsController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new DeleteInstallationCommand(installationId)));
     }
+
+    [HttpPost("SendAdminNotification")]
+    public async Task<ActionResult> SendAdminNotification(SendAdminNotificationCommand command)
+    {
+        await Mediator.Send(command);
+        return Ok();
+    }
 }
