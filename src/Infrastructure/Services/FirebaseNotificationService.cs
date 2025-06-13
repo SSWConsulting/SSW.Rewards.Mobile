@@ -111,15 +111,4 @@ public class FirebaseNotificationService : IFirebaseNotificationService
         _firebaseInitializerService.Initialize();
         await FirebaseMessaging.DefaultInstance.SendAsync(message, cancellationToken);
     }
-
-    public string ScheduleNotification<T>(int userId, string notificationTitle, string notificationMessage, T messagePayload, DateTimeOffset scheduleAtDateTime)
-    {
-        string payloadJson = JsonSerializer.Serialize(messagePayload);
-        return _backgroundJobClient.Schedule(() => SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, CancellationToken.None), scheduleAtDateTime);
-    }
-
-    public string ScheduleNotification(int userId, string notificationTitle, string notificationMessage, string payloadJson, DateTimeOffset scheduleAtDateTime)
-    {
-        return _backgroundJobClient.Schedule(() => SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, CancellationToken.None), scheduleAtDateTime);
-    }
 }
