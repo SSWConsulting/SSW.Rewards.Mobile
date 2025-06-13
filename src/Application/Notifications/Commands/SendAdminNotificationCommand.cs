@@ -1,21 +1,20 @@
 using System.ComponentModel.DataAnnotations;
+using Hangfire;
 using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Notifications.BackgroundJobs;
 using SSW.Rewards.Application.Services;
 
 namespace SSW.Rewards.Application.Notifications.Commands;
 
-public class SendAdminNotificationCommand : IRequest
+public class SendAdminNotificationCommand : IRequest<NotificationSentResponse>
 {
-    [Required]
-    public DeliveryOption DeliveryOption { get; set; }
-
     public DateTimeOffset? ScheduleAt { get; set; }
 
-    public int? AchievementId { get; set; }
+    public List<int> AchievementIds { get; set; } = [];
 
-    public int? UserId { get; set; }
+    public List<int> UserIds { get; set; } = [];
 
-    public string? Role { get; set; } // e.g., "Admin", "Staff", "User"
+    public List<int> RoleIds { get; set; } = [];
 
     [Required]
     [MaxLength(100)]
@@ -29,77 +28,86 @@ public class SendAdminNotificationCommand : IRequest
     public string? ImageUrl { get; set; }
 }
 
-public enum DeliveryOption
-{
-    Now,
-    Schedule
-}
-
-public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNotificationCommand>
+public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNotificationCommand, NotificationSentResponse>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IFirebaseNotificationService _firebaseNotificationService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IBackgroundJobClient _backgroundJobClient;
+    private readonly IFirebaseNotificationService _firebaseNotificationService;
+    private readonly IDateTime _dateTimeService;
     private readonly ILogger<SendAdminNotificationCommandHandler> _logger;
 
     public SendAdminNotificationCommandHandler(
         IApplicationDbContext context,
-        IFirebaseNotificationService firebaseNotificationService,
         ICurrentUserService currentUserService,
+        IBackgroundJobClient backgroundJobClient,
+        IFirebaseNotificationService firebaseNotificationService,
+        IDateTime dateTimeService,
         ILogger<SendAdminNotificationCommandHandler> logger)
     {
         _context = context;
-        _firebaseNotificationService = firebaseNotificationService;
         _currentUserService = currentUserService;
+        _backgroundJobClient = backgroundJobClient;
+        _firebaseNotificationService = firebaseNotificationService;
+        _dateTimeService = dateTimeService;
         _logger = logger;
     }
 
-    public async Task Handle(SendAdminNotificationCommand request, CancellationToken cancellationToken)
+    public async Task<NotificationSentResponse> Handle(SendAdminNotificationCommand request, CancellationToken cancellationToken)
     {
-        var targetUserIds = new List<int>();
+        var utcNow = _dateTimeService.UtcNow;
+        if (request.ScheduleAt.HasValue && request.ScheduleAt >= utcNow)
+        {
+            _logger.LogDebug("Admin notification SCHEDULED. Title: {Title}, Time: {ScheduleTime}", request.Title, request.ScheduleAt.Value);
 
-        if (request.UserId.HasValue)
-        {
-            var userExists = await _context.Users.AnyAsync(u => u.Id == request.UserId.Value && u.Activated, cancellationToken);
-            if (userExists)
-            {
-                targetUserIds.Add(request.UserId.Value);
-            }
-            else
-            {
-                _logger.LogWarning("Admin notification: Targeted User ID {UserId} not found or not activated.", request.UserId.Value);
-                return;
-            }
+            _backgroundJobClient.Schedule<ScheduleNotificationTask>(
+                task => task.ProcessScheduledNotification(request),
+                request.ScheduleAt.Value);
+
+            return NotificationSentResponse.Empty;
         }
-        else if (request.AchievementId.HasValue)
+
+        if (request.ScheduleAt.HasValue)
         {
-            targetUserIds = await _context.UserAchievements
-                .Where(ua => ua.AchievementId == request.AchievementId.Value)
-                .Select(ua => ua.UserId)
-                .Distinct()
-                .ToListAsync(cancellationToken);
+            // Notify that the scheduled time is in the past.
+            _logger.LogWarning("Admin notification was scheduled in the past. Title: {Title}, Scheduled Time: {ScheduleTime}, Current Time: {CurrentTime}", request.Title, request.ScheduleAt.Value, utcNow);
         }
-        else if (!string.IsNullOrWhiteSpace(request.Role))
+
+        IQueryable<User> query = _context.Users
+            .AsNoTracking()
+            .TagWithContext()
+            .Where(x => x.Activated);
+        
+        if (request.AchievementIds?.Count > 0)
         {
-            targetUserIds = await _context.UserRoles
-                .Where(ur => ur.Role.Name == request.Role && ur.User.Activated)
-                .Select(ur => ur.UserId)
-                .Distinct()
-                .ToListAsync(cancellationToken);
+            query = query
+                .TagWithContext("ByAchievements")
+                .Where(x => x.UserAchievements.Any(a => request.AchievementIds.Contains(a.AchievementId)));
         }
-        else
+
+        if (request.RoleIds?.Count > 0)
         {
-            targetUserIds = await _context.Users
-                .Where(u => u.Activated)
-                .Select(u => u.Id)
-                .ToListAsync(cancellationToken);
-            _logger.LogInformation("Admin notification: No specific target, preparing to send to all {UserCount} activated users.", targetUserIds.Count);
+            query = query
+                .TagWithContext("ByRoles")
+                .Where(x => x.Roles.Any(r => request.RoleIds.Contains(r.RoleId)));
         }
+
+        if (request.UserIds?.Count > 0)
+        {
+            query = query
+                .TagWithContext("ByUsers")
+                .Where(x => request.UserIds.Contains(x.Id));
+        }
+
+        List<int> targetUserIds = await query
+            .Select(x => x.Id)
+            .Distinct()
+            .ToListAsync(cancellationToken);
 
         if (!targetUserIds.Any())
         {
             _logger.LogWarning("Admin notification: No target users found for the specified criteria. Title: {Title}", request.Title);
-            return;
+            return NotificationSentResponse.Empty;
         }
 
         _logger.LogInformation("Admin notification: Targeting {UserCount} users. Title: {Title}. Sent by: {AdminUserId}",
@@ -111,41 +119,36 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             payload.Add("image", request.ImageUrl);
         }
 
-        foreach (var userId in targetUserIds)
+        var result = NotificationSentResponse.SendingNotificationTo(targetUserIds.Count);
+        foreach (int userId in targetUserIds)
         {
             try
             {
-                if (request.DeliveryOption == DeliveryOption.Schedule)
+                bool success = await _firebaseNotificationService.SendNotificationAsync(
+                    userId,
+                    request.Title,
+                    request.Body,
+                    payload,
+                    cancellationToken);
+
+                if (success)
                 {
-                    if (!request.ScheduleAt.HasValue)
-                    {
-                        _logger.LogError("Admin notification: Scheduling requested but ScheduleAt is null. UserID: {UserId}, Title: {Title}", userId, request.Title);
-                        continue;
-                    }
-                    _firebaseNotificationService.ScheduleNotification(
-                        userId,
-                        request.Title,
-                        request.Body,
-                        payload,
-                        request.ScheduleAt.Value);
-                    
-                    _logger.LogDebug("Admin notification SCHEDULED for User ID {UserId}. Title: {Title}, Time: {ScheduleTime}", userId, request.Title, request.ScheduleAt.Value);
+                    _logger.LogDebug("Admin notification SENT for {UserID}. Title: {Title}", userId, request.Title);
+
+                    ++result.NotificationsSent;
                 }
-                else // DeliveryOption.Now
+                else
                 {
-                    await _firebaseNotificationService.SendNotificationAsync(
-                        userId,
-                        request.Title,
-                        request.Body,
-                        payload,
-                        cancellationToken);
-                    _logger.LogDebug("Admin notification SENT to User ID {UserId}. Title: {Title}", userId, request.Title);
+                    _logger.LogWarning("Failed to send notification to User ID {UserId}. Title: {Title}", userId, request.Title);
                 }
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing admin notification for User ID {UserId}. Title: {Title}", userId, request.Title);
             }
         }
+
+        return result;
     }
 }
