@@ -62,6 +62,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         var scannedUsersQuery = _dbContext.Users
             .AsNoTracking()
             .TagWithContext("GetScannedUsers")
+            .Where(u => u.Activated)
             .Join(
                 _dbContext.UserAchievements.AsNoTracking().Where(ua => ua.UserId == user.Id),
                 user => user.AchievementId,
@@ -83,7 +84,8 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         var scannedMeQuery = _dbContext.UserAchievements
             .AsNoTracking()
             .TagWithContext("GetUserScannedMe")
-            .Where(x => x.AchievementId == user.AchievementId || x.AchievementId == user.StaffAchievementId)
+            .Where(x => (x.AchievementId == user.AchievementId || x.AchievementId == user.StaffAchievementId)
+                        && x.User.Activated)
             .Select(x => new NetworkProfileDto
             {
                 UserId = x.User.Id,

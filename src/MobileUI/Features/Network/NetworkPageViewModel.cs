@@ -9,8 +9,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public enum NetworkPageSegments
 {
     Following,
-    Followers,
-    ToMeet,
+    Followers
 }
 
 public partial class NetworkPageViewModel : BaseViewModel
@@ -45,9 +44,8 @@ public partial class NetworkPageViewModel : BaseViewModel
         {
             Segments =
                 [
-                    new() { Name = "Scanned", Value = NetworkPageSegments.Following },
-                    new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
-                    new() { Name = "Valuable", Value = NetworkPageSegments.ToMeet }
+                    new Segment { Name = "Scanned", Value = NetworkPageSegments.Following },
+                    new Segment { Name = "Scanned me", Value = NetworkPageSegments.Followers },
                 ];
 
             // Always use cache first because all tabs have same endpoint but different local filtering logic.
@@ -59,7 +57,6 @@ public partial class NetworkPageViewModel : BaseViewModel
                 {
                     NetworkPageSegments.Following => x.Scanned,
                     NetworkPageSegments.Followers => x.ScannedMe,
-                    NetworkPageSegments.ToMeet => x.IsStaff && !x.Scanned,
                     _ => false
                 };
 
