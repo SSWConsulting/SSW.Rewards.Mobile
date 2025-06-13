@@ -1,4 +1,4 @@
-﻿using Plugin.Firebase.Crashlytics;
+﻿using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Mobile.Common;
 
@@ -16,6 +16,7 @@ public class AdvancedObservableCollection<T> : IDisposable
     private List<T> _fullList = [];
     private Func<bool> _shouldUseCache;
     private bool _disposed;
+    private readonly ILogger<AdvancedObservableCollection<T>> _logger;
 
     public ObservableRangeCollection<T> Collection { get; } = [];
     public bool IsLoaded { get; private set; }
@@ -26,6 +27,11 @@ public class AdvancedObservableCollection<T> : IDisposable
     public event Action<List<T>, bool> OnCollectionUpdated;
     public event Action<List<T>, bool> OnDataReceived;
     public event Func<Exception, bool> OnError;
+
+    public AdvancedObservableCollection(ILogger<AdvancedObservableCollection<T>> logger)
+    {
+        _logger = logger;
+    }
 
     public void InitializeInitialCaching(IFileCacheService fileCacheService, string cacheKey, Func<bool> shouldUseCache)
     {
@@ -77,7 +83,7 @@ public class AdvancedObservableCollection<T> : IDisposable
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(ex);
+            _logger.LogError(ex, "Error occurred while loading data for AdvancedObservableCollection");
 
             // Ask ViewModel if it wants to handle the error. Otherwise, rethrow it.
             if (OnError == null || !OnError(ex))

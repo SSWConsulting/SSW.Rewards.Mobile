@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Plugin.Firebase.Crashlytics;
+using Microsoft.Extensions.Logging;
 using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
@@ -8,6 +8,7 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
+    private readonly ILogger<LoginPageViewModel> _logger;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -20,9 +21,10 @@ public partial class LoginPageViewModel : BaseViewModel
 
     private bool _isStaff;
 
-    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
+    public LoginPageViewModel(IAuthenticationService authService, IUserService userService, ILogger<LoginPageViewModel> logger)
     {
         _authService = authService;
+        _logger = logger;
         ButtonText = "Sign up / Log in";
         userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
     }
@@ -59,7 +61,7 @@ public partial class LoginPageViewModel : BaseViewModel
             else
             {
                 enableButtonAfterLogin = false;
-                await App.InitialiseMainPage();
+                await App.InitialiseMainPageAsync();
             }
         }
 
@@ -96,13 +98,12 @@ public partial class LoginPageViewModel : BaseViewModel
             var _ = _authService.GetAccessToken();
 
             await WaitForWindowClose();
-            await App.InitialiseMainPage();
+            await App.InitialiseMainPageAsync();
         }
         catch (HttpRequestException e)
         {
             // Everything else is fatal
-            CrossFirebaseCrashlytics.Current.RecordException(e);
-            Console.WriteLine(e);
+            _logger.LogError(e, "HTTP request exception on login refresh");
             await WaitForWindowClose();
 
             // Skip logic for initial setup as the above might have failed on updating device ID.
@@ -111,8 +112,7 @@ public partial class LoginPageViewModel : BaseViewModel
         catch (Exception e)
         {
             // Everything else is fatal
-            CrossFirebaseCrashlytics.Current.RecordException(e);
-            Console.WriteLine(e);
+            _logger.LogError(e, "Error refreshing token");
             await WaitForWindowClose();
             await Application.Current.MainPage.DisplayAlert("Login Failure",
                 "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");

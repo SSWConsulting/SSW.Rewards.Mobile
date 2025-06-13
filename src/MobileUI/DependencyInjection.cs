@@ -1,9 +1,12 @@
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 using SSW.Rewards.Mobile.Config;
+using SSW.Rewards.Mobile.Logging;
+using SSW.Rewards.Mobile.Services.Authentication;
 using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 using IQuizService = SSW.Rewards.Mobile.Services.IQuizService;
 using IRewardService = SSW.Rewards.Mobile.Services.IRewardService;
@@ -75,6 +78,23 @@ public static class DependencyInjection
         services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
         services.AddSingleton<IFirstRunService, FirstRunService>();
 
+        // Configure authentication options
+        services.Configure<AuthenticationOptions>(options =>
+        {
+            options.Authority = Constants.AuthorityUri;
+            options.ClientId = Constants.ClientId;
+            options.Scope = Constants.Scope;
+            options.RedirectUri = Constants.AuthRedirectUrl;
+            options.TokenRefreshBuffer = TimeSpan.FromMinutes(2);
+        });
+
+        // Register authentication services
+        services.AddSingleton<IAuthStorageService, AuthStorageService>();
+        services.AddSingleton<IOidcAuthenticationProvider, OidcAuthenticationProvider>();
+        services.AddSingleton<ITokenManager, TokenManager>();
+        services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IAuthenticationService, AuthenticationService>();
+
         services.AddSingleton<FlyoutHeader>();
         services.AddSingleton<FlyoutHeaderViewModel>();
         services.AddSingleton<FlyoutFooter>();
@@ -87,6 +107,15 @@ public static class DependencyInjection
 
         // Configuration that in the future will be modifiable by the user or WebAPI
         services.AddSingleton(new ScannerConfig());
+
+        // Add Firebase logging
+        services.AddLogging(builder =>
+        {
+            builder.ClearProviders(); // Remove default providers
+            builder.AddProvider(new FirebaseLoggerProvider());
+            builder.SetMinimumLevel(LogLevel.Information);
+        });
+
 
         return services;
     }
