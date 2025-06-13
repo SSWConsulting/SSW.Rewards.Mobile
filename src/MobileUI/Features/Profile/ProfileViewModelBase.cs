@@ -123,7 +123,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         catch (Exception)
         {
             await ClosePage();
-            await App.Current.MainPage.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+            await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
         }
 
         _loadingProfileSectionsSemaphore.Release();
@@ -210,7 +210,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
             }
         }
     }

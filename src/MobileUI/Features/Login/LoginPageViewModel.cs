@@ -53,7 +53,7 @@ public partial class LoginPageViewModel : BaseViewModel
                 if (_authService.IsLoggedIn && _authService.HasCachedAccount)
                 {
                     var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-                    await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
+                    await Shell.Current.DisplayAlert(alert.Title, alert.Message, "OK");
                 }
             }
             else
@@ -106,7 +106,7 @@ public partial class LoginPageViewModel : BaseViewModel
             await WaitForWindowClose();
 
             // Skip logic for initial setup as the above might have failed on updating device ID.
-            await Application.Current.InitializeMainPage();
+            Application.Current.InitializeMainPage();
         }
         catch (Exception e)
         {
@@ -114,7 +114,7 @@ public partial class LoginPageViewModel : BaseViewModel
             CrossFirebaseCrashlytics.Current.RecordException(e);
             Console.WriteLine(e);
             await WaitForWindowClose();
-            await Application.Current.MainPage.DisplayAlert("Login Failure",
+            await Shell.Current.DisplayAlert("Login Failure",
                 "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
         }
         finally

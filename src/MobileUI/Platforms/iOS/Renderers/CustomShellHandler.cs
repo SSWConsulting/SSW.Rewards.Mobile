@@ -17,9 +17,4 @@ internal class CustomShellHandler : ShellRenderer
 
         return renderer;
     }
-
-    protected override IShellPageRendererTracker CreatePageRendererTracker()
-    {
-        return new CustomShellPageRendererTracker(this);
-    }
 }

@@ -132,7 +132,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         {
             if (! await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
             }
         }
 
@@ -197,6 +197,6 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     [RelayCommand]
     private async Task ClosePage()
     {
-        await App.Current.MainPage.Navigation.PopModalAsync();
+        await Shell.Current.Navigation.PopModalAsync();
     }
 }
