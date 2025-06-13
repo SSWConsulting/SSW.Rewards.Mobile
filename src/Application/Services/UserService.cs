@@ -15,7 +15,7 @@ public class UserService : IUserService, IRolesService
     private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
     private readonly ILogger<UserService> _logger;
-    private readonly string _staffSMTPDomain;
+    private readonly string _staffSmtpDomain;
 
     public UserService(
         IApplicationDbContext dbContext,
@@ -31,7 +31,7 @@ public class UserService : IUserService, IRolesService
         _mapper = mapper;
         _logger = logger;
 
-        _staffSMTPDomain = options.Value.StaffSmtpDomain;
+        _staffSmtpDomain = options.Value.StaffSmtpDomain;
     }
 
     public int AddRole(Role role)
@@ -63,111 +63,150 @@ public class UserService : IUserService, IRolesService
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public int CreateUser(User user)
+    public User CreateUser(User user)
     {
         return CreateUser(user, CancellationToken.None).Result;
     }
 
-    public async Task<int> CreateUser(User newUser, CancellationToken cancellationToken)
+    public async Task<User> CreateUser(User newUser, CancellationToken cancellationToken)
     {
-        var currentUser = await _dbContext.Users
-            .TagWithContext("GetUserByEmail")
-            .Where(u => u.Email == newUser.Email)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (currentUser != null)
+        try
         {
-            _logger.LogWarning("User with {email} already exists", newUser.Email);
-            return currentUser.Id;
-        }
+            if (string.IsNullOrWhiteSpace(newUser.Email))
+                throw new ArgumentException("Email is required", nameof(newUser));
 
-        var userRole = await _dbContext.Roles
-            .TagWithContext("GetRoleNamedUser")
-            .FirstOrDefaultAsync(r => r.Name == "User");
-
-        newUser.Roles.Add(new UserRole { Role = userRole });
-
-        var userEmail = new MailAddress(newUser.Email);
-
-        if (userEmail.Host == _staffSMTPDomain)
-        {
-            var staffRole = await _dbContext.Roles
-                .TagWithContext("GetStaffRole")
-                .FirstOrDefaultAsync(r => r.Name == "Staff");
-
-            newUser.Roles.Add(new UserRole { Role = staffRole });
-
-            var existingStaff = await _dbContext.StaffMembers
-                .TagWithContext("GetExistingStaff")
-                .FirstOrDefaultAsync(r => r.Email == newUser.Email);
-
-            if (existingStaff == null)
+            var existingUser = await GetUserByEmailAsync(newUser.Email, cancellationToken);
+            if (existingUser != null)
             {
-                var staffMemberEntity = new StaffMember();
-
-                staffMemberEntity.Email = newUser.Email;
-                staffMemberEntity.Name = newUser.FullName ?? string.Empty;
-
-                await _dbContext.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
-
-                staffMemberEntity.StaffAchievement ??= new Achievement
-                {
-                    Name = staffMemberEntity.Name,
-                    Code = AchievementHelper.GenerateCode(),
-                    Type = AchievementType.Scanned,
-                    Value = 0
-                };
+                _logger.LogInformation("User with email {Email} already exists, returning existing user", newUser.Email);
+                return existingUser;
             }
+
+            _logger.LogInformation("Creating new user with email {Email}", newUser.Email);
+        
+            await AssignUserRolesAsync(newUser, cancellationToken);
+            await HandleStaffMemberCreationAsync(newUser, cancellationToken);
+            await ProcessUnclaimedAchievementsAsync(newUser, cancellationToken);
+
+            _dbContext.Users.Add(newUser);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            _cacheService.Remove(CacheTags.NewlyUserCreated);
+        
+            _logger.LogInformation("Successfully created user with ID {UserId}", newUser.Id);
+            return newUser;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating user with email {Email}", newUser.Email);
+            throw;
+        }
+    }
+
+    private async Task AssignUserRolesAsync(User newUser, CancellationToken cancellationToken)
+    {
+        var requiredRoles = new List<string> { "User" };
+        
+        if (IsStaffEmail(newUser.Email!))
+        {
+            requiredRoles.Add("Staff");
         }
 
+        var roles = await _dbContext.Roles
+            .TagWithContext("GetRequiredRoles")
+            .Where(r => requiredRoles.Contains(r.Name))
+            .ToListAsync(cancellationToken);
+
+        if (roles.Count != requiredRoles.Count)
+        {
+            var missingRoles = requiredRoles.Except(roles.Select(r => r.Name));
+            throw new InvalidOperationException($"Missing required roles: {string.Join(", ", missingRoles)}");
+        }
+
+        foreach (var role in roles)
+        {
+            newUser.Roles.Add(new UserRole { Role = role });
+        }
+    }
+
+    private async Task HandleStaffMemberCreationAsync(User newUser, CancellationToken cancellationToken)
+    {
+        if (!IsStaffEmail(newUser.Email!))
+        {
+            newUser.GenerateAchievement();
+            return;
+        }
+
+        var existingStaff = await _dbContext.StaffMembers
+            .TagWithContext("GetExistingStaff")
+            .FirstOrDefaultAsync(s => s.Email == newUser.Email, cancellationToken);
+
+        if (existingStaff == null)
+        {
+            var staffMember = new StaffMember 
+            { 
+                Email = newUser.Email, 
+                Name = newUser.FullName ?? string.Empty 
+            };
+
+            staffMember.StaffAchievement = new Achievement
+            {
+                Name = staffMember.Name,
+                Code = AchievementHelper.GenerateCode(),
+                Type = AchievementType.Scanned,
+                Value = 0
+            };
+
+            await _dbContext.StaffMembers.AddAsync(staffMember, cancellationToken);
+        }
+    }
+
+    private async Task ProcessUnclaimedAchievementsAsync(User newUser, CancellationToken cancellationToken)
+    {
         var unclaimedAchievements = await _dbContext.UnclaimedAchievements
             .TagWithContext("GetUnclaimedAchievements")
-            .Where(ua => ua.EmailAddress.ToLower() == newUser.Email.ToLower())
-            .ToListAsync();
+            .Include(ua => ua.Achievement)
+            .Where(ua => ua.EmailAddress.ToLower() == newUser.Email!.ToLower())
+            .ToListAsync(cancellationToken);
 
-        if (unclaimedAchievements.Any())
+        if (unclaimedAchievements.Count == 0) return;
+
+        var currentTime = DateTime.UtcNow;
+        
+        foreach (var unclaimedAchievement in unclaimedAchievements)
         {
-            foreach (var achievement in unclaimedAchievements)
+            newUser.UserAchievements.Add(new UserAchievement
             {
-                newUser.UserAchievements.Add(new UserAchievement
-                {
-                    Achievement = achievement.Achievement,
-                    AwardedAt = DateTime.UtcNow,
-                    CreatedUtc = DateTime.UtcNow
-                });
+                Achievement = unclaimedAchievement.Achievement,
+                AwardedAt = currentTime,
+                CreatedUtc = currentTime
+            });
 
-                _dbContext.UnclaimedAchievements.Remove(achievement);
-            }
+            _dbContext.UnclaimedAchievements.Remove(unclaimedAchievement);
         }
+    }
 
-        _dbContext.Users.Add(newUser);
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        _cacheService.Remove(CacheTags.NewlyUserCreated);
-
-        return newUser.Id;
+    private bool IsStaffEmail(string email)
+    {
+        return new MailAddress(email).Host == _staffSmtpDomain;
     }
 
     public async Task<int> GetUserId(string email, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(email))
-        {
-            throw new ArgumentNullException(nameof(email), "no email provided");
-        }
+            throw new ArgumentNullException(nameof(email), "Email cannot be null or empty");
 
-        email = email.Trim().ToLower();
-
-        var user = await _dbContext.Users
+        var userId = await _dbContext.Users
             .AsNoTracking()
-            .TagWithContext()
-            .Where(u => u.Email.ToLower() == email)
-            .Select(x => new { x.Id })
+            .Where(u => u.Email.ToLower() == email.Trim().ToLower())
+            .Select(u => u.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return user != null
-            ? user.Id
-            : throw new NotFoundException("No user found");
+        if (userId == 0)
+            throw new NotFoundException($"No user found with email: {email}");
+
+        return userId;
+
     }
 
     public CurrentUserDto GetCurrentUser()
@@ -177,33 +216,62 @@ public class UserService : IUserService, IRolesService
 
     public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken)
     {
-        string currentUserEmail = _currentUserService.GetUserEmail();
+        var currentUserEmail = _currentUserService.GetUserEmail();
 
-        var user = await _dbContext.Users
-                .TagWithContext()
-                .Where(u => u.Email == currentUserEmail)
-                .Include(u => u.Achievement)
-                .Include(u => u.UserAchievements)
-                    .ThenInclude(ua => ua.Achievement)
-                .Include(u => u.UserRewards)
-                    .ThenInclude(ur => ur.Reward)
-                .SingleOrDefaultAsync(cancellationToken);
+        if (string.IsNullOrWhiteSpace(currentUserEmail))
+            throw new UnauthorizedAccessException("User is not logged in");
 
-        if (user == null)
-        {
-            throw new NotFoundException(nameof(User), currentUserEmail);
-        }
+        var user = await GetOrCreateUserAsync(currentUserEmail, cancellationToken);
 
         await ActivateUserIfNotActive(user, cancellationToken);
 
         var currentUserDto = _mapper.Map<CurrentUserDto>(user);
-        var usersRanked =
-            await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
-        var userRank = usersRanked.FirstOrDefault(u => u.Id == user.Id)
-                       ?? throw new NotFoundException(nameof(User), user.Id);
-        currentUserDto.Rank = userRank.Rank;
+        currentUserDto.Rank = await GetUserRankAsync(user.Id, cancellationToken);
         
         return currentUserDto;
+    }
+
+    private async Task<User> GetOrCreateUserAsync(string email, CancellationToken cancellationToken)
+    {
+        var user = await GetUserByEmailAsync(email, cancellationToken);
+
+        if (user != null)
+            return user;
+
+        // Create a new user if they don't exist
+        var newUser = new User
+        {
+            Email = email,
+            FullName = _currentUserService.GetUserFullName(),
+            Avatar = _currentUserService.GetUserProfilePic(),
+            CreatedUtc = DateTime.UtcNow
+        };
+
+        return await CreateUser(newUser, cancellationToken);
+    }
+
+    private async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .TagWithContext("GetUserByEmail")
+            .Where(u => u.Email == email)
+            .Include(u => u.Achievement)
+            .Include(u => u.UserAchievements)
+                .ThenInclude(ua => ua.Achievement)
+            .Include(u => u.UserRewards)
+                .ThenInclude(ur => ur.Reward)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private async Task<int> GetUserRankAsync(int userId, CancellationToken cancellationToken)
+    {
+        var usersRanked = await _cacheService.GetOrAddAsync(
+            CacheKeys.UserRanking, 
+            () => GenerateRanking(cancellationToken));
+    
+        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId);
+    
+        return userRank?.Rank ?? 0;
     }
 
     public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)
@@ -263,11 +331,6 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserProfileDto> GetUser(int userId, CancellationToken cancellationToken)
     {
-        var usersRanked = await _cacheService.GetOrAddAsync(CacheKeys.UserRanking, () => GenerateRanking(cancellationToken));
-
-        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId)
-            ?? throw new NotFoundException(nameof(User), userId);
-
         var vm = await _dbContext.Users
             .TagWithContext("GetUserProfile")
             .Where(u => u.Id == userId)
@@ -275,7 +338,7 @@ public class UserService : IUserService, IRolesService
             .FirstOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException(nameof(User), userId);
 
-        vm.Rank = userRank.Rank;
+        vm.Rank = await GetUserRankAsync(userId, cancellationToken);
         vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
         vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
@@ -353,29 +416,18 @@ public class UserService : IUserService, IRolesService
 
     public async Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken)
     {
-        // This throws NRE. Original code below for now, but this should work.
-        // TODO: figure out why this doesn't work.
-        //return await _dbContext.Users.Where(u => u.Id == userId)
-        //            .ProjectTo<UserRewardsViewModel>(_mapper.ConfigurationProvider)
-        //            .FirstOrDefaultAsync(cancellationToken);
-
-        var rewards = await _dbContext.Rewards.ToListAsync(cancellationToken);
         var userRewards = await _dbContext.UserRewards
             .TagWithContext()
             .Where(ur => ur.UserId == userId)
             .ProjectTo<UserRewardDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        // Currently using in-memory join because the expected returned records are very low (max 10 or so)
-        var vm = new List<UserRewardDto>();
-
-        vm.AddRange(userRewards);
-
         return new UserRewardsViewModel
         {
             UserId = userId,
-            UserRewards = vm
+            UserRewards = userRewards
         };
+
     }
     
     public UserPendingRedemptionsViewModel GetUserPendingRedemptions(int userId)

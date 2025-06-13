@@ -1,10 +1,6 @@
-﻿using SSW.Rewards.Application.Common.Extensions;
+﻿namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
 
-namespace SSW.Rewards.Application.Users.Commands.RegisterUser;
-
-public class RegisterUserCommand : IRequest
-{
-}
+public class RegisterUserCommand : IRequest;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
 {
@@ -19,7 +15,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
 
     public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var newUser = new Domain.Entities.User
+        var newUser = new User
         {
             Email = _currentUserService.GetUserEmail(),
             FullName = _currentUserService.GetUserFullName(),
@@ -27,11 +23,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
             Avatar = _currentUserService.GetUserProfilePic(),
             CreatedUtc = DateTime.UtcNow
         };
-
-        if (!newUser.Email.ToLower().Contains("ssw.com.au"))
-        {
-            newUser.GenerateAchievement();
-        }
 
         await _userService.CreateUser(newUser, cancellationToken);
     }
