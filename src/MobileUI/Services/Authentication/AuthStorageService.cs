@@ -86,7 +86,7 @@ public class AuthStorageService : IAuthStorageService
             SecureStorage.RemoveAll();
             Preferences.Clear();
 
-            // Restore device token and first run state
+            // Preserve device token
             if (!string.IsNullOrWhiteSpace(deviceToken))
             {
                 await StoreDeviceTokenAsync(deviceToken);

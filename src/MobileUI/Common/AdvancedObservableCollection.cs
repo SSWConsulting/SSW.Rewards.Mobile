@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace SSW.Rewards.Mobile.Common;
+﻿namespace SSW.Rewards.Mobile.Common;
 
 /// <summary>
 /// A wrapper around ObservableCollection with purpose to have an ObservableCollection that is backed by
