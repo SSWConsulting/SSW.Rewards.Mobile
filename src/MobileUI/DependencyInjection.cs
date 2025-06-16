@@ -92,7 +92,6 @@ public static class DependencyInjection
         services.AddSingleton<IAuthStorageService, AuthStorageService>();
         services.AddSingleton<IOidcAuthenticationProvider, OidcAuthenticationProvider>();
         services.AddSingleton<ITokenManager, TokenManager>();
-        services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
         services.AddSingleton<FlyoutHeader>();
@@ -111,7 +110,7 @@ public static class DependencyInjection
         // Add Firebase logging
         services.AddLogging(builder =>
         {
-            builder.ClearProviders(); // Remove default providers
+            builder.ClearProviders();
             builder.AddProvider(new FirebaseLoggerProvider());
             builder.SetMinimumLevel(LogLevel.Information);
         });

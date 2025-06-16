@@ -20,8 +20,8 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly ITokenManager _tokenManager;
     private readonly IOidcAuthenticationProvider _oidcProvider;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IAuthStorageService _authStorage;
-    private readonly INavigationService _navigationService;
     private readonly ILogger<AuthenticationService> _logger;
 
     public event EventHandler DetailsUpdated;
@@ -31,14 +31,14 @@ public class AuthenticationService : IAuthenticationService
     public AuthenticationService(
         ITokenManager tokenManager,
         IOidcAuthenticationProvider oidcProvider,
+        IServiceProvider serviceProvider,
         IAuthStorageService authStorage,
-        INavigationService navigationService,
         ILogger<AuthenticationService> logger)
     {
         _tokenManager = tokenManager;
         _oidcProvider = oidcProvider;
+        _serviceProvider = serviceProvider;
         _authStorage = authStorage;
-        _navigationService = navigationService;
         _logger = logger;
 
         // Forward token updates to authentication service listeners
@@ -59,7 +59,7 @@ public class AuthenticationService : IAuthenticationService
 
             try
             {
-                await _navigationService.InitializeMainPageAsync();
+                await App.InitialiseMainPageAsync();
             }
             catch (Exception ex)
             {
@@ -131,6 +131,6 @@ public class AuthenticationService : IAuthenticationService
 
     public void NavigateToLoginPage()
     {
-        _navigationService.NavigateToLoginPage();
+        App.Current.MainPage = _serviceProvider.GetRequiredService<LoginPage>();
     }
 }

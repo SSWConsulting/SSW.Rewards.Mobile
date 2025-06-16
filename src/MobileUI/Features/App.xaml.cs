@@ -5,10 +5,10 @@ namespace SSW.Rewards.Mobile;
 
 public partial class App : Application
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IAuthenticationService _authService;
-    private readonly IFirstRunService _firstRunService;
-    private readonly ILogger<App> _logger;
+    private static IServiceProvider _serviceProvider;
+    private static IAuthenticationService _authService;
+    private static IFirstRunService _firstRunService;
+    private static ILogger<App> _logger;
 
     public App(
         LoginPage page, 
@@ -81,7 +81,7 @@ public partial class App : Application
         await _firstRunService.InitialiseAfterLogin();
     }
 
-    public void NavigateToLoginPage()
+    public static void NavigateToLoginPage()
     {
         _authService.NavigateToLoginPage();
     }
