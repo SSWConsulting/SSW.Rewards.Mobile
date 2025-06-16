@@ -136,9 +136,10 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogWarning("Login result contains error: {Error}, {ErrorDescription}", 
                 result.Error, result.ErrorDescription);
 
+            var errorType = MapStringToErrorType(result.Error);
             return new AuthResult
             {
-                Error = AuthErrorType.UnknownError,
+                Error = errorType,
                 ErrorDescription = result.ErrorDescription
             };
         }
@@ -159,9 +160,10 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogWarning("Token refresh result contains error: {Error}, {ErrorDescription}", 
                 result.Error, result.ErrorDescription);
 
+            var errorType = MapStringToErrorType(result.Error);
             return new AuthResult
             {
-                Error = AuthErrorType.UnknownError,
+                Error = errorType,
                 ErrorDescription = result.ErrorDescription
             };
         }
@@ -172,6 +174,19 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             RefreshToken = result.RefreshToken,
             IdentityToken = result.IdentityToken,
             AccessTokenExpiration = result.AccessTokenExpiration
+        };
+    }
+
+    private static AuthErrorType MapStringToErrorType(string error)
+    {
+        return error?.ToLowerInvariant() switch
+        {
+            "access_denied" => AuthErrorType.Cancelled,
+            "invalid_grant" => AuthErrorType.InvalidToken,
+            "invalid_request" => AuthErrorType.InvalidToken,
+            "server_error" => AuthErrorType.ServerError,
+            "temporarily_unavailable" => AuthErrorType.NetworkError,
+            _ => AuthErrorType.UnknownError
         };
     }
 }

@@ -7,5 +7,7 @@ public enum AuthErrorType
     InvalidToken,
     Exception,
     SilentLoginFailed,
+    NetworkError,
+    ServerError,
     UnknownError
 }
