@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SSW.Rewards.Models;
 
 namespace SSW.Rewards.Mobile.Services.Authentication;
 
@@ -54,8 +53,14 @@ public class TokenManager : ITokenManager
             return _cachedAccessToken;
         }
 
-        // Thread-safe token refresh
-        await _refreshSemaphore.WaitAsync();
+        // Thread-safe token refresh with timeout
+        bool lockTaken = await _refreshSemaphore.WaitAsync(TimeSpan.FromSeconds(30));
+        if (!lockTaken)
+        {
+            _logger.LogWarning("Token refresh timed out waiting for semaphore");
+            return string.Empty;
+        }
+
         try
         {
             // Double-check after acquiring lock
@@ -69,7 +74,8 @@ public class TokenManager : ITokenManager
                 return _cachedAccessToken;
             }
 
-            _logger.LogWarning("Unable to refresh token");
+            _logger.LogWarning("Unable to refresh token - clearing stored tokens");
+            await ClearTokensAsync(); // Clear invalid tokens
             return string.Empty;
         }
         finally

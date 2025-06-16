@@ -18,7 +18,7 @@ public class AuthHandler : DelegatingHandler
     {
         try
         {
-            var token = await _authenticationService.GetAccessToken();
+            var token = await _authenticationService.GetAccessTokenAsync();
 
             if (!string.IsNullOrWhiteSpace(token))
             {

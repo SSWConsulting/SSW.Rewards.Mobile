@@ -8,7 +8,7 @@ public interface IAuthenticationService
 {
     Task AutologinAsync(string accessToken);
     Task<ApiStatus> SignInAsync();
-    Task<string> GetAccessToken();
+    Task<string> GetAccessTokenAsync();
     Task SignOut();
     bool HasCachedAccount { get; }
     bool IsLoggedIn { get; }
@@ -52,6 +52,14 @@ public class AuthenticationService : IAuthenticationService
             _logger.LogInformation("Attempting auto-login with access token");
 
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (!tokenHandler.CanReadToken(accessToken))
+            {
+                _logger.LogWarning("Invalid JWT token format provided for auto-login");
+                await SignOut();
+                return;
+            }
+
             var jwtToken = tokenHandler.ReadJwtToken(accessToken);
             var expiry = jwtToken.ValidTo;
 
@@ -86,7 +94,7 @@ public class AuthenticationService : IAuthenticationService
     {
         try
         {
-            _logger.LogInformation("Starting sign-in process");
+            _logger.LogInformation("Starting sign-in process. HasCachedAccount: {HasCachedAccount}", HasCachedAccount);
 
             var result = await _oidcProvider.LoginAsync(!HasCachedAccount);
 
@@ -97,11 +105,17 @@ public class AuthenticationService : IAuthenticationService
                     result.RefreshToken, 
                     result.AccessTokenExpiration);
 
-                _logger.LogInformation("Sign-in successful");
+                _logger.LogInformation("Sign-in successful. Token expires at: {ExpirationTime}", result.AccessTokenExpiration);
                 return ApiStatus.Success;
             }
 
-            _logger.LogWarning("Sign-in failed: {Error}", result.Error);
+            if (result.Error == AuthErrorType.Cancelled)
+            {
+                _logger.LogInformation("Sign-in cancelled by user");
+                return ApiStatus.CancelledByUser;
+            }
+
+            _logger.LogWarning("Sign-in failed: {Error} - {ErrorDescription}", result.Error, result.ErrorDescription);
             await SignOut();
             return ApiStatus.Error;
         }
@@ -118,7 +132,7 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    public async Task<string> GetAccessToken()
+    public async Task<string> GetAccessTokenAsync()
     {
         return await _tokenManager.GetValidTokenAsync();
     }

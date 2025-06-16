@@ -3,7 +3,6 @@ using Duende.IdentityModel.OidcClient;
 using Duende.IdentityModel.OidcClient.Results;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SSW.Rewards.Models;
 using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 
 namespace SSW.Rewards.Mobile.Services.Authentication;
@@ -61,7 +60,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogInformation("Login was cancelled by the user");
             return new AuthResult
             {
-                Error = "cancelled",
+                Error = AuthErrorType.Cancelled,
                 ErrorDescription = "User cancelled the login process"
             };
         }
@@ -70,7 +69,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogError(ex, "Exception during login");
             return new AuthResult
             {
-                Error = "exception",
+                Error = AuthErrorType.Exception,
                 ErrorDescription = ex.Message
             };
         }
@@ -83,7 +82,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogWarning("Refresh token is null or empty");
             return new AuthResult
             {
-                Error = "invalid_token",
+                Error = AuthErrorType.InvalidToken,
                 ErrorDescription = "Refresh token is null or empty"
             };
         }
@@ -98,7 +97,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogError(ex, "Exception during token refresh");
             return new AuthResult
             {
-                Error = "exception",
+                Error = AuthErrorType.Exception,
                 ErrorDescription = ex.Message
             };
         }
@@ -124,7 +123,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
             _logger.LogError(ex, "Silent login failed");
             return new AuthResult
             {
-                Error = "silent_login_failed",
+                Error = AuthErrorType.SilentLoginFailed,
                 ErrorDescription = ex.Message
             };
         }
@@ -139,7 +138,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
 
             return new AuthResult
             {
-                Error = result.Error,
+                Error = AuthErrorType.UnknownError,
                 ErrorDescription = result.ErrorDescription
             };
         }
@@ -162,7 +161,7 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
 
             return new AuthResult
             {
-                Error = result.Error,
+                Error = AuthErrorType.UnknownError,
                 ErrorDescription = result.ErrorDescription
             };
         }
