@@ -38,11 +38,6 @@ public class UserService : IUserService, IRolesService
         _staffSmtpDomain = options.Value.StaffSmtpDomain;
     }
 
-    public int AddRole(Role role)
-    {
-        return AddRole(role, CancellationToken.None).Result;
-    }
-
     public async Task<int> AddRole(Role role, CancellationToken cancellationToken)
     {
         _dbContext.Roles.Add(role);
@@ -65,11 +60,6 @@ public class UserService : IUserService, IRolesService
         });
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public User CreateUser(User user)
-    {
-        return CreateUser(user, CancellationToken.None).Result;
     }
 
     public async Task<User> CreateUser(User newUser, CancellationToken cancellationToken)
@@ -213,11 +203,6 @@ public class UserService : IUserService, IRolesService
 
     }
 
-    public CurrentUserDto GetCurrentUser()
-    {
-        return GetCurrentUser(CancellationToken.None).Result;
-    }
-
     public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken)
     {
         var currentUserEmail = _currentUserService.GetUserEmail();
@@ -270,10 +255,9 @@ public class UserService : IUserService, IRolesService
     private async Task<int> GetUserRankAsync(int userId, CancellationToken cancellationToken)
     {
         var leaderboard = await _leaderboardService.GetFullLeaderboard(cancellationToken);
-        var leaderboardRanked = leaderboard.OrderByDescending(x => x.TotalPoints);
-        var userRank = leaderboardRanked.FirstOrDefault(u => u.UserId == userId);
+        var user = leaderboard.FirstOrDefault(u => u.UserId == userId);
     
-        return userRank?.Rank ?? 0;
+        return user?.Rank ?? 0;
     }
 
     public async Task<int> GetCurrentUserId(CancellationToken cancellationToken)
@@ -297,11 +281,6 @@ public class UserService : IUserService, IRolesService
         return user.Id;
     }
 
-    public IEnumerable<Role> GetCurrentUserRoles()
-    {
-        return GetCurrentUserRoles(CancellationToken.None).Result;
-    }
-
     public async Task<IEnumerable<Role>> GetCurrentUserRoles(CancellationToken cancellationToken)
     {
         string email = _currentUserService.GetUserEmail();
@@ -311,11 +290,6 @@ public class UserService : IUserService, IRolesService
             .Where(x => x.User.Email == email)
             .Select(x => x.Role)
             .ToListAsync(cancellationToken);
-    }
-
-    public string GetStaffQRCode(string emailAddress)
-    {
-        return GetStaffQRCode(emailAddress, CancellationToken.None).Result;
     }
 
     public async Task<string> GetStaffQRCode(string emailAddress, CancellationToken cancellationToken)
@@ -347,11 +321,6 @@ public class UserService : IUserService, IRolesService
         return vm;
     }
 
-    public UsersViewModel GetUsers()
-    {
-        return GetUsers(CancellationToken.None).Result;
-    }
-
     public async Task<UsersViewModel> GetUsers(CancellationToken cancellationToken)
     {
         var vm = await _dbContext.Users
@@ -366,11 +335,6 @@ public class UserService : IUserService, IRolesService
         }
 
         return new UsersViewModel { Users = vm };
-    }
-    
-    public UserAchievementsViewModel GetUserAchievements(int userId)
-    {
-        return GetUserAchievements(userId, CancellationToken.None).Result;
     }
 
     public async Task<UserAchievementsViewModel> GetUserAchievements(int userId, CancellationToken cancellationToken)
@@ -391,11 +355,6 @@ public class UserService : IUserService, IRolesService
         };
     }
 
-    public UserRewardsViewModel GetUserRewards(int userId)
-    {
-        return GetUserRewards(userId, CancellationToken.None).Result;
-    }
-
     public async Task<UserRewardsViewModel> GetUserRewards(int userId, CancellationToken cancellationToken)
     {
         var userRewards = await _dbContext.UserRewards
@@ -412,11 +371,6 @@ public class UserService : IUserService, IRolesService
 
     }
     
-    public UserPendingRedemptionsViewModel GetUserPendingRedemptions(int userId)
-    {
-        return GetUserPendingRedemptions(userId, CancellationToken.None).Result;
-    }
-    
     public async Task<UserPendingRedemptionsViewModel> GetUserPendingRedemptions(int userId, CancellationToken cancellationToken)
     {
         var pendingRedemptions = await _dbContext.PendingRedemptions
@@ -426,11 +380,6 @@ public class UserService : IUserService, IRolesService
             .ToListAsync(cancellationToken);
 
         return new UserPendingRedemptionsViewModel { UserId = userId, PendingRedemptions = pendingRedemptions };
-    }
-
-    public IEnumerable<Role> GetUserRoles(int userId)
-    {
-        return GetUserRoles(userId, CancellationToken.None).Result;
     }
 
     public async Task<IEnumerable<Role>> GetUserRoles(int userId, CancellationToken cancellationToken)
