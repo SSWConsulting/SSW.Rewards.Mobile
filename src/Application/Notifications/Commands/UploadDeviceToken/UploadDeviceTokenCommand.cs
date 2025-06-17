@@ -20,7 +20,7 @@ public class Handler : IRequestHandler<UploadDeviceTokenCommand, Unit>
 
     public async Task<Unit> Handle(UploadDeviceTokenCommand request, CancellationToken cancellationToken)
     {
-        var currentUser = _userService.GetCurrentUser();
+        var currentUser = await _userService.GetCurrentUser(cancellationToken);
         var dbUser = await _context.Users.FirstAsync(x => x.Id == currentUser.Id, cancellationToken);
 
         var currentDeviceToken =
