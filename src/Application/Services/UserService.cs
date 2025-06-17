@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Helpers;
+using SSW.Rewards.Application.Leaderboard;
 using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Services;
@@ -15,6 +16,7 @@ public class UserService : IUserService, IRolesService
     private readonly ICacheService _cacheService;
     private readonly IMapper _mapper;
     private readonly ILogger<UserService> _logger;
+    private readonly ILeaderboardService _leaderboardService;
     private readonly string _staffSmtpDomain;
 
     public UserService(
@@ -23,13 +25,15 @@ public class UserService : IUserService, IRolesService
         ICacheService cacheService,
         IMapper mapper,
         IOptions<UserServiceOptions> options,
-        ILogger<UserService> logger)
+        ILogger<UserService> logger,
+        ILeaderboardService leaderboardService)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _cacheService = cacheService;
         _mapper = mapper;
         _logger = logger;
+        _leaderboardService = leaderboardService;
 
         _staffSmtpDomain = options.Value.StaffSmtpDomain;
     }
@@ -117,7 +121,7 @@ public class UserService : IUserService, IRolesService
             .Where(r => requiredRoles.Contains(r.Name))
             .ToListAsync(cancellationToken);
 
-        if (roles.Count != requiredRoles.Count)
+        if (!requiredRoles.All(x => roles.Any(r => x == r.Name)))
         {
             var missingRoles = requiredRoles.Except(roles.Select(r => r.Name));
             throw new InvalidOperationException($"Missing required roles: {string.Join(", ", missingRoles)}");
@@ -166,7 +170,7 @@ public class UserService : IUserService, IRolesService
         var unclaimedAchievements = await _dbContext.UnclaimedAchievements
             .TagWithContext("GetUnclaimedAchievements")
             .Include(ua => ua.Achievement)
-            .Where(ua => ua.EmailAddress.ToLower() == newUser.Email!.ToLower())
+            .Where(ua => ua.EmailAddress == newUser.Email)
             .ToListAsync(cancellationToken);
 
         if (unclaimedAchievements.Count == 0) return;
@@ -198,7 +202,7 @@ public class UserService : IUserService, IRolesService
 
         var userId = await _dbContext.Users
             .AsNoTracking()
-            .Where(u => u.Email.ToLower() == email.Trim().ToLower())
+            .Where(u => u.Email == email)
             .Select(u => u.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -265,11 +269,9 @@ public class UserService : IUserService, IRolesService
 
     private async Task<int> GetUserRankAsync(int userId, CancellationToken cancellationToken)
     {
-        var usersRanked = await _cacheService.GetOrAddAsync(
-            CacheKeys.UserRanking, 
-            () => GenerateRanking(cancellationToken));
-    
-        var userRank = usersRanked.FirstOrDefault(u => u.Id == userId);
+        var leaderboard = await _leaderboardService.GetFullLeaderboard(cancellationToken);
+        var leaderboardRanked = leaderboard.OrderByDescending(x => x.TotalPoints);
+        var userRank = leaderboardRanked.FirstOrDefault(u => u.UserId == userId);
     
         return userRank?.Rank ?? 0;
     }
@@ -343,26 +345,6 @@ public class UserService : IUserService, IRolesService
         vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
         return vm;
-    }
-
-    private async Task<List<UserRankingMinimumDto>> GenerateRanking(CancellationToken cancellationToken)
-    {
-        var usersPoints = await _dbContext.Users
-            .AsNoTracking()
-            .TagWithContext("GetRanks")
-            .Where(u => u.Activated && !string.IsNullOrWhiteSpace(u.FullName))
-            .Select(x => new
-            {
-                x.Id,
-                Points = x.UserAchievements.Sum(ua => ua.Achievement.Value)
-            })
-            .ToListAsync(cancellationToken);
-
-        // TODO: Cache these values as they only change when somebody claim an achievement.
-        return usersPoints
-            .OrderByDescending(u => u.Points)
-            .Select((u, i) => new UserRankingMinimumDto(u.Id, i + 1, u.Points))
-            .ToList();
     }
 
     public UsersViewModel GetUsers()
