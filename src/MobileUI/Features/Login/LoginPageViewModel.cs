@@ -9,6 +9,8 @@ public partial class LoginPageViewModel : BaseViewModel
     private readonly IAuthenticationService _authService;
     private readonly ILogger<LoginPageViewModel> _logger;
 
+    private const string DefaultButtonText = "Sign up / Log in";
+
     [ObservableProperty]
     private bool _isRunning;
 
@@ -18,11 +20,11 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
-    public LoginPageViewModel(IAuthenticationService authService, IUserService userService, ILogger<LoginPageViewModel> logger)
+    public LoginPageViewModel(IAuthenticationService authService, ILogger<LoginPageViewModel> logger)
     {
         _authService = authService;
         _logger = logger;
-        ButtonText = "Sign up / Log in";
+        ButtonText = DefaultButtonText;
     }
 
     [RelayCommand]
@@ -56,10 +58,10 @@ public partial class LoginPageViewModel : BaseViewModel
     {
         IsRunning = isLoading;
         LoginButtonEnabled = !isLoading;
-        ButtonText = isLoading ? "Logging you in..." : "Sign up / Log in";
+        ButtonText = isLoading ? "Logging you in..." : DefaultButtonText;
     }
 
-    private async Task ShowErrorForStatus(ApiStatus status)
+    private static async Task ShowErrorForStatus(ApiStatus status)
     {
         var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {
