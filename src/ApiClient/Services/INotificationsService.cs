@@ -1,13 +1,13 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
-using SSW.Rewards.Application.Notifications.Commands;
+using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.ApiClient.Services;
 
 public interface INotificationsService
 {
     Task UploadDeviceToken(DeviceTokenDto command, CancellationToken cancellationToken);
-    Task SendAdminNotification(SendAdminNotificationCommand command, CancellationToken cancellationToken);
+    Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken);
 }
 
 public class NotificationsService : INotificationsService
@@ -34,7 +34,7 @@ public class NotificationsService : INotificationsService
         throw new Exception($"Failed to upload Android Device Token: {responseContent}");
     }
 
-    public async Task SendAdminNotification(SendAdminNotificationCommand command, CancellationToken cancellationToken)
+    public async Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken)
     {
         var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}SendAdminNotification", command, cancellationToken);
 
