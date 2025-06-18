@@ -1,20 +1,12 @@
 @page "/notifications"
+
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
-@using SSW.Rewards.ApiClient.Services
 @using SSW.Rewards.Shared.DTOs.Achievements
-@using SSW.Rewards.Shared.DTOs.Notifications
-@using SSW.Rewards.Shared.DTOs.PrizeDraw
-@using SSW.Rewards.Shared.DTOs.Rewards
-@using System.ComponentModel.DataAnnotations
-@using SSW.Rewards.Enums
+@using SSW.Rewards.Shared.DTOs.Roles
+@using SSW.Rewards.Admin.UI.Models
 
 @attribute [Authorize(Roles = "Admin")]
-
-@inject IAchievementService AchievementService
-@inject IUserService UserAdminService
-@inject ISnackbar Snackbar
-@inject INotificationsService NotificationsService
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
     <MudText Typo="Typo.h3" GutterBottom="true">Notifications</MudText>
@@ -67,22 +59,16 @@
                                              ResetValueOnEmptyText="true" />
                         </MudItem>
 
-@*                         <MudItem xs="12" sm="6" md="4">
-                            <MudAutocomplete T="UserDto"
-                                             Label="User"
-                                             SearchFunc="@SearchUsers"
-                                             @bind-Value="@_model.SelectedUser"
-                                             ToStringFunc="@(u => u?.FullName)"
-                                             Clearable="true" />
-                        </MudItem> *@
-
-@*                         <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="@_model.SelectedRole" Label="Role" Clearable="true" AnchorOrigin="Origin.BottomCenter">
-                                <MudSelectItem Value="@(nameof(Roles.User))">User</MudSelectItem>
-                                <MudSelectItem Value="@(nameof(Roles.Staff))">Staff</MudSelectItem>
-                                <MudSelectItem Value="@(nameof(Roles.Admin))">Admin</MudSelectItem>
-                            </MudSelect>
-                        </MudItem> *@
+                        <MudItem xs="12">
+                            <MudAutocomplete T="RoleDto"
+                                             @bind-Value="@_model.SelectedRole"
+                                             Label="Role (Optional)"
+                                             SearchFunc="@SearchRoles"
+                                             ToStringFunc="@(role => role?.Name ?? string.Empty)"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true" />
+                        </MudItem>
 
                         <MudItem xs="12">
                             <MudText Typo="Typo.h6" Class="mt-4">Content</MudText>
