@@ -1,9 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
-using Duende.IdentityModel.Client;
-using Duende.IdentityModel.OidcClient;
-using Duende.IdentityModel.OidcClient.Results;
-using Plugin.Firebase.Crashlytics;
-using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
+using Microsoft.Extensions.Logging;
+using SSW.Rewards.Mobile.Services.Authentication;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -11,7 +8,7 @@ public interface IAuthenticationService
 {
     Task AutologinAsync(string accessToken);
     Task<ApiStatus> SignInAsync();
-    Task<string> GetAccessToken();
+    Task<string> GetAccessTokenAsync();
     Task SignOut();
     bool HasCachedAccount { get; }
     bool IsLoggedIn { get; }
@@ -21,54 +18,60 @@ public interface IAuthenticationService
 
 public class AuthenticationService : IAuthenticationService
 {
-    private readonly OidcClientOptions _options;
-    private readonly IServiceProvider _provider;
-
-    private string RefreshToken;
-
-    private string _accessToken;
-    private DateTimeOffset _tokenExpiry;
+    private readonly ITokenManager _tokenManager;
+    private readonly IOidcAuthenticationProvider _oidcProvider;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IAuthStorageService _authStorage;
+    private readonly ILogger<AuthenticationService> _logger;
 
     public event EventHandler DetailsUpdated;
-    public bool HasCachedAccount { get => Preferences.Get(nameof(HasCachedAccount), false); }
-    
-    public bool IsLoggedIn { get => !string.IsNullOrWhiteSpace(_accessToken); }
+    public bool HasCachedAccount => _authStorage.HasCachedAccount;
+    public bool IsLoggedIn => _tokenManager.IsLoggedIn;
 
-    public AuthenticationService(IBrowser browser, IServiceProvider provider)
+    public AuthenticationService(
+        ITokenManager tokenManager,
+        IOidcAuthenticationProvider oidcProvider,
+        IServiceProvider serviceProvider,
+        IAuthStorageService authStorage,
+        ILogger<AuthenticationService> logger)
     {
-        _options = new OidcClientOptions
-        {
-            Authority = Constants.AuthorityUri,
-            ClientId = Constants.ClientId,
-            Scope = Constants.Scope,
-            RedirectUri = Constants.AuthRedirectUrl,
-            Browser = browser,
-        };
-        _provider = provider;
+        _tokenManager = tokenManager;
+        _oidcProvider = oidcProvider;
+        _serviceProvider = serviceProvider;
+        _authStorage = authStorage;
+        _logger = logger;
+
+        // Forward token updates to authentication service listeners
+        _tokenManager.TokensUpdated += (sender, args) => DetailsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task AutologinAsync(string accessToken)
     {
         try
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+            _logger.LogInformation("Attempting auto-login with access token");
 
-            _accessToken = accessToken;
-            _tokenExpiry = jwtToken.ValidTo;
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (!tokenHandler.CanReadToken(accessToken))
+            {
+                _logger.LogWarning("Invalid JWT token format provided for auto-login");
+                await SignOut();
+                return;
+            }
+
+            var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+            var expiry = jwtToken.ValidTo;
+
+            await _tokenManager.StoreTokensAsync(accessToken, null, expiry);
 
             try
             {
-                Preferences.Set(nameof(HasCachedAccount), true);
-                DetailsUpdated?.Invoke(this, EventArgs.Empty);
-
-                await SecureStorage.SetAsync(nameof(_accessToken), _accessToken);
-
-                await App.InitialiseMainPage();
+                await App.InitialiseMainPageAsync();
             }
             catch (Exception ex)
             {
-                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
+                _logger.LogError(ex, "Failed to initialize main page during auto-login");
 
                 // TECH DEBT: Workaround for iOS since calling DisplayAlert while a Safari web view is in
                 // the process of closing causes the alert to never appear and the await call never returns.
@@ -82,7 +85,7 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            _logger.LogError(ex, "Auto-login failed");
             await SignOut();
         }
     }
@@ -91,221 +94,57 @@ public class AuthenticationService : IAuthenticationService
     {
         try
         {
-            var oidcClient = new OidcClient(_options);
+            _logger.LogInformation("Starting sign-in process. HasCachedAccount: {HasCachedAccount}", HasCachedAccount);
 
-            var result = await oidcClient.LoginAsync(new LoginRequest()
-            {
-                FrontChannelExtraParameters = HasCachedAccount ? null : new Parameters
-                {
-                    { "prompt", "login" }
-                }
-            });
+            var result = await _oidcProvider.LoginAsync(!HasCachedAccount);
 
-            if (result.IsError)
+            if (result.IsSuccess)
             {
-                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: LoginAsync returned error {result.ErrorDescription}"));
-                await SignOut();
-                return ApiStatus.Error;
+                await _tokenManager.StoreTokensAsync(
+                    result.AccessToken, 
+                    result.RefreshToken, 
+                    result.AccessTokenExpiration);
+
+                _logger.LogInformation("Sign-in successful. Token expires at: {ExpirationTime}", result.AccessTokenExpiration);
+                return ApiStatus.Success;
             }
 
-            var authResult = GetAuthResult(result);
-            await SetRefreshToken(authResult);
-            return SetLoggedInState(authResult);
+            if (result.Error == AuthErrorType.Cancelled)
+            {
+                _logger.LogInformation("Sign-in cancelled by user");
+                return ApiStatus.CancelledByUser;
+            }
+
+            _logger.LogWarning("Sign-in failed: {Error} - {ErrorDescription}", result.Error, result.ErrorDescription);
+            await SignOut();
+            return ApiStatus.Error;
         }
-        catch (TaskCanceledException) // Is thrown when user closes the browser without logging-in
+        catch (TaskCanceledException)
         {
+            _logger.LogInformation("Sign-in cancelled by user");
             return ApiStatus.CancelledByUser;
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"AuthDebug: unknown exception was thrown during SignIn ${ex.Message}; ${ex.StackTrace}"));
+            _logger.LogError(ex, "Unexpected error during sign-in");
             await SignOut();
             return ApiStatus.Error;
         }
     }
 
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-    public async Task<string> GetAccessToken()
+    public async Task<string> GetAccessTokenAsync()
     {
-        if (string.IsNullOrEmpty(_accessToken))
-        {
-            await GetStoredAccessToken();
-        }
-
-        if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
-        {
-            return _accessToken;
-        }
-
-        await _semaphore.WaitAsync();
-        try
-        {
-            // Recheck the token after acquiring the lock to handle the case where
-            // the token was refreshed while waiting for the semaphore.
-            if (!string.IsNullOrWhiteSpace(_accessToken) && _tokenExpiry > DateTimeOffset.Now.AddMinutes(2))
-            {
-                return _accessToken;
-            }
-
-            if (await RefreshLoginAsync())
-            {
-                return _accessToken;
-            }
-
-            return string.Empty;
-        }
-        finally
-        {
-            _semaphore.Release();
-        }
+        return await _tokenManager.GetValidTokenAsync();
     }
 
     public async Task SignOut()
     {
-        // TODO: remove from auth client
-        var deviceToken = await SecureStorage.GetAsync("DeviceToken");
-        SecureStorage.RemoveAll();
-        Preferences.Clear();
-        if (deviceToken != null)
-        {
-            await SecureStorage.SetAsync("DeviceToken", deviceToken);
-        }
-        Preferences.Set("FirstRun", false);
-    }
-
-    private async Task GetStoredAccessToken()
-    {
-        _accessToken = await SecureStorage.GetAsync(nameof(_accessToken));
-
-        if (!string.IsNullOrEmpty(_accessToken))
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(_accessToken);
-
-            _tokenExpiry = jwtToken.ValidTo;
-
-            if (_tokenExpiry <= DateTimeOffset.Now.AddMinutes(2))
-            {
-                SecureStorage.Remove(nameof(_accessToken));
-            }
-            else
-            {
-                Preferences.Set(nameof(HasCachedAccount), true);
-                DetailsUpdated?.Invoke(this, EventArgs.Empty);
-            }
-        }
-    }
-
-    private ApiStatus SetLoggedInState(AuthResult loginResult)
-    {
-        if (!string.IsNullOrWhiteSpace(loginResult.IdentityToken) && !string.IsNullOrWhiteSpace(loginResult.AccessToken))
-        {
-            _accessToken = loginResult.AccessToken;
-            _tokenExpiry = loginResult.AccessTokenExpiration;
-
-            try
-            {
-                Preferences.Set(nameof(HasCachedAccount), true);
-                DetailsUpdated?.Invoke(this, EventArgs.Empty);
-            }
-            catch (Exception ex)
-            {
-                CrossFirebaseCrashlytics.Current.RecordException(new Exception("Failed to set a logged-in state"));
-                return ApiStatus.Unavailable;
-            }
-
-            return ApiStatus.Success;
-        }
-        else
-        {
-            CrossFirebaseCrashlytics.Current.RecordException(new Exception(
-                 $"AuthDebug: loginResult is missing tokens. Missing IdentityToken = {string.IsNullOrWhiteSpace(loginResult.IdentityToken)}, missing AccessToken = {string.IsNullOrWhiteSpace(loginResult.AccessToken)}"));
-            return ApiStatus.LoginFailure;
-        }
-    }
-
-    private async Task SetRefreshToken(AuthResult result)
-    {
-        if (!string.IsNullOrWhiteSpace(result.RefreshToken))
-        {
-            RefreshToken = result.RefreshToken;
-            await SecureStorage.SetAsync(nameof(RefreshToken), RefreshToken);
-        }
-    }
-
-    public async Task<bool> RefreshLoginAsync()
-    {
-        RefreshToken = await SecureStorage.GetAsync(nameof(RefreshToken));
-
-        if (!string.IsNullOrWhiteSpace(RefreshToken))
-        {
-            var oidcClient = new OidcClient(_options);
-
-            var result = await oidcClient.RefreshTokenAsync(RefreshToken);
-
-            if (!result.IsError)
-            {
-                var authResult = GetAuthResult(result);
-                await SetRefreshToken(authResult);
-                SetLoggedInState(authResult);
-                return true;
-            }
-            else
-            {
-                CrossFirebaseCrashlytics.Current.RecordException(new Exception($"{result.Error}, {result.ErrorDescription}"));
-
-                var signInResult = await SignInAsync();
-                if (signInResult != ApiStatus.Success && signInResult != ApiStatus.CancelledByUser)
-                {
-                    CrossFirebaseCrashlytics.Current.RecordException(new Exception(
-                         $"AuthDebug: Unsuccessful attempt to sign in after unsuccessful token refresh, ApiStatus={signInResult}"));
-                }
-
-                return signInResult == ApiStatus.Success;
-            }
-        }
-
-        return false;
+        _logger.LogInformation("Signing out user");
+        await _tokenManager.ClearTokensAsync();
     }
 
     public void NavigateToLoginPage()
     {
-        App.Current.MainPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
-    }
-
-    private AuthResult GetAuthResult<TResult> (TResult result)
-    {
-        if (result is LoginResult loginResult)
-        {
-            return new AuthResult
-            {
-                AccessToken = loginResult.AccessToken,
-                RefreshToken = loginResult.RefreshToken,
-                AccessTokenExpiration = loginResult.AccessTokenExpiration,
-                IdentityToken = loginResult.IdentityToken,
-            };
-        }
-        else if (result is RefreshTokenResult refreshTokenResult)
-        {
-            return new AuthResult
-            {
-                AccessToken = refreshTokenResult.AccessToken,
-                RefreshToken = refreshTokenResult.RefreshToken,
-                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
-                IdentityToken = refreshTokenResult.IdentityToken,
-            };
-        }
-        else
-        {
-            throw new ArgumentException("Unexpected result type", nameof(result));
-        }
-    }
-
-    private class AuthResult
-    {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
-        public string IdentityToken { get; set; }
-        public DateTimeOffset AccessTokenExpiration { get; set; }
+        App.Current.MainPage = _serviceProvider.GetRequiredService<LoginPage>();
     }
 }

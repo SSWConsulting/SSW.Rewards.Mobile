@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Plugin.Firebase.Crashlytics;
+using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -11,6 +11,12 @@ public interface IFileCacheService
 public class FileCacheService : IFileCacheService
 {
     private static readonly string CacheDirectory = FileSystem.CacheDirectory;
+    private readonly ILogger<FileCacheService> _logger;
+
+    public FileCacheService(ILogger<FileCacheService> logger)
+    {
+        _logger = logger;
+    }
 
     /// <summary>
     /// This is a generic method to fetch and refresh a cache file.
@@ -30,8 +36,8 @@ public class FileCacheService : IFileCacheService
             }
             catch (Exception e)
             {
-                // Log the error to Firebase Crashlytics and keep going.
-                CrossFirebaseCrashlytics.Current.RecordException(e);
+                // Log the error and keep going.
+                _logger.LogError(e, "Failed to create cache directory at {CacheDirectory}", CacheDirectory);
             }
         }
 
@@ -49,8 +55,8 @@ public class FileCacheService : IFileCacheService
             }
             catch (Exception e)
             {
-                // Log the error to Firebase Crashlytics and keep going.
-                CrossFirebaseCrashlytics.Current.RecordException(e);
+                // Log the error and keep going.
+                _logger.LogError(e, "Failed to deserialize cached data from {FilePath}", filePath);
             }
         }
 
@@ -65,7 +71,7 @@ public class FileCacheService : IFileCacheService
         }
         catch (Exception e)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(e);
+            _logger.LogError(e, "Failed to fetch and cache data for key {CacheKey}", cacheKey);
             throw;
         }
     }

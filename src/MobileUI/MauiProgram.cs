@@ -63,13 +63,7 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        
-        // Log all unhandled exceptions
-        MauiExceptions.UnhandledException += (_, args) =>
-        {
-            CrossFirebaseCrashlytics.Current.RecordException(args.ExceptionObject as Exception);
-        };
-        
+
 #if ANDROID
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
         {

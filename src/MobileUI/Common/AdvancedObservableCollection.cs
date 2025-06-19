@@ -1,6 +1,4 @@
-﻿using Plugin.Firebase.Crashlytics;
-
-namespace SSW.Rewards.Mobile.Common;
+﻿namespace SSW.Rewards.Mobile.Common;
 
 /// <summary>
 /// A wrapper around ObservableCollection with purpose to have an ObservableCollection that is backed by
@@ -77,8 +75,6 @@ public class AdvancedObservableCollection<T> : IDisposable
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(ex);
-
             // Ask ViewModel if it wants to handle the error. Otherwise, rethrow it.
             if (OnError == null || !OnError(ex))
             {

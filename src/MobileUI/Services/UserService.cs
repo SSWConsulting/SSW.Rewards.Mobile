@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Microsoft.Extensions.Logging;
 using SSW.Rewards.Shared.DTOs.Users;
 using IApiUserService = SSW.Rewards.ApiClient.Services.IUserService;
 
@@ -46,6 +47,7 @@ public class UserService : IUserService
 {
     private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
+    private readonly ILogger<UserService> _logger;
 
     private readonly BehaviorSubject<int> _myUserId = new(0);
     private readonly BehaviorSubject<string> _myName = new(string.Empty);
@@ -66,10 +68,11 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _twitterProfile = new(string.Empty);
     private readonly BehaviorSubject<string> _companyUrl = new(string.Empty);
 
-    public UserService(IApiUserService userService, IAuthenticationService authService)
+    public UserService(IApiUserService userService, IAuthenticationService authService, ILogger<UserService> logger)
     {
         _userClient = userService;
         _authService = authService;
+        _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
     }
 
@@ -108,16 +111,24 @@ public class UserService : IUserService
 
     public async Task UpdateMyDetailsAsync()
     {
-        var user = await _userClient.GetCurrentUser();
-        _myUserId.OnNext(user.Id);
-        _myName.OnNext(user.FullName);
-        _myEmail.OnNext(user.Email);
-        _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
-        _myPoints.OnNext(user.Points);
-        _myBalance.OnNext(user.Balance);
-        _myQrCode.OnNext(user.QRCode);
-        _isStaff.OnNext(user.IsStaff);
-        _myAllTimeRank.OnNext(user.Rank);
+        try
+        {
+            var user = await _userClient.GetCurrentUser();
+            _myUserId.OnNext(user.Id);
+            _myName.OnNext(user.FullName);
+            _myEmail.OnNext(user.Email);
+            _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
+            _myPoints.OnNext(user.Points);
+            _myBalance.OnNext(user.Balance);
+            _myQrCode.OnNext(user.QRCode);
+            _isStaff.OnNext(user.IsStaff);
+            _myAllTimeRank.OnNext(user.Rank);
+        }
+        catch (HttpRequestException ex)
+        {
+            // Network connectivity issues - silently fail and keep existing data
+            _logger.LogWarning(ex, "Network error while updating current user details");
+        }
     }
     
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()

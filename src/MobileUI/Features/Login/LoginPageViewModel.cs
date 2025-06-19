@@ -1,13 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Plugin.Firebase.Crashlytics;
-using SSW.Rewards.Mobile.Common;
+using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
+    private readonly ILogger<LoginPageViewModel> _logger;
+
+    private const string DefaultButtonText = "Sign up / Log in";
 
     [ObservableProperty]
     private bool _isRunning;
@@ -18,53 +20,58 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
-    private bool _isStaff;
-
-    public LoginPageViewModel(IAuthenticationService authService, IUserService userService)
+    public LoginPageViewModel(IAuthenticationService authService, ILogger<LoginPageViewModel> logger)
     {
         _authService = authService;
-        ButtonText = "Sign up / Log in";
-        userService.MyQrCodeObservable().Subscribe(myQrCode => _isStaff = !string.IsNullOrWhiteSpace(myQrCode));
+        _logger = logger;
+        ButtonText = DefaultButtonText;
     }
 
     [RelayCommand]
     private async Task LoginTapped()
     {
-        IsRunning = true;
-        LoginButtonEnabled = false;
-        bool enableButtonAfterLogin = true;
+        SetLoadingState(true);
 
-        ApiStatus status = await _authService.SignInAsync();
-
-        var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
+        try
         {
-            { ApiStatus.Unavailable, ("Service Unavailable", "Looks like the SSW.Rewards service is not currently available. Please try again later.") },
-            { ApiStatus.LoginFailure, ("Login Failure", "There seems to have been a problem logging you in. Please try again.") },
-        };
+            ApiStatus status = await _authService.SignInAsync();
 
-        if (status != ApiStatus.CancelledByUser)
-        {
-            if (status != ApiStatus.Success)
+            if (status == ApiStatus.Success)
+            {
+                await App.InitialiseMainPageAsync();
+                return;
+            }
+
+            if (status != ApiStatus.CancelledByUser)
             {
                 await WaitForWindowClose();
-
-                // Only display error if user is not logged in.
-                // Autologin will fall here, if login page is opened, despite being successfull.
-                if (_authService.IsLoggedIn && _authService.HasCachedAccount)
-                {
-                    var alert = statusAlerts.GetValueOrDefault(status, (Title: "Unexpected Error", Message: "Something went wrong there, please try again later."));
-                    await App.Current.MainPage.DisplayAlert(alert.Title, alert.Message, "OK");
-                }
-            }
-            else
-            {
-                enableButtonAfterLogin = false;
-                await App.InitialiseMainPage();
+                await ShowErrorForStatus(status);
             }
         }
+        finally
+        {
+            SetLoadingState(false);
+        }
+    }
 
-        LoginButtonEnabled = enableButtonAfterLogin;
-        IsRunning = false;
+    private void SetLoadingState(bool isLoading)
+    {
+        IsRunning = isLoading;
+        LoginButtonEnabled = !isLoading;
+        ButtonText = isLoading ? "Logging you in..." : DefaultButtonText;
+    }
+
+    private static async Task ShowErrorForStatus(ApiStatus status)
+    {
+        var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
+        {
+            { ApiStatus.Unavailable, ("Service Unavailable", "The SSW.Rewards service is not currently available. Please try again later.") },
+            { ApiStatus.LoginFailure, ("Login Failure", "There was a problem logging you in. Please try again.") },
+            { ApiStatus.Error, ("Unexpected Error", "Something went wrong. Please try again later.") }
+        };
+
+        var alert = statusAlerts.GetValueOrDefault(status, ("Error", "An unexpected error occurred."));
+        await App.Current.MainPage.DisplayAlert(alert.Item1, alert.Item2, "OK");
     }
 
     private async static Task WaitForWindowClose()
@@ -85,43 +92,41 @@ public partial class LoginPageViewModel : BaseViewModel
             return;
         }
 
-        bool enableButtonAfterLogin = true;
-        LoginButtonEnabled = false;
-        IsRunning = true;
-        ButtonText = "Logging you in...";
+        SetLoadingState(true);
 
         try
         {
-            // Load token in background.
-            var _ = _authService.GetAccessToken();
-
+            // Proceed to main page immediately if we have a cached account
             await WaitForWindowClose();
-            await App.InitialiseMainPage();
-        }
-        catch (HttpRequestException e)
-        {
-            // Everything else is fatal
-            CrossFirebaseCrashlytics.Current.RecordException(e);
-            Console.WriteLine(e);
-            await WaitForWindowClose();
+            await App.InitialiseMainPageAsync();
 
-            // Skip logic for initial setup as the above might have failed on updating device ID.
-            await Application.Current.InitializeMainPage();
+            try
+            {
+                var token = await _authService.GetAccessTokenAsync();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    _logger.LogWarning("No access token found");
+                    return;
+                }
+
+                _logger.LogInformation("Access token retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to get access token - user can continue with cached credentials");
+            }
         }
         catch (Exception e)
         {
-            // Everything else is fatal
-            CrossFirebaseCrashlytics.Current.RecordException(e);
-            Console.WriteLine(e);
+            _logger.LogError(e, "Error during refresh");
             await WaitForWindowClose();
-            await Application.Current.MainPage.DisplayAlert("Login Failure",
-                "There seems to have been a problem logging you in. Please try again. " + e.Message, "OK");
+            await Application.Current.MainPage.DisplayAlert("Login Error",
+                "There was a problem accessing your account. Please try logging in again.", "OK");
         }
         finally
         {
-            IsRunning = false;
-            LoginButtonEnabled = enableButtonAfterLogin;
-            ButtonText = "Sign up / Log in";
+            SetLoadingState(false);
         }
     }
 }
