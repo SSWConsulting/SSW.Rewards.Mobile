@@ -96,26 +96,33 @@ public partial class LoginPageViewModel : BaseViewModel
 
         try
         {
-            var token = await _authService.GetAccessTokenAsync();
-        
-            if (!string.IsNullOrEmpty(token))
-            {
-                await WaitForWindowClose();
-                await App.InitialiseMainPageAsync();
-                return;
-            }
-        
-            // Token retrieval failed - show session expired message
+            // Proceed to main page immediately if we have a cached account
             await WaitForWindowClose();
-            await Application.Current.MainPage.DisplayAlert("Session Expired", 
-                "Your session has expired. Please log in again.", "OK");
+            await App.InitialiseMainPageAsync();
+
+            try
+            {
+                var token = await _authService.GetAccessTokenAsync();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    _logger.LogWarning("No access token found");
+                    return;
+                }
+
+                _logger.LogInformation("Access token retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to get access token - user can continue with cached credentials");
+            }
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error during refresh");
             await WaitForWindowClose();
             await Application.Current.MainPage.DisplayAlert("Login Error",
-                "There was a problem refreshing your session. Please try logging in again.", "OK");
+                "There was a problem accessing your account. Please try logging in again.", "OK");
         }
         finally
         {

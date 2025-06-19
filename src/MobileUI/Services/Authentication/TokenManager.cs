@@ -19,6 +19,7 @@ public class TokenManager : ITokenManager
     private readonly IOidcAuthenticationProvider _oidcProvider;
     private readonly ILogger<TokenManager> _logger;
     private readonly SemaphoreSlim _refreshSemaphore = new(1, 1);
+    private readonly TimeSpan _refreshSemaphoreTimeout = TimeSpan.FromSeconds(10);
     private readonly TimeSpan _tokenRefreshBuffer;
 
     private string _cachedAccessToken;
@@ -41,42 +42,86 @@ public class TokenManager : ITokenManager
 
     public async Task<string> GetValidTokenAsync()
     {
-        // Load from cache if not present
-        if (string.IsNullOrEmpty(_cachedAccessToken))
-        {
-            await LoadTokenFromStorageAsync();
-        }
+        await EnsureTokenLoadedAsync();
 
-        // Return if still valid (with buffer)
         if (IsTokenValid())
         {
             return _cachedAccessToken;
         }
 
-        // Thread-safe token refresh with timeout
-        bool lockTaken = await _refreshSemaphore.WaitAsync(TimeSpan.FromSeconds(30));
-        if (!lockTaken)
+        return await HandleExpiredTokenAsync();
+    }
+
+    private async Task EnsureTokenLoadedAsync()
+    {
+        if (string.IsNullOrEmpty(_cachedAccessToken))
+        {
+            await LoadTokenFromStorageAsync();
+        }
+    }
+
+    private async Task<string> HandleExpiredTokenAsync()
+    {
+        // Return cached token and refresh in background if available
+        if (!string.IsNullOrEmpty(_cachedAccessToken))
+        {
+            _ = RefreshTokenAsync();
+            _logger.LogInformation("Returning cached token for immediate use, refresh in progress");
+            return _cachedAccessToken;
+        }
+
+        // No cached token - attempt refresh
+        var success = await RefreshTokenAsync();
+
+        if (success)
+        {
+            return _cachedAccessToken;
+        }
+
+        _logger.LogWarning("Unable to refresh token - no cached credentials available");
+        await ClearTokensAsync();
+        return string.Empty;
+    }
+
+    private async Task<bool> RefreshTokenAsync()
+    {
+        if (!await _refreshSemaphore.WaitAsync(_refreshSemaphoreTimeout))
         {
             _logger.LogWarning("Token refresh timed out waiting for semaphore");
-            return string.Empty;
+            return false;
         }
 
         try
         {
-            // Double-check after acquiring lock
+            // Double-check if token is now valid after acquiring semaphore
             if (IsTokenValid())
             {
-                return _cachedAccessToken;
+                return true;
             }
 
-            if (await RefreshTokenAsync())
+            var refreshToken = await _storage.GetRefreshTokenAsync();
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
             {
-                return _cachedAccessToken;
+                _logger.LogWarning("No refresh token available");
+                return false;
             }
 
-            _logger.LogWarning("Unable to refresh token - clearing stored tokens");
-            await ClearTokensAsync(); // Clear invalid tokens
-            return string.Empty;
+            var result = await _oidcProvider.RefreshTokenAsync(refreshToken);
+
+            if (result.IsSuccess)
+            {
+                await StoreTokensAsync(result.AccessToken, result.RefreshToken, result.AccessTokenExpiration);
+                return true;
+            }
+
+            _logger.LogWarning("Token refresh failed: {Error}", result.Error);
+            return await AttemptSilentLoginAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Token refresh failed");
+            return false;
         }
         finally
         {
@@ -84,38 +129,9 @@ public class TokenManager : ITokenManager
         }
     }
 
-    private async Task<bool> RefreshTokenAsync()
-    {
-        string refreshToken = await _storage.GetRefreshTokenAsync();
-
-        if (string.IsNullOrWhiteSpace(refreshToken))
-        {
-            _logger.LogWarning("No refresh token available");
-            return false;
-        }
-
-        var result = await _oidcProvider.RefreshTokenAsync(refreshToken);
-
-        if (result.IsSuccess)
-        {
-            await StoreTokensAsync(result.AccessToken, result.RefreshToken, result.AccessTokenExpiration);
-            return true;
-        }
-        else
-        {
-            _logger.LogWarning("Token refresh failed: {Error}", result.Error);
-
-            // Try silent login as fallback
-            return await AttemptSilentLoginAsync();
-        }
-    }
-
     public async Task StoreTokensAsync(string accessToken, string refreshToken, DateTimeOffset expiry)
     {
-        if (string.IsNullOrWhiteSpace(accessToken))
-        {
-            throw new ArgumentException("Access token cannot be null or empty", nameof(accessToken));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(accessToken, nameof(accessToken));
 
         _cachedAccessToken = accessToken;
         _tokenExpiry = expiry;
@@ -142,32 +158,39 @@ public class TokenManager : ITokenManager
     {
         _cachedAccessToken = await _storage.GetAccessTokenAsync();
 
-        if (!string.IsNullOrEmpty(_cachedAccessToken))
+        if (string.IsNullOrEmpty(_cachedAccessToken))
         {
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadJwtToken(_cachedAccessToken);
-                _tokenExpiry = jwtToken.ValidTo;
+            return;
+        }
 
-                if (!IsTokenValid())
-                {
-                    _logger.LogInformation("Stored token is expired");
-                    _cachedAccessToken = null;
-                }
-                else
-                {
-                    _storage.SetHasCachedAccount(true);
-                    TokensUpdated?.Invoke(this, EventArgs.Empty);
-                }
-            }
-            catch (Exception ex)
+        try
+        {
+            _tokenExpiry = ExtractTokenExpiry(_cachedAccessToken);
+
+            if (!IsTokenValid())
             {
-                _logger.LogError(ex, "Error parsing stored access token");
+                _logger.LogInformation("Stored token is expired");
                 _cachedAccessToken = null;
-                await _storage.ClearAllAsync();
+            }
+            else
+            {
+                _storage.SetHasCachedAccount(true);
+                TokensUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error parsing stored access token");
+            _cachedAccessToken = null;
+            await _storage.ClearAllAsync();
+        }
+    }
+
+    private static DateTimeOffset ExtractTokenExpiry(string accessToken)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+        return jwtToken.ValidTo;
     }
 
     private bool IsTokenValid()
