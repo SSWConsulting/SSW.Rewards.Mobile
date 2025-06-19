@@ -10,6 +10,7 @@ public interface IAuthStorageService
     Task StoreAccessTokenAsync(string accessToken);
     Task StoreRefreshTokenAsync(string refreshToken);
     Task StoreDeviceTokenAsync(string deviceToken);
+    void ClearAccessToken();
     Task ClearAllAsync();
     void SetHasCachedAccount(bool value);
     bool HasCachedAccount { get; }
@@ -75,6 +76,19 @@ public class AuthStorageService : IAuthStorageService
         }
 
         await StoreTokenInSecureStorageAsync(DeviceTokenKey, deviceToken);
+    }
+
+    public void ClearAccessToken()
+    {
+        try
+        {
+            SecureStorage.Remove(AccessTokenKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to clear access token");
+            throw;
+        }
     }
 
     public async Task ClearAllAsync()

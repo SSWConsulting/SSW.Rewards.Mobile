@@ -17,24 +17,36 @@ public class FirstRunService : IFirstRunService
     private readonly IPermissionsService _permissionsService;
     private readonly IPushNotificationsService _pushNotificationsService;
     private readonly IAuthStorageService _storage;
+    private readonly IUserService _userService;
     private readonly ILogger<FirstRunService> _logger;
 
     private string _pendingScanCode;
 
     public FirstRunService(IServiceProvider provider, IPermissionsService permissionsService,
         IPushNotificationsService pushNotificationsService, IAuthStorageService storage,
-        ILogger<FirstRunService> logger)
+        IUserService userService, ILogger<FirstRunService> logger)
     {
         _provider = provider;
         _permissionsService = permissionsService;
         _pushNotificationsService = pushNotificationsService;
         _storage = storage;
+        _userService = userService;
         _logger = logger;
     }
 
     public async Task InitialiseAfterLogin()
     {
         await Application.Current.InitializeMainPage();
+
+        // Update user details after login
+        try
+        {
+            await _userService.UpdateMyDetailsAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating user details after login");
+        }
 
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
 

@@ -44,7 +44,7 @@ public class TokenManager : ITokenManager
     {
         await EnsureTokenLoadedAsync();
 
-        if (IsTokenValid())
+        if (IsCachedTokenValid())
         {
             return _cachedAccessToken;
         }
@@ -79,7 +79,6 @@ public class TokenManager : ITokenManager
         }
 
         _logger.LogWarning("Unable to refresh token - no cached credentials available");
-        await ClearTokensAsync();
         return string.Empty;
     }
 
@@ -94,7 +93,7 @@ public class TokenManager : ITokenManager
         try
         {
             // Double-check if token is now valid after acquiring semaphore
-            if (IsTokenValid())
+            if (IsCachedTokenValid())
             {
                 return true;
             }
@@ -131,12 +130,13 @@ public class TokenManager : ITokenManager
 
     public async Task StoreTokensAsync(string accessToken, string refreshToken, DateTimeOffset expiry)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(accessToken, nameof(accessToken));
-
         _cachedAccessToken = accessToken;
         _tokenExpiry = expiry;
 
-        await _storage.StoreAccessTokenAsync(accessToken);
+        if (!string.IsNullOrWhiteSpace(accessToken))
+        {
+            await _storage.StoreAccessTokenAsync(accessToken);
+        }
 
         if (!string.IsNullOrWhiteSpace(refreshToken))
         {
@@ -156,25 +156,28 @@ public class TokenManager : ITokenManager
 
     private async Task LoadTokenFromStorageAsync()
     {
-        _cachedAccessToken = await _storage.GetAccessTokenAsync();
+        var token = await _storage.GetAccessTokenAsync();
 
-        if (string.IsNullOrEmpty(_cachedAccessToken))
+        if (string.IsNullOrEmpty(token))
         {
             return;
         }
 
         try
         {
-            _tokenExpiry = ExtractTokenExpiry(_cachedAccessToken);
+            var expiry = ExtractTokenExpiry(token);
 
-            if (!IsTokenValid())
+            if (!IsTokenValid(token))
             {
                 _logger.LogInformation("Stored token is expired");
                 _cachedAccessToken = null;
+                _storage.ClearAccessToken();
             }
             else
             {
                 _storage.SetHasCachedAccount(true);
+                _cachedAccessToken = token;
+                _tokenExpiry = expiry;
                 TokensUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -193,9 +196,14 @@ public class TokenManager : ITokenManager
         return jwtToken.ValidTo;
     }
 
-    private bool IsTokenValid()
+    private bool IsCachedTokenValid()
     {
-        return !string.IsNullOrWhiteSpace(_cachedAccessToken) && 
+        return IsTokenValid(_cachedAccessToken);
+    }
+
+    private bool IsTokenValid(string token)
+    {
+        return !string.IsNullOrWhiteSpace(token) &&
                _tokenExpiry > DateTimeOffset.UtcNow.Add(_tokenRefreshBuffer);
     }
 
