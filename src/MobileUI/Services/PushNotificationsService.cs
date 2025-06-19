@@ -30,7 +30,7 @@ public class PushNotificationsService : IPushNotificationsService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Couldn't upload device token at {LastTimeUpdated}. Error: {Exception}", lastTimeUpdated, e);
+            _logger.LogError(e, "Couldn't upload device token at {LastTimeUpdated}", lastTimeUpdated);
             return false;
         }
     }
