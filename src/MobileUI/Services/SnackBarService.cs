@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Extensions;
 using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.Services;
