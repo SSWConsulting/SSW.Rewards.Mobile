@@ -97,7 +97,7 @@
                                         <Setter Property="IsVisible" Value="False" />
                                     </DataTrigger>
                                 </Grid.Triggers>
-                                <!-- Rest of your carousel content -->
+                                <!-- Carousel content -->
                                 <CarouselView Grid.Row="0"
                                               x:Name="Carousel"
                                               HeightRequest="400"
@@ -109,7 +109,7 @@
                                     <CarouselView.Behaviors>
                                         <mct:EventToCommandBehavior
                                             EventName="Scrolled"
-                                            Command="{Binding CarouselScrolledCommand}" />
+                                            Command="{Binding Source={x:Reference RewardList}, Path=BindingContext.CarouselScrolledCommand}" />
                                     </CarouselView.Behaviors>
                                     <CarouselView.ItemTemplate>
                                         <DataTemplate x:DataType="models:Reward">

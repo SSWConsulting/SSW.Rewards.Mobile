@@ -20,7 +20,7 @@
                 <controls:SegmentedControl.Behaviors>
                     <mct:EventToCommandBehavior
                         EventName="SelectionChanged"
-                        Command="{Binding FilterBySegmentCommand}" />
+                        Command="{Binding Source={x:Reference Activity}, Path=BindingContext.FilterBySegmentCommand}" />
                 </controls:SegmentedControl.Behaviors>
             </controls:SegmentedControl>
         </Grid>
