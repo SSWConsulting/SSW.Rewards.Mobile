@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <RootNamespace>SSW.Rewards.WebAPI</RootNamespace>
         <AssemblyName>SSW.Rewards.WebAPI</AssemblyName>
         <Nullable>enable</Nullable>
