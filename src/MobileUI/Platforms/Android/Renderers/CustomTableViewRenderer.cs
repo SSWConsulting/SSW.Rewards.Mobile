@@ -2,8 +2,8 @@ using Android.Content;
 using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
-using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 using Microsoft.Maui.Controls.Platform;
+using Microsoft.Maui.Platform;
 using TableViewModelRenderer = Microsoft.Maui.Controls.Handlers.Compatibility.TableViewModelRenderer;
 using TableViewRenderer = Microsoft.Maui.Controls.Handlers.Compatibility.TableViewRenderer;
 
@@ -21,8 +21,8 @@ public class CustomTableViewRenderer : TableViewRenderer
         if (Control == null)
             return;
     
-        var listView = Control as Android.Widget.ListView;
-        listView.Divider = new ColorDrawable(Colors.Transparent.ToAndroid());
+        var listView = Control;
+        listView.Divider = new ColorDrawable(Colors.Transparent.ToPlatform());
     }
 
     protected override TableViewModelRenderer GetModelRenderer(Android.Widget.ListView listView, TableView view)
@@ -49,10 +49,10 @@ public class CustomTableViewRenderer : TableViewRenderer
                 try
                 {
                     // get the divider below the header
-                    var divider = (view as LinearLayout).GetChildAt(1);
+                    var divider = (view as LinearLayout)?.GetChildAt(1);
 
                     // Set the color
-                    divider.SetBackgroundColor(Colors.Transparent.ToAndroid());
+                    divider?.SetBackgroundColor(Colors.Transparent.ToPlatform());
                 }
                 catch (Exception) { }
             }

@@ -64,11 +64,11 @@ jobs:
           fi
 
       - name: Build and sign
-        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net8.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
+        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net9.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-ios-${{ inputs.build_number }}
           path: | 
-            src/MobileUI/bin/Release/net8.0-ios/ios-arm64/publish/*.ipa
+            src/MobileUI/bin/Release/net9.0-ios/ios-arm64/publish/*.ipa

@@ -15,7 +15,7 @@ public partial class SegmentedControl : ContentView
 	public event EventHandler<Segment> SelectionChanged;
 
 	[AutoBindable(DefaultBindingMode = "TwoWay", OnChanged = nameof(SegmentChanged))]
-	private Segment _selectedSegment;
+	private Segment? _selectedSegment;
 
     private void SegmentChanged(Segment segment)
     {

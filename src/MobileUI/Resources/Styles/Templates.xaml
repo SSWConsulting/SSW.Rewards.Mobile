@@ -119,9 +119,6 @@
                             <Setter Property="IsVisible" Value="False" />
                         </DataTrigger>
                     </Button.Triggers>
-                    <ImageButton.Behaviors>
-                        <mct:IconTintColorBehavior TintColor="White" />
-                    </ImageButton.Behaviors>
                     <Button.ImageSource>
                         <FileImageSource File="icon_bell" />
                     </Button.ImageSource>

@@ -9,7 +9,7 @@ public partial class App : Application
     private static IAuthenticationService _authService;
     private static IFirstRunService _firstRunService;
 
-    public App(LoginPage page, IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
+    public App(IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
     {
         _provider = serviceProvider;
         _authService = authService;
@@ -17,20 +17,18 @@ public partial class App : Application
         
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
-
-        MainPage = page;
+    }
+    
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var loginPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
+        return new Window(loginPage);
     }
 
     protected override async void OnStart()
     {
         //await UpdateAccessTokenAsync();
         await CheckApiCompatibilityAsync();
-
-        // HACK - Resource dictionary isn't available here :(
-        // See discussion: https://github.com/dotnet/maui/discussions/5263
-        //MainPage = new LoginPage(loginPageViewModel);
-
-        //await App.Current.MainPage.Navigation.PushModalAsync<LoginPage>();
     }
 
     protected override void OnSleep()
@@ -86,7 +84,7 @@ public partial class App : Application
 
             if (!compatible)
             {
-                await Application.Current.MainPage.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                await Shell.Current.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
             }
         }
         catch (Exception ex)

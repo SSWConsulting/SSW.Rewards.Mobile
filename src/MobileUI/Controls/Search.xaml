@@ -18,6 +18,7 @@
             x:Name="SearchEntry"
             PlaceholderColor="{StaticResource Gray500}"
             android:Entry.ImeOptions="Search"
+            Keyboard="Plain"
             Margin="{OnPlatform Android='10,3,0,0', iOS='10,0,0,0'}" 
             TextChanged="SearchEntry_OnTextChanged">
             <controls:BorderlessEntry.Behaviors>
@@ -45,8 +46,7 @@
             WidthRequest="20"
             HeightRequest="20"
             Grid.Column="1"
-            IsRunning="True"
-            IsVisible="False"
+            IsRunning="False"
             Color="{DynamicResource SSWRed}"
             HorizontalOptions="Center"
             VerticalOptions="Center" />

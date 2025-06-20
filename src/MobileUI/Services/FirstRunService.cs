@@ -27,7 +27,7 @@ public class FirstRunService : IFirstRunService
 
     public async Task InitialiseAfterLogin()
     {
-        await Application.Current.InitializeMainPage();
+        Application.Current.InitializeMainPage();
 
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
 

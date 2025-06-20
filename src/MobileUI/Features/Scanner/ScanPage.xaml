@@ -177,7 +177,7 @@
             <controls:SegmentedControl.Behaviors>
                 <toolkit:EventToCommandBehavior
                     EventName="SelectionChanged"
-                    Command="{Binding FilterBySegmentCommand}" />
+                    Command="{Binding Source={x:Reference Scan}, Path=BindingContext.FilterBySegmentCommand}" />
             </controls:SegmentedControl.Behaviors>
         </controls:SegmentedControl>
 

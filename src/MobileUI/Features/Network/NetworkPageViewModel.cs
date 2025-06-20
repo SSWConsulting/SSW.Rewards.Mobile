@@ -20,7 +20,7 @@ public partial class NetworkPageViewModel : BaseViewModel
     [ObservableProperty] 
     private List<Segment> _segments;
     [ObservableProperty]
-    private Segment _selectedSegment;
+    private Segment? _selectedSegment;
     [ObservableProperty]
     private bool _isRefreshing;
 
@@ -82,6 +82,9 @@ public partial class NetworkPageViewModel : BaseViewModel
     [RelayCommand]
     private void FilterBySegment()
     {
+        if (SelectedSegment == null)
+            return;
+
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
 
         // This may trigger before the page is ready.
