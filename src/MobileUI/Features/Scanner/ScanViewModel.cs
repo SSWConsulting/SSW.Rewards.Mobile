@@ -41,7 +41,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     ];
     
     [ObservableProperty]
-    private Segment _selectedSegment;
+    private Segment? _selectedSegment;
     
     [ObservableProperty]
     private bool _isCameraEnabled;
@@ -170,6 +170,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [RelayCommand]
     private void FilterBySegment()
     {
+        if (SelectedSegment == null)
+            return;
+
         CurrentSegment = (ScanPageSegments)SelectedSegment.Value;
 
         switch (CurrentSegment)

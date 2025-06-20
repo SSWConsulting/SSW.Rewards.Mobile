@@ -32,7 +32,7 @@
                 <controls:SegmentedControl.Behaviors>
                     <mct:EventToCommandBehavior
                         EventName="SelectionChanged"
-                        Command="{Binding FilterByPeriodCommand}" />
+                        Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.FilterByPeriodCommand}" />
                 </controls:SegmentedControl.Behaviors>
             </controls:SegmentedControl>
 

@@ -26,7 +26,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     private List<Segment> _segments = [];
     
     [ObservableProperty]
-    private Segment _selectedSegment;
+    private Segment? _selectedSegment;
     
     [ObservableProperty]
     private bool _isRefreshing;
@@ -160,7 +160,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     [RelayCommand]
     private async Task FilterBySegment()
     {
-        if (!_loaded || CurrentSegment == (ActivityPageSegments)SelectedSegment.Value)
+        if (!_loaded || SelectedSegment == null || CurrentSegment == (ActivityPageSegments)SelectedSegment.Value)
         {
             return;
         }
