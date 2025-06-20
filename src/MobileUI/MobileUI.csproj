@@ -65,34 +65,31 @@
 
 	<ItemGroup>
 		<PackageReference Include="BarcodeScanning.Native.Maui" Version="2.2.1" />
-		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="1.1.1" />
+		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="2.5.4" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.80" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
 		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
 		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.58.1" />
-		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0-preview3" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.73.0" />
+		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.0.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1" />
 		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
-		<PackageReference Include="Mopups" Version="1.3.0" />
+		<PackageReference Include="Mopups" Version="1.3.4" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="QRCoder-ImageSharp" Version="0.10.0" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.7" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.7" />
-		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
-		<PackageReference Include="System.Reactive" Version="6.0.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
+		<PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <GoogleServicesJson Include="Platforms/Android/google-services.json" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.7.0.1" />
-        <PackageReference Include="Xamarin.Google.Dagger" Version="2.48.1.2" />
 	</ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
@@ -100,7 +97,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios' OR '$(TargetFramework)' == 'net9.0-android'">
-        <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.1" />
+        <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.1" />
     </ItemGroup>
@@ -120,6 +117,11 @@
 	</PropertyGroup>
     <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
         <BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+      <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.2" />
+      <PackageReference Include="Xamarin.Google.Dagger" Version="2.56.2.2" />
+      <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.7.0.2" />
     </ItemGroup>
 
     <!-- Target needed until LinkWithSwiftSystemLibraries makes it into the SDK: https://github.com/xamarin/xamarin-macios/pull/20463 -->
