@@ -8,6 +8,7 @@ using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
 using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
+using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 

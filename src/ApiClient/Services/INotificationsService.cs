@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
 using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.ApiClient.Services;
@@ -8,6 +7,7 @@ public interface INotificationsService
 {
     Task UploadDeviceToken(DeviceTokenDto command, CancellationToken cancellationToken);
     Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken);
+    Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, CancellationToken cancellationToken);
 }
 
 public class NotificationsService : INotificationsService
@@ -45,5 +45,20 @@ public class NotificationsService : INotificationsService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to send admin notification: {responseContent}");
+    }
+
+    public async Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.GetAsync($"{_baseRoute}List?page={page}&pageSize={pageSize}", cancellationToken);
+        if (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<NotificationHistoryListViewModel>(cancellationToken: cancellationToken);
+            if (response is not null)
+            {
+                return response;
+            }
+        }
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to get notification history: {responseContent}");
     }
 }

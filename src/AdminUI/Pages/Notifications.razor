@@ -1,123 +1,59 @@
 @page "/notifications"
 
-@using Microsoft.AspNetCore.Authorization
 @using MudBlazor
-@using SSW.Rewards.Shared.DTOs.Achievements
-@using SSW.Rewards.Shared.DTOs.Roles
-@using SSW.Rewards.Admin.UI.Models
-
-@attribute [Authorize(Roles = "Admin")]
+@using SSW.Rewards.Shared.DTOs.Notifications
+@inject NavigationManager Navigation
+@inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
     <MudText Typo="Typo.h3" GutterBottom="true">Notifications</MudText>
-
-    <MudGrid>
-        <MudItem xs="12" md="7">
-            <MudPaper Class="pa-4">
-                <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    <MudGrid Spacing="3">
-                        <MudItem xs="12">
-                            <MudText Typo="Typo.h6">Delivery</MudText>
-                            <MudRadioGroup @bind-Value="@_model.DeliveryOption">
-                                <MudRadio Option="@Delivery.Now" Color="Color.Primary">Now</MudRadio>
-                                <MudRadio Option="@Delivery.Schedule" Color="Color.Primary">Schedule</MudRadio>
-                            </MudRadioGroup>
-                        </MudItem>
-
-                        @if (_model.DeliveryOption == Delivery.Schedule)
-                        {
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudDatePicker Label="Date" @bind-Date="@_model.ScheduleDate" For="@(() => _model.ScheduleDate)" Required="true" MinDate="@DateTime.Today" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudTimePicker Label="Time" @bind-Time="@_model.ScheduleTime" For="@(() => _model.ScheduleTime)" Required="true" />
-                            </MudItem>
-                            <MudItem xs="12" sm="12" md="4">
-                                <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone" For="@(() => _model.SelectedTimeZone)" Required="true" AnchorOrigin="Origin.BottomCenter">
-                                    @foreach (var tz in _timezones)
-                                    {
-                                        <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
-                                    }
-                                </MudSelect>
-                            </MudItem>
-                        }
-
-                        <MudItem xs="12">
-                            <MudText Typo="Typo.h6" Class="mt-4">Targeting (Optional)</MudText>
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudAutocomplete T="AchievementDto"
-                                             @bind-Value="@_model.SelectedAchievement"
-                                             Label="Required Achievement (Optional)"
-                                             AnchorOrigin="Origin.BottomCenter"
-                                             SearchFuncWithCancel="@SearchAchievements"
-                                             ShowProgressIndicator="true"
-                                             ToStringFunc="@GetAchievementName"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true" />
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudAutocomplete T="RoleDto"
-                                             @bind-Value="@_model.SelectedRole"
-                                             Label="Role (Optional)"
-                                             SearchFunc="@SearchRoles"
-                                             ToStringFunc="@(role => role?.Name ?? string.Empty)"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Dense="true" />
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudText Typo="Typo.h6" Class="mt-4">Content</MudText>
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Title" Label="Notification Title" For="@(() => _model.Title)" Required="true" MaxLength="100" Counter="100" />
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Body" Label="Notification Body" For="@(() => _model.Body)" Required="true" Lines="3" MaxLength="250" Counter="250" />
-                        </MudItem>
-
-                        <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.ImageUrl" Label="Notification Image URL (Optional)" For="@(() => _model.ImageUrl)" />
-                        </MudItem>
-
-                        <MudItem xs="12" Class="d-flex justify-end mt-4">
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Disabled="@_isSending">Send Notification</MudButton>
-                        </MudItem>
-                    </MudGrid>
-                </EditForm>
-            </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" md="5">
-            <MudText Typo="Typo.h5" GutterBottom="true" Class="mb-3">Preview</MudText>
-            <MudGrid Spacing="2" Justify="Justify.Center">
-                <MudItem xs="6" sm="5" md="6" lg="5">
-                    <MudPaper Class="pa-3" Style="background-color: #f5f5f5; border-radius: 20px; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <div style="font-family: 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100%; max-width: 180px; background-color: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <MudText Typo="Typo.caption" Style="font-weight: bold; color: #1d1d1f;">SSW Rewards</MudText>
-                            <MudText Typo="Typo.subtitle2" Style="font-weight: bold; color: #1d1d1f; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrWhiteSpace(_model.Title) ? _model.Title : "New Achievement!")</MudText>
-                            <MudText Typo="Typo.body2" Style="color: #333333; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrWhiteSpace(_model.Body) ? _model.Body : "Great job!")</MudText>
-                        </div>
-                    </MudPaper>
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-1">iOS</MudText>
-                </MudItem>
-                <MudItem xs="6" sm="5" md="6" lg="5">
-                    <MudPaper Class="pa-3" Style="background-color: #f5f5f5; border-radius: 20px; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <div style="font-family: 'Roboto', sans-serif; width: 100%; max-width: 180px; background-color: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <MudText Typo="Typo.caption" Style="font-weight: bold; color: #1f1f1f;">SSW Rewards</MudText>
-                            <MudText Typo="Typo.subtitle2" Style="font-weight: bold; color: #1f1f1f; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrWhiteSpace(_model.Title) ? _model.Title : "New Achievement!")</MudText>
-                            <MudText Typo="Typo.body2" Style="color: #3c4043; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrWhiteSpace(_model.Body) ? _model.Body : "Great job!")</MudText>
-                        </div>
-                    </MudPaper>
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="mt-1">Android</MudText>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-    </MudGrid>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mb-4" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
+        Send Notification
+    </MudButton>
+    <MudPaper>
+        <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>Title</MudTh>
+                <MudTh>Created</MudTh>
+                <MudTh>Was Sent</MudTh>
+                <MudTh>Had Errors</MudTh>
+                <MudTh>Sent On</MudTh>
+                <MudTh>Targeted</MudTh>
+                <MudTh>Sent</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Title">@context.Title</MudTd>
+                <MudTd DataLabel="Created">@context.CreatedDate.ToString("g")</MudTd>
+                <MudTd DataLabel="Was Sent">@(context.WasSent ? "Yes" : "No")</MudTd>
+                <MudTd DataLabel="Had Errors">@(context.HasError ? "Yes" : "No")</MudTd>
+                <MudTd DataLabel="Sent On">@(context.SentOn?.ToString("g") ?? "-")</MudTd>
+                <MudTd DataLabel="Targeted">@context.NumberOfUsersTargeted</MudTd>
+                <MudTd DataLabel="Sent">@context.NumberOfUsersSent</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
 </MudContainer>
+
+@code {
+    private bool _loading = false;
+    private async Task<TableData<NotificationHistoryDto>> LoadNotifications(TableState state)
+    {
+        _loading = true;
+        try
+        {
+            // MudTable uses 0-based page index
+            var page = state.Page;
+            var pageSize = state.PageSize > 0 ? state.PageSize : 20;
+            var result = await NotificationsService.GetNotificationHistoryListAsync(page, pageSize, CancellationToken.None);
+            return new TableData<NotificationHistoryDto>
+            {
+                Items = result.Items.ToList(),
+                TotalItems = result.Count
+            };
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}
