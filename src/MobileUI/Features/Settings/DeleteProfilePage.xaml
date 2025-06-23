@@ -95,8 +95,7 @@
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
                                Grid.RowSpan="3"
-                               IsRunning="True"
-                               IsVisible="False"
+                               IsRunning="False"
                                x:Name="DeleteIndicator"/>
         </Grid>
     </Border>

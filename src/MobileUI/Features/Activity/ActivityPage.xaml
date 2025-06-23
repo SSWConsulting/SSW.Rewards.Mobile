@@ -125,8 +125,6 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
-            IsEnabled="{Binding IsBusy}"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}" />
+            IsRunning="{Binding IsBusy}" />
     </Grid>
 </common:BaseContentPage>

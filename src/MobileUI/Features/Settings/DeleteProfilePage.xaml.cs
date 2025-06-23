@@ -60,9 +60,9 @@ public partial class DeleteProfilePage
 
         if (sure)
         {
-            DeleteIndicator.IsVisible = true;
+            DeleteIndicator.IsRunning = true;
             var requestSubmitted = await _userService.DeleteProfileAsync();
-            DeleteIndicator.IsVisible = false;
+            DeleteIndicator.IsRunning = false;
 
             if (requestSubmitted)
             {

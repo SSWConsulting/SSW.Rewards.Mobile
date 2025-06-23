@@ -263,16 +263,15 @@
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            IsRunning="True"
-            Color="{StaticResource primary}"
-            IsVisible="False">
+            IsRunning="False"
+            Color="{StaticResource primary}">
             <ActivityIndicator.Triggers>
                 <MultiTrigger TargetType="ActivityIndicator">
                     <MultiTrigger.Conditions>
                         <BindingCondition Binding="{Binding IsLoading}" Value="True" />
                         <BindingCondition Binding="{Binding IsStaff}" Value="True" />
                     </MultiTrigger.Conditions>
-                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="IsRunning" Value="True" />
                 </MultiTrigger>
             </ActivityIndicator.Triggers>
         </ActivityIndicator>

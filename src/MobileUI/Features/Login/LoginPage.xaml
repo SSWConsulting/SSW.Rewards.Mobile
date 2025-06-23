@@ -33,7 +33,6 @@
             <ActivityIndicator HorizontalOptions="Center"
                                Color="{StaticResource primary}"
                                VerticalOptions="Center"
-                               IsVisible="{Binding IsRunning}"
                                IsRunning="{Binding IsRunning}"/>
 
             <Image Source="rewardslogo"

@@ -204,8 +204,6 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
-            IsEnabled="{Binding IsRunning}"
-            IsRunning="{Binding IsRunning}"
-            IsVisible="{Binding IsRunning}" />
+            IsRunning="{Binding IsRunning}" />
     </Grid>
 </common:BaseContentPage>
