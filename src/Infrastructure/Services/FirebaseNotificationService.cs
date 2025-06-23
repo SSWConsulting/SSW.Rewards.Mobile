@@ -29,13 +29,13 @@ public class FirebaseNotificationService : IFirebaseNotificationService
         _backgroundJobClient = backgroundJobClient;
     }
 
-    public async Task<bool> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, T messagePayload, CancellationToken cancellationToken)
+    public async Task<bool> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, string? imageUrl, T messagePayload, CancellationToken cancellationToken)
     {
         string payloadJson = JsonSerializer.Serialize(messagePayload);
-        return await SendNotificationAsync(userId, notificationTitle, notificationMessage, payloadJson, cancellationToken);
+        return await SendNotificationAsync(userId, notificationTitle, notificationMessage, imageUrl, payloadJson, cancellationToken);
     }
 
-    public async Task<bool> SendNotificationAsync(int userId, string notificationTitle, string notificationMessage, string payloadJson, CancellationToken cancellationToken)
+    public async Task<bool> SendNotificationAsync(int userId, string notificationTitle, string notificationMessage, string? imageUrl, string payloadJson, CancellationToken cancellationToken)
     {
         var deviceTokens = await _dbContext.DeviceTokens
             .Where(dt => dt.User.Id == userId && !string.IsNullOrEmpty(dt.Token))
@@ -63,7 +63,8 @@ public class FirebaseNotificationService : IFirebaseNotificationService
                 Notification = new FirebaseNotification
                 {
                     Title = notificationTitle,
-                    Body = notificationMessage
+                    Body = notificationMessage,
+                    ImageUrl = imageUrl
                 }
             };
 

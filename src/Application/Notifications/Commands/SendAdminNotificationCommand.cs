@@ -75,7 +75,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
 
         IQueryable<User> query = _context.Users
             .AsNoTracking()
-            .TagWithContext()
+            .TagWithContext("NotificationUsers")
             .Where(x => x.Activated);
         
         if (request.AchievementIds?.Count > 0)
@@ -119,6 +119,34 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             payload.Add("image", request.ImageUrl);
         }
 
+        string currentUserEmail = _currentUserService.GetUserEmail();
+        int staffUserId = await _context.Users
+            .TagWithContext("GetStaffUserId")
+            .AsNoTracking()
+            .Where(x => x.Email == currentUserEmail)
+            .Select(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var notification = new Notification
+        {
+            Title = request.Title,
+            Message = request.Body,
+            Scheduled = request.ScheduleAt,
+            NotificationAction = "Send",
+            NotificationTag = $"Users:{ListIdsToString(targetUserIds)};" +
+                $"AchievementIds:{ListIdsToString(request.AchievementIds)};" +
+                $"Roles:{ListIdsToString(request.RoleIds)}",
+            NumberOfUsersTargeted = targetUserIds.Count,
+            SentByStaffMemberId = staffUserId,
+            CreatedUtc = utcNow,
+            WasSent = false,
+        };
+
+        _context.Notifications.Add(notification);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        List<int> failedUserIds = [];
         var result = NotificationSentResponse.SendingNotificationTo(targetUserIds.Count);
         foreach (int userId in targetUserIds)
         {
@@ -128,6 +156,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
                     userId,
                     request.Title,
                     request.Body,
+                    request.ImageUrl,
                     payload,
                     cancellationToken);
 
@@ -140,8 +169,9 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
                 else
                 {
                     _logger.LogWarning("Failed to send notification to User ID {UserId}. Title: {Title}", userId, request.Title);
-                }
 
+                    failedUserIds.Add(userId);
+                }
             }
             catch (Exception ex)
             {
@@ -149,6 +179,17 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             }
         }
 
+        notification.NumberOfUsersSent = result.NotificationsSent;
+        notification.WasSent = true;
+        notification.SentOn = _dateTimeService.UtcNow;
+        notification.FailedUserIds = failedUserIds;
+        notification.HasError = failedUserIds.Any();
+
+        await _context.SaveChangesAsync(cancellationToken);
+
         return result;
     }
+
+    private static string ListIdsToString(IEnumerable<int>? ids)
+        => ids != null && ids.Any() ? string.Join(',', ids) : "";
 }
