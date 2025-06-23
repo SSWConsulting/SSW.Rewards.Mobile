@@ -8,7 +8,6 @@
         <MauiVersion>9.0.21</MauiVersion>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
-        <TrimMode>full</TrimMode>
 
 		<!-- Display name -->
 		<ApplicationTitle>SSW Rewards</ApplicationTitle>
