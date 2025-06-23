@@ -191,6 +191,7 @@
                             <ActivityIndicator HorizontalOptions="Center"
                                                VerticalOptions="Center"
                                                Color="{StaticResource SSWRed}"
+                                               IsVisible="{Binding IsBusy}"
                                                IsRunning="{Binding IsBusy}"
                                                Grid.Row="5" />
                         </Grid>

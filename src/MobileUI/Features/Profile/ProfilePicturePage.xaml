@@ -94,6 +94,7 @@
                                    WidthRequest="80"
                                    VerticalOptions="CenterAndExpand"
                                    IsRunning="{Binding IsUploading}"
+                                   IsVisible="{Binding IsUploading}"
                                    Color="{StaticResource SSWRed}"/>
                     <Label Text="Saving..."
                            TextColor="{StaticResource SSWRed}"

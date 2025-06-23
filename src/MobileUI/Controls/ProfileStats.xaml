@@ -264,6 +264,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             IsRunning="False"
+            IsVisible="False"
             Color="{StaticResource primary}">
             <ActivityIndicator.Triggers>
                 <MultiTrigger TargetType="ActivityIndicator">
@@ -272,6 +273,7 @@
                         <BindingCondition Binding="{Binding IsStaff}" Value="True" />
                     </MultiTrigger.Conditions>
                     <Setter Property="IsRunning" Value="True" />
+                    <Setter Property="IsVisible" Value="True" />
                 </MultiTrigger>
             </ActivityIndicator.Triggers>
         </ActivityIndicator>

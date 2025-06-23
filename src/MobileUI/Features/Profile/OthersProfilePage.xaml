@@ -43,7 +43,8 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Color="{StaticResource SSWRed}"
-                IsRunning="{Binding IsLoading}" />
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"/>
         </Grid>
     </ScrollView>
 </common:BaseContentPage>

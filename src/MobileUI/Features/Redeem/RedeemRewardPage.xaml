@@ -382,7 +382,8 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         Color="{StaticResource SSWRed}"
-                        IsRunning="{Binding IsBusy}" />
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"/>
                 </Grid>
             </Border>
 

@@ -28,6 +28,7 @@
               HeightRequest="300">
 
             <ActivityIndicator IsRunning="True"
+                               IsVisible="True"
                                x:Name="DeleteIndicator"/>
         </Grid>
     </Border>
