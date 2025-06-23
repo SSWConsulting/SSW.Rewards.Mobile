@@ -64,7 +64,7 @@ public partial class LeaderboardPage
         // Fix for CollectionView.Header not resizing when window size changes
         if (DeviceInfo.Current.Platform == DevicePlatform.iOS && LeadersCollection.Header is VisualElement headerVisualElement)
         {
-            headerVisualElement.InvalidateMeasureNonVirtual(InvalidationTrigger.Undefined);
+            headerVisualElement.InvalidateMeasure();
         }
     }
 }
