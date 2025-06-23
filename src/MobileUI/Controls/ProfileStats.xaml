@@ -326,7 +326,7 @@
                             HorizontalOptions="Center"
                             BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="staff:StaffSkillDto">
                                     <Label FontFamily="FA6Regular"
                                            FontAutoScalingEnabled="False"
                                            FontSize="15"

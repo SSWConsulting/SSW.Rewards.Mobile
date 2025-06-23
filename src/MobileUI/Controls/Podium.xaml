@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
+             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
              x:Class="SSW.Rewards.Mobile.Controls.Podium"
+             x:DataType="controls:Podium"
              x:Name="this">
     <VerticalStackLayout Spacing="2"
                          IsVisible="False"
