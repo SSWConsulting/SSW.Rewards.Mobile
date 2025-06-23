@@ -68,8 +68,7 @@
 		<PackageReference Include="Goldie.MauiPlugins.PageResolver" Version="2.5.4" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.80" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
-		<PackageReference Include="FFImageLoadingCompat.Transformations" Version="0.1.1" />
-		<PackageReference Include="FFImageLoadingCompat.Maui" Version="0.1.1" />
+		<PackageReference Include="FFImageLoading.Maui" Version="1.2.9" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
 		<PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.73.0" />
