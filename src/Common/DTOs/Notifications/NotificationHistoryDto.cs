@@ -3,7 +3,8 @@
 public class NotificationHistoryDto
 {
     public string Message { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDateUtc { get; set; }
+    public DateTime? ScheduledDate { get; set; }
     public string EmailAddress { get; set; }
     public string Title { get; set; }
     public bool WasSent { get; set; }

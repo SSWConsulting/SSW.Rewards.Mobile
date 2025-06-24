@@ -7,7 +7,8 @@ public class Mapping : Profile
     public Mapping()
     {
         CreateMap<Notification, NotificationHistoryDto>()
-            .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.Scheduled.HasValue ? src.Scheduled.Value.DateTime : default))
+            .ForMember(dest => dest.CreatedDateUtc, opt => opt.MapFrom(src => src.CreatedUtc))
+            .ForMember(dest => dest.ScheduledDate, opt => opt.MapFrom(src => src.Scheduled.HasValue ? src.Scheduled.Value.DateTime : default))
             .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.SentByStaffMember.Email))
             .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))

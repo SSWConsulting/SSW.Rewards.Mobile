@@ -1,50 +1,85 @@
-@page "/notifications"
+﻿@page "/notifications"
 
 @using MudBlazor
 @using SSW.Rewards.Shared.DTOs.Notifications
 @inject NavigationManager Navigation
 @inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
-    <MudText Typo="Typo.h3" GutterBottom="true">Notifications</MudText>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mb-4" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
-        Send Notification
-    </MudButton>
-    <MudPaper>
-        <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true">
-            <HeaderContent>
-                <MudTh>Title</MudTh>
-                <MudTh>Created</MudTh>
-                <MudTh>Was Sent</MudTh>
-                <MudTh>Had Errors</MudTh>
-                <MudTh>Sent On</MudTh>
-                <MudTh>Targeted</MudTh>
-                <MudTh>Sent</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Title">@context.Title</MudTd>
-                <MudTd DataLabel="Created">@context.CreatedDate.ToString("g")</MudTd>
-                <MudTd DataLabel="Was Sent">@(context.WasSent ? "Yes" : "No")</MudTd>
-                <MudTd DataLabel="Had Errors">@(context.HasError ? "Yes" : "No")</MudTd>
-                <MudTd DataLabel="Sent On">@(context.SentOn?.ToString("g") ?? "-")</MudTd>
-                <MudTd DataLabel="Targeted">@context.NumberOfUsersTargeted</MudTd>
-                <MudTd DataLabel="Sent">@context.NumberOfUsersSent</MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudPaper>
-</MudContainer>
+<MudText Typo="Typo.h2">Notifications</MudText>
+<MudText Typo="Typo.body1">All notification history</MudText>
+
+<MudPaper Class="pa-4 mt-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search by title"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" Immediate="true" OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="LoadNotificationsFromSearch">
+            Search
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
+            Send Notification
+        </MudButton>
+    </MudStack>
+    <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4" @ref="_table">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDate">Created</MudTableSortLabel></MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="SentOn">Sent On</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="NumberOfUsersSent">Delivery</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Created">@context.CreatedDateUtc.ToLocalTime().ToString("g")</MudTd>
+            <MudTd DataLabel="Status">
+                @if (context.WasSent)
+                {
+                    <MudChip Color="@(context.HasError ? Color.Error : Color.Success)" Variant="Variant.Filled">
+                        @(context.HasError ? "Sent with Errors" : "Sent")
+                    </MudChip>
+                }
+                else if (context.HasError)
+                {
+                    <MudChip Color="Color.Error" Variant="Variant.Filled">Failed</MudChip>
+                }
+                else if (context.ScheduledDate != null)
+                {
+                    <MudChip Color="Color.Info" Variant="Variant.Outlined">Scheduled @(context.ScheduledDate?.ToLocalTime().ToString("g"))</MudChip>
+                }
+                else
+                {
+                    <MudChip Color="Color.Default" Variant="Variant.Outlined">Not Sent</MudChip>
+                }
+            </MudTd>
+            <MudTd DataLabel="Sent On">@(context.SentOn?.ToLocalTime().ToString("g") ?? "-")</MudTd>
+            <MudTd DataLabel="Delivery">
+                <MudTooltip Text="Sent / Targeted">
+                    <span>@context.NumberOfUsersSent / @context.NumberOfUsersTargeted</span>
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
 
 @code {
     private bool _loading = false;
+    private string _searchString = string.Empty;
+    private MudTable<NotificationHistoryDto> _table;
+
     private async Task<TableData<NotificationHistoryDto>> LoadNotifications(TableState state)
     {
         _loading = true;
         try
         {
-            // MudTable uses 0-based page index
             var page = state.Page;
             var pageSize = state.PageSize > 0 ? state.PageSize : 20;
-            var result = await NotificationsService.GetNotificationHistoryListAsync(page, pageSize, CancellationToken.None);
+            var sortLabel = state.SortLabel;
+            var sortDirection = state.SortDirection == MudBlazor.SortDirection.None ? null : state.SortDirection.ToString().ToLower();
+            var result = await NotificationsService.GetNotificationHistoryListAsync(page, pageSize, _searchString, sortLabel, sortDirection, CancellationToken.None);
             return new TableData<NotificationHistoryDto>
             {
                 Items = result.Items.ToList(),
@@ -54,6 +89,14 @@
         finally
         {
             _loading = false;
+        }
+    }
+
+    private async Task LoadNotificationsFromSearch()
+    {
+        if (_table != null)
+        {
+            await _table.ReloadServerData();
         }
     }
 }
