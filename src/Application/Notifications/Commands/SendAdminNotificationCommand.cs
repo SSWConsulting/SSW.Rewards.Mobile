@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Hangfire;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Notifications.BackgroundJobs;
@@ -26,6 +27,12 @@ public class SendAdminNotificationCommand : IRequest<NotificationSentResponse>
 
     [Url]
     public string? ImageUrl { get; set; }
+
+    /// <summary>
+    /// This is used for scheduled notifications once the message is already created.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int? NotificationId { get; set; }
 }
 
 public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNotificationCommand, NotificationSentResponse>
@@ -55,11 +62,32 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
 
     public async Task<NotificationSentResponse> Handle(SendAdminNotificationCommand request, CancellationToken cancellationToken)
     {
+        Notification? notification;
         var utcNow = _dateTimeService.UtcNow;
         if (request.ScheduleAt.HasValue && request.ScheduleAt >= utcNow)
         {
             _logger.LogDebug("Admin notification SCHEDULED. Title: {Title}, Time: {ScheduleTime}", request.Title, request.ScheduleAt.Value);
 
+            int staffUserId = await GetStaffUserId(cancellationToken);
+            notification = new()
+            {
+                Title = request.Title,
+                Message = request.Body,
+                Scheduled = request.ScheduleAt,
+                NotificationAction = "Send",
+                NotificationTag = $"Users:{ListIdsToString(request.UserIds)};" +
+                $"AchievementIds:{ListIdsToString(request.AchievementIds)};" +
+                $"Roles:{ListIdsToString(request.RoleIds)}",
+                SentByStaffMemberId = staffUserId,
+                CreatedUtc = utcNow,
+                WasSent = false
+            };
+
+            _context.Notifications.Add(notification);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            request.NotificationId = notification.Id;
             _backgroundJobClient.Schedule<ScheduleNotificationTask>(
                 task => task.ProcessScheduledNotification(request),
                 request.ScheduleAt.Value);
@@ -77,7 +105,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             .AsNoTracking()
             .TagWithContext("NotificationUsers")
             .Where(x => x.Activated);
-        
+
         if (request.AchievementIds?.Count > 0)
         {
             query = query
@@ -119,30 +147,49 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             payload.Add("image", request.ImageUrl);
         }
 
-        string currentUserEmail = _currentUserService.GetUserEmail();
-        int staffUserId = await _context.Users
-            .TagWithContext("GetStaffUserId")
-            .AsNoTracking()
-            .Where(x => x.Email == currentUserEmail)
-            .Select(x => x.Id)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        var notification = new Notification
+        if (request.NotificationId is null)
         {
-            Title = request.Title,
-            Message = request.Body,
-            Scheduled = request.ScheduleAt,
-            NotificationAction = "Send",
-            NotificationTag = $"Users:{ListIdsToString(targetUserIds)};" +
-                $"AchievementIds:{ListIdsToString(request.AchievementIds)};" +
-                $"Roles:{ListIdsToString(request.RoleIds)}",
-            NumberOfUsersTargeted = targetUserIds.Count,
-            SentByStaffMemberId = staffUserId,
-            CreatedUtc = utcNow,
-            WasSent = false,
-        };
+            int staffUserId = await GetStaffUserId(cancellationToken);
+            notification = new()
+            {
+                Title = request.Title,
+                Message = request.Body,
+                Scheduled = request.ScheduleAt,
+                NotificationAction = "Send",
+                NotificationTag = $"Users:{ListIdsToString(targetUserIds)};" +
+                    $"AchievementIds:{ListIdsToString(request.AchievementIds)};" +
+                    $"Roles:{ListIdsToString(request.RoleIds)}",
+                NumberOfUsersTargeted = targetUserIds.Count,
+                SentByStaffMemberId = staffUserId,
+                CreatedUtc = utcNow,
+                WasSent = false,
+            };
 
-        _context.Notifications.Add(notification);
+            _context.Notifications.Add(notification);
+        }
+        else
+        {
+            notification = await _context.Notifications
+                .TagWithContext("GetNotificationById")
+                .FirstOrDefaultAsync(x => x.Id == request.NotificationId.Value, cancellationToken);
+
+            if (notification == null)
+            {
+                _logger.LogError("Notification with ID {NotificationId} not found.", request.NotificationId);
+                throw new InvalidOperationException($"Notification with ID {request.NotificationId} not found.");
+            }
+
+            if (notification.WasSent)
+            {
+                _logger.LogWarning("Notification with ID {NotificationId} has already been sent. Skipping.", request.NotificationId);
+                return NotificationSentResponse.Empty;
+            }
+
+            notification.NotificationTag = $"Users:{ListIdsToString(targetUserIds)};" +
+                $"AchievementIds:{ListIdsToString(request.AchievementIds)};" +
+                $"Roles:{ListIdsToString(request.RoleIds)}";
+            notification.NumberOfUsersTargeted = targetUserIds.Count;
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -188,6 +235,17 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
         await _context.SaveChangesAsync(cancellationToken);
 
         return result;
+    }
+
+    private async Task<int> GetStaffUserId(CancellationToken cancellationToken)
+    {
+        string currentUserEmail = _currentUserService.GetUserEmail();
+        return await _context.Users
+            .TagWithContext("GetStaffUserId")
+            .AsNoTracking()
+            .Where(x => x.Email == currentUserEmail)
+            .Select(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private static string ListIdsToString(IEnumerable<int>? ids)

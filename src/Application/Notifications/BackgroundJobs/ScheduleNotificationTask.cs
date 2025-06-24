@@ -1,8 +1,9 @@
-﻿using SSW.Rewards.Application.Notifications.Commands;
+﻿using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Notifications.Commands;
 
 namespace SSW.Rewards.Application.Notifications.BackgroundJobs;
 
-public class ScheduleNotificationTask(IMediator mediator)
+public class ScheduleNotificationTask(IMediator mediator, ILogger<ScheduleNotificationTask> logger)
 {
     public async Task ProcessScheduledNotification(SendAdminNotificationCommand command)
     {
@@ -14,6 +15,15 @@ public class ScheduleNotificationTask(IMediator mediator)
 
         // Clear the schedule time as the job is now processing.
         command.ScheduleAt = null;
-        await mediator.Send(command);
+
+        try
+        {
+            await mediator.Send(command);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing scheduled notification: {Title}", command.Title);
+            throw;
+        }
     }
 }
