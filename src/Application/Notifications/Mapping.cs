@@ -11,6 +11,7 @@ public class Mapping : Profile
             .ForMember(dest => dest.ScheduledDate, opt => opt.MapFrom(src => src.Scheduled.HasValue ? src.Scheduled.Value.DateTime : default))
             .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.SentByStaffMember.Email))
             .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.NotificationTag))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.WasSent, opt => opt.MapFrom(src => src.WasSent))
             .ForMember(dest => dest.HasError, opt => opt.MapFrom(src => src.HasError))

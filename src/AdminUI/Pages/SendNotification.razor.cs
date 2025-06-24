@@ -58,7 +58,6 @@ public partial class SendNotification
     {
         // Check if no role, achievement, or user is selected
         bool isTargetingEveryone = _model.SelectedAchievement is null && _model.SelectedRole is null;
-
         if (isTargetingEveryone)
         {
             var parameters = new DialogParameters
