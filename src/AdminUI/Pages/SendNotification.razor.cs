@@ -84,9 +84,12 @@ public partial class SendNotification
                 return;
             }
 
-            DateTime combinedDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
+            // Combine date and time as Unspecified kind
+            DateTime combinedDateTime = DateTime.SpecifyKind(_model.ScheduleDate.Value.Date + _model.ScheduleTime.Value, DateTimeKind.Unspecified);
             TimeZoneInfo selectedTzi = TimeZoneInfo.FindSystemTimeZoneById(_model.SelectedTimeZone);
-            command.ScheduleAt = new DateTimeOffset(combinedDateTime, selectedTzi.GetUtcOffset(combinedDateTime));
+            // Convert to UTC
+            DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(combinedDateTime, selectedTzi);
+            command.ScheduleAt = new DateTimeOffset(utcDateTime, TimeSpan.Zero);
         }
 
         try
