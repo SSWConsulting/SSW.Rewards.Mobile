@@ -5,6 +5,7 @@ using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Shared.DTOs.Achievements;
 using SSW.Rewards.Shared.DTOs.Notifications;
 using SSW.Rewards.Shared.DTOs.Roles;
+using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations;
 
 namespace SSW.Rewards.Admin.UI.Pages;
 
@@ -14,6 +15,7 @@ public partial class SendNotification
     [Inject] private IAchievementService AchievementService { get; set; } = default!;
     [Inject] private INotificationsService NotificationsService { get; set; } = default!;
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private IDialogService DialogService { get; set; } = default!;
 
     private NotificationViewModel _model = new();
     private Dictionary<string, string> _timezones = [];
@@ -54,6 +56,26 @@ public partial class SendNotification
 
     private async Task HandleValidSubmit()
     {
+        // Check if no role, achievement, or user is selected
+        bool isTargetingEveryone = _model.SelectedAchievement is null && _model.SelectedRole is null;
+
+        if (isTargetingEveryone)
+        {
+            var parameters = new DialogParameters
+            {
+                { "ContentText", "No role, achievement, or user is selected. This will send the notification to EVERYONE. Are you sure you want to continue?" },
+                { "ButtonText", "Send" },
+                { "Color", Color.Primary }
+            };
+            var dialog = DialogService.Show<SimpleConfirmationDialog>("Send to Everyone?", parameters);
+            var result = await dialog.Result;
+            if (result.Canceled || !(result.Data is bool confirmed && confirmed))
+            {
+                // User cancelled, do not send or clear
+                return;
+            }
+        }
+
         _isSending = true;
         StateHasChanged();
 
