@@ -16,9 +16,9 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class NotificationsController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10)
+    public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10, string? search = null, string? sortLabel = null, string? sortDirection = null)
     {
-        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize }));
+        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize, Search = search, SortLabel = sortLabel, SortDirection = sortDirection }));
     }
 
     [HttpPost]
