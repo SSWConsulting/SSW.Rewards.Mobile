@@ -270,7 +270,7 @@ public class AuthenticationService : IAuthenticationService
 
     public void NavigateToLoginPage()
     {
-        App.Current.MainPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
+        App.Current.Windows[0].Page = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
     }
 
     private AuthResult GetAuthResult<TResult> (TResult result)
