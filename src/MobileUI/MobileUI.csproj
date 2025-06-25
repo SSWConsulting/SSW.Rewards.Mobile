@@ -119,6 +119,9 @@
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
       <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.2" />
+      <PackageReference Include="Xamarin.Firebase.Analytics" Version="121.5.1.1" />
+      <PackageReference Include="Xamarin.Firebase.Crashlytics" Version="118.6.0.1" />
+      <PackageReference Include="Xamarin.Firebase.Messaging" Version="123.3.1.2" />
       <PackageReference Include="Xamarin.Google.Dagger" Version="2.56.2.2" />
       <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.7.0.2" />
     </ItemGroup>
