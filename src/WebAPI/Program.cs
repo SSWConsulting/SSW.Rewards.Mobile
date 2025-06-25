@@ -1,4 +1,5 @@
 using SSW.Rewards.Infrastructure.Persistence;
+using SSW.Rewards.WebAPI.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,24 @@ app.UseCors(_allowSpecificOrigins);
     
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (ctx, next) =>
+{
+    var path = ctx.Request.Path.Value ?? "";
+
+    if (UrlBlockList.IsBlocked(path))
+    {
+        // Random 0.5-3 s delay – enough to annoy bots, negligible for you
+        await Task.Delay(Random.Shared.Next(500, 3000));
+
+        ctx.Response.StatusCode = StatusCodes.Status404NotFound;
+        await ctx.Response.CompleteAsync();
+
+        return;
+    }
+
+    await next();
+});
 
 app.MapControllerRoute(
     name: "default",
