@@ -1,0 +1,111 @@
+﻿@page "/send-notification"
+
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using SSW.Rewards.Shared.DTOs.Achievements
+@using SSW.Rewards.Shared.DTOs.Roles
+@using SSW.Rewards.Admin.UI.Models
+
+@attribute [Authorize(Roles = "Admin")]
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudText Typo="Typo.h3" GutterBottom="true">Send Notification</MudText>
+
+    <MudGrid>
+        <MudItem xs="12" md="7">
+            <MudPaper Class="pa-4">
+                <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6">Delivery</MudText>
+                            <MudRadioGroup @bind-Value="@_model.DeliveryOption">
+                                <MudRadio Option="@Delivery.Now" Color="Color.Primary">Now</MudRadio>
+                                <MudRadio Option="@Delivery.Schedule" Color="Color.Primary">Schedule</MudRadio>
+                            </MudRadioGroup>
+                        </MudItem>
+
+                        @if (_model.DeliveryOption == Delivery.Schedule)
+                        {
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudDatePicker Label="Date" @bind-Date="@_model.ScheduleDate" For="@(() => _model.ScheduleDate)" Required="true" MinDate="@DateTime.Today" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudTimePicker Label="Time" @bind-Time="@_model.ScheduleTime" For="@(() => _model.ScheduleTime)" Required="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="12" md="4">
+                                <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone" For="@(() => _model.SelectedTimeZone)" Required="true" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var tz in _timezones)
+                                    {
+                                        <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        }
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mt-4">Targeting (Optional)</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudAutocomplete T="AchievementDto"
+                                             @bind-Value="@_model.SelectedAchievement"
+                                             Label="Required Achievement (Optional)"
+                                             AnchorOrigin="Origin.BottomCenter"
+                                             SearchFuncWithCancel="@SearchAchievements"
+                                             ShowProgressIndicator="true"
+                                             ToStringFunc="@GetAchievementName"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudAutocomplete T="RoleDto"
+                                             @bind-Value="@_model.SelectedRole"
+                                             Label="Role (Optional)"
+                                             SearchFunc="@SearchRoles"
+                                             ToStringFunc="@(role => role?.Name ?? string.Empty)"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mt-4">Content</MudText>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@_model.Title" Label="Notification Title" For="@(() => _model.Title)" Required="true" MaxLength="100" Counter="100" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@_model.Body" Label="Notification Body" For="@(() => _model.Body)" Required="true" Lines="3" MaxLength="250" Counter="250" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="@_model.ImageUrl" Label="Notification Image URL (Optional)" For="@(() => _model.ImageUrl)" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="d-flex justify-end mt-4">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Disabled="@_isSending">Send Notification</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MudText Typo="Typo.h5" GutterBottom="true" Class="mb-3">Preview</MudText>
+            <MudPaper Class="pa-4" Style="width: 100%; border-radius: 12px; box-shadow: var(--mud-elevation-2);">
+                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%;">
+                    @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
+                    {
+                        <MudImage Src="@_model.ImageUrl" Alt="Notification Image" Style="max-width: 100px; max-height: 100px; border-radius: 8px; object-fit: cover; margin-bottom: 8px;" />
+                    }
+                    <MudText Typo="Typo.subtitle1" Class="mb-1" Style="font-weight: bold;">@(!string.IsNullOrWhiteSpace(_model.Title) ? _model.Title : "New Achievement!")</MudText>
+                    <MudText Typo="Typo.body2">@(!string.IsNullOrWhiteSpace(_model.Body) ? _model.Body : "Great job!")</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

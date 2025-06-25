@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using SSW.Rewards.Shared.DTOs.Notifications;
+using AutoMapper.QueryableExtensions;
 
 namespace SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 public class GetNotificationHistoryList : IRequest<List<NotificationHistoryDto>>
@@ -19,8 +20,9 @@ public class GetNotificationHistoryListQueryHandler : IRequestHandler<GetNotific
 
     public async Task<List<NotificationHistoryDto>> Handle(GetNotificationHistoryList request, CancellationToken cancellationToken)
     {
-        return await _context
-            .Notifications
+        return await _context.Notifications
+            .AsNoTracking()
+            .TagWithContext("NotificationHistory")
             .ProjectTo<NotificationHistoryDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }

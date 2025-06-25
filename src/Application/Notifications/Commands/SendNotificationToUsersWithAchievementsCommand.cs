@@ -10,6 +10,7 @@ public class SendNotificationToUsersWithAchievementsCommand : IRequest<Notificat
     public string? DataPayload { get; set; }
     public List<int> AchievementIds { get; set; } = [];
     public bool FilterStaff { get; set; }
+    public string? ImageUrl { get; set; }
 }
 
 public class SendNotificationToUsersWithAchievementsCommandHandler : IRequestHandler<SendNotificationToUsersWithAchievementsCommand, NotificationSentResponse>
@@ -62,6 +63,7 @@ public class SendNotificationToUsersWithAchievementsCommandHandler : IRequestHan
                 user.UserId,
                 request.Title,
                 request.Message,
+                request.ImageUrl,
                 request.DataPayload ?? string.Empty,
                 cancellationToken);
 

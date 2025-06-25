@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Options;
+using SSW.Rewards.WebAPI.Filters;
 using ClientConstants = SSW.Rewards.ApiClient.Constants;
 
 namespace SSW.Rewards.WebAPI.Telemetry;
@@ -23,6 +25,20 @@ public class WebApiTelemetryInitializer : ITelemetryInitializer
 
     public void Initialize(ITelemetry telemetry)
     {
+        if (telemetry is RequestTelemetry req && req.ResponseCode == "404")
+        {
+            req.Properties["Handled404"] = "true";
+            if (req.Url != null && req.Url.PathAndQuery != null && UrlBlockList.IsBlocked(req.Url.PathAndQuery))
+            {
+                req.Properties["BlockedUrl"] = "true";
+                req.Success = true;
+            }
+            else
+            {
+                req.Properties["BlockedUrl"] = "false";
+            }
+        }
+
         var context = _httpContextAccessor.HttpContext;
         if (context != null)
         {

@@ -26,7 +26,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
 
     public async Task<int> Handle(AdminAddNewQuiz request, CancellationToken cancellationToken)
     {
-        var user = _userService.GetCurrentUser();
+        var user = await _userService.GetCurrentUser(cancellationToken);
 
         var dbUser = await _context.Users.FirstAsync(x => x.Id == user.Id, cancellationToken);
 

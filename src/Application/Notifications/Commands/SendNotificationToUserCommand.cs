@@ -7,6 +7,7 @@ public class SendNotificationToUserCommand : IRequest<NotificationSentResponse>
     public int UserId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
     public string? DataPayload { get; set; }
 }
 
@@ -26,6 +27,7 @@ public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotifica
             request.UserId,
             request.Title,
             request.Message,
+            request.ImageUrl,
             request.DataPayload,
             cancellationToken);
 
