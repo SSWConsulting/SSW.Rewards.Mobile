@@ -54,6 +54,15 @@ app.Use(async (ctx, next) =>
 {
     var path = ctx.Request.Path.Value ?? "";
 
+    // It's for Azure health checks and similar scenarios.
+    if (path == "/")
+    {
+        ctx.Response.StatusCode = StatusCodes.Status204NoContent;
+        await ctx.Response.CompleteAsync();
+        return;
+    }
+
+    // Check for spammy bots and crawlers
     if (UrlBlockList.IsBlocked(path))
     {
         // Random 0.5-3 s delay – enough to annoy bots, negligible for you
@@ -76,4 +85,4 @@ app.MapControllerRoute(
 
 //app.MapFallbackToFile("index.html"); ;
 
-app.Run();
+await app.RunAsync();
