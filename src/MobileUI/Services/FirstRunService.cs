@@ -1,6 +1,7 @@
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
-using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.Mobile.Common;
+using SSW.Rewards.Mobile.Services.Authentication;
 
 namespace SSW.Rewards.Mobile.Services;
 
@@ -15,19 +16,37 @@ public class FirstRunService : IFirstRunService
     private readonly IServiceProvider _provider;
     private readonly IPermissionsService _permissionsService;
     private readonly IPushNotificationsService _pushNotificationsService;
-    
+    private readonly IAuthStorageService _storage;
+    private readonly IUserService _userService;
+    private readonly ILogger<FirstRunService> _logger;
+
     private string _pendingScanCode;
 
-    public FirstRunService(IServiceProvider provider, IPermissionsService permissionsService, IPushNotificationsService pushNotificationsService)
+    public FirstRunService(IServiceProvider provider, IPermissionsService permissionsService,
+        IPushNotificationsService pushNotificationsService, IAuthStorageService storage,
+        IUserService userService, ILogger<FirstRunService> logger)
     {
         _provider = provider;
         _permissionsService = permissionsService;
         _pushNotificationsService = pushNotificationsService;
+        _storage = storage;
+        _userService = userService;
+        _logger = logger;
     }
 
     public async Task InitialiseAfterLogin()
     {
         await Application.Current.InitializeMainPage();
+
+        // Update user details after login
+        try
+        {
+            await _userService.UpdateMyDetailsAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating user details after login");
+        }
 
         var granted = await _permissionsService.CheckAndRequestPermission<Permissions.PostNotifications>();
 
@@ -37,9 +56,9 @@ public class FirstRunService : IFirstRunService
             uploadDeviceTokenTask = UploadDeviceTokenIfRequired();
         }
 
-        if (Preferences.Get("FirstRun", true))
+        if (_storage.IsFirstRun)
         {
-            Preferences.Set("FirstRun", false);
+            _storage.SetIsFirstRun(false);
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 var page = ActivatorUtilities.CreateInstance<OnBoardingPage>(_provider);
@@ -62,8 +81,7 @@ public class FirstRunService : IFirstRunService
             }
             catch (Exception ex)
             {
-                CrossFirebaseCrashlytics.Current.RecordException(ex);
-                CrossFirebaseCrashlytics.Current.Log($"Error uploading device token: {ex.Message}");
+                _logger.LogError(ex, "Error uploading device token");
             }
         }
     }
@@ -75,14 +93,14 @@ public class FirstRunService : IFirstRunService
 
     private async Task UploadDeviceTokenIfRequired()
     {
-        var now = DateTime.Now;
-        var lastTimeUpdated = Preferences.Get("DeviceTokenLastTimeUpdated", DateTime.MinValue);
+        var now = DateTime.UtcNow;
+        var lastTimeUpdated = _storage.DeviceTokenLastUpdated;
         if (now <= lastTimeUpdated.AddDays(30))
         {
             return;
         }
 
-        var token = await SecureStorage.GetAsync("DeviceToken");
+        var token = await _storage.GetDeviceTokenAsync();
         if (string.IsNullOrWhiteSpace(token))
         {
             return;
@@ -91,7 +109,7 @@ public class FirstRunService : IFirstRunService
         var success = await _pushNotificationsService.UploadDeviceToken(token, now, DeviceService.GetDeviceId());
         if (success)
         {
-            Preferences.Set("DeviceTokenLastTimeUpdated", now);
+            _storage.SetDeviceTokenLastUpdated(now);
         }
     }
 }

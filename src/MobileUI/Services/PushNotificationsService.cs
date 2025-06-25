@@ -1,4 +1,4 @@
-﻿using Plugin.Firebase.Crashlytics;
+﻿using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Shared.DTOs.Notifications;
 
@@ -12,10 +12,12 @@ public interface IPushNotificationsService
 public class PushNotificationsService : IPushNotificationsService
 {
     private readonly INotificationsService _notificationsService;
+    private readonly ILogger<PushNotificationsService> _logger;
 
-    public PushNotificationsService(INotificationsService notificationsService)
+    public PushNotificationsService(INotificationsService notificationsService, ILogger<PushNotificationsService> logger)
     {
         _notificationsService = notificationsService;
+        _logger = logger;
     }
 
     public async Task<bool> UploadDeviceToken(string token, DateTime lastTimeUpdated, string deviceId)
@@ -28,7 +30,7 @@ public class PushNotificationsService : IPushNotificationsService
         }
         catch (Exception e)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(new Exception($"Couldn't upload device token at {lastTimeUpdated}. Error: {e}"));
+            _logger.LogError(e, "Couldn't upload device token at {LastTimeUpdated}", lastTimeUpdated);
             return false;
         }
     }
