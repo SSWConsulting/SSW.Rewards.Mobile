@@ -19,7 +19,8 @@ Connect the outside world with SSW at events through awesome rewards!
 
 ## Roadmap
 
-- Support for TV leaderboard at conferences
+- Upgrade to .NET 9
+- Push notification support - for prize draws 🥳 
 - Offline access
 - Better support for white labelling to allow companies to put their own branding to the app
 - [SSW Rewards Engagement Strategy](https://www.youtube.com/watch?v=qLeeRmg87GY)
