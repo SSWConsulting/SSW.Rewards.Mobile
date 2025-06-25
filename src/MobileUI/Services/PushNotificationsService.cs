@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
-using Plugin.Firebase.Crashlytics;
+﻿using Plugin.Firebase.Crashlytics;
 using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.Mobile.Services;
 

@@ -8,6 +8,7 @@ using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
 using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
+using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.WebAPI.Controllers;
 
@@ -15,9 +16,9 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class NotificationsController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<NotificationHistoryListViewModel>> List()
+    public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10, string? search = null, string? sortLabel = null, string? sortDirection = null)
     {
-        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery()));
+        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize, Search = search, SortLabel = sortLabel, SortDirection = sortDirection }));
     }
 
     [HttpPost]
@@ -73,5 +74,13 @@ public class NotificationsController : ApiControllerBase
     public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute]string installationId)
     {
         return Ok(await Mediator.Send(new DeleteInstallationCommand(installationId)));
+    }
+
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult<NotificationSentResponse>> SendAdminNotification(SendAdminNotificationCommand command)
+    {
+        return Ok(await Mediator.Send(command));
     }
 }

@@ -74,7 +74,7 @@ public class UserService : IUserService
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
 
-        throw new Exception($"Failed to upload proile pic: {responseContent}");
+        throw new Exception($"Failed to upload profile pic: {responseContent}");
     }
 
     public async Task<CurrentUserDto> GetCurrentUser(CancellationToken cancellationToken = default)
