@@ -22,7 +22,7 @@ public static class UrlBlockList
         {
             _ when string.IsNullOrWhiteSpace(url) => false,
             _ when SimpleContainsMatch.Any(x => url.Contains(x, StringComparison.OrdinalIgnoreCase)) => true,
-            _ when SimpleEndWithMatch.Any(x => url.Contains(x, StringComparison.OrdinalIgnoreCase)) => true,
+            _ when SimpleEndWithMatch.Any(x => url.EndsWith(x, StringComparison.OrdinalIgnoreCase)) => true,
             _ => false
         };
 }
