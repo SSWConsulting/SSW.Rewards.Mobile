@@ -57,8 +57,9 @@ app.Use(async (ctx, next) =>
     // It's for Azure health checks and similar scenarios.
     if (path == "/")
     {
-        ctx.Response.StatusCode = StatusCodes.Status204NoContent;
+        ctx.Response.StatusCode = StatusCodes.Status200OK;
         await ctx.Response.CompleteAsync();
+
         return;
     }
 
