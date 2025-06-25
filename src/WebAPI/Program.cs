@@ -65,7 +65,7 @@ app.Use(async (ctx, next) =>
     // Check for spammy bots and crawlers
     if (UrlBlockList.IsBlocked(path))
     {
-        // Random 0.5-3 s delay – enough to annoy bots, negligible for you
+        // Random 0.5-3 s delay â€” enough to annoy bots, negligible for legitimate users
         await Task.Delay(Random.Shared.Next(500, 3000));
 
         ctx.Response.StatusCode = StatusCodes.Status404NotFound;
