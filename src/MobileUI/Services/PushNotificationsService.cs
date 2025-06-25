@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection.Notifications.Commands.UploadDeviceToken;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Shared.DTOs.Notifications;
 
