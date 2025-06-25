@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Plugin.Firebase.Crashlytics;
+using Microsoft.Extensions.Logging;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.Controls;
 
@@ -11,18 +11,21 @@ public partial class LeaderboardViewModel : BaseViewModel
     private readonly ILeaderService _leaderService;
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
+    private readonly ILogger<LeaderboardViewModel> _logger;
     private bool _loaded;
 
     private const int PageSize = 50;
     private int _page;
     private bool _limitReached;
 
-    public LeaderboardViewModel(ILeaderService leaderService, IServiceProvider provider, IFileCacheService fileCacheService)
+    public LeaderboardViewModel(ILeaderService leaderService, IServiceProvider provider,
+        IFileCacheService fileCacheService, ILogger<LeaderboardViewModel> logger)
     {
         Title = "Leaderboard";
         _leaderService = leaderService;
         _provider = provider;
         _fileCacheService = fileCacheService;
+        _logger = logger;
     }
 
     public ObservableRangeCollection<LeaderViewModel> Leaders { get; } = [];
@@ -178,7 +181,7 @@ public partial class LeaderboardViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.RecordException(ex);
+            _logger.LogError(ex, "Error loading leaderboard");
         }
 
         IsRunning = false;

@@ -1,34 +1,50 @@
-﻿using Mopups.Services;
-using Plugin.Firebase.Crashlytics;
+﻿using Microsoft.Extensions.Logging;
+using Mopups.Services;
 
 namespace SSW.Rewards.Mobile;
 
 public partial class App : Application
 {
-    private static IServiceProvider _provider;
+    private static IServiceProvider _serviceProvider;
     private static IAuthenticationService _authService;
     private static IFirstRunService _firstRunService;
+    private static ILogger<App> _logger;
 
-    public App(IServiceProvider serviceProvider, IAuthenticationService authService, IFirstRunService firstRunService)
+    public App(
+        LoginPage page,
+        IServiceProvider serviceProvider,
+        IAuthenticationService authService,
+        IFirstRunService firstRunService,
+        ILogger<App> logger)
     {
-        _provider = serviceProvider;
+        _serviceProvider = serviceProvider;
         _authService = authService;
         _firstRunService = firstRunService;
-        
+        _logger = logger;
+
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
+
+        // Log all unhandled exceptions
+        MauiExceptions.UnhandledException += OnUnhandledException;
     }
-    
+
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var loginPage = ActivatorUtilities.CreateInstance<LoginPage>(_provider);
+        var loginPage = ActivatorUtilities.CreateInstance<LoginPage>(_serviceProvider);
         return new Window(loginPage);
     }
 
     protected override async void OnStart()
     {
-        //await UpdateAccessTokenAsync();
-        await CheckApiCompatibilityAsync();
+        try
+        {
+            await CheckApiCompatibilityAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during app startup");
+        }
     }
 
     protected override void OnSleep()
@@ -49,22 +65,22 @@ public partial class App : Application
             
             if (IsAutoLoginRequest(uri))
             {
-                await HandleAutoLoginRequest(uri);
+                await HandleAutoLoginRequestAsync(uri);
                 return;
             }
 
             if (IsRedeemRequest(uri))
             {
-                await HandleRedeemRequest(uri);
+                await HandleRedeemRequestAsync(uri);
             }
         }
         catch (Exception ex)
         {
-            CrossFirebaseCrashlytics.Current.Log($"Error processing app link: {ex.Message}");
+            _logger.LogError(ex, "Error processing app link: {Uri}", uri);
         }
     }
 
-    public static async Task InitialiseMainPage()
+    public static async Task InitialiseMainPageAsync()
     {
         await _firstRunService.InitialiseAfterLogin();
     }
@@ -74,25 +90,32 @@ public partial class App : Application
         _authService.NavigateToLoginPage();
     }
 
+    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
+    {
+        if (args.ExceptionObject is Exception exception)
+        {
+            _logger.LogError(exception, "Unhandled exception occurred");
+        }
+    }
+
     private async Task CheckApiCompatibilityAsync()
     {
         try
         {
-            ApiInfo info = new ApiInfo(Constants.ApiBaseUrl);
+            var apiInfo = new ApiInfo(Constants.ApiBaseUrl);
+            var isCompatible = await apiInfo.IsApiCompatibleAsync();
 
-            bool compatible = await info.IsApiCompatibleAsync();
-
-            if (!compatible)
+            if (!isCompatible)
             {
-                await Shell.Current.DisplayAlert("Update Required", "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", "OK");
+                await Shell.Current.DisplayAlert(
+                    "Update Required",
+                    "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
+                    "OK");
             }
         }
         catch (Exception ex)
         {
-            // TODO: log these instead to AppCenter
-            Console.WriteLine("[App] ERROR checking API compat");
-            Console.WriteLine($"[App] {ex.Message}");
-            Console.WriteLine($"[App {ex.StackTrace}");
+            _logger.LogError(ex, "Error checking API compatibility");
         }
     }
     
@@ -103,7 +126,7 @@ public partial class App : Application
         uri is { Scheme: ApiClientConstants.RewardsQRCodeProtocol, Host: "redeem" } or
             { Host: ApiClientConstants.RewardsWebDomain, AbsolutePath: "/redeem" };
 
-    private static async Task HandleAutoLoginRequest(Uri uri)
+    private async Task HandleAutoLoginRequestAsync(Uri uri)
     {
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var token = queryDictionary.Get("token");
@@ -112,21 +135,26 @@ public partial class App : Application
         {
             await _authService.AutologinAsync(token);
         }
+        else
+        {
+            _logger.LogWarning("Auto-login request received without token");
+        }
     }
 
-    private static async Task HandleRedeemRequest(Uri uri)
+    private async Task HandleRedeemRequestAsync(Uri uri)
     {
         var queryDictionary = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var code = queryDictionary.Get(ApiClientConstants.RewardsQRCodeProtocolQueryName);
 
         if (string.IsNullOrEmpty(code))
         {
+            _logger.LogWarning("Redeem request received without code");
             return;
         }
 
         if (_authService.IsLoggedIn)
         {
-            await ShowScanResultPopup(code);
+            await ShowScanResultPopupAsync(code);
         }
         else
         {
@@ -134,11 +162,10 @@ public partial class App : Application
         }
     }
 
-    private static async Task ShowScanResultPopup(string code)
+    private async Task ShowScanResultPopupAsync(string code)
     {
-        var vm = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_provider);
-        var popup = new PopupPages.ScanResult(vm, code);
+        var viewModel = ActivatorUtilities.CreateInstance<ScanResultViewModel>(_serviceProvider);
+        var popup = new PopupPages.ScanResult(viewModel, code);
         await MopupService.Instance.PushAsync(popup);
     }
-
 }

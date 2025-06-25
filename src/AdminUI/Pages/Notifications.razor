@@ -1,95 +1,102 @@
-@* TODO: uncomment this when these items are complete:
-    https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/496
-    https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/287
-    @page "/Notifications"
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using SSW.Rewards.Admin.UI.Components.Dialogs.Notifications
+﻿@page "/notifications"
 
-@attribute [Authorize (Roles = "Admin")]
-
-@inject INotificationsClient _client
-@inject IDialogService DialogService
+@using MudBlazor
+@using SSW.Rewards.Shared.DTOs.Notifications
+@inject NavigationManager Navigation
+@inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
 
 <MudText Typo="Typo.h2">Notifications</MudText>
-<MudText Typo="Typo.body1">Send and view notifications</MudText>
-<MudButton  OnClick="@((e) => OpenDialog(disableBackdropClick))" Variant="Variant.Filled" Color="Color.Primary">
-    New notification
-</MudButton>
+<MudText Typo="Typo.body1">All notification history</MudText>
 
-@if (_model != null)
-{
-    <MudTable Items="@_model.List"
-              Hover="true"
-              Breakpoint="Breakpoint.Sm"
-              Loading="@_isLoading"
-              LoadingProgressColor="Color.Info">
+<MudPaper Class="pa-4 mt-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search by title"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" Immediate="true" OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="LoadNotificationsFromSearch">
+            Search
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
+            Send Notification
+        </MudButton>
+    </MudStack>
+    <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4" @ref="_table">
         <HeaderContent>
-            <MudTh>Date</MudTh>
-            <MudTh>Message</MudTh>
-            <MudTh>Created by</MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDate">Created</MudTableSortLabel></MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="SentOn">Sent On</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="NumberOfUsersSent">Delivery</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Date">@context.CreatedDate.ToLocalTime().ToString("dd/MM/yy hh:mm")</MudTd>
-            <MudTd DataLabel="Message">@context.Message</MudTd>
-            <MudTd DataLabel="Created by">@context.EmailAddress</MudTd>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Created">@context.CreatedDateUtc.ToLocalTime().ToString("g")</MudTd>
+            <MudTd DataLabel="Status">
+                @if (context.WasSent)
+                {
+                    <MudChip Color="@(context.HasError ? Color.Error : Color.Success)" Variant="Variant.Filled">
+                        @(context.HasError ? "Sent with Errors" : "Sent")
+                    </MudChip>
+                }
+                else if (context.HasError)
+                {
+                    <MudChip Color="Color.Error" Variant="Variant.Filled">Failed</MudChip>
+                }
+                else if (context.ScheduledDate != null)
+                {
+                    <MudChip Color="Color.Info" Variant="Variant.Outlined">Scheduled @(context.ScheduledDate?.ToLocalTime().ToString("g"))</MudChip>
+                }
+                else
+                {
+                    <MudChip Color="Color.Default" Variant="Variant.Outlined">Not Sent</MudChip>
+                }
+            </MudTd>
+            <MudTd DataLabel="Sent On">@(context.SentOn?.ToLocalTime().ToString("g") ?? "-")</MudTd>
+            <MudTd DataLabel="Delivery">
+                <MudTooltip Text="Sent / Targeted">
+                    <span>@context.NumberOfUsersSent / @context.NumberOfUsersTargeted</span>
+                </MudTooltip>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager/>
+            <MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" />
         </PagerContent>
     </MudTable>
-}
+</MudPaper>
 
 @code {
-    private readonly DialogOptions disableBackdropClick = new()
-    {
-            DisableBackdropClick = true,
-            MaxWidth = MaxWidth.Medium
-    };
+    private bool _loading = false;
+    private string _searchString = string.Empty;
+    private MudTable<NotificationHistoryDto> _table;
 
-    private bool _isLoading = true;
-    private NotificationHistoryListViewModel? _model;
-
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<NotificationHistoryDto>> LoadNotifications(TableState state)
     {
+        _loading = true;
         try
         {
-            GetNotifications();
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-
-        await base.OnInitializedAsync();
-    }
-
-    private async void GetNotifications()
-    {
-        _isLoading = true;
-        _model = await _client.ListAsync();
-        _isLoading = false;
-    }
-
-    private async Task OpenDialog(DialogOptions options)
-    {
-        var dialog = DialogService.Show<NewNotificationDialog>("New Notification", options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            // Add the Reward
-            if (result.Data is RequestNotificationCommand dto)
+            var page = state.Page;
+            var pageSize = state.PageSize > 0 ? state.PageSize : 20;
+            var sortLabel = state.SortLabel;
+            var sortDirection = state.SortDirection == MudBlazor.SortDirection.None ? null : state.SortDirection.ToString().ToLower();
+            var result = await NotificationsService.GetNotificationHistoryListAsync(page, pageSize, _searchString, sortLabel, sortDirection, CancellationToken.None);
+            return new TableData<NotificationHistoryDto>
             {
-                await _client.RequestPushAsync(new RequestNotificationCommand
-                {
-                    Text    = dto.Text,
-                    Silent  = dto.Silent,
-                    Action  = dto.Action,
-                    Tags    = new List<string>()
-                });
-
-                GetNotifications();
-            }
+                Items = result.Items.ToList(),
+                TotalItems = result.Count
+            };
+        }
+        finally
+        {
+            _loading = false;
         }
     }
-} *@
+
+    private async Task LoadNotificationsFromSearch()
+    {
+        if (_table != null)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+}
