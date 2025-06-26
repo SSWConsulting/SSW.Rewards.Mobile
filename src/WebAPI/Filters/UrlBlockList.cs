@@ -1,28 +1,28 @@
-﻿namespace SSW.Rewards.WebAPI.Filters;
+﻿using System.Buffers;
+
+namespace SSW.Rewards.WebAPI.Filters;
 
 public static class UrlBlockList
 {
-    public static readonly string[] SimpleContainsMatch =
-    [
-        ".git/config",
-        "index/leaveMsg/",
-        "kcfinder/",
-        "wlwmanifest",
-        "ALFA_DATA/",
-        "wp-content",
-    ];
+    private static string[] _simpleContainsMatch = Array.Empty<string>();
+    private static SearchValues<string> _simpleContainsMatchSearchValues = SearchValues.Create(_simpleContainsMatch, StringComparison.OrdinalIgnoreCase);
 
-    public static readonly string[] SimpleEndWithMatch =
-    [
-        ".php"
-    ];
+    public static void Init(string[]? simpleContainsMatch)
+    {
+        _simpleContainsMatch = simpleContainsMatch ?? [];
+        _simpleContainsMatch = _simpleContainsMatch
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.Trim().ToLowerInvariant())
+            .ToArray();
+
+        _simpleContainsMatchSearchValues = SearchValues.Create(_simpleContainsMatch, StringComparison.Ordinal);
+    }
 
     public static bool IsBlocked(string url)
         => url switch
         {
             _ when string.IsNullOrWhiteSpace(url) => false,
-            _ when SimpleContainsMatch.Any(x => url.Contains(x, StringComparison.OrdinalIgnoreCase)) => true,
-            _ when SimpleEndWithMatch.Any(x => url.EndsWith(x, StringComparison.OrdinalIgnoreCase)) => true,
+            _ when url.ToLowerInvariant().AsSpan().ContainsAny(_simpleContainsMatchSearchValues) => true,
             _ => false
         };
 }

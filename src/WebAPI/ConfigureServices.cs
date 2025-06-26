@@ -98,7 +98,11 @@ public static class ConfigureServices
         //TODO: Remove magic string
         services.AddAuthorization(options => 
             options.AddPolicy(Policies.MobileApp, policy => policy.RequireClaim("client_id", "ssw-rewards-mobile-app")));
-        
+
+        // Initialize UrlBlockList from configuration
+        string[]? ignore404PathContains = configuration.GetSection("Ignore404PathContains").Get<string[]>();
+        UrlBlockList.Init(ignore404PathContains);
+
         return services;
     }
 }
