@@ -25,17 +25,26 @@ public class WebApiTelemetryInitializer : ITelemetryInitializer
 
     public void Initialize(ITelemetry telemetry)
     {
-        if (telemetry is RequestTelemetry req && req.ResponseCode == "404")
+        if (telemetry is RequestTelemetry req)
         {
-            req.Properties["Handled404"] = "true";
-            if (req.Url != null && req.Url.PathAndQuery != null && UrlBlockList.IsBlocked(req.Url.PathAndQuery))
+            if (req.ResponseCode == "404")
             {
-                req.Properties["BlockedUrl"] = "true";
-                req.Success = true;
+                req.Properties["Handled404"] = "true";
+                if (req.Url != null && req.Url.PathAndQuery != null && UrlBlockList.IsBlocked(req.Url.PathAndQuery))
+                {
+                    req.Properties["BlockedUrl"] = "true";
+                    req.Success = true;
+                }
+                else
+                {
+                    req.Properties["BlockedUrl"] = "false";
+                }
             }
-            else
+            else if (req.ResponseCode == "499")
             {
-                req.Properties["BlockedUrl"] = "false";
+                // User canceled the request (e.g. by closing the app or browser)
+                req.Properties["Handled499"] = "true";
+                req.Success = true;
             }
         }
 
