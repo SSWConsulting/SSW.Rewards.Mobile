@@ -30,7 +30,7 @@
                     StrokeShape="RoundRectangle 8"
                     Margin="15"
                     BackgroundColor="{StaticResource Background}">
-                    <Grid RowDefinitions="120, Auto, Auto, 40, 40, *, 60">
+                    <Grid RowDefinitions="120, Auto, Auto, Auto, 40, *, 60">
 
                         <Border Grid.Row="0"
                                 HeightRequest="80"
