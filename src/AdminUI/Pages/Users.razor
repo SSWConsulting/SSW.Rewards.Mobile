@@ -16,7 +16,14 @@
 <MudText Typo="Typo.body1">All users</MudText>
 
 <Table TItem="UserDto"
-       Items="@(_vm.Users.Where(s => s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase) || s.Email.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)).OrderBy(i => i.Name).ToList())"
+       Items="@(string.IsNullOrWhiteSpace(_searchString)
+                ? _vm.Users
+                    .OrderBy(i => i.Name)
+                    .ToList()
+                : _vm.Users
+                    .Where(s => (s.Name != null && s.Name.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)) || (s.Email != null && s.Email.Contains(_searchString, StringComparison.InvariantCultureIgnoreCase)))
+                    .OrderBy(i => i.Name)
+                    .ToList())"
        IsLoading="@_loading"
        TableTitle="Users">
     <ToolbarContent>

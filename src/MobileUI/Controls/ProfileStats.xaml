@@ -263,15 +263,16 @@
         <ActivityIndicator
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            IsRunning="True"
-            Color="{StaticResource primary}"
-            IsVisible="False">
+            IsRunning="False"
+            IsVisible="False"
+            Color="{StaticResource primary}">
             <ActivityIndicator.Triggers>
                 <MultiTrigger TargetType="ActivityIndicator">
                     <MultiTrigger.Conditions>
                         <BindingCondition Binding="{Binding IsLoading}" Value="True" />
                         <BindingCondition Binding="{Binding IsStaff}" Value="True" />
                     </MultiTrigger.Conditions>
+                    <Setter Property="IsRunning" Value="True" />
                     <Setter Property="IsVisible" Value="True" />
                 </MultiTrigger>
             </ActivityIndicator.Triggers>
@@ -326,7 +327,7 @@
                             HorizontalOptions="Center"
                             BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="staff:StaffSkillDto">
                                     <Label FontFamily="FA6Regular"
                                            FontAutoScalingEnabled="False"
                                            FontSize="15"

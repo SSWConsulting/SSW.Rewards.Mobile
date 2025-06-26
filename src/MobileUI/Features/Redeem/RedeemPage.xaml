@@ -97,7 +97,7 @@
                                         <Setter Property="IsVisible" Value="False" />
                                     </DataTrigger>
                                 </Grid.Triggers>
-                                <!-- Rest of your carousel content -->
+                                <!-- Carousel content -->
                                 <CarouselView Grid.Row="0"
                                               x:Name="Carousel"
                                               HeightRequest="400"
@@ -109,7 +109,7 @@
                                     <CarouselView.Behaviors>
                                         <mct:EventToCommandBehavior
                                             EventName="Scrolled"
-                                            Command="{Binding CarouselScrolledCommand}" />
+                                            Command="{Binding Source={x:Reference RewardList}, Path=BindingContext.CarouselScrolledCommand}" />
                                     </CarouselView.Behaviors>
                                     <CarouselView.ItemTemplate>
                                         <DataTemplate x:DataType="models:Reward">
@@ -134,7 +134,7 @@
                                                Margin="0,0,0,15"
                                                x:Name="QuizIndicator" />
                             </Grid>
-                            
+
                             <CollectionView
                                 ItemsSource="{Binding Rewards}"
                                 ItemsUpdatingScrollMode="KeepItemsInView"
@@ -175,9 +175,8 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Color="{StaticResource SSWRed}"
-                IsEnabled="{Binding IsBusy}"
                 IsRunning="{Binding IsBusy}"
-                IsVisible="{Binding IsBusy}" />
+                IsVisible="{Binding IsBusy}"/>
         </Grid>
     </common:BaseContentPage.Content>
 </common:BaseContentPage>

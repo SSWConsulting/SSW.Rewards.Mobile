@@ -49,7 +49,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     private LeaderboardFilter CurrentPeriod { get; set; } = LeaderboardFilter.ThisWeek;
 
     [ObservableProperty]
-    private Segment _selectedPeriod;
+    private Segment? _selectedPeriod;
 
     [ObservableProperty]
     private LeaderViewModel _first;
@@ -74,6 +74,9 @@ public partial class LeaderboardViewModel : BaseViewModel
     [RelayCommand]
     private async Task FilterByPeriod()
     {
+        if (SelectedPeriod == null)
+            return;
+
         CurrentPeriod = (LeaderboardFilter)SelectedPeriod.Value;
 
         await UpdateLeaderboardByAction(LeaderboardAction.FullRefresh);

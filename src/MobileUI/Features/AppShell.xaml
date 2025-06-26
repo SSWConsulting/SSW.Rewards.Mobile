@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="SSW.Rewards.Mobile.AppShell"
+    x:DataType="mobile:AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+    xmlns:mobile="clr-namespace:SSW.Rewards.Mobile"
     Title="SSW.Rewards"
     FlyoutBackgroundColor="{StaticResource FlyoutBackgroundColour}"
     Shell.NavBarIsVisible="False"
-    MenuItemTemplate="{StaticResource SSWMenuTemplate}"
     FlyoutBehavior="Flyout"
     x:Name="RewardsShell">
 
@@ -27,35 +28,6 @@
                 <Setter Property="Shell.TabBarTitleColor" Value="#BE4b47"/>
             </Style>
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
-
-            <DataTemplate x:Key="SSWMenuTemplate">
-                <Grid
-                    ColumnDefinitions="30,*"
-                    Padding="{OnPlatform Android='5', iOS='0'}"
-                    Margin="{OnPlatform Android='20,5', iOS='10,5,10,0'}">
-
-                    <Image Grid.Column="0"
-                            HorizontalOptions="Start"
-                            Margin="5"
-                            HeightRequest="30"
-                            WidthRequest="30"
-                            Source="{Binding Icon}">
-                    </Image>
-
-                    <Label Grid.Column="1"
-                        TextColor="White"
-                        VerticalOptions="Center"
-                        Margin="20,0,0,0"
-                        Text="{Binding Text}">
-                        <Label.FontSize>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="iOS">18</On>
-                                <On Platform="Android">18</On>
-                            </OnPlatform>
-                        </Label.FontSize>
-                    </Label>
-                </Grid>
-            </DataTemplate>
         </ResourceDictionary>
     </Shell.Resources>
 

@@ -80,7 +80,7 @@ public class AuthenticationService : IAuthenticationService
                     await Task.Delay(1000);
                 }
 
-                await App.Current.MainPage.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                await Shell.Current.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
             }
         }
         catch (Exception ex)
@@ -101,8 +101,8 @@ public class AuthenticationService : IAuthenticationService
             if (result.IsSuccess)
             {
                 await _tokenManager.StoreTokensAsync(
-                    result.AccessToken, 
-                    result.RefreshToken, 
+                    result.AccessToken,
+                    result.RefreshToken,
                     result.AccessTokenExpiration);
 
                 _logger.LogInformation("Sign-in successful. Token expires at: {ExpirationTime}", result.AccessTokenExpiration);
@@ -145,6 +145,6 @@ public class AuthenticationService : IAuthenticationService
 
     public void NavigateToLoginPage()
     {
-        App.Current.MainPage = _serviceProvider.GetRequiredService<LoginPage>();
+        App.Current.Windows[0].Page = _serviceProvider.GetRequiredService<LoginPage>();
     }
 }

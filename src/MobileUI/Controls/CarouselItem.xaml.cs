@@ -28,13 +28,13 @@ public partial class CarouselItem
     
     [AutoBindable]
     private readonly string _ribbonText;
-    
+
     private object _cachedBindingContext;
 
     protected override void OnBindingContextChanged()
     {
         base.OnBindingContextChanged();
-        
+
         // TECH DEBT: Workaround for the previous item disappearing in CarouselView on iOS
         // See: https://github.com/dotnet/maui/issues/22015
         if (BindingContext is not null)

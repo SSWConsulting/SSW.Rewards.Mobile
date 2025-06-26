@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Extensions;
 using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -14,6 +14,6 @@ public class SnackBarService : ISnackbarService
     {
         var snack = new Snackbar(options);
 
-        await App.Current.MainPage.ShowPopupAsync(snack);
+        await Shell.Current.ShowPopupAsync(snack);
     }
 }

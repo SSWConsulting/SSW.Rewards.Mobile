@@ -56,22 +56,24 @@ public partial class DeleteProfilePage
         }
         
         await MopupService.Instance.PopAllAsync();
-        var sure = await App.Current.MainPage.DisplayAlert("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+        var sure = await Shell.Current.DisplayAlert("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
 
         if (sure)
         {
+            DeleteIndicator.IsRunning = true;
             DeleteIndicator.IsVisible = true;
             var requestSubmitted = await _userService.DeleteProfileAsync();
+            DeleteIndicator.IsRunning = false;
             DeleteIndicator.IsVisible = false;
 
             if (requestSubmitted)
             {
-                await App.Current.MainPage.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                await Shell.Current.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
                 App.NavigateToLoginPage();
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
+                await Shell.Current.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
             }
         }
     }

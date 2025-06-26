@@ -32,7 +32,7 @@
                 <controls:SegmentedControl.Behaviors>
                     <mct:EventToCommandBehavior
                         EventName="SelectionChanged"
-                        Command="{Binding FilterByPeriodCommand}" />
+                        Command="{Binding Source={x:Reference Leaderboard}, Path=BindingContext.FilterByPeriodCommand}" />
                 </controls:SegmentedControl.Behaviors>
             </controls:SegmentedControl>
 
@@ -204,8 +204,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
-            IsEnabled="{Binding IsRunning}"
             IsRunning="{Binding IsRunning}"
-            IsVisible="{Binding IsRunning}" />
+            IsVisible="{Binding IsRunning}"/>
     </Grid>
 </common:BaseContentPage>

@@ -11,24 +11,28 @@ public partial class App : Application
     private static ILogger<App> _logger;
 
     public App(
-        LoginPage page, 
-        IServiceProvider serviceProvider, 
-        IAuthenticationService authService, 
-        IFirstRunService firstRunService, 
+        LoginPage page,
+        IServiceProvider serviceProvider,
+        IAuthenticationService authService,
+        IFirstRunService firstRunService,
         ILogger<App> logger)
     {
         _serviceProvider = serviceProvider;
         _authService = authService;
         _firstRunService = firstRunService;
         _logger = logger;
-        
+
         InitializeComponent();
         Current.UserAppTheme = AppTheme.Dark;
 
-        MainPage = page;
-
         // Log all unhandled exceptions
         MauiExceptions.UnhandledException += OnUnhandledException;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        var loginPage = ActivatorUtilities.CreateInstance<LoginPage>(_serviceProvider);
+        return new Window(loginPage);
     }
 
     protected override async void OnStart()
@@ -103,9 +107,9 @@ public partial class App : Application
 
             if (!isCompatible)
             {
-                await Current.MainPage.DisplayAlert(
-                    "Update Required", 
-                    "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.", 
+                await Shell.Current.DisplayAlert(
+                    "Update Required",
+                    "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
                     "OK");
             }
         }

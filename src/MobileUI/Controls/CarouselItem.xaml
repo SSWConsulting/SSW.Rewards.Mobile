@@ -5,6 +5,7 @@
         xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
         xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         x:Class="SSW.Rewards.Mobile.Controls.CarouselItem"
+        x:DataType="controls:CarouselItem"
         x:Name="this"
         StrokeThickness="0"
         StrokeShape="RoundRectangle 8">

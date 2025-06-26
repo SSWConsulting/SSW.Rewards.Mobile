@@ -2,7 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:pages="clr-namespace:SSW.Rewards.Mobile.Pages"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              x:Class="SSW.Rewards.Mobile.Controls.Podium"
              x:Name="this">
     <VerticalStackLayout Spacing="2"
@@ -11,7 +11,7 @@
         <VerticalStackLayout.GestureRecognizers>
             <TapGestureRecognizer
                 NumberOfTapsRequired="1"
-                Command="{Binding Path=BindingContext.LeaderTappedCommand, Source={RelativeSource AncestorType={x:Type pages:LeaderboardPage}}}"
+                Command="{Binding Path=LeaderTappedCommand, Source={RelativeSource AncestorType={x:Type viewModels:LeaderboardViewModel}}}"
                 CommandParameter="{Binding Leader, Source={x:Reference this}}" />
         </VerticalStackLayout.GestureRecognizers>
         <Label HorizontalOptions="Center"

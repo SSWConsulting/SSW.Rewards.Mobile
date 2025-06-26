@@ -36,7 +36,7 @@ public class FirstRunService : IFirstRunService
 
     public async Task InitialiseAfterLogin()
     {
-        await Application.Current.InitializeMainPage();
+        Application.Current.InitializeMainPage();
 
         // Update user details after login
         try

@@ -81,8 +81,9 @@ public partial class Search
     {
         var isSearching = (bool)newvalue;
         var search = (Search)bindable;
-        
+
         search.ActivityIndicator.IsVisible = isSearching;
+        search.ActivityIndicator.IsRunning = isSearching;
         search.Icon.IsVisible = !isSearching;
     }
 

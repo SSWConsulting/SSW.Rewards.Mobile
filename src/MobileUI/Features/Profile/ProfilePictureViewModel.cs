@@ -71,7 +71,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         }
         else
         {
-            await App.Current.MainPage.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
+            await Shell.Current.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
         }
     }
 
@@ -90,7 +90,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
+                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
             }
         }
     }
@@ -137,7 +137,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
+            await Shell.Current.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
         }
     }
 

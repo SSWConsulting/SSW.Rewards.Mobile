@@ -166,7 +166,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     IsBusy = false;
                     await MopupService.Instance.RemovePageAsync(popup);
-                    await App.Current.MainPage.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
+                    await Shell.Current.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
                     return;
                 }
 
@@ -177,7 +177,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
+                await Shell.Current.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
             }
         }
 

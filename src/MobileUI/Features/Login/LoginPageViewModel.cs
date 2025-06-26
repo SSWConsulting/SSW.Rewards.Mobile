@@ -121,7 +121,7 @@ public partial class LoginPageViewModel : BaseViewModel
         {
             _logger.LogError(e, "Error during refresh");
             await WaitForWindowClose();
-            await Application.Current.MainPage.DisplayAlert("Login Error",
+            await Shell.Current.DisplayAlert("Login Error",
                 "There was a problem accessing your account. Please try logging in again.", "OK");
         }
         finally

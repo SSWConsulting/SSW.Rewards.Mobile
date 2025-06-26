@@ -57,7 +57,7 @@ public class RewardService : IRewardService
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await App.Current.MainPage.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
+                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
             }
         }
 
