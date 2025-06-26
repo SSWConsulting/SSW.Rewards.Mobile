@@ -57,8 +57,7 @@ app.Use(async (ctx, next) =>
     // It's for Azure health checks and similar scenarios.
     if (path == "/")
     {
-        ctx.Response.StatusCode = StatusCodes.Status204NoContent;
-        await ctx.Response.CompleteAsync();
+        ctx.Response.StatusCode = StatusCodes.Status200OK;
         return;
     }
 
@@ -69,8 +68,6 @@ app.Use(async (ctx, next) =>
         await Task.Delay(Random.Shared.Next(500, 3000));
 
         ctx.Response.StatusCode = StatusCodes.Status404NotFound;
-        await ctx.Response.CompleteAsync();
-
         return;
     }
 
