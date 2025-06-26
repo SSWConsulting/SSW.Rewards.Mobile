@@ -58,8 +58,6 @@ app.Use(async (ctx, next) =>
     if (path == "/")
     {
         ctx.Response.StatusCode = StatusCodes.Status200OK;
-        await ctx.Response.CompleteAsync();
-
         return;
     }
 
@@ -70,8 +68,6 @@ app.Use(async (ctx, next) =>
         await Task.Delay(Random.Shared.Next(500, 3000));
 
         ctx.Response.StatusCode = StatusCodes.Status404NotFound;
-        await ctx.Response.CompleteAsync();
-
         return;
     }
 
