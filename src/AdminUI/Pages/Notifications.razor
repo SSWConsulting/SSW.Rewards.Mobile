@@ -8,15 +8,15 @@
 <MudText Typo="Typo.h2">Notifications</MudText>
 <MudText Typo="Typo.body1">All notification history</MudText>
 
-<MudPaper Class="pa-4 mt-4">
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+<MudPaper Class="pa-4 mt-4 warm-grey-bg">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
         <MudTextField @bind-Value="_searchString"
                       Placeholder="Search by title"
                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" Immediate="true" OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })" />
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="LoadNotificationsFromSearch">
-            Search
-        </MudButton>
+                      Class="mt-0" Immediate="true"
+                      OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })"
+                      OnBlur="LoadNotificationsFromSearch" />
+        <MudSpacer />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
             Send Notification
         </MudButton>
@@ -24,35 +24,49 @@
     <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4" @ref="_table">
         <HeaderContent>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDate">Created</MudTableSortLabel></MudTh>
-            <MudTh>Status</MudTh>
-            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="SentOn">Sent On</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="NumberOfUsersSent">Delivery</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDateUtc">Created</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Status">Status</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="SentOrScheduled">Delivery Date</MudTableSortLabel></MudTh>
+            <MudTh>
+                <MudTooltip Text="This column shows the number of users who received the notification vs the total number of users we tried to send it to. Reasons for not being delivered include expired device tokens or users never approving/registering for notifications.">
+                    <span style="cursor: help;">Delivery<span style="color: red;">*</span></span>
+                </MudTooltip>
+            </MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Title</MudTd>
             <MudTd DataLabel="Created">@context.CreatedDateUtc.ToLocalTime().ToString("g")</MudTd>
             <MudTd DataLabel="Status">
-                @if (context.WasSent)
+                @switch (context.Status)
                 {
-                    <MudChip Color="@(context.HasError ? Color.Error : Color.Success)" Variant="Variant.Filled">
-                        @(context.HasError ? "Sent with Errors" : "Sent")
-                    </MudChip>
+                    case NotificationStatus.Sent:
+                        <MudChip Color="Color.Success" Variant="Variant.Filled">Sent</MudChip>
+                        break;
+                    case NotificationStatus.Failed:
+                        <MudChip Color="Color.Error" Variant="Variant.Filled">Failed</MudChip>
+                        break;
+                    case NotificationStatus.Scheduled:
+                        <MudChip Color="Color.Info" Variant="Variant.Filled">Scheduled</MudChip>
+                        break;
+                    default:
+                        <MudChip Color="Color.Default" Variant="Variant.Filled">Not Sent</MudChip>
+                        break;
                 }
-                else if (context.HasError)
+            </MudTd>
+            <MudTd DataLabel="Delivery Date">
+                @if (context.Status == NotificationStatus.Sent && context.SentOn != null)
                 {
-                    <MudChip Color="Color.Error" Variant="Variant.Filled">Failed</MudChip>
+                    @context.SentOn?.ToLocalTime().ToString("g")
                 }
-                else if (context.ScheduledDate != null)
+                else if (context.Status == NotificationStatus.Scheduled && context.ScheduledDate != null)
                 {
-                    <MudChip Color="Color.Info" Variant="Variant.Outlined">Scheduled @(context.ScheduledDate?.ToLocalTime().ToString("g"))</MudChip>
+                    @context.ScheduledDate?.ToLocalTime().ToString("g") <span> (Scheduled)</span>
                 }
                 else
                 {
-                    <MudChip Color="Color.Default" Variant="Variant.Outlined">Not Sent</MudChip>
+                    <span>-</span>
                 }
             </MudTd>
-            <MudTd DataLabel="Sent On">@(context.SentOn?.ToLocalTime().ToString("g") ?? "-")</MudTd>
             <MudTd DataLabel="Delivery">
                 <MudTooltip Text="Sent / Targeted">
                     <span>@context.NumberOfUsersSent / @context.NumberOfUsersTargeted</span>
@@ -69,6 +83,11 @@
     private bool _loading = false;
     private string _searchString = string.Empty;
     private MudTable<NotificationHistoryDto> _table;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNotificationsFromSearch();
+    }
 
     private async Task<TableData<NotificationHistoryDto>> LoadNotifications(TableState state)
     {
