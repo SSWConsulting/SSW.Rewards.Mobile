@@ -16,6 +16,7 @@ public partial class SendNotification
     [Inject] private INotificationsService NotificationsService { get; set; } = default!;
     [Inject] private ISnackbar Snackbar { get; set; } = default!;
     [Inject] private IDialogService DialogService { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
     private NotificationViewModel _model = new();
     private Dictionary<string, string> _timezones = [];
@@ -62,11 +63,13 @@ public partial class SendNotification
         {
             var parameters = new DialogParameters
             {
-                { "ContentText", "No role, achievement, or user is selected. This will send the notification to EVERYONE. Are you sure you want to continue?" },
-                { "ButtonText", "Send" },
+                { "ContentText", "You haven’t selected a specific role, achievement, or user. This notification will be sent to everyone. \nAre you sure you want to continue?" },
+                { "ButtonText", "Send to Everyone" },
+                { "CancelText", "Go Back" },
                 { "Color", Color.Primary }
             };
-            var dialog = DialogService.Show<SimpleConfirmationDialog>("Send to Everyone?", parameters);
+
+            var dialog = await DialogService.ShowAsync<SimpleConfirmationDialog>("Send to All Users?", parameters);
             var result = await dialog.Result;
             if (result.Canceled || !(result.Data is bool confirmed && confirmed))
             {
@@ -128,6 +131,9 @@ public partial class SendNotification
             }
 
             _model = new NotificationViewModel { SelectedTimeZone = TimeZoneInfo.Local.Id };
+
+            // Navigate to Notifications page after sending
+            NavigationManager.NavigateTo("/notifications");
         }
         catch (Exception ex)
         {

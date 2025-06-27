@@ -13,12 +13,14 @@
 
     <MudGrid>
         <MudItem xs="12" md="7">
-            <MudPaper Class="pa-4">
+            <MudPaper Class="pa-4 warm-grey-bg">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
                     <MudGrid Spacing="3">
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h6">Delivery</MudText>
+                            <MudTooltip Text="This shows how many users got the notification out of everyone we tried to send it to. Some may not get it if they haven’t enabled notifications or their device token expired.">
+                                <MudText Typo="Typo.h6" Style="display: inline; cursor: help;">Delivery<span style="color: red;">*</span></MudText>
+                            </MudTooltip>
                             <MudRadioGroup @bind-Value="@_model.DeliveryOption">
                                 <MudRadio Option="@Delivery.Now" Color="Color.Primary">Now</MudRadio>
                                 <MudRadio Option="@Delivery.Schedule" Color="Color.Primary">Schedule</MudRadio>
@@ -96,7 +98,7 @@
 
         <MudItem xs="12" md="5">
             <MudText Typo="Typo.h5" GutterBottom="true" Class="mb-3">Preview</MudText>
-            <MudPaper Class="pa-4" Style="width: 100%; border-radius: 12px; box-shadow: var(--mud-elevation-2);">
+            <MudPaper Class="pa-4 preview-light-grey-bg" Style="width: 100%; border-radius: 12px; box-shadow: var(--mud-elevation-2);">
                 <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%;">
                     @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
                     {

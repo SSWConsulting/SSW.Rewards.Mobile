@@ -62,3 +62,11 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.warm-grey-bg {
+    background-color: #F5F3F0 !important; /* Warm grey, adjust as needed to match sidebar */
+}
+
+.preview-light-grey-bg {
+    background-color: #FAF9F7 !important; /* Lighter warm grey for preview elevation */
+}
