@@ -1,6 +1,5 @@
 using System.Text.Json;
 using FirebaseAdmin.Messaging;
-using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Extensions;
@@ -15,28 +14,26 @@ public class FirebaseNotificationService : IFirebaseNotificationService
     private readonly IApplicationDbContext _dbContext;
     private readonly IFirebaseInitializerService _firebaseInitializerService;
     private readonly ILogger<FirebaseNotificationService> _logger;
-    private readonly IBackgroundJobClient _backgroundJobClient;
 
     public FirebaseNotificationService(
         IApplicationDbContext dbContext,
         IFirebaseInitializerService firebaseInitializerService,
-        ILogger<FirebaseNotificationService> logger,
-        IBackgroundJobClient backgroundJobClient)
+        ILogger<FirebaseNotificationService> logger)
     {
         _dbContext = dbContext;
         _firebaseInitializerService = firebaseInitializerService;
         _logger = logger;
-        _backgroundJobClient = backgroundJobClient;
     }
 
-    public async Task<bool> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, string? imageUrl, T messagePayload, CancellationToken cancellationToken)
+    public async Task<FirebaseNotificationResult> SendNotificationAsync<T>(int userId, string notificationTitle, string notificationMessage, string? imageUrl, T messagePayload, CancellationToken cancellationToken)
     {
         string payloadJson = JsonSerializer.Serialize(messagePayload);
         return await SendNotificationAsync(userId, notificationTitle, notificationMessage, imageUrl, payloadJson, cancellationToken);
     }
 
-    public async Task<bool> SendNotificationAsync(int userId, string notificationTitle, string notificationMessage, string? imageUrl, string payloadJson, CancellationToken cancellationToken)
+    public async Task<FirebaseNotificationResult> SendNotificationAsync(int userId, string notificationTitle, string notificationMessage, string? imageUrl, string payloadJson, CancellationToken cancellationToken)
     {
+        FirebaseNotificationResult result = new();
         var deviceTokens = await _dbContext.DeviceTokens
             .Where(dt => dt.User.Id == userId && !string.IsNullOrEmpty(dt.Token))
             .OrderByDescending(dt => dt.LastTimeUpdated)
@@ -45,15 +42,15 @@ public class FirebaseNotificationService : IFirebaseNotificationService
             .Select(g => g.First())
             .ToListAsync(cancellationToken);
 
+        result.Devices = deviceTokens.Count;
         if (!deviceTokens.Any())
         {
             _logger.LogWarning("No device tokens found for User ID {UserId}. Notification not sent.", userId);
-            return false;
+            return result;
         }
 
         _logger.LogInformation("Preparing to send notification titled '{NotificationTitle}' to User ID {UserId} for {DeviceCount} device(s).", notificationTitle, userId, deviceTokens.Count);
 
-        bool atLeastOneSent = false;
         foreach (var deviceToken in deviceTokens)
         {
             var message = new Message()
@@ -74,7 +71,7 @@ public class FirebaseNotificationService : IFirebaseNotificationService
 
                 await SendNotificationToDevice(message, cancellationToken);
 
-                atLeastOneSent = true;
+                ++result.Sent;
             }
             catch (FirebaseMessagingException ex)
             {
@@ -90,20 +87,26 @@ public class FirebaseNotificationService : IFirebaseNotificationService
                             .TagWithContext("DeletingInvalidDeviceToken")
                             .Where(x => x.Id == deviceToken.Id)
                             .ExecuteDeleteAsync(cancellationToken);
+
+                        ++result.Removed;
                     }
                     catch (Exception dbEx)
                     {
                         _logger.LogError(dbEx, "Error removing invalid device token {DeviceToken} for User ID {UserId} from database.", deviceToken, userId);
+
+                        ++result.Failed;
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error sending notification to token {DeviceToken} for User ID {UserId}", deviceToken, userId);
+
+                ++result.Failed;
             }
         }
 
-        return atLeastOneSent;
+        return result;
     }
 
     private async Task SendNotificationToDevice(Message message, CancellationToken cancellationToken)
