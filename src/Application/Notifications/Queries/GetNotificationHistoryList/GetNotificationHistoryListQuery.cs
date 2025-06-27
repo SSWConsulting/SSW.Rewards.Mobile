@@ -33,7 +33,7 @@ public class GetNotificationHistoryListQuery : IRequest<NotificationHistoryListV
                 query = query.Where(n => n.Title != null && n.Title.Contains(request.Search));
             }
 
-            var isDesc = string.Equals(request.SortDirection, "desc", StringComparison.OrdinalIgnoreCase);
+            bool isDesc = request.SortDirection?.StartsWith("desc", StringComparison.OrdinalIgnoreCase) == true;
 
             var projected = query
                 .ProjectTo<NotificationHistoryDto>(_mapper.ConfigurationProvider);
