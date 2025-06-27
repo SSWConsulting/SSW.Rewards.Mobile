@@ -34,20 +34,39 @@ public class GetNotificationHistoryListQuery : IRequest<NotificationHistoryListV
             }
 
             var isDesc = string.Equals(request.SortDirection, "desc", StringComparison.OrdinalIgnoreCase);
-            query = request.SortLabel switch
-            {
-                "Title" => isDesc ? query.OrderByDescending(n => n.Title) : query.OrderBy(n => n.Title),
-                "CreatedDate" => isDesc ? query.OrderByDescending(n => n.CreatedUtc) : query.OrderBy(n => n.CreatedUtc),
-                "WasSent" => isDesc ? query.OrderByDescending(n => n.WasSent) : query.OrderBy(n => n.WasSent),
-                "HasError" => isDesc ? query.OrderByDescending(n => n.HasError) : query.OrderBy(n => n.HasError),
-                "SentOn" => isDesc ? query.OrderByDescending(n => n.SentOn) : query.OrderBy(n => n.SentOn),
-                "NumberOfUsersTargeted" => isDesc ? query.OrderByDescending(n => n.NumberOfUsersTargeted) : query.OrderBy(n => n.NumberOfUsersTargeted),
-                "NumberOfUsersSent" => isDesc ? query.OrderByDescending(n => n.NumberOfUsersSent) : query.OrderBy(n => n.NumberOfUsersSent),
-                _ => query.OrderByDescending(n => n.CreatedUtc),
-            };
 
             var projected = query
                 .ProjectTo<NotificationHistoryDto>(_mapper.ConfigurationProvider);
+
+            // Status order: NotSent (0), Sent (1), Failed (2), Scheduled (3)
+            projected = request.SortLabel switch
+            {
+                "Title" => isDesc
+                    ? projected.OrderByDescending(n => n.Title)
+                    : projected.OrderBy(n => n.Title),
+                "CreatedDateUtc" => isDesc
+                    ? projected.OrderByDescending(n => n.CreatedDateUtc)
+                    : projected.OrderBy(n => n.CreatedDateUtc),
+                "SentOn" => isDesc
+                    ? projected.OrderByDescending(n => n.SentOn)
+                    : projected.OrderBy(n => n.SentOn),
+                "NumberOfUsersSent" => isDesc
+                    ? projected.OrderByDescending(n => n.NumberOfUsersSent)
+                    : projected.OrderBy(n => n.NumberOfUsersSent),
+                "NumberOfUsersTargeted" => isDesc
+                    ? projected.OrderByDescending(n => n.NumberOfUsersTargeted)
+                    : projected.OrderBy(n => n.NumberOfUsersTargeted),
+                "SentOrScheduled" => isDesc
+                    ? projected.OrderByDescending(n => n.SentOn).ThenByDescending(n => n.ScheduledDate)
+                    : projected.OrderBy(n => n.SentOn).ThenBy(n => n.ScheduledDate),
+                "Delivered" => isDesc
+                    ? projected.OrderByDescending(n => n.NumberOfUsersTargeted).ThenByDescending(n => n.NumberOfUsersSent)
+                    : projected.OrderBy(n => n.NumberOfUsersTargeted).ThenBy(n => n.NumberOfUsersSent),
+                "Status" => isDesc
+                    ? projected.OrderByDescending(n => n.Status)
+                    : projected.OrderBy(n => n.Status),
+                _ => projected.OrderByDescending(n => n.CreatedDateUtc),
+            };
 
             return await projected.ToPaginatedResultAsync<NotificationHistoryListViewModel, NotificationHistoryDto>(request, cancellationToken);
         }

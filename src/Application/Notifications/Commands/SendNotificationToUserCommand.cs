@@ -23,7 +23,7 @@ public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotifica
     public async Task<NotificationSentResponse> Handle(SendNotificationToUserCommand request, CancellationToken cancellationToken)
     {
         request.DataPayload ??= string.Empty;
-        bool wasSent = await _firebaseNotificationService.SendNotificationAsync(
+        var stats = await _firebaseNotificationService.SendNotificationAsync(
             request.UserId,
             request.Title,
             request.Message,
@@ -34,7 +34,7 @@ public class SendNotificationToUserCommandHandler : IRequestHandler<SendNotifica
         return new NotificationSentResponse
         {
             UsersToNotify = 1,
-            NotificationsSent = wasSent ? 1 : 0
+            NotificationsSent = stats.Sent
         };
     }
 }

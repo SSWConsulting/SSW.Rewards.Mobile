@@ -59,7 +59,7 @@ public class SendNotificationToUsersWithAchievementsCommandHandler : IRequestHan
                 continue;
             }
 
-            bool wasSent = await _firebaseNotificationService.SendNotificationAsync(
+            var stats = await _firebaseNotificationService.SendNotificationAsync(
                 user.UserId,
                 request.Title,
                 request.Message,
@@ -67,11 +67,8 @@ public class SendNotificationToUsersWithAchievementsCommandHandler : IRequestHan
                 request.DataPayload ?? string.Empty,
                 cancellationToken);
 
-            if (wasSent)
-            {
-                notificationsSent++;
-            }
-            else
+            notificationsSent += stats.Sent;
+            if (stats.Sent == 0)
             {
                 _logger.LogWarning("Failed to send notification to User {UserId} ({Email}). AchievementIds: {AchievementIds}", user.UserId, user.Email, string.Join(", ", request.AchievementIds));
             }

@@ -17,6 +17,12 @@ public class Mapping : Profile
             .ForMember(dest => dest.HasError, opt => opt.MapFrom(src => src.HasError))
             .ForMember(dest => dest.SentOn, opt => opt.MapFrom(src => src.SentOn.HasValue ? src.SentOn.Value.DateTime : (DateTime?)null))
             .ForMember(dest => dest.NumberOfUsersTargeted, opt => opt.MapFrom(src => src.NumberOfUsersTargeted))
-            .ForMember(dest => dest.NumberOfUsersSent, opt => opt.MapFrom(src => src.NumberOfUsersSent));
+            .ForMember(dest => dest.NumberOfUsersSent, opt => opt.MapFrom(src => src.NumberOfUsersSent))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
+                src.WasSent && !src.HasError ? NotificationStatus.Sent :
+                src.HasError ? NotificationStatus.Failed :
+                src.Scheduled != null && !src.WasSent && !src.HasError ? NotificationStatus.Scheduled :
+                NotificationStatus.NotSent
+            ));
     }
 }

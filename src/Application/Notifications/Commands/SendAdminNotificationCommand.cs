@@ -170,7 +170,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
         {
             try
             {
-                bool success = await _firebaseNotificationService.SendNotificationAsync(
+                var stats = await _firebaseNotificationService.SendNotificationAsync(
                     userId,
                     request.Title,
                     request.Body,
@@ -178,13 +178,14 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
                     payload,
                     cancellationToken);
 
-                if (success)
+                if (stats.Sent > 0)
                 {
                     _logger.LogDebug("Admin notification SENT for {UserID}. Title: {Title}", userId, request.Title);
 
                     ++result.NotificationsSent;
                 }
-                else
+                
+                if (stats.Failed > 0)
                 {
                     _logger.LogWarning("Failed to send notification to User ID {UserId}. Title: {Title}", userId, request.Title);
 
