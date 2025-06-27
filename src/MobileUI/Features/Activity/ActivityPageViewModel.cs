@@ -16,15 +16,21 @@ public enum ActivityPageSegments
     Friends
 }
 
-public partial class ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider provider) : BaseViewModel
+public partial class ActivityPageViewModel : BaseViewModel
 {
-    public ActivityPageSegments CurrentSegment { get; set; }
+    private readonly IActivityFeedService _activityService;
+    private readonly IServiceProvider _serviceProvider;
+
+    private ActivityPageSegments CurrentSegment { get; set; }
     
     public ObservableRangeCollection<ActivityFeedItemDto> Feed { get; set; } = [];
 
-    [ObservableProperty]
-    private List<Segment> _segments = [];
-    
+    public List<Segment> Segments { get; set; } =
+    [
+        new() { Name = "All", Value = ActivityPageSegments.All },
+        new() { Name = "Friends", Value = ActivityPageSegments.Friends }
+    ];
+
     [ObservableProperty]
     private Segment? _selectedSegment;
     
@@ -39,39 +45,24 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     
     private int _myUserId;
 
-    public async Task Initialise()
+    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider)
     {
-        if (_loaded)
-            return;
-        
-        if (Segments.Count == 0)
-        {
-            Segments =
-            [
-                new Segment { Name = "All", Value = ActivityPageSegments.All },
-                new Segment { Name = "Friends", Value = ActivityPageSegments.Friends }
-            ];
-        }
+        _activityService = activityService;
+        _serviceProvider = serviceProvider;
 
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
-
-        await LoadFeed();
     }
     
     private static string GetMessage(UserAchievementDto achievement)
     {
         string name = achievement.AchievementName;
-        string action = string.Empty;
+        string action;
         string scored = $"just scored {achievement.AchievementValue}pts for";
 
         switch (achievement.AchievementType)
         {
             case AchievementType.Attended:
                 action = "checked into";
-                break;
-
-            case AchievementType.Completed:
-                action = $"{scored} completing";
                 break;
 
             case AchievementType.Linked:
@@ -82,30 +73,23 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
             case AchievementType.Scanned:
                 action = $"{scored} scanning";
                 break;
+
+            case AchievementType.Completed:
+            default:
+                action = $"{scored} completing";
+                break;
         }
 
         action = char.ToUpper(action[0]) + action[1..];
         return $"{action} {name}";
     }
 
-    private async Task LoadFeed(bool isRefreshing = false)
+    public async Task LoadFeed()
     {
-        if (!isRefreshing)
-        {
-            Feed.Clear();
-        }
-        
-        IsBusy = true;
         _skip = 0;
         var feed = await GetFeedData();
         
-        if (isRefreshing)
-        {
-            Feed.Clear();
-        }
-
-        Feed.AddRange(feed);
-        IsBusy = false;
+        Feed.ReplaceRange(feed);
         _loaded = true;
     }
     
@@ -116,8 +100,8 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
         try
         {
             feed = (CurrentSegment == ActivityPageSegments.Friends
-                ? await activityService.GetFriendsActivities(Take, _skip, CancellationToken.None)
-                : await activityService.GetAllActivities(Take, _skip, CancellationToken.None)).Feed.Select(x =>
+                ? await _activityService.GetFriendsActivities(Take, _skip, CancellationToken.None)
+                : await _activityService.GetAllActivities(Take, _skip, CancellationToken.None)).Feed.Select(x =>
             {
                 x.UserAvatar = string.IsNullOrWhiteSpace(x.UserAvatar)
                     ? "v2sophie"
@@ -175,7 +159,7 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     [RelayCommand]
     private async Task Refresh()
     {
-        await LoadFeed(true);
+        await LoadFeed();
         IsRefreshing = false;
     }
     
@@ -184,18 +168,18 @@ public partial class ActivityPageViewModel(IActivityFeedService activityService,
     {
         if (_myUserId == item.UserId)
         {
-            var page = ActivatorUtilities.CreateInstance<MyProfilePage>(provider);
+            var page = ActivatorUtilities.CreateInstance<MyProfilePage>(_serviceProvider);
             await Shell.Current.Navigation.PushAsync(page);
         }
         else
         {
-            var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(provider, item.UserId);
+            var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_serviceProvider, item.UserId);
             await Shell.Current.Navigation.PushAsync(page);
         }
     }
     
     [RelayCommand]
-    private async Task ClosePage()
+    private static async Task ClosePage()
     {
         await Shell.Current.Navigation.PopModalAsync();
     }
