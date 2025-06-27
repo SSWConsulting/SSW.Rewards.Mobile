@@ -20,6 +20,6 @@ public partial class ActivityPage
     {
         base.OnAppearing();
         _firebaseAnalyticsService.Log("ActivityPage");
-        await _viewModel.Initialise();
+        await _viewModel.LoadFeed();
     }
 }
