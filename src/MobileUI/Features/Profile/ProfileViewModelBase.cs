@@ -42,22 +42,30 @@ public partial class ProfileViewModelBase : BaseViewModel
     private string _title;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _linkedInUrl;
     
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _gitHubUrl;
     
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _twitterUrl;
     
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _companyUrl;
+
+    public bool HasAnySocialMedia =>
+        !string.IsNullOrWhiteSpace(LinkedInUrl) ||
+        !string.IsNullOrWhiteSpace(GitHubUrl) ||
+        !string.IsNullOrWhiteSpace(TwitterUrl) ||
+        !string.IsNullOrWhiteSpace(CompanyUrl);
 
     public bool ShowBalance { get; set; } = true;
 
     protected int UserId { get; set; }
-
-    public bool ShowCloseButton { get; set; } = true;
 
     [ObservableProperty]
     private bool _isLoading;
@@ -108,12 +116,12 @@ public partial class ProfileViewModelBase : BaseViewModel
             var profile = profileTask.Result;
 
             ProfilePic = profile.ProfilePic ?? "v2sophie";
-            Name = profile.FullName;
+            Name = profile.FullName ?? string.Empty;
             Rank = profile.Rank;
             Points = profile.Points;
             Balance = profile.Balance;
             IsStaff = profile.IsStaff;
-            UserEmail = profile.Email;
+            UserEmail = profile.Email ?? string.Empty;
             Title = GetTitle();
         
             await UpdateSkillsSectionIfRequired();
@@ -148,7 +156,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task ChangeProfilePicture()
+    private void ChangeProfilePicture()
     {
         if (IsLoading || !IsMe)
             return;
@@ -166,19 +174,19 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         await OpenProfile(LinkedInUrl, Constants.SocialMediaPlatformIds.LinkedIn);
     }
-    
+
     [RelayCommand]
     private async Task OpenGitHubProfile()
     {
         await OpenProfile(GitHubUrl, Constants.SocialMediaPlatformIds.GitHub);
     }
-    
+
     [RelayCommand]
     private async Task OpenTwitterProfile()
     {
         await OpenProfile(TwitterUrl, Constants.SocialMediaPlatformIds.Twitter);
     }
-    
+
     [RelayCommand]
     private async Task OpenCompanyUrl()
     {
@@ -192,13 +200,13 @@ public partial class ProfileViewModelBase : BaseViewModel
             {
                 return;
             }
-            
+
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty);
                 await MopupService.Instance.PushAsync(page);
             });
-            
+
             return;
         }
 
@@ -215,7 +223,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
     }
 
-    public string GetMessage(UserAchievementDto achievement, bool isActivity = false)
+    private string GetMessage(UserAchievementDto achievement, bool isActivity = false)
     {
         string prefix = IsMe ? "You have" : $"{Name} has";
 
@@ -225,17 +233,13 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         string activity = achievement.AchievementName;
-        string action = string.Empty;
+        string action;
         string scored = $"just scored {achievement.AchievementValue}pts for";
 
         switch (achievement.AchievementType)
         {
             case AchievementType.Attended:
                 action = "checked into";
-                break;
-
-            case AchievementType.Completed:
-                action = $"{scored} completing";
                 break;
 
             case AchievementType.Linked:
@@ -245,6 +249,11 @@ public partial class ProfileViewModelBase : BaseViewModel
 
             case AchievementType.Scanned:
                 action = $"{scored} scanning";
+                break;
+
+            case AchievementType.Completed:
+            default:
+                action = $"{scored} completing";
                 break;
         }
 
@@ -279,7 +288,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         const int takeSize = 5;
         List<Activity> activities = [];
-        
+
         activities.AddRange(FilterRecentAchievements(achievements, takeSize));
         activities.AddRange(FilterRecentRewards(rewards, takeSize));
 
@@ -298,7 +307,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             .Where(a => a.AchievementType != AchievementType.Attended)
             .OrderByDescending(a => a.AwardedAt)
             .Take(takeSize);
-        
+
         foreach (var achievement in recentAchievements)
         {
             result.Add(new Activity
@@ -312,7 +321,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         return result;
     }
-    
+
     private static IEnumerable<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
     {
         List<Activity> result = [];
@@ -360,7 +369,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task ClosePage()
+    private static async Task ClosePage()
     {
         await Shell.Current.GoToAsync("..");
     }

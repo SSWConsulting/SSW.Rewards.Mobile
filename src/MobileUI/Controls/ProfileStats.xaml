@@ -16,10 +16,10 @@
         <converters:LevelToStarsConverter x:Key="LevelToStars" />
     </Border.Resources>
     <VerticalStackLayout
-        Spacing="15">
+        Spacing="15"
+        Margin="15">
         <Grid WidthRequest="120"
-              HeightRequest="120"
-              Margin="0,10,0,0">
+              HeightRequest="120">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
             </Grid.GestureRecognizers>
@@ -76,8 +76,7 @@
         <Border IsVisible="{Binding Path=ShowBalance}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 8"
-                Margin="20, 0">
+                StrokeShape="RoundRectangle 8">
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
@@ -172,8 +171,7 @@
         <Border IsVisible="{Binding Path=ShowBalance, Converter={toolkit:InvertedBoolConverter}}"
                 Stroke="{StaticResource ProfileGridBorder}"
                 StrokeThickness="1"
-                StrokeShape="RoundRectangle 8"
-                Margin="20, 0">
+                StrokeShape="RoundRectangle 8">
             <Grid
                 BackgroundColor="{StaticResource ProfileGridBorder}"
                 ColumnSpacing="1"
@@ -242,9 +240,7 @@
             </Grid>
         </Border>
 
-        <controls:SocialMedia
-            Padding="20,10"
-            Margin="0, 0, 0, 0" />
+        <controls:SocialMedia IsVisible="{Binding HasAnySocialMedia}" />
 
         <Label Text="Skill Set"
                HorizontalOptions="Center"
@@ -281,7 +277,6 @@
         <HorizontalStackLayout
             BindableLayout.ItemsSource="{Binding Skills}"
             HorizontalOptions="Center"
-            Margin="0,5,0,15"
             Spacing="30">
             <HorizontalStackLayout.Triggers>
                 <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Skills.Count}" Value="0">
@@ -327,14 +322,14 @@
                             HorizontalOptions="Center"
                             BindableLayout.ItemsSource="{Binding Level, Converter={StaticResource LevelToStars}}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="staff:StaffSkillDto">
+                                <DataTemplate x:DataType="x:Boolean">
                                     <Label FontFamily="FA6Regular"
                                            FontAutoScalingEnabled="False"
                                            FontSize="15"
                                            Text="&#xf005;">
                                         <Label.Triggers>
                                             <DataTrigger TargetType="Label"
-                                                         Binding="{Binding }"
+                                                         Binding="{Binding}"
                                                          Value="True">
                                                 <Setter Property="FontFamily" Value="FA6Solid"/>
                                             </DataTrigger>
