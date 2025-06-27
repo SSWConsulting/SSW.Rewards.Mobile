@@ -64,6 +64,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
     {
         Notification? notification;
         var utcNow = _dateTimeService.UtcNow;
+        var targetUsersQuery = GetTargetUserIdsQuery(request);
         if (request.ScheduleAt.HasValue && request.ScheduleAt >= utcNow)
         {
             _logger.LogDebug("Admin notification SCHEDULED. Title: {Title}, Time: {ScheduleTime}", request.Title, request.ScheduleAt.Value);
@@ -80,7 +81,8 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
                 $"Roles:{ListIdsToString(request.RoleIds)}",
                 SentByStaffMemberId = staffUserId,
                 CreatedUtc = utcNow,
-                WasSent = false
+                WasSent = false,
+                NumberOfUsersTargeted = await targetUsersQuery.CountAsync(cancellationToken)
             };
 
             _context.Notifications.Add(notification);
@@ -101,41 +103,10 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             _logger.LogWarning("Admin notification was scheduled in the past. Title: {Title}, Scheduled Time: {ScheduleTime}, Current Time: {CurrentTime}", request.Title, request.ScheduleAt.Value, utcNow);
         }
 
-        IQueryable<User> query = _context.Users
-            .AsNoTracking()
-            .TagWithContext("NotificationUsers")
-            .Where(x => x.Activated);
-
-        if (request.AchievementIds?.Count > 0)
-        {
-            query = query
-                .TagWithContext("ByAchievements")
-                .Where(x => x.UserAchievements.Any(a => request.AchievementIds.Contains(a.AchievementId)));
-        }
-
-        if (request.RoleIds?.Count > 0)
-        {
-            query = query
-                .TagWithContext("ByRoles")
-                .Where(x => x.Roles.Any(r => request.RoleIds.Contains(r.RoleId)));
-        }
-
-        if (request.UserIds?.Count > 0)
-        {
-            query = query
-                .TagWithContext("ByUsers")
-                .Where(x => request.UserIds.Contains(x.Id));
-        }
-
-        List<int> targetUserIds = await query
-            .Select(x => x.Id)
-            .Distinct()
-            .ToListAsync(cancellationToken);
-
+        List<int> targetUserIds = await targetUsersQuery.ToListAsync(cancellationToken);
         if (!targetUserIds.Any())
         {
             _logger.LogWarning("Admin notification: No target users found for the specified criteria. Title: {Title}", request.Title);
-            return NotificationSentResponse.Empty;
         }
 
         _logger.LogInformation("Admin notification: Targeting {UserCount} users. Title: {Title}. Sent by: {AdminUserId}",
@@ -235,6 +206,39 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
         await _context.SaveChangesAsync(cancellationToken);
 
         return result;
+    }
+
+    private IQueryable<int> GetTargetUserIdsQuery(SendAdminNotificationCommand request)
+    {
+        IQueryable<User> query = _context.Users
+            .AsNoTracking()
+            .TagWithContext("NotificationUsers")
+            .Where(x => x.Activated);
+
+        if (request.AchievementIds?.Count > 0)
+        {
+            query = query
+                .TagWithContext("ByAchievements")
+                .Where(x => x.UserAchievements.Any(a => request.AchievementIds.Contains(a.AchievementId)));
+        }
+
+        if (request.RoleIds?.Count > 0)
+        {
+            query = query
+                .TagWithContext("ByRoles")
+                .Where(x => x.Roles.Any(r => request.RoleIds.Contains(r.RoleId)));
+        }
+
+        if (request.UserIds?.Count > 0)
+        {
+            query = query
+                .TagWithContext("ByUsers")
+                .Where(x => request.UserIds.Contains(x.Id));
+        }
+
+        return query
+            .Select(x => x.Id)
+            .Distinct();
     }
 
     private async Task<int> GetStaffUserId(CancellationToken cancellationToken)
