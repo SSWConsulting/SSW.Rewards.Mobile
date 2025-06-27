@@ -29,9 +29,10 @@
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 8"
                     Margin="15"
+                    Padding="15"
                     BackgroundColor="{StaticResource Background}">
-                    <Grid RowDefinitions="120, Auto, Auto, Auto, 40, *, 60">
-
+                    <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *, Auto"
+                          RowSpacing="15">
                         <Border Grid.Row="0"
                                 HeightRequest="80"
                                 WidthRequest="80"
@@ -49,15 +50,13 @@
                         <Label Grid.Row="1"
                                Text="{Binding QuizTitle}"
                                Style="{StaticResource LabelBold}"
-                               Margin="10,0"
-                               FontSize="24"
+                               FontSize="22"
                                HorizontalTextAlignment="Center" />
 
                         <Label Grid.Row="2"
                                Text="{Binding QuizDescription}"
                                TextColor="{StaticResource Gray300}"
-                               Margin="10,0"
-                               FontSize="18"
+                               FontSize="16"
                                HorizontalTextAlignment="Center" />
 
                         <!-- Reward amount -->
@@ -66,7 +65,6 @@
                                 StrokeShape="RoundRectangle 8"
                                 HorizontalOptions="Center"
                                 Padding="10,8"
-                                Margin="0,10,0,0"
                                 BackgroundColor="{StaticResource FlyoutBackgroundColour}">
                             <Grid ColumnDefinitions="Auto,*"
                                   ColumnSpacing="10">
@@ -82,7 +80,7 @@
                                     InputTransparent="True" />
                                 <Label Grid.Column="1" Text="{Binding Points}"
                                        TextColor="White"
-                                       FontSize="18"
+                                       FontSize="16"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center" />
                             </Grid>
@@ -95,20 +93,14 @@
                                        IndicatorSize="4.5"
                                        Position="{Binding CurrentQuestionIndex}"
                                        Count="{Binding Questions.Count}"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="End" />
+                                       HorizontalOptions="Center" />
 
                         <!-- Question & Answer -->
-                        <Grid Grid.Row="5" RowDefinitions="Auto,*" Margin="20">
+                        <Grid Grid.Row="5" RowDefinitions="Auto,*" RowSpacing="15">
                             <Label Grid.Row="0"
-                                   HorizontalOptions="FillAndExpand"
-                                   VerticalOptions="FillAndExpand"
-                                   HorizontalTextAlignment="Start"
-                                   VerticalTextAlignment="End"
                                    Style="{StaticResource LabelBold}"
                                    TextColor="White"
-                                   FontSize="Large"
-                                   Margin="0,0,0,40"
+                                   FontSize="18"
                                    Text="{Binding CurrentQuestion.Text, StringFormat='Q: {0}'}" />
                             <Border
                                 Grid.Row="1"
@@ -132,14 +124,13 @@
                             <Label Grid.Row="1"
                                    IsVisible="{Binding CurrentQuestion.IsSubmitted}"
                                    Text="{Binding CurrentQuestion.Answer, StringFormat='A: {0}'}"
-                                   FontSize="Medium"
+                                   FontSize="16"
                                    TextColor="{StaticResource White}" />
                         </Grid>
 
                         <!-- Quiz navigation -->
                         <Grid Grid.Row="6"
                               ColumnDefinitions="*,*"
-                              Margin="20,0,20,10"
                               IsEnabled="{Binding IsBusy, Converter={toolkit:InvertedBoolConverter}}">
                             <Button Grid.Column="0"
                                     IsVisible="{Binding IsFirstQuestion, Converter={toolkit:InvertedBoolConverter}}"
