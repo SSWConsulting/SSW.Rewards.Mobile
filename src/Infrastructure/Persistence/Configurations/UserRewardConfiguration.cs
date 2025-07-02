@@ -17,6 +17,10 @@ public class UserRewardConfiguration : IEntityTypeConfiguration<UserReward>
             .WithMany(u => u.UserRewards);
 
         builder
+            .HasIndex(x => x.UserId)
+            .IncludeProperties(x => x.RewardId);
+
+        builder
             .Property(ur => ur.AwardedAt)
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAdd();

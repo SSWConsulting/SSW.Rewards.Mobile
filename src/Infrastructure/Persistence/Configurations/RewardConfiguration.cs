@@ -8,5 +8,8 @@ public class RewardConfiguration : IEntityTypeConfiguration<Reward>
 {
     public void Configure(EntityTypeBuilder<Reward> builder)
     {
+        builder
+            .HasIndex(x => x.Id)
+            .IncludeProperties(x => x.Cost);
     }
 }

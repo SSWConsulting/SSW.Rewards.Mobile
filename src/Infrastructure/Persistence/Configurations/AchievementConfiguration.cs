@@ -10,5 +10,9 @@ public class AchievementConfiguration : IEntityTypeConfiguration<Achievement>
     {
         builder.HasIndex(a => a.IntegrationId)
             .IsUnique();
+
+        builder
+            .HasIndex(x => x.Id)
+            .IncludeProperties(x => x.Value);
     }
 }
