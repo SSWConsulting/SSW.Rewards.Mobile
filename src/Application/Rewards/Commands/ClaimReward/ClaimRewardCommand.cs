@@ -98,7 +98,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
         });
 
         // Award the user an achievement for claiming their first prize.
-        if (!userAndPoints.HasClaimedPrizeAchievement)
+        if (!userAndPoints.HasClaimedPrizeAchievement && claimPrizeAchievementId != -1)
         {
             _context.UserAchievements.Add(new UserAchievement
             {
