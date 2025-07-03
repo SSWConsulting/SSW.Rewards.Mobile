@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Achievements.Notifications;
 using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.Achievements.Command.ClaimAchievementForUser;
@@ -12,24 +14,26 @@ public class ClaimAchievementForUserCommand : IRequest<ClaimAchievementResult>
 public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchievementForUserCommand, ClaimAchievementResult>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICacheService _cacheService;
     private readonly ILogger<ClaimAchievementForUserCommand> _logger;
+    private readonly IMediator _mediator;
 
     public ClaimAchievementForUserCommandHandler(
             IApplicationDbContext context,
-            ICacheService cacheService,
-            ILogger<ClaimAchievementForUserCommand> logger)
+            ILogger<ClaimAchievementForUserCommand> logger,
+            IMediator mediator)
     {
         _context = context;
-        _cacheService = cacheService;
         _logger = logger;
+        _mediator = mediator;
     }
 
     public async Task<ClaimAchievementResult> Handle(ClaimAchievementForUserCommand request, CancellationToken cancellationToken)
     {
-        var achievement = await _context
-            .Achievements
+        var achievement = await _context.Achievements
+            .AsNoTracking()
+            .TagWithContext("ClaimAchievementForUser")
             .Where(a => a.Code == request.Code)
+            .Select(x => new { x.Id })
             .FirstOrDefaultAsync(cancellationToken);
 
         if (achievement == null)
@@ -42,8 +46,10 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
         }
 
         var user = await _context.Users
+            .AsNoTracking()
+            .TagWithContext("GetUserId")
             .Where(u => u.Id == request.UserId)
-            .Include(u => u.UserAchievements).ThenInclude(ua => ua.Achievement)
+            .Select(x => new { x.Id })
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user == null)
@@ -55,12 +61,12 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
             };
         }
 
-        var achievementCheck = user
-            .UserAchievements
-            .Where(ua => ua.Achievement.Code == request.Code)
-            .FirstOrDefault();
+        var hasAchievement = await _context.UserAchievements
+            .AsNoTracking()
+            .TagWithContext("HasAchievement")
+            .AnyAsync(x => x.UserId == user.Id && x.Achievement.Code == request.Code, cancellationToken);
 
-        if (achievementCheck != null)
+        if (hasAchievement)
         {
             _logger.LogError("User already has achievement: {AchievementCode}", request.Code);
             return new ClaimAchievementResult
@@ -80,7 +86,8 @@ public class ClaimAchievementForUserCommandHandler : IRequestHandler<ClaimAchiev
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            _cacheService.Remove(CacheTags.UpdatedRanking);
+            // Check for any other milestone achievements that the user may have reached.
+            await _mediator.Publish(new UserMilestoneAchievementCheckRequested { UserId = user.Id }, cancellationToken);
         }
         catch (Exception e)
         {
