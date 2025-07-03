@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Application.System.Commands.Common;
+﻿using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.Shared.DTOs.AddressTypes;
 using SSW.Rewards.Shared.DTOs.Rewards;
 
@@ -20,50 +21,68 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
     private readonly IRewardSender _rewardSender;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICacheService _cacheService;
+    private readonly ILogger<ClaimRewardCommandHandler> _logger;
 
     public ClaimRewardCommandHandler(
         IApplicationDbContext context,
         IMapper mapper,
         IRewardSender rewardSender,
         ICurrentUserService currentUserService,
-        ICacheService cacheService)
+        ICacheService cacheService,
+        ILogger<ClaimRewardCommandHandler> logger)
     {
         _context = context;
         _mapper = mapper;
         _rewardSender = rewardSender;
         _currentUserService = currentUserService;
         _cacheService = cacheService;
+        _logger = logger;
     }
 
     public async Task<ClaimRewardResult> Handle(ClaimRewardCommand request, CancellationToken cancellationToken)
     {
         var reward = await _context.Rewards
+            .AsNoTracking()
             .TagWithContext("GetReward")
             .FirstOrDefaultAsync(r => r.Code == request.Code || r.Id == request.Id, cancellationToken);
 
         if (reward == null)
         {
+            _logger.LogWarning("Reward with code {Code} or ID {Id} not found.", request.Code, request.Id);
             return new ClaimRewardResult
             {
                 status = RewardStatus.NotFound
             };
         }
 
-        var user = await _context.Users
+        int claimPrizeAchievementId = await _cacheService.GetOrAddAsync(
+            CacheKeys.ClaimPrizeAchievementId,
+            () => GetClaimPrizeAchievementId(cancellationToken));
+
+        var userAndPoints = await _context.Users
+            .AsNoTracking()
             .TagWithContext("GetUser")
             .Where(u => u.Email == _currentUserService.GetUserEmail())
-            .Include(u => u.UserRewards)
-                .ThenInclude(ur => ur.Reward)
-            .Include(u => u.UserAchievements)
-                .ThenInclude(u => u.Achievement)
+            .Select(x => new
+            {
+                User = x,
+                UserId = x.Id,
+                PointsUsed = x.UserRewards.Sum(ur => ur.Reward.Cost),
+                TotalPoints = x.UserAchievements.Sum(ua => ua.Achievement.Value),
+                HasClaimedPrizeAchievement = x.UserAchievements.Any(ua => ua.AchievementId == claimPrizeAchievementId)
+            })
             .FirstOrDefaultAsync(cancellationToken);
 
-        int pointsUsed = user.UserRewards.Sum(ur => ur.Reward.Cost);
+        if (userAndPoints == null)
+        {
+            _logger.LogWarning("User with email {Email} not found.", _currentUserService.GetUserEmail());
+            return new ClaimRewardResult
+            {
+                status = RewardStatus.Error
+            };
+        }
 
-        int totalPoints = user.UserAchievements.Sum(ua => ua.Achievement.Value);
-
-        int balance = totalPoints - pointsUsed;
-
+        int balance = userAndPoints.TotalPoints - userAndPoints.PointsUsed;
         if (balance < reward.Cost)
         {
             return new ClaimRewardResult
@@ -72,22 +91,21 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             };
         }
 
-        // award the user an achievement for claiming their first prize
-        if (!user.UserRewards.Any())
+        _context.UserRewards.Add(new()
         {
-            var achievement = await _context.Achievements
-                .TagWithContext("GetClaimPrizeAchievement")
-                .FirstOrDefaultAsync(a => a.Name == MilestoneAchievements.ClaimPrize, cancellationToken);
-            if (achievement != null)
-            {
-                user.UserAchievements.Add(new UserAchievement { Achievement = achievement });
-            }
-        }
-
-        user.UserRewards.Add(new UserReward
-        {
-            Reward = reward
+            UserId = userAndPoints.UserId,
+            RewardId = reward.Id
         });
+
+        // Award the user an achievement for claiming their first prize.
+        if (!userAndPoints.HasClaimedPrizeAchievement && claimPrizeAchievementId != -1)
+        {
+            _context.UserAchievements.Add(new UserAchievement
+            {
+                UserId = userAndPoints.UserId,
+                AchievementId = claimPrizeAchievementId
+            });
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -95,7 +113,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
         if (!request.ClaimInPerson)
         {
-            await _rewardSender.SendRewardAsync(user, reward, request.Address?.freeformAddress??string.Empty, cancellationToken);
+            await _rewardSender.SendRewardAsync(userAndPoints.User, reward, request.Address?.freeformAddress ?? string.Empty, cancellationToken);
         }
 
         var rewardModel = _mapper.Map<RewardDto>(reward);
@@ -105,5 +123,17 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             Reward = rewardModel,
             status = RewardStatus.Claimed
         };
+    }
+
+    private async Task<int> GetClaimPrizeAchievementId(CancellationToken ct)
+    {
+        var achievement = await _context.Achievements
+            .AsNoTracking()
+            .TagWithContext("GetClaimPrizeAchievement")
+            .Where(a => a.Name == MilestoneAchievements.ClaimPrize)
+            .Select(x => new { x.Id })
+            .FirstOrDefaultAsync(ct);
+
+        return achievement?.Id ?? -1;
     }
 }
