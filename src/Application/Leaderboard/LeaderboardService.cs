@@ -6,6 +6,7 @@ namespace SSW.Rewards.Application.Leaderboard;
 public interface ILeaderboardService
 {
     Task<List<LeaderboardUserDto>> GetFullLeaderboard(CancellationToken cancellationToken);
+    Task<LeaderboardUserDto?> GetUserById(int userId, CancellationToken cancellationToken);
 }
 
 public class LeaderboardService : ILeaderboardService
@@ -21,6 +22,12 @@ public class LeaderboardService : ILeaderboardService
         _dateTime = dateTime;
         _cacheService = cacheService;
         _profilePicStorageProvider = profilePicStorageProvider;
+    }
+
+    public async Task<LeaderboardUserDto?> GetUserById(int userId, CancellationToken cancellationToken)
+    {
+        var leaderboard = await GetFullLeaderboard(cancellationToken);
+        return leaderboard.FirstOrDefault(u => u.UserId == userId);
     }
 
     public async Task<List<LeaderboardUserDto>> GetFullLeaderboard(CancellationToken cancellationToken)

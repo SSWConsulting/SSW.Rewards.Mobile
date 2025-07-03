@@ -5,6 +5,7 @@ public static class CacheKeys
     public const string Leaderboard = "LeaderboardAllTime";
     public const string UserRanking = "UserRankingsAllTime";
     public const string ClaimPrizeAchievementId = "ClaimPrizeAchievementId";
+    public const string LeaderboardTop100AchievementId = "LeaderboardTop100AchievementId";
 }
 
 /// <summary>
