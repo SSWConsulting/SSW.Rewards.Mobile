@@ -1,5 +1,5 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
-public class Achievement : BaseEntity
+public class Achievement : BaseAuditableEntity
 {
     public string? Code { get; set; }
 
@@ -12,8 +12,6 @@ public class Achievement : BaseEntity
     public Icons Icon { get; set; }
 
     public bool IconIsBranded { get; set; }
-
-    public bool IsDeleted { get; set; }
 
     public bool IsMultiscanEnabled { get; set; }
 

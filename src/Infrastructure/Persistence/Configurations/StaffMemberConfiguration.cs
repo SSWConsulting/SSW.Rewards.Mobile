@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Graph.Models;
 using SSW.Rewards.Domain.Entities;
+using SSW.Rewards.Infrastructure.Persistence.Configurations;
 
 namespace SSW.Rewards.Persistence.Configurations;
 
@@ -10,5 +12,7 @@ public class StaffMemberConfiguration : IEntityTypeConfiguration<StaffMember>
     {
         builder.Property(s => s.IsExternal)
             .HasDefaultValue(false);
+
+        builder.HasSoftDelete();
     }
 }

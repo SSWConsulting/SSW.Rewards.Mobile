@@ -14,13 +14,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        //IMediator mediator,
         AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         AchievementIntegrationIdInterceptor achievementIntegrationIdInterceptor
         )
         : base(options)
     {
-        //_mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _achievementIntegrationIdInterceptor = achievementIntegrationIdInterceptor;
     }

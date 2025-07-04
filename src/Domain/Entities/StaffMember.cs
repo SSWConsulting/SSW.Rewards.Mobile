@@ -1,5 +1,5 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
-public class StaffMember : BaseEntity
+public class StaffMember : BaseAuditableEntity
 {
     public string? Name { get; set; } = string.Empty;
     public string? Title { get; set; } = string.Empty;
@@ -13,5 +13,4 @@ public class StaffMember : BaseEntity
     public Achievement? StaffAchievement { get; set; }
     public ICollection<StaffMemberSkill> StaffMemberSkills { get; set; } = new HashSet<StaffMemberSkill>();
     public string? ProfilePhoto { get; set; } = string.Empty;
-    public bool IsDeleted { get; set; }
 }

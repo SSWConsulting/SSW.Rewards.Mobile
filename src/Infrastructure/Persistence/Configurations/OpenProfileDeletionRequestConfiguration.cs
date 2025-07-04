@@ -8,6 +8,6 @@ public class OpenProfileDeletionRequestConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<OpenProfileDeletionRequest> builder)
     {
-        builder.ConfigureSoftDelete();
+        builder.HasSoftDelete();
     }
 }

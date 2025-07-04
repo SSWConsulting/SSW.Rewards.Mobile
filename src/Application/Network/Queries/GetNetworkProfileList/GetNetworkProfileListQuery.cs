@@ -106,7 +106,7 @@ public class GetNetworkProfileListHandler : IRequestHandler<GetNetworkProfileLis
         var staff = await _dbContext.StaffMembers
             .AsNoTracking()
             .TagWithContext("GetAllStaff")
-            .Where(x => !x.IsDeleted && x.StaffAchievementId.HasValue)
+            .Where(x => x.StaffAchievementId.HasValue)
             .Join(
                 _dbContext.Users.AsNoTracking().Where(x => x.Activated),
                 user => user.Email,
