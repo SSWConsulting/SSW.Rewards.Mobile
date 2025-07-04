@@ -23,7 +23,7 @@ public class DeleteStaffMemberProfileCommandHandler : IRequestHandler<DeleteStaf
             .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(StaffMember), request.Id);
 
-        // Soft delete the achievement.
+        // Soft delete the staff member.
         _context.StaffMembers.Remove(staffMember);
 
         await _context.SaveChangesAsync(cancellationToken);
