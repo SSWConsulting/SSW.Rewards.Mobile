@@ -364,7 +364,7 @@ public class SampleDataSeeder
                     IconIsBranded = true,
                     Name = "Quiz: Angular 2022",
                     Type = AchievementType.Completed,
-                    IsDeleted = false,
+                    DeletedUtc = null,
                     Value = 500
                 }
             };

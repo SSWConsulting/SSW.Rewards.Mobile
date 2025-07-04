@@ -14,13 +14,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        //IMediator mediator,
         AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         AchievementIntegrationIdInterceptor achievementIntegrationIdInterceptor
         )
         : base(options)
     {
-        //_mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _achievementIntegrationIdInterceptor = achievementIntegrationIdInterceptor;
     }
@@ -49,11 +47,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<OpenProfileDeletionRequest> OpenProfileDeletionRequests { get; set; }
     public DbSet<PendingRedemption> PendingRedemptions { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        base.OnModelCreating(builder);
+        base.OnModelCreating(modelBuilder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,11 +60,4 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             _auditableEntitySaveChangesInterceptor,
             _achievementIntegrationIdInterceptor);
     }
-
-    //public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    //{
-    //    await _mediator.DispatchDomainEvents(this);
-
-    //    return await base.SaveChangesAsync(cancellationToken);
-    //}
 }

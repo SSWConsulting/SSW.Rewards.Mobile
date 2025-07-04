@@ -76,7 +76,7 @@ public class UserController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<UserAchievementsViewModel>> ProfileAchievements([FromQuery] int userId)
     {
-        return Ok(await Mediator.Send(new GetProfileAchivementsQuery { UserId = userId }));
+        return Ok(await Mediator.Send(new GetProfileAchievementsQuery { UserId = userId }));
     }
 
     [HttpPost]

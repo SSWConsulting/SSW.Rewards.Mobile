@@ -2,12 +2,12 @@
 
 namespace SSW.Rewards.Application.Users.Queries.GetProfileAchievements;
 
-public class GetProfileAchivementsQuery : IRequest<UserAchievementsViewModel>
+public class GetProfileAchievementsQuery : IRequest<UserAchievementsViewModel>
 {
     public int UserId { get; set; }
 }
 
-public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchivementsQuery, UserAchievementsViewModel>
+public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchievementsQuery, UserAchievementsViewModel>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserService _userService;
@@ -18,7 +18,7 @@ public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchiv
         _userService = userService;
     }
 
-    public async Task<UserAchievementsViewModel> Handle(GetProfileAchivementsQuery request, CancellationToken cancellationToken)
+    public async Task<UserAchievementsViewModel> Handle(GetProfileAchievementsQuery request, CancellationToken cancellationToken)
     {
         var userAchievements = await _userService.GetUserAchievements(request.UserId, cancellationToken);
 
@@ -26,7 +26,6 @@ public class GetProfileAchievementQueryHandler : IRequestHandler<GetProfileAchiv
 
         var achievements = await _context.Achievements
             .Where(a =>
-                !a.IsDeleted &&
                 (a.Type == AchievementType.Completed || a.Type == AchievementType.Linked) &&
                 !userAchievementNames.Contains(a.Name))
             .AsNoTracking()

@@ -85,7 +85,8 @@ public class AchievementController : ApiControllerBase
     [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<ActionResult> Delete([FromQuery] int id)
     {
-        return Ok(await Mediator.Send(new DeleteAchievementCommand { Id = id }));
+        await Mediator.Send(new DeleteAchievementCommand { Id = id });
+        return Ok();
     }
 
     [HttpPatch]

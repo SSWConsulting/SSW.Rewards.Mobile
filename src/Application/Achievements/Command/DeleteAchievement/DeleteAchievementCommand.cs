@@ -2,12 +2,12 @@
 
 namespace SSW.Rewards.Application.Achievements.Command.DeleteAchievement;
 
-public class DeleteAchievementCommand : IRequest<Unit>
+public class DeleteAchievementCommand : IRequest
 {
     public int Id { get; set; }
 }
 
-public class DeleteAchievementCommandHandler : IRequestHandler<DeleteAchievementCommand, Unit>
+public class DeleteAchievementCommandHandler : IRequestHandler<DeleteAchievementCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -16,20 +16,15 @@ public class DeleteAchievementCommandHandler : IRequestHandler<DeleteAchievement
         _context = context;
     }
 
-    public async Task<Unit> Handle(DeleteAchievementCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteAchievementCommand request, CancellationToken cancellationToken)
     {
         var achievement = await _context.Achievements
-                    .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(DeleteAchievementCommand), request.Id);
 
-        if (achievement == null)
-        {
-            throw new NotFoundException(nameof(DeleteAchievementCommand), request.Id);
-        }
-
-        achievement.IsDeleted = true;
+        // Soft delete the achievement.
+        _context.Achievements.Remove(achievement);
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

@@ -20,9 +20,9 @@ public sealed class GetAchievementListQueryHandler : IRequestHandler<GetAchievem
 
     public async Task<AchievementListViewModel> Handle(GetAchievementListQuery request, CancellationToken cancellationToken)
     {
-        var achievements = await _context
-            .Achievements
-            .Where(a => !a.IsDeleted)
+        var achievements = await _context.Achievements
+            .AsNoTracking()
+            .TagWithContext()
             .ProjectTo<AchievementDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

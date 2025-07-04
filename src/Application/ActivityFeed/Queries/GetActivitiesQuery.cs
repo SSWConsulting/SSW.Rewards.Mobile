@@ -28,7 +28,7 @@ public class GetActivitiesQueryHandler(IApplicationDbContext dbContext, ICurrent
 
         var staffDetails = await dbContext.StaffMembers
             .TagWithContext("GetActiveStaffMembers")
-            .Where(s => !s.IsDeleted && s.StaffAchievement != null)
+            .Where(s => s.StaffAchievement != null)
             .Select((s) => new
             {
                 s.Email,

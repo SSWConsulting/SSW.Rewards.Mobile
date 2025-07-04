@@ -297,8 +297,7 @@ public class UserService : IUserService, IRolesService
         var code = await _dbContext.StaffMembers
                 .AsNoTracking()
                 .TagWithContext()
-                .Include(s => s.StaffAchievement)
-                .Where(s => s.Email == emailAddress && !s.IsDeleted)
+                .Where(s => s.Email == emailAddress)
                 .Select(s => s.StaffAchievement!.Code)
                 .SingleOrDefaultAsync(cancellationToken);
 
