@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Graph.Models;
 using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Infrastructure.Persistence.Configurations;
 
