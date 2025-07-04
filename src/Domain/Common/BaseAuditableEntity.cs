@@ -1,12 +1,14 @@
-﻿namespace SSW.Rewards.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SSW.Rewards.Domain.Common;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {
-    public DateTime Created { get; set; }
-
-    public string? CreatedBy { get; set; }
-
-    public DateTime? LastModified { get; set; }
-
+    public DateTime? LastModifiedUtc { get; set; }
+    [MaxLength(40)]
     public string? LastModifiedBy { get; set; }
+
+    public DateTime? DeletedUtc { get; set; }
+    [MaxLength(40)]
+    public string? DeletedBy { get; set; }
 }

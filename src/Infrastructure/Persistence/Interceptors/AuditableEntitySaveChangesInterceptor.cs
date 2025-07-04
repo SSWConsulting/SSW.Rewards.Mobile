@@ -36,29 +36,31 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
-        foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.CreatedBy = _currentUserService.GetUserId();
-                entry.Entity.Created = _dateTime.UtcNow;
-            }
-
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
-            {
-                entry.Entity.LastModifiedBy = _currentUserService.GetUserId();
-                entry.Entity.LastModified = _dateTime.UtcNow;
-            }
-        }
-
-        // Technical debt: The following requires a refactor, but this workaround will ensure we capture the CreatedUtc time for all entities
-        // See: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/749
-
+        DateTime utcNow = _dateTime.UtcNow;
         foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedUtc = _dateTime.UtcNow;
+                entry.Entity.CreatedUtc = utcNow;
+                entry.Entity.CreatedBy = _currentUserService.GetUserId();
+            }
+
+            if (entry.Entity is BaseAuditableEntity auditableEntity)
+            {
+                if (entry.State is EntityState.Added or EntityState.Modified || entry.HasChangedOwnedEntities())
+                {
+
+                    auditableEntity.LastModifiedBy = _currentUserService.GetUserId();
+                    auditableEntity.LastModifiedUtc = utcNow;
+                }
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    auditableEntity.DeletedBy = _currentUserService.GetUserId();
+                    auditableEntity.DeletedUtc = utcNow;
+
+                    entry.State = EntityState.Modified;
+                }
             }
         }
     }

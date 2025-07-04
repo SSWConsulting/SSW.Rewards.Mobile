@@ -8,7 +8,7 @@ public class Mapping : Profile
     {
         CreateMap<OpenProfileDeletionRequest, ProfileDeletionRequestDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName))
-            .ForMember(dest => dest.Requested, opt => opt.MapFrom(src => src.Created.ToString("O")))
+            .ForMember(dest => dest.Requested, opt => opt.MapFrom(src => src.CreatedUtc.ToString("O")))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
     }
 }
