@@ -79,7 +79,7 @@ public class StaffController : ApiControllerBase
     [Authorize(Roles = AuthorizationRoles.Admin)]
     public async Task<ActionResult> DeleteStaffMemberProfile([FromQuery] int Id)
     {
-        var command = new DeleteStaffMemberProfileCommand { Id = Id };
-        return Ok(await Mediator.Send(command));
+        await Mediator.Send(new DeleteStaffMemberProfileCommand { Id = Id });
+        return Ok();
     }
 }
