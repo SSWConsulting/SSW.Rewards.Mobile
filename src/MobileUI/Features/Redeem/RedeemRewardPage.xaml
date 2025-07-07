@@ -318,7 +318,7 @@
                             <Grid
                                 ColumnDefinitions="*,15,*"
                                 Margin="0,0,0,30"
-                                IsVisible="{Binding IsBalanceVisible, Mode=OneWay}">
+                                IsVisible="{Binding IsBalanceVisible}">
                                 <controls:MultiLineButton
                                     Text="Redeem in-person"
                                     Command="{Binding RedeemInPersonClickedCommand}"
