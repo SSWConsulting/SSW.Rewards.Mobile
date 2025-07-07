@@ -234,6 +234,15 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task RedeemDigitalClicked()
     {
+        var isConfirmed = await ViewPage.DisplayAlert(
+            "Confirm Digital Redemption",
+            $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis digital reward will be sent to your email address.",
+            "Yes, Redeem",
+            "Cancel");
+
+        if (!isConfirmed)
+            return;
+
         ShowClaimingState();
 
         var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
@@ -281,6 +290,15 @@ public partial class RedeemRewardViewModel(
         {
             return;
         }
+
+        var isConfirmed = await ViewPage.DisplayAlert(
+            "Confirm Physical Reward",
+            $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis reward will be shipped to:\n{SelectedAddress.freeformAddress}, Australia",
+            "Yes, Ship It",
+            "Cancel");
+
+        if (!isConfirmed)
+            return;
 
         ShowClaimingState();
 
