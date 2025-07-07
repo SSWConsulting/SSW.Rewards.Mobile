@@ -21,6 +21,10 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private readonly float _defaultBrightness;
     private const float ZoomFactorStep = 1.0f;
     private const float MaxBrightness = 1.0f;
+
+    private readonly SemaphoreSlim _cameraToggleSemaphore = new(1, 1);
+    private DateTime _lastCameraToggle = DateTime.MinValue;
+    private const int CameraToggleDelayMs = 500;
     
     public ScanPageSegments CurrentSegment { get; set; }
 
@@ -95,26 +99,55 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     public async Task OnAppearing()
     {
         WeakReferenceMessenger.Default.Register(this);
+        SetSegment(ScanPageSegments.Scan);
         
         HasScanPermissions = await Methods.AskForRequiredPermissionAsync();
 
         if (HasScanPermissions && IsScanVisible)
         {
-            IsCameraEnabled = true;
+            await SetCameraEnabledAsync(true);
         }
     }
     
-    public void OnDisappearing()
+    public async Task OnDisappearing()
     {
-        IsCameraEnabled = false;
+        await SetCameraEnabledAsync(false);
         ScreenBrightness.Default.Brightness = _defaultBrightness;
         WeakReferenceMessenger.Default.Unregister<EnableScannerMessage>(this);
     }
     
-    private void ToggleScanner(bool toggleOn)
+    private async Task SetCameraEnabledAsync(bool enabled)
+    {
+        // Don't allow toggling the camera too quickly, as this can lock up the app
+
+        if (!await _cameraToggleSemaphore.WaitAsync(0))
+        {
+            return;
+        }
+
+        try
+        {
+            var timeSinceLastToggle = DateTime.UtcNow - _lastCameraToggle;
+
+            if (timeSinceLastToggle.TotalMilliseconds < CameraToggleDelayMs)
+            {
+                var remainingDelay = CameraToggleDelayMs - (int)timeSinceLastToggle.TotalMilliseconds;
+                await Task.Delay(remainingDelay);
+            }
+
+            _lastCameraToggle = DateTime.UtcNow;
+            IsCameraEnabled = enabled;
+        }
+        finally
+        {
+            _cameraToggleSemaphore.Release();
+        }
+    }
+
+    private async Task ToggleScanner(bool toggleOn)
     {
         IsScanVisible = toggleOn;
-        IsCameraEnabled = toggleOn;
+        await SetCameraEnabledAsync(toggleOn);
         
         ScreenBrightness.Default.Brightness = toggleOn ? _defaultBrightness : MaxBrightness;
     }
@@ -123,8 +156,8 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     {
         ToggleScanner(true);
     }
-    
-    public void SetSegment(ScanPageSegments segment)
+
+    private void SetSegment(ScanPageSegments segment)
     {
         var matchingSegment = Segments.FirstOrDefault(s => (ScanPageSegments)s.Value == segment);
 
@@ -158,9 +191,9 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
             Vibration.Default.Vibrate();
 
         // the handler is called on a thread-pool thread
-        App.Current.Dispatcher.Dispatch(() =>
+        App.Current.Dispatcher.Dispatch(async () =>
         {
-            IsCameraEnabled = false;
+            await SetCameraEnabledAsync(false);
             
             var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
             MopupService.Instance.PushAsync(popup);
