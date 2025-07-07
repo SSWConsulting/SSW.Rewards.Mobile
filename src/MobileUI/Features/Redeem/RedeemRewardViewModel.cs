@@ -39,9 +39,6 @@ public partial class RedeemRewardViewModel(
 
     [ObservableProperty]
     private int _userBalance;
-
-    [ObservableProperty]
-    private string _shipButtonText = $"Ship to my address{Environment.NewLine}(Australia only)";
     
     [ObservableProperty]
     private bool _isHeaderVisible = true;

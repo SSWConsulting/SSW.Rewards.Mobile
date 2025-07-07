@@ -8,6 +8,7 @@
                  xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:addr="clr-namespace:SSW.Rewards.Shared.DTOs.AddressTypes;assembly=Shared"
                  xmlns:lottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+                 xmlns:s="clr-namespace:System;assembly=System.Runtime"
                  x:Name="RedeemRewardPopup"
                  x:DataType="viewModels:RedeemRewardViewModel"
                  x:Class="SSW.Rewards.Mobile.PopupPages.RedeemRewardPage"
@@ -325,7 +326,8 @@
                                     Grid.Column="0" />
 
                                 <controls:MultiLineButton
-                                    Text="{Binding ShipButtonText}"
+                                    Text="{Binding StringFormat='Ship to my address{0}(Australia only)',
+                                        Source={x:Static s:Environment.NewLine}}"
                                     Command="{Binding NextClickedCommand}"
                                     IsVisible="{Binding IsDigital, Converter={StaticResource InvertedBoolConverter}}"
                                     Grid.Column="2" />
