@@ -35,7 +35,13 @@ public partial class RedeemRewardViewModel(
     private int _cost;
 
     [ObservableProperty]
+    private bool _isDigital;
+
+    [ObservableProperty]
     private int _userBalance;
+
+    [ObservableProperty]
+    private string _shipButtonText = $"Ship to my address{Environment.NewLine}(Australia only)";
     
     [ObservableProperty]
     private bool _isHeaderVisible = true;
@@ -84,6 +90,7 @@ public partial class RedeemRewardViewModel(
         Heading = $"You are about to get:{Environment.NewLine}{reward.Name}";
         Description = reward.Description;
         Cost = reward.Cost;
+        IsDigital = reward.IsDigital;
 
         if (reward.IsPendingRedemption)
         {
@@ -273,5 +280,36 @@ public partial class RedeemRewardViewModel(
     {
         ConfirmEnabled = false;
         IsAddressVisible = true;
+    }
+
+    [RelayCommand]
+    private async Task RedeemDigitalClicked()
+    {
+        IsBalanceVisible = false;
+        ConfirmEnabled = false;
+        SendingClaim = true;
+        Heading = "Claiming reward...";
+
+        var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
+        {
+            Id = _reward.Id,
+            InPerson = false
+        });
+
+        SendingClaim = false;
+
+        if (claimResult.status == RewardStatus.Claimed)
+        {
+            Heading = "Success!";
+            Description = "Your digital reward will be sent to your email!";
+            ClaimSuccess = true;
+            LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
+        }
+        else
+        {
+            Heading = "Error";
+            Description = "Something went wrong - please try again later";
+            ClaimError = true;
+        }
     }
 }
