@@ -11,8 +11,8 @@ public interface IAuthStorageService
     Task StoreRefreshTokenAsync(string refreshToken);
     Task StoreDeviceTokenAsync(string deviceToken);
     void ClearAccessToken();
+    void ClearRefreshToken();
     Task ClearAllAsync();
-    void SetHasCachedAccount(bool value);
     bool HasCachedAccount { get; }
     void SetIsFirstRun(bool value);
     bool IsFirstRun { get; }
@@ -59,6 +59,7 @@ public class AuthStorageService : IAuthStorageService
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(accessToken, nameof(accessToken));
         await StoreTokenInSecureStorageAsync(AccessTokenKey, accessToken);
+        SetHasCachedAccount(true);
     }
 
     public async Task StoreRefreshTokenAsync(string refreshToken)
@@ -83,10 +84,24 @@ public class AuthStorageService : IAuthStorageService
         try
         {
             SecureStorage.Remove(AccessTokenKey);
+            SetHasCachedAccount(false);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to clear access token");
+            throw;
+        }
+    }
+
+    public void ClearRefreshToken()
+    {
+        try
+        {
+            SecureStorage.Remove(RefreshTokenKey);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to clear refresh token");
             throw;
         }
     }
@@ -116,7 +131,7 @@ public class AuthStorageService : IAuthStorageService
         }
     }
 
-    public void SetHasCachedAccount(bool value)
+    private void SetHasCachedAccount(bool value)
     {
         SetPreference(HasCachedAccountKey, value);
     }
