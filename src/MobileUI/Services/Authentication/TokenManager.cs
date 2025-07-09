@@ -152,7 +152,7 @@ public class TokenManager : ITokenManager
     public async Task StoreTokensAsync(string accessToken, string refreshToken, DateTimeOffset expiry)
     {
         _cachedAccessToken = accessToken;
-        _tokenExpiry = expiry.ToUniversalTime();
+        _tokenExpiry = expiry;
 
         if (!string.IsNullOrWhiteSpace(accessToken))
         {
