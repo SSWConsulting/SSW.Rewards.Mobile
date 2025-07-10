@@ -7,7 +7,8 @@ public interface INotificationsService
 {
     Task UploadDeviceToken(DeviceTokenDto command, CancellationToken cancellationToken);
     Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken);
-    Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, CancellationToken cancellationToken);
+    Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, bool includeDeleted, CancellationToken cancellationToken);
+    Task ArchiveNotificationAsync(int id, CancellationToken cancellationToken);
 }
 
 public class NotificationsService : INotificationsService
@@ -47,7 +48,7 @@ public class NotificationsService : INotificationsService
         throw new Exception($"Failed to send admin notification: {responseContent}");
     }
 
-    public async Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, CancellationToken cancellationToken)
+    public async Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, bool includeDeleted, CancellationToken cancellationToken)
     {
         var url = $"{_baseRoute}List?page={page}&pageSize={pageSize}";
         if (!string.IsNullOrWhiteSpace(search))
@@ -62,6 +63,10 @@ public class NotificationsService : INotificationsService
         {
             url += $"&sortDirection={Uri.EscapeDataString(sortDirection)}";
         }
+        if (includeDeleted)
+        {
+            url += "&includeDeleted=true";
+        }
         var result = await _httpClient.GetAsync(url, cancellationToken);
         if (result.IsSuccessStatusCode)
         {
@@ -73,5 +78,15 @@ public class NotificationsService : INotificationsService
         }
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
         throw new Exception($"Failed to get notification history: {responseContent}");
+    }
+
+    public async Task ArchiveNotificationAsync(int id, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteNotification/{id}", cancellationToken);
+        if (!result.IsSuccessStatusCode)
+        {
+            var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+            throw new Exception($"Failed to archive notification: {responseContent}");
+        }
     }
 }

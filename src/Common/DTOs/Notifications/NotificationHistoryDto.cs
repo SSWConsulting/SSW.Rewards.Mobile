@@ -2,6 +2,7 @@
 
 public class NotificationHistoryDto
 {
+    public int Id { get; set; }
     public string Title { get; set; }
     public string Message { get; set; }
     public string Tags { get; set; }

@@ -1,6 +1,5 @@
 ﻿@page "/notifications"
 
-@using MudBlazor
 @using SSW.Rewards.Shared.DTOs.Notifications
 @inject NavigationManager Navigation
 @inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
@@ -16,6 +15,7 @@
                       Class="mt-0" Immediate="true"
                       OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })"
                       OnBlur="LoadNotificationsFromSearch" />
+        <MudCheckBox Value="_showArchived" ValueChanged="@OnShowArchivedChanged" Color="Color.Primary" Label="Show archived" Class="ml-4" T="bool" />
         <MudSpacer />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
             Send Notification
@@ -54,17 +54,17 @@
                 }
             </MudTd>
             <MudTd DataLabel="Delivery Date">
-                @if (context.Status == NotificationStatus.Sent && context.SentOn != null)
+                @switch (context.Status)
                 {
-                    @context.SentOn?.ToLocalTime().ToString("g")
-                }
-                else if (context.Status == NotificationStatus.Scheduled && context.ScheduledDate != null)
-                {
-                    @context.ScheduledDate?.ToLocalTime().ToString("g") <span> (Scheduled)</span>
-                }
-                else
-                {
-                    <span>-</span>
+                    case NotificationStatus.Sent when context.SentOn != null:
+                        @context.SentOn?.ToLocalTime().ToString("g")
+                        break;
+                    case NotificationStatus.Scheduled when context.ScheduledDate != null:
+                        @context.ScheduledDate?.ToLocalTime().ToString("g") <span> (Scheduled)</span>
+                        break;
+                    default:
+                        <span>-</span>
+                        break;
                 }
             </MudTd>
             <MudTd DataLabel="Delivery">
@@ -72,50 +72,14 @@
                     <span>@context.NumberOfUsersSent / @context.NumberOfUsersTargeted</span>
                 </MudTooltip>
             </MudTd>
+            <MudTd DataLabel="Actions">
+                <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small" OnClick="@(() => ArchiveNotification(context.Id))">
+                    <MudIcon Icon="@Icons.Material.Filled.Archive" /> &nbsp; Archive
+                </MudButton>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 10, 20, 50 }" />
+            <MudTablePager PageSizeOptions="[ 10, 20, 50 ]" />
         </PagerContent>
     </MudTable>
 </MudPaper>
-
-@code {
-    private bool _loading = false;
-    private string _searchString = string.Empty;
-    private MudTable<NotificationHistoryDto> _table;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadNotificationsFromSearch();
-    }
-
-    private async Task<TableData<NotificationHistoryDto>> LoadNotifications(TableState state)
-    {
-        _loading = true;
-        try
-        {
-            var page = state.Page;
-            var pageSize = state.PageSize > 0 ? state.PageSize : 20;
-            var sortLabel = state.SortLabel;
-            var sortDirection = state.SortDirection == MudBlazor.SortDirection.None ? null : state.SortDirection.ToString().ToLower();
-            var result = await NotificationsService.GetNotificationHistoryListAsync(page, pageSize, _searchString, sortLabel, sortDirection, CancellationToken.None);
-            return new TableData<NotificationHistoryDto>
-            {
-                Items = result.Items.ToList(),
-                TotalItems = result.Count
-            };
-        }
-        finally
-        {
-            _loading = false;
-        }
-    }
-
-    private async Task LoadNotificationsFromSearch()
-    {
-        if (_table != null)
-        {
-            await _table.ReloadServerData();
-        }
-    }
-}
