@@ -1,5 +1,5 @@
 ﻿namespace SSW.Rewards.Domain.Entities;
-public class Notification : BaseEntity
+public class Notification : BaseAuditableEntity
 {
     public int SentByStaffMemberId { get; set; }
     public User SentByStaffMember { get; set; } = null!;

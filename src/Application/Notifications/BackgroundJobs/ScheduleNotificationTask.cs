@@ -12,10 +12,7 @@ public class ScheduleNotificationTask(IMediator mediator, ILogger<ScheduleNotifi
             // This should not happen if DI is configured correctly with Hangfire
             throw new InvalidOperationException("IMediator was not initialized. Check Hangfire DI configuration.");
         }
-
-        // Clear the schedule time as the job is now processing.
-        command.ScheduleAt = null;
-
+        
         try
         {
             await mediator.Send(command);

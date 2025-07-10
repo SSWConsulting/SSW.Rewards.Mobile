@@ -16,9 +16,9 @@ namespace SSW.Rewards.WebAPI.Controllers;
 public class NotificationsController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10, string? search = null, string? sortLabel = null, string? sortDirection = null)
+    public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10, string? search = null, string? sortLabel = null, string? sortDirection = null, bool includeDeleted = false)
     {
-        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize, Search = search, SortLabel = sortLabel, SortDirection = sortDirection }));
+        return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize, Search = search, SortLabel = sortLabel, SortDirection = sortDirection, IncludeDeleted = includeDeleted }));
     }
 
     [HttpPost]
@@ -82,5 +82,14 @@ public class NotificationsController : ApiControllerBase
     public async Task<ActionResult<NotificationSentResponse>> SendAdminNotification(SendAdminNotificationCommand command)
     {
         return Ok(await Mediator.Send(command));
+    }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> DeleteNotification([FromRoute] int id)
+    {
+        await Mediator.Send(new DeleteNotificationCommand(id));
+        return Ok();
     }
 }
