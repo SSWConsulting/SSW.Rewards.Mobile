@@ -8,6 +8,7 @@ public class GetNotificationHistoryListQuery : IRequest<NotificationHistoryListV
     public int Page { get; set; }
     public int PageSize { get; set; }
     public string? Search { get; set; }
+    public bool IncludeDeleted { get; set; }
     public string? SortLabel { get; set; }
     public string? SortDirection { get; set; }
 
@@ -27,6 +28,11 @@ public class GetNotificationHistoryListQuery : IRequest<NotificationHistoryListV
             var query = _context.Notifications
                 .AsNoTracking()
                 .TagWithContext("NotificationHistory");
+
+            if (request.IncludeDeleted)
+            {
+                query = query.IgnoreQueryFilters();
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
