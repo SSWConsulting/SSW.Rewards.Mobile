@@ -98,7 +98,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
         if (!string.IsNullOrWhiteSpace(currentUrl))
         {
-            InputText = _validationPattern.ExtractUsername(currentUrl);
+            InputText = _validationPattern.ExtractHandle(currentUrl);
         }
     }
 

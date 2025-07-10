@@ -4,10 +4,10 @@ namespace SSW.Rewards.Shared.Utils;
 
 public static partial class RegexHelpers
 {
-    private const string LinkedInValidationPattern = @"^https?://(www\.)?linkedin\.com/in/(?<username>[a-zA-Z0-9._-]+)$";
-    private const string GitHubValidationPattern = @"^https?://(www\.)?github\.com/(?<username>[a-zA-Z0-9._-]+)$";
-    private const string TwitterValidationPattern = @"^https?://(www\.)?(twitter|x)\.com/(?<username>[a-zA-Z0-9._-]+)$";
-    private const string CompanyValidationPattern = @"^https?://\S+";
+    private const string LinkedInValidationPattern = @"^https?://(www\.)?linkedin\.com/in/(?<handle>[a-zA-Z0-9._-]+)$";
+    private const string GitHubValidationPattern = @"^https?://(www\.)?github\.com/(?<handle>[a-zA-Z0-9._-]+)$";
+    private const string TwitterValidationPattern = @"^https?://(www\.)?(twitter|x)\.com/(?<handle>[a-zA-Z0-9._-]+)$";
+    private const string CompanyValidationPattern = @"^https?://(?<handle>[a-zA-Z0-9._-]+\.[a-zA-Z]{2,})(?:/.*)?$";
 
     [GeneratedRegex(@"^https?://", RegexOptions.IgnoreCase, 200)]
     public static partial Regex TitleRegex();
@@ -24,12 +24,12 @@ public static partial class RegexHelpers
     [GeneratedRegex(CompanyValidationPattern, RegexOptions.IgnoreCase, 200)]
     public static partial Regex CompanyRegex();
 
-    // Extract username from social media URLs
-    public static string ExtractUsername(this Regex regex, string url)
+    // Extract handle from URLs (username for social media, domain for company websites)
+    public static string ExtractHandle(this Regex regex, string url)
     {
         var match = regex.Match(url);
-        return match.Success && match.Groups["username"].Success
-            ? match.Groups["username"].Value
+        return match.Success && match.Groups["handle"].Success
+            ? match.Groups["handle"].Value
             : string.Empty;
     }
 }
