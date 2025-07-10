@@ -23,6 +23,7 @@ public class Mapping : Profile
                 src.HasError ? NotificationStatus.Failed :
                 src.Scheduled != null && !src.WasSent && !src.HasError ? NotificationStatus.Scheduled :
                 NotificationStatus.NotSent
-            ));
+            ))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
     }
 }

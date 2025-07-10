@@ -83,4 +83,13 @@ public class NotificationsController : ApiControllerBase
     {
         return Ok(await Mediator.Send(command));
     }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> DeleteNotification([FromRoute] int id)
+    {
+        await Mediator.Send(new DeleteNotificationCommand(id));
+        return Ok();
+    }
 }
