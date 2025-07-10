@@ -22,7 +22,8 @@ public class DeleteNotificationCommandHandler : IRequestHandler<DeleteNotificati
             .FirstOrDefaultAsync(n => n.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Notification), request.Id);
 
-        notification.DeletedUtc = _dateTime.UtcNow;
+        _context.Notifications.Remove(notification);
+        
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
