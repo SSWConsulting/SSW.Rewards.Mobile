@@ -97,7 +97,7 @@
                                 MaxLines="2">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label"
-                                                 Binding="{Binding InputText, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+                                                 Binding="{Binding IsUrlValid}"
                                                  Value="True">
                                         <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
                                         <Setter Property="TextDecorations" Value="Underline" />

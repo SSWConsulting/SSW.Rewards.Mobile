@@ -106,6 +106,7 @@ public static class DependencyInjection
 
         // Configuration that in the future will be modifiable by the user or WebAPI
         services.AddSingleton(new ScannerConfig());
+        services.AddSingleton(new SocialMediaConfig());
 
         // Add Firebase logging
         services.AddLogging(builder =>

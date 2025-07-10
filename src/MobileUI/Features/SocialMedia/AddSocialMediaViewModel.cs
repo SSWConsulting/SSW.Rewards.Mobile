@@ -1,7 +1,9 @@
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
+using SSW.Rewards.Mobile.Config;
 using SSW.Rewards.Mobile.Controls;
 using SSW.Rewards.Shared.Utils;
 
@@ -11,122 +13,137 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly ISnackbarService _snackbarService;
-    private readonly int _platformId;
-
+    private readonly ILogger<AddSocialMediaViewModel> _logger;
+    private readonly SocialMediaConfig _configuration;
+    private int _platformId;
     private Regex _validationPattern;
 
-    [ObservableProperty]
-    private string _placeholder;
-    
-    [ObservableProperty]
-    private string _url;
+    private const string TickIcon = "\uf297";
+    private const string CrossIcon = "\uf36f";
+    private const int NewConnectionPoints = 150;
 
     [ObservableProperty]
-    private string _platformName;
+    private string _placeholder = string.Empty;
+    
+    [ObservableProperty]
+    private string _url = string.Empty;
+
+    [ObservableProperty]
+    private string _platformName = string.Empty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CompleteUrl))]
-    private string _inputText;
+    [NotifyPropertyChangedFor(nameof(IsUrlValid))]
+    private string _inputText = string.Empty;
 
     [ObservableProperty]
     private int _cursorPosition;
 
     [ObservableProperty]
-    private string _errorText;
+    private string _errorText = string.Empty;
     
     [ObservableProperty]
-    private string _currentUrl;
+    private string _currentUrl = string.Empty;
     
     [ObservableProperty]
-    private string _icon;
+    private string _icon = string.Empty;
 
-    public string CompleteUrl
+    public string CompleteUrl => 
+        string.IsNullOrEmpty(InputText) ? $"{Url}{Placeholder}" : $"{Url}{InputText}";
+
+    public bool IsUrlValid
     {
         get
         {
-            return string.IsNullOrEmpty(InputText) ? $"{Url}{Placeholder}" : $"{Url}{InputText}";
+            if (_validationPattern == null || string.IsNullOrWhiteSpace(CompleteUrl))
+                return false;
+
+            return _validationPattern.IsMatch(CompleteUrl);
         }
     }
 
-    public AddSocialMediaViewModel(IUserService userService,
+    public AddSocialMediaViewModel(
+        IUserService userService,
         ISnackbarService snackbarService,
-        int socialMediaPlatformId,
-        string currentUrl)
+        ILogger<AddSocialMediaViewModel> logger,
+        SocialMediaConfig configuration)
     {
         _userService = userService;
         _snackbarService = snackbarService;
-        _platformId = socialMediaPlatformId;
-
-        Initialise(currentUrl, socialMediaPlatformId);
+        _logger = logger;
+        _configuration = configuration;
     }
 
-    private void Initialise(string currentUrl, int socialMediaPlatformId)
+    public async Task InitialiseAsync(string currentUrl, int socialMediaPlatformId)
     {
-        switch (socialMediaPlatformId)
+        try
         {
-            case Constants.SocialMediaPlatformIds.LinkedIn:
-                PlatformName = "LinkedIn";
-                Url = "https://linkedin.com/in/";
-                Placeholder = "[your-name]";
-                _validationPattern = RegexHelpers.LinkedInRegex();
-                Icon = "\uf0e1";
-                break;
-            case Constants.SocialMediaPlatformIds.GitHub:
-                PlatformName = "GitHub";
-                Url = "https://github.com/";
-                Placeholder = "[your-username]";
-                _validationPattern = RegexHelpers.GitHubRegex();
-                Icon = "\uf09b";
-                break;
-            case Constants.SocialMediaPlatformIds.Twitter:
-                PlatformName = "Twitter";
-                Url = "https://x.com/";
-                Placeholder = "[your-username]";
-                _validationPattern = RegexHelpers.TwitterRegex();
-                Icon = "\ue61b";
-                break;
-            case Constants.SocialMediaPlatformIds.Company:
-                PlatformName = "Company";
-                Url = "https://";
-                Placeholder = "[your-website]";
-                _validationPattern = RegexHelpers.CompanyRegex();
-                Icon = "\uf1ad";
-                break;
+            if (!_configuration.Platforms.TryGetValue(socialMediaPlatformId, out var config))
+            {
+                _logger.LogError("Social media platform {PlatformId} not found", socialMediaPlatformId);
+                await ShowErrorAndClose("Social media platform not found.");
+                return;
+            }
+
+            _platformId = socialMediaPlatformId;
+            _validationPattern = config.ValidationPattern();
+
+            PlatformName = config.PlatformName;
+            Url = config.Url;
+            Placeholder = config.Placeholder;
+            Icon = config.Icon;
+            CurrentUrl = currentUrl;
+
+            // Extract handle from current URL if editing
+            if (!string.IsNullOrWhiteSpace(currentUrl))
+            {
+                InputText = _validationPattern.ExtractHandle(currentUrl);
+            }
         }
-
-        CurrentUrl = currentUrl;
-
-        if (!string.IsNullOrWhiteSpace(currentUrl))
+        catch (Exception ex)
         {
-            InputText = _validationPattern.ExtractHandle(currentUrl);
+            _logger.LogError(ex, "Error initializing AddSocialMediaViewModel for platform {PlatformId}", socialMediaPlatformId);
+            await ShowErrorAndClose("An error occurred while loading the social media platform.");
         }
     }
 
     partial void OnInputTextChanged(string value)
     {
+        // Clear error when input is cleared
         if (string.IsNullOrWhiteSpace(value))
         {
+            ErrorText = string.Empty;
             return;
         }
 
         // Check if the user pasted or entered a full URL and extract just the handle
-        var extractedHandle = _validationPattern.ExtractHandle(value);
-        if (!string.IsNullOrEmpty(extractedHandle) && extractedHandle != value)
+        if (_validationPattern != null)
         {
-            InputText = extractedHandle;
+            var extractedHandle = _validationPattern.ExtractHandle(value);
+            if (!string.IsNullOrEmpty(extractedHandle) && extractedHandle != value)
+            {
+                InputText = extractedHandle;
+                return; // Prevent clearing error text below since we're updating InputText
+            }
+        }
+
+        // Clear error text when user starts typing
+        if (!string.IsNullOrEmpty(ErrorText))
+        {
+            ErrorText = string.Empty;
         }
     }
 
     [RelayCommand]
     private async Task Connect()
     {
+        if (IsBusy) return;
+
         InputText = InputText.Trim();
 
-        var isValid = ValidateForm();
+        if (!ValidateForm()) return;
 
-        if (!isValid) return;
-
-        await AddProfile();
+        await SaveProfile();
     }
 
     [RelayCommand]
@@ -138,12 +155,12 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     [RelayCommand]
     private void InputFocused()
     {
-        if (string.IsNullOrWhiteSpace(InputText)) 
+        if (string.IsNullOrWhiteSpace(InputText))
         {
             InputText = Url;
         }
 
-        App.Current.Dispatcher.Dispatch(() =>
+        MainThread.BeginInvokeOnMainThread(() =>
         {
             CursorPosition = InputText.Length;
         });
@@ -154,77 +171,110 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     {
         InputText = InputText.Trim();
     }
-    
+
     [RelayCommand]
     private async Task OpenLink()
     {
-        var isValid = ValidateForm();
-        
-        if (isValid && Uri.TryCreate(CompleteUrl, UriKind.Absolute, out Uri uri))
-        {
-            try
-            {
-                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
-            }
-            catch (Exception)
-            {
-                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
-            }
-        }
-    }
+        if (!ValidateForm()) return;
 
-    private bool IsUrlValid()
-    {
-        return _validationPattern.IsMatch(CompleteUrl);
+        if (!Uri.TryCreate(CompleteUrl, UriKind.Absolute, out var uri))
+        {
+            await ShowAlert("Error", "The URL is not valid.");
+            return;
+        }
+
+        try
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error launching browser for URL: {Uri}", uri);
+            await ShowAlert("Error", "There was an error trying to launch the default browser.");
+        }
     }
 
     private bool ValidateForm()
     {
         ErrorText = string.Empty;
-        
+
         if (string.IsNullOrWhiteSpace(InputText))
         {
             ErrorText = "URL cannot be empty";
             return false;
         }
 
-        if (!IsUrlValid())
+        if (!IsUrlValid)
         {
             ErrorText = "The URL is not valid";
             return false;
         }
-        
+
         return true;
     }
 
-    private async Task AddProfile()
+    private async Task SaveProfile()
     {
         IsBusy = true;
-        var result = await _userService.SaveSocialMedia(_platformId, CompleteUrl);
-        var snackbarOptions = new SnackbarOptions
-        {
-            Glyph = "\uf297", // tick icon
-            ShowPoints = false,
-        };
-        switch (result)
-        {
-            case true:
-                snackbarOptions.ShowPoints = true;
-                snackbarOptions.Points = 150;
-                snackbarOptions.Message = $"Thanks for connecting your {PlatformName} with SSW Rewards";
-                await ClosePage();
-                break;
-            case false:
-                snackbarOptions.Message = $"{PlatformName} has been successfully updated";
-                await ClosePage();
-                break;
-            default:
-                snackbarOptions.Message = $"Couldn't connect your {PlatformName}, please try again later";
-                snackbarOptions.Glyph = "\uf36f"; // cross icon
-                break;
-        }
 
-        IsBusy = false;
-        await _snackbarService.ShowSnackbar(snackbarOptions);
+        try
+        {
+            var result = await _userService.SaveSocialMedia(_platformId, CompleteUrl);
+            var snackbarOptions = CreateSnackbarOptions(result);
+
+            if (result.HasValue)
+            {
+                await ClosePage();
+            }
+
+            await _snackbarService.ShowSnackbar(snackbarOptions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error saving social media for platform {PlatformId}", _platformId);
+            await ShowAlert("Error", "There was an error saving your social media. Please try again later.");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private SnackbarOptions CreateSnackbarOptions(bool? result)
+    {
+        return result switch
+        {
+            true => new SnackbarOptions
+            {
+                ShowPoints = true,
+                Points = NewConnectionPoints,
+                Message = $"Thanks for connecting your {PlatformName} with SSW Rewards",
+                Glyph = TickIcon,
+                ActionCompleted = true
+            },
+            false => new SnackbarOptions
+            {
+                Message = $"{PlatformName} has been successfully updated",
+                Glyph = TickIcon,
+                ActionCompleted = true
+            },
+            null => new SnackbarOptions
+            {
+                Message = $"Couldn't connect your {PlatformName}, please try again later",
+                Glyph = CrossIcon,
+                ActionCompleted = false
+            }
+        };
+    }
+
+    private static async Task ShowErrorAndClose(string message)
+    {
+        await ShowAlert("Error", message);
+        await ClosePage();
+    }
+
+    private static async Task ShowAlert(string title, string message)
+    {
+        await Shell.Current.DisplayAlert(title, message, "OK");
     }
 }

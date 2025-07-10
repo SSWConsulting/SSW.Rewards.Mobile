@@ -151,7 +151,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
 
         return !string.IsNullOrEmpty(CompanyUrl)
-            ? RegexHelpers.TitleRegex().Replace(CompanyUrl, string.Empty)
+            ? RegexHelpers.WebsiteRegex().Replace(CompanyUrl, string.Empty)
             : "Community";
     }
 

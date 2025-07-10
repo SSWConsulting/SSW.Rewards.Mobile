@@ -25,7 +25,7 @@ public partial class LeaderViewModel : BaseViewModel
         _displayPoints = user.Points;
 
         Title = !string.IsNullOrWhiteSpace(user.Title)
-            ? RegexHelpers.TitleRegex().Replace(user.Title, string.Empty)
+            ? RegexHelpers.WebsiteRegex().Replace(user.Title, string.Empty)
             : string.Empty;
     }
 
