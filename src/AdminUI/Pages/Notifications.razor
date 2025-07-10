@@ -73,9 +73,16 @@
                 </MudTooltip>
             </MudTd>
             <MudTd DataLabel="Actions">
-                <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small" OnClick="@(() => ArchiveNotification(context.Id))">
-                    <MudIcon Icon="@Icons.Material.Filled.Archive" /> &nbsp; Archive
-                </MudButton>
+                @if (context.IsArchived)
+                {
+                    <span>Archived</span>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small" OnClick="@(() => ArchiveNotification(context.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Archive" /> &nbsp; Archive
+                    </MudButton>
+                }
             </MudTd>
         </RowTemplate>
         <PagerContent>

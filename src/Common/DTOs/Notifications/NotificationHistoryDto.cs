@@ -12,6 +12,7 @@ public class NotificationHistoryDto
     public string EmailAddress { get; set; }
     public bool WasSent { get; set; }
     public bool HasError { get; set; }
+    public bool IsArchived { get; set; }
     public DateTime? SentOn { get; set; }
     public int NumberOfUsersTargeted { get; set; }
     public int NumberOfUsersSent { get; set; }
