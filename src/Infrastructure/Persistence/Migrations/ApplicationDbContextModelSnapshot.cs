@@ -175,12 +175,26 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime?>("DeletedUtc")
+                        .HasColumnType("datetime2");
+
                     b.PrimitiveCollection<string>("FailedUserIds")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasError")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime>("LastModifiedUtc")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -213,6 +227,9 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeletedUtc")
+                        .HasFilter("[DeletedUtc] IS NULL");
 
                     b.HasIndex("SentByStaffMemberId");
 
