@@ -8,6 +8,7 @@ namespace SSW.Rewards.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public int Cost { get; set; }
+        public bool IsDigital { get; set; }
         public DateTimeOffset? AwardedAt { get; set; }
         public bool Awarded { get; set; }
         public string ImageUri { get; set; }

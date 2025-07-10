@@ -47,7 +47,8 @@ public class RewardService : IRewardService
                     Description = reward.Description,
                     CarouselImageUri = reward.CarouselImageUri,
                     IsCarousel = reward.IsCarousel,
-                    IsHidden = reward.IsHidden
+                    IsHidden = reward.IsHidden,
+                    IsDigital = reward.RewardType == RewardType.Digital
                 });
             }
 

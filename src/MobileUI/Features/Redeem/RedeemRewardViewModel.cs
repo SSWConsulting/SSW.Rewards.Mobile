@@ -35,6 +35,9 @@ public partial class RedeemRewardViewModel(
     private int _cost;
 
     [ObservableProperty]
+    private bool _isDigital;
+
+    [ObservableProperty]
     private int _userBalance;
     
     [ObservableProperty]
@@ -80,10 +83,8 @@ public partial class RedeemRewardViewModel(
     {
         _reward = reward;
         _defaultBrightness = ScreenBrightness.Default.Brightness;
-        Image = reward.ImageUri;
-        Heading = $"You are about to get:{Environment.NewLine}{reward.Name}";
-        Description = reward.Description;
-        Cost = reward.Cost;
+
+        SetRewardProperties(reward);
 
         if (reward.IsPendingRedemption)
         {
@@ -91,8 +92,16 @@ public partial class RedeemRewardViewModel(
         }
 
         userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
-        
         LogEvent(Constants.AnalyticsEvents.RewardView);
+    }
+
+    private void SetRewardProperties(Reward reward)
+    {
+        Image = reward.ImageUri;
+        Heading = $"You are about to get:{Environment.NewLine}{reward.Name}";
+        Description = reward.Description;
+        Cost = reward.Cost;
+        IsDigital = reward.IsDigital;
     }
 
     public void OnDisappearing()
@@ -111,6 +120,30 @@ public partial class RedeemRewardViewModel(
         QrCode = ImageHelpers.GenerateQrCode(qrCode ?? _reward.PendingRedemptionCode);
         IsQrCodeVisible = true;
         ShouldCallCallback = true;
+    }
+
+    private void ShowClaimingState()
+    {
+        IsBalanceVisible = false;
+        ConfirmEnabled = false;
+        SendingClaim = true;
+        Heading = "Claiming reward...";
+    }
+
+    private void ShowSuccessState(string message)
+    {
+        SendingClaim = false;
+        Heading = "Success!";
+        Description = message;
+        ClaimSuccess = true;
+    }
+
+    private void ShowErrorState()
+    {
+        SendingClaim = false;
+        Heading = "Error";
+        Description = "Something went wrong - please try again later";
+        ClaimError = true;
     }
 
     private void LogEvent(string eventName)
@@ -180,17 +213,12 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task RedeemInPersonClicked()
     {
-        IsBalanceVisible = false;
-        ConfirmEnabled = false;
-        SendingClaim = true;
-        Heading = "Claiming reward...";
+        ShowClaimingState();
 
         var claimResult = await rewardService.CreatePendingRedemption(new CreatePendingRedemptionDto
         {
             Id = _reward.Id
         });
-
-        SendingClaim = false;
 
         if (claimResult.status == RewardStatus.Pending)
         {
@@ -199,9 +227,38 @@ public partial class RedeemRewardViewModel(
         }
         else
         {
-            Heading = "Error";
-            Description = "Something went wrong - please try again later";
-            ClaimError = true;
+            ShowErrorState();
+        }
+    }
+
+    [RelayCommand]
+    private async Task RedeemDigitalClicked()
+    {
+        var isConfirmed = await ViewPage.DisplayAlert(
+            "Confirm Digital Redemption",
+            $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis digital reward will be sent to your email address.",
+            "Yes, Redeem",
+            "Cancel");
+
+        if (!isConfirmed)
+            return;
+
+        ShowClaimingState();
+
+        var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
+        {
+            Id = _reward.Id,
+            InPerson = false
+        });
+
+        if (claimResult.status == RewardStatus.Claimed)
+        {
+            ShowSuccessState("Your digital reward will be sent to your email!");
+            LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
+        }
+        else
+        {
+            ShowErrorState();
         }
     }
 
@@ -213,7 +270,7 @@ public partial class RedeemRewardViewModel(
 
         if (!isConfirmed)
             return;
-        
+
         IsBusy = true;
 
         await rewardService.CancelPendingRedemption(new CancelPendingRedemptionDto
@@ -234,9 +291,16 @@ public partial class RedeemRewardViewModel(
             return;
         }
 
-        ConfirmEnabled = false;
-        SendingClaim = true;
-        Heading = "Claiming reward...";
+        var isConfirmed = await ViewPage.DisplayAlert(
+            "Confirm Physical Reward",
+            $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis reward will be shipped to:\n{SelectedAddress.freeformAddress}, Australia",
+            "Yes, Ship It",
+            "Cancel");
+
+        if (!isConfirmed)
+            return;
+
+        ShowClaimingState();
 
         var claimResult = await rewardService.ClaimReward(new ClaimRewardDto()
         {
@@ -245,20 +309,14 @@ public partial class RedeemRewardViewModel(
             Address = SelectedAddress
         });
 
-        SendingClaim = false;
-
         if (claimResult.status == RewardStatus.Claimed)
         {
-            Heading = "Success!";
-            Description = "Your reward is on the way!";
-            ClaimSuccess = true;
+            ShowSuccessState("Your reward is on the way!");
             LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
         }
         else
         {
-            Heading = "Error";
-            Description = "Something went wrong - please try again later";
-            ClaimError = true;
+            ShowErrorState();
         }
     }
 
