@@ -5,8 +5,7 @@ public partial class AddSocialMediaPage
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
 
     public AddSocialMediaPage(IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider,
-        int socialMediaPlatformId,
-        string currentUrl)
+        int socialMediaPlatformId, string currentUrl)
     {
         _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();

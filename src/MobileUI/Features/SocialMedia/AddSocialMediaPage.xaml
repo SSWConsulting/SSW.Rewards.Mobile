@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
-             xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
-             BackgroundColor="#b3000000"
-             CloseWhenBackgroundIsClicked="False"
-             x:DataType="viewModels:AddSocialMediaViewModel"
-             x:Class="SSW.Rewards.Mobile.PopupPages.AddSocialMediaPage">
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Mopups.Pages;assembly=Mopups"
+                 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+                 xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
+                 BackgroundColor="#b3000000"
+                 CloseWhenBackgroundIsClicked="False"
+                 x:DataType="viewModels:AddSocialMediaViewModel"
+                 x:Class="SSW.Rewards.Mobile.PopupPages.AddSocialMediaPage">
     <pages:PopupPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{OnPlatform iOS='Transparent', Android={StaticResource Background}}"
                                    StatusBarStyle="LightContent" />
@@ -32,80 +32,83 @@
                 StrokeShape="RoundRectangle 10"
                 BackgroundColor="{StaticResource Background}">
 
-                <Grid Padding="0" RowDefinitions="*, Auto">
-                    <VerticalStackLayout Spacing="6" Margin="0,30">
+                <Grid RowDefinitions="*, Auto">
+                    <VerticalStackLayout Spacing="30" Margin="20,30">
                         <Label HorizontalTextAlignment="Center"
                                TextColor="{StaticResource SSWRed}"
-                               FontSize="Large"
-                               Text="{Binding PlatformName}"/>
+                               FontSize="22"
+                               Text="{Binding PlatformName}" />
+
                         <Label HorizontalTextAlignment="Center"
-                               Margin="20"
                                TextColor="White"
                                Text="{Binding Path=PlatformName, StringFormat='Receive ⭐️ 150 points for connecting your {0} with SSW Rewards'}">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label"
                                              Binding="{Binding CurrentUrl, Converter={toolkit:IsStringNullOrEmptyConverter}}"
                                              Value="False">
-                                    <Setter Property="Text" Value="{Binding Path=PlatformName, StringFormat='Update your {0} connection with SSW Rewards'}" />
+                                    <Setter Property="Text"
+                                            Value="{Binding Path=PlatformName, StringFormat='Update your {0} connection with SSW Rewards'}" />
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                        
-                        <Border
-                            Margin="20,0"
-                            StrokeShape="RoundRectangle 10"
-                            StrokeThickness="0"
-                            HeightRequest="45">
-                            <Entry
-                                Text="{Binding InputText}"
-                                Keyboard="Url"
-                                ReturnType="Done"
-                                Placeholder="{Binding Placeholder}"
-                                CursorPosition="{Binding CursorPosition}"
-                                IsSpellCheckEnabled="False"
-                                PlaceholderColor="Grey"
-                                BackgroundColor="White"
-                                TextColor="Black">
-                                <controls:BorderlessEntry.Behaviors>
-                                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding InputFocusedCommand}"/>
-                                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding InputUnfocusedCommand}"/>
-                                </controls:BorderlessEntry.Behaviors>
-                            </Entry>
-                        </Border>
-                        
-                        <VerticalStackLayout HeightRequest="40">
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label HorizontalTextAlignment="Start"
+                                   Text="{Binding Url}" />
+
+                            <Border
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0">
+                                <Entry
+                                    Text="{Binding InputText}"
+                                    Keyboard="Plain"
+                                    ReturnType="Done"
+                                    Placeholder="{Binding Placeholder}"
+                                    CursorPosition="{Binding CursorPosition}"
+                                    IsSpellCheckEnabled="False"
+                                    PlaceholderColor="Grey"
+                                    BackgroundColor="White"
+                                    TextColor="Black">
+                                    <controls:BorderlessEntry.Behaviors>
+                                        <toolkit:EventToCommandBehavior EventName="Focused"
+                                                                        Command="{Binding InputFocusedCommand}" />
+                                        <toolkit:EventToCommandBehavior EventName="Unfocused"
+                                                                        Command="{Binding InputUnfocusedCommand}" />
+                                    </controls:BorderlessEntry.Behaviors>
+                                </Entry>
+                            </Border>
+
                             <Label
                                 FontSize="11"
-                                Margin="30,0"
+                                HeightRequest="20"
                                 Text="{Binding ErrorText}"
-                                TextColor="{StaticResource SSWRed}"
-                            />
-                            <Label
-                                FontSize="11"
-                                Margin="30,0"
-                                Text="{Binding SuccessText}"
-                                TextColor="White"
-                            />
+                                TextColor="{StaticResource SSWRed}" />
                         </VerticalStackLayout>
-                        
-                        <Label
-                            HorizontalOptions="Center"
-                            FontFamily="FA6Brands"
-                            Text="{Binding Icon}"
-                            FontAutoScalingEnabled="False"
-                            FontSize="50"
-                            TextColor="DimGrey">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label"
-                                             Binding="{Binding InputText, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
-                                             Value="True">
-                                    <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
-                                </DataTrigger>
-                            </Label.Triggers>
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding OpenLinkCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Preview:"
+                                   HorizontalOptions="Start" />
+
+                            <Label
+                                Text="{Binding CompleteUrl}"
+                                FontSize="16"
+                                TextColor="DimGrey"
+                                LineBreakMode="CharacterWrap"
+                                MaxLines="2">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding InputText, Converter={toolkit:IsStringNotNullOrEmptyConverter}}"
+                                                 Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                        <Setter Property="TextDecorations" Value="Underline" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenLinkCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </VerticalStackLayout>
+
                     </VerticalStackLayout>
                     <Button
                         Text="Connect"
@@ -114,7 +117,7 @@
                         VerticalOptions="End"
                         Margin="20,30"
                         CornerRadius="10"
-                        HeightRequest="60"/>
+                        HeightRequest="60" />
                 </Grid>
             </Border>
 
@@ -131,9 +134,9 @@
                 VerticalOptions="Start"
                 HorizontalOptions="End">
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ClosePageCommand}"/>
+                    <TapGestureRecognizer Command="{Binding ClosePageCommand}" />
                 </Border.GestureRecognizers>
-                <Image Source="icon_close"/>
+                <Image Source="icon_close" />
             </Border>
         </Grid>
         <ActivityIndicator
@@ -141,6 +144,6 @@
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
             IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}"/>
+            IsVisible="{Binding IsBusy}" />
     </Grid>
 </pages:PopupPage>
