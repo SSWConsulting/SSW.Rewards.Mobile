@@ -102,6 +102,21 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         }
     }
 
+    partial void OnInputTextChanged(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        // Check if the user pasted or entered a full URL and extract just the handle
+        var extractedHandle = _validationPattern.ExtractHandle(value);
+        if (!string.IsNullOrEmpty(extractedHandle) && extractedHandle != value)
+        {
+            InputText = extractedHandle;
+        }
+    }
+
     [RelayCommand]
     private async Task Connect()
     {
