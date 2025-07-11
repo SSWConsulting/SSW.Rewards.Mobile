@@ -94,10 +94,9 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             Icon = config.Icon;
             CurrentUrl = currentUrl;
 
-            // Extract handle from current URL if editing
             if (!string.IsNullOrWhiteSpace(currentUrl))
             {
-                InputText = _validationPattern.ExtractHandle(currentUrl);
+                InputText = currentUrl;
             }
         }
         catch (Exception ex)
