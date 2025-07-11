@@ -108,7 +108,7 @@ public partial class ActivityPageViewModel : BaseViewModel
                     : x.UserAvatar;
                 x.AchievementMessage = GetMessage(x.Achievement);
                 x.TimeElapsed = DateTimeHelpers.GetTimeElapsed(x.AwardedAt);
-                x.UserTitle = RegexHelpers.TitleRegex().Replace(x.UserTitle, string.Empty);
+                x.UserTitle = RegexHelpers.WebsiteRegex().Replace(x.UserTitle, string.Empty);
                 return x;
             }).ToList();
         }
