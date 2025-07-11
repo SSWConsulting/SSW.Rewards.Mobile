@@ -155,13 +155,14 @@ docker compose --profile admin up -d
 ```
 
 7. Check `Managing-DB.md` if you want to restore existing DB.
-**TODO: Current seeding might not fully work for development.**
+
+**TODO: Current seeding might not fully work for development. [Tech-Debt - #540](https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/540)**
 
 Currently, we need to restore the DB like for instance from staging or another developer. Follow `Managing-DB.md` for backup and restore instructions.
 
 ## Mobile UI
 
-Follow Microsoft Learn’s step-by-step guide to get your first .NET MAUI project up and runningIt lets you run Mobile UI without issues. https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
+Follow Microsoft Learn’s step-by-step guide to get your first .NET MAUI project up and running. It lets you run Mobile UI without issues. https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
 
 ### To work on the Mobile UI (Android SDK)
 1. Run the Docker containers (Only WebApi required)
@@ -221,15 +222,15 @@ All the secrets can be found in our password manager (PM).
 3. Download distribution provisioning profile form the Apple Developer Portal
 4. Double click the provisioning profile to install it
 5. Go to the MobileUI folder
-6. Run `dotnet publish -f net8.0-ios -p:ArchiveOnBuild=true -p:CodesignKey="XXX" -p:CodesignProvision="YYY"`; XXX is the CertificateName (in PM) and YYY is ProfileName (same as in Apple Developer Portal)
-7. The ipa file in the _../MobileUI/bin/Release/net8.0-ios/ios-arm64/publish/_ folder is ready to be uploaded to TestFlight
+6. Run `dotnet publish -f net9.0-ios -p:ArchiveOnBuild=true -p:CodesignKey="XXX" -p:CodesignProvision="YYY"`; XXX is the CertificateName (in PM) and YYY is ProfileName (same as in Apple Developer Portal)
+7. The ipa file in the _../MobileUI/bin/Release/net9.0-ios/ios-arm64/publish/_ folder is ready to be uploaded to TestFlight
 
 #### Android
 1. Find keystore info in PM
 2. Run `echo <keystore-base64-string> | base64 --decode > rewards.keystore`
 3. To see the info about keystore run `keytool -list -v -keystore rewards.keystore`
-4. Run `dotnet publish -f net8.0-android -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=rewards.keystore -p:AndroidSigningKeyAlias=XXX -p:AndroidSigningKeyPass=YYY -p:AndroidSigningStorePass=YYY`; XXX and YYY can be found in PM
-5. The signed aab file in the _../MobileUI/bin/Release/net8.0-android/publish/_ folder is ready to be uploaded to InternalTesting
+4. Run `dotnet publish -f net9.0-android -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=rewards.keystore -p:AndroidSigningKeyAlias=XXX -p:AndroidSigningKeyPass=YYY -p:AndroidSigningStorePass=YYY`; XXX and YYY can be found in PM
+5. The signed aab file in the _../MobileUI/bin/Release/net9.0-android/publish/_ folder is ready to be uploaded to InternalTesting
 
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
