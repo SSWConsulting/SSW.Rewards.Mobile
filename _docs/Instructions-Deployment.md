@@ -28,7 +28,7 @@ The following checks must be performed on the staging environment and signed off
 1. Build pipelines for both Android and iOS will run and push the changes to App Center testers
 1. Get approval on the Production release to deploy to Play Store and Production
 
-# High-level production depencencies
+# High-level production dependencies
 
 ```mermaid
 %%{ init: {
