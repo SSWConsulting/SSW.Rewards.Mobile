@@ -2,8 +2,9 @@ version: "3"
 
 services:
   # SQL Server
-  azuresqledge:
-    image: mcr.microsoft.com/azure-sql-edge:latest
+  rewards-sqlserver:
+    container_name: rewards-sqlserver
+    image: mcr.microsoft.com/mssql/server:latest
     environment:
       - MSSQL_SA_PASSWORD=Rewards.Docker1!
       - ACCEPT_EULA=1
