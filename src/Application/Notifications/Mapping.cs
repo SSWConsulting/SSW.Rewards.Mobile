@@ -15,6 +15,7 @@ public class Mapping : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.WasSent, opt => opt.MapFrom(src => src.WasSent))
             .ForMember(dest => dest.HasError, opt => opt.MapFrom(src => src.HasError))
+            .ForMember(dest => dest.IsArchived, opt => opt.MapFrom(src => src.DeletedUtc.HasValue))
             .ForMember(dest => dest.SentOn, opt => opt.MapFrom(src => src.SentOn.HasValue ? src.SentOn.Value.DateTime : (DateTime?)null))
             .ForMember(dest => dest.NumberOfUsersTargeted, opt => opt.MapFrom(src => src.NumberOfUsersTargeted))
             .ForMember(dest => dest.NumberOfUsersSent, opt => opt.MapFrom(src => src.NumberOfUsersSent))
@@ -23,6 +24,7 @@ public class Mapping : Profile
                 src.HasError ? NotificationStatus.Failed :
                 src.Scheduled != null && !src.WasSent && !src.HasError ? NotificationStatus.Scheduled :
                 NotificationStatus.NotSent
-            ));
+            ))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
     }
 }

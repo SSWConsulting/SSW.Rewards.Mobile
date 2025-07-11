@@ -41,8 +41,14 @@ public class AuthenticationService : IAuthenticationService
         _authStorage = authStorage;
         _logger = logger;
 
+        _tokenManager.TokensCleared += (_, _) =>
+        {
+            _logger.LogInformation("Tokens have been cleared - navigating to login");
+            NavigateToLoginPage();
+        };
+
         // Forward token updates to authentication service listeners
-        _tokenManager.TokensUpdated += (sender, args) => DetailsUpdated?.Invoke(this, EventArgs.Empty);
+        _tokenManager.TokensUpdated += (_, _) => DetailsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task AutologinAsync(string accessToken)

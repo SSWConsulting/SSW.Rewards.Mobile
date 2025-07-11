@@ -65,7 +65,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
         Notification? notification;
         var utcNow = _dateTimeService.UtcNow;
         var targetUsersQuery = GetTargetUserIdsQuery(request);
-        if (request.ScheduleAt.HasValue && request.ScheduleAt >= utcNow)
+        if (request.ScheduleAt.HasValue && request.ScheduleAt >= utcNow && !request.NotificationId.HasValue)
         {
             _logger.LogDebug("Admin notification SCHEDULED. Title: {Title}, Time: {ScheduleTime}", request.Title, request.ScheduleAt.Value);
 
@@ -97,7 +97,7 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
             return NotificationSentResponse.Empty;
         }
 
-        if (request.ScheduleAt.HasValue)
+        if (!request.NotificationId.HasValue && request.ScheduleAt.HasValue)
         {
             // Notify that the scheduled time is in the past.
             _logger.LogWarning("Admin notification was scheduled in the past. Title: {Title}, Scheduled Time: {ScheduleTime}, Current Time: {CurrentTime}", request.Title, request.ScheduleAt.Value, utcNow);
@@ -146,8 +146,19 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
 
             if (notification == null)
             {
-                _logger.LogError("Notification with ID {NotificationId} not found.", request.NotificationId);
-                throw new InvalidOperationException($"Notification with ID {request.NotificationId} not found.");
+                notification = await _context.Notifications
+                    .IgnoreQueryFilters()
+                    .TagWithContext("GetDeletedNotificationById")
+                    .FirstOrDefaultAsync(x => x.Id == request.NotificationId.Value, cancellationToken);
+
+                if (notification == null)
+                {
+                    _logger.LogError("Notification with ID {NotificationId} not found.", request.NotificationId);
+                    throw new InvalidOperationException($"Notification with ID {request.NotificationId} not found.");
+                }
+
+                _logger.LogInformation("Notification with ID {NotificationId} is archived and won't be sent.", request.NotificationId);
+                return NotificationSentResponse.Archived();
             }
 
             if (notification.WasSent)

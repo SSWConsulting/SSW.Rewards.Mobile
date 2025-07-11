@@ -30,6 +30,7 @@
     <pages:PopupPage.Resources>
         <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmpty" />
         <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmpty" />
+        <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         <Style TargetType="Label" x:Key="SelectedCheckLabelStyle">
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
@@ -328,6 +329,13 @@
                                     Text="{Binding StringFormat='Ship to my address{0}(Australia only)',
                                         Source={x:Static s:Environment.NewLine}}"
                                     Command="{Binding NextClickedCommand}"
+                                    IsVisible="{Binding IsDigital, Converter={StaticResource InvertedBoolConverter}}"
+                                    Grid.Column="2" />
+
+                                <controls:MultiLineButton
+                                    Text="Redeem digital reward"
+                                    Command="{Binding RedeemDigitalClickedCommand}"
+                                    IsVisible="{Binding IsDigital}"
                                     Grid.Column="2" />
                             </Grid>
 

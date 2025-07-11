@@ -11,7 +11,6 @@ public interface IOidcAuthenticationProvider
 {
     Task<AuthResult> LoginAsync(bool promptLogin = false);
     Task<AuthResult> RefreshTokenAsync(string refreshToken);
-    Task<AuthResult> SilentLoginAsync();
 }
 
 public class OidcAuthenticationProvider : IOidcAuthenticationProvider
@@ -181,9 +180,9 @@ public class OidcAuthenticationProvider : IOidcAuthenticationProvider
     {
         return error?.ToLowerInvariant() switch
         {
-            "access_denied" => AuthErrorType.Cancelled,
-            "invalid_grant" => AuthErrorType.InvalidToken,
-            "invalid_request" => AuthErrorType.InvalidToken,
+            "access_denied" => AuthErrorType.AccessDenied,
+            "invalid_grant" => AuthErrorType.InvalidGrant,
+            "invalid_request" => AuthErrorType.InvalidRequest,
             "server_error" => AuthErrorType.ServerError,
             "temporarily_unavailable" => AuthErrorType.NetworkError,
             _ => AuthErrorType.UnknownError
