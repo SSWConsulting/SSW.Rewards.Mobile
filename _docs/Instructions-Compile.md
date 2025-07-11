@@ -1,16 +1,93 @@
 # The F5 Experience
 
+**NOTE:** ⚠️ From 07/07/2025 we moved from Azure SQL Edge to SQL Server 2022! If you have setup SSW.Rewards before that date, backup your DB and restore it after running Docker compose.
+
+## Local architecture
+
+```mermaid
+%%──────────────────────────────────────────────────────────
+%%  SSW-red on charcoal  – same layout as your first diagram
+%%──────────────────────────────────────────────────────────
+%%{ init: {
+      "theme":"base",
+      "darkMode":true,                  /* custom colours win   */
+      "themeVariables":{
+        "fontSize":"15px",
+        "fontFamily":"Inter, Segoe UI, sans-serif",
+
+        /* red accents */
+        "lineColor":"#d50000",
+        "arrowheadColor":"#d50000",
+        "clusterBorder":"#d50000",
+
+        /* link label colour (edge text) */
+        "tertiaryTextColor":"#cccccc"
+      },
+      "themeCSS":".node rect, .node polygon, .cluster rect { filter:none !important; }",
+      "flowchart":{ "curve":"basis" }
+}%%
+
+flowchart LR
+
+%%──────────────────── Local ────────────────────
+subgraph Local["🧑‍💻 Local"]
+  direction TB
+  MobileApp["📱 Mobile App<br/>(Xamarin / .NET&nbsp;MAUI)"]
+  DevTunnel[/"🌐 Dev Tunnel<br/>(ngrok / Dev Tunnels)"/]
+  AdminUI["🖥️ Admin UI<br/>(Blazor)"]
+  WebAPI{{"⚡ WebAPI<br/>(ASP.NET Core)"}}
+
+  MobileApp -- HTTPS --> DevTunnel
+  DevTunnel -- HTTPS --> WebAPI
+  AdminUI  -- HTTPS --> WebAPI
+end
+
+%%──────────────────── Docker ───────────────────
+subgraph Docker["🐳 Docker"]
+  direction TB
+  SQLServer[("🗄️ SQL Server")]
+  Azurite[("🪣 Azurite Blob Storage")]
+
+  WebAPI -- SQL --> SQLServer
+  WebAPI -- "Blob API" --> Azurite
+end
+
+%%────────────────── External ───────────────────
+subgraph External["🌐 External"]
+  direction TB
+  SSWIdentity["🔐 SSW.Identity<br/>(can run local)"]
+  SSWQuizGPT["🧠 SSW.QuizGPT<br/>(can run local)"]
+  NotificationHub["🔔 AWS Notification Hub"]
+
+  WebAPI    -- HTTPS         --> SSWQuizGPT
+  WebAPI    -- HTTPS         --> SSWIdentity
+  AdminUI   -- HTTPS         --> SSWIdentity
+  MobileApp -- HTTPS         --> WebAPI
+  MobileApp -- HTTPS         --> SSWIdentity
+
+  WebAPI    -- Notifications --> NotificationHub
+  NotificationHub -- Push    --> MobileApp
+end
+
+%%────────────────── Styling ────────────────────
+classDef clusterStyle stroke-width:2,rx:6,ry:6;
+classDef service fill:#1e1e1e,stroke:#d50000,stroke-width:1,color:#ffffff;
+
+class Local,Docker,External clusterStyle;
+class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGPT,NotificationHub service;
+```
+
 ## Requirements 
 **TODO** Find Azurite seed data for the API (Tylah might be blind)
 
-- .NET 8 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+- .NET 9 SDK https://dotnet.microsoft.com/en-us/download/dotnet/9.0
 - IDE - Visual Studio Enterprise Latest // Jetbrains Rider // VS Code 
 - Android SDK setup/ installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-sdk)
 - iOS SDK setup/installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/)
-- [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files (see Local Emulator Database)
-- [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
 - [PowerShell Core](https://github.com/PowerShell/PowerShell)
 - [Docker Desktop](https://docs.docker.com/desktop/)
+- Optional: [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
+- Optional: [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files)
 
 - Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
   - [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
@@ -25,7 +102,7 @@
 ## Setting up the Repo for Development
 ### To work on the API + Admin UI
 1. Clone this Repo https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
-2. Download and install the .NET SDK version 8.0.402
+2. Download and install latest .NET 9 SDK
 3. Get the Secrets from Keeper 
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
@@ -48,8 +125,8 @@ dotnet dev-certs https --trust
 **NOTE:** If when creating WebAPI.pfx you get "A valid HTTPS certificate is already present." use `dotnet dev-certs https --clean` to remove the existing certificate.
 **NOTE:** See https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates if there are any issues.
 
-4. Cd into the Repo
-5. Run the Docker Containers
+5. Cd into the Repo
+6. Run the Docker Containers
 * On Windows, open PowerShell and run:
  ```bash
  ./up.ps1
@@ -58,12 +135,15 @@ dotnet dev-certs https --trust
 ```bash
 pwsh ./up.ps1
 ```
-
-**Note:** `global.json` must have `version` and `workloadVersion` set to **8.0.402** due to breaking changes in the version **8.0.404**.
   
 You should now be able to access the AdminUI hosted locally at https://localhost:7137  
   
 You should now be able to access the WebAPI Swagger docs at https://localhost:5001/swagger/index.html
+
+**NOTE:** For active development for WebAPI and AdminUI, we can just start up dependencies for them:
+```bash
+docker compose --profile tools up -d
+```
 
 **Note:** You can run only the WebAPI or AdminUI by running:
 ```bash
@@ -74,9 +154,15 @@ OR
 docker compose --profile admin up -d
 ```
 
+7. Check `Managing-DB.md` if you want to restore existing DB.
+
+**TODO: Current seeding might not fully work for development. [Tech-Debt - #540](https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/540)**
+
+Currently, we need to restore the DB like for instance from staging or another developer. Follow `Managing-DB.md` for backup and restore instructions.
+
 ## Mobile UI
 
-Microsoft Learn has a great step-by-step process to get your first .NET MAUI project up and running, this will should allow you to run the Mobile UI with out much issue! https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
+Follow Microsoft Learn’s step-by-step guide to get your first .NET MAUI project up and running. It lets you run Mobile UI without issues. https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android 
 
 ### To work on the Mobile UI (Android SDK)
 1. Run the Docker containers (Only WebApi required)
@@ -93,9 +179,12 @@ devtunnel host -p 5001
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
 
-**NOTE: if the solution fails to load, open a terminal in the SSW.Rewards.Mobile folder and run:
+**NOTE: if the solution fails to load, open a terminal in the SSW.Rewards.Mobile folder and run:**
+
+```bash
 dotnet workload update
-dotnet workload restore**
+dotnet workload restore
+```
 
 1. Open up the iOS project settings by right clicking on SSW.Consulting.iOS and selecting Options.
 1. go to 'iOS Bundle Signing' and select your signing identity and provisioning profile.
@@ -133,15 +222,15 @@ All the secrets can be found in our password manager (PM).
 3. Download distribution provisioning profile form the Apple Developer Portal
 4. Double click the provisioning profile to install it
 5. Go to the MobileUI folder
-6. Run `dotnet publish -f net8.0-ios -p:ArchiveOnBuild=true -p:CodesignKey="XXX" -p:CodesignProvision="YYY"`; XXX is the CertificateName (in PM) and YYY is ProfileName (same as in Apple Developer Portal)
-7. The ipa file in the _../MobileUI/bin/Release/net8.0-ios/ios-arm64/publish/_ folder is ready to be uploaded to TestFlight
+6. Run `dotnet publish -f net9.0-ios -p:ArchiveOnBuild=true -p:CodesignKey="XXX" -p:CodesignProvision="YYY"`; XXX is the CertificateName (in PM) and YYY is ProfileName (same as in Apple Developer Portal)
+7. The ipa file in the _../MobileUI/bin/Release/net9.0-ios/ios-arm64/publish/_ folder is ready to be uploaded to TestFlight
 
 #### Android
 1. Find keystore info in PM
 2. Run `echo <keystore-base64-string> | base64 --decode > rewards.keystore`
 3. To see the info about keystore run `keytool -list -v -keystore rewards.keystore`
-4. Run `dotnet publish -f net8.0-android -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=rewards.keystore -p:AndroidSigningKeyAlias=XXX -p:AndroidSigningKeyPass=YYY -p:AndroidSigningStorePass=YYY`; XXX and YYY can be found in PM
-5. The signed aab file in the _../MobileUI/bin/Release/net8.0-android/publish/_ folder is ready to be uploaded to InternalTesting
+4. Run `dotnet publish -f net9.0-android -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=rewards.keystore -p:AndroidSigningKeyAlias=XXX -p:AndroidSigningKeyPass=YYY -p:AndroidSigningStorePass=YYY`; XXX and YYY can be found in PM
+5. The signed aab file in the _../MobileUI/bin/Release/net9.0-android/publish/_ folder is ready to be uploaded to InternalTesting
 
 
 [Now you are setup, lets get started on a PBI](Definition-of-Ready.md)
