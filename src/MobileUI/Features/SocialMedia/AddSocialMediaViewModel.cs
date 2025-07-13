@@ -152,20 +152,6 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void InputFocused()
-    {
-        if (string.IsNullOrWhiteSpace(InputText))
-        {
-            InputText = Url;
-        }
-
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            CursorPosition = InputText.Length;
-        });
-    }
-
-    [RelayCommand]
     private void InputUnfocused()
     {
         InputText = InputText.Trim();

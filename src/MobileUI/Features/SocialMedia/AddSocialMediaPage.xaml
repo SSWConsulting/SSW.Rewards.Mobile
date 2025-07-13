@@ -70,8 +70,6 @@
                                     BackgroundColor="White"
                                     TextColor="Black">
                                     <controls:BorderlessEntry.Behaviors>
-                                        <toolkit:EventToCommandBehavior EventName="Focused"
-                                                                        Command="{Binding InputFocusedCommand}" />
                                         <toolkit:EventToCommandBehavior EventName="Unfocused"
                                                                         Command="{Binding InputUnfocusedCommand}" />
                                     </controls:BorderlessEntry.Behaviors>
