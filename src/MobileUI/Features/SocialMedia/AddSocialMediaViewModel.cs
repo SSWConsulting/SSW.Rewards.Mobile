@@ -207,6 +207,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
             var result = await _userService.SaveSocialMedia(_platformId, CompleteUrl);
             var snackbarOptions = CreateSnackbarOptions(result);
 
+            // Close window as both true and false are successful states in this case
             if (result.HasValue)
             {
                 await ClosePage();
