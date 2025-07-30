@@ -46,6 +46,20 @@ docker-compose build
 
 Write-Host "✅ Done!"
 
-Write-Host "▶️ Starting docker containers..."
+Write-Host "▶️ Starting docker containers required for dev..."
 
-docker compose --profile all up -d
+docker compose --profile tools up -d
+
+# Make sure HangFire database exists
+Write-Host "🏗️ Setting up HangFire database if not existing..."
+
+docker exec -i rewards-sqlserver `
+  /opt/mssql-tools18/bin/sqlcmd `
+    -S localhost,1433 `
+    -U SA `
+    -P 'Rewards.Docker1!' `
+    -C `
+    -Q "IF DB_ID('ssw.rewards.hangfire') IS NULL
+        CREATE DATABASE [ssw.rewards.hangfire];"
+
+Write-Host "✅ Done!"

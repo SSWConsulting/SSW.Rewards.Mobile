@@ -1,27 +1,36 @@
-version: "3"
-
 services:
   # SQL Server
-  azuresqledge:
-    image: mcr.microsoft.com/azure-sql-edge:latest
+  rewards-sqlserver:
+    container_name: rewards-sqlserver
+    image: mcr.microsoft.com/mssql/server:latest
     environment:
       - MSSQL_SA_PASSWORD=Rewards.Docker1!
       - ACCEPT_EULA=1
     ports:
       - 1433:1433
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./backups:/backup
+    profiles: ["all", "tools", "webapi", "admin"]
 
   # Azurite
-  azurite:
+  rewards-azurite:
+    container_name: rewards-azurite
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
       - 10000:10000
       - 10001:10001
       - 10002:10002
+    volumes:
+      - azurite_data:/data
+    profiles: ["all", "tools", "webapi", "admin"]
 
   # API
-  webapi:
+  rewards-webapi:
+    container_name: rewards-webapi
     depends_on:
-      - azuresqledge
+      - rewards-sqlserver
+      - rewards-azurite
     build:
       dockerfile: src/WebAPI/Dockerfile
     ports:
@@ -36,9 +45,10 @@ services:
     profiles: ["all", "webapi"]
 
   # Admin UI
-  adminui:
+  rewards-adminui:
+    container_name: rewards-adminui
     depends_on:
-      - azuresqledge
+      - rewards-sqlserver
     build:
       dockerfile: src/AdminUI/Dockerfile
     ports:
@@ -51,3 +61,7 @@ services:
     volumes:
       - ${CERTS_PATH}:/https:ro
     profiles: ["all", "admin"]
+
+volumes:
+  sql_data:
+  azurite_data:
