@@ -13,7 +13,7 @@ public static class NavigationPages
 {
     public static List<NavigationPage> PublicPages() =>
         [
-            new() { Href = "kiosk-leaderboard", Icon = Icons.Material.Filled.Leaderboard, Title = "Leaderboard (Kiosk Mode)" }
+            new() { Href = "kiosk-leaderboard", Icon = Icons.Material.Filled.Leaderboard, Title = "Leaderboard (Kiosk)" }
         ];
 
     public static List<NavigationPage> StaffPages() =>
