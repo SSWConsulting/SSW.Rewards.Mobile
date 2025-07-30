@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 @inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
 
-<MudText Typo="Typo.h2">Notifications</MudText>
+<MudText Typo="Typo.h2">Mobile Notifications</MudText>
 <MudText Typo="Typo.body1">All notification history</MudText>
 
 <MudPaper Class="pa-4 mt-4 warm-grey-bg">
@@ -29,7 +29,7 @@
             <MudTh><MudTableSortLabel T="NotificationHistoryDto">Delivery Date</MudTableSortLabel></MudTh>
             <MudTh>
                 <MudTooltip Text="This column shows the number of users who received the notification vs the total number of users we tried to send it to. Reasons for not being delivered include expired device tokens or users never approving/registering for notifications.">
-                    <span style="cursor: help;">Delivery<span style="color: red;">*</span></span>
+                    <span style="cursor: help;">Delivered to<span style="color: red;">*</span></span>
                 </MudTooltip>
             </MudTh>
         </HeaderContent>
@@ -40,7 +40,7 @@
                 @switch (context.Status)
                 {
                     case NotificationStatus.Sent:
-                        <MudChip Color="Color.Success" Variant="Variant.Filled">Sent</MudChip>
+                        <MudChip Color="Color.Default" Variant="Variant.Filled">Sent</MudChip>
                         break;
                     case NotificationStatus.Failed:
                         <MudChip Color="Color.Error" Variant="Variant.Filled">Failed</MudChip>
