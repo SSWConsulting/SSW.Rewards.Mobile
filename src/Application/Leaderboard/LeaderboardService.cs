@@ -86,7 +86,7 @@ public class LeaderboardService : ILeaderboardService
             user.Rank = ++rank;
             user.Title = user.Title switch
             {
-                _ when !string.IsNullOrEmpty(user.Title) => RegexHelpers.TitleRegex().Replace(user.Title, string.Empty),
+                _ when !string.IsNullOrEmpty(user.Title) => RegexHelpers.WebsiteRegex().Replace(user.Title, string.Empty),
                 _ when user.Email?.EndsWith("ssw.com.au") == true => "SSW",
                 _ => "Community"
             };
