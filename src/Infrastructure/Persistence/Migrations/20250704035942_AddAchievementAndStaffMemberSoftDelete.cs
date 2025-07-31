@@ -23,6 +23,19 @@ namespace SSW.Rewards.Persistence.Migrations
                 type: "datetime2",
                 nullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "LastModifiedBy",
+                table: "StaffMembers",
+                type: "nvarchar(40)",
+                maxLength: 40,
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "LastModifiedUtc",
+                table: "Achievements",
+                type: "datetime2",
+                nullable: true);
+
             // Inject raw SQL before schema changes
             migrationBuilder.Sql(@"
                 UPDATE Achievements
@@ -139,13 +152,6 @@ namespace SSW.Rewards.Persistence.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "DeletedBy",
-                table: "StaffMembers",
-                type: "nvarchar(40)",
-                maxLength: 40,
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LastModifiedBy",
                 table: "StaffMembers",
                 type: "nvarchar(40)",
                 maxLength: 40,
@@ -319,12 +325,6 @@ namespace SSW.Rewards.Persistence.Migrations
                 table: "Achievements",
                 type: "nvarchar(40)",
                 maxLength: 40,
-                nullable: true);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LastModifiedUtc",
-                table: "Achievements",
-                type: "datetime2",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
