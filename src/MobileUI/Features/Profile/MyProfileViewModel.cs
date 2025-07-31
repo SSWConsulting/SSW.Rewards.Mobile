@@ -4,8 +4,9 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public class MyProfileViewModel(
     IUserService userService,
     IDevService devService,
-    IServiceProvider provider)
-    : ProfileViewModelBase(true, userService, devService, provider)
+    IServiceProvider provider,
+    IFileCacheService fileCacheService)
+    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService)
 {
     private readonly IUserService _userService = userService;
 

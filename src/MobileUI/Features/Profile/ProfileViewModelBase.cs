@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Enums;
@@ -16,6 +15,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IUserService _userService;
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
+    private readonly IFileCacheService _fileCacheService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -73,22 +73,24 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
-    public ObservableCollection<Activity> RecentActivity { get; } = [];
-    public ObservableCollection<Activity> LastSeen { get; } = [];
-    public ObservableCollection<StaffSkillDto> Skills { get; set; } = [];
+    public ObservableRangeCollection<Activity> RecentActivity { get; } = [];
+    public ObservableRangeCollection<Activity> LastSeen { get; } = [];
+    public ObservableRangeCollection<StaffSkillDto> Skills { get; set; } = [];
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
 
     public ProfileViewModelBase(
         bool isMe,
         IUserService userService,
         IDevService devService,
-        IServiceProvider provider)
+        IServiceProvider provider,
+        IFileCacheService fileCacheService)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
         _provider = provider;
-        
+        _fileCacheService = fileCacheService;
+
         userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
         userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
         userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
@@ -102,40 +104,108 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     protected async Task LoadProfileSections()
     {
-        if (!_loadingProfileSectionsSemaphore.Wait(0))
+        if (!await _loadingProfileSectionsSemaphore.WaitAsync(0))
             return;
 
         try
         {
             IsLoading = true;
-            var profileTask = _userService.GetUserAsync(UserId);
-            var socialMediaTask = LoadSocialMedia();
-        
-            await Task.WhenAll(profileTask, socialMediaTask);
 
-            var profile = profileTask.Result;
+            string cacheKey = $"profile_{UserId}";
 
-            ProfilePic = profile.ProfilePic ?? "v2sophie";
-            Name = profile.FullName ?? string.Empty;
-            Rank = profile.Rank;
-            Points = profile.Points;
-            Balance = profile.Balance;
-            IsStaff = profile.IsStaff;
-            UserEmail = profile.Email ?? string.Empty;
-            Title = GetTitle();
-        
-            await UpdateSkillsSectionIfRequired();
-            UpdateLastSeenSection(profile.Achievements);
-            UpdateRecentActivitySection(profile.Achievements, profile.Rewards);
+            await _fileCacheService.FetchAndRefresh(
+                cacheKey,
+                FetchProfileData,
+                OnProfileDataReceived,
+                this
+            );
         }
         catch (Exception)
         {
-            await ClosePage();
-            await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+            // Only show error if we never got any data (cached or fresh)
+            if (IsLoading)
+            {
+                await ClosePage();
+                await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+            }
+        }
+        finally
+        {
+            _loadingProfileSectionsSemaphore.Release();
+            IsLoading = false;
+        }
+    }
+
+    private async Task<CachedProfileData> FetchProfileData()
+    {
+        var profileTask = _userService.GetUserAsync(UserId);
+        var socialMediaTask = LoadSocialMedia();
+
+        await Task.WhenAll(profileTask, socialMediaTask);
+
+        var profile = profileTask.Result;
+
+        // Get skills if staff member
+        List<StaffSkillDto> skills = [];
+        if (profile.IsStaff)
+        {
+            try
+            {
+                DevProfile devProfile = await _devService.GetProfileAsync(profile.Email);
+                if (devProfile != null)
+                {
+                    skills = devProfile.Skills.OrderByDescending(s => s.Level).Take(3).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't fail the whole operation
+                System.Diagnostics.Debug.WriteLine($"Failed to load skills: {ex.Message}");
+            }
         }
 
-        _loadingProfileSectionsSemaphore.Release();
-        IsLoading = false;
+        return new CachedProfileData
+        {
+            ProfilePic = profile.ProfilePic,
+            FullName = profile.FullName,
+            Rank = profile.Rank,
+            Points = profile.Points,
+            Balance = profile.Balance,
+            IsStaff = profile.IsStaff,
+            Email = profile.Email,
+            Achievements = profile.Achievements.ToList(),
+            Rewards = profile.Rewards.ToList(),
+            Skills = skills
+        };
+    }
+
+    private async Task OnProfileDataReceived(CachedProfileData profileData, bool isFromCache, object tag)
+    {
+        // Only process if this callback is for the current instance
+        if (tag != this)
+            return;
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            // Stop loading as soon as we get cached data
+            if (isFromCache && IsLoading)
+            {
+                IsLoading = false;
+            }
+
+            ProfilePic = profileData.ProfilePic ?? "v2sophie";
+            Name = profileData.FullName ?? string.Empty;
+            Rank = profileData.Rank;
+            Points = profileData.Points;
+            Balance = profileData.Balance;
+            IsStaff = profileData.IsStaff;
+            UserEmail = profileData.Email ?? string.Empty;
+            Title = GetTitle();
+
+            UpdateSkillsSection(profileData.Skills);
+            UpdateLastSeenSection(profileData.Achievements);
+            UpdateRecentActivitySection(profileData.Achievements, profileData.Rewards);
+        });
     }
 
     private async Task LoadSocialMedia()
@@ -268,20 +338,24 @@ public partial class ProfileViewModelBase : BaseViewModel
         }
     }
 
+    private void UpdateSkillsSection(IEnumerable<StaffSkillDto> skills)
+    {
+        Skills.ReplaceRange(skills);
+    }
+
     private void UpdateLastSeenSection(IEnumerable<UserAchievementDto> achievementList)
     {
-        LastSeen.Clear(); // it could contain data from another user profile
-        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended).OrderByDescending(a => a.AwardedAt).Take(5);
-        foreach (var achievement in recentLastSeen)
-        {
-            LastSeen.Add(new Activity
+        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended)
+            .OrderByDescending(a => a.AwardedAt).Take(5).Select(
+                achievement => new Activity
             {
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
                 Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
+                TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)achievement.AwardedAt) : string.Empty
             });
-        }
+
+        LastSeen.ReplaceRange(recentLastSeen);
     }
 
     private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievements, IEnumerable<UserRewardDto> rewards)
@@ -292,15 +366,11 @@ public partial class ProfileViewModelBase : BaseViewModel
         activities.AddRange(FilterRecentAchievements(achievements, takeSize));
         activities.AddRange(FilterRecentRewards(rewards, takeSize));
 
-        RecentActivity.Clear(); // it could contain data from another user profile
         var recentActivity = activities.OrderByDescending(a => a.OccurredAt).Take(takeSize);
-        foreach (var activity in recentActivity)
-        {
-            RecentActivity.Add(activity);
-        }
+        RecentActivity.ReplaceRange(recentActivity);
     }
 
-    private IEnumerable<Activity> FilterRecentAchievements(IEnumerable<UserAchievementDto> achievementList, int takeSize)
+    private List<Activity> FilterRecentAchievements(IEnumerable<UserAchievementDto> achievementList, int takeSize)
     {
         List<Activity> result = [];
         var recentAchievements = achievementList
@@ -308,21 +378,18 @@ public partial class ProfileViewModelBase : BaseViewModel
             .OrderByDescending(a => a.AwardedAt)
             .Take(takeSize);
 
-        foreach (var achievement in recentAchievements)
+        result.AddRange(recentAchievements.Select(achievement => new Activity
         {
-            result.Add(new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
-            });
-        }
+            ActivityName = GetMessage(achievement, true),
+            OccurredAt = achievement.AwardedAt,
+            Type = achievement.AchievementType.ToActivityType(),
+            TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)achievement.AwardedAt) : string.Empty
+        }));
 
         return result;
     }
 
-    private static IEnumerable<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
+    private static List<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
     {
         List<Activity> result = [];
         var recentRewards = rewardList
@@ -330,34 +397,15 @@ public partial class ProfileViewModelBase : BaseViewModel
             .OrderByDescending(r => r.AwardedAt)
             .Take(takeSize);
 
-        foreach (var reward in recentRewards)
+        result.AddRange(recentRewards.Select(reward => new Activity
         {
-            result.Add(new Activity
-            {
-                ActivityName = $"Claimed {reward.RewardName}",
-                OccurredAt = reward.AwardedAt,
-                Type = ActivityType.Claimed,
-                TimeElapsed = DateTimeHelpers.GetTimeElapsed((DateTime)reward.AwardedAt)
-            });
-        }
+            ActivityName = $"Claimed {reward.RewardName}",
+            OccurredAt = reward.AwardedAt,
+            Type = ActivityType.Claimed,
+            TimeElapsed = reward.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)reward.AwardedAt) : string.Empty
+        }));
 
         return result;
-    }
-
-    private async Task UpdateSkillsSectionIfRequired()
-    {
-        if (IsStaff)
-        {
-            DevProfile devProfile = await _devService.GetProfileAsync(UserEmail);
-            if (devProfile != null)
-            {
-                Skills.Clear(); // it could contain data from another user profile
-                foreach (var skill in devProfile.Skills.OrderByDescending(s => s.Level).Take(3))
-                {
-                    Skills.Add(skill);
-                }
-            }
-        }
     }
 
     public void OnDisappearing()
@@ -373,4 +421,18 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         await Shell.Current.GoToAsync("..");
     }
+}
+
+public class CachedProfileData
+{
+    public string ProfilePic { get; init; }
+    public string FullName { get; init; }
+    public int Rank { get; init; }
+    public int Points { get; init; }
+    public int Balance { get; init; }
+    public bool IsStaff { get; init; }
+    public string Email { get; init; }
+    public List<UserAchievementDto> Achievements { get; init; } = [];
+    public List<UserRewardDto> Rewards { get; init; } = [];
+    public List<StaffSkillDto> Skills { get; init; } = [];
 }
