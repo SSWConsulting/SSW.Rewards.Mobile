@@ -13,21 +13,20 @@ namespace SSW.Rewards.Persistence.Migrations
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "DeletedUtc",
-                table: "Achievements",
+                table: "StaffMembers",
                 type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "DeletedUtc",
+                name: "LastModifiedUtc",
                 table: "StaffMembers",
                 type: "datetime2",
                 nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LastModifiedBy",
-                table: "StaffMembers",
-                type: "nvarchar(40)",
-                maxLength: 40,
+            
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedUtc",
+                table: "Achievements",
+                type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
@@ -157,10 +156,11 @@ namespace SSW.Rewards.Persistence.Migrations
                 maxLength: 40,
                 nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LastModifiedUtc",
+            migrationBuilder.AddColumn<string>(
+                name: "LastModifiedBy",
                 table: "StaffMembers",
-                type: "datetime2",
+                type: "nvarchar(40)",
+                maxLength: 40,
                 nullable: true);
 
             migrationBuilder.AlterColumn<string>(
