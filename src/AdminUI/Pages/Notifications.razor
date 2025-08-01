@@ -26,7 +26,7 @@
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDateUtc">Created</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Status">Status</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel T="NotificationHistoryDto">Delivery Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel T="NotificationHistoryDto">Delivered</MudTableSortLabel></MudTh>
             <MudTh>
                 <MudTooltip Text="This column shows the number of users who received the notification vs the total number of users we tried to send it to. Reasons for not being delivered include expired device tokens or users never approving/registering for notifications.">
                     <span style="cursor: help;">Delivered to<span style="color: red;">*</span></span>
@@ -35,7 +35,7 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Title</MudTd>
-            <MudTd DataLabel="Created">@context.CreatedDateUtc.ToLocalTime().ToString("g")</MudTd>
+            <MudTd DataLabel="Created">@DateTimeFormatter.FormatLongDate(context.CreatedDateUtc.ToLocalTime())</MudTd>
             <MudTd DataLabel="Status">
                 @switch (context.Status)
                 {
@@ -53,14 +53,14 @@
                         break;
                 }
             </MudTd>
-            <MudTd DataLabel="Delivery Date">
+            <MudTd DataLabel="Delivered">
                 @switch (context.Status)
                 {
                     case NotificationStatus.Sent when context.SentOn != null:
-                        @context.SentOn?.ToLocalTime().ToString("g")
+                        @DateTimeFormatter.FormatLongDate(context.SentOn?.ToLocalTime())
                         break;
                     case NotificationStatus.Scheduled when context.ScheduledDate != null:
-                        @context.ScheduledDate?.ToLocalTime().ToString("g") <span> (Scheduled)</span>
+                        @DateTimeFormatter.FormatLongDate(context.ScheduledDate?.ToLocalTime()) <span> (Scheduled)</span>
                         break;
                     default:
                         <span>-</span>
