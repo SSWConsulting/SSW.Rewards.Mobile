@@ -217,7 +217,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private static string GetSocialMediaUrl(List<UserSocialMediaIdDto> socialMediaList, int socialMediaPlatformId)
     {
-        return socialMediaList.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)?.SocialMediaUserId;
+        return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)?.SocialMediaUserId;
     }
 
     private string GetTitle()
@@ -359,7 +359,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 ActivityName = GetMessage(achievement, true),
                 OccurredAt = achievement.AwardedAt,
                 Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)achievement.AwardedAt) : string.Empty
+                TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
             });
 
         LastSeen.ReplaceRange(recentLastSeen);
@@ -390,7 +390,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             ActivityName = GetMessage(achievement, true),
             OccurredAt = achievement.AwardedAt,
             Type = achievement.AchievementType.ToActivityType(),
-            TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)achievement.AwardedAt) : string.Empty
+            TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
         }));
 
         return result;
@@ -409,7 +409,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             ActivityName = $"Claimed {reward.RewardName}",
             OccurredAt = reward.AwardedAt,
             Type = ActivityType.Claimed,
-            TimeElapsed = reward.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed((DateTime)reward.AwardedAt) : string.Empty
+            TimeElapsed = reward.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value) : string.Empty
         }));
 
         return result;
