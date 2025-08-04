@@ -57,6 +57,8 @@ public partial class ProfileViewModelBase : BaseViewModel
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _companyUrl;
 
+    private string _cacheTag;
+
     public bool HasAnySocialMedia =>
         !string.IsNullOrWhiteSpace(LinkedInUrl) ||
         !string.IsNullOrWhiteSpace(GitHubUrl) ||
@@ -107,12 +109,13 @@ public partial class ProfileViewModelBase : BaseViewModel
             IsLoading = true;
 
             string cacheKey = $"profile_{UserId}";
+            _cacheTag = DateTime.UtcNow.Ticks.ToString();
 
             await _fileCacheService.FetchAndRefresh(
                 cacheKey,
                 FetchProfileData,
                 OnProfileDataReceived,
-                this
+                _cacheTag
             );
         }
         catch (Exception)
@@ -182,7 +185,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private async Task OnProfileDataReceived(CachedProfileData profileData, bool isFromCache, object tag)
     {
         // Only process if this callback is for the current instance
-        if (tag != this)
+        if (!Equals(tag, _cacheTag))
             return;
 
         await MainThread.InvokeOnMainThreadAsync(() =>
