@@ -5,8 +5,9 @@ namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 public partial class OthersProfileViewModel(
     IUserService userService,
     IDevService devService,
-    IServiceProvider provider)
-    : ProfileViewModelBase(false, userService, devService, provider)
+    IServiceProvider provider,
+    IFileCacheService fileCacheService)
+    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService)
 {
     public async Task Initialise()
     {

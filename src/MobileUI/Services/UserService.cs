@@ -39,6 +39,7 @@ public interface IUserService
     Task<UserProfileDto> GetUserAsync(int userId);
     Task<bool?> SaveSocialMedia(int socialMediaPlatformId, string socialMediaUserProfile);
     Task LoadSocialMedia(int userId);
+    Task<List<UserSocialMediaIdDto>> GetSocialMedia(int userId);
     void ClearSocialMedia();
     Task<bool> DeleteProfileAsync();
 }
@@ -276,6 +277,20 @@ public class UserService : IUserService
         catch (Exception ex)
         {
             // ignored
+        }
+    }
+
+    public async Task<List<UserSocialMediaIdDto>> GetSocialMedia(int userId)
+    {
+        try
+        {
+            var socialMedia = await _userClient.GetSocialMedia(userId);
+
+            return socialMedia?.SocialMedia ?? [];
+        }
+        catch (Exception)
+        {
+            return [];
         }
     }
 
