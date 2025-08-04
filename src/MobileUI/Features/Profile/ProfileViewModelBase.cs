@@ -90,11 +90,6 @@ public partial class ProfileViewModelBase : BaseViewModel
         _devService = devService;
         _provider = provider;
         _fileCacheService = fileCacheService;
-
-        userService.LinkedInProfileObservable().Subscribe(linkedIn => LinkedInUrl = linkedIn);
-        userService.GitHubProfileObservable().Subscribe(gitHub => GitHubUrl = gitHub);
-        userService.TwitterProfileObservable().Subscribe(twitter => TwitterUrl = twitter);
-        userService.CompanyUrlObservable().Subscribe(company => CompanyUrl = company);
     }
 
     protected async Task _initialise()
@@ -139,11 +134,12 @@ public partial class ProfileViewModelBase : BaseViewModel
     private async Task<CachedProfileData> FetchProfileData()
     {
         var profileTask = _userService.GetUserAsync(UserId);
-        var socialMediaTask = LoadSocialMedia();
+        var socialMediaTask = _userService.GetSocialMedia(UserId);
 
         await Task.WhenAll(profileTask, socialMediaTask);
 
         var profile = profileTask.Result;
+        var socialMedia = socialMediaTask.Result;
 
         // Get skills if staff member
         List<StaffSkillDto> skills = [];
@@ -175,7 +171,11 @@ public partial class ProfileViewModelBase : BaseViewModel
             Email = profile.Email,
             Achievements = profile.Achievements.ToList(),
             Rewards = profile.Rewards.ToList(),
-            Skills = skills
+            Skills = skills,
+            LinkedInUrl = GetSocialMediaUrl(socialMedia, Constants.SocialMediaPlatformIds.LinkedIn),
+            GitHubUrl = GetSocialMediaUrl(socialMedia, Constants.SocialMediaPlatformIds.GitHub),
+            TwitterUrl = GetSocialMediaUrl(socialMedia, Constants.SocialMediaPlatformIds.Twitter),
+            CompanyUrl = GetSocialMediaUrl(socialMedia, Constants.SocialMediaPlatformIds.Company)
         };
     }
 
@@ -201,6 +201,10 @@ public partial class ProfileViewModelBase : BaseViewModel
             IsStaff = profileData.IsStaff;
             UserEmail = profileData.Email ?? string.Empty;
             Title = GetTitle();
+            LinkedInUrl = profileData.LinkedInUrl;
+            GitHubUrl = profileData.GitHubUrl;
+            TwitterUrl = profileData.TwitterUrl;
+            CompanyUrl = profileData.CompanyUrl;
 
             UpdateSkillsSection(profileData.Skills);
             UpdateLastSeenSection(profileData.Achievements);
@@ -208,9 +212,9 @@ public partial class ProfileViewModelBase : BaseViewModel
         });
     }
 
-    private async Task LoadSocialMedia()
+    private static string GetSocialMediaUrl(List<UserSocialMediaIdDto> socialMediaList, int socialMediaPlatformId)
     {
-        await _userService.LoadSocialMedia(UserId);
+        return socialMediaList.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)?.SocialMediaUserId;
     }
 
     private string GetTitle()
@@ -432,6 +436,10 @@ public class CachedProfileData
     public int Balance { get; init; }
     public bool IsStaff { get; init; }
     public string Email { get; init; }
+    public string LinkedInUrl { get; init; }
+    public string GitHubUrl { get; init; }
+    public string TwitterUrl { get; init; }
+    public string CompanyUrl { get; init; }
     public List<UserAchievementDto> Achievements { get; init; } = [];
     public List<UserRewardDto> Rewards { get; init; } = [];
     public List<StaffSkillDto> Skills { get; init; } = [];
