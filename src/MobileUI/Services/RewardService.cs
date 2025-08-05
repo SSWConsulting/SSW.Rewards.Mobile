@@ -30,15 +30,12 @@ public class RewardService : IRewardService
 
     public async Task<List<Reward>> GetRewards()
     {
-        var rewardList = new List<Reward>();
-
         try
         {
             var rewards = await _rewardClient.GetRewards(CancellationToken.None);
 
-            foreach (var reward in rewards.Rewards)
-            {
-                rewardList.Add(new Reward
+            return rewards.Rewards
+                .Select(reward => new Reward
                 {
                     Cost = reward.Cost,
                     Id = reward.Id,
@@ -49,20 +46,16 @@ public class RewardService : IRewardService
                     IsCarousel = reward.IsCarousel,
                     IsHidden = reward.IsHidden,
                     IsDigital = reward.RewardType == RewardType.Digital
-                });
-            }
-
-            return rewardList;
+                })
+                .ToList();
         }
         catch (Exception e)
         {
             if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the leaderboard. Please try again soon.", "OK");
-            }
+                throw;
         }
 
-        return rewardList;
+        throw new Exception("Error getting rewards");
     }
 
     public async Task<ClaimRewardResult> ClaimReward(ClaimRewardDto claim)
