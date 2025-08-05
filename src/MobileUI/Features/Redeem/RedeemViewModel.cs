@@ -171,7 +171,18 @@ public partial class RedeemViewModel : BaseViewModel
         {
             if (!Rewards.IsLoaded)
             {
-                await Shell.Current.DisplayAlert("Oops...", "There was an error loading the rewards", "OK");
+                string userMessage;
+
+                if (ex is HttpRequestException)
+                {
+                    userMessage = "Unable to load rewards due to a network issue. Please check your internet connection and try again.";
+                }
+                else
+                {
+                    userMessage = "An unexpected error occurred while loading rewards. Please try again later.";
+                }
+
+                await Shell.Current.DisplayAlert("Oops...", userMessage, "OK");
             }
 
             IsBusy = false;
