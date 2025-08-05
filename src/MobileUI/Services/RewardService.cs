@@ -51,11 +51,10 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-                throw;
-        }
+            if (!await ExceptionHandler.HandleApiException(e)) { }
 
-        throw new Exception("Error getting rewards");
+            throw;
+        }
     }
 
     public async Task<ClaimRewardResult> ClaimReward(ClaimRewardDto claim)
