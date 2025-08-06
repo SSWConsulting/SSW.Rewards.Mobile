@@ -7,6 +7,7 @@ using SSW.Rewards.Application.Notifications.Commands;
 using SSW.Rewards.Application.Notifications.Commands.DeleteInstallation;
 using SSW.Rewards.Application.Notifications.Commands.RequestNotification;
 using SSW.Rewards.Application.Notifications.Commands.UpdateInstallation;
+using SSW.Rewards.Application.Notifications.Queries;
 using SSW.Rewards.Application.Notifications.Queries.GetNotificationHistoryList;
 using SSW.Rewards.Shared.DTOs.Notifications;
 
@@ -19,6 +20,12 @@ public class NotificationsController : ApiControllerBase
     public async Task<ActionResult<NotificationHistoryListViewModel>> List(int page = 0, int pageSize = 10, string? search = null, string? sortLabel = null, string? sortDirection = null, bool includeDeleted = false)
     {
         return Ok(await Mediator.Send(new GetNotificationHistoryListQuery { Page = page, PageSize = pageSize, Search = search, SortLabel = sortLabel, SortDirection = sortDirection, IncludeDeleted = includeDeleted }));
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> ImpactedUsers(GetNumberOfImpactedNotificationUsersQuery query)
+    {
+        return Ok(await Mediator.Send(query));
     }
 
     [HttpPost]

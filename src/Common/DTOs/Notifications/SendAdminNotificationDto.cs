@@ -2,15 +2,9 @@
 
 namespace SSW.Rewards.Shared.DTOs.Notifications;
 
-public class SendAdminNotificationDto
+public class SendAdminNotificationDto : GetNumberOfImpactedNotificationUsersDto
 {
     public DateTimeOffset? ScheduleAt { get; set; }
-
-    public List<int> AchievementIds { get; set; } = [];
-
-    public List<int> UserIds { get; set; } = [];
-
-    public List<int> RoleIds { get; set; } = [];
 
     [Required]
     [MaxLength(100)]
