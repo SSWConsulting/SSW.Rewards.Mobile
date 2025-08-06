@@ -98,7 +98,7 @@ public partial class SendNotification
                 builder.AddMarkupContent(2, $"<p><strong>Target:</strong> {impactedUsers} {targetGroup}</p>");
                 builder.AddMarkupContent(3, $"<p><strong>Delivery:</strong> {deliveryTime}</p>");
                 builder.AddMarkupContent(4, "<br>");
-                builder.AddMarkupContent(4, "<p>Are you sure you want to continue?</p>");
+                builder.AddMarkupContent(5, "<p>Are you sure you want to continue?</p>");
                 builder.CloseElement();
             };
             
