@@ -107,20 +107,7 @@ public partial class RedeemViewModel : BaseViewModel
     {
         Rewards.InitializeInitialCaching(_fileCacheService, CacheKey, () => true);
         Rewards.FilterItem = FilterReward;
-        Rewards.CompareItems = (r1, r2) =>
-            r1.Id == r2.Id &&
-            r1.Name == r2.Name &&
-            r1.Cost == r2.Cost &&
-            r1.Description == r2.Description &&
-            r1.IsCarousel == r2.IsCarousel &&
-            r1.IsHidden == r2.IsHidden &&
-            r1.ImageUri == r2.ImageUri &&
-            r1.CarouselImageUri == r2.CarouselImageUri &&
-            r1.Awarded == r2.Awarded &&
-            r1.IsDigital == r2.IsDigital &&
-            r1.IsPendingRedemption == r2.IsPendingRedemption &&
-            r1.AwardedAt == r2.AwardedAt &&
-            r1.PendingRedemptionCode == r2.PendingRedemptionCode;
+        Rewards.CompareItems = Reward.IsEqual;
         Rewards.OnCollectionUpdated += OnRewardsUpdated;
         Rewards.OnError += OnRewardsError;
 
