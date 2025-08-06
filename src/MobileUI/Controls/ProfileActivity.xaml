@@ -11,36 +11,14 @@
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileActivity"
     x:DataType="viewModels:ProfileViewModelBase">
-    <VerticalStackLayout >
-        <Label Text="Last Seen"
-               FontSize="16"
-               Style="{StaticResource LabelBold}"
-               Margin="0, 5" />
-
-        <VerticalStackLayout
-            BindableLayout.ItemsSource="{Binding LastSeen}"
-            Margin="0,0,0,10"
-            Spacing="8">
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <controls:ProfileActivityItem />
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-            <BindableLayout.EmptyView>
-                <Label Text="No check-ins"
-                       TextColor="{StaticResource LeaderCardBackground}"
-                       Margin="0, 10"
-                       HorizontalOptions="Center" />
-            </BindableLayout.EmptyView>
-        </VerticalStackLayout>
-
+    <VerticalStackLayout>
         <Label Text="Recent Activity"
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
 
         <VerticalStackLayout
-            BindableLayout.ItemsSource="{Binding RecentActivity}"
+            BindableLayout.ItemsSource="{Binding Activity}"
             Spacing="8">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
@@ -48,7 +26,7 @@
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
             <BindableLayout.EmptyView>
-                <Label Text="No recent activity"
+                <Label Text="No activity"
                        TextColor="{StaticResource LeaderCardBackground}"
                        Margin="0, 10"
                        HorizontalOptions="Center" />

@@ -75,10 +75,13 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
-    public ObservableRangeCollection<Activity> RecentActivity { get; } = [];
-    public ObservableRangeCollection<Activity> LastSeen { get; } = [];
+    public ObservableRangeCollection<Activity> Activity { get; set; } = [];
     public ObservableRangeCollection<StaffSkillDto> Skills { get; set; } = [];
+
     private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
+
+    private const int MaxActivity = 10;
+    private const int MaxSkills = 3;
 
     public ProfileViewModelBase(
         bool isMe,
@@ -153,7 +156,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 DevProfile devProfile = await _devService.GetProfileAsync(profile.Email);
                 if (devProfile != null)
                 {
-                    skills = devProfile.Skills.OrderByDescending(s => s.Level).Take(3).ToList();
+                    skills = devProfile.Skills.OrderByDescending(s => s.Level).Take(MaxSkills).ToList();
                 }
             }
             catch (Exception ex)
@@ -210,8 +213,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             CompanyUrl = profileData.CompanyUrl;
 
             UpdateSkillsSection(profileData.Skills);
-            UpdateLastSeenSection(profileData.Achievements);
-            UpdateRecentActivitySection(profileData.Achievements, profileData.Rewards);
+            UpdateActivitySection(profileData.Achievements, profileData.Rewards);
         });
     }
 
@@ -311,7 +313,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         string activity = achievement.AchievementName;
         string action;
-        string scored = $"just scored {achievement.AchievementValue}pts for";
+        string scored = $"scored {achievement.AchievementValue}pts for";
 
         switch (achievement.AchievementType)
         {
@@ -350,70 +352,43 @@ public partial class ProfileViewModelBase : BaseViewModel
         Skills.ReplaceRange(skills);
     }
 
-    private void UpdateLastSeenSection(IEnumerable<UserAchievementDto> achievementList)
+    private void UpdateActivitySection(List<UserAchievementDto> achievements, List<UserRewardDto> rewards)
     {
-        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended)
-            .OrderByDescending(a => a.AwardedAt).Take(5).Select(
-                achievement => new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
-            });
+        var allActivities = new List<Activity>();
 
-        LastSeen.ReplaceRange(recentLastSeen);
-    }
-
-    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievements, IEnumerable<UserRewardDto> rewards)
-    {
-        const int takeSize = 5;
-        List<Activity> activities = [];
-
-        activities.AddRange(FilterRecentAchievements(achievements, takeSize));
-        activities.AddRange(FilterRecentRewards(rewards, takeSize));
-
-        var recentActivity = activities.OrderByDescending(a => a.OccurredAt).Take(takeSize);
-        RecentActivity.ReplaceRange(recentActivity);
-    }
-
-    private List<Activity> FilterRecentAchievements(IEnumerable<UserAchievementDto> achievementList, int takeSize)
-    {
-        List<Activity> result = [];
-        var recentAchievements = achievementList
-            .Where(a => a.AchievementType != AchievementType.Attended)
-            .OrderByDescending(a => a.AwardedAt)
-            .Take(takeSize);
-
-        result.AddRange(recentAchievements.Select(achievement => new Activity
+        if (achievements?.Count > 0)
         {
-            ActivityName = GetMessage(achievement, true),
-            OccurredAt = achievement.AwardedAt,
-            Type = achievement.AchievementType.ToActivityType(),
-            TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
-        }));
+            allActivities.AddRange(achievements.Select(CreateActivityFromAchievement));
+        }
 
-        return result;
-    }
-
-    private static List<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
-    {
-        List<Activity> result = [];
-        var recentRewards = rewardList
-            .Where(r => r.Awarded)
-            .OrderByDescending(r => r.AwardedAt)
-            .Take(takeSize);
-
-        result.AddRange(recentRewards.Select(reward => new Activity
+        if (rewards?.Count > 0)
         {
-            ActivityName = $"Claimed {reward.RewardName}",
-            OccurredAt = reward.AwardedAt,
-            Type = ActivityType.Claimed,
-            TimeElapsed = reward.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value) : string.Empty
-        }));
+            allActivities.AddRange(rewards.Select(CreateActivityFromReward));
+        }
 
-        return result;
+        var sortedActivities = allActivities
+            .OrderByDescending(x => x.OccurredAt)
+            .Take(MaxActivity)
+            .ToList();
+
+        Activity.ReplaceRange(sortedActivities);
     }
+
+    private Activity CreateActivityFromAchievement(UserAchievementDto achievement) => new()
+    {
+        ActivityName = GetMessage(achievement, true),
+        OccurredAt = achievement.AwardedAt,
+        Type = achievement.AchievementType.ToActivityType(),
+        TimeElapsed = achievement.AwardedAt.HasValue ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
+    };
+
+    private static Activity CreateActivityFromReward(UserRewardDto reward) => new()
+    {
+        ActivityName = $"Claimed {reward.RewardName}",
+        OccurredAt = reward.AwardedAt,
+        Type = ActivityType.Claimed,
+        TimeElapsed = reward.AwardedAt.HasValue ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value) : string.Empty
+    };
 
     public void OnDisappearing()
     {
