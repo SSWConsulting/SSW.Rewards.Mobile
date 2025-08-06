@@ -136,7 +136,7 @@
                             </Grid>
 
                             <CollectionView
-                                ItemsSource="{Binding Rewards}"
+                                ItemsSource="{Binding Rewards.Collection}"
                                 ItemsUpdatingScrollMode="KeepItemsInView"
                                 ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}">
                                 <CollectionView.ItemsLayout>
