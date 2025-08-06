@@ -51,7 +51,10 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e)) { }
+            if (!await ExceptionHandler.HandleApiException(e))
+            {
+                // This is left empty intentionally.
+            }
 
             throw;
         }
