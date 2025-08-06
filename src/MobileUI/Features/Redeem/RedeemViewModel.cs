@@ -23,6 +23,7 @@ public partial class RedeemViewModel : BaseViewModel
 
     private const int AutoScrollInterval = 6;
     private const int DebounceInterval = 300;
+    private const string CacheKey = "RewardsList";
 
     public AdvancedObservableCollection<Reward> Rewards { get; } = new();
     public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
@@ -104,7 +105,7 @@ public partial class RedeemViewModel : BaseViewModel
 
     public async Task Initialise()
     {
-        Rewards.InitializeInitialCaching(_fileCacheService, "RewardsList", () => true);
+        Rewards.InitializeInitialCaching(_fileCacheService, CacheKey, () => true);
         Rewards.FilterItem = FilterReward;
         Rewards.CompareItems = (r1, r2) =>
             r1.Id == r2.Id &&
