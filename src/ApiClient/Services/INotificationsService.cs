@@ -9,6 +9,7 @@ public interface INotificationsService
     Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken);
     Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, bool includeDeleted, CancellationToken cancellationToken);
     Task ArchiveNotificationAsync(int id, CancellationToken cancellationToken);
+    Task<int> GetNumberOfImpactedUsers(GetNumberOfImpactedNotificationUsersDto command, CancellationToken cancellationToken);
 }
 
 public class NotificationsService : INotificationsService
@@ -38,7 +39,6 @@ public class NotificationsService : INotificationsService
     public async Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken)
     {
         var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}SendAdminNotification", command, cancellationToken);
-
         if (result.IsSuccessStatusCode)
         {
             return;
@@ -88,5 +88,18 @@ public class NotificationsService : INotificationsService
             var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
             throw new Exception($"Failed to archive notification: {responseContent}");
         }
+    }
+
+    public async Task<int> GetNumberOfImpactedUsers(GetNumberOfImpactedNotificationUsersDto command, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}ImpactedUsers", command, cancellationToken);
+        if (!result.IsSuccessStatusCode)
+        {
+            var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+            throw new Exception($"Failed to get number of impacted users: {responseContent}");
+        }
+
+        int count = await result.Content.ReadFromJsonAsync<int>(cancellationToken);
+        return count;
     }
 }
