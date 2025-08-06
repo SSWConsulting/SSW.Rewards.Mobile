@@ -139,13 +139,8 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private async Task<CachedProfileData> FetchProfileData()
     {
-        var profileTask = _userService.GetUserAsync(UserId);
-        var socialMediaTask = _userService.GetSocialMedia(UserId);
-
-        await Task.WhenAll(profileTask, socialMediaTask);
-
-        var profile = profileTask.Result;
-        var socialMedia = socialMediaTask.Result;
+        var profile = await _userService.GetUserAsync(UserId);
+        var socialMedia = await _userService.GetSocialMedia(UserId);
 
         // Get skills if staff member
         List<StaffSkillDto> skills = [];
