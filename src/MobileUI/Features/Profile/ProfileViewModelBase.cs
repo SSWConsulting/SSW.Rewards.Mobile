@@ -37,22 +37,22 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     [ObservableProperty]
     private bool _isStaff;
-    
+
     [ObservableProperty]
     private string _title;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _linkedInUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _gitHubUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _twitterUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _companyUrl;
@@ -78,7 +78,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     public ObservableRangeCollection<Activity> Activity { get; set; } = [];
     public ObservableRangeCollection<StaffSkillDto> Skills { get; set; } = [];
 
-    private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
+    private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1, 1);
 
     private const int MaxActivity = 10;
     private const int MaxSkills = 3;
@@ -107,6 +107,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!await _loadingProfileSectionsSemaphore.WaitAsync(0))
             return;
 
+        bool hasCachedData = false;
+
         try
         {
             IsLoading = true;
@@ -117,17 +119,25 @@ public partial class ProfileViewModelBase : BaseViewModel
             await _fileCacheService.FetchAndRefresh(
                 cacheKey,
                 FetchProfileData,
-                OnProfileDataReceived,
+                (data, isFromCache, tag) =>
+                {
+                    hasCachedData = isFromCache;
+                    return OnProfileDataReceived(data, isFromCache, tag);
+                },
                 _cacheTag
             );
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Only show error if we never got any data (cached or fresh)
-            if (IsLoading)
+            // Only show error if we never got any cached data
+            if (!hasCachedData)
             {
-                await ClosePage();
-                await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+                await HandleLoadingError(ex);
+            }
+            else
+            {
+                // Log the error but don't interrupt the user since they have cached data
+                System.Diagnostics.Debug.WriteLine($"Profile refresh failed but cached data available: {ex.Message}");
             }
         }
         finally
@@ -135,6 +145,24 @@ public partial class ProfileViewModelBase : BaseViewModel
             _loadingProfileSectionsSemaphore.Release();
             IsLoading = false;
         }
+    }
+
+    private static async Task HandleLoadingError(Exception ex)
+    {
+        string userMessage;
+
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            userMessage = "No internet connection available. Please check your network settings and try again.";
+        }
+        else
+        {
+            userMessage = "Unable to load profile. Please check your internet connection and try again.";
+        }
+
+        System.Diagnostics.Debug.WriteLine($"Profile loading error: {ex.Message}");
+        await Shell.Current.DisplayAlert("Network Error", userMessage, "OK");
+        await ClosePage();
     }
 
     private async Task<CachedProfileData> FetchProfileData()
@@ -214,7 +242,8 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private static string GetSocialMediaUrl(List<UserSocialMediaIdDto> socialMediaList, int socialMediaPlatformId)
     {
-        return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)?.SocialMediaUserId;
+        return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)
+            ?.SocialMediaUserId;
     }
 
     private string GetTitle()
@@ -267,7 +296,14 @@ public partial class ProfileViewModelBase : BaseViewModel
         await OpenProfile(CompanyUrl, Constants.SocialMediaPlatformIds.Company);
     }
 
-    private async Task OpenProfile(string userProfile, int socialMediaPlatformId) {
+    [RelayCommand]
+    private static async Task GoToScanPage()
+    {
+        await Shell.Current.GoToAsync("//scan");
+    }
+
+    private async Task OpenProfile(string userProfile, int socialMediaPlatformId)
+    {
         if (string.IsNullOrWhiteSpace(userProfile))
         {
             if (!IsMe)
@@ -277,7 +313,8 @@ public partial class ProfileViewModelBase : BaseViewModel
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty);
+                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId,
+                    string.Empty);
                 await MopupService.Instance.PushAsync(page);
             });
 
@@ -292,7 +329,8 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.",
+                    "OK");
             }
         }
     }
@@ -374,7 +412,9 @@ public partial class ProfileViewModelBase : BaseViewModel
         ActivityName = GetMessage(achievement, true),
         OccurredAt = achievement.AwardedAt,
         Type = achievement.AchievementType.ToActivityType(),
-        TimeElapsed = achievement.AwardedAt.HasValue ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
+        TimeElapsed = achievement.AwardedAt.HasValue
+            ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
+            : string.Empty
     };
 
     private static Activity CreateActivityFromReward(UserRewardDto reward) => new()
@@ -382,7 +422,9 @@ public partial class ProfileViewModelBase : BaseViewModel
         ActivityName = $"Claimed {reward.RewardName}",
         OccurredAt = reward.AwardedAt,
         Type = ActivityType.Claimed,
-        TimeElapsed = reward.AwardedAt.HasValue ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value) : string.Empty
+        TimeElapsed = reward.AwardedAt.HasValue
+            ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value)
+            : string.Empty
     };
 
     public void OnDisappearing()
