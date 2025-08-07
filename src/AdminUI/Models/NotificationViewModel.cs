@@ -5,10 +5,12 @@ using SSW.Rewards.Shared.DTOs.Roles;
 namespace SSW.Rewards.Admin.UI.Models;
 
 public enum Delivery { Now, Schedule }
+public enum Targeting { Everyone, Achievement, Role }
 
 public class NotificationViewModel
 {
     public Delivery DeliveryOption { get; set; } = Delivery.Now;
+    public Targeting TargetingOption { get; set; } = Targeting.Everyone;
 
     public DateTime? ScheduleDate { get; set; } = DateTime.Today;
     public TimeSpan? ScheduleTime { get; set; } = DateTime.Now.TimeOfDay;

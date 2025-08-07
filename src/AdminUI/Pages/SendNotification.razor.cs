@@ -6,6 +6,7 @@ using SSW.Rewards.Shared.DTOs.Achievements;
 using SSW.Rewards.Shared.DTOs.Notifications;
 using SSW.Rewards.Shared.DTOs.Roles;
 using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations;
+using SSW.Rewards.Admin.UI.Helpers;
 
 namespace SSW.Rewards.Admin.UI.Pages;
 
@@ -57,67 +58,87 @@ public partial class SendNotification
 
     private async Task HandleValidSubmit()
     {
-        // Check if no role, achievement, or user is selected
-        bool isTargetingEveryone = _model.SelectedAchievement is null && _model.SelectedRole is null;
-        if (isTargetingEveryone)
-        {
-            var parameters = new DialogParameters
-            {
-                { "ContentText", "You haven’t selected a specific role, achievement, or user. This notification will be sent to everyone. \nAre you sure you want to continue?" },
-                { "ButtonText", "Send to Everyone" },
-                { "CancelText", "Go Back" },
-                { "Color", Color.Primary }
-            };
-
-            var dialog = await DialogService.ShowAsync<SimpleConfirmationDialog>("Send to All Users?", parameters);
-            var result = await dialog.Result;
-            if (result.Canceled || !(result.Data is bool confirmed && confirmed))
-            {
-                // User cancelled, do not send or clear
-                return;
-            }
-        }
-
         _isSending = true;
         StateHasChanged();
 
-        SendAdminNotificationDto command = new()
+        try
         {
-            Title = _model.Title,
-            Body = _model.Body,
-            ImageUrl = _model.ImageUrl,
-        };
-
-        if (_model.SelectedAchievement is not null)
-        {
-            command.AchievementIds.Add(_model.SelectedAchievement.Id);
-        }
-
-        if (_model.SelectedRole is not null)
-        {
-            command.RoleIds.Add(_model.SelectedRole.Id);
-        }
-
-        if (_model.DeliveryOption == Delivery.Schedule)
-        {
-            if (!_model.ScheduleDate.HasValue || !_model.ScheduleTime.HasValue || string.IsNullOrWhiteSpace(_model.SelectedTimeZone))
+            SendAdminNotificationDto command = new()
             {
-                Snackbar.Add("Please select a valid date, time, and timezone for scheduled notifications.", Severity.Error, options => { });
+                Title = _model.Title,
+                Body = _model.Body,
+                ImageUrl = _model.ImageUrl
+            };
+
+            string targetGroup;
+            switch (_model.TargetingOption)
+            {
+                case Targeting.Achievement when _model.SelectedAchievement is not null:
+                    command.AchievementIds = [_model.SelectedAchievement.Id];
+                    targetGroup = $"users with the '{_model.SelectedAchievement.Name}' achievement";
+                    break;
+                case Targeting.Role when _model.SelectedRole is not null:
+                    command.RoleIds = [_model.SelectedRole.Id];
+                    targetGroup = $"users with the '{_model.SelectedRole.Name}' role";
+                    break;
+                default:
+                    targetGroup = "users";
+                    break;
+            }
+
+            var impactedUsers = await NotificationsService.GetNumberOfImpactedUsers(command, CancellationToken.None);
+            var deliveryTime = _model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue
+                ? $"at {DateTimeFormatter.FormatLongDate(_model.ScheduleDate.Value)}"
+                : "immediately";
+
+            RenderFragment confirmationContent = builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddMarkupContent(1, $"<p><strong>Title:</strong> {_model.Title}</p>");
+                builder.AddMarkupContent(2, $"<p><strong>Target:</strong> {impactedUsers} {targetGroup}</p>");
+                builder.AddMarkupContent(3, $"<p><strong>Delivery:</strong> {deliveryTime}</p>");
+                builder.AddMarkupContent(4, "<br>");
+                builder.AddMarkupContent(5, "<p>Are you sure you want to continue?</p>");
+                builder.CloseElement();
+            };
+            
+            string confirmationText = $"{(_model.DeliveryOption == Delivery.Now ? "Send" : "Schedule")} Notification"; 
+            var parameters = new DialogParameters
+            {
+                { "Content", confirmationContent },
+                { "ButtonText", confirmationText },
+                { "CancelText", "Cancel" },
+                { "Color", Color.Primary }
+            };
+
+            var dialog = await DialogService.ShowAsync<ConfirmationDialog>($"Send notification to {impactedUsers} users", parameters);
+            var result = await dialog.Result;
+
+            if (result.Canceled || !(result.Data is bool confirmed && confirmed))
+            {
                 _isSending = false;
                 StateHasChanged();
                 return;
             }
 
-            // Combine date and time as Unspecified kind
-            DateTime combinedDateTime = DateTime.SpecifyKind(_model.ScheduleDate.Value.Date + _model.ScheduleTime.Value, DateTimeKind.Unspecified);
-            TimeZoneInfo selectedTzi = TimeZoneInfo.FindSystemTimeZoneById(_model.SelectedTimeZone);
-            // Convert to UTC
-            DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(combinedDateTime, selectedTzi);
-            command.ScheduleAt = new DateTimeOffset(utcDateTime, TimeSpan.Zero);
-        }
+            if (_model.DeliveryOption == Delivery.Schedule)
+            {
+                if (!_model.ScheduleDate.HasValue || !_model.ScheduleTime.HasValue || string.IsNullOrWhiteSpace(_model.SelectedTimeZone))
+                {
+                    Snackbar.Add("Please select a valid date, time, and timezone for scheduled notifications.", Severity.Error, options => { });
+                    _isSending = false;
+                    StateHasChanged();
+                    return;
+                }
 
-        try
-        {
+                // Combine date and time as Unspecified kind
+                DateTime combinedDateTime = DateTime.SpecifyKind(_model.ScheduleDate.Value.Date + _model.ScheduleTime.Value, DateTimeKind.Unspecified);
+                TimeZoneInfo selectedTzi = TimeZoneInfo.FindSystemTimeZoneById(_model.SelectedTimeZone);
+                // Convert to UTC
+                DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(combinedDateTime, selectedTzi);
+                command.ScheduleAt = new DateTimeOffset(utcDateTime, TimeSpan.Zero);
+            }
+
             // Send notification through the API client service
             await NotificationsService.SendAdminNotification(command, CancellationToken.None);
 

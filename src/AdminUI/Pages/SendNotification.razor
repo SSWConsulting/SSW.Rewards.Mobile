@@ -12,7 +12,7 @@
     <MudText Typo="Typo.h3" GutterBottom="true">Send Notification</MudText>
 
     <MudGrid>
-        <MudItem xs="12" md="7">
+        <MudItem xs="12" md="12">
             <MudPaper Class="pa-4 warm-grey-bg">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
@@ -46,31 +46,44 @@
                         }
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h6" Class="mt-4">Targeting (Optional)</MudText>
+                            <MudText Typo="Typo.h6" Style="display: inline; cursor: help;">Target<span style="color: red;">*</span></MudText>
+                            <MudRadioGroup @bind-Value="@_model.TargetingOption">
+                                <MudRadio Option="@Targeting.Everyone" Color="Color.Primary">Everyone</MudRadio>
+                                <MudRadio Option="@Targeting.Achievement" Color="Color.Primary">Requires Achievement</MudRadio>
+                                <MudRadio Option="@Targeting.Role" Color="Color.Primary">Requires Role</MudRadio>
+                            </MudRadioGroup>
                         </MudItem>
 
-                        <MudItem xs="12">
-                            <MudAutocomplete T="AchievementDto"
-                                             @bind-Value="@_model.SelectedAchievement"
-                                             Label="Required Achievement (Optional)"
-                                             AnchorOrigin="Origin.BottomCenter"
-                                             SearchFuncWithCancel="@SearchAchievements"
-                                             ShowProgressIndicator="true"
-                                             ToStringFunc="@GetAchievementName"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true" />
-                        </MudItem>
+                        @if (_model.TargetingOption == Targeting.Achievement)
+                        {
+                            <MudItem xs="12">
+                                <MudAutocomplete T="AchievementDto"
+                                                 @bind-Value="@_model.SelectedAchievement"
+                                                 Label="Required Achievement"
+                                                 AnchorOrigin="Origin.BottomCenter"
+                                                 SearchFuncWithCancel="@SearchAchievements"
+                                                 ShowProgressIndicator="true"
+                                                 ToStringFunc="@GetAchievementName"
+                                                 Clearable="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 Required="true" />
+                            </MudItem>
+                        }
 
-                        <MudItem xs="12">
-                            <MudAutocomplete T="RoleDto"
-                                             @bind-Value="@_model.SelectedRole"
-                                             Label="Role (Optional)"
-                                             SearchFunc="@SearchRoles"
-                                             ToStringFunc="@(role => role?.Name ?? string.Empty)"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Dense="true" />
-                        </MudItem>
+                        @if (_model.TargetingOption == Targeting.Role)
+                        {
+                            <MudItem xs="12">
+                                <MudAutocomplete T="RoleDto"
+                                                 @bind-Value="@_model.SelectedRole"
+                                                 Label="Role"
+                                                 SearchFunc="@SearchRoles"
+                                                 ToStringFunc="@(role => role?.Name ?? string.Empty)"
+                                                 Clearable="true"
+                                                 ResetValueOnEmptyText="true"
+                                                 Dense="true"
+                                                 Required="true" />
+                            </MudItem>
+                        }
 
                         <MudItem xs="12">
                             <MudText Typo="Typo.h6" Class="mt-4">Content</MudText>
@@ -93,20 +106,6 @@
                         </MudItem>
                     </MudGrid>
                 </EditForm>
-            </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" md="5">
-            <MudText Typo="Typo.h5" GutterBottom="true" Class="mb-3">Preview</MudText>
-            <MudPaper Class="pa-4 preview-light-grey-bg" Style="width: 100%; border-radius: 12px; box-shadow: var(--mud-elevation-2);">
-                <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%;">
-                    @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
-                    {
-                        <MudImage Src="@_model.ImageUrl" Alt="Notification Image" Style="max-width: 100px; max-height: 100px; border-radius: 8px; object-fit: cover; margin-bottom: 8px;" />
-                    }
-                    <MudText Typo="Typo.subtitle1" Class="mb-1" Style="font-weight: bold;">@(!string.IsNullOrWhiteSpace(_model.Title) ? _model.Title : "New Achievement!")</MudText>
-                    <MudText Typo="Typo.body2">@(!string.IsNullOrWhiteSpace(_model.Body) ? _model.Body : "Great job!")</MudText>
-                </div>
             </MudPaper>
         </MudItem>
     </MudGrid>
