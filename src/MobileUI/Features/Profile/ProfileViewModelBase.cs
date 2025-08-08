@@ -248,12 +248,12 @@ public partial class ProfileViewModelBase : BaseViewModel
     }
 
     [RelayCommand]
-    private void ChangeProfilePicture()
+    private async Task ChangeProfilePicture()
     {
         if (IsLoading || !IsMe)
             return;
 
-        MainThread.BeginInvokeOnMainThread(async void () =>
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             try
             {
@@ -308,7 +308,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async void () =>
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 try
                 {
