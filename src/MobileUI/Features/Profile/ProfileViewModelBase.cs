@@ -84,6 +84,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private const int MaxActivity = 10;
     private const int MaxSkills = 3;
+    private const string DefaultProfilePic = "v2sophie";
 
     public ProfileViewModelBase(
         bool isMe,
@@ -210,7 +211,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 IsLoading = false;
             }
 
-            ProfilePic = profileData.ProfilePic ?? "v2sophie";
+            ProfilePic = profileData.ProfilePic ?? DefaultProfilePic;
             Name = profileData.FullName ?? string.Empty;
             Rank = profileData.Rank;
             Points = profileData.Points;
@@ -252,11 +253,19 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (IsLoading || !IsMe)
             return;
 
-        MainThread.BeginInvokeOnMainThread(async () =>
+        MainThread.BeginInvokeOnMainThread(async void () =>
         {
-            var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
-            var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
-            await MopupService.Instance.PushAsync(popup);
+            try
+            {
+                var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+                var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
+                await MopupService.Instance.PushAsync(popup);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to open profile picture page");
+                await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+            }
         });
     }
 
@@ -299,11 +308,19 @@ public partial class ProfileViewModelBase : BaseViewModel
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async void () =>
             {
-                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId,
-                    string.Empty);
-                await MopupService.Instance.PushAsync(page);
+                try
+                {
+                    var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId,
+                        string.Empty);
+                    await MopupService.Instance.PushAsync(page);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to open add social media popup");
+                    await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+                }
             });
 
             return;
