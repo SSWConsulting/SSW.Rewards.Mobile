@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.PopupPages;
@@ -16,6 +17,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
+    private readonly ILogger<ProfileViewModelBase> _logger;
 
     [ObservableProperty]
     private string _profilePic;
@@ -88,13 +90,15 @@ public partial class ProfileViewModelBase : BaseViewModel
         IUserService userService,
         IDevService devService,
         IServiceProvider provider,
-        IFileCacheService fileCacheService)
+        IFileCacheService fileCacheService,
+        ILogger<ProfileViewModelBase> logger)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
         _provider = provider;
         _fileCacheService = fileCacheService;
+        _logger = logger;
     }
 
     protected async Task _initialise()
@@ -132,12 +136,14 @@ public partial class ProfileViewModelBase : BaseViewModel
             // Only show error if we never got any cached data
             if (!hasCachedData)
             {
-                await HandleLoadingError(ex);
+                _logger.LogError("Profile loading error: {Message}", ex.Message);
+                await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+                await ClosePage();
             }
             else
             {
                 // Log the error but don't interrupt the user since they have cached data
-                System.Diagnostics.Debug.WriteLine($"Profile refresh failed but cached data available: {ex.Message}");
+                _logger.LogInformation("Profile refresh failed but cached data available: {Message}", ex.Message);
             }
         }
         finally
@@ -145,24 +151,6 @@ public partial class ProfileViewModelBase : BaseViewModel
             _loadingProfileSectionsSemaphore.Release();
             IsLoading = false;
         }
-    }
-
-    private static async Task HandleLoadingError(Exception ex)
-    {
-        string userMessage;
-
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
-        {
-            userMessage = "No internet connection available. Please check your network settings and try again.";
-        }
-        else
-        {
-            userMessage = "Unable to load profile. Please check your internet connection and try again.";
-        }
-
-        System.Diagnostics.Debug.WriteLine($"Profile loading error: {ex.Message}");
-        await Shell.Current.DisplayAlert("Network Error", userMessage, "OK");
-        await ClosePage();
     }
 
     private async Task<CachedProfileData> FetchProfileData()
@@ -185,7 +173,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             catch (Exception ex)
             {
                 // Log error but don't fail the whole operation
-                System.Diagnostics.Debug.WriteLine($"Failed to load skills: {ex.Message}");
+                _logger.LogError(ex, "Failed to load skills: {Message}", ex.Message);
             }
         }
 

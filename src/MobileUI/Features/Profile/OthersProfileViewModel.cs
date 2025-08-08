@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
@@ -6,8 +7,9 @@ public partial class OthersProfileViewModel(
     IUserService userService,
     IDevService devService,
     IServiceProvider provider,
-    IFileCacheService fileCacheService)
-    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService)
+    IFileCacheService fileCacheService,
+    ILogger<ProfileViewModelBase> logger)
+    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService, logger)
 {
     public async Task Initialise()
     {
