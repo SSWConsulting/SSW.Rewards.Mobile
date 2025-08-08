@@ -111,7 +111,7 @@ public partial class SendNotification
                 { "Color", Color.Primary }
             };
 
-            var dialog = await DialogService.ShowAsync<ConfirmationDialog>($"Send notification to {impactedUsers} users", parameters);
+            var dialog = await DialogService.ShowAsync<ConfirmationDialog>($"Create notification for {impactedUsers} users", parameters);
             var result = await dialog.Result;
 
             if (result.Canceled || !(result.Data is bool confirmed && confirmed))

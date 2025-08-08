@@ -8,7 +8,7 @@ public interface INotificationsService
     Task UploadDeviceToken(DeviceTokenDto command, CancellationToken cancellationToken);
     Task SendAdminNotification(SendAdminNotificationDto command, CancellationToken cancellationToken);
     Task<NotificationHistoryListViewModel> GetNotificationHistoryListAsync(int page, int pageSize, string? search, string? sortLabel, string? sortDirection, bool includeDeleted, CancellationToken cancellationToken);
-    Task ArchiveNotificationAsync(int id, CancellationToken cancellationToken);
+    Task DeleteNotificationAsync(int id, CancellationToken cancellationToken);
     Task<int> GetNumberOfImpactedUsers(GetNumberOfImpactedNotificationUsersDto command, CancellationToken cancellationToken);
 }
 
@@ -80,13 +80,13 @@ public class NotificationsService : INotificationsService
         throw new Exception($"Failed to get notification history: {responseContent}");
     }
 
-    public async Task ArchiveNotificationAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteNotificationAsync(int id, CancellationToken cancellationToken)
     {
         var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteNotification/{id}", cancellationToken);
         if (!result.IsSuccessStatusCode)
         {
             var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Failed to archive notification: {responseContent}");
+            throw new Exception($"Failed to delete notification: {responseContent}");
         }
     }
 

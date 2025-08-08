@@ -15,10 +15,10 @@
                       Class="mt-0" Immediate="true"
                       OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })"
                       OnBlur="LoadNotificationsFromSearch" />
-        <MudCheckBox Value="_showArchived" ValueChanged="@OnShowArchivedChanged" Color="Color.Primary" Label="Show archived" Class="ml-4" T="bool" />
+        <MudCheckBox Value="_showArchived" ValueChanged="@OnShowArchivedChanged" Color="Color.Primary" Label="Show deleted" Class="ml-4" T="bool" />
         <MudSpacer />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
-            Send Notification
+            Create Notification
         </MudButton>
     </MudStack>
     <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4" @ref="_table">
@@ -75,12 +75,12 @@
             <MudTd DataLabel="Actions">
                 @if (context.IsArchived)
                 {
-                    <span>Archived</span>
+                    <span>Deleted</span>
                 }
                 else
                 {
-                    <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small" OnClick="@(() => ArchiveNotification(context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Archive" /> &nbsp; Archive
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteNotification(context.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> &nbsp; Delete
                     </MudButton>
                 }
             </MudTd>
