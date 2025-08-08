@@ -1,12 +1,14 @@
-﻿
+﻿using Microsoft.Extensions.Logging;
+
 namespace SSW.Rewards.Mobile.ViewModels.ProfileViewModels;
 
 public class MyProfileViewModel(
     IUserService userService,
     IDevService devService,
     IServiceProvider provider,
-    IFileCacheService fileCacheService)
-    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService)
+    IFileCacheService fileCacheService,
+    ILogger<ProfileViewModelBase> logger)
+    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService, logger)
 {
     private readonly IUserService _userService = userService;
 

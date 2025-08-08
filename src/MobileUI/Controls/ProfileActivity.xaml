@@ -9,38 +9,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SSW.Rewards.Mobile.Controls"
     xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="SSW.Rewards.Mobile.Controls.ProfileActivity"
     x:DataType="viewModels:ProfileViewModelBase">
-    <VerticalStackLayout >
-        <Label Text="Last Seen"
-               FontSize="16"
-               Style="{StaticResource LabelBold}"
-               Margin="0, 5" />
-
-        <VerticalStackLayout
-            BindableLayout.ItemsSource="{Binding LastSeen}"
-            Margin="0,0,0,10"
-            Spacing="8">
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <controls:ProfileActivityItem />
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-            <BindableLayout.EmptyView>
-                <Label Text="No check-ins"
-                       TextColor="{StaticResource LeaderCardBackground}"
-                       Margin="0, 10"
-                       HorizontalOptions="Center" />
-            </BindableLayout.EmptyView>
-        </VerticalStackLayout>
-
+    <VerticalStackLayout>
         <Label Text="Recent Activity"
                FontSize="16"
                Style="{StaticResource LabelBold}"
                Margin="0, 5" />
 
         <VerticalStackLayout
-            BindableLayout.ItemsSource="{Binding RecentActivity}"
+            BindableLayout.ItemsSource="{Binding Activity}"
             Spacing="8">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
@@ -48,10 +27,16 @@
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
             <BindableLayout.EmptyView>
-                <Label Text="No recent activity"
-                       TextColor="{StaticResource LeaderCardBackground}"
-                       Margin="0, 10"
-                       HorizontalOptions="Center" />
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="10" Margin="0, 10">
+                    <Label Text="No activity"
+                           TextColor="{StaticResource LeaderCardBackground}"
+                           HorizontalOptions="Center"
+                           IsVisible="{Binding IsMe, Converter={toolkit:InvertedBoolConverter}}" />
+                    <Button Text="Start earning points by scanning QR codes"
+                            Command="{Binding GoToScanPageCommand}"
+                            IsVisible="{Binding IsMe}"
+                            HorizontalOptions="Center" />
+                </VerticalStackLayout>
             </BindableLayout.EmptyView>
         </VerticalStackLayout>
     </VerticalStackLayout>
