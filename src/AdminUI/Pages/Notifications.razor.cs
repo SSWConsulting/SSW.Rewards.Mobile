@@ -45,12 +45,12 @@ public partial class Notifications
         }
     }
 
-    private async Task ArchiveNotification(int id)
+    private async Task DeleteNotification(int id)
     {
         _loading = true;
         try
         {
-            await NotificationsService.ArchiveNotificationAsync(id, CancellationToken.None);
+            await NotificationsService.DeleteNotificationAsync(id, CancellationToken.None);
             await LoadNotificationsFromSearch();
         }
         finally
