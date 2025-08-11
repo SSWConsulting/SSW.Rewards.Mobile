@@ -84,7 +84,7 @@ jobs:
       run: | 
         $out = az deployment group create `
           --resource-group ${{ inputs.RESOURCE_GROUP }} `
-          --template-file .\infra\main.bicep `
+          --template-file ./infra/main.bicep `
           --parameters environment=${{ inputs.ENVIRONMENT }} `
             databaseSkuName=${{ inputs.DATABASE_SKU }} `
             appServicePlanName=${{ inputs.APP_SERVICE_PLAN }} `
