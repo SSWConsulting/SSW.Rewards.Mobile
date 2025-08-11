@@ -65,4 +65,4 @@ jobs:
         with:
           name: artifacts-android-${{ inputs.build_number }}
           path: |
-            src\MobileUI\bin\Release\net9.0-android\publish\*.aab
+            src/MobileUI/bin/Release/net9.0-android/publish/*.aab
