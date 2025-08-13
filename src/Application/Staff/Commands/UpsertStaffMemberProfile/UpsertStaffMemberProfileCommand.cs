@@ -55,6 +55,13 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         // Add if doesn't exist
         if (staffMemberEntity == null)
         {
+            // Check if email already exists
+            var emailConflict = await _context.StaffMembers
+                .AnyAsync(s => s.Email == request.Email, cancellationToken);
+
+            if (emailConflict)
+                throw new InvalidOperationException($"A staff member with email '{request.Email}' already exists.");
+
             staffMemberEntity = new StaffMember();
             await _context.StaffMembers.AddAsync(staffMemberEntity, cancellationToken);
         }
