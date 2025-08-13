@@ -23,6 +23,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     private const float MaxBrightness = 1.0f;
 
     private readonly SemaphoreSlim _cameraToggleSemaphore = new(1, 1);
+    private readonly SemaphoreSlim _detectionSemaphore = new(1, 1);
     private DateTime _lastCameraToggle = DateTime.MinValue;
     private const int CameraToggleDelayMs = 500;
     
@@ -179,25 +180,45 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
             return;
         }
 
-        // Go through all detected barcodes and find the first valid QR code.
-        var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
-        string rawValue = validBarCode?.RawValue;
-        if (string.IsNullOrWhiteSpace(rawValue))
+        // Prevent concurrent processing of detections
+        if (!_detectionSemaphore.Wait(0))
         {
             return;
         }
-        
-        if (Vibration.Default.IsSupported)
-            Vibration.Default.Vibrate();
 
-        // the handler is called on a thread-pool thread
-        App.Current.Dispatcher.Dispatch(async () =>
+        try
         {
-            await SetCameraEnabledAsync(false);
-            
-            var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
-            MopupService.Instance.PushAsync(popup);
-        });
+            // Go through all detected barcodes and find the first valid QR code.
+            var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
+            string rawValue = validBarCode?.RawValue;
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                return;
+            }
+
+            if (Vibration.Default.IsSupported)
+                Vibration.Default.Vibrate();
+
+            // the handler is called on a thread-pool thread
+            App.Current.Dispatcher.Dispatch(async () =>
+            {
+                try
+                {
+                    await SetCameraEnabledAsync(false);
+
+                    var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
+                    await MopupService.Instance.PushAsync(popup);
+                }
+                finally
+                {
+                    _detectionSemaphore.Release();
+                }
+            });
+        }
+        catch
+        {
+            _detectionSemaphore.Release();
+        }
     }
 
     [RelayCommand]
