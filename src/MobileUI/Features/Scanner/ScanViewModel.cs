@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
 using Plugin.Maui.ScreenBrightness;
 using SSW.Rewards.Mobile.Controls;
@@ -18,6 +19,7 @@ public enum ScanPageSegments
 public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _resultViewModel;
+    private readonly ILogger<ScanViewModel> _logger;
     private readonly float _defaultBrightness;
     private const float ZoomFactorStep = 1.0f;
     private const float MaxBrightness = 1.0f;
@@ -81,9 +83,10 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [ObservableProperty]
     private bool _hasScanPermissions;
 
-    public ScanViewModel(IUserService userService, ScanResultViewModel resultViewModel)
+    public ScanViewModel(IUserService userService, ILogger<ScanViewModel> logger, ScanResultViewModel resultViewModel)
     {
         _resultViewModel = resultViewModel;
+        _logger = logger;
         
         _defaultBrightness = ScreenBrightness.Default.Brightness;
         
@@ -173,7 +176,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     }
 
     [RelayCommand]
-    private void DetectionFinished(IReadOnlySet<BarcodeResult> result)
+    private async Task DetectionFinished(IReadOnlySet<BarcodeResult> result)
     {
         if (!IsCameraEnabled || result.Count == 0)
         {
@@ -181,7 +184,7 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
         }
 
         // Prevent concurrent processing of detections
-        if (!_detectionSemaphore.Wait(0))
+        if (!await _detectionSemaphore.WaitAsync(0))
         {
             return;
         }
@@ -199,23 +202,19 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
             if (Vibration.Default.IsSupported)
                 Vibration.Default.Vibrate();
 
-            // the handler is called on a thread-pool thread
-            App.Current.Dispatcher.Dispatch(async () =>
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                try
-                {
-                    await SetCameraEnabledAsync(false);
+                await SetCameraEnabledAsync(false);
 
-                    var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
-                    await MopupService.Instance.PushAsync(popup);
-                }
-                finally
-                {
-                    _detectionSemaphore.Release();
-                }
+                var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
+                await MopupService.Instance.PushAsync(popup);
             });
         }
-        catch
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing barcode");
+        }
+        finally
         {
             _detectionSemaphore.Release();
         }
