@@ -57,6 +57,7 @@ public class UpsertStaffMemberProfileCommandHandler : IRequestHandler<UpsertStaf
         {
             // Check if email already exists
             var emailConflict = await _context.StaffMembers
+                .TagWithContext("CheckDuplicateEmail")
                 .AnyAsync(s => s.Email == request.Email, cancellationToken);
 
             if (emailConflict)
