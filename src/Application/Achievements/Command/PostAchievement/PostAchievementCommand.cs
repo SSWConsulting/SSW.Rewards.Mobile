@@ -55,7 +55,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             .Where(ua => ua.UserId == userId)
             .ToListAsync(cancellationToken);
 
-        if (userAchievements.Any(ua => ua.Achievement == requestedAchievement && !requestedAchievement.IsMultiscanEnabled))
+        if (!requestedAchievement.IsMultiscanEnabled && userAchievements.Any(ua => ua.AchievementId == requestedAchievement.Id))
         {
             return new ClaimAchievementResult
             {

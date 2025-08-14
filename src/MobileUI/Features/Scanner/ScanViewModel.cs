@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
 using Plugin.Maui.ScreenBrightness;
 using SSW.Rewards.Mobile.Controls;
@@ -18,11 +19,13 @@ public enum ScanPageSegments
 public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMessage>
 {
     private readonly ScanResultViewModel _resultViewModel;
+    private readonly ILogger<ScanViewModel> _logger;
     private readonly float _defaultBrightness;
     private const float ZoomFactorStep = 1.0f;
     private const float MaxBrightness = 1.0f;
 
     private readonly SemaphoreSlim _cameraToggleSemaphore = new(1, 1);
+    private readonly SemaphoreSlim _detectionSemaphore = new(1, 1);
     private DateTime _lastCameraToggle = DateTime.MinValue;
     private const int CameraToggleDelayMs = 500;
     
@@ -80,9 +83,10 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     [ObservableProperty]
     private bool _hasScanPermissions;
 
-    public ScanViewModel(IUserService userService, ScanResultViewModel resultViewModel)
+    public ScanViewModel(IUserService userService, ILogger<ScanViewModel> logger, ScanResultViewModel resultViewModel)
     {
         _resultViewModel = resultViewModel;
+        _logger = logger;
         
         _defaultBrightness = ScreenBrightness.Default.Brightness;
         
@@ -172,32 +176,48 @@ public partial class ScanViewModel : BaseViewModel, IRecipient<EnableScannerMess
     }
 
     [RelayCommand]
-    private void DetectionFinished(IReadOnlySet<BarcodeResult> result)
+    private async Task DetectionFinished(IReadOnlySet<BarcodeResult> result)
     {
         if (!IsCameraEnabled || result.Count == 0)
         {
             return;
         }
 
-        // Go through all detected barcodes and find the first valid QR code.
-        var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
-        string rawValue = validBarCode?.RawValue;
-        if (string.IsNullOrWhiteSpace(rawValue))
+        // Prevent concurrent processing of detections
+        if (!await _detectionSemaphore.WaitAsync(0))
         {
             return;
         }
-        
-        if (Vibration.Default.IsSupported)
-            Vibration.Default.Vibrate();
 
-        // the handler is called on a thread-pool thread
-        App.Current.Dispatcher.Dispatch(async () =>
+        try
         {
-            await SetCameraEnabledAsync(false);
-            
-            var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
-            MopupService.Instance.PushAsync(popup);
-        });
+            // Go through all detected barcodes and find the first valid QR code.
+            var validBarCode = result.FirstOrDefault(x => _resultViewModel.IsQRCodeValid(x?.RawValue));
+            string rawValue = validBarCode?.RawValue;
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                return;
+            }
+
+            if (Vibration.Default.IsSupported)
+                Vibration.Default.Vibrate();
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await SetCameraEnabledAsync(false);
+
+                var popup = new PopupPages.ScanResult(_resultViewModel, rawValue);
+                await MopupService.Instance.PushAsync(popup);
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing barcode");
+        }
+        finally
+        {
+            _detectionSemaphore.Release();
+        }
     }
 
     [RelayCommand]

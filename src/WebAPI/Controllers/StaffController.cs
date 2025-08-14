@@ -56,7 +56,15 @@ public class StaffController : ApiControllerBase
             Title = staffMember.Title
         };
 
-        return Ok(await Mediator.Send(command));
+        try
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 
     [HttpPost]
