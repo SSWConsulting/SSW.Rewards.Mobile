@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Mobile.PopupPages;
@@ -16,6 +17,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IDevService _devService;
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
+    private readonly ILogger<ProfileViewModelBase> _logger;
 
     [ObservableProperty]
     private string _profilePic;
@@ -37,22 +39,22 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     [ObservableProperty]
     private bool _isStaff;
-    
+
     [ObservableProperty]
     private string _title;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _linkedInUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _gitHubUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _twitterUrl;
-    
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasAnySocialMedia))]
     private string _companyUrl;
@@ -75,23 +77,29 @@ public partial class ProfileViewModelBase : BaseViewModel
     [ObservableProperty]
     private bool _isMe;
 
-    public ObservableRangeCollection<Activity> RecentActivity { get; } = [];
-    public ObservableRangeCollection<Activity> LastSeen { get; } = [];
+    public ObservableRangeCollection<Activity> Activity { get; set; } = [];
     public ObservableRangeCollection<StaffSkillDto> Skills { get; set; } = [];
-    private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1,1);
+
+    private readonly SemaphoreSlim _loadingProfileSectionsSemaphore = new(1, 1);
+
+    private const int MaxActivity = 10;
+    private const int MaxSkills = 3;
+    private const string DefaultProfilePic = "v2sophie";
 
     public ProfileViewModelBase(
         bool isMe,
         IUserService userService,
         IDevService devService,
         IServiceProvider provider,
-        IFileCacheService fileCacheService)
+        IFileCacheService fileCacheService,
+        ILogger<ProfileViewModelBase> logger)
     {
         IsMe = isMe;
         _userService = userService;
         _devService = devService;
         _provider = provider;
         _fileCacheService = fileCacheService;
+        _logger = logger;
     }
 
     protected async Task _initialise()
@@ -104,6 +112,8 @@ public partial class ProfileViewModelBase : BaseViewModel
         if (!await _loadingProfileSectionsSemaphore.WaitAsync(0))
             return;
 
+        bool hasCachedData = false;
+
         try
         {
             IsLoading = true;
@@ -114,17 +124,27 @@ public partial class ProfileViewModelBase : BaseViewModel
             await _fileCacheService.FetchAndRefresh(
                 cacheKey,
                 FetchProfileData,
-                OnProfileDataReceived,
+                (data, isFromCache, tag) =>
+                {
+                    hasCachedData = isFromCache;
+                    return OnProfileDataReceived(data, isFromCache, tag);
+                },
                 _cacheTag
             );
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Only show error if we never got any data (cached or fresh)
-            if (IsLoading)
+            // Only show error if we never got any cached data
+            if (!hasCachedData)
             {
-                await ClosePage();
+                _logger.LogError("Profile loading error: {Message}", ex.Message);
                 await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+                await ClosePage();
+            }
+            else
+            {
+                // Log the error but don't interrupt the user since they have cached data
+                _logger.LogInformation("Profile refresh failed but cached data available: {Message}", ex.Message);
             }
         }
         finally
@@ -136,13 +156,8 @@ public partial class ProfileViewModelBase : BaseViewModel
 
     private async Task<CachedProfileData> FetchProfileData()
     {
-        var profileTask = _userService.GetUserAsync(UserId);
-        var socialMediaTask = _userService.GetSocialMedia(UserId);
-
-        await Task.WhenAll(profileTask, socialMediaTask);
-
-        var profile = profileTask.Result;
-        var socialMedia = socialMediaTask.Result;
+        var profile = await _userService.GetUserAsync(UserId);
+        var socialMedia = await _userService.GetSocialMedia(UserId);
 
         // Get skills if staff member
         List<StaffSkillDto> skills = [];
@@ -153,13 +168,13 @@ public partial class ProfileViewModelBase : BaseViewModel
                 DevProfile devProfile = await _devService.GetProfileAsync(profile.Email);
                 if (devProfile != null)
                 {
-                    skills = devProfile.Skills.OrderByDescending(s => s.Level).Take(3).ToList();
+                    skills = devProfile.Skills.OrderByDescending(s => s.Level).Take(MaxSkills).ToList();
                 }
             }
             catch (Exception ex)
             {
                 // Log error but don't fail the whole operation
-                System.Diagnostics.Debug.WriteLine($"Failed to load skills: {ex.Message}");
+                _logger.LogError(ex, "Failed to load skills: {Message}", ex.Message);
             }
         }
 
@@ -196,7 +211,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 IsLoading = false;
             }
 
-            ProfilePic = profileData.ProfilePic ?? "v2sophie";
+            ProfilePic = profileData.ProfilePic ?? DefaultProfilePic;
             Name = profileData.FullName ?? string.Empty;
             Rank = profileData.Rank;
             Points = profileData.Points;
@@ -210,14 +225,14 @@ public partial class ProfileViewModelBase : BaseViewModel
             CompanyUrl = profileData.CompanyUrl;
 
             UpdateSkillsSection(profileData.Skills);
-            UpdateLastSeenSection(profileData.Achievements);
-            UpdateRecentActivitySection(profileData.Achievements, profileData.Rewards);
+            UpdateActivitySection(profileData.Achievements, profileData.Rewards);
         });
     }
 
     private static string GetSocialMediaUrl(List<UserSocialMediaIdDto> socialMediaList, int socialMediaPlatformId)
     {
-        return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)?.SocialMediaUserId;
+        return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)
+            ?.SocialMediaUserId;
     }
 
     private string GetTitle()
@@ -233,16 +248,24 @@ public partial class ProfileViewModelBase : BaseViewModel
     }
 
     [RelayCommand]
-    private void ChangeProfilePicture()
+    private async Task ChangeProfilePicture()
     {
         if (IsLoading || !IsMe)
             return;
 
-        MainThread.BeginInvokeOnMainThread(async () =>
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
-            var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
-            await MopupService.Instance.PushAsync(popup);
+            try
+            {
+                var vm = ActivatorUtilities.CreateInstance<ProfilePictureViewModel>(_provider);
+                var popup = ActivatorUtilities.CreateInstance<ProfilePicturePage>(_provider, vm);
+                await MopupService.Instance.PushAsync(popup);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to open profile picture page");
+                await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+            }
         });
     }
 
@@ -270,7 +293,14 @@ public partial class ProfileViewModelBase : BaseViewModel
         await OpenProfile(CompanyUrl, Constants.SocialMediaPlatformIds.Company);
     }
 
-    private async Task OpenProfile(string userProfile, int socialMediaPlatformId) {
+    [RelayCommand]
+    private static async Task GoToScanPage()
+    {
+        await Shell.Current.GoToAsync("//scan");
+    }
+
+    private async Task OpenProfile(string userProfile, int socialMediaPlatformId)
+    {
         if (string.IsNullOrWhiteSpace(userProfile))
         {
             if (!IsMe)
@@ -278,10 +308,19 @@ public partial class ProfileViewModelBase : BaseViewModel
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async () =>
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId, string.Empty);
-                await MopupService.Instance.PushAsync(page);
+                try
+                {
+                    var page = ActivatorUtilities.CreateInstance<AddSocialMediaPage>(_provider, socialMediaPlatformId,
+                        string.Empty);
+                    await MopupService.Instance.PushAsync(page);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to open add social media popup");
+                    await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+                }
             });
 
             return;
@@ -295,7 +334,8 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.",
+                    "OK");
             }
         }
     }
@@ -311,7 +351,7 @@ public partial class ProfileViewModelBase : BaseViewModel
 
         string activity = achievement.AchievementName;
         string action;
-        string scored = $"just scored {achievement.AchievementValue}pts for";
+        string scored = $"scored {achievement.AchievementValue}pts for";
 
         switch (achievement.AchievementType)
         {
@@ -350,70 +390,47 @@ public partial class ProfileViewModelBase : BaseViewModel
         Skills.ReplaceRange(skills);
     }
 
-    private void UpdateLastSeenSection(IEnumerable<UserAchievementDto> achievementList)
+    private void UpdateActivitySection(List<UserAchievementDto> achievements, List<UserRewardDto> rewards)
     {
-        var recentLastSeen = achievementList.Where(a => a.AchievementType == AchievementType.Attended)
-            .OrderByDescending(a => a.AwardedAt).Take(5).Select(
-                achievement => new Activity
-            {
-                ActivityName = GetMessage(achievement, true),
-                OccurredAt = achievement.AwardedAt,
-                Type = achievement.AchievementType.ToActivityType(),
-                TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
-            });
+        var allActivities = new List<Activity>();
 
-        LastSeen.ReplaceRange(recentLastSeen);
-    }
-
-    private void UpdateRecentActivitySection(IEnumerable<UserAchievementDto> achievements, IEnumerable<UserRewardDto> rewards)
-    {
-        const int takeSize = 5;
-        List<Activity> activities = [];
-
-        activities.AddRange(FilterRecentAchievements(achievements, takeSize));
-        activities.AddRange(FilterRecentRewards(rewards, takeSize));
-
-        var recentActivity = activities.OrderByDescending(a => a.OccurredAt).Take(takeSize);
-        RecentActivity.ReplaceRange(recentActivity);
-    }
-
-    private List<Activity> FilterRecentAchievements(IEnumerable<UserAchievementDto> achievementList, int takeSize)
-    {
-        List<Activity> result = [];
-        var recentAchievements = achievementList
-            .Where(a => a.AchievementType != AchievementType.Attended)
-            .OrderByDescending(a => a.AwardedAt)
-            .Take(takeSize);
-
-        result.AddRange(recentAchievements.Select(achievement => new Activity
+        if (achievements?.Count > 0)
         {
-            ActivityName = GetMessage(achievement, true),
-            OccurredAt = achievement.AwardedAt,
-            Type = achievement.AchievementType.ToActivityType(),
-            TimeElapsed = achievement.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value) : string.Empty
-        }));
+            allActivities.AddRange(achievements.Select(CreateActivityFromAchievement));
+        }
 
-        return result;
-    }
-
-    private static List<Activity> FilterRecentRewards(IEnumerable<UserRewardDto> rewardList, int takeSize)
-    {
-        List<Activity> result = [];
-        var recentRewards = rewardList
-            .Where(r => r.Awarded)
-            .OrderByDescending(r => r.AwardedAt)
-            .Take(takeSize);
-
-        result.AddRange(recentRewards.Select(reward => new Activity
+        if (rewards?.Count > 0)
         {
-            ActivityName = $"Claimed {reward.RewardName}",
-            OccurredAt = reward.AwardedAt,
-            Type = ActivityType.Claimed,
-            TimeElapsed = reward.AwardedAt != null ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value) : string.Empty
-        }));
+            allActivities.AddRange(rewards.Select(CreateActivityFromReward));
+        }
 
-        return result;
+        var sortedActivities = allActivities
+            .OrderByDescending(x => x.OccurredAt)
+            .Take(MaxActivity)
+            .ToList();
+
+        Activity.ReplaceRange(sortedActivities);
     }
+
+    private Activity CreateActivityFromAchievement(UserAchievementDto achievement) => new()
+    {
+        ActivityName = GetMessage(achievement, true),
+        OccurredAt = achievement.AwardedAt,
+        Type = achievement.AchievementType.ToActivityType(),
+        TimeElapsed = achievement.AwardedAt.HasValue
+            ? DateTimeHelpers.GetTimeElapsed(achievement.AwardedAt.Value)
+            : string.Empty
+    };
+
+    private static Activity CreateActivityFromReward(UserRewardDto reward) => new()
+    {
+        ActivityName = $"Claimed {reward.RewardName}",
+        OccurredAt = reward.AwardedAt,
+        Type = ActivityType.Claimed,
+        TimeElapsed = reward.AwardedAt.HasValue
+            ? DateTimeHelpers.GetTimeElapsed(reward.AwardedAt.Value)
+            : string.Empty
+    };
 
     public void OnDisappearing()
     {

@@ -36,10 +36,6 @@
                                      HorizontalOptions="Center"
                                      Spacing="20"
                                      Margin="20">
-                    <Image Source="camera_permission"
-                           HeightRequest="100"
-                           WidthRequest="100"
-                           HorizontalOptions="Center" />
                     <Label Text="Camera Access Required"
                            Style="{StaticResource LabelBold}"
                            FontSize="24"
