@@ -19,7 +19,7 @@
                     <MudGrid Spacing="3">
                         <MudItem xs="12">
                             <MudTooltip Text="This shows how many users got the notification out of everyone we tried to send it to. Some may not get it if they haven’t enabled notifications or their device token expired.">
-                                <MudText Typo="Typo.h6" Style="display: inline; cursor: help;">Delivery<span style="color: red;">*</span></MudText>
+                                <MudText Typo="Typo.h5" Style="display: inline; cursor: help;">Delivery*</MudText>
                             </MudTooltip>
                             <MudRadioGroup @bind-Value="@_model.DeliveryOption">
                                 <MudRadio Option="@Delivery.Now" Color="Color.Primary">Now</MudRadio>
@@ -27,26 +27,38 @@
                             </MudRadioGroup>
                         </MudItem>
 
-                        @if (_model.DeliveryOption == Delivery.Schedule)
-                        {
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudDatePicker Label="Date" @bind-Date="@_model.ScheduleDate" For="@(() => _model.ScheduleDate)" Required="true" MinDate="@DateTime.Today" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudTimePicker Label="Time" @bind-Time="@_model.ScheduleTime" For="@(() => _model.ScheduleTime)" Required="true" />
-                            </MudItem>
-                            <MudItem xs="12" sm="12" md="4">
-                                <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone" For="@(() => _model.SelectedTimeZone)" Required="true" AnchorOrigin="Origin.BottomCenter">
-                                    @foreach (var tz in _timezones)
-                                    {
-                                        <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
-                                    }
-                                </MudSelect>
-                            </MudItem>
-                        }
+                        <!-- Always visible Date/Time/Timezone; disabled when not scheduling -->
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudDatePicker Label="Date"
+                                           @bind-Date="@_model.ScheduleDate"
+                                           For="@(() => _model.ScheduleDate)"
+                                           Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                           Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
+                                           MinDate="@DateTime.Today" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudTimePicker Label="Time"
+                                           @bind-Time="@_model.ScheduleTime"
+                                           For="@(() => _model.ScheduleTime)"
+                                           Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                           Disabled="@(_model.DeliveryOption != Delivery.Schedule)" />
+                        </MudItem>
+                        <MudItem xs="12" sm="12" md="4">
+                            <MudSelect @bind-Value="@_model.SelectedTimeZone"
+                                       Label="Timezone"
+                                       For="@(() => _model.SelectedTimeZone)"
+                                       Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                       Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
+                                       AnchorOrigin="Origin.BottomCenter">
+                                @foreach (var tz in _timezones)
+                                {
+                                    <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h6" Style="display: inline; cursor: help;">Target<span style="color: red;">*</span></MudText>
+                            <MudText Typo="Typo.h5" Style="display: inline; cursor: help;">Target*</MudText>
                             <MudRadioGroup @bind-Value="@_model.TargetingOption">
                                 <MudRadio Option="@Targeting.Everyone" Color="Color.Primary">Everyone</MudRadio>
                                 <MudRadio Option="@Targeting.Achievement" Color="Color.Primary">Requires Achievement</MudRadio>
@@ -54,39 +66,36 @@
                             </MudRadioGroup>
                         </MudItem>
 
-                        @if (_model.TargetingOption == Targeting.Achievement)
-                        {
-                            <MudItem xs="12">
-                                <MudAutocomplete T="AchievementDto"
-                                                 @bind-Value="@_model.SelectedAchievement"
-                                                 Label="Required Achievement"
-                                                 AnchorOrigin="Origin.BottomCenter"
-                                                 SearchFuncWithCancel="@SearchAchievements"
-                                                 ShowProgressIndicator="true"
-                                                 ToStringFunc="@GetAchievementName"
-                                                 Clearable="true"
-                                                 ResetValueOnEmptyText="true"
-                                                 Required="true" />
-                            </MudItem>
-                        }
+                        <!-- Always visible achievement selector -->
+                        <MudItem xs="12">
+                            <MudAutocomplete T="AchievementDto"
+                                             @bind-Value="@_model.SelectedAchievement"
+                                             Label="Required Achievement"
+                                             AnchorOrigin="Origin.BottomCenter"
+                                             SearchFuncWithCancel="@SearchAchievements"
+                                             ShowProgressIndicator="true"
+                                             ToStringFunc="@GetAchievementName"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Required="@(_model.TargetingOption == Targeting.Achievement)"
+                                             Disabled="@(_model.TargetingOption != Targeting.Achievement)" />
+                        </MudItem>
 
-                        @if (_model.TargetingOption == Targeting.Role)
-                        {
-                            <MudItem xs="12">
-                                <MudAutocomplete T="RoleDto"
-                                                 @bind-Value="@_model.SelectedRole"
-                                                 Label="Role"
-                                                 SearchFunc="@SearchRoles"
-                                                 ToStringFunc="@(role => role?.Name ?? string.Empty)"
-                                                 Clearable="true"
-                                                 ResetValueOnEmptyText="true"
-                                                 Dense="true"
-                                                 Required="true" />
-                            </MudItem>
-                        }
+                        <!-- Always visible role selector -->
+                        <MudItem xs="12">
+                            <MudAutocomplete T="RoleDto"
+                                             @bind-Value="@_model.SelectedRole"
+                                             Label="Role"
+                                             SearchFunc="@SearchRoles"
+                                             ToStringFunc="@(role => role?.Name ?? string.Empty)"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Required="@(_model.TargetingOption == Targeting.Role)"
+                                             Disabled="@(_model.TargetingOption != Targeting.Role)" />
+                        </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h6" Class="mt-4">Content</MudText>
+                            <MudText Typo="Typo.h5" Class="mt-4">Content</MudText>
                         </MudItem>
 
                         <MudItem xs="12">

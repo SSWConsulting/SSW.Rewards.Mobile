@@ -60,7 +60,7 @@
                         @DateTimeFormatter.FormatLongDate(context.SentOn?.ToLocalTime())
                         break;
                     case NotificationStatus.Scheduled when context.ScheduledDate != null:
-                        @DateTimeFormatter.FormatLongDate(context.ScheduledDate?.ToLocalTime()) <span> (Scheduled)</span>
+                        <MudText Typo="Typo.body1">@DateTimeFormatter.FormatLongDate(context.ScheduledDate?.ToLocalTime())</MudText>
                         break;
                     default:
                         <span>-</span>
@@ -80,7 +80,7 @@
                 else
                 {
                     <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteNotification(context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> &nbsp; Delete
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> &nbsp;
                     </MudButton>
                 }
             </MudTd>

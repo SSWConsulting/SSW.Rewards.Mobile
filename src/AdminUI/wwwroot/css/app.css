@@ -2,6 +2,26 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px; /* Slightly larger base font */
+}
+
+/* Smokey white background for active (focused) inputs */
+:root {
+    --smokey-white: #F7F7F7;
+}
+
+/* Generic inputs */
+input:focus, textarea:focus, select:focus {
+    background-color: var(--smokey-white);
+}
+
+/* MudBlazor inputs */
+.mud-input-root:focus-within .mud-input-slot input,
+.mud-input-root:focus-within .mud-input-slot textarea,
+.mud-select:focus-within .mud-input-slot,
+.mud-select:focus-within .mud-input-slot .mud-input,
+.mud-select:focus-within .mud-input-slot input {
+    background-color: var(--smokey-white);
 }
 
 h1:focus {
