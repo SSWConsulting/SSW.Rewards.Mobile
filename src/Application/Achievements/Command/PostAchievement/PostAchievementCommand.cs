@@ -1,6 +1,7 @@
 ﻿using SSW.Rewards.Application.Achievements.Notifications;
 using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.Shared.DTOs.Achievements;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SSW.Rewards.Application.Achievements.Command.PostAchievement;
 
@@ -55,6 +56,7 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             .Where(ua => ua.UserId == userId)
             .ToListAsync(cancellationToken);
 
+        // If multiscan is disabled and user already has this achievement, return duplicate
         if (!requestedAchievement.IsMultiscanEnabled && userAchievements.Any(ua => ua.AchievementId == requestedAchievement.Id))
         {
             return new ClaimAchievementResult
@@ -128,38 +130,103 @@ public class PostAchievementCommandHandler : IRequestHandler<PostAchievementComm
             AchievementId = requestedAchievement.Id
         };
 
-        _context.UserAchievements.Add(userAchievement);
-
-        if (requestedAchievement.Type == AchievementType.Attended)
+        // For achievements with multiscan disabled, use a transaction to prevent race conditions
+        if (!requestedAchievement.IsMultiscanEnabled)
         {
-            int? milestoneAchievementId = await (requestedAchievement.Icon switch
+            using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, cancellationToken);
+            
+            try
             {
-                Icons.Puzzle when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG) 
-                    => GetAchievementId(MilestoneAchievements.AttendUG, cancellationToken),
-
-                Icons.Lightbulb when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday) 
-                    => GetAchievementId(MilestoneAchievements.AttendHackday, cancellationToken),
-
-                Icons.Lightning when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers) 
-                    => GetAchievementId(MilestoneAchievements.AttendSuperpowers, cancellationToken),
-
-                Icons.Certificate when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop) 
-                    => GetAchievementId(MilestoneAchievements.AttendWorkshop, cancellationToken),
-
-                _ => Task.FromResult<int?>(null)
-            });
-
-            if (milestoneAchievementId.HasValue)
-            {
-                _context.UserAchievements.Add(new UserAchievement
+                // Check one more time within the serializable transaction to prevent race conditions
+                var existingUserAchievement = await _context.UserAchievements
+                    .TagWithContext("TransactionDuplicateCheck")
+                    .FirstOrDefaultAsync(ua => ua.UserId == userId && ua.AchievementId == requestedAchievement.Id, cancellationToken);
+                
+                if (existingUserAchievement != null)
                 {
-                    UserId = userId,
-                    AchievementId = milestoneAchievementId.Value
-                });
+                    return new ClaimAchievementResult
+                    {
+                        viewModel = achievementModel,
+                        status = ClaimAchievementStatus.Duplicate,
+                    };
+                }
+
+                _context.UserAchievements.Add(userAchievement);
+
+                if (requestedAchievement.Type == AchievementType.Attended)
+                {
+                    int? milestoneAchievementId = await (requestedAchievement.Icon switch
+                    {
+                        Icons.Puzzle when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG) 
+                            => GetAchievementId(MilestoneAchievements.AttendUG, cancellationToken),
+
+                        Icons.Lightbulb when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday) 
+                            => GetAchievementId(MilestoneAchievements.AttendHackday, cancellationToken),
+
+                        Icons.Lightning when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers) 
+                            => GetAchievementId(MilestoneAchievements.AttendSuperpowers, cancellationToken),
+
+                        Icons.Certificate when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop) 
+                            => GetAchievementId(MilestoneAchievements.AttendWorkshop, cancellationToken),
+
+                        _ => Task.FromResult<int?>(null)
+                    });
+
+                    if (milestoneAchievementId.HasValue)
+                    {
+                        _context.UserAchievements.Add(new UserAchievement
+                        {
+                            UserId = userId,
+                            AchievementId = milestoneAchievementId.Value
+                        });
+                    }
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
             }
         }
+        else
+        {
+            // For multiscan enabled achievements, use the normal flow
+            _context.UserAchievements.Add(userAchievement);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            if (requestedAchievement.Type == AchievementType.Attended)
+            {
+                int? milestoneAchievementId = await (requestedAchievement.Icon switch
+                {
+                    Icons.Puzzle when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendUG) 
+                        => GetAchievementId(MilestoneAchievements.AttendUG, cancellationToken),
+
+                    Icons.Lightbulb when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendHackday) 
+                        => GetAchievementId(MilestoneAchievements.AttendHackday, cancellationToken),
+
+                    Icons.Lightning when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendSuperpowers) 
+                        => GetAchievementId(MilestoneAchievements.AttendSuperpowers, cancellationToken),
+
+                    Icons.Certificate when !userAchievements.Any(ua => ua.Achievement.Name == MilestoneAchievements.AttendWorkshop) 
+                        => GetAchievementId(MilestoneAchievements.AttendWorkshop, cancellationToken),
+
+                    _ => Task.FromResult<int?>(null)
+                });
+
+                if (milestoneAchievementId.HasValue)
+                {
+                    _context.UserAchievements.Add(new UserAchievement
+                    {
+                        UserId = userId,
+                        AchievementId = milestoneAchievementId.Value
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
         // Check for any other milestone achievements that the user may have reached.
         await _mediator.Publish(new UserMilestoneAchievementCheckRequested { UserId = userId }, cancellationToken);
