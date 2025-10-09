@@ -11,7 +11,7 @@ public abstract class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryP
         if (item is DependencyTelemetry dep)
         {
             // Filter SQL dependencies related to Hangfire Job Queue checks
-            if (dep is { Type: "SQL", Data: not null } && dep.Data.Contains("[HangFire].JobQueue"))
+            if (dep is { Type: "SQL", Data: not null } && dep.Data.IndexOf("[HangFire].JobQueue", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return;
             }
