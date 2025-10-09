@@ -11,7 +11,7 @@ Expert in .NET MAUI, Blazor WebAssembly, EF Core, .NET 9. Build modern cross-pla
 
 - **MAUI** (`src/MobileUI/`): iOS/Android, CommunityToolkit.Mvvm, Firebase
 - **Blazor WASM** (`src/AdminUI/`): MudBlazor, API client  
-- **API** (`src/WebAPI/`): MediatR CQRS, PostgreSQL, EF Core
+- **API** (`src/WebAPI/`): MediatR CQRS, SQL Server, EF Core
 - **Architecture**: Domain → Application → Infrastructure
 
 ## C# 13 & .NET 9
@@ -109,7 +109,7 @@ var result = sorted.ToPaginatedResult<ViewModel, Dto>(request);
 ## Testing
 
 - **Unit**: Mock services, bUnit for Blazor, SQLite in-memory for EF Core
-- **Integration**: `WebApplicationFactory`, real PostgreSQL in Docker
+- **Integration**: `WebApplicationFactory`, real SQL Server in Docker
 - **Tools**: Moq/NSubstitute, Bogus, Respawn
 
 ## Patterns
