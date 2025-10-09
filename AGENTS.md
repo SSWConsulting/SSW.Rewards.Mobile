@@ -9,7 +9,7 @@ This file provides AI agents (GitHub Copilot, Cursor, Windsurf, etc.) with essen
 - **Mobile App**: .NET MAUI (iOS & Android)
 - **Admin Portal**: Blazor WebAssembly with MudBlazor
 - **Backend API**: ASP.NET Core Web API (.NET 9)
-- **Database**: PostgreSQL with EF Core
+- **Database**: SQL Server with EF Core
 - **Authentication**: SSW.Identity (OIDC/OAuth2)
 - **Architecture**: Clean Architecture with CQRS (MediatR)
 
@@ -106,7 +106,7 @@ Application/Achievements/
 ### Backend (.NET 9)
 
 - **Framework**: ASP.NET Core 9.0, Minimal APIs
-- **ORM**: Entity Framework Core 9.0 (PostgreSQL provider)
+- **ORM**: Entity Framework Core 9.0 (SQL Server provider)
 - **CQRS**: MediatR 12.x
 - **Validation**: FluentValidation 11.x
 - **Mapping**: AutoMapper (limited use, prefer manual mapping)
@@ -137,7 +137,7 @@ Application/Achievements/
 
 ### Database
 
-- **Primary**: PostgreSQL (Azure Database for PostgreSQL)
+- **Primary**: SQL Server (Azure SQL Database)
 - **Blob Storage**: Azure Blob Storage (profile pics, assets)
 - **Caching**: Redis (distributed cache for production)
 - **Migrations**: EF Core migrations
@@ -425,7 +425,7 @@ dotnet test --collect:"XPlat Code Coverage"
 - `MediatR` (CQRS pattern)
 - `FluentValidation.AspNetCore` (validation)
 - `Microsoft.EntityFrameworkCore.Tools` (migrations)
-- `Npgsql.EntityFrameworkCore.PostgreSQL` (PostgreSQL)
+- `Microsoft.EntityFrameworkCore.SqlServer` (SQL Server)
 - `Swashbuckle.AspNetCore` (Swagger/OpenAPI)
 - `Hangfire` (background jobs)
 
@@ -518,7 +518,7 @@ When generating code for this project:
 - **CI/CD**: GitHub Actions (`.github/workflows/`)
 - **Mobile**: App Store (iOS), Play Store (Android)
 - **Web**: Azure App Service (API + Admin)
-- **Database**: Azure Database for PostgreSQL
+- **Database**: Azure SQL Database
 - **Storage**: Azure Blob Storage
 
 ---
