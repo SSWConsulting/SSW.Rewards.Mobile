@@ -51,7 +51,7 @@ public static class ConfigureServices
             {
                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                QueuePollInterval = TimeSpan.Zero,
+                QueuePollInterval = TimeSpan.FromSeconds(3),
                 UseRecommendedIsolationLevel = true,
                 DisableGlobalLocks = true
             }));

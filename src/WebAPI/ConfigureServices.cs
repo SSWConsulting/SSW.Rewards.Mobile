@@ -35,7 +35,7 @@ public static class ConfigureServices
 
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo 
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "SSW.Rewards API",
                 Version = "v1"
@@ -67,7 +67,7 @@ public static class ConfigureServices
 
         string _allowSpecificOrigins = "_AllowSpecificOrigins";
         string? AllowedOrigin = configuration[nameof(AllowedOrigin)];
-        
+
         if (string.IsNullOrWhiteSpace(AllowedOrigin))
         {
             throw new Exception("AllowedOrigin is not configured");
@@ -87,6 +87,7 @@ public static class ConfigureServices
 
         services.AddApplicationInsightsTelemetry();
         services.AddSingleton<ITelemetryInitializer, WebApiTelemetryInitializer>();
+        services.AddApplicationInsightsTelemetryProcessor<TelemetryProcessor>();
         services.Configure<TelemetryConfig>(configuration.GetSection("Telemetry"));
         services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, options) =>
         {
@@ -96,7 +97,7 @@ public static class ConfigureServices
         services.AddDistributedMemoryCache();
 
         //TODO: Remove magic string
-        services.AddAuthorization(options => 
+        services.AddAuthorization(options =>
             options.AddPolicy(Policies.MobileApp, policy => policy.RequireClaim("client_id", "ssw-rewards-mobile-app")));
 
         // Initialize UrlBlockList from configuration
