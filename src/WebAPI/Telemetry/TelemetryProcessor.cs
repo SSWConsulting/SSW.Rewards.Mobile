@@ -6,16 +6,16 @@ namespace SSW.Rewards.WebAPI.Telemetry;
 
 public class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
 {
-    private const string HangfireStagingDbIdentifier = "db-sswrewards-hangfire";
+    private const string HangfireDbIdentifier = "db-sswrewards-hangfire";
     private const string HealthOperationName = "GET /health";
 
     public void Process(ITelemetry item)
     {
         if (item is DependencyTelemetry { Type: "SQL" } dep)
         {
-            if (dep.Target?.Contains(HangfireStagingDbIdentifier, StringComparison.OrdinalIgnoreCase) == true)
+            if (dep.Target?.Contains(HangfireDbIdentifier, StringComparison.OrdinalIgnoreCase) == true)
             {
-                return; // suppress telemetry for Hangfire staging DB noise
+                return; // suppress telemetry for Hangfire DB noise
             }
 
             if (dep.Context.Operation.Name == HealthOperationName)
