@@ -4,7 +4,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace SSW.Rewards.WebAPI.Telemetry;
 
-public abstract class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
+public class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
 {
     public void Process(ITelemetry item)
     {
