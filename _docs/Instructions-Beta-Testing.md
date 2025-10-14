@@ -46,14 +46,14 @@ If you are not yet a tester but need beta access:
 * Email address
 
 ### 2. Android – Add to Play Beta
-1. Google Play Console > `SSW Rewards` > Testing > (Internal / Beta).
-2. Ensure tester email (or Google Group) is in the tester list.
+1. Google Play Console > `SSW Rewards` > Testing > Internal testing.
+2. Add tester email to the Testers list.
 3. Provide tester the opt‑in link if first time.
 
 ### 3. iOS – Add to TestFlight Group
 1. App Store Connect > Users and Access: add internal user if needed.
-2. TestFlight tab > Add tester to Internal (and/or External group if External testing enabled).
-3. After build processing finishes the tester automatically gets access (if group already has the build enabled).
+2. TestFlight tab > Add tester to internal testing group.
+3. After build processing finishes the tester automatically gets access.
 
 ## Promotion Steps (Automated)
 ### Android
