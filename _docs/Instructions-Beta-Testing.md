@@ -110,7 +110,6 @@ Gold plating:
 ## References
 - Deployment steps: `Instructions-Deployment.md`
 - Developer guidelines: `Developer_Guidelines.MD`
-- Pipeline variables: `Pipeline-Variables.md`
 - Apple TestFlight docs: https://developer.apple.com/testflight/
 - Google Play testing tracks: https://support.google.com/googleplay/android-developer/answer/9845334
 - Firebase Analytics: https://firebase.google.com/docs/analytics
