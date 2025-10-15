@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
+using MediatR;
 using SSW.Rewards.Shared.DTOs.Quizzes;
+using SSW.Rewards.Application.Notifications.Commands;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+
 public class AdminUpdateQuiz : IRequest<int>
 {
     public QuizEditDto Quiz { get; set; } = new();
@@ -10,10 +14,14 @@ public class AdminUpdateQuiz : IRequest<int>
 public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ISender _sender;
+    private readonly ILogger<AdminUpdateQuizHandler> _logger;
 
-    public AdminUpdateQuizHandler(IApplicationDbContext context)
+    public AdminUpdateQuizHandler(IApplicationDbContext context, ISender sender, ILogger<AdminUpdateQuizHandler> logger)
     {
         _context = context;
+        _sender = sender;
+        _logger = logger;
     }
 
     public async Task<int> Handle(AdminUpdateQuiz request, CancellationToken cancellationToken)
@@ -23,7 +31,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                                     .Include(q => q.Questions)
                                     .ThenInclude(r => r.Answers)
                                     .FirstAsync(x => x.Id == request.Quiz.QuizId, cancellationToken);
-        
+
         dbQuiz.Title = request.Quiz.Title;
         dbQuiz.Description = request.Quiz.Description;
         dbQuiz.LastUpdatedUtc = DateTime.UtcNow;
@@ -32,7 +40,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         dbQuiz.CarouselImage = request.Quiz.CarouselImage;
         dbQuiz.ThumbnailImage = request.Quiz.ThumbnailImage;
         dbQuiz.IsCarousel = request.Quiz.IsCarousel;
-        
+
         // loop through the incoming quiz's questions and add/update/delete them from the dbquiz
         foreach (var q in request.Quiz.Questions)
         {
@@ -42,9 +50,9 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                 dbQuiz.Questions.Add(CreateQuestion(q));
                 continue;
             }
-            
+
             var existingQuestion = dbQuiz.Questions.First(x => x.Id == q.QuestionId);
-            
+
             //Delete the question if it's marked as deleted
             //TODO: https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/773
             if (q.IsDeleted)
@@ -52,12 +60,52 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                 dbQuiz.Questions.Remove(existingQuestion);
                 continue;
             }
-            
+
             UpdateExistingQuestion(ref existingQuestion, q);
         }
         _context.Quizzes.Update(dbQuiz);
         await _context.SaveChangesAsync(cancellationToken);
+
+        await NotifyUsersIfRequestedAsync(request.Quiz, dbQuiz, cancellationToken);
         return dbQuiz.Id;
+    }
+
+    private async Task NotifyUsersIfRequestedAsync(QuizEditDto quizDto, Quiz dbQuiz, CancellationToken cancellationToken)
+    {
+        if (!quizDto.NotifyUsers)
+        {
+            return;
+        }
+
+        try
+        {
+            string title = Truncate("Updated quiz: " + dbQuiz.Title, 100);
+            string pointsText = quizDto.Points > 0 ? $" Earn {quizDto.Points} points." : string.Empty;
+            string body = Truncate($"Refresh your knowledge with {dbQuiz.Title}!{pointsText}", 250);
+
+            var command = new SendAdminNotificationCommand
+            {
+                Title = title,
+                Body = body,
+                ImageUrl = string.IsNullOrWhiteSpace(quizDto.ThumbnailImage) ? null : quizDto.ThumbnailImage
+            };
+
+            await _sender.Send(command, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to send update notification for quiz {QuizId}", dbQuiz.Id);
+        }
+    }
+
+    private static string Truncate(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
+        {
+            return value;
+        }
+
+        return value[..maxLength];
     }
 
     private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
@@ -94,7 +142,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                 existingQuestion.Answers.Add(answer);
             }
         }
-        
+
         foreach (int i in currentAnswerIds)
         {
             QuizAnswer answerToBeDeleted = existingQuestion.Answers.First(x => x.Id == i);

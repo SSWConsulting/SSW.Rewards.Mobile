@@ -13,6 +13,7 @@ public class QuizEditDto
     public int Points { get; set; }
     public Icons Icon { get; set; }
     public bool IsArchived { get; set; }
+    public bool NotifyUsers { get; set; }
     public DateTime DateCreated { get; set; }
     public IList<QuizQuestionEditDto> Questions { get; set; } = new List<QuizQuestionEditDto>();
 }
