@@ -87,6 +87,7 @@ public static class ConfigureServices
 
         services.AddApplicationInsightsTelemetry();
         services.AddSingleton<ITelemetryInitializer, WebApiTelemetryInitializer>();
+        services.AddApplicationInsightsTelemetryProcessor<TelemetryProcessor>();
         services.Configure<TelemetryConfig>(configuration.GetSection("Telemetry"));
 
         services.AddDistributedMemoryCache();
