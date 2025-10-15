@@ -30,7 +30,7 @@ The following checks must be performed on the staging environment and signed off
    * iOS build to TestFlight.
 1. Testers on those tracks receive the update automatically (no manual upload required).
 1. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
-1. For tester management and promotion specifics see [Beta Testing Guide](_docs/Instructions-Beta-Testing.md)
+1. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
 
 # High-level production dependencies
 
