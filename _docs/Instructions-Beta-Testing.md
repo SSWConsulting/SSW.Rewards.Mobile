@@ -25,14 +25,6 @@ Give developers, QA, Product Owner, and other stakeholders access to pre‑relea
 | Beta Deploy (iOS)     | Post-build success | (Pending until gate) Upload to App Store Connect  | Yes (Approve)          | TestFlight build available |
 | Prod Release          | Manual trigger     | Promotes approved beta build to Production stores | Yes (Release approval) | Public store release       |
 
-## Terminology
-
-- Internal Testing (Play Console) / Beta Track: Private track targeted by the pipeline; testers auto-update.
-- TestFlight Internal: Up to 100 members (no Apple review required) – auto-enabled by pipeline.
-- TestFlight External: Up to 10,000 testers; if pipeline configured, first build per version requires Apple beta review before external testers see it.
-- Firebase Analytics: Event & usage telemetry for mobile clients.
-- Firebase Crashlytics: Primary mobile crash reporting surface (real-time crash triage).
-
 ## Requesting Beta Access (New Users)
 
 If you are not yet a tester but need beta access:
