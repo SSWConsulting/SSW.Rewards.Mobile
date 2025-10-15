@@ -25,12 +25,12 @@ The following checks must be performed on the staging environment and signed off
 ### Mobile App
 
 1. Merge PR into main (this triggers the mobile CI/CD pipeline).
-1. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
+2. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
    * Android build to the configured Google Play beta/internal track.
    * iOS build to TestFlight.
-1. Testers on those tracks receive the update automatically (no manual upload required).
-1. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
-1. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
+3. Testers on those tracks receive the update automatically (no manual upload required).
+4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
+5. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
 
 # High-level production dependencies
 
