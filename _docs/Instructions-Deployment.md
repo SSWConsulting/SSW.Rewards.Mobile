@@ -2,7 +2,7 @@
 
 ### Web API / Infrastructure
 
-1. Merge PR into master
+1. Merge PR into main
    ![image.png](imgs/deployment-merge.png)
    **Figure: Merge Pull Request after getting approval**
 
@@ -24,9 +24,13 @@ The following checks must be performed on the staging environment and signed off
 
 ### Mobile App
 
-1. Merge PR into master
-1. Build pipelines for both Android and iOS will run and push the changes to App Center testers
-1. Get approval on the Production release to deploy to Play Store and Production
+1. Merge PR into main (this triggers the mobile CI/CD pipeline).
+2. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
+   * Android build to the configured Google Play beta/internal track.
+   * iOS build to TestFlight.
+3. Testers on those tracks receive the update automatically (no manual upload required).
+4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
+5. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
 
 # High-level production dependencies
 
