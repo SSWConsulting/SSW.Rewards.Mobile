@@ -1,7 +1,7 @@
 # Beta Testing – Mobile App (Android & iOS)
 
 ## Goal
-Give developers, QA, Product Owner, and selected external stakeholders access to pre‑release builds so we can find issues early before releasing to Production stores.
+Give developers, QA, Product Owner, and other stakeholders access to pre‑release builds so we can find issues early before releasing to Production stores.
 
 ## High-Level Flow
 1. Developer merges PR into `main`.
