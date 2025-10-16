@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
-using MediatR;
+﻿using Microsoft.Extensions.Logging;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Notifications.Commands;
 
@@ -79,9 +77,11 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
 
         try
         {
-            string title = Truncate("Updated quiz: " + dbQuiz.Title, 100);
+            string title = "Updated quiz: " + dbQuiz.Title;
             string pointsText = quizDto.Points > 0 ? $" Earn {quizDto.Points} points." : string.Empty;
-            string body = Truncate($"Refresh your knowledge with {dbQuiz.Title}!{pointsText}", 250);
+            string body = $"Refresh your knowledge with {dbQuiz.Title}!{pointsText}";
+
+            var targetUserIds = await GetActivatedUserIdsWithDeviceTokensAsync(cancellationToken);
 
             var command = new SendAdminNotificationCommand
             {
@@ -89,6 +89,14 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
                 Body = body,
                 ImageUrl = string.IsNullOrWhiteSpace(quizDto.ThumbnailImage) ? null : quizDto.ThumbnailImage
             };
+
+            if (targetUserIds.Count == 0)
+            {
+                _logger.LogWarning("No activated users with device tokens available for quiz {QuizId} update notification", dbQuiz.Id);
+                return;
+            }
+
+            command.UserIds = targetUserIds;
 
             await _sender.Send(command, cancellationToken);
         }
@@ -98,15 +106,14 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         }
     }
 
-    private static string Truncate(string value, int maxLength)
-    {
-        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
-        {
-            return value;
-        }
-
-        return value[..maxLength];
-    }
+    private async Task<List<int>> GetActivatedUserIdsWithDeviceTokensAsync(CancellationToken cancellationToken)
+        => await _context.Users
+            .Include(u => u.DeviceTokens)
+            .AsNoTracking()
+            .TagWithContext("UpdateQuiz-GetUsersWithDeviceTokens")
+            .Where(u => u.Activated && u.DeviceTokens.Any())
+            .Select(u => u.Id)
+            .ToListAsync(cancellationToken);
 
     private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
     {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
-using MediatR;
+﻿using Microsoft.Extensions.Logging;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Achievements.Common;
 using SSW.Rewards.Application.Notifications.Commands;
@@ -78,9 +76,11 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
 
         try
         {
-            string title = Truncate("New quiz: " + quiz.Title, 100);
+            string title = "New quiz: " + quiz.Title;
             string pointsText = quizDto.Points > 0 ? $" Earn {quizDto.Points} points." : string.Empty;
-            string body = Truncate($"Take the {quiz.Title} quiz today!{pointsText}", 250);
+            string body = $"Take the {quiz.Title} quiz today!{pointsText}";
+
+            var targetUserIds = await GetActivatedUserIdsWithDeviceTokensAsync(cancellationToken);
 
             var command = new SendAdminNotificationCommand
             {
@@ -88,6 +88,14 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
                 Body = body,
                 ImageUrl = string.IsNullOrWhiteSpace(quizDto.ThumbnailImage) ? null : quizDto.ThumbnailImage
             };
+
+            if (targetUserIds.Count == 0)
+            {
+                _logger.LogWarning("No activated users with device tokens available for quiz {QuizId} notification", quiz.Id);
+                return;
+            }
+
+            command.UserIds = targetUserIds;
 
             await _sender.Send(command, cancellationToken);
         }
@@ -97,15 +105,14 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         }
     }
 
-    private static string Truncate(string value, int maxLength)
-    {
-        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
-        {
-            return value;
-        }
-
-        return value[..maxLength];
-    }
+    private async Task<List<int>> GetActivatedUserIdsWithDeviceTokensAsync(CancellationToken cancellationToken)
+        => await _context.Users
+            .Include(u => u.DeviceTokens)
+            .AsNoTracking()
+            .TagWithContext("AddNewQuiz-GetUsersWithDeviceTokens")
+            .Where(u => u.Activated && u.DeviceTokens.Any())
+            .Select(u => u.Id)
+            .ToListAsync(cancellationToken);
 
     private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
