@@ -79,7 +79,7 @@
                 }
                 else
                 {
-                    <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteNotification(context.Id))">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteNotification(context.Id))" aria-label="Delete">
                         <MudIcon Icon="@Icons.Material.Filled.Delete" /> &nbsp;
                     </MudButton>
                 }
