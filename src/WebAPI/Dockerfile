@@ -1,6 +1,6 @@
 ﻿# Learn about building .NET container images:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-FROM mcr.microsoft.com/dotnet/sdk:9.0.301 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0.305 AS build
 WORKDIR /src
 COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/SSW.Rewards.Application.csproj", "src/Application/"]

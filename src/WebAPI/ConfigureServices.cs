@@ -2,6 +2,7 @@
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Infrastructure.Persistence;
@@ -22,8 +23,42 @@ public static class ConfigureServices
 
         services.AddHttpContextAccessor();
 
-        services.AddHealthChecks()
+        var healthChecksBuilder = services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
+
+        // Add Azure Blob Storage health check if connection string is configured
+        var blobConnectionString = configuration["CloudBlobProviderOptions:ContentStorageConnectionString"];
+        if (!string.IsNullOrWhiteSpace(blobConnectionString))
+        {
+            try
+            {
+                // Check if it's a connection string (contains '=') or a service URI
+                if (blobConnectionString.Contains('='))
+                {
+                    // It's a connection string - add blob storage health check
+                    healthChecksBuilder.AddAzureBlobStorage(
+                        blobConnectionString,
+                        name: "azure-blob-storage",
+                        failureStatus: HealthStatus.Degraded,
+                        tags: new[] { "storage", "blob" });
+                }
+                else if (Uri.TryCreate(blobConnectionString, UriKind.Absolute, out _))
+                {
+                    // It's a service URI - would need DefaultAzureCredential, skip health check for now
+                    // as health checks with managed identity are more complex
+                    Console.WriteLine("[HealthCheck] Blob storage configured with service URI - health check skipped (requires managed identity)");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log but don't fail startup if health check can't be added
+                Console.WriteLine($"[HealthCheck] Warning: Could not add blob storage health check: {ex.Message}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("[HealthCheck] Blob storage not configured - health check skipped");
+        }
 
         services.AddControllersWithViews(options =>
             options.Filters.Add<ApiExceptionFilterAttribute>())

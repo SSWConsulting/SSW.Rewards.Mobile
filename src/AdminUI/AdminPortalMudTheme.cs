@@ -44,6 +44,61 @@ public static class AdminPortalMudTheme
                 Error = "#f64e62",
                 Dark = "#27272f",
             },
+            Typography = new Typography()
+            {
+                Default = new Default
+                {
+                    FontSize = "1rem", // Increased from default (0.875rem)
+                },
+                Body1 = new Body1
+                {
+                    FontSize = "1.125rem", // Increased from default (1rem)
+                },
+                Body2 = new Body2
+                {
+                    FontSize = "1rem", // Increased from default (0.875rem)
+                },
+                H1 = new H1
+                {
+                    FontSize = "6.5rem", // Increased from default (6rem)
+                },
+                H2 = new H2
+                {
+                    FontSize = "4rem", // Increased from default (3.75rem)
+                },
+                H3 = new H3
+                {
+                    FontSize = "3.25rem", // Increased from default (3rem)
+                },
+                H4 = new H4
+                {
+                    FontSize = "2.375rem", // Increased from default (2.125rem)
+                },
+                H5 = new H5
+                {
+                    FontSize = "1.625rem", // Increased from default (1.5rem)
+                },
+                H6 = new H6
+                {
+                    FontSize = "1.375rem", // Increased from default (1.25rem)
+                },
+                Subtitle1 = new Subtitle1
+                {
+                    FontSize = "1.125rem", // Increased from default (1rem)
+                },
+                Subtitle2 = new Subtitle2
+                {
+                    FontSize = "1rem", // Increased from default (0.875rem)
+                },
+                Button = new Button
+                {
+                    FontSize = "1rem", // Increased from default (0.875rem)
+                },
+                Caption = new Caption
+                {
+                    FontSize = "0.875rem", // Increased from default (0.75rem)
+                }
+            }
         };
     }
 
