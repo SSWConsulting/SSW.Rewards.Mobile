@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Notifications.Commands;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
-namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+namespace SSW.Rewards.Application.Quizzes.Commands.AdminUpdateQuiz;
 
 public class AdminUpdateQuiz : IRequest<int>
 {
@@ -96,7 +96,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         }
     }
 
-    private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
+    private static void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
     {
         existingQuestion.Text = dto.Text;
 
@@ -138,7 +138,7 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
         }
     }
 
-    private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
+    private static QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {

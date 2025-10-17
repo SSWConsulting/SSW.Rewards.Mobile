@@ -1,7 +1,7 @@
 ﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
-public class AdminAddNewQuizValidator : AbstractValidator<AdminAddNewQuiz>
+public class AdminAddNewQuizValidator : AbstractValidator<AdminAddNewQuiz.AdminAddNewQuiz>
 {
     private readonly IApplicationDbContext _context;
 
@@ -42,7 +42,7 @@ public class AdminAddNewQuizValidator : AbstractValidator<AdminAddNewQuiz>
             });
     }
 
-    private async Task<bool> BeUniqueQuiz(AdminAddNewQuiz command, CancellationToken cancellationToken)
+    private async Task<bool> BeUniqueQuiz(AdminAddNewQuiz.AdminAddNewQuiz command, CancellationToken cancellationToken)
     {
         return !await _context.Quizzes
             .AnyAsync(q => !q.IsArchived && q.Title.ToLower() == command.NewQuiz.Title.ToLower(), cancellationToken);

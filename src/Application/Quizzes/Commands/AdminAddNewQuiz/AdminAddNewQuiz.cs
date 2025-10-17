@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using SSW.Rewards.Shared.DTOs.Quizzes;
 using SSW.Rewards.Application.Achievements.Common;
 using SSW.Rewards.Application.Notifications.Commands;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 
-namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+namespace SSW.Rewards.Application.Quizzes.Commands.AdminAddNewQuiz;
 
 public class AdminAddNewQuiz : IRequest<int>
 {
@@ -95,7 +95,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         }
     }
 
-    private QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
+    private static QuizQuestion CreateQuestion(QuizQuestionEditDto dto)
     {
         var dbQuestion = new QuizQuestion
         {
@@ -110,7 +110,7 @@ public class AddNewQuizCommandHandler : IRequestHandler<AdminAddNewQuiz, int>
         return dbQuestion;
     }
 
-    private Achievement CreateQuizAchievement(QuizEditDto dto)
+    private static Achievement CreateQuizAchievement(QuizEditDto dto)
     {
         return new Achievement
         {
