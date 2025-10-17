@@ -81,22 +81,12 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             string pointsText = quizDto.Points > 0 ? $" Earn {quizDto.Points} points." : string.Empty;
             string body = $"Refresh your knowledge with {dbQuiz.Title}!{pointsText}";
 
-            var targetUserIds = await GetActivatedUserIdsWithDeviceTokensAsync(cancellationToken);
-
             var command = new SendAdminNotificationCommand
             {
                 Title = title,
                 Body = body,
                 ImageUrl = string.IsNullOrWhiteSpace(quizDto.ThumbnailImage) ? null : quizDto.ThumbnailImage
             };
-
-            if (targetUserIds.Count == 0)
-            {
-                _logger.LogWarning("No activated users with device tokens available for quiz {QuizId} update notification", dbQuiz.Id);
-                return;
-            }
-
-            command.UserIds = targetUserIds;
 
             await _sender.Send(command, cancellationToken);
         }
@@ -105,15 +95,6 @@ public class AdminUpdateQuizHandler : IRequestHandler<AdminUpdateQuiz, int>
             _logger.LogError(ex, "Failed to send update notification for quiz {QuizId}", dbQuiz.Id);
         }
     }
-
-    private async Task<List<int>> GetActivatedUserIdsWithDeviceTokensAsync(CancellationToken cancellationToken)
-        => await _context.Users
-            .Include(u => u.DeviceTokens)
-            .AsNoTracking()
-            .TagWithContext("UpdateQuiz-GetUsersWithDeviceTokens")
-            .Where(u => u.Activated && u.DeviceTokens.Any())
-            .Select(u => u.Id)
-            .ToListAsync(cancellationToken);
 
     private void UpdateExistingQuestion(ref QuizQuestion existingQuestion, QuizQuestionEditDto dto)
     {
