@@ -1,0 +1,8 @@
+# Ignore chatmode markdown files to prevent auto-formatting
+.github/chatmodes/*.md
+
+# Other files to ignore
+**/bin/
+**/obj/
+*.min.js
+*.min.css

@@ -39,6 +39,7 @@ Please ensure you are following the [Developer Guidelines](https://github.com/SS
 4. [Deployment Steps](_docs/Instructions-Deployment.md)
 5. [Overview](_docs/Business.md)
 6. [Technologies & Architecture](_docs/Technologies-and-Architecture.md)
+7. [Beta Testing (Android & iOS)](_docs/Instructions-Beta-Testing.md)
 
 ### Trends and Analytics
 

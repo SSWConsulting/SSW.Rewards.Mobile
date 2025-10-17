@@ -4,16 +4,23 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace SSW.Rewards.WebAPI.Telemetry;
 
-public abstract class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
+public class TelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
 {
+    private const string HangfireDbIdentifier = "db-sswrewards-hangfire";
+    private const string HealthOperationName = "GET /health";
+
     public void Process(ITelemetry item)
     {
-        if (item is DependencyTelemetry dep)
+        if (item is DependencyTelemetry { Type: "SQL" } dep)
         {
-            // Filter SQL dependencies related to HangFire Job Queue checks
-            if (dep is { Type: "SQL", Data: not null } && dep.Data.IndexOf("[HangFire].JobQueue", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (dep.Target?.Contains(HangfireDbIdentifier, StringComparison.OrdinalIgnoreCase) == true)
             {
-                return;
+                return; // suppress telemetry for Hangfire DB noise
+            }
+
+            if (dep.Context.Operation.Name == HealthOperationName)
+            {
+                return; // suppress telemetry for health check
             }
         }
         next.Process(item);

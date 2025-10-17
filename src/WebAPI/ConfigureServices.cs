@@ -89,10 +89,6 @@ public static class ConfigureServices
         services.AddSingleton<ITelemetryInitializer, WebApiTelemetryInitializer>();
         services.AddApplicationInsightsTelemetryProcessor<TelemetryProcessor>();
         services.Configure<TelemetryConfig>(configuration.GetSection("Telemetry"));
-        services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, options) =>
-        {
-            module.EnableSqlCommandTextInstrumentation = true;
-        });
 
         services.AddDistributedMemoryCache();
 
