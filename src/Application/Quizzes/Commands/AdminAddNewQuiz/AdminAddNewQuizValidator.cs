@@ -42,7 +42,7 @@ public class AdminAddNewQuizValidator : AbstractValidator<AdminAddNewQuiz>
             });
     }
 
-    private async Task<bool> BeUniqueQuiz(Commands.AdminAddNewQuiz.AdminAddNewQuiz command, CancellationToken cancellationToken)
+    private async Task<bool> BeUniqueQuiz(AdminAddNewQuiz command, CancellationToken cancellationToken)
     {
         return !await _context.Quizzes
             .AnyAsync(q => !q.IsArchived && q.Title.ToLower() == command.NewQuiz.Title.ToLower(), cancellationToken);
