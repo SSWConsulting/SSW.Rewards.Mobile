@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Quizzes;
-using SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+using SSW.Rewards.Application.Quizzes.Commands.AdminAddNewQuiz;
+using SSW.Rewards.Application.Quizzes.Commands.AdminUpdateQuiz;
 using SSW.Rewards.Application.Quizzes.Commands.AdminUploadQuizImage;
 using SSW.Rewards.Application.Quizzes.Commands.SubmitUserQuiz;
 using SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;

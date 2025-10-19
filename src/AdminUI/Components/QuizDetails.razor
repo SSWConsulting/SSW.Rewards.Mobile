@@ -76,6 +76,10 @@
                         </ButtonTemplate>
                     </MudFileUpload>
                     <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Model.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
+                    <MudCheckBox T="bool"
+                                 Label="Notify users about this quiz"
+                                 @bind-Value="Model.NotifyUsers"
+                                 HelperText="Sends a push notification to all active users after saving." />
                 </MudItem>
             </MudGrid>
             

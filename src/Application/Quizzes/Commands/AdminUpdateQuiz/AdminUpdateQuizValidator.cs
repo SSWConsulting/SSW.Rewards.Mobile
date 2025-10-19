@@ -1,6 +1,6 @@
 ﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
-namespace SSW.Rewards.Application.Quizzes.Commands.AddNewQuiz;
+namespace SSW.Rewards.Application.Quizzes.Commands.AdminUpdateQuiz;
 public class AdminUpdateQuizValidator : AbstractValidator<AdminUpdateQuiz>
 {
     private readonly IApplicationDbContext _context;
