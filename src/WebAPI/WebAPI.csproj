@@ -24,10 +24,10 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.23.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.6" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.10" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     </ItemGroup>
 
     <ItemGroup>
