@@ -26,8 +26,9 @@ jobs:
      with:
        environment: staging
        resourceGroupName: ssw.rewards.staging
-       frontDoorProfileName: staging-rewards
-       frontDoorEndpointName: staging-rewards # CLI needs the short name without .azureedge.net
+       frontDoorResourceGroupName: ssw.rewards.prod
+       frontDoorProfileName: rewards
+       frontDoorEndpointName: staging-sswrewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: staging.rewards.ssw.com.au
      secrets: inherit
 

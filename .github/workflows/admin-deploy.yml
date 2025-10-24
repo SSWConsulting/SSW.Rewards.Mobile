@@ -7,6 +7,8 @@ on:
       resourceGroupName:
         required: true
         type: string
+      frontDoorResourceGroupName:
+        type: string
       frontDoorProfileName:
         type: string
       frontDoorEndpointName:
@@ -117,8 +119,12 @@ jobs:
       - name: Purge Azure Front Door Cache
         shell: pwsh
         run: |
+          $resourceGroup = "${{ inputs.frontDoorResourceGroupName }}"
+          if ([string]::IsNullOrEmpty($resourceGroup)) {
+            $resourceGroup = "${{ inputs.resourceGroupName }}"
+          }
           az afd endpoint purge `
-            --resource-group ${{ inputs.resourceGroupName }} `
+            --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --endpoint-name ${{ inputs.frontDoorEndpointName }} `
             --content-paths '/*' `
