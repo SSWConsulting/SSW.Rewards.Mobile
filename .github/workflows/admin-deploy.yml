@@ -113,3 +113,13 @@ jobs:
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --name ${{ inputs.frontDoorEndpointName }} `
             --content-paths '/*'
+
+      - name: Purge Azure Front Door Cache
+        shell: pwsh
+        run: |
+          az afd endpoint purge `
+            --resource-group ${{ inputs.resourceGroupName }} `
+            --profile-name ${{ inputs.frontDoorProfileName }} `
+            --endpoint-name ${{ inputs.frontDoorEndpointName }} `
+            --content-paths '/*' `
+            --domains ${{ inputs.frontDoorDomain }}
