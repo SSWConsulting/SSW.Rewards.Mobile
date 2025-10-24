@@ -101,20 +101,11 @@ jobs:
             --sas-token "${{ steps.storage.outputs.sastoken }}" `
             --delete-destination true
 
-      # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
-      - name: Install Azure CLI Extension for Front Door Classic
+      # Install Azure CLI extension for Front Door commands
+      - name: Install Azure CLI Extension for Front Door
         shell: pwsh
         run: |
           az extension add --name front-door
-
-      - name: Purge Azure CDN Cache
-        shell: pwsh
-        run: |
-          az cdn endpoint purge `
-            --resource-group ${{ inputs.resourceGroupName }} `
-            --profile-name ${{ inputs.frontDoorProfileName }} `
-            --name ${{ inputs.frontDoorEndpointName }} `
-            --content-paths '/*'
 
       - name: Purge Azure Front Door Cache
         shell: pwsh
