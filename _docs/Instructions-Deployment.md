@@ -15,19 +15,61 @@
 4. Get approval on the Production release to deploy to Production
 
 ### Sanity checks
+
 The following checks must be performed on the staging environment and signed off by another developer before deploying to staging.
 
-* Can sign into the mobile app
-* Can complete an achievement in the mobile app
-* Can purchase a reward in the mobile app
-* Can sign in to the Admin portal
+- Can sign into the mobile app
+- Can complete an achievement in the mobile app
+- Can purchase a reward in the mobile app
+- Can sign in to the Admin portal
+
+### Admin Portal CDN Cache Management
+
+The Admin Portal is deployed to Azure Storage Static Website and served through Azure Front Door for both staging and production environments.
+
+#### Important Configuration Notes
+
+- **Azure Front Door Resource Location**: Both staging and production Front Door profiles are located in the **Production resource group** (cost optimization)
+- **Automated Purge**: GitHub Actions automatically purges the Front Door cache after each deployment
+- **Manual Purge Access**: When requesting Azure staging resources access via My Access from SysAdmin, CDN purge permissions are now included
+
+#### Manual Cache Purge (if needed)
+
+If you need to manually purge the cache outside of deployment:
+
+1. Navigate to [Azure Portal - Production Resource Group](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Consulting.Prod/overview)
+2. Find the Front Door profile for the environment you need to purge
+3. Select **Endpoints** → Choose the endpoint
+4. Click **Purge** and enter `/*` to purge all cached content
+
+Alternatively, use Azure CLI:
+
+```bash
+# Purge staging Front Door cache
+az afd endpoint purge \
+  --resource-group SSW.Consulting.Prod \
+  --profile-name <staging-profile-name> \
+  --endpoint-name <staging-endpoint-name> \
+  --content-paths '/*' \
+  --domains <staging-domain>
+
+# Purge production Front Door cache
+az afd endpoint purge \
+  --resource-group SSW.Consulting.Prod \
+  --profile-name <prod-profile-name> \
+  --endpoint-name <prod-endpoint-name> \
+  --content-paths '/*' \
+  --domains <prod-domain>
+```
+
+> **Note**: Cache purge typically takes 2-5 minutes to propagate globally.
 
 ### Mobile App
 
 1. Merge PR into main (this triggers the mobile CI/CD pipeline).
 2. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
-   * Android build to the configured Google Play beta/internal track.
-   * iOS build to TestFlight.
+   - Android build to the configured Google Play beta/internal track.
+   - iOS build to TestFlight.
 3. Testers on those tracks receive the update automatically (no manual upload required).
 4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
 5. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)

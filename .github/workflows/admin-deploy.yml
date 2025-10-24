@@ -7,6 +7,8 @@ on:
       resourceGroupName:
         required: true
         type: string
+      frontDoorResourceGroupName:
+        type: string
       frontDoorProfileName:
         type: string
       frontDoorEndpointName:
@@ -99,17 +101,22 @@ jobs:
             --sas-token "${{ steps.storage.outputs.sastoken }}" `
             --delete-destination true
 
-      # [Tech-Deb] #1199 ✨ Azure | Migrate away from "Azure CDN Standard from Microsoft (classic)"
-      - name: Install Azure CLI Extension for Front Door Classic
+      # Install Azure CLI extension for Front Door commands
+      - name: Install Azure CLI Extension for Front Door
         shell: pwsh
         run: |
           az extension add --name front-door
 
-      - name: Purge Azure CDN Cache
+      - name: Purge Azure Front Door Cache
         shell: pwsh
         run: |
-          az cdn endpoint purge `
-            --resource-group ${{ inputs.resourceGroupName }} `
+          $resourceGroup = "${{ inputs.frontDoorResourceGroupName }}"
+          if ([string]::IsNullOrEmpty($resourceGroup)) {
+            $resourceGroup = "${{ inputs.resourceGroupName }}"
+          }
+          az afd endpoint purge `
+            --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
-            --name ${{ inputs.frontDoorEndpointName }} `
-            --content-paths '/*'
+            --endpoint-name ${{ inputs.frontDoorEndpointName }} `
+            --content-paths '/*' `
+            --domains ${{ inputs.frontDoorDomain }}
