@@ -14,13 +14,40 @@ input:focus, textarea:focus, select:focus {
     background-color: var(--smokey-white);
 }
 
-/* MudBlazor inputs */
-.mud-input-root:focus-within .mud-input-slot input,
-.mud-input-root:focus-within .mud-input-slot textarea,
+/* MudSelect (dropdowns) - black text on smokey white when focused */
 .mud-select:focus-within .mud-input-slot,
 .mud-select:focus-within .mud-input-slot .mud-input,
 .mud-select:focus-within .mud-input-slot input {
-    background-color: var(--smokey-white);
+    background-color: var(--smokey-white) !important;
+    color: #000000 !important;
+}
+
+.mud-select.mud-input-control-focused .mud-input-slot .mud-input-root input,
+.mud-select.mud-input-control-focused .mud-input-slot input {
+    color: #000000 !important;
+}
+
+/* MudAutocomplete (searchable dropdowns) - black text on smokey white when focused */
+.mud-autocomplete:focus-within .mud-input-slot input,
+.mud-autocomplete:focus-within .mud-input-slot .mud-input,
+.mud-autocomplete .mud-input-root:focus-within .mud-input-slot input {
+    background-color: var(--smokey-white) !important;
+    color: #000000 !important;
+}
+
+.mud-autocomplete:focus-within .mud-input-slot,
+.mud-autocomplete.mud-input-control-focused .mud-input-slot {
+    background-color: var(--smokey-white) !important;
+}
+
+.mud-autocomplete.mud-input-control-focused .mud-input-slot input {
+    color: #000000 !important;
+}
+
+/* Ensure normal state (unfocused) for dropdowns has proper styling */
+.mud-select:not(.mud-input-control-focused) .mud-input-slot input,
+.mud-autocomplete:not(.mud-input-control-focused) .mud-input-slot input {
+    background-color: transparent;
 }
 
 /* Remove red on black background */
