@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:9.0.301 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0.306 AS build
 WORKDIR /src
 COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/SSW.Rewards.Application.csproj", "src/Application/"]
@@ -8,7 +8,7 @@ COPY ["src/Common/Shared.csproj", "src/Common/"]
 COPY ["src/Infrastructure/SSW.Rewards.Infrastructure.csproj", "src/Infrastructure/"]
 RUN dotnet restore "src/AdminUI/AdminUI.csproj"
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0.301 AS development
+FROM mcr.microsoft.com/dotnet/sdk:9.0.306 AS development
 COPY . /src
 WORKDIR /src/src/AdminUI
 RUN dotnet workload update

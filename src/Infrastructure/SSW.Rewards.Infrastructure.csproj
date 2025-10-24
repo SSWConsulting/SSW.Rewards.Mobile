@@ -14,16 +14,16 @@
         <PackageReference Include="AsyncKeyedLock" Version="7.1.6" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
         <PackageReference Include="FluentEmail.Graph" Version="2.5.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.10" />
         <PackageReference Include="Microsoft.Azure.NotificationHubs" Version="4.2.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
           <!--<PrivateAssets>all</PrivateAssets>-->
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-			<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.10" />
 		<PackageReference Include="FluentEmail.Core" Version="3.0.2" />
 		<PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.12.0" />
