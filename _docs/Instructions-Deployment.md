@@ -3,16 +3,42 @@
 ### Web API / Infrastructure
 
 1. Merge PR into main
-   ![image.png](imgs/deployment-merge.png)
-   **Figure: Merge Pull Request after getting approval**
 
-2. Build pipeline will automatically run and deploy the changes into the DEV environment
-   ![image.png](imgs/deployment-successful-build.png)
-   **Figure: Wait for a successful build**
+  <p>
+    <img src="imgs/deployment-merge.png" alt="Merge Pull Request after getting approval" />
+    <br />
+    <em>Figure: Merge Pull Request after getting approval</em>
+  </p>
 
-3. Perform sanity checks (described below)
+2. Deploy to Staging via GitHub Actions (manual)
 
-4. Get approval on the Production release to deploy to Production
+   <p>
+     <img src="imgs/deployment-workflow-run-button.png" alt="Click Run workflow and select branch main" />
+     <br />
+     <em>Figure: Click "Run workflow" and select branch <code>main</code> to trigger the deployment</em>
+   </p>
+
+- Workflow: "API - Main (Build & deploy)" (`.github/workflows/api-main.yml`)
+- Approval: After code is built, you'll need to approve deployment to staging and later to production
+- Note: Sometimes when running Web API and Admin Portal deployment, one of them might fail because Azure is busy due to infra deployment. Just re-run deployment.
+
+   <p>
+     <img src="imgs/deployment-workflow-waiting-approval.png" alt="Workflow waiting for production approval" />
+     <br />
+     <em>Figure: After successful build and staging deploy, the workflow waits for approval to deploy to production</em>
+   </p>
+
+   <p>
+     <img src="imgs/deployment-review-approval-dialog.png" alt="Review pending deployments dialog with Approve and deploy" />
+     <br />
+     <em>Figure: Click "Approve and deploy" to promote to the production environment</em>
+   </p>
+
+3. Perform sanity checks on Staging (see Sanity checks section below)
+
+4. Promote to Production
+
+- Approve the Production gate in the same workflow run (manual approval required)
 
 ### Sanity checks
 
@@ -23,6 +49,19 @@ The following checks must be performed on the staging environment and signed off
 - Can purchase a reward in the mobile app
 - Can sign in to the Admin portal
 
+### Admin Portal
+
+1. Merge PR into main
+2. Deploy to Staging via GitHub Actions (manual)
+
+- Workflow: "Admin - Main (Build & Deploy)"
+- YAML: `.github/workflows/admin-main.yml`
+- Trigger: Manual from the Actions tab → Run workflow → branch `main` → environment `Staging`
+- Note: This workflow deploys the Admin application and related infrastructure (e.g., Storage Static Website, Azure Front Door configuration). Running this at the same time as the API deployment to the same environment might cause one to fail. If that happens, just re-run the failed deployment.
+
+3. Perform sanity checks (Admin login, navigation, notifications UI where relevant)
+4. Promote to Production (manual approval required in the workflow)
+
 ### Admin Portal CDN Cache Management
 
 The Admin Portal is deployed to Azure Storage Static Website and served through Azure Front Door for both staging and production environments.
@@ -31,48 +70,30 @@ The Admin Portal is deployed to Azure Storage Static Website and served through 
 
 - **Azure Front Door Resource Location**: Both staging and production Front Door profiles are located in the **Production resource group** (cost optimization)
 - **Automated Purge**: GitHub Actions automatically purges the Front Door cache after each deployment
-- **Manual Purge Access**: When requesting Azure staging resources access via My Access from SysAdmin, CDN purge permissions are now included
 
-#### Manual Cache Purge (if needed)
-
-If you need to manually purge the cache outside of deployment:
-
-1. Navigate to [Azure Portal - Production Resource Group](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Consulting.Prod/overview)
-2. Find the Front Door profile for the environment you need to purge
-3. Select **Endpoints** → Choose the endpoint
-4. Click **Purge** and enter `/*` to purge all cached content
-
-Alternatively, use Azure CLI:
-
-```bash
-# Purge staging Front Door cache
-az afd endpoint purge \
-  --resource-group SSW.Consulting.Prod \
-  --profile-name <staging-profile-name> \
-  --endpoint-name <staging-endpoint-name> \
-  --content-paths '/*' \
-  --domains <staging-domain>
-
-# Purge production Front Door cache
-az afd endpoint purge \
-  --resource-group SSW.Consulting.Prod \
-  --profile-name <prod-profile-name> \
-  --endpoint-name <prod-endpoint-name> \
-  --content-paths '/*' \
-  --domains <prod-domain>
-```
-
-> **Note**: Cache purge typically takes 2-5 minutes to propagate globally.
+For manual purge steps and access notes, see Deployment Troubleshooting → [Admin Portal CDN Cache](Instructions-Deployment-Troubleshooting.md#admin-portal-cdn-cache).
 
 ### Mobile App
 
-1. Merge PR into main (this triggers the mobile CI/CD pipeline).
+1. Merge PR into main (automatic mobile pipeline trigger when mobile app files change)
+
+- Workflow: "Mobile - Main (Build & Deploy)"
+- YAML: `.github/workflows/mobile-main.yml`
+- Trigger: Automatic on changes to the mobile app in `main`
+
 2. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
    - Android build to the configured Google Play beta/internal track.
    - iOS build to TestFlight.
 3. Testers on those tracks receive the update automatically (no manual upload required).
 4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
 5. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
+
+### Build & Test (no deployment)
+
+- Workflow: "Build and Test"
+- YAML: `.github/workflows/build-and-test.yml`
+- Trigger: Automatic on PRs and pushes
+- Purpose: Builds Mobile, Admin, and Web API; runs tests; does not deploy
 
 # High-level production dependencies
 
@@ -142,3 +163,39 @@ classDef service      fill:#1e1e1e,stroke:#d50000,stroke-width:1,color:#fff;
 class Azure,External clusterStyle;
 class AdminUI,MobileApp,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGPT,NotificationHub service;
 ```
+
+## GitHub Actions – Workflow details (at a glance)
+
+Use these from GitHub → Actions tab. Where noted, Production requires manual approval.
+
+⚠️ Caution: The Admin Portal workflow deploys infrastructure. Do not run Admin and API deployments to the same environment at the same time. Run them sequentially to avoid resource locks or configuration conflicts.
+
+- Admin Portal
+
+  - Workflow: "Admin - Main (Build & Deploy)" → Staging/Prod
+  - File: `.github/workflows/admin-main.yml`
+  - Trigger: Manual (Run workflow on `main`)
+
+- Web API
+
+  - Workflow: "API - Main (Build & deploy)" → Staging/Prod
+  - File: `.github/workflows/api-main.yml`
+  - Trigger: Manual (Run workflow on `main`)
+
+- Mobile
+
+  - Workflow: "Mobile - Main (Build & Deploy)" → Beta build (prod APIs) / Production
+  - File: `.github/workflows/mobile-main.yml`
+  - Trigger: Automatic (on `main` when mobile app changes)
+
+- Build & Test (no deployment)
+  - Workflow: "Build and Test"
+  - File: `.github/workflows/build-and-test.yml`
+  - Trigger: Automatic (PRs and pushes)
+
+How to run (manual workflows):
+
+1. Open GitHub → Actions → pick the workflow above
+2. Click "Run workflow" → select branch `main`
+3. Choose environment (Staging or Production)
+4. Approve gates when prompted (Production requires manual approval)
