@@ -34,7 +34,7 @@
      <em>Figure: Click "Approve and deploy" to promote to the production environment</em>
    </p>
 
-3. Perform sanity checks on Staging (see checklist below)
+3. Perform sanity checks on Staging (see Sanity checks section below)
 
 4. Promote to Production
 
