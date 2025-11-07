@@ -88,7 +88,7 @@ public partial class SendNotification
 
             var impactedUsers = await NotificationsService.GetNumberOfImpactedUsers(command, CancellationToken.None);
             var deliveryTime = _model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue
-                ? $"at {DateTimeFormatter.FormatLongDate(_model.ScheduleDate.Value)}"
+                ? $"at {DateTimeFormatter.FormatLongDate(DateTime.SpecifyKind((_model.ScheduleDate.Value.Date + _model.ScheduleTime.Value), DateTimeKind.Utc))} ({_model.SelectedTimeZone})"
                 : "immediately";
 
             RenderFragment confirmationContent = builder =>
@@ -101,8 +101,8 @@ public partial class SendNotification
                 builder.AddMarkupContent(5, "<p>Are you sure you want to continue?</p>");
                 builder.CloseElement();
             };
-            
-            string confirmationText = $"{(_model.DeliveryOption == Delivery.Now ? "Send" : "Schedule")} Notification"; 
+
+            string confirmationText = $"{(_model.DeliveryOption == Delivery.Now ? "Send" : "Schedule")} Notification";
             var parameters = new DialogParameters
             {
                 { "Content", confirmationContent },
