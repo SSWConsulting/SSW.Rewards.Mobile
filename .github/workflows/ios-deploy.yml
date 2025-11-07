@@ -12,7 +12,7 @@ on:
 jobs:
   deploy-ios:
     name: Deploy iOS to TestFlight
-    runs-on: macos-15
+    runs-on: macos-26
     environment: ${{ inputs.environment }}
     steps:
       - name: Download artifact
