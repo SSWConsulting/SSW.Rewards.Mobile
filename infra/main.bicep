@@ -131,4 +131,13 @@ module notificationhub 'modules/notificationhub.bicep' = {
   }
 }
 
+module loadTesting 'modules/loadtesting.bicep' = {
+  name: 'lt-${now}'
+  params: {
+    projectName: projectName
+    environment: environment
+    location: location
+  }
+}
+
 output appServiceName string = appService.outputs.appServiceName
