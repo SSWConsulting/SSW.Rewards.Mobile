@@ -204,26 +204,26 @@
             _hasErrorsOnUpdate = false;
             
             // Calculate total pages based on users with points only
-            // We need to count how many users in total have points > 0 for this filter
-            // The API returns total count in result.Count, but we need to check if we're showing all users with points
             var usersWithPointsOnPage = result.Items.Count(u => u.Points > 0);
             
-            // If we have users with 0 points on this page, we've reached the last page
-            if (usersWithPointsOnPage < result.Items.Count())
+            // If this page has users with 0 points or fewer users than page size, we've found the boundary
+            if (usersWithPointsOnPage < _defaultPageSize || usersWithPointsOnPage < result.Items.Count())
             {
-                // Calculate total users with points across all previous pages plus this page
+                // Calculate exact total: all previous pages (full) + users with points on this page
                 var totalUsersWithPoints = (state.Page * _defaultPageSize) + usersWithPointsOnPage;
-                _totalPages = totalUsersWithPoints > 0 
-                    ? (int)Math.Ceiling((double)totalUsersWithPoints / _defaultPageSize) 
-                    : 1;
+                _totalPages = Math.Max(1, (int)Math.Ceiling((double)totalUsersWithPoints / _defaultPageSize));
+            }
+            else if (usersWithPointsOnPage == _defaultPageSize && result.Items.Count() == _defaultPageSize)
+            {
+                // This page is full of users with points, there might be more pages
+                // We'll know the exact count when we hit a page with 0-point users or incomplete page
+                // For now, assume at least one more page exists
+                _totalPages = state.Page + 2; // Current page + at least one more
             }
             else
             {
-                // We haven't reached users with 0 points yet, so calculate based on total
-                // This assumes all users up to result.Count might have points
-                _totalPages = result.Count > 0 
-                    ? (int)Math.Ceiling((double)result.Count / _defaultPageSize) 
-                    : 1;
+                // Fallback: at least the current page
+                _totalPages = Math.Max(1, state.Page + 1);
             }
             
             _lastTableCache = new() { TotalItems = result.Count, Items = result.Items };
