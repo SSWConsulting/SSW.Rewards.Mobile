@@ -82,6 +82,9 @@
     </style>
     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.25rem;">
         <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-2" Style="height: 60px; margin: 0 auto; display: block;" />
+        <MudText Typo="Typo.subtitle1" Style="color: #ccc; text-align: center; margin-top: 0.5rem;">
+            Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
+        </MudText>
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
         <div style="width: 600px; max-width: 100%;">
@@ -95,11 +98,11 @@
     </div>
     <div style="display: flex; justify-content: center;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;">
+            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;" RowsPerPage="@_defaultPageSize">
                 <HeaderContent>
                     <MudTh Style="width: 80px; text-align: center;">Rank</MudTh>
                     <MudTh Style="width: 320px;">Name</MudTh>
-                    <MudTh Style="width: 160px; text-align: center;">Total Points</MudTh>
+                    <MudTh Style="width: 160px; text-align: center;">Points</MudTh>
                 </HeaderContent>
                 <RowTemplate Context="row">
                     <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
@@ -113,25 +116,22 @@
                             }
                         </div>
                     </MudTd>
-                    <MudTd Style="width: 160px; text-align: center;" DataLabel="Points">@row.Points</MudTd>
+                    <MudTd Style="width: 160px; text-align: center;" DataLabel="Points">@row.Points.ToString("N0")</MudTd>
                 </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="@_pageSizeOptions" />
-                </PagerContent>
             </MudTable>
         </div>
     </div>
     @if (!_hasErrorsOnUpdate)
     {
         <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
-            Last updated: @(_lastUpdated != null ? _lastUpdated?.ToString("dd MMMM yyyy HH:mm") : "never")
+            Last updated: @GetLastUpdatedText() | Next refresh in: @_secondsUntilRefresh seconds
         </div>
     }
     else
     {
         <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
-            ⚠️ We couldn't refresh the leaderboard. Retrying in 1 min.<br />
-            Last updated: @(_lastUpdated != null ? _lastUpdated?.ToString("dd MMMM yyyy HH:mm") : "never")
+            ⚠️ We couldn't refresh the leaderboard. Retrying in @_secondsUntilRefresh seconds.<br />
+            Last updated: @GetLastUpdatedText()
         </div>
     }
 </MudPaper>
@@ -140,10 +140,16 @@
     private MudTable<MobileLeaderboardUserDto> table;
     private LeaderboardFilter _selectedFilter = LeaderboardFilter.ThisWeek;
     private int _activeTabIndex = 0;
-    private readonly int[] _pageSizeOptions = new[] { 10, 25, 50, 100, 250 };
+    private readonly int[] _pageSizeOptions = new[] { 30, 50, 100 };
+    private int _defaultPageSize = 30;
     private System.Timers.Timer? _refreshTimer;
+    private System.Timers.Timer? _countdownTimer;
+    private System.Timers.Timer? _scrollTimer;
     private DateTime? _lastUpdated;
     private bool _hasErrorsOnUpdate = false;
+    private int _secondsUntilRefresh = 60;
+    private int _currentPage = 0;
+    private int _totalPages = 0;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
 
@@ -151,19 +157,75 @@
     {
         await LoadLeaderboard();
 
+        // Refresh data every 60 seconds
         _refreshTimer = new System.Timers.Timer(60000); // 1 minute
-        _refreshTimer.Elapsed += async (_, __) => await InvokeAsync(LoadLeaderboard);
+        _refreshTimer.Elapsed += async (_, __) => await InvokeAsync(async () =>
+        {
+            _secondsUntilRefresh = 60;
+            await LoadLeaderboard();
+        });
         _refreshTimer.AutoReset = true;
         _refreshTimer.Start();
+
+        // Update countdown every second
+        _countdownTimer = new System.Timers.Timer(1000); // 1 second
+        _countdownTimer.Elapsed += async (_, __) => await InvokeAsync(() =>
+        {
+            if (_secondsUntilRefresh > 0)
+                _secondsUntilRefresh--;
+            StateHasChanged();
+        });
+        _countdownTimer.AutoReset = true;
+        _countdownTimer.Start();
+
+        // Auto-scroll through pages every 10 seconds
+        _scrollTimer = new System.Timers.Timer(10000); // 10 seconds
+        _scrollTimer.Elapsed += async (_, __) => await InvokeAsync(() =>
+        {
+            if (_totalPages > 1)
+            {
+                _currentPage = (_currentPage + 1) % _totalPages;
+                if (table != null)
+                {
+                    table.NavigateTo(_currentPage);
+                }
+            }
+        });
+        _scrollTimer.AutoReset = true;
+        _scrollTimer.Start();
     }
 
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
     {
         try
         {
-            var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, state.PageSize, _selectedFilter, CancellationToken.None);
+            var result = await leaderboardService.GetMobilePaginatedLeaderboard(state.Page, _defaultPageSize, _selectedFilter, CancellationToken.None);
             _lastUpdated = DateTime.Now;
             _hasErrorsOnUpdate = false;
+            
+            // Calculate total pages based on users with points only
+            // We need to count how many users in total have points > 0 for this filter
+            // The API returns total count in result.Count, but we need to check if we're showing all users with points
+            var usersWithPointsOnPage = result.Items.Count(u => u.Points > 0);
+            
+            // If we have users with 0 points on this page, we've reached the last page
+            if (usersWithPointsOnPage < result.Items.Count())
+            {
+                // Calculate total users with points across all previous pages plus this page
+                var totalUsersWithPoints = (state.Page * _defaultPageSize) + usersWithPointsOnPage;
+                _totalPages = totalUsersWithPoints > 0 
+                    ? (int)Math.Ceiling((double)totalUsersWithPoints / _defaultPageSize) 
+                    : 1;
+            }
+            else
+            {
+                // We haven't reached users with 0 points yet, so calculate based on total
+                // This assumes all users up to result.Count might have points
+                _totalPages = result.Count > 0 
+                    ? (int)Math.Ceiling((double)result.Count / _defaultPageSize) 
+                    : 1;
+            }
+            
             _lastTableCache = new() { TotalItems = result.Count, Items = result.Items };
         }
         catch (Exception ex)
@@ -179,6 +241,7 @@
     {
         if (table != null)
         {
+            _currentPage = 0;
             await table.ReloadServerData();
         }
     }
@@ -198,6 +261,23 @@
         await LoadLeaderboard();
     }
 
+    private string GetLastUpdatedText()
+    {
+        if (_lastUpdated == null)
+            return "never";
+
+        var timeSpan = DateTime.Now - _lastUpdated.Value;
+        
+        if (timeSpan.TotalSeconds < 60)
+            return $"{(int)timeSpan.TotalSeconds} seconds ago";
+        else if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} ago";
+        else if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} ago";
+        else
+            return _lastUpdated.Value.ToString("dd MMMM yyyy HH:mm");
+    }
+
     public void Dispose()
     {
         if (_refreshTimer != null)
@@ -205,6 +285,20 @@
             _refreshTimer.Stop();
             _refreshTimer.Dispose();
             _refreshTimer = null;
+        }
+        
+        if (_countdownTimer != null)
+        {
+            _countdownTimer.Stop();
+            _countdownTimer.Dispose();
+            _countdownTimer = null;
+        }
+        
+        if (_scrollTimer != null)
+        {
+            _scrollTimer.Stop();
+            _scrollTimer.Dispose();
+            _scrollTimer = null;
         }
     }
 }
