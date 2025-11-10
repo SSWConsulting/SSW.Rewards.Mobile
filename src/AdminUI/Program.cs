@@ -73,7 +73,19 @@ public class Program
 
             options.ProviderOptions.ResponseType = "code";
         })
+#if !DEBUG
+        // PRODUCTION: Use standard RolesClaimsPrincipalFactory that processes JWT role claims only
         .AddAccountClaimsPrincipalFactory<RolesClaimsPrincipalFactory>();
+#else
+        // DEBUG: Use WebRolesClaimsPrincipalFactory to fetch roles from database
+        // This is a workaround for SSW.Identity limitation where @ssw.com.au email addresses
+        // don't receive proper role claims in JWT tokens. This needs to be fixed in SSW.Identity.
+        // See: WebRolesClaimsPrincipalFactory.cs for detailed documentation.
+        .AddAccountClaimsPrincipalFactory<WebRolesClaimsPrincipalFactory>();
+        
+        Console.WriteLine("[DEBUG] Using WebRolesClaimsPrincipalFactory - roles will be fetched from database");
+        Console.WriteLine("[DEBUG] This is a workaround for only @ssw.com.au email getting proper roles assigned");
+#endif
 
         await builder.Build().RunAsync();
     }

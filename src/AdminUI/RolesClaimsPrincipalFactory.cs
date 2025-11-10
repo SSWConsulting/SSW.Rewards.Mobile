@@ -5,8 +5,14 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 
 namespace SSW.Rewards.Admin.UI;
 
-// SSW.Identity currently returns roles as a string array.
-// This is here because of this https://github.com/dotnet/aspnetcore/issues/21836
+/// <summary>
+/// Claims principal factory for production use that processes JWT role claims.
+/// SSW.Identity returns roles as a string array, which requires special handling.
+/// See: https://github.com/dotnet/aspnetcore/issues/21836
+/// 
+/// For local development with @ssw.com.au emails, use WebRolesClaimsPrincipalFactory instead,
+/// which fetches roles from the database to work around SSW.Identity limitations.
+/// </summary>
 public class RolesClaimsPrincipalFactory : AccountClaimsPrincipalFactory<RemoteUserAccount>
 {
     public RolesClaimsPrincipalFactory(IAccessTokenProviderAccessor accessor) : base(accessor)
