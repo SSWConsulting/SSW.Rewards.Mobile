@@ -39,6 +39,7 @@ tests/tmp/
 ## 🚀 Quick Start
 
 1. **Create a new test file** in this folder:
+
    ```bash
    touch tests/tmp/my-test.spec.ts
    ```
@@ -46,6 +47,7 @@ tests/tmp/
 2. **Copy the example structure** from `example-disposable.spec.ts`
 
 3. **Run your test**:
+
    ```bash
    npx playwright test tests/tmp/my-test.spec.ts --headed
    ```
@@ -100,22 +102,24 @@ This folder is perfect for AI-assisted development:
 ## 🎓 Example Use Cases
 
 ### Debugging a Specific Element
+
 ```typescript
 // tests/tmp/debug-autocomplete.spec.ts
-test('debug autocomplete dropdown', async ({ page }) => {
-  await page.goto('https://localhost:7137/send-notification');
-  const input = page.getByTestId('target-achievement');
+test("debug autocomplete dropdown", async ({ page }) => {
+  await page.goto("https://localhost:7137/send-notification");
+  const input = page.getByTestId("target-achievement");
   await input.click();
-  await input.fill('test');
-  await page.screenshot({ path: 'screenshots/autocomplete-debug.png' });
+  await input.fill("test");
+  await page.screenshot({ path: "screenshots/autocomplete-debug.png" });
 });
 ```
 
 ### Capturing Multiple Screenshots
+
 ```typescript
 // tests/tmp/screenshot-all-pages.spec.ts
-test('capture all admin pages', async ({ page }) => {
-  const pages = ['/users', '/achievements', '/notifications'];
+test("capture all admin pages", async ({ page }) => {
+  const pages = ["/users", "/achievements", "/notifications"];
   for (const route of pages) {
     await page.goto(`https://localhost:7137${route}`);
     await page.screenshot({ path: `screenshots/${route.slice(1)}.png` });
@@ -124,19 +128,20 @@ test('capture all admin pages', async ({ page }) => {
 ```
 
 ### Testing New Selector
+
 ```typescript
 // tests/tmp/test-new-selector.spec.ts
-test('find the right selector', async ({ page }) => {
-  await page.goto('https://localhost:7137/send-notification');
-  
+test("find the right selector", async ({ page }) => {
+  await page.goto("https://localhost:7137/send-notification");
+
   // Try different selectors
-  const selector1 = page.locator('.mud-input-slot');
-  const selector2 = page.getByTestId('notification-title');
+  const selector1 = page.locator(".mud-input-slot");
+  const selector2 = page.getByTestId("notification-title");
   const selector3 = page.locator('input[aria-label*="title"]');
-  
-  console.log('Selector 1 count:', await selector1.count());
-  console.log('Selector 2 count:', await selector2.count());
-  console.log('Selector 3 count:', await selector3.count());
+
+  console.log("Selector 1 count:", await selector1.count());
+  console.log("Selector 2 count:", await selector2.count());
+  console.log("Selector 3 count:", await selector3.count());
 });
 ```
 

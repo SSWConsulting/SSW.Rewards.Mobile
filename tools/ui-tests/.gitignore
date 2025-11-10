@@ -6,6 +6,9 @@ test-results/
 playwright-report/
 playwright/.cache/
 
+# Disposable/temporary tests (for experimentation)
+tests/tmp/
+
 # Screenshots (generated during tests)
 screenshots/
 

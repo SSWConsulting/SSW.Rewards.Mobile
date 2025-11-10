@@ -45,6 +45,8 @@ SSW.Rewards.Mobile/
 │   ├── Application.UnitTests/
 │   ├── Application.IntegrationTests/
 │   └── WebAPI.IntegrationTests/
+├── tools/
+│   └── ui-tests/             # Playwright UI tests for AdminUI
 ├── infra/                    # Bicep IaC templates
 └── _docs/                    # Project documentation
 ```
@@ -393,7 +395,7 @@ docker compose logs -f rewards-webapi
 ### Testing Strategy
 
 ```bash
-# Run all tests
+# Run all backend tests
 dotnet test
 
 # Run specific test project
@@ -401,6 +403,10 @@ dotnet test tests/Application.UnitTests/Application.UnitTests.csproj
 
 # With coverage
 dotnet test --collect:"XPlat Code Coverage"
+
+# Run AdminUI Playwright tests (non-destructive UI verification)
+cd tools/ui-tests
+npx playwright test
 ```
 
 **Testing tools**:
@@ -408,6 +414,85 @@ dotnet test --collect:"XPlat Code Coverage"
 - **Unit**: NUnit, FluentAssertions, Moq
 - **Integration**: `WebApplicationFactory<Program>`, TestContainers
 - **Data**: Bogus (fake data generation), Respawn (DB cleanup)
+- **UI**: Playwright (AdminUI end-to-end tests)
+
+### UI Testing (AdminUI)
+
+**Location**: `tools/ui-tests/`
+
+Playwright-based UI testing suite for AdminUI verification:
+
+```bash
+# Quick CSS verification
+cd tools/ui-tests
+npx playwright test dom-inspection.spec.ts --grep "CSS"
+
+# Run all tests (9 tests, ~10 seconds)
+npx playwright test
+
+# Run with UI visible (headed mode)
+npx playwright test --headed
+
+# Debug specific test
+npx playwright test --debug
+```
+
+**Test Categories**:
+
+- **Authentication** (3 tests): Login flow, session persistence, protected pages
+- **DOM Inspection** (3 tests): Page structure, CSS variables, MudBlazor components
+- **Form Interactions** (4 tests): Validation, population, conditional fields, screenshots
+- **Disposable Tests** (`tests/tmp/`): Temporary/experimental tests (gitignored)
+
+**Key Features**:
+
+- ✅ Non-destructive (never creates data)
+- ✅ Fast execution (~10s for full suite)
+- ✅ AI-friendly console output
+- ✅ Screenshot capture on failure
+- ✅ Saved authentication session (no repeated logins)
+- ✅ Disposable test folder for experimentation (not committed to git)
+
+**Documentation**:
+
+- `tools/ui-tests/README.md` - Complete guide
+- `tools/ui-tests/AI-QUICK-REFERENCE.md` - Quick commands for AI verification
+- `tools/ui-tests/SUMMARY.md` - Setup summary and test results
+- `tools/ui-tests/tests/tmp/README.md` - Guide for disposable tests
+
+**Common Use Cases**:
+
+```bash
+# Verify CSS changes after AdminUI updates
+npx playwright test dom-inspection.spec.ts --grep "CSS"
+
+# Test form behavior
+npx playwright test form-interactions.spec.ts
+
+# Verify authentication still works
+npx playwright test auth.verify.spec.ts
+
+# Create disposable test for quick debugging (gitignored)
+npx playwright test tests/tmp/my-debug.spec.ts --headed
+```
+
+**Disposable Tests for AI**:
+
+```bash
+# Create temporary test in gitignored folder
+cd tools/ui-tests
+cat > tests/tmp/ai-verify.spec.ts << 'EOF'
+import { test } from '@playwright/test';
+test.use({ storageState: '.auth/user.json' });
+test('quick verification', async ({ page }) => {
+  await page.goto('https://localhost:7137/your-page');
+  await page.screenshot({ path: 'screenshots/verify.png' });
+});
+EOF
+
+# Run and delete (it's gitignored anyway)
+npx playwright test tests/tmp/ai-verify.spec.ts --headed
+```
 
 ## 🔒 Authentication & Security
 
