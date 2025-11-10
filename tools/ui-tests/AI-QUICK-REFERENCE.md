@@ -54,6 +54,52 @@ npx playwright test dom-inspection.spec.ts --grep "page structure"
 **Output**: Lists all sections, inputs, buttons on SendNotification page  
 **Use for**: Getting page overview
 
+### 6. Create Disposable Test for Quick Debugging
+
+```bash
+cd tools/ui-tests
+npx playwright test tests/tmp/example-disposable.spec.ts --headed
+```
+
+**Output**: Runs temporary test examples  
+**Use for**: Learning, experimentation, one-off debugging
+
+## 🧪 Disposable Tests (Recommended for AI)
+
+**Folder**: `tests/tmp/` (gitignored - won't be committed)
+
+```bash
+# Create quick debugging test
+cat > tests/tmp/ai-debug.spec.ts << 'EOF'
+import { test } from '@playwright/test';
+test.use({ storageState: '.auth/user.json' });
+
+test('AI quick verification', async ({ page }) => {
+  await page.goto('https://localhost:7137/send-notification');
+  await page.waitForLoadState('networkidle');
+
+  // Your debugging code here
+  await page.screenshot({ path: 'screenshots/ai-debug.png', fullPage: true });
+  console.log('✅ Screenshot captured');
+});
+EOF
+
+# Run it
+npx playwright test tests/tmp/ai-debug.spec.ts --headed
+
+# Clean up (optional - it's gitignored anyway)
+rm tests/tmp/ai-debug.spec.ts
+```
+
+**Benefits**:
+
+- ✅ No git pollution (tests aren't committed)
+- ✅ Fast iteration (create, test, delete)
+- ✅ Perfect for AI-generated tests
+- ✅ Ideal for one-off verifications
+
+**See**: `tests/tmp/README.md` for more examples
+
 ## 🐛 Debugging Commands
 
 ### See Tests Run Live
