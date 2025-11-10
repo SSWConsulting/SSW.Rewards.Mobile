@@ -22,6 +22,12 @@ public partial class QuizPage
         await _viewModel.Initialise();
         await Animate();
     }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.OnDisappearing();
+    }
     
     private async Task Animate()
     {
