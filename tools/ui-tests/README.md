@@ -19,7 +19,10 @@ tools/ui-tests/
 │   ├── auth.setup.ts              # Authentication setup (run once)
 │   ├── auth.verify.spec.ts        # Verify authentication is working
 │   ├── dom-inspection.spec.ts     # DOM structure and CSS verification
-│   └── form-interactions.spec.ts  # Non-destructive form testing
+│   ├── form-interactions.spec.ts  # Non-destructive form testing
+│   └── tmp/                       # Disposable tests (gitignored)
+│       ├── README.md              # Guide for disposable tests
+│       └── example-disposable.spec.ts  # Example temporary test
 ├── screenshots/                    # Test screenshots (gitignored)
 ├── .auth/                         # Authentication state (gitignored)
 ├── .env                           # Environment variables (gitignored)
@@ -153,7 +156,31 @@ npx playwright test form-interactions.spec.ts
 
 **Non-destructive**: These tests fill forms but **never submit** them.
 
-## 🤖 AI-Driven UI Verification Guide
+## � Disposable Tests (`tests/tmp/`)
+
+**Purpose**: Temporary tests for experimentation and debugging.
+
+The `tests/tmp/` folder is gitignored for disposable/temporary tests:
+
+```bash
+# Create a quick debugging test
+npx playwright test tests/tmp/my-debug.spec.ts --headed
+
+# Run example disposable test
+npx playwright test tests/tmp/example-disposable.spec.ts
+```
+
+**Use cases**:
+
+- 🔬 Experimenting with new test approaches
+- 🐛 Debugging specific UI issues
+- 📸 Capturing screenshots for bug reports
+- 📚 Learning Playwright syntax
+- ⚡ Quick one-off verifications
+
+**See**: `tests/tmp/README.md` for detailed guide on disposable tests
+
+## �🤖 AI-Driven UI Verification Guide
 
 ### Quick CSS Verification
 
@@ -170,6 +197,28 @@ npx playwright test dom-inspection.spec.ts --headed
 # Expected: background: rgb(247, 247, 247), color: rgb(0, 0, 0)
 ```
 
+### Create Disposable Test for Quick Debugging
+
+```bash
+# Create a temporary test file
+cat > tests/tmp/debug-issue.spec.ts << 'EOF'
+import { test } from '@playwright/test';
+test.use({ storageState: '.auth/user.json' });
+
+test('debug specific issue', async ({ page }) => {
+  await page.goto('https://localhost:7137/send-notification');
+  await page.screenshot({ path: 'screenshots/debug.png' });
+  console.log('Debug screenshot captured');
+});
+EOF
+
+# Run it
+npx playwright test tests/tmp/debug-issue.spec.ts --headed
+
+# Delete when done (it's gitignored anyway!)
+rm tests/tmp/debug-issue.spec.ts
+```
+
 ### Verify Form Behavior
 
 After UI changes:
@@ -182,7 +231,7 @@ Watch the test interact with the form automatically.
 
 ### Debug Specific Element
 
-1. Open test file (e.g., `dom-inspection.spec.ts`)
+1. Create a disposable test in `tests/tmp/` or open an existing test file
 2. Add inspection code for your element:
 
 ```typescript
