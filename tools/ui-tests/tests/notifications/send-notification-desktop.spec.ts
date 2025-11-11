@@ -1,32 +1,45 @@
 import { test, expect } from '@playwright/test';
+import {
+  Selectors,
+  navigateToSendNotification,
+  verifyDeliveryOption,
+  verifyTargetOption,
+  verifyPreviewText,
+  fillNotificationForm,
+  selectDeliveryOption,
+  selectTargetOption,
+  selectAchievementFromDropdown,
+  logTestHeader,
+  logTestComplete,
+  logSuccess,
+  logInfo
+} from './send-notification.helpers';
 
 test.use({ storageState: '.auth/user.json' });
 
 test.describe('SendNotification Page - Desktop View', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('https://localhost:7137/send-notification');
-    await page.waitForLoadState('networkidle');
+    await navigateToSendNotification(page);
   });
 
   test('verify iPhone preview has white theme', async ({ page }) => {
-    console.log('\n🎨 iPhone White Theme Verification\n');
-    console.log('='.repeat(70));
+    logTestHeader('iPhone White Theme Verification');
 
-    const iphoneScreen = page.locator('.iphone-screen');
+    const iphoneScreen = page.locator(Selectors.iphoneScreen);
     const screenBg = await iphoneScreen.evaluate((el) => {
       return window.getComputedStyle(el).background;
     });
 
-    console.log(`\n📱 iPhone screen background: ${screenBg}`);
-    console.log('   Expected: Light gradient (white theme)');
+    logInfo('📱 iPhone screen background', screenBg);
+    logInfo('   Expected', 'Light gradient (white theme)');
 
-    const time = page.locator('.iphone-time');
+    const time = page.locator(Selectors.iphoneTime);
     const timeColor = await time.evaluate((el) => {
       return window.getComputedStyle(el).color;
     });
 
-    console.log(`\n⏰ Time text color: ${timeColor}`);
-    console.log('   Expected: Black text (rgb(0, 0, 0))');
+    logInfo('⏰ Time text color', timeColor);
+    logInfo('   Expected', 'Black text (rgb(0, 0, 0))');
 
     // Verify black text on light background
     expect(timeColor).toBe('rgb(0, 0, 0)');
@@ -36,104 +49,69 @@ test.describe('SendNotification Page - Desktop View', () => {
       fullPage: true
     });
 
-    console.log('\n✅ White theme verified');
-    console.log('='.repeat(70));
+    logTestComplete('White theme verified');
   });
 
   test('send now to everyone - verify preview', async ({ page }) => {
-    console.log('\n📨 Test: Send Now to Everyone\n');
-    console.log('='.repeat(70));
+    logTestHeader('Send Now to Everyone');
 
-    // Verify "Now" is default selected (MudBlazor uses aria-checked)
-    await expect(page.locator('[data-testid="delivery-now"]')).toHaveAttribute('aria-checked', 'true');
-    console.log('✅ Delivery: Now (default)');
+    // Verify defaults
+    await verifyDeliveryOption(page, 'now');
+    await verifyTargetOption(page, 'everyone');
 
-    // Verify "Everyone" is default selected (MudBlazor uses aria-checked)
-    await expect(page.locator('[data-testid="target-everyone"]')).toHaveAttribute('aria-checked', 'true');
-    console.log('✅ Target: Everyone (default)');
+    // Fill form
+    await fillNotificationForm(page, 'Welcome to SSW Rewards!', 'Earn points and redeem prizes.');
 
-    // Fill in notification details
-    await page.fill('[data-testid="notification-title"]', 'Welcome to SSW Rewards!');
-    await page.fill('[data-testid="notification-body"]', 'Start scanning QR codes to earn points and win prizes.');
+    // Verify preview
+    await verifyPreviewText(page, 'Welcome to SSW Rewards!', 'Earn points and redeem prizes.');
 
-    // Verify preview updates
-    const previewTitle = page.locator('.notification-title');
-    await expect(previewTitle).toContainText('Welcome to SSW Rewards!');
-    console.log('✅ Preview title updated');
-
-    const previewBody = page.locator('.notification-body');
-    await expect(previewBody).toContainText('Start scanning QR codes');
-    console.log('✅ Preview body updated');
-
-    // Verify time shows current time (not scheduled)
-    const timeDisplay = page.locator('.iphone-time');
+    // Verify time display shows current time (for "Now" delivery)
+    const timeDisplay = page.locator(Selectors.iphoneTime);
     const timeText = await timeDisplay.textContent();
-    console.log(`⏰ Time displayed: ${timeText} (current time)`);
+    logInfo('⏰ Time displayed', `${timeText} (current time)`);
 
     await page.screenshot({
       path: 'screenshots/send-notification/desktop-send-now-everyone.png',
       fullPage: true
     });
 
-    console.log('\n✅ Send Now to Everyone - Verified');
-    console.log('='.repeat(70));
+    logTestComplete('Send Now to Everyone - Verified');
   });
 
   test('scheduled notification with achievement requirement - verify preview', async ({ page }) => {
-    console.log('\n📅 Test: Scheduled with Achievement\n');
-    console.log('='.repeat(70));
+    logTestHeader('Scheduled with Achievement');
 
     // Select Schedule delivery
-    await page.click('[data-testid="delivery-schedule"]');
-    console.log('✅ Selected: Schedule delivery');
+    await selectDeliveryOption(page, 'schedule');
+    logSuccess('Selected: Schedule delivery');
     
-    // Wait for fields to be enabled (they're disabled when delivery is "Now")
+    // Wait for fields to be enabled
     await page.waitForTimeout(800);
 
-    // Since interacting with MudBlazor date/time pickers is complex (readonly inputs, popups),
-    // and the goal is to test scheduling functionality, we'll skip setting specific date/time
-    // and just verify the form accepts scheduled notifications with achievement targeting.
-    // The preview will show the default scheduled time which is sufficient for testing.
-    
-    console.log('⏭️  Skipping date/time/timezone (MudBlazor pickers use complex popups)');
-    console.log('   Testing focuses on achievement targeting and preview updates');
+    logInfo('⏭️  Skipping date/time/timezone (MudBlazor pickers use complex popups)');
+    logInfo('   Testing focuses on achievement targeting and preview updates');
 
     // Select Achievement targeting
-    await page.click('[data-testid="target-achievement"]');
-    await page.waitForTimeout(500);
-    console.log('✅ Selected: Requires Achievement');
+    await selectTargetOption(page, 'achievement');
+    logSuccess('Selected: Requires Achievement');
 
-    // Wait for achievement autocomplete to appear
-    const achievementAutocomplete = page.locator('[data-testid="achievement-autocomplete"]');
-    await achievementAutocomplete.waitFor({ state: 'visible', timeout: 10000 });
-    
-    // Click on the autocomplete to activate it and type
-    await achievementAutocomplete.click();
-    await page.keyboard.type('test');
-    await page.waitForTimeout(1500); // Wait for search results
-
-    // Select first achievement from dropdown
-    const firstResult = page.locator('.mud-list-item').first();
-    await firstResult.waitFor({ state: 'visible', timeout: 5000 });
-    await firstResult.click();
-    console.log('✅ Achievement selected');
+    // Select achievement
+    await selectAchievementFromDropdown(page, 'test');
+    logSuccess('Achievement selected');
 
     // Fill notification content
-    await page.fill('[data-testid="notification-title"]', 'Prize Draw in 10 Minutes!');
-    await page.fill('[data-testid="notification-body"]', 'Come to the SSW booth for our prize draw. Don\'t miss out!');
+    await fillNotificationForm(page, 'Prize Draw in 10 Minutes!', 'Come to the SSW booth for our prize draw. Don\'t miss out!');
 
     // Verify preview updates
-    await expect(page.locator('.notification-title')).toContainText('Prize Draw in 10 Minutes!');
-    await expect(page.locator('.notification-body')).toContainText('Come to the SSW booth');
-    console.log('✅ Preview updated with scheduled notification');
+    await verifyPreviewText(page, 'Prize Draw in 10 Minutes!', 'Come to the SSW booth');
+    logSuccess('Preview updated with scheduled notification');
 
     await page.screenshot({
       path: 'screenshots/send-notification/desktop-scheduled-achievement.png',
       fullPage: true
     });
 
-    console.log('\n✅ Scheduled with Achievement - Verified');
-    console.log('='.repeat(70));
+    logTestComplete('Scheduled with Achievement');
   });
 
   test('role-based notification - verify preview', async ({ page }) => {

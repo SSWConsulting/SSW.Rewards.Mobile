@@ -164,6 +164,10 @@ export function logWarning(message: string) {
   console.log(`⚠️  ${message}`);
 }
 
-export function logInfo(message: string) {
-  console.log(`ℹ️  ${message}`);
+export function logInfo(label: string, value?: string) {
+  if (value !== undefined) {
+    console.log(`${label}: ${value}`);
+  } else {
+    console.log(label);
+  }
 }
