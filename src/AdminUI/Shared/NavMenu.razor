@@ -43,9 +43,17 @@
     .mud-navmenu .mud-stack {
         gap: 0 !important;
     }
+    
+    /* 2-color dividers: 1px #171717 + 1px #404040 */
+    .nav-divider {
+        height: 2px;
+        background: linear-gradient(to bottom, #171717 0%, #171717 50%, #404040 50%, #404040 100%);
+        margin: 0;
+        padding: 0;
+    }
 </style>
 
-<MudDivider Style="background-color: var(--mud-palette-divider);"/>
+<div class="nav-divider"></div>
 <MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
     <MudStack Spacing="0">
         <!-- For staff and admins -->
@@ -55,7 +63,7 @@
                 <MudNavLink Href="@staffPage.Href" 
                             Match="NavLinkMatch.Prefix" 
                             Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
-                <MudDivider Style="background-color: var(--mud-palette-divider);"/>
+                <div class="nav-divider"></div>
             }
         </AuthorizeView>
 
@@ -66,7 +74,7 @@
                 <MudNavLink Href="@adminPage.Href"
                             Match="NavLinkMatch.Prefix" 
                             Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
-                <MudDivider Style="background-color: var(--mud-palette-divider);"/>
+                <div class="nav-divider"></div>
             }
         </AuthorizeView>
 
@@ -78,7 +86,7 @@
                     <MudNavLink Href="@publicPage.Href"
                                 Match="NavLinkMatch.Prefix"
                                 Icon="@publicPage.Icon">@publicPage.Title</MudNavLink>
-                    <MudDivider Style="background-color: var(--mud-palette-divider);" />
+                    <div class="nav-divider"></div>
                 }
             </Authorized>
         </AuthorizeView>
