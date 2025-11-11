@@ -1,0 +1,9 @@
+/* Larger table font for better readability */
+.notifications-table {
+    font-size: 1.125rem;
+}
+
+.notifications-table td,
+.notifications-table th {
+    font-size: 1.125rem;
+}
