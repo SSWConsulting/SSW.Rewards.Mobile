@@ -5,9 +5,49 @@
 
 @inject NavigationManager Navigation
 
-<MudDivider Style="background-color: black"/>
+<style>
+    /* Navigation styling to match design */
+    .mud-drawer .mud-navmenu .mud-nav-link {
+        color: rgba(255, 255, 255, 0.6) !important;
+        position: relative;
+        border-right: 5px solid transparent;
+        min-height: 48px;
+        display: flex !important;
+        align-items: center;
+        padding: 12px 16px !important;
+        margin: 0 !important;
+    }
+    
+    .mud-drawer .mud-navmenu .mud-nav-link.active {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        color: #ffffff !important;
+        border-right: 5px solid #cc4141 !important;
+    }
+    
+    .mud-drawer .mud-navmenu .mud-nav-link.active .mud-nav-link-text {
+        color: #ffffff !important;
+    }
+    
+    .mud-drawer .mud-navmenu .mud-nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    
+    /* Ensure icon and text are vertically centered */
+    .mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-icon,
+    .mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-text {
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    /* Remove MudStack spacing - we want nav items to touch */
+    .mud-navmenu .mud-stack {
+        gap: 0 !important;
+    }
+</style>
+
+<MudDivider Style="background-color: var(--mud-palette-divider);"/>
 <MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
-    <MudStack Spacing="2">
+    <MudStack Spacing="0">
         <!-- For staff and admins -->
         <AuthorizeView Roles="Admin, Staff">
             @foreach (var staffPage in NavigationPages.StaffPages())
@@ -15,7 +55,7 @@
                 <MudNavLink Href="@staffPage.Href" 
                             Match="NavLinkMatch.Prefix" 
                             Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
-                <MudDivider Style="background-color: black"/>
+                <MudDivider Style="background-color: var(--mud-palette-divider);"/>
             }
         </AuthorizeView>
 
@@ -26,7 +66,7 @@
                 <MudNavLink Href="@adminPage.Href"
                             Match="NavLinkMatch.Prefix" 
                             Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
-                <MudDivider Style="background-color: black"/>
+                <MudDivider Style="background-color: var(--mud-palette-divider);"/>
             }
         </AuthorizeView>
 
@@ -38,7 +78,7 @@
                     <MudNavLink Href="@publicPage.Href"
                                 Match="NavLinkMatch.Prefix"
                                 Icon="@publicPage.Icon">@publicPage.Title</MudNavLink>
-                    <MudDivider Style="background-color: black" />
+                    <MudDivider Style="background-color: var(--mud-palette-divider);" />
                 }
             </Authorized>
         </AuthorizeView>

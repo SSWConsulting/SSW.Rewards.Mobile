@@ -4,8 +4,20 @@
 @inject NavigationManager Navigation
 @inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
 
-<MudText Typo="Typo.h2">Mobile Notifications</MudText>
-<MudText Typo="Typo.body1">All notification history</MudText>
+<style>
+    /* Larger table font for better readability */
+    .notifications-table {
+        font-size: 1.125rem;
+    }
+    
+    .notifications-table td,
+    .notifications-table th {
+        font-size: 1.125rem;
+    }
+</style>
+
+<MudText Typo="Typo.h3">Mobile Notifications</MudText>
+<MudText Typo="Typo.h6">All notification history</MudText>
 
 <MudPaper Class="pa-4 mt-4 warm-grey-bg">
     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
@@ -21,7 +33,7 @@
             Create Notification
         </MudButton>
     </MudStack>
-    <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4" @ref="_table">
+    <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4 notifications-table" @ref="_table">
         <HeaderContent>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="CreatedDateUtc">Created</MudTableSortLabel></MudTh>
@@ -60,7 +72,7 @@
                         @DateTimeFormatter.FormatLongDate(context.SentOn?.ToLocalTime())
                         break;
                     case NotificationStatus.Scheduled when context.ScheduledDate != null:
-                        <MudText Typo="Typo.body1">@DateTimeFormatter.FormatLongDate(context.ScheduledDate?.ToLocalTime())</MudText>
+                        <span style="font-weight: 600;">@DateTimeFormatter.FormatLongDate(context.ScheduledDate?.ToLocalTime())</span>
                         break;
                     default:
                         <span>-</span>

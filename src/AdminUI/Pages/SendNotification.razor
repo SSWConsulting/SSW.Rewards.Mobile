@@ -8,6 +8,22 @@
 
 @attribute [Authorize(Roles = "Admin")]
 
+<style>
+    /* Larger font for scheduled date/time fields */
+    .schedule-field-large input {
+        font-size: 1.5rem !important;
+    }
+    
+    .schedule-field-large label {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Larger font for radio groups */
+    .radio-group-large label {
+        font-size: 1.25rem !important;
+    }
+</style>
+
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
     <MudText Typo="Typo.h3" GutterBottom="true" id="page-title">Create Notification</MudText>
 
@@ -19,11 +35,12 @@
                     <MudGrid Spacing="3">
                         <MudItem xs="12">
                             <MudTooltip Text="This shows how many users got the notification out of everyone we tried to send it to. Some may not get it if they haven't enabled notifications or their device token expired.">
-                                <MudText Typo="Typo.h5" Style="display: inline; cursor: help;" id="delivery-section-label">Delivery*</MudText>
+                                <MudText Typo="Typo.h4" Style="display: inline; cursor: help;" id="delivery-section-label">Delivery*</MudText>
                             </MudTooltip>
                             <MudRadioGroup @bind-Value="@_model.DeliveryOption" 
                                            aria-labelledby="delivery-section-label"
-                                           data-testid="delivery-radio-group">
+                                           data-testid="delivery-radio-group"
+                                           Class="radio-group-large">
                                 <MudRadio Option="@Delivery.Now" 
                                           Color="Color.Primary"
                                           data-testid="delivery-now"
@@ -44,7 +61,8 @@
                                            Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
                                            MinDate="@DateTime.Today"
                                            data-testid="schedule-date"
-                                           aria-label="Schedule date for notification" />
+                                           aria-label="Schedule date for notification"
+                                           Class="schedule-field-large" />
                         </MudItem>
                         <MudItem xs="12" sm="6" md="4">
                             <MudTimePicker Label="Time"
@@ -53,7 +71,8 @@
                                            Required="@(_model.DeliveryOption == Delivery.Schedule)"
                                            Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
                                            data-testid="schedule-time"
-                                           aria-label="Schedule time for notification" />
+                                           aria-label="Schedule time for notification"
+                                           Class="schedule-field-large" />
                         </MudItem>
                         <MudItem xs="12" sm="12" md="4">
                             <MudSelect @bind-Value="@_model.SelectedTimeZone"
@@ -63,7 +82,8 @@
                                        Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
                                        AnchorOrigin="Origin.BottomCenter"
                                        data-testid="schedule-timezone"
-                                       aria-label="Select timezone for scheduled notification">
+                                       aria-label="Select timezone for scheduled notification"
+                                       Class="schedule-field-large">
                                 @foreach (var tz in _timezones)
                                 {
                                     <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
@@ -72,10 +92,11 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h5" Style="display: inline; cursor: help;" id="target-section-label">Target*</MudText>
+                            <MudText Typo="Typo.h4" Style="display: inline; cursor: help;" id="target-section-label">Target*</MudText>
                             <MudRadioGroup @bind-Value="@_model.TargetingOption"
                                            aria-labelledby="target-section-label"
-                                           data-testid="target-radio-group">
+                                           data-testid="target-radio-group"
+                                           Class="radio-group-large">
                                 <MudRadio Option="@Targeting.Everyone" 
                                           Color="Color.Primary"
                                           data-testid="target-everyone"
@@ -124,7 +145,7 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h5" Class="mt-4" id="content-section-label">Content</MudText>
+                            <MudText Typo="Typo.h4" Class="mt-4" id="content-section-label">Content</MudText>
                         </MudItem>
 
                         <MudItem xs="12">
