@@ -10,7 +10,7 @@ test.use({
   storageState: '.auth/user.json'
 });
 
-test.describe('Notification Form - Mobile Responsive View', () => {
+test.describe('SendNotification Page - Mobile View (390x844)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('https://localhost:7137/send-notification');
     await page.waitForLoadState('networkidle');
@@ -40,7 +40,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
 
     // Take screenshot of mobile view
     await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-portrait.png',
+      path: 'screenshots/send-notification/mobile-390x844-portrait.png',
       fullPage: true
     });
 
@@ -147,7 +147,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
     await expect(imageField).toHaveValue('https://example.com/image.jpg');
 
     await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-input-fields.png',
+      path: 'screenshots/send-notification/mobile-390x844-input-fields.png',
       fullPage: true
     });
 
@@ -203,7 +203,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
 
     // Take screenshot with submit button visible
     await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-submit-button.png',
+      path: 'screenshots/send-notification/mobile-390x844-submit-button.png',
       fullPage: false
     });
 
@@ -248,7 +248,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
     }
 
     await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-autocomplete.png',
+      path: 'screenshots/send-notification/mobile-390x844-autocomplete.png',
       fullPage: true
     });
 
@@ -327,7 +327,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
   });
 });
 
-test.describe('Notification Form - Mobile Landscape View', () => {
+test.describe('SendNotification Page - Mobile Landscape (844x390)', () => {
   test('verify page layout in landscape mode', async ({ browser }) => {
     // Create a new context with landscape orientation (iPhone 12 Pro landscape: 844x390)
     const context = await browser.newContext({
@@ -365,7 +365,7 @@ test.describe('Notification Form - Mobile Landscape View', () => {
     console.log(`✅ Horizontal overflow in landscape: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
     await page.screenshot({
-      path: 'screenshots/notifications/mobile-844x390-landscape.png',
+      path: 'screenshots/send-notification/mobile-844x390-landscape.png',
       fullPage: true
     });
 

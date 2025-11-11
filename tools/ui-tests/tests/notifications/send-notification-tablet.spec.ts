@@ -11,7 +11,7 @@ test.use({
   storageState: '.auth/user.json'
 });
 
-test.describe('Notification Form - Tablet Responsive View', () => {
+test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('https://localhost:7137/send-notification');
     await page.waitForLoadState('networkidle');
@@ -42,7 +42,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     }
 
     await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-portrait.png',
+      path: 'screenshots/send-notification/tablet-1024x1366-portrait.png',
       fullPage: true
     });
 
@@ -104,7 +104,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     console.log('✅ Preview body updates on tablet');
 
     await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-live-preview.png',
+      path: 'screenshots/send-notification/tablet-1024x1366-live-preview.png',
       fullPage: true
     });
 
@@ -211,7 +211,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     console.log(`✅ Submit button visible and enabled: ${isEnabled}`);
 
     await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-submit.png',
+      path: 'screenshots/send-notification/tablet-1024x1366-submit.png',
       fullPage: false
     });
 
@@ -238,7 +238,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     console.log('✅ Image visible in preview on tablet');
 
     await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-with-image.png',
+      path: 'screenshots/send-notification/tablet-1024x1366-with-image.png',
       fullPage: true
     });
 
@@ -247,7 +247,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
   });
 });
 
-test.describe('Notification Form - Tablet Landscape View', () => {
+test.describe('SendNotification Page - Tablet Landscape (1366x1024)', () => {
   test('verify page layout in tablet landscape mode', async ({ browser }) => {
     // Create context with landscape orientation (iPad Pro landscape: 1366x1024)
     const context = await browser.newContext({
@@ -284,7 +284,7 @@ test.describe('Notification Form - Tablet Landscape View', () => {
     console.log(`✅ Horizontal overflow: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
     await page.screenshot({
-      path: 'screenshots/notifications/tablet-1366x1024-landscape.png',
+      path: 'screenshots/send-notification/tablet-1366x1024-landscape.png',
       fullPage: true
     });
 
