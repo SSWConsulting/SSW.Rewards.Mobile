@@ -22,13 +22,123 @@
     .radio-group-large label {
         font-size: 1.25rem !important;
     }
+    
+    /* iPhone notification preview */
+    .iphone-preview {
+        position: sticky;
+        top: 20px;
+        background: #000;
+        border-radius: 40px;
+        padding: 12px;
+        width: 320px;
+        height: 640px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .iphone-screen {
+        background: linear-gradient(to bottom, #f2f2f7 0%, #e5e5ea 100%);
+        border-radius: 32px;
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        padding: 50px 12px 20px 12px;
+    }
+    
+    .iphone-notch {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 30px;
+        background: #000;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .iphone-time {
+        color: #000;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    
+    .notification-preview {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 12px;
+        margin: 0 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(0,0,0,0.1);
+    }
+    
+    .notification-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .notification-icon {
+        width: 20px;
+        height: 20px;
+        background: #cc4141;
+        border-radius: 4px;
+        margin-right: 8px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .notification-app-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #000;
+        flex: 1;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    
+    .notification-time-badge {
+        font-size: 11px;
+        color: #8e8e93;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    
+    .notification-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 4px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        word-wrap: break-word;
+    }
+    
+    .notification-body {
+        font-size: 13px;
+        color: #3c3c43;
+        line-height: 1.4;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        word-wrap: break-word;
+    }
+    
+    .preview-placeholder {
+        color: #8e8e93;
+        font-style: italic;
+    }
 </style>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
     <MudText Typo="Typo.h3" GutterBottom="true" id="page-title">Create Notification</MudText>
 
     <MudGrid>
-        <MudItem xs="12" md="12">
+        <!-- Form Column -->
+        <MudItem xs="12" md="8">
             <MudPaper Class="pa-4 warm-grey-bg" role="form" aria-labelledby="page-title">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
@@ -55,7 +165,8 @@
                         <!-- Always visible Date/Time/Timezone; disabled when not scheduling -->
                         <MudItem xs="12" sm="6" md="4">
                             <MudDatePicker Label="Date"
-                                           @bind-Date="@_model.ScheduleDate"
+                                           Date="@_model.ScheduleDate"
+                                           DateChanged="@OnDateChanged"
                                            For="@(() => _model.ScheduleDate)"
                                            Required="@(_model.DeliveryOption == Delivery.Schedule)"
                                            Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
@@ -66,7 +177,8 @@
                         </MudItem>
                         <MudItem xs="12" sm="6" md="4">
                             <MudTimePicker Label="Time"
-                                           @bind-Time="@_model.ScheduleTime"
+                                           Time="@_model.ScheduleTime"
+                                           TimeChanged="@OnTimeChanged"
                                            For="@(() => _model.ScheduleTime)"
                                            Required="@(_model.DeliveryOption == Delivery.Schedule)"
                                            Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
@@ -115,18 +227,18 @@
                         <!-- Always visible achievement selector -->
                         <MudItem xs="12">
                             <MudAutocomplete T="AchievementDto"
-                                             @bind-Value="@_model.SelectedAchievement"
                                              Label="Required Achievement"
-                                             AnchorOrigin="Origin.BottomCenter"
-                                             SearchFuncWithCancel="@SearchAchievements"
+                                             @bind-Value="@_model.SelectedAchievement"
+                                             SearchFunc="@SearchAchievements"
+                                             ToStringFunc="@(a => a?.Name)"
                                              ShowProgressIndicator="true"
-                                             ToStringFunc="@GetAchievementName"
-                                             Clearable="true"
                                              ResetValueOnEmptyText="true"
                                              Required="@(_model.TargetingOption == Targeting.Achievement)"
                                              Disabled="@(_model.TargetingOption != Targeting.Achievement)"
                                              data-testid="achievement-autocomplete"
-                                             aria-label="Search and select required achievement" />
+                                             aria-label="Search and select required achievement"
+                                             @onkeydown:preventDefault
+                                             Variant="Variant.Outlined" />
                         </MudItem>
 
                         <!-- Always visible role selector -->
@@ -134,17 +246,16 @@
                             <MudAutocomplete T="RoleDto"
                                              @bind-Value="@_model.SelectedRole"
                                              Label="Role"
-                                             SearchFunc="@SearchRoles"
+                                             SearchFuncWithCancel="@SearchRoles"
                                              ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                              Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Required="@(_model.TargetingOption == Targeting.Role)"
-                                             Disabled="@(_model.TargetingOption != Targeting.Role)"
-                                             data-testid="role-autocomplete"
-                                             aria-label="Search and select required role" />
-                        </MudItem>
-
-                        <MudItem xs="12">
+                                            ResetValueOnEmptyText="true"
+                                            Required="@(_model.TargetingOption == Targeting.Role)"
+                                            Disabled="@(_model.TargetingOption != Targeting.Role)"
+                                            data-testid="role-autocomplete"
+                                            aria-label="Search and select required role"
+                                            @onkeydown:preventDefault />
+                        </MudItem>                        <MudItem xs="12">
                             <MudText Typo="Typo.h4" Class="mt-4" id="content-section-label">Content</MudText>
                         </MudItem>
 
@@ -157,7 +268,8 @@
                                           Counter="100"
                                           data-testid="notification-title"
                                           aria-label="Enter notification title, maximum 100 characters"
-                                          aria-describedby="content-section-label" />
+                                          aria-describedby="content-section-label"
+                                          Immediate="true" />
                         </MudItem>
 
                         <MudItem xs="12">
@@ -170,7 +282,8 @@
                                           Counter="250"
                                           data-testid="notification-body"
                                           aria-label="Enter notification body text, maximum 250 characters"
-                                          aria-describedby="content-section-label" />
+                                          aria-describedby="content-section-label"
+                                          Immediate="true" />
                         </MudItem>
 
                         <MudItem xs="12">
@@ -195,6 +308,49 @@
                     </MudGrid>
                 </EditForm>
             </MudPaper>
+        </MudItem>
+        
+        <!-- iPhone Preview Column -->
+        <MudItem xs="12" md="4">
+            <div class="iphone-preview">
+                <div class="iphone-screen">
+                    <div class="iphone-notch"></div>
+                    
+                    <div class="iphone-time">
+                        @GetPreviewTime()
+                    </div>
+                    
+                    <div class="notification-preview">
+                        <div class="notification-header">
+                            <div class="notification-icon">S</div>
+                            <span class="notification-app-name">SSW Rewards</span>
+                            <span class="notification-time-badge">now</span>
+                        </div>
+                        
+                        <div class="notification-title">
+                            @if (string.IsNullOrWhiteSpace(_model.Title))
+                            {
+                                <span class="preview-placeholder">Notification Title</span>
+                            }
+                            else
+                            {
+                                @_model.Title
+                            }
+                        </div>
+                        
+                        <div class="notification-body">
+                            @if (string.IsNullOrWhiteSpace(_model.Body))
+                            {
+                                <span class="preview-placeholder">Notification message will appear here...</span>
+                            }
+                            else
+                            {
+                                @_model.Body
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </MudItem>
     </MudGrid>
 </MudContainer>

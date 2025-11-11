@@ -51,10 +51,10 @@ public partial class SendNotification
         _timezones = TimeZoneInfo.GetSystemTimeZones().ToDictionary(x => x.Id, x => x.DisplayName);
     }
 
-    private async Task<IEnumerable<RoleDto>> SearchRoles(string value)
-        => _roles != null && !string.IsNullOrWhiteSpace(value)
+    private Task<IEnumerable<RoleDto>> SearchRoles(string value, CancellationToken cancellationToken)
+        => Task.FromResult(_roles != null && !string.IsNullOrWhiteSpace(value)
             ? _roles.Where(r => r.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            : _roles ?? [];
+            : _roles ?? Enumerable.Empty<RoleDto>());
 
     private async Task HandleValidSubmit()
     {
@@ -167,11 +167,11 @@ public partial class SendNotification
         }
     }
 
-    private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value)
     {
         try
         {
-            var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
+            var achievements = await AchievementService.SearchAchievements(value, CancellationToken.None);
             return achievements.Achievements;
         }
         catch (Exception ex)
@@ -182,4 +182,27 @@ public partial class SendNotification
     }
 
     private static string GetAchievementName(AchievementDto? achievement) => achievement?.Name ?? string.Empty;
+
+    private string GetPreviewTime()
+    {
+        if (_model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue)
+        {
+            var combinedDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
+            return combinedDateTime.ToString("h:mm tt");
+        }
+        
+        return DateTime.Now.ToString("h:mm tt");
+    }
+
+    private void OnDateChanged(DateTime? date)
+    {
+        _model.ScheduleDate = date;
+        StateHasChanged();
+    }
+
+    private void OnTimeChanged(TimeSpan? time)
+    {
+        _model.ScheduleTime = time;
+        StateHasChanged();
+    }
 }
