@@ -124,14 +124,14 @@
     @if (!_hasErrorsOnUpdate)
     {
         <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
-            Last updated: @GetLastUpdatedText() | Next refresh in: @_secondsUntilRefresh seconds
+            Last refreshed: @GetLastUpdatedText() (refreshing in @_secondsUntilRefresh seconds)
         </div>
     }
     else
     {
         <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
             ⚠️ We couldn't refresh the leaderboard. Retrying in @_secondsUntilRefresh seconds.<br />
-            Last updated: @GetLastUpdatedText()
+            Last refreshed: @GetLastUpdatedText()
         </div>
     }
 </MudPaper>
