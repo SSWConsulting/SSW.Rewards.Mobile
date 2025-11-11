@@ -316,13 +316,19 @@ test.describe('Notification Form and Preview Verification', () => {
     
     const imageUrl = 'https://adamcogan.com/wp-content/uploads/2019/11/ssw-speakers-ndc-sydney-2019.jpg';
     await page.fill('[data-testid="notification-image-url"]', imageUrl);
-    await page.waitForTimeout(1000); // Wait for image to load
+    await page.waitForTimeout(2000); // Wait for image to load
 
     // Verify image URL is set
     const imageField = page.locator('[data-testid="notification-image-url"]');
     await expect(imageField).toHaveValue(imageUrl);
     console.log('✅ Image URL set successfully');
     console.log(`📸 Image: ${imageUrl}`);
+
+    // Verify image appears in the preview
+    const previewImage = page.locator('.notification-image');
+    await expect(previewImage).toBeVisible({ timeout: 5000 });
+    await expect(previewImage).toHaveAttribute('src', imageUrl);
+    console.log('✅ Image visible in preview');
 
     // Take screenshot to verify image preview
     await page.screenshot({ path: 'screenshots/notification-with-image.png', fullPage: true });
