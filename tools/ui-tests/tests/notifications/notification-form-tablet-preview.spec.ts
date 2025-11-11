@@ -36,9 +36,9 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     const boundingBox = await iphonePreview.boundingBox();
     if (boundingBox) {
       console.log(`📐 Preview: ${boundingBox.width}x${boundingBox.height}px`);
-      expect(boundingBox.width).toBe(320);
-      expect(boundingBox.height).toBe(640);
-      console.log('✅ Preview has correct dimensions');
+      expect(boundingBox.width).toBe(260);
+      expect(boundingBox.height).toBe(520);
+      console.log('✅ Preview has correct dimensions (smaller for iPad Pro)');
     }
 
     await page.screenshot({
