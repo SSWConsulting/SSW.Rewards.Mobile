@@ -127,6 +127,14 @@
         word-wrap: break-word;
     }
     
+    .notification-image {
+        margin-top: 8px;
+        border-radius: 8px;
+        width: 100%;
+        max-height: 150px;
+        object-fit: cover;
+    }
+    
     .preview-placeholder {
         color: #8e8e93;
         font-style: italic;
@@ -140,7 +148,7 @@
         <!-- Form Column -->
         <MudItem xs="12" md="8">
             <MudPaper Class="pa-4 warm-grey-bg" role="form" aria-labelledby="page-title">
-                <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
+                <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit" onkeypress="return event.keyCode!=13">
                     <DataAnnotationsValidator />
                     <MudGrid Spacing="3">
                         <MudItem xs="12">
@@ -186,7 +194,7 @@
                                            aria-label="Schedule time for notification"
                                            Class="schedule-field-large" />
                         </MudItem>
-                        <MudItem xs="12" sm="12" md="4">
+                        <MudItem xs="12" sm="6" md="4">
                             <MudSelect @bind-Value="@_model.SelectedTimeZone"
                                        Label="Timezone"
                                        For="@(() => _model.SelectedTimeZone)"
@@ -237,7 +245,6 @@
                                              Disabled="@(_model.TargetingOption != Targeting.Achievement)"
                                              data-testid="achievement-autocomplete"
                                              aria-label="Search and select required achievement"
-                                             @onkeydown:preventDefault
                                              Variant="Variant.Outlined" />
                         </MudItem>
 
@@ -253,8 +260,7 @@
                                             Required="@(_model.TargetingOption == Targeting.Role)"
                                             Disabled="@(_model.TargetingOption != Targeting.Role)"
                                             data-testid="role-autocomplete"
-                                            aria-label="Search and select required role"
-                                            @onkeydown:preventDefault />
+                                            aria-label="Search and select required role" />
                         </MudItem>                        <MudItem xs="12">
                             <MudText Typo="Typo.h4" Class="mt-4" id="content-section-label">Content</MudText>
                         </MudItem>
@@ -291,7 +297,8 @@
                                           Label="Notification Image URL (Optional)" 
                                           For="@(() => _model.ImageUrl)"
                                           data-testid="notification-image-url"
-                                          aria-label="Enter optional image URL for notification" />
+                                          aria-label="Enter optional image URL for notification"
+                                          Immediate="true" />
                         </MudItem>
 
                         <MudItem xs="12" Class="d-flex justify-end mt-4">
@@ -348,6 +355,14 @@
                                 @_model.Body
                             }
                         </div>
+                        
+                        @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
+                        {
+                            <img src="@_model.ImageUrl" 
+                                 alt="Notification image preview" 
+                                 class="notification-image"
+                                 loading="lazy" />
+                        }
                     </div>
                 </div>
             </div>
