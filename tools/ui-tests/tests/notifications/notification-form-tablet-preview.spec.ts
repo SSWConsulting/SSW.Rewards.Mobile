@@ -42,7 +42,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     }
 
     await page.screenshot({
-      path: 'screenshots/notification-tablet-preview.png',
+      path: 'screenshots/notifications/tablet-1024x1366-portrait.png',
       fullPage: true
     });
 
@@ -100,11 +100,11 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     // Type in body and verify preview updates
     await bodyField.tap();
     await bodyField.fill('This notification was created on a tablet device.');
-    await expect(previewBody).toContainText('This notification was created on a tablet');
+    await expect(previewBody).toContainText('This notification was created on a tablet device');
     console.log('✅ Preview body updates on tablet');
 
     await page.screenshot({
-      path: 'screenshots/notification-tablet-live-preview.png',
+      path: 'screenshots/notifications/tablet-1024x1366-live-preview.png',
       fullPage: true
     });
 
@@ -211,7 +211,7 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     console.log(`✅ Submit button visible and enabled: ${isEnabled}`);
 
     await page.screenshot({
-      path: 'screenshots/notification-tablet-submit.png',
+      path: 'screenshots/notifications/tablet-1024x1366-submit.png',
       fullPage: false
     });
 
@@ -235,10 +235,10 @@ test.describe('Notification Form - Tablet Responsive View', () => {
     const previewImage = page.locator('.notification-image');
     await expect(previewImage).toBeVisible({ timeout: 5000 });
     await expect(previewImage).toHaveAttribute('src', imageUrl);
-    console.log('✅ Image preview visible on tablet');
+    console.log('✅ Image visible in preview on tablet');
 
     await page.screenshot({
-      path: 'screenshots/notification-tablet-with-image.png',
+      path: 'screenshots/notifications/tablet-1024x1366-with-image.png',
       fullPage: true
     });
 
@@ -281,10 +281,10 @@ test.describe('Notification Form - Tablet Landscape View', () => {
     const hasHorizontalScroll = await page.evaluate(() => {
       return document.documentElement.scrollWidth > document.documentElement.clientWidth;
     });
-    console.log(`✅ Horizontal overflow: ${hasHorizontalScroll ? 'Yes ⚠️' : 'No'}`);
+    console.log(`✅ Horizontal overflow: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
     await page.screenshot({
-      path: 'screenshots/notification-tablet-landscape.png',
+      path: 'screenshots/notifications/tablet-1366x1024-landscape.png',
       fullPage: true
     });
 

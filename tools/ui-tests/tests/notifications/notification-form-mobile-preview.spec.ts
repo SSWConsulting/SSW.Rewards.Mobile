@@ -40,7 +40,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
 
     // Take screenshot of mobile view
     await page.screenshot({
-      path: 'screenshots/notification-mobile-view.png',
+      path: 'screenshots/notifications/mobile-390x844-portrait.png',
       fullPage: true
     });
 
@@ -147,7 +147,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
     await expect(imageField).toHaveValue('https://example.com/image.jpg');
 
     await page.screenshot({
-      path: 'screenshots/notification-mobile-input.png',
+      path: 'screenshots/notifications/mobile-390x844-input-fields.png',
       fullPage: true
     });
 
@@ -198,13 +198,13 @@ test.describe('Notification Form - Mobile Responsive View', () => {
 
     // Verify button is visible and tappable
     await expect(submitButton).toBeVisible();
-    const isEnabled = await submitButton.isEnabled();
-    console.log(`✅ Submit button visible: true, enabled: ${isEnabled}`);
+    await expect(submitButton).toBeEnabled();
+    console.log('✅ Submit button visible and enabled');
 
     // Take screenshot with submit button visible
     await page.screenshot({
-      path: 'screenshots/notification-mobile-submit.png',
-      fullPage: false // Just current viewport showing submit button
+      path: 'screenshots/notifications/mobile-390x844-submit-button.png',
+      fullPage: false
     });
 
     console.log('\n✅ Mobile Submit Button - Verified');
@@ -248,7 +248,7 @@ test.describe('Notification Form - Mobile Responsive View', () => {
     }
 
     await page.screenshot({
-      path: 'screenshots/notification-mobile-autocomplete.png',
+      path: 'screenshots/notifications/mobile-390x844-autocomplete.png',
       fullPage: true
     });
 
@@ -362,10 +362,10 @@ test.describe('Notification Form - Mobile Landscape View', () => {
       return document.documentElement.scrollWidth > document.documentElement.clientWidth;
     });
 
-    console.log(`✅ Horizontal overflow in landscape: ${hasHorizontalScroll ? 'Yes ⚠️' : 'No'}`);
+    console.log(`✅ Horizontal overflow in landscape: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
     await page.screenshot({
-      path: 'screenshots/notification-mobile-landscape.png',
+      path: 'screenshots/notifications/mobile-844x390-landscape.png',
       fullPage: true
     });
 

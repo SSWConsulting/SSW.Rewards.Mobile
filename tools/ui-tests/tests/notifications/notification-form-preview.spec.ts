@@ -32,7 +32,7 @@ test.describe('Notification Form and Preview Verification', () => {
     expect(timeColor).toBe('rgb(0, 0, 0)');
 
     await page.screenshot({
-      path: 'screenshots/notification-iphone-white-theme.png',
+      path: 'screenshots/notifications/desktop-iphone-white-theme.png',
       fullPage: true
     });
 
@@ -71,7 +71,7 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log(`⏰ Time displayed: ${timeText} (current time)`);
 
     await page.screenshot({
-      path: 'screenshots/notification-send-now-everyone.png',
+      path: 'screenshots/notifications/desktop-send-now-everyone.png',
       fullPage: true
     });
 
@@ -128,7 +128,7 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log('✅ Preview updated with scheduled notification');
 
     await page.screenshot({
-      path: 'screenshots/notification-scheduled-achievement.png',
+      path: 'screenshots/notifications/desktop-scheduled-achievement.png',
       fullPage: true
     });
 
@@ -174,7 +174,7 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log('✅ Preview updated with role-based notification');
 
     await page.screenshot({
-      path: 'screenshots/notification-role-based.png',
+      path: 'screenshots/notifications/desktop-role-based.png',
       fullPage: true
     });
 
@@ -256,7 +256,7 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log('✅ Body placeholder visible');
 
     await page.screenshot({
-      path: 'screenshots/notification-preview-elements.png',
+      path: 'screenshots/notifications/desktop-preview-elements.png',
       fullPage: true
     });
 
@@ -312,7 +312,7 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log('✅ Preview handles maximum length content');
 
     await page.screenshot({
-      path: 'screenshots/notification-max-length.png',
+      path: 'screenshots/notifications/desktop-max-length.png',
       fullPage: true
     });
 
@@ -349,8 +349,8 @@ test.describe('Notification Form and Preview Verification', () => {
     console.log('✅ Image visible in preview');
 
     // Take screenshot to verify image preview
-    await page.screenshot({ path: 'screenshots/notification-with-image.png', fullPage: true });
-    console.log('📸 Screenshot: screenshots/notification-with-image.png');
+    await page.screenshot({ path: 'screenshots/notifications/desktop-with-image.png', fullPage: true });
+    console.log('📸 Screenshot: screenshots/notifications/desktop-with-image.png');
 
     console.log('\n✅ Image URL - Verified');
     console.log('='.repeat(70));
