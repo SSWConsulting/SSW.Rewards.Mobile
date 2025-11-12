@@ -1,9 +1,9 @@
 /* Larger table font for better readability */
-:deep(.notifications-table) {
+.notifications-table {
     font-size: 1.125rem !important;
 }
 
-:deep(.notifications-table td),
-:deep(.notifications-table th) {
+.notifications-table td,
+.notifications-table th {
     font-size: 1.125rem !important;
 }
