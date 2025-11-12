@@ -346,11 +346,15 @@ test.describe('SendNotification Page - Mobile Landscape (844x390)', () => {
     await page.goto('https://localhost:7137/send-notification');
     await page.waitForLoadState('networkidle');
 
-    // Check if iPhone preview is visible in landscape (more horizontal space)
+    // Check if iPhone preview is hidden in landscape (insufficient vertical space)
     const iphonePreview = page.locator('.iphone-preview');
     const isVisible = await iphonePreview.isVisible().catch(() => false);
     
     console.log(`📱 iPhone preview visible in landscape: ${isVisible}`);
+    
+    // Should be HIDDEN in landscape due to max-height: 600px media query
+    expect(isVisible).toBe(false);
+    console.log('✅ Preview correctly hidden in landscape (insufficient vertical space)');
 
     // Verify form is still functional
     const titleField = page.locator('[data-testid="notification-title"]');

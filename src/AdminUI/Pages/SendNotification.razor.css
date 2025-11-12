@@ -54,6 +54,13 @@
     }
 }
 
+/* Hide iPhone preview in mobile landscape mode (insufficient vertical space) */
+@media (max-height: 600px) {
+    .iphone-preview {
+        display: none;
+    }
+}
+
 .iphone-screen {
     background: linear-gradient(to bottom, #f2f2f7 0%, #e5e5ea 100%);
     border-radius: 26px;
