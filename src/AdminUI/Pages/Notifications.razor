@@ -8,19 +8,31 @@
 <MudText Typo="Typo.h6">All notification history</MudText>
 
 <MudPaper Class="pa-4 mt-4 warm-grey-bg">
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-        <MudTextField @bind-Value="_searchString"
-                      Placeholder="Search by title"
-                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" Immediate="true"
-                      OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })"
-                      OnBlur="LoadNotificationsFromSearch" />
-        <MudCheckBox Value="_showArchived" ValueChanged="@OnShowArchivedChanged" Color="Color.Primary" Label="Show deleted" Class="ml-4" T="bool" />
-        <MudSpacer />
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => Navigation.NavigateTo("/send-notification"))">
-            Create Notification
-        </MudButton>
-    </MudStack>
+    <div class="notification-controls-wrapper">
+        <!-- Search field - own row on mobile -->
+        <div class="control-row">
+            <MudTextField @bind-Value="_searchString"
+                          Placeholder="Search by title"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                          Class="mt-0 search-field" Immediate="true"
+                          OnKeyDown="@(e => { if (e.Key == "Enter") LoadNotificationsFromSearch(); })"
+                          OnBlur="LoadNotificationsFromSearch" />
+        </div>
+        
+        <!-- Checkbox - own row on mobile -->
+        <div class="control-row">
+            <MudCheckBox Value="_showArchived" ValueChanged="@OnShowArchivedChanged" Color="Color.Primary" Label="Show deleted" Class="show-deleted-checkbox" T="bool" />
+        </div>
+        
+        <!-- Button - own row on mobile -->
+        <div class="control-row">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" 
+                       OnClick="@(() => Navigation.NavigateTo("/send-notification"))"
+                       Class="create-btn" FullWidth="true">
+                Create Notification
+            </MudButton>
+        </div>
+    </div>
     <MudTable ServerData="LoadNotifications" Loading="@_loading" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-4 notifications-table" @ref="_table">
         <HeaderContent>
             <MudTh><MudTableSortLabel T="NotificationHistoryDto" SortLabel="Title">Title</MudTableSortLabel></MudTh>
