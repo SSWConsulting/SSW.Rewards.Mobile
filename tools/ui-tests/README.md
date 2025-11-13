@@ -198,7 +198,7 @@ npx playwright test form-interactions.spec.ts
 
 **Non-destructive**: These tests fill forms but **never submit** them.
 
-## � Disposable Tests (`tests/tmp/`)
+## 🗑️ Disposable Tests (`tests/tmp/`)
 
 **Purpose**: Temporary tests for experimentation and debugging.
 
@@ -222,7 +222,7 @@ npx playwright test tests/tmp/example-disposable.spec.ts
 
 **See**: `tests/tmp/README.md` for detailed guide on disposable tests
 
-## �🤖 AI-Driven UI Verification Guide
+## 🤖 AI-Driven UI Verification Guide
 
 ### Quick CSS Verification
 

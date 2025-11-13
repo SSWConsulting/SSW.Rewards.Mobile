@@ -35,7 +35,7 @@ public class WebRolesClaimsPrincipalFactory : AccountClaimsPrincipalFactory<Remo
     {
         var user = await base.CreateUserAsync(account, options);
         
-        if (user.Identity?.IsAuthenticated == true)
+        if (user.Identity?.IsAuthenticated ?? false)
         {
             var identity = (ClaimsIdentity)user.Identity;
 
@@ -144,9 +144,14 @@ public class WebRolesClaimsPrincipalFactory : AccountClaimsPrincipalFactory<Remo
                 Console.WriteLine($"[WebRolesClaimsPrincipalFactory] Failed to fetch database roles: {response.StatusCode}");
             }
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            Console.WriteLine($"[WebRolesClaimsPrincipalFactory] Error fetching database roles: {ex.Message}");
+            Console.WriteLine($"[WebRolesClaimsPrincipalFactory] HTTP error fetching database roles: {ex.Message}");
+            // Fail silently - keep JWT roles if database fetch fails
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"[WebRolesClaimsPrincipalFactory] JSON error parsing database roles: {ex.Message}");
             // Fail silently - keep JWT roles if database fetch fails
         }
     }
