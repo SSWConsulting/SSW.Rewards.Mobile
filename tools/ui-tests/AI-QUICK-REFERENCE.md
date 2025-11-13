@@ -143,8 +143,8 @@ await takeResponsiveScreenshots(
 **Generates**:
 
 - `mobile-375x667-feature-name.png`
-- `tablet-768x1024-feature-name.png`
-- `desktop-1280x720-feature-name.png`
+- `tablet-1024x768-feature-name.png`
+- `desktop-1920x1080-feature-name.png`
 
 **See**: `tests/tmp/README.md` for more examples
 
