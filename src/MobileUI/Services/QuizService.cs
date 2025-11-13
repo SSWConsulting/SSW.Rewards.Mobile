@@ -61,6 +61,11 @@ public class QuizService : IQuizService
 
             return quizzes;
         }
+        catch (HttpRequestException)
+        {
+            // Don't show error for network issues - let the caller handle it
+            throw;
+        }
         catch (Exception e)
         {
             if (! await ExceptionHandler.HandleApiException(e))

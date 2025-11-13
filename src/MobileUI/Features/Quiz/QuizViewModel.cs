@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Messages;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
@@ -8,13 +9,13 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
 {
-    private bool _isLoaded;
     private readonly IQuizService _quizService;
     private readonly IServiceProvider _provider;
-
-    private IDispatcherTimer _timer;
+    private readonly IFileCacheService _fileCacheService;
+    private readonly IDispatcherTimer _timer;
     
     private const int AutoScrollInterval = 6;
+    private const string CacheKey = "QuizzesList";
     
     [ObservableProperty]
     private bool _isRefreshing;
@@ -22,14 +23,14 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [ObservableProperty]
     private int _carouselPosition;
 
-    public ObservableRangeCollection<QuizItemViewModel> Quizzes { get; set; } = [];
-
+    public AdvancedObservableCollection<QuizItemViewModel> Quizzes { get; } = new();
     public ObservableRangeCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = [];
 
-    public QuizViewModel(IQuizService quizService, IServiceProvider provider)
+    public QuizViewModel(IQuizService quizService, IServiceProvider provider, IFileCacheService fileCacheService)
     {
         _quizService = quizService;
         _provider = provider;
+        _fileCacheService = fileCacheService;
         WeakReferenceMessenger.Default.Register(this);
         
         _timer = Application.Current.Dispatcher.CreateTimer();
@@ -38,46 +39,82 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
 
     public async Task Initialise()
     {
-        if (_isLoaded)
-            return;
+        Quizzes.CompareItems = QuizItemViewModel.IsEqual;
+        Quizzes.OnCollectionUpdated += OnQuizzesUpdated;
+        Quizzes.OnError += OnQuizzesError;
+        Quizzes.InitializeInitialCaching(_fileCacheService, CacheKey, () => true);
 
-        IsBusy = true;
-        await UpdateQuizzes();
+        if (!Quizzes.IsLoaded)
+        {
+            await LoadData();
+        }
+
         BeginAutoScroll();
-
-        IsBusy = false;
-        _isLoaded = true;
     }
 
-    private async Task UpdateQuizzes()
+    private async Task LoadData()
     {
+        if (!Quizzes.IsLoaded)
+            IsBusy = true;
+
         _timer.Stop();
-        
-        var quizzes = await _quizService.GetQuizzes();
-        var quizDtos = quizzes.ToList();
-        
         CarouselPosition = 0;
 
+        await Quizzes.LoadAsync(async ct => await FetchQuizzesData(ct), reload: true);
+    }
+
+    private async Task<List<QuizItemViewModel>> FetchQuizzesData(CancellationToken ct)
+    {
+        var quizzes = await _quizService.GetQuizzes();
+        var quizDtos = quizzes?.ToList() ?? [];
+
         var quizzesList = new List<QuizItemViewModel>();
-        var carouselQuizzesList = new List<QuizItemViewModel>();
 
         foreach (var quiz in quizDtos)
         {
-            var quizItem = new QuizItemViewModel(quiz);
-            if (quiz.IsCarousel)
-            {
-                carouselQuizzesList.Add(quizItem);
-            }
-            else
-            {
-                quizzesList.Add(quizItem);
-            }
+            quizzesList.Add(new QuizItemViewModel(quiz));
         }
 
-        Quizzes.ReplaceRange(quizzesList);
-        CarouselQuizzes.ReplaceRange(carouselQuizzesList);
+        return quizzesList;
+    }
 
-        _timer.Start();
+    private void OnQuizzesUpdated(List<QuizItemViewModel> quizzes, bool isFromCache)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            IsBusy = false;
+            IsRefreshing = false;
+            _timer.Start();
+
+            CarouselQuizzes.ReplaceRange(Quizzes.Collection.Where(q => q.IsCarousel));
+        });
+    }
+
+    private bool OnQuizzesError(Exception ex)
+    {
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            if (!Quizzes.IsLoaded)
+            {
+                string userMessage;
+
+                if (ex is HttpRequestException)
+                {
+                    userMessage = "Unable to load quizzes due to a network issue. Please check your internet connection and try again.";
+                }
+                else
+                {
+                    userMessage = "An unexpected error occurred while loading quizzes. Please try again later.";
+                }
+
+                await Shell.Current.DisplayAlert("Oops...", userMessage, "OK");
+            }
+
+            IsBusy = false;
+            IsRefreshing = false;
+            _timer.Start();
+        });
+        return true;
     }
     
     private void BeginAutoScroll()
@@ -110,27 +147,37 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [RelayCommand]
     private async Task RefreshQuizzes()
     {
-        await UpdateQuizzes();
-        IsRefreshing = false;
+        await LoadData();
     }
 
     [RelayCommand]
     private async Task OpenQuiz(int quizId)
     {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            await Shell.Current.DisplayAlert("Device Offline", "You must be online to start a quiz.", "OK");
+            return;
+        }
+
         var page = ActivatorUtilities.CreateInstance<QuizDetailsPage>(_provider, quizId);
         await Shell.Current.Navigation.PushAsync(page);
     }
 
     private bool CanOpenQuiz(int quizId)
     {
-        return Quizzes.First(q => q.Id == quizId).Passed == false;
+        var quiz = Quizzes.Collection.FirstOrDefault(q => q.Id == quizId);
+        return quiz?.Passed == false;
     }
 
     public async void Receive(QuizzesUpdatedMessage message)
     {
-        IsBusy = true;
-        await UpdateQuizzes();
-        IsBusy = false;
+        await LoadData();
+    }
+
+    public void OnDisappearing()
+    {
+        _timer.Stop();
+        _timer.Tick -= OnScrollTick;
     }
 }
 
@@ -150,5 +197,21 @@ public partial class QuizItemViewModel : QuizDto
         IsCarousel = questionDto.IsCarousel;
         Icon = questionDto.Icon;
         Points = questionDto.Points;
+    }
+
+    public static bool IsEqual(QuizItemViewModel a, QuizItemViewModel b)
+    {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+
+        return a.Id == b.Id
+            && a.Title == b.Title
+            && a.Description == b.Description
+            && a.Passed == b.Passed
+            && a.ThumbnailImage == b.ThumbnailImage
+            && a.CarouselImage == b.CarouselImage
+            && a.IsCarousel == b.IsCarousel
+            && a.Icon == b.Icon
+            && a.Points == b.Points;
     }
 }
