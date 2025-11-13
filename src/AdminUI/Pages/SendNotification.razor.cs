@@ -55,7 +55,7 @@ public partial class SendNotification
     private Task<IEnumerable<RoleDto>> SearchRoles(string value, CancellationToken cancellationToken)
         => Task.FromResult(_roles != null && !string.IsNullOrWhiteSpace(value)
             ? _roles.Where(r => r.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            : _roles ?? Enumerable.Empty<RoleDto>());
+            : _roles ?? []);
 
     private async Task HandleValidSubmit()
     {
