@@ -42,10 +42,34 @@ docker compose --profile all up -d
 print_success "Services started"
 echo ""
 
-# Step 4: Wait for AdminUI to be ready
-print_info "Waiting for AdminUI to be ready..."
-MAX_RETRIES=90  # Increased from 60
+# Step 4: Wait for WebAPI to be ready (AdminUI depends on this)
+print_info "Waiting for WebAPI to be ready..."
+MAX_RETRIES=90
 RETRY_COUNT=0
+while ! curl -k -s https://localhost:5001/health > /dev/null 2>&1; do
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        print_error "WebAPI failed to start after ${MAX_RETRIES} seconds"
+        echo ""
+        print_info "Container logs:"
+        docker compose logs --tail=50 rewards-webapi
+        exit 1
+    fi
+    echo -n "."
+    sleep 1
+done
+echo ""
+
+# Additional wait for WebAPI to fully initialize
+print_info "Waiting additional 5 seconds for WebAPI to fully initialize..."
+sleep 5
+print_success "WebAPI is ready (https://localhost:5001/health)"
+echo ""
+
+# Step 5: Wait for AdminUI to be ready (now that WebAPI is running)
+print_info "Waiting for AdminUI to be ready..."
+RETRY_COUNT=0
+MAX_RETRIES=90
 while ! curl -k -s https://localhost:7137 > /dev/null; do
     RETRY_COUNT=$((RETRY_COUNT+1))
     if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
@@ -64,30 +88,6 @@ echo ""
 print_info "Waiting additional 10 seconds for AdminUI to fully initialize..."
 sleep 10
 print_success "AdminUI is ready (https://localhost:7137)"
-echo ""
-
-# Step 5: Wait for WebAPI to be ready
-print_info "Waiting for WebAPI to be ready..."
-RETRY_COUNT=0
-MAX_RETRIES=90  # Increased from 60
-while ! curl -k -s https://localhost:5001/health > /dev/null 2>&1; do
-    RETRY_COUNT=$((RETRY_COUNT+1))
-    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
-        print_error "WebAPI failed to start after ${MAX_RETRIES} seconds"
-        echo ""
-        print_info "Container logs:"
-        docker compose logs --tail=50 rewards-webapi
-        exit 1
-    fi
-    echo -n "."
-    sleep 1
-done
-echo ""
-
-# Additional wait for WebAPI to fully initialize
-print_info "Waiting additional 5 seconds for WebAPI to fully initialize..."
-sleep 5
-print_success "WebAPI is ready (https://localhost:5001)"
 echo ""
 
 # Step 6: Run Playwright authentication
