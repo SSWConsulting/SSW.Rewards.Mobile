@@ -186,13 +186,22 @@ public partial class SendNotification
 
     private string GetPreviewTime()
     {
+        DateTime displayDateTime;
+        
         if (_model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue)
         {
-            var combinedDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
-            return combinedDateTime.ToString("h:mm tt");
+            displayDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
+        }
+        else
+        {
+            displayDateTime = DateTime.Now;
         }
         
-        return DateTime.Now.ToString("h:mm tt");
+        // Format: "Mon Nov 13  1:30 PM" (iPhone lock screen format with double space)
+        // Return raw HTML with &nbsp; entities for MarkupString rendering
+        string dayMonthDate = displayDateTime.ToString("ddd MMM d");
+        string time = displayDateTime.ToString("h:mm tt");
+        return $"{dayMonthDate}&nbsp;&nbsp;{time}"; // Use HTML entity for MarkupString
     }
 
     private void OnDateChanged(DateTime? date)
