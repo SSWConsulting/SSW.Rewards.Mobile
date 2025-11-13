@@ -1,3 +1,12 @@
+/* 2-color dividers: 1px #171717 + 1px #404040 */
+.nav-divider {
+    height: 2px;
+    background: linear-gradient(to bottom, #171717 0%, #171717 50%, #404040 50%, #404040 100%);
+    margin: 0;
+    padding: 0;
+}
+
+/* Legacy styles below (kept for backwards compatibility) */
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }

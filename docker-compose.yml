@@ -53,6 +53,7 @@ services:
     container_name: rewards-adminui
     depends_on:
       - rewards-sqlserver
+      - rewards-webapi
     build:
       dockerfile: src/AdminUI/Dockerfile
     ports:
@@ -62,6 +63,7 @@ services:
       - ASPNETCORE_URLS=https://+:7137
       - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisPassword
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/WebAPI.pfx
+      - RewardsApiUrl=https://rewards-webapi:5001
     volumes:
       - ${CERTS_PATH}:/https:ro
     profiles: ["all", "admin"]

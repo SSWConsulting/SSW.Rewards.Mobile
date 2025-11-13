@@ -4,6 +4,50 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+/* ======================
+   NavMenu Styles
+   ====================== */
+/* Navigation styling to match design */
+.mud-drawer .mud-navmenu .mud-nav-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+    position: relative;
+    border-right: 5px solid transparent;
+    min-height: 48px;
+    display: flex !important;
+    align-items: center;
+    padding: 12px 16px !important;
+    margin: 0 !important;
+}
+
+.mud-drawer .mud-navmenu .mud-nav-link.active {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border-right: 5px solid #cc4141 !important;
+}
+
+.mud-drawer .mud-navmenu .mud-nav-link.active .mud-nav-link-text {
+    color: #ffffff !important;
+}
+
+.mud-drawer .mud-navmenu .mud-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Ensure icon and text are vertically centered */
+.mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-icon,
+.mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-text {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Remove MudStack spacing - we want nav items to touch */
+.mud-navmenu .mud-stack {
+    gap: 0 !important;
+}
+
+/* ======================
+   Input Focus Styles
+   ====================== */
 /* Smokey white background for active (focused) inputs */
 :root {
     --smokey-white: #F7F7F7;
@@ -14,39 +58,47 @@ input:focus, textarea:focus, select:focus {
     background-color: var(--smokey-white);
 }
 
-/* MudSelect (dropdowns) - black text on smokey white when focused */
-.mud-select:focus-within .mud-input-slot,
-.mud-select:focus-within .mud-input-slot .mud-input,
-.mud-select:focus-within .mud-input-slot input {
+/* MudTextField - black text on smokey white when focused */
+/* Target the input element directly as it has the mud-input-slot class */
+input.mud-input-slot:focus,
+textarea.mud-input-slot:focus,
+.mud-input-control:focus-within input.mud-input-slot,
+.mud-input-control:focus-within textarea.mud-input-slot,
+.mud-input-control.mud-input-control-focused input.mud-input-slot,
+.mud-input-control.mud-input-control-focused textarea.mud-input-slot {
     background-color: var(--smokey-white) !important;
     color: #000000 !important;
 }
 
-.mud-select.mud-input-control-focused .mud-input-slot .mud-input-root input,
-.mud-select.mud-input-control-focused .mud-input-slot input {
+/* MudSelect (dropdowns) - black text on smokey white when focused */
+.mud-select:focus-within input.mud-input-slot,
+.mud-select.mud-select-open input.mud-input-slot,
+input.mud-select-input:focus {
+    background-color: var(--smokey-white) !important;
     color: #000000 !important;
 }
 
 /* MudAutocomplete (searchable dropdowns) - black text on smokey white when focused */
-.mud-autocomplete:focus-within .mud-input-slot input,
-.mud-autocomplete:focus-within .mud-input-slot .mud-input,
-.mud-autocomplete .mud-input-root:focus-within .mud-input-slot input {
+.mud-autocomplete:focus-within input.mud-input-slot,
+.mud-autocomplete input.mud-input-slot:focus,
+input.mud-select-input:focus {
     background-color: var(--smokey-white) !important;
     color: #000000 !important;
 }
 
-.mud-autocomplete:focus-within .mud-input-slot,
-.mud-autocomplete.mud-input-control-focused .mud-input-slot {
+/* MudDatePicker & MudTimePicker - black text on smokey white when focused */
+.mud-picker:focus-within input.mud-input-slot,
+.mud-picker input.mud-input-slot:focus,
+input.mud-picker-input:focus {
     background-color: var(--smokey-white) !important;
-}
-
-.mud-autocomplete.mud-input-control-focused .mud-input-slot input {
     color: #000000 !important;
 }
 
-/* Ensure normal state (unfocused) for dropdowns has proper styling */
-.mud-select:not(.mud-input-control-focused) .mud-input-slot input,
-.mud-autocomplete:not(.mud-input-control-focused) .mud-input-slot input {
+/* Ensure normal state (unfocused) for all inputs has proper styling */
+input.mud-input-slot:not(:focus),
+textarea.mud-input-slot:not(:focus),
+.mud-input-control:not(.mud-input-control-focused) input.mud-input-slot,
+.mud-input-control:not(.mud-input-control-focused) textarea.mud-input-slot {
     background-color: transparent;
 }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using SSW.Rewards.Admin.UI.Models;
 using SSW.Rewards.ApiClient.Services;
@@ -51,10 +52,10 @@ public partial class SendNotification
         _timezones = TimeZoneInfo.GetSystemTimeZones().ToDictionary(x => x.Id, x => x.DisplayName);
     }
 
-    private async Task<IEnumerable<RoleDto>> SearchRoles(string value)
-        => _roles != null && !string.IsNullOrWhiteSpace(value)
+    private Task<IEnumerable<RoleDto>> SearchRoles(string value, CancellationToken cancellationToken)
+        => Task.FromResult(_roles != null && !string.IsNullOrWhiteSpace(value)
             ? _roles.Where(r => r.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            : _roles ?? [];
+            : _roles ?? []);
 
     private async Task HandleValidSubmit()
     {
@@ -167,11 +168,11 @@ public partial class SendNotification
         }
     }
 
-    private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AchievementDto>> SearchAchievements(string value)
     {
         try
         {
-            var achievements = await AchievementService.SearchAchievements(value, cancellationToken);
+            var achievements = await AchievementService.SearchAchievements(value, CancellationToken.None);
             return achievements.Achievements;
         }
         catch (Exception ex)
@@ -182,4 +183,36 @@ public partial class SendNotification
     }
 
     private static string GetAchievementName(AchievementDto? achievement) => achievement?.Name ?? string.Empty;
+
+    private string GetPreviewTime()
+    {
+        DateTime displayDateTime;
+        
+        if (_model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue)
+        {
+            displayDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
+        }
+        else
+        {
+            displayDateTime = DateTime.Now;
+        }
+        
+        // Format: "Mon Nov 13  1:30 PM" (iPhone lock screen format with double space)
+        // Return raw HTML with &nbsp; entities for MarkupString rendering
+        string dayMonthDate = displayDateTime.ToString("ddd MMM d");
+        string time = displayDateTime.ToString("h:mm tt");
+        return $"{dayMonthDate}&nbsp;&nbsp;{time}"; // Use HTML entity for MarkupString
+    }
+
+    private void OnDateChanged(DateTime? date)
+    {
+        _model.ScheduleDate = date;
+        StateHasChanged();
+    }
+
+    private void OnTimeChanged(TimeSpan? time)
+    {
+        _model.ScheduleTime = time;
+        StateHasChanged();
+    }
 }
