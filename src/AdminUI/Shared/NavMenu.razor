@@ -5,9 +5,9 @@
 
 @inject NavigationManager Navigation
 
-<MudDivider Style="background-color: black"/>
+<div class="nav-divider"></div>
 <MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
-    <MudStack Spacing="2">
+    <MudStack Spacing="0">
         <!-- For staff and admins -->
         <AuthorizeView Roles="Admin, Staff">
             @foreach (var staffPage in NavigationPages.StaffPages())
@@ -15,7 +15,7 @@
                 <MudNavLink Href="@staffPage.Href" 
                             Match="NavLinkMatch.Prefix" 
                             Icon="@staffPage.Icon">@staffPage.Title</MudNavLink>
-                <MudDivider Style="background-color: black"/>
+                <div class="nav-divider"></div>
             }
         </AuthorizeView>
 
@@ -26,7 +26,7 @@
                 <MudNavLink Href="@adminPage.Href"
                             Match="NavLinkMatch.Prefix" 
                             Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
-                <MudDivider Style="background-color: black"/>
+                <div class="nav-divider"></div>
             }
         </AuthorizeView>
 
@@ -38,7 +38,7 @@
                     <MudNavLink Href="@publicPage.Href"
                                 Match="NavLinkMatch.Prefix"
                                 Icon="@publicPage.Icon">@publicPage.Title</MudNavLink>
-                    <MudDivider Style="background-color: black" />
+                    <div class="nav-divider"></div>
                 }
             </Authorized>
         </AuthorizeView>

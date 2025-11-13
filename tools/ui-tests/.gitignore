@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+
+# Test results and reports
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Disposable/temporary tests (for experimentation)
+tests/tmp/
+
+# Screenshots (generated during tests)
+screenshots/
+
+# Authentication state (contains session data)
+.auth/
+
+# Environment variables (contains credentials)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

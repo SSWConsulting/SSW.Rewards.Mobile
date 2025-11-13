@@ -120,6 +120,34 @@ var result = sorted.ToPaginatedResult<ViewModel, Dto>(request);
 - **Async**: Always for I/O, `CancellationToken`, avoid `.Result`/`.Wait()`
 - **Logging**: `ILogger<T>`, structured logging, never log PII
 
+## UI Testing (Playwright)
+
+**Location**: `tools/ui-tests/` - Non-destructive AdminUI verification
+
+```bash
+# Verify CSS changes (fast, ~7s)
+cd tools/ui-tests && npx playwright test dom-inspection.spec.ts --grep "CSS"
+
+# Full suite (9 tests, ~10s)
+npx playwright test
+
+# Debug mode
+npx playwright test --debug
+```
+
+**When to use**:
+- After CSS/styling changes (verify smokey white focus states)
+- After form field changes (test validation, conditional logic)
+- Before PR (ensure UI not broken)
+- Debugging MudBlazor component behavior
+
+**Test categories**:
+- `auth.verify.spec.ts` - Authentication flow
+- `dom-inspection.spec.ts` - CSS variables, component structure
+- `form-interactions.spec.ts` - Form validation, conditional fields
+
+See: `tools/ui-tests/AI-QUICK-REFERENCE.md` for commands
+
 ## Commands
 
 ```bash
@@ -129,6 +157,9 @@ dotnet ef migrations add <Name> --project src/Infrastructure --startup-project s
 dotnet ef database update --project src/Infrastructure --startup-project src/WebAPI
 dotnet run --project src/WebAPI
 dotnet workload install maui
+
+# UI Tests
+cd tools/ui-tests && npx playwright test
 ```
 
 ## Interaction
@@ -136,6 +167,7 @@ dotnet workload install maui
 - Concise code examples, modern best practices, explain trade-offs
 - Use `search` to find patterns, `usages` for types, `problems` for errors
 - Use `upstash/context7` for latest .NET MAUI, Blazor, EF Core docs
+- Run `npx playwright test` to verify AdminUI changes
 - Ask clarifying questions when uncertain
 
 **Mission**: High-quality, maintainable .NET apps with best practices across mobile and web.

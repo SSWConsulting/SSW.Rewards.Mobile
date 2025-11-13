@@ -1,0 +1,72 @@
+/* Larger table font for better readability */
+.notifications-table {
+    font-size: 1.125rem !important;
+}
+
+.notifications-table td,
+.notifications-table th {
+    font-size: 1.125rem !important;
+}
+
+/* Controls wrapper - responsive layout */
+.notification-controls-wrapper {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.control-row {
+    display: flex;
+}
+
+/* Mobile: Stack controls vertically, each in own row */
+@media (max-width: 768px) {
+    .notification-controls-wrapper {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .control-row {
+        width: 100%;
+    }
+    
+    /* Search field full width */
+    :deep(.search-field) {
+        width: 100%;
+    }
+    
+    /* Checkbox - align left on mobile */
+    :deep(.show-deleted-checkbox) {
+        margin-left: -11px; /* Compensate for MudCheckBox internal padding */
+    }
+    
+    /* Button full width on mobile */
+    :deep(.create-btn) {
+        width: 100%;
+    }
+}
+
+/* Desktop/Tablet: Horizontal layout */
+@media (min-width: 769px) {
+    .notification-controls-wrapper {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    /* Search takes available space */
+    .control-row:nth-child(1) {
+        flex: 1;
+        max-width: 400px;
+    }
+    
+    /* Checkbox natural width */
+    .control-row:nth-child(2) {
+        flex: 0 0 auto;
+    }
+    
+    /* Button on the right */
+    .control-row:nth-child(3) {
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+}
