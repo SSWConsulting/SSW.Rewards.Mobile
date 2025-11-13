@@ -5,54 +5,6 @@
 
 @inject NavigationManager Navigation
 
-<style>
-    /* Navigation styling to match design */
-    .mud-drawer .mud-navmenu .mud-nav-link {
-        color: rgba(255, 255, 255, 0.6) !important;
-        position: relative;
-        border-right: 5px solid transparent;
-        min-height: 48px;
-        display: flex !important;
-        align-items: center;
-        padding: 12px 16px !important;
-        margin: 0 !important;
-    }
-    
-    .mud-drawer .mud-navmenu .mud-nav-link.active {
-        background-color: rgba(255, 255, 255, 0.08) !important;
-        color: #ffffff !important;
-        border-right: 5px solid #cc4141 !important;
-    }
-    
-    .mud-drawer .mud-navmenu .mud-nav-link.active .mud-nav-link-text {
-        color: #ffffff !important;
-    }
-    
-    .mud-drawer .mud-navmenu .mud-nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.08) !important;
-    }
-    
-    /* Ensure icon and text are vertically centered */
-    .mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-icon,
-    .mud-drawer .mud-navmenu .mud-nav-link .mud-nav-link-text {
-        display: inline-flex;
-        align-items: center;
-    }
-    
-    /* Remove MudStack spacing - we want nav items to touch */
-    .mud-navmenu .mud-stack {
-        gap: 0 !important;
-    }
-    
-    /* 2-color dividers: 1px #171717 + 1px #404040 */
-    .nav-divider {
-        height: 2px;
-        background: linear-gradient(to bottom, #171717 0%, #171717 50%, #404040 50%, #404040 100%);
-        margin: 0;
-        padding: 0;
-    }
-</style>
-
 <div class="nav-divider"></div>
 <MudNavMenu Style="margin-top: 8px; display:flex; flex-direction: column; justify-content: space-between; height: 100vh; margin-bottom: 16px; overflow: hidden;">
     <MudStack Spacing="0">
