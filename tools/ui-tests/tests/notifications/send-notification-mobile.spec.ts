@@ -173,7 +173,7 @@ test.describe('SendNotification Page - Mobile View (390x844)', () => {
 
     // Preview should exist in DOM but be hidden with CSS
     const exists = await iphonePreview.count() > 0;
-    console.log(`� Preview exists in DOM: ${exists}`);
+    console.log(`📦 Preview exists in DOM: ${exists}`);
     expect(exists).toBe(true);
     console.log('✅ Preview exists in DOM but hidden with CSS media query');
 
