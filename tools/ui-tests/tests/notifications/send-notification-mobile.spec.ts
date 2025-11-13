@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
-// Configure mobile viewport (iPhone 12 Pro dimensions with Chromium)
+// Configure mobile viewport (iPhone 14 Pro dimensions with Chromium)
 test.use({ 
   viewport: { width: 390, height: 844 }, // iPhone 12 Pro
   userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
@@ -39,10 +40,12 @@ test.describe('SendNotification Page - Mobile View (390x844)', () => {
     console.log('✅ Scrolled to bottom successfully');
 
     // Take screenshot of mobile view
-    await page.screenshot({
-      path: 'screenshots/send-notification/mobile-390x844-portrait.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'mobile-portrait',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Page Load - Verified');
     console.log('='.repeat(70));
@@ -146,10 +149,12 @@ test.describe('SendNotification Page - Mobile View (390x844)', () => {
 
     await expect(imageField).toHaveValue('https://example.com/image.jpg');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/mobile-390x844-input-fields.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'mobile-input-fields',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Text Input - Verified');
     console.log('='.repeat(70));
@@ -202,10 +207,12 @@ test.describe('SendNotification Page - Mobile View (390x844)', () => {
     console.log('✅ Submit button visible and enabled');
 
     // Take screenshot with submit button visible
-    await page.screenshot({
-      path: 'screenshots/send-notification/mobile-390x844-submit-button.png',
-      fullPage: false
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'mobile-submit-button',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Submit Button - Verified');
     console.log('='.repeat(70));
@@ -247,10 +254,12 @@ test.describe('SendNotification Page - Mobile View (390x844)', () => {
       }
     }
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/mobile-390x844-autocomplete.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'mobile-autocomplete',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Autocomplete - Verified');
     console.log('='.repeat(70));
@@ -368,10 +377,12 @@ test.describe('SendNotification Page - Mobile Landscape (844x390)', () => {
 
     console.log(`✅ Horizontal overflow in landscape: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/mobile-844x390-landscape.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'mobile-landscape',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Landscape Layout - Verified');
     console.log('='.repeat(70));

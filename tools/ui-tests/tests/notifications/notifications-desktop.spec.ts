@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
 test.use({ storageState: '.auth/user.json' });
 
@@ -52,10 +53,12 @@ test.describe('Notifications History Page - Desktop View', () => {
     expect(fontSizeNum).toBeGreaterThanOrEqual(16); // At least default size
     console.log('✅ Table font size is adequate for readability');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/desktop-page-load.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'desktop-page-load',
+      { collapseSidebar: false } // Desktop keeps sidebar open
+    );
 
     console.log('\n✅ Page Load & Structure - Verified');
     console.log('='.repeat(70));
@@ -114,10 +117,12 @@ test.describe('Notifications History Page - Desktop View', () => {
     await expect(searchBox).toHaveValue('test');
     console.log('✅ Search box retains value');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/desktop-search.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'desktop-search',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ Search Functionality - Verified');
     console.log('='.repeat(70));
@@ -142,10 +147,12 @@ test.describe('Notifications History Page - Desktop View', () => {
     await expect(checkbox).toBeChecked();
     console.log('✅ Now checked (shows deleted notifications)');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/desktop-show-deleted.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'desktop-show-deleted',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ Show Deleted Toggle - Verified');
     console.log('='.repeat(70));
@@ -208,11 +215,14 @@ test.describe('Notifications History Page - Desktop View', () => {
       console.log('ℹ️  No notifications in table (empty state)');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/desktop-table-data.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'desktop-table-data',
+      { collapseSidebar: false }
+    );
 
+    console.log('\n✅ Table Data & Rows - Verified');
     console.log('\n✅ Table Data Display - Verified');
     console.log('='.repeat(70));
   });
@@ -302,10 +312,12 @@ test.describe('Notifications History Page - Desktop View', () => {
       }
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/desktop-status-chips.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'desktop-status-chips',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ Status Chip Styling - Verified');
     console.log('='.repeat(70));

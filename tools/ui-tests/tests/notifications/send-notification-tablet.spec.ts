@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
 // Configure tablet viewport (iPad Pro dimensions with Chromium)
 // Tablet is essentially "desktop-lite" - has enough width to show iPhone preview
@@ -32,19 +33,21 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await expect(iphonePreview).toBeVisible();
     console.log('✅ iPhone preview visible on tablet');
 
-    // Verify preview is properly sized
+    // Verify preview is properly sized (scaled to 1.15x for better space utilization)
     const boundingBox = await iphonePreview.boundingBox();
     if (boundingBox) {
       console.log(`📐 Preview: ${boundingBox.width}x${boundingBox.height}px`);
-      expect(boundingBox.width).toBe(260);
-      expect(boundingBox.height).toBe(520);
-      console.log('✅ Preview has correct dimensions (smaller for iPad Pro)');
+      expect(boundingBox.width).toBe(299); // 260 * 1.15 = 299 (scaled)
+      expect(boundingBox.height).toBe(598); // 520 * 1.15 = 598 (scaled)
+      console.log('✅ Preview has correct scaled dimensions (1.15x for better visibility)');
     }
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/tablet-1024x1366-portrait.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'tablet-portrait',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Page Load - Verified');
     console.log('='.repeat(70));
@@ -103,10 +106,12 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await expect(previewBody).toContainText('This notification was created on a tablet device');
     console.log('✅ Preview body updates on tablet');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/tablet-1024x1366-live-preview.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'tablet-live-preview',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Preview Updates - Verified');
     console.log('='.repeat(70));
@@ -210,10 +215,12 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     const isEnabled = await submitButton.isEnabled();
     console.log(`✅ Submit button visible and enabled: ${isEnabled}`);
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/tablet-1024x1366-submit.png',
-      fullPage: false
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'tablet-submit',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Submit Button - Verified');
     console.log('='.repeat(70));
@@ -237,10 +244,12 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await expect(previewImage).toHaveAttribute('src', imageUrl);
     console.log('✅ Image visible in preview on tablet');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/tablet-1024x1366-with-image.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'tablet-with-image',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Image Preview - Verified');
     console.log('='.repeat(70));
@@ -283,10 +292,12 @@ test.describe('SendNotification Page - Tablet Landscape (1366x1024)', () => {
     });
     console.log(`✅ Horizontal overflow: ${hasHorizontalScroll ? 'Yes' : 'No'}`);
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/tablet-1366x1024-landscape.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'tablet-landscape',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Landscape Layout - Verified');
     console.log('='.repeat(70));

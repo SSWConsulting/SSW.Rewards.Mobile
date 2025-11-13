@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
 test.use({ 
   storageState: '.auth/user.json',
@@ -35,10 +36,12 @@ test.describe('Notifications History Page - Tablet View (1024x1366)', () => {
     await expect(createButton).toBeVisible();
     console.log('✅ Create button visible on tablet');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-page-load.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'tablet-page-load',
+      { collapseSidebar: true } // Tablet collapses sidebar
+    );
 
     console.log('\n✅ Tablet Page Load - Verified');
     console.log('='.repeat(70));
@@ -96,10 +99,12 @@ test.describe('Notifications History Page - Tablet View (1024x1366)', () => {
       console.log('✅ No horizontal overflow');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/tablet-1024x1366-overflow.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'tablet-overflow',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Overflow Check - Complete');
     console.log('='.repeat(70));
@@ -195,10 +200,12 @@ test.describe('Notifications History Page - Tablet Landscape (1366x1024)', () =>
       console.log('✅ No horizontal overflow in landscape');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/tablet-1366x1024-landscape.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'tablet-landscape',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Tablet Landscape Layout - Verified');
     console.log('='.repeat(70));

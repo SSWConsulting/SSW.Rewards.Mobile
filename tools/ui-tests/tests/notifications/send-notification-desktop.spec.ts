@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 import {
   Selectors,
   navigateToSendNotification,
@@ -44,10 +45,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     // Verify black text on light background
     expect(timeColor).toBe('rgb(0, 0, 0)');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-iphone-white-theme.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-iphone-white-theme',
+      { collapseSidebar: false }
+    );
 
     logTestComplete('White theme verified');
   });
@@ -70,10 +73,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     const timeText = await timeDisplay.textContent();
     logInfo('⏰ Time displayed', `${timeText} (current time)`);
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-send-now-everyone.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-send-now-everyone',
+      { collapseSidebar: false }
+    );
 
     logTestComplete('Send Now to Everyone - Verified');
   });
@@ -106,10 +111,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     await verifyPreviewText(page, 'Prize Draw in 10 Minutes!', 'Come to the SSW booth');
     logSuccess('Preview updated with scheduled notification');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-scheduled-achievement.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-scheduled-achievement',
+      { collapseSidebar: false }
+    );
 
     logTestComplete('Scheduled with Achievement');
   });
@@ -151,10 +158,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     await expect(page.locator('.notification-body')).toContainText('New admin features');
     console.log('✅ Preview updated with role-based notification');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-role-based.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-role-based',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ Role-Based Notification - Verified');
     console.log('='.repeat(70));
@@ -233,10 +242,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     await expect(page.locator('.notification-body .preview-placeholder')).toContainText('Notification message will appear here');
     console.log('✅ Body placeholder visible');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-preview-elements.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-preview-elements',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ All Preview Elements - Verified');
     console.log('='.repeat(70));
@@ -289,10 +300,12 @@ test.describe('SendNotification Page - Desktop View', () => {
 
     console.log('✅ Preview handles maximum length content');
 
-    await page.screenshot({
-      path: 'screenshots/send-notification/desktop-max-length.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-max-length',
+      { collapseSidebar: false }
+    );
 
     console.log('\n✅ Maximum Length - Verified');
     console.log('='.repeat(70));
@@ -327,7 +340,12 @@ test.describe('SendNotification Page - Desktop View', () => {
     console.log('✅ Image visible in preview');
 
     // Take screenshot to verify image preview
-    await page.screenshot({ path: 'screenshots/send-notification/desktop-with-image.png', fullPage: true });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/send-notification',
+      'desktop-with-image',
+      { collapseSidebar: false }
+    );
     console.log('📸 Screenshot: screenshots/send-notification/desktop-with-image.png');
 
     console.log('\n✅ Image URL - Verified');

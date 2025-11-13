@@ -44,9 +44,29 @@ tests/tmp/
    touch tests/tmp/my-test.spec.ts
    ```
 
-2. **Copy the example structure** from `example-disposable.spec.ts`
+2. **Use the screenshot helper** for consistent naming:
 
-3. **Run your test**:
+   ```typescript
+   import { test } from '@playwright/test';
+   import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+   
+   test.use({ storageState: '.auth/user.json' });
+   
+   test('my quick test', async ({ page }) => {
+     await page.goto('https://localhost:7137/your-page');
+     await page.waitForLoadState('networkidle');
+     
+     // Take responsive screenshots (mobile, tablet, desktop)
+     await takeResponsiveScreenshots(
+       page,
+       'screenshots/tmp',
+       'my-test',
+       { collapseSidebar: true }
+     );
+   });
+   ```
+
+3. **Run your test** (uses list reporter by default):
 
    ```bash
    npx playwright test tests/tmp/my-test.spec.ts --headed
@@ -55,6 +75,30 @@ tests/tmp/
 4. **When done**, either:
    - Delete the file (it's disposable!)
    - Move it to `tests/` if it's valuable for the project
+
+## 📸 Screenshot Helper Utility
+
+**Always use** `takeResponsiveScreenshots()` for consistent naming:
+
+```typescript
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
+await takeResponsiveScreenshots(
+  page,
+  'screenshots/tmp',      // Base path
+  'feature-name',          // Name
+  { 
+    collapseSidebar: true,  // Auto-collapse on mobile/tablet
+    waitForNetwork: false,  // Optional network wait
+    fullPage: true          // Full page screenshot
+  }
+);
+```
+
+**Generates**:
+- `mobile-375x667-feature-name.png`
+- `tablet-768x1024-feature-name.png`
+- `desktop-1280x720-feature-name.png`
 
 ## 📝 Best Practices
 
@@ -95,34 +139,56 @@ This folder is perfect for AI-assisted development:
 
 ```
 "Create a quick test in tests/tmp/ to verify the new date picker behavior"
-"Add a disposable test to capture screenshots of all form states"
+"Add a disposable test with takeResponsiveScreenshots to capture all form states"
 "Write a tmp test to debug why the autocomplete isn't working"
 ```
 
 ## 🎓 Example Use Cases
 
-### Debugging a Specific Element
+### Debugging with Responsive Screenshots
 
 ```typescript
 // tests/tmp/debug-autocomplete.spec.ts
-test("debug autocomplete dropdown", async ({ page }) => {
-  await page.goto("https://localhost:7137/send-notification");
-  const input = page.getByTestId("target-achievement");
+import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
+test.use({ storageState: '.auth/user.json' });
+
+test('debug autocomplete dropdown', async ({ page }) => {
+  await page.goto('https://localhost:7137/send-notification');
+  const input = page.getByTestId('target-achievement');
   await input.click();
-  await input.fill("test");
-  await page.screenshot({ path: "screenshots/autocomplete-debug.png" });
+  await input.fill('test');
+  
+  // Take responsive screenshots
+  await takeResponsiveScreenshots(
+    page,
+    'screenshots/tmp',
+    'autocomplete-debug',
+    { collapseSidebar: true }
+  );
 });
 ```
 
-### Capturing Multiple Screenshots
+### Capturing Multiple Pages
 
 ```typescript
 // tests/tmp/screenshot-all-pages.spec.ts
-test("capture all admin pages", async ({ page }) => {
-  const pages = ["/users", "/achievements", "/notifications"];
+import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
+test.use({ storageState: '.auth/user.json' });
+
+test('capture all admin pages', async ({ page }) => {
+  const pages = ['/users', '/achievements', '/notifications'];
   for (const route of pages) {
     await page.goto(`https://localhost:7137${route}`);
-    await page.screenshot({ path: `screenshots/${route.slice(1)}.png` });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/tmp',
+      route.slice(1), // Remove leading slash
+      { collapseSidebar: true }
+    );
   }
 });
 ```
@@ -131,17 +197,17 @@ test("capture all admin pages", async ({ page }) => {
 
 ```typescript
 // tests/tmp/test-new-selector.spec.ts
-test("find the right selector", async ({ page }) => {
-  await page.goto("https://localhost:7137/send-notification");
+test('find the right selector', async ({ page }) => {
+  await page.goto('https://localhost:7137/send-notification');
 
   // Try different selectors
-  const selector1 = page.locator(".mud-input-slot");
-  const selector2 = page.getByTestId("notification-title");
+  const selector1 = page.locator('.mud-input-slot');
+  const selector2 = page.getByTestId('notification-title');
   const selector3 = page.locator('input[aria-label*="title"]');
 
-  console.log("Selector 1 count:", await selector1.count());
-  console.log("Selector 2 count:", await selector2.count());
-  console.log("Selector 3 count:", await selector3.count());
+  console.log('Selector 1 count:', await selector1.count());
+  console.log('Selector 2 count:', await selector2.count());
+  console.log('Selector 3 count:', await selector3.count());
 });
 ```
 
@@ -149,4 +215,6 @@ test("find the right selector", async ({ page }) => {
 
 **Remember**: This folder is gitignored! Your tests here won't be committed to the repository.
 
-**Last Updated**: November 10, 2025
+**Pro Tip**: Always use `takeResponsiveScreenshots()` for consistent naming across all devices.
+
+**Last Updated**: November 2025

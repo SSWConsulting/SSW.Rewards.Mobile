@@ -328,11 +328,13 @@ test.describe('Notifications History - Mock Data Tests', () => {
     console.log('✅ Archived notification now visible');
 
     // Take screenshot
-    await page.screenshot({
-      path: 'screenshots/notifications/show-archived.png',
-      fullPage: true
-    });
-    console.log('📸 Screenshot saved: screenshots/notifications/show-archived.png');
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'show-archived',
+      { collapseSidebar: false }
+    );
+    console.log('📸 Screenshot saved with responsive helper');
   });
 
   test('pagination with many notifications', async ({ page }) => {
@@ -407,10 +409,12 @@ test.describe('Notifications History - Mock Data Tests', () => {
     console.log('✅ Next page button enabled');
 
     // Take screenshot
-    await page.screenshot({
-      path: 'screenshots/notifications/pagination.png',
-      fullPage: true
-    });
-    console.log('📸 Screenshot saved: screenshots/notifications/pagination.png');
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'pagination',
+      { collapseSidebar: false }
+    );
+    console.log('📸 Screenshot saved with responsive helper');
   });
 });

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
 test.use({ 
   storageState: '.auth/user.json',
@@ -26,10 +27,12 @@ test.describe('Notifications History Page - Mobile View (390x844)', () => {
     await expect(table).toBeVisible();
     console.log('✅ Notifications table visible on mobile');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-page-load.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'mobile-page-load',
+      { collapseSidebar: true } // Mobile collapses sidebar
+    );
 
     console.log('\n✅ Mobile Page Load - Verified');
     console.log('='.repeat(70));
@@ -84,10 +87,12 @@ test.describe('Notifications History Page - Mobile View (390x844)', () => {
       console.log('ℹ️  No horizontal overflow (table might be responsive or empty)');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-overflow.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'mobile-overflow',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Horizontal Scrolling - Verified');
     console.log('='.repeat(70));
@@ -157,10 +162,12 @@ test.describe('Notifications History Page - Mobile View (390x844)', () => {
       console.log('ℹ️  Search box not found in mobile layout');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-search.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'mobile-search',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Search - Verified');
     console.log('='.repeat(70));
@@ -222,10 +229,12 @@ test.describe('Notifications History Page - Mobile View (390x844)', () => {
       console.log('ℹ️  No data in table to scroll to');
     }
 
-    await page.screenshot({
-      path: 'screenshots/notifications/mobile-390x844-scrolled-right.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'mobile-scrolled-right',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Table Horizontal Scroll - Verified');
     console.log('='.repeat(70));
@@ -303,10 +312,12 @@ test.describe('Notifications History Page - Mobile Landscape (844x390)', () => {
     console.log(`📏 Scroll width: ${scrollWidth}px, Client width: ${clientWidth}px`);
     console.log('ℹ️  More horizontal space available in landscape mode');
 
-    await page.screenshot({
-      path: 'screenshots/notifications/mobile-844x390-landscape.png',
-      fullPage: true
-    });
+    await takeResponsiveScreenshots(
+      page,
+      'screenshots/notifications',
+      'mobile-landscape',
+      { collapseSidebar: true }
+    );
 
     console.log('\n✅ Mobile Landscape Layout - Verified');
     console.log('='.repeat(70));
