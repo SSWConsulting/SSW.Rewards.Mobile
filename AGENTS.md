@@ -427,7 +427,7 @@ Playwright-based UI testing suite for AdminUI verification:
 cd tools/ui-tests
 npx playwright test dom-inspection.spec.ts --grep "CSS"
 
-# Run all tests (9 tests, ~10 seconds)
+# Run all tests (~10-15 seconds, uses --reporter=list by default)
 npx playwright test
 
 # Run with UI visible (headed mode)
@@ -435,19 +435,52 @@ npx playwright test --headed
 
 # Debug specific test
 npx playwright test --debug
+
+# Create disposable test for quick debugging
+cat > tests/tmp/debug.spec.ts << 'EOF'
+import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+test.use({ storageState: '.auth/user.json' });
+test('quick check', async ({ page }) => {
+  await page.goto('https://localhost:7137/your-page');
+  await takeResponsiveScreenshots(page, 'screenshots/tmp', 'debug');
+});
+EOF
+npx playwright test tests/tmp/debug.spec.ts --headed
 ```
 
 **Test Categories**:
 
 - **Authentication** (3 tests): Login flow, session persistence, protected pages
 - **DOM Inspection** (3 tests): Page structure, CSS variables, MudBlazor components
-- **Form Interactions** (4 tests): Validation, population, conditional fields, screenshots
+- **Form Interactions** (4 tests): Validation, population, conditional fields
+- **Notifications** (58 tests): SendNotification & Notifications pages (desktop/tablet/mobile)
+- **Mock Data** (4 tests): Empty state, all statuses, pagination
 - **Disposable Tests** (`tests/tmp/`): Temporary/experimental tests (gitignored)
+
+**Screenshot Helper Utility**:
+
+All tests use `takeResponsiveScreenshots()` for consistent naming:
+
+```typescript
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
+
+await takeResponsiveScreenshots(
+  page,
+  "screenshots/notifications",
+  "feature-name",
+  { collapseSidebar: true }
+);
+// Generates: mobile-375x667-feature-name.png, tablet-768x1024-feature-name.png, desktop-1280x720-feature-name.png
+```
 
 **Key Features**:
 
 - ✅ Non-destructive (never creates data)
-- ✅ Fast execution (~10s for full suite)
+- ✅ Fast execution (~15s for full suite)
+- ✅ Uses `--reporter=list` by default (non-blocking output)
+- ✅ Consistent screenshot naming: `{device}-{resolution}-{name}.png`
+- ✅ Auto-collapses sidebar on mobile/tablet
 - ✅ AI-friendly console output
 - ✅ Screenshot capture on failure
 - ✅ Saved authentication session (no repeated logins)

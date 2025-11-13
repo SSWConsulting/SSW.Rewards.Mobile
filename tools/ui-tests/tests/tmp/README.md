@@ -47,22 +47,19 @@ tests/tmp/
 2. **Use the screenshot helper** for consistent naming:
 
    ```typescript
-   import { test } from '@playwright/test';
-   import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
-   
-   test.use({ storageState: '.auth/user.json' });
-   
-   test('my quick test', async ({ page }) => {
-     await page.goto('https://localhost:7137/your-page');
-     await page.waitForLoadState('networkidle');
-     
+   import { test } from "@playwright/test";
+   import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
+
+   test.use({ storageState: ".auth/user.json" });
+
+   test("my quick test", async ({ page }) => {
+     await page.goto("https://localhost:7137/your-page");
+     await page.waitForLoadState("networkidle");
+
      // Take responsive screenshots (mobile, tablet, desktop)
-     await takeResponsiveScreenshots(
-       page,
-       'screenshots/tmp',
-       'my-test',
-       { collapseSidebar: true }
-     );
+     await takeResponsiveScreenshots(page, "screenshots/tmp", "my-test", {
+       collapseSidebar: true,
+     });
    });
    ```
 
@@ -81,21 +78,22 @@ tests/tmp/
 **Always use** `takeResponsiveScreenshots()` for consistent naming:
 
 ```typescript
-import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
 
 await takeResponsiveScreenshots(
   page,
-  'screenshots/tmp',      // Base path
-  'feature-name',          // Name
-  { 
-    collapseSidebar: true,  // Auto-collapse on mobile/tablet
-    waitForNetwork: false,  // Optional network wait
-    fullPage: true          // Full page screenshot
+  "screenshots/tmp", // Base path
+  "feature-name", // Name
+  {
+    collapseSidebar: true, // Auto-collapse on mobile/tablet
+    waitForNetwork: false, // Optional network wait
+    fullPage: true, // Full page screenshot
   }
 );
 ```
 
 **Generates**:
+
 - `mobile-375x667-feature-name.png`
 - `tablet-768x1024-feature-name.png`
 - `desktop-1280x720-feature-name.png`
@@ -149,22 +147,22 @@ This folder is perfect for AI-assisted development:
 
 ```typescript
 // tests/tmp/debug-autocomplete.spec.ts
-import { test } from '@playwright/test';
-import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+import { test } from "@playwright/test";
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
 
-test.use({ storageState: '.auth/user.json' });
+test.use({ storageState: ".auth/user.json" });
 
-test('debug autocomplete dropdown', async ({ page }) => {
-  await page.goto('https://localhost:7137/send-notification');
-  const input = page.getByTestId('target-achievement');
+test("debug autocomplete dropdown", async ({ page }) => {
+  await page.goto("https://localhost:7137/send-notification");
+  const input = page.getByTestId("target-achievement");
   await input.click();
-  await input.fill('test');
-  
+  await input.fill("test");
+
   // Take responsive screenshots
   await takeResponsiveScreenshots(
     page,
-    'screenshots/tmp',
-    'autocomplete-debug',
+    "screenshots/tmp",
+    "autocomplete-debug",
     { collapseSidebar: true }
   );
 });
@@ -174,18 +172,18 @@ test('debug autocomplete dropdown', async ({ page }) => {
 
 ```typescript
 // tests/tmp/screenshot-all-pages.spec.ts
-import { test } from '@playwright/test';
-import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+import { test } from "@playwright/test";
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
 
-test.use({ storageState: '.auth/user.json' });
+test.use({ storageState: ".auth/user.json" });
 
-test('capture all admin pages', async ({ page }) => {
-  const pages = ['/users', '/achievements', '/notifications'];
+test("capture all admin pages", async ({ page }) => {
+  const pages = ["/users", "/achievements", "/notifications"];
   for (const route of pages) {
     await page.goto(`https://localhost:7137${route}`);
     await takeResponsiveScreenshots(
       page,
-      'screenshots/tmp',
+      "screenshots/tmp",
       route.slice(1), // Remove leading slash
       { collapseSidebar: true }
     );
@@ -197,17 +195,17 @@ test('capture all admin pages', async ({ page }) => {
 
 ```typescript
 // tests/tmp/test-new-selector.spec.ts
-test('find the right selector', async ({ page }) => {
-  await page.goto('https://localhost:7137/send-notification');
+test("find the right selector", async ({ page }) => {
+  await page.goto("https://localhost:7137/send-notification");
 
   // Try different selectors
-  const selector1 = page.locator('.mud-input-slot');
-  const selector2 = page.getByTestId('notification-title');
+  const selector1 = page.locator(".mud-input-slot");
+  const selector2 = page.getByTestId("notification-title");
   const selector3 = page.locator('input[aria-label*="title"]');
 
-  console.log('Selector 1 count:', await selector1.count());
-  console.log('Selector 2 count:', await selector2.count());
-  console.log('Selector 3 count:', await selector3.count());
+  console.log("Selector 1 count:", await selector1.count());
+  console.log("Selector 2 count:", await selector2.count());
+  console.log("Selector 3 count:", await selector3.count());
 });
 ```
 

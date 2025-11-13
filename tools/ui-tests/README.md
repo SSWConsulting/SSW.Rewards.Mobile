@@ -82,7 +82,7 @@ This saves your authenticated session to `.auth/user.json`.
 ### 5. Run Tests
 
 ```bash
-# Run all tests
+# Run all tests (uses list reporter by default)
 npx playwright test
 
 # Run specific test file
@@ -93,7 +93,49 @@ npx playwright test --headed
 
 # Run with debug mode
 npx playwright test --debug
+
+# Create disposable test for quick debugging
+npx playwright test tests/tmp/my-debug.spec.ts --headed
 ```
+
+**Note**: The project is configured to use `--reporter=list` by default for non-blocking output.
+
+## 📸 Screenshot Helper Utility
+
+All production tests use the shared `takeResponsiveScreenshots()` utility for consistent naming and behavior:
+
+**Format**: `{device}-{resolution}-{name}.png`  
+**Example**: `mobile-375x667-page-load.png`, `tablet-768x1024-overflow.png`
+
+```typescript
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
+
+// Takes screenshots across mobile, tablet, and desktop
+await takeResponsiveScreenshots(
+  page,
+  "screenshots/notifications",
+  "page-load", // Automatically strips device prefixes (e.g., 'desktop-page-load' → 'page-load')
+  {
+    collapseSidebar: true, // Auto-collapse sidebar on mobile/tablet
+    waitForNetwork: false, // Optional: wait for networkidle
+    fullPage: true, // Full page screenshot
+  }
+);
+```
+
+**Generated files**:
+
+- `mobile-375x667-page-load.png` (iPhone SE)
+- `tablet-768x1024-page-load.png` (iPad)
+- `desktop-1920x1080-page-load.png` (Full HD)
+
+**Benefits**:
+
+- ✅ Consistent naming across all tests
+- ✅ Automatically strips device prefixes from names (avoids redundancy)
+- ✅ Automatic sidebar collapse on mobile/tablet
+- ✅ Network settling and animation waits
+- ✅ Single function call instead of 30+ lines of code
 
 ## 📋 Test Suites
 
@@ -200,19 +242,30 @@ npx playwright test dom-inspection.spec.ts --headed
 ### Create Disposable Test for Quick Debugging
 
 ```bash
-# Create a temporary test file
+# Create a temporary test file with screenshot helper
 cat > tests/tmp/debug-issue.spec.ts << 'EOF'
 import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
 test.use({ storageState: '.auth/user.json' });
 
 test('debug specific issue', async ({ page }) => {
   await page.goto('https://localhost:7137/send-notification');
-  await page.screenshot({ path: 'screenshots/debug.png' });
-  console.log('Debug screenshot captured');
+  await page.waitForLoadState('networkidle');
+
+  // Take responsive screenshots with consistent naming
+  await takeResponsiveScreenshots(
+    page,
+    'screenshots/tmp',
+    'debug-issue',
+    { collapseSidebar: true }
+  );
+
+  console.log('✅ Debug screenshots captured');
 });
 EOF
 
-# Run it
+# Run it (list reporter by default, non-blocking)
 npx playwright test tests/tmp/debug-issue.spec.ts --headed
 
 # Delete when done (it's gitignored anyway!)

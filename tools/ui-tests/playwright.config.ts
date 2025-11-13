@@ -31,7 +31,7 @@ export default defineConfig({
   },
 
   projects: [
-    // Setup project - runs authentication once
+    // Setup project - runs authentication once (run manually: npx playwright test --project=setup)
     { 
       name: 'setup', 
       testMatch: /.*\.setup\.ts/,
@@ -44,7 +44,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState: '.auth/user.json', // Reuse saved auth state
       },
-      dependencies: ['setup'], // Run setup first
+      // dependencies: ['setup'], // Commented out - run setup manually when needed
     },
 
     // Optionally test in Firefox

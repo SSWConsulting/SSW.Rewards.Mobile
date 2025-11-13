@@ -58,33 +58,56 @@ npx playwright test dom-inspection.spec.ts --grep "page structure"
 
 ```bash
 cd tools/ui-tests
-npx playwright test tests/tmp/example-disposable.spec.ts --headed
+# Create test using screenshot helper
+cat > tests/tmp/ai-verify.spec.ts << 'EOF'
+import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
+test.use({ storageState: '.auth/user.json' });
+
+test('AI quick verification', async ({ page }) => {
+  await page.goto('https://localhost:7137/your-page');
+  await page.waitForLoadState('networkidle');
+
+  await takeResponsiveScreenshots(page, 'screenshots/tmp', 'verify');
+});
+EOF
+
+npx playwright test tests/tmp/ai-verify.spec.ts --headed
 ```
 
-**Output**: Runs temporary test examples  
-**Use for**: Learning, experimentation, one-off debugging
+**Output**: Creates `mobile-375x667-verify.png`, `tablet-768x1024-verify.png`, `desktop-1280x720-verify.png`  
+**Use for**: Quick responsive screenshots with consistent naming
 
 ## 🧪 Disposable Tests (Recommended for AI)
 
 **Folder**: `tests/tmp/` (gitignored - won't be committed)
 
 ```bash
-# Create quick debugging test
+# Create quick debugging test with screenshot helper
 cat > tests/tmp/ai-debug.spec.ts << 'EOF'
 import { test } from '@playwright/test';
+import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
+
 test.use({ storageState: '.auth/user.json' });
 
 test('AI quick verification', async ({ page }) => {
   await page.goto('https://localhost:7137/send-notification');
   await page.waitForLoadState('networkidle');
 
-  // Your debugging code here
-  await page.screenshot({ path: 'screenshots/ai-debug.png', fullPage: true });
-  console.log('✅ Screenshot captured');
+  // Take responsive screenshots (mobile, tablet, desktop)
+  await takeResponsiveScreenshots(
+    page,
+    'screenshots/tmp',
+    'debug',
+    { collapseSidebar: true }
+  );
+
+  console.log('✅ Screenshots captured with consistent naming');
 });
 EOF
 
-# Run it
+# Run it (uses list reporter by default - non-blocking)
 npx playwright test tests/tmp/ai-debug.spec.ts --headed
 
 # Clean up (optional - it's gitignored anyway)
@@ -97,6 +120,31 @@ rm tests/tmp/ai-debug.spec.ts
 - ✅ Fast iteration (create, test, delete)
 - ✅ Perfect for AI-generated tests
 - ✅ Ideal for one-off verifications
+- ✅ Consistent screenshot naming: `{device}-{resolution}-{name}.png`
+- ✅ Auto-collapses sidebar on mobile/tablet
+
+**See**: `tests/tmp/README.md` for more examples
+
+## 📸 Screenshot Helper Utility
+
+All tests should use the shared `takeResponsiveScreenshots()` function:
+
+```typescript
+import { takeResponsiveScreenshots } from "../../utils/screenshot-helper";
+
+await takeResponsiveScreenshots(
+  page,
+  "screenshots/notifications", // Base path
+  "feature-name", // Name
+  { collapseSidebar: true } // Options
+);
+```
+
+**Generates**:
+
+- `mobile-375x667-feature-name.png`
+- `tablet-768x1024-feature-name.png`
+- `desktop-1280x720-feature-name.png`
 
 **See**: `tests/tmp/README.md` for more examples
 
