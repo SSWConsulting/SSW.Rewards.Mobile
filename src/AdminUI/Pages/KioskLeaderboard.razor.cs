@@ -21,11 +21,14 @@ public partial class KioskLeaderboard : IDisposable
     private System.Timers.Timer? _refreshTimer;
     private System.Timers.Timer? _countdownTimer;
     private System.Timers.Timer? _scrollTimer;
+    private System.Timers.Timer? _progressTimer;
     private DateTime? _lastUpdated;
     private bool _hasErrorsOnUpdate = false;
     private int _secondsUntilRefresh = RefreshIntervalSeconds;
     private int _currentPage = 0;
     private int _totalPages = 0;
+    private double _progressBarWidth = 0;
+    private DateTime _lastPageChange = DateTime.Now;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
 
@@ -62,6 +65,7 @@ public partial class KioskLeaderboard : IDisposable
             if (_totalPages > 1 && RefreshIntervalSeconds - _secondsUntilRefresh >= ScrollIntervalSeconds)
             {
                 _currentPage = (_currentPage + 1) % _totalPages;
+                _lastPageChange = DateTime.Now; // Reset the timer for progress animation
                 if (table != null)
                 {
                     table.NavigateTo(_currentPage);
@@ -70,6 +74,41 @@ public partial class KioskLeaderboard : IDisposable
         });
         _scrollTimer.AutoReset = true;
         _scrollTimer.Start();
+
+        // Update progress bar animation (every 100ms for smooth animation)
+        _progressTimer = new System.Timers.Timer(100);
+        _progressTimer.Elapsed += async (_, __) => await InvokeAsync(() =>
+        {
+            UpdateProgressBar();
+        });
+        _progressTimer.AutoReset = true;
+        _progressTimer.Start();
+    }
+
+    private void UpdateProgressBar()
+    {
+        if (_totalPages <= 1)
+        {
+            _progressBarWidth = 100; // Full width if only one page
+            StateHasChanged();
+            return;
+        }
+
+        // Calculate time elapsed since last page change
+        var elapsedSeconds = (DateTime.Now - _lastPageChange).TotalSeconds;
+        
+        // Calculate progress within current page (0-100% over ScrollIntervalSeconds)
+        var pageProgress = Math.Min(100, (elapsedSeconds / (double)ScrollIntervalSeconds) * 100.0);
+        
+        // Calculate base progress from completed pages
+        var baseProgress = ((double)_currentPage / _totalPages) * 100;
+        
+        // Calculate progress increment for current page
+        var pageIncrement = (100.0 / _totalPages) * (pageProgress / 100);
+        
+        _progressBarWidth = 100 - pageProgress;
+        
+        StateHasChanged();
     }
 
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
@@ -110,6 +149,9 @@ public partial class KioskLeaderboard : IDisposable
             _hasErrorsOnUpdate = true;
             Console.WriteLine($"Error in ServerReload: {ex.Message}");
         }
+        
+        // Reset progress bar when data reloads
+        _lastPageChange = DateTime.Now;
         StateHasChanged();
         return _lastTableCache;
     }
@@ -144,21 +186,8 @@ public partial class KioskLeaderboard : IDisposable
     }
 
     private string GetLastUpdatedText()
-    {
-        if (_lastUpdated == null)
-            return "never";
-
-        var timeSpan = DateTime.Now - _lastUpdated.Value;
-
-        if (timeSpan.TotalSeconds < 60)
-            return $"{(int)timeSpan.TotalSeconds} seconds ago";
-        else if (timeSpan.TotalMinutes < 60)
-            return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} ago";
-        else if (timeSpan.TotalHours < 24)
-            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} ago";
-        else
-            return _lastUpdated.Value.ToString("dd MMMM yyyy HH:mm");
-    }
+        => _lastUpdated?.ToString("dd MMMM yyyy HH:mm")
+            ?? "never";
 
     public void Dispose()
     {
@@ -181,6 +210,13 @@ public partial class KioskLeaderboard : IDisposable
             _scrollTimer.Stop();
             _scrollTimer.Dispose();
             _scrollTimer = null;
+        }
+
+        if (_progressTimer != null)
+        {
+            _progressTimer.Stop();
+            _progressTimer.Dispose();
+            _progressTimer = null;
         }
     }
 }

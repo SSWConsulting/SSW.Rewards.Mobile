@@ -41,6 +41,10 @@
                     <MudTd Style="width: 160px; text-align: center;" DataLabel="Points">@row.Points.ToString("N0")</MudTd>
                 </RowTemplate>
             </MudTable>
+            <!-- TODO: Hide if no scrolling -->
+            <div class="page-progress-container">
+                <div class="page-progress-bar" style="width: @_progressBarWidth%;"></div>
+            </div>
         </div>
     </div>
     @if (!_hasErrorsOnUpdate)
