@@ -97,7 +97,7 @@ public static class MauiProgram
 
         return builder.Build();
     }
-    
+
     private static MauiAppBuilder RegisterFirebase(this MauiAppBuilder builder)
     {
         builder.ConfigureLifecycleEvents(events =>
@@ -110,7 +110,8 @@ public static class MauiProgram
                 return false;
             }));
 #elif ANDROID
-            events.AddAndroid(android => android.OnCreate((activity, bundle) => {
+            events.AddAndroid(android => android.OnCreate((activity, bundle) =>
+            {
                 CrossFirebase.Initialize(activity);
                 FirebaseAnalyticsImplementation.Initialize(activity);
                 CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
@@ -147,34 +148,24 @@ public static class MauiProgram
                 }
             });
 #elif ANDROID
-            events.AddAndroid(android => 
+            events.AddAndroid(android =>
             {
                 android.OnCreate((activity, bundle) =>
                 {
                     var action = activity.Intent?.Action;
                     var data = activity.Intent?.Data?.ToString();
 
-                    if (action != Android.Content.Intent.ActionView || data is null)
+                    if (action == Android.Content.Intent.ActionView)
                     {
-                        return;
+                        DispatchAppLink(data);
                     }
-
-                    Task.Run(() => HandleAppLink(data));
                 });
 
                 android.OnNewIntent((activity, intent) =>
                 {
-                    if (intent != null)
+                    if (intent?.Action == Android.Content.Intent.ActionView)
                     {
-                        var action = intent.Action;
-                        var data = intent.Data?.ToString();
-                        
-                        if (action != Android.Content.Intent.ActionView || data is null)
-                        {
-                            return;
-                        }
-
-                        Task.Run(() => HandleAppLink(data));
+                        DispatchAppLink(intent.Data?.ToString());
                     }
                 });
             });
@@ -208,4 +199,22 @@ public static class MauiProgram
         return true;
 
     }
+
+#if ANDROID
+    private static void DispatchAppLink(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return;
+        }
+
+        if (MainThread.IsMainThread)
+        {
+            HandleAppLink(url);
+            return;
+        }
+
+        MainThread.BeginInvokeOnMainThread(() => HandleAppLink(url));
+    }
+#endif
 }
