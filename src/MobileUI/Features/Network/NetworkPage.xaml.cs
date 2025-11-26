@@ -20,4 +20,10 @@ public partial class NetworkPage
         _firebaseAnalyticsService.Log("NetworkPage");
         await _viewModel.Initialise();
     }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.OnDisappearing();
+    }
 }

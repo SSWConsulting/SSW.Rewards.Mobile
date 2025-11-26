@@ -76,6 +76,8 @@ public partial class RedeemViewModel : BaseViewModel
     {
         _timer.Stop();
         _timer.Tick -= OnScrollTick;
+        Rewards.OnCollectionUpdated -= OnRewardsUpdated;
+        Rewards.OnError -= OnRewardsError;
     }
 
     private void OnUserChanged(int userId)
@@ -258,11 +260,14 @@ public partial class RedeemViewModel : BaseViewModel
                 _firebaseAnalyticsService,
                 new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService),
                 reward);
-            popup.CallbackEvent += async (_, _) =>
+            EventHandler<object> handler = null;
+            handler = async (_, __) =>
             {
+                popup.CallbackEvent -= handler;
                 await LoadData();
                 await _userService.UpdateMyDetailsAsync();
             };
+            popup.CallbackEvent += handler;
             await MopupService.Instance.PushAsync(popup);
         }
     }

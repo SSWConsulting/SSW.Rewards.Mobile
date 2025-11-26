@@ -61,22 +61,35 @@ public partial class NetworkPageViewModel : BaseViewModel
                 };
 
             // Disable refreshing when done.
-            AdvancedSearchResults.OnCollectionUpdated += (_, _) => IsBusy = IsRefreshing = false;
+            AdvancedSearchResults.OnCollectionUpdated += OnCollectionUpdated;
 
             // This is to reduce flickering when loading data.
             AdvancedSearchResults.CompareItems = NetworkProfileDto.IsEqual;
 
             // Handle errors silently, e.g., log them or show a message.
-            AdvancedSearchResults.OnError += ex =>
-                {
-                    IsRefreshing = IsBusy = false;
-                    return true;
-                };
+            AdvancedSearchResults.OnError += OnCollectionError;
         }
 
         _pageLoaded = true;
 
         await RefreshNetwork();
+    }
+
+    public void OnDisappearing()
+    {
+        AdvancedSearchResults.OnCollectionUpdated -= OnCollectionUpdated;
+        AdvancedSearchResults.OnError -= OnCollectionError;
+    }
+
+    private void OnCollectionUpdated(List<NetworkProfileDto> profiles, bool isFromCache)
+    {
+        IsBusy = IsRefreshing = false;
+    }
+
+    private bool OnCollectionError(Exception ex)
+    {
+        IsRefreshing = IsBusy = false;
+        return true;
     }
 
     [RelayCommand]

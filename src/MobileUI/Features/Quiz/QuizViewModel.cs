@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Common;
@@ -163,12 +164,6 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         await Shell.Current.Navigation.PushAsync(page);
     }
 
-    private bool CanOpenQuiz(int quizId)
-    {
-        var quiz = Quizzes.Collection.FirstOrDefault(q => q.Id == quizId);
-        return quiz?.Passed == false;
-    }
-
     public async void Receive(QuizzesUpdatedMessage message)
     {
         await LoadData();
@@ -178,6 +173,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         _timer.Stop();
         _timer.Tick -= OnScrollTick;
+        Quizzes.OnCollectionUpdated -= OnQuizzesUpdated;
+        Quizzes.OnError -= OnQuizzesError;
     }
 }
 
@@ -186,7 +183,16 @@ public partial class QuizItemViewModel : QuizDto
 {
     [ObservableProperty] private bool _passed;
 
-    public QuizItemViewModel(QuizDto questionDto)
+    [JsonConstructor]
+    public QuizItemViewModel()
+    {
+        _passed = base.Passed;
+    }
+
+    public QuizItemViewModel(QuizDto questionDto) : this()
+        => CopyFromDto(questionDto);
+
+    private void CopyFromDto(QuizDto questionDto)
     {
         Id = questionDto.Id;
         Title = questionDto.Title;
