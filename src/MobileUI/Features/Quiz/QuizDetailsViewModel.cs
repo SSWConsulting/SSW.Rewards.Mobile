@@ -93,12 +93,27 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public async Task Initialise(int quizId)
         {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Device Offline", "You must be online to start a quiz.", "OK");
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
+
             IsBusy = true;
             _quizId = quizId;
             IsLoadingQuestions = true;
 
             var quiz = await _quizService.GetQuizDetails(_quizId);
             var beginQuiz = await _quizService.BeginQuiz(_quizId);
+
+            if (quiz == null || beginQuiz == null)
+            {
+                // Error already shown by service
+                await Shell.Current.GoToAsync("..");
+                return;
+            }
+
             _submissionId = beginQuiz.SubmissionId;
 
             foreach (var question in quiz.Questions.OrderBy(q => q.QuestionId))
@@ -125,6 +140,13 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         private async Task SubmitAnswer()
         {
+            // Silently skip submission if offline - this prevents error dialogs on every "Next" press
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                MoveTo(Questions.IndexOf(CurrentQuestion) + 1);
+                return;
+            }
+
             IsBusy = true;
             var question = Questions.FirstOrDefault(q => q.QuestionId == CurrentQuestion.QuestionId);
 
@@ -148,6 +170,12 @@ namespace SSW.Rewards.Mobile.ViewModels
         [RelayCommand]
         private async Task SubmitResponses()
         {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
+                return;
+            }
+
             if (!CurrentQuestion.IsSubmitted)
             {
                 await SubmitAnswer();
