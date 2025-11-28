@@ -7,12 +7,34 @@ public class AuthBrowser : IBrowser
 {
     public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
     {
-        WebAuthenticatorResult authResult = await WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(Constants.AuthRedirectUrl));
-
-        return new BrowserResult
+        try
         {
-            Response = ParseAuthenticationResult(authResult)
-        };
+            WebAuthenticatorResult authResult = await WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(Constants.AuthRedirectUrl));
+
+            return new BrowserResult
+            {
+                Response = ParseAuthenticationResult(authResult)
+            };
+        }
+        catch (TaskCanceledException)
+        {
+            return new BrowserResult
+            {
+                ResultType = BrowserResultType.UserCancel
+            };
+        }
+#if ANDROID
+        catch (Java.Lang.NullPointerException)
+        {
+            // IntermediateActivity can crash with null intent
+            // when Android kills the app during authentication and user returns.
+            return new BrowserResult
+            {
+                ResultType = BrowserResultType.UserCancel,
+                Error = "Authentication was interrupted. Please try again."
+            };
+        }
+#endif
     }
 
     private string ParseAuthenticationResult(WebAuthenticatorResult result)
