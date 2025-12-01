@@ -25,6 +25,7 @@ public sealed class Handler : IRequestHandler<GetStaffListQuery, StaffListViewMo
     {
         var staffDtos = await _dbContext.StaffMembers
             .IgnoreQueryFilters()
+            .AsNoTracking()
             .TagWithContext()
             .ProjectTo<StaffMemberDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
