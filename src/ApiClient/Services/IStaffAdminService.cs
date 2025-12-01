@@ -8,6 +8,8 @@ public interface IStaffAdminService
 {
     Task DeleteStaffMember(int id, CancellationToken cancellationToken);
 
+    Task RestoreStaffMember(int id, CancellationToken cancellationToken);
+
     Task UploadProfilePicture(int id, Stream file, string fileName, CancellationToken cancellationToken);
 
     Task<StaffMemberDto> UpsertStaffMemberProfile(StaffMemberDto dto, CancellationToken cancellationToken);
@@ -28,7 +30,7 @@ public class StaffAdminService : IStaffAdminService
     {
         var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteStaffMemberProfile?Id={id}", cancellationToken);
 
-        if  (result.IsSuccessStatusCode)
+        if (result.IsSuccessStatusCode)
         {
             return;
         }
@@ -37,13 +39,26 @@ public class StaffAdminService : IStaffAdminService
         throw new Exception($"Failed to delete staff member: {responseContent}");
     }
 
+    public async Task RestoreStaffMember(int id, CancellationToken cancellationToken)
+    {
+        var result = await _httpClient.PostAsync($"{_baseRoute}RestoreStaffMemberProfile?Id={id}", null, cancellationToken);
+
+        if (result.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
+        throw new Exception($"Failed to restore staff member: {responseContent}");
+    }
+
     public async Task UploadProfilePicture(int id, Stream file, string fileName, CancellationToken cancellationToken)
     {
         var content = Helpers.ProcessImageContent(file, fileName);
 
         var result = await _httpClient.PostAsync($"{_baseRoute}UploadStaffMemberProfilePicture?id={id}", content, cancellationToken);
 
-        if  (result.IsSuccessStatusCode)
+        if (result.IsSuccessStatusCode)
         {
             return;
         }
@@ -56,7 +71,7 @@ public class StaffAdminService : IStaffAdminService
     {
         var result = await _httpClient.PostAsJsonAsync($"{_baseRoute}UpsertStaffMemberProfile", dto, cancellationToken);
 
-        if  (result.IsSuccessStatusCode)
+        if (result.IsSuccessStatusCode)
         {
             var response = await result.Content.ReadFromJsonAsync<StaffMemberDto>(cancellationToken: cancellationToken);
 

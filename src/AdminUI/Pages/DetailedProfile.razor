@@ -7,8 +7,10 @@
 @using SSW.Rewards.Enums
 @using SSW.Rewards.Shared.DTOs.Staff
 @using SSW.Rewards.ApiClient.Services
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 
 @inject IJSRuntime JSRuntime
+@inject IDialogService DialogService
 @inject ISnackbar _snackbar
 @inject IStaffService staffService
 @inject IStaffAdminService staffAdminService
@@ -312,8 +314,33 @@
 
     private async Task OnArchiveClicked()
     {
-        await staffAdminService.DeleteStaffMember(_staff.Id, CancellationToken.None);
-        await GetProfile();
+        var isArchiving = !_staff.IsDeleted;
+        var action = isArchiving ? "archive" : "restore";
+        var title = isArchiving ? $"Archive \"{_staff.Name}\"?" : $"Restore \"{_staff.Name}\"?";
+        var contentText = isArchiving 
+            ? "Archiving this profile will hide it from the active profiles list. You can restore it later from the archived profiles."
+            : "Restoring this profile will make it visible in the active profiles list again.";
+        var buttonText = isArchiving ? "Archive" : "Restore";
+        var dialogType = isArchiving ? SimpleConfirmationDialogType.Warning : SimpleConfirmationDialogType.Info;
+
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            title,
+            SimpleConfirmationDialog.CreateDialogParams(dialogType, contentText, buttonText)
+        ).Result;
+
+        if (!result.Canceled && (bool)result.Data)
+        {
+            if (isArchiving)
+            {
+                await staffAdminService.DeleteStaffMember(_staff.Id, CancellationToken.None);
+            }
+            else
+            {
+                await staffAdminService.RestoreStaffMember(_staff.Id, CancellationToken.None);
+            }
+            await GetProfile();
+            _snackbar.Add($"Profile {action}d successfully", Severity.Success);
+        }
     }
 
 }

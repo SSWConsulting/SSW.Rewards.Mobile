@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Shared.DTOs.Staff;
 using SSW.Rewards.Application.Staff.Commands.DeleteStaffMemberProfile;
+using SSW.Rewards.Application.Staff.Commands.RestoreStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Commands.UploadStaffMemberProfilePicture;
 using SSW.Rewards.Application.Staff.Commands.UpsertStaffMemberProfile;
 using SSW.Rewards.Application.Staff.Queries.GetStaffList;
@@ -88,6 +89,14 @@ public class StaffController : ApiControllerBase
     public async Task<ActionResult> DeleteStaffMemberProfile([FromQuery] int Id)
     {
         await Mediator.Send(new DeleteStaffMemberProfileCommand { Id = Id });
+        return Ok();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = AuthorizationRoles.Admin)]
+    public async Task<ActionResult> RestoreStaffMemberProfile([FromQuery] int Id)
+    {
+        await Mediator.Send(new RestoreStaffMemberProfileCommand { Id = Id });
         return Ok();
     }
 }
