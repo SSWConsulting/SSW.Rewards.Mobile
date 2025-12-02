@@ -1,4 +1,5 @@
 using MudBlazor;
+using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations;
 using SSW.Rewards.Shared.DTOs.Notifications;
 
 namespace SSW.Rewards.Admin.UI.Pages;
@@ -45,8 +46,20 @@ public partial class Notifications
         }
     }
 
-    private async Task DeleteNotification(int id)
+    private async Task DeleteNotification(int id, string title)
     {
+        var result = await DialogService.Show<SimpleConfirmationDialog>(
+            $"Delete \"{title}\"?",
+            SimpleConfirmationDialog.CreateDialogParams(
+                SimpleConfirmationDialogType.Danger,
+                "Are you sure you want to delete this notification? This action cannot be undone.")
+        ).Result;
+
+        if (result.Canceled || result.Data is not true)
+        {
+            return;
+        }
+
         _loading = true;
         try
         {
