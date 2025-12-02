@@ -33,7 +33,7 @@
     <ColGroup>
         <col style="width: 50px"/>
         <col />
-        <col />
+        <col style="width: 60px"/>
     </ColGroup>
     <HeaderContent>
         <MudTh>Thumbnail</MudTh>
@@ -54,7 +54,13 @@
             }
         </MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Delete"><MudButton OnClick="@(() => OnDeletedClicked(context))">Delete</MudButton></MudTd>
+        <MudTd DataLabel="Delete">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                           Color="Color.Error" 
+                           Size="Size.Small"
+                           OnClick="@(() => OnDeletedClicked(context))" 
+                           aria-label="Delete skill" />
+        </MudTd>
     </RowTemplate>
     <RowEditingTemplate>
         <MudTd DataLabel="Thumbnail">
