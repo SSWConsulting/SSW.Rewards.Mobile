@@ -1,4 +1,4 @@
-﻿@page "/deletion-requests"
+﻿@page "/deletion-approvals"
 
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components
@@ -12,8 +12,8 @@
 
 @attribute [Authorize(Roles = "Staff, Admin")]
 
-<MudText Typo="Typo.h2">Deletion Requests</MudText>
-<MudText Typo="Typo.body1">Users who have requested that their profile be deleted</MudText>
+<MudText Typo="Typo.h2">Account Deletion Approvals</MudText>
+<MudText Typo="Typo.body1">As per the GDPR rules, users have the right to ask to be deleted. Pending requests are listed below.</MudText>
 
 
 <Table TItem="ProfileDeletionRequestDto"
