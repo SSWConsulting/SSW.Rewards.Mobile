@@ -1,4 +1,5 @@
 ﻿@using SSW.Rewards.Admin.UI.Components.Dialogs.Quizzes
+@using SSW.Rewards.Admin.UI.Components.Dialogs.Confirmations
 @using SSW.Rewards.ApiClient.Services
 @using SSW.Rewards.Shared.DTOs.Quizzes
 @using Microsoft.Extensions.Options
@@ -83,7 +84,17 @@
                 </MudItem>
             </MudGrid>
             
-            <MudButton Variant="Variant.Filled" Class="mt-2" Color="Color.Primary" OnClick="@(() => OnSave())">Save quiz</MudButton>
+            <div class="d-flex gap-4 mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="@(() => OnSave())">Save quiz</MudButton>
+                @if (Model.IsArchived)
+                {
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.Restore" OnClick="@(() => OnRestore())">Restore quiz</MudButton>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" OnClick="@(() => OnDelete())">Delete quiz</MudButton>
+                }
+            </div>
         </MudItem>
         <MudItem xs="12" md="6">
             <div class="d-flex align-content-between mb-4">
@@ -99,11 +110,11 @@
                         <div class="d-flex align-content-between">
                             <MudText Typo="Typo.h6" Class="d-flex flex-1">@q.Text</MudText>
                             <MudIconButton 
-                                Color="Color.Primary" 
+                                Color="Color.Default" 
                                 Icon="@Icons.Material.Filled.Edit" 
                                 OnClick="@((e) => EditQuestionDialog(_disableBackdropClick, q))" />
                             <MudIconButton 
-                                Color="Color.Primary" 
+                                Color="Color.Error" 
                                 Icon="@Icons.Material.Filled.Delete" 
                                 OnClick="@((e) => DeleteQuestion(q.QuestionId))"/>
                         </div>
@@ -131,6 +142,12 @@
 @code {
     [Parameter]
     public EventCallback<bool> OnSaveClicked { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnDeleteClicked { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnRestoreClicked { get; set; }
 
     [Parameter]
     public QuizEditDto Model { get; set; } = new();
@@ -168,6 +185,42 @@
     private async Task OnSave()
     {
         await OnSaveClicked.InvokeAsync(true);
+    }
+    
+    private async Task OnDelete()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", (RenderFragment)(builder => builder.AddContent(0, "Are you sure you want to delete this quiz?")) },
+            { "ButtonText", "Delete" },
+            { "Color", Color.Error }
+        };
+        
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Delete Quiz", parameters, new DialogOptions { MaxWidth = MaxWidth.Small });
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            await OnDeleteClicked.InvokeAsync(true);
+        }
+    }
+    
+    private async Task OnRestore()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", (RenderFragment)(builder => builder.AddContent(0, "Are you sure you want to restore this quiz? It will become visible to users again.")) },
+            { "ButtonText", "Restore" },
+            { "Color", Color.Success }
+        };
+        
+        var dialog = await DialogService.ShowAsync<ConfirmationDialog>("Restore Quiz", parameters, new DialogOptions { MaxWidth = MaxWidth.Small });
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            await OnRestoreClicked.InvokeAsync(true);
+        }
     }
     private async Task EditQuestionDialog(DialogOptions options, QuizQuestionEditDto q)
     {
