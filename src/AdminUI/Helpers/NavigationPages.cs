@@ -32,6 +32,6 @@ public static class NavigationPages
             new() { Href = "newusers", Icon = Icons.Material.Filled.SupervisedUserCircle, Title = "New Users" },
             new() { Href = "prizedraw", Icon = Icons.Material.Filled.Celebration, Title = "Prize Draw" },
             new() { Href = "notifications", Icon = Icons.Material.Filled.Chat, Title = "Notifications" },
-            new() { Href = "delete", Icon = Icons.Material.Filled.Delete, Title = "Delete" }
+            new() { Href = "deletion-requests", Icon = Icons.Material.Filled.AssignmentLate, Title = "Deletion Requests" }
         ];
 }
