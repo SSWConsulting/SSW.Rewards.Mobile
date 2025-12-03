@@ -3,6 +3,7 @@
 @using SSW.Rewards.Shared.DTOs.Notifications
 @inject NavigationManager Navigation
 @inject SSW.Rewards.ApiClient.Services.INotificationsService NotificationsService
+@inject IDialogService DialogService
 
 <PageTitle>SSW Rewards | Mobile Notifications</PageTitle>
 
@@ -93,9 +94,10 @@
                 }
                 else
                 {
-                    <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteNotification(context.Id))" aria-label="Delete">
-                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> &nbsp;
-                    </MudButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   OnClick="@(() => DeleteNotification(context.Id, context.Title))"
+                                   aria-label="Delete" />
                 }
             </MudTd>
         </RowTemplate>
