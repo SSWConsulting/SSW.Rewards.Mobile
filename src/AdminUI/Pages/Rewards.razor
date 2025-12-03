@@ -110,14 +110,6 @@
                     await rewardAdminService.UpdateReward(dto, CancellationToken.None);
                     SnackBar.Add($"Reward: '{dto.Name}' saved", Severity.Success);
                     break;
-                case AssignReward usr:
-                    if (usr?.Id == null) return;
-
-                    await rewardAdminService.ClaimForUser(usr.Code, usr.Id, false, CancellationToken.None);
-                    // TODO: Add nice notification for returned status
-                    
-                    SnackBar.Add($"Reward claimed", Severity.Success);
-                    break;
             }
             await GetRewards();
         }
