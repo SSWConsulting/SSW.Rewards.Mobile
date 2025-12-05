@@ -85,7 +85,6 @@
             </MudGrid>
             
             <div class="d-flex gap-4 mt-4">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="@(() => OnSave())">Save quiz</MudButton>
                 @if (Model.IsArchived)
                 {
                     <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.Restore" OnClick="@(() => OnRestore())">Restore quiz</MudButton>
@@ -94,6 +93,8 @@
                 {
                     <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" OnClick="@(() => OnDelete())">Delete quiz</MudButton>
                 }
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="@(() => OnSave())">Save quiz</MudButton>
             </div>
         </MudItem>
         <MudItem xs="12" md="6">
