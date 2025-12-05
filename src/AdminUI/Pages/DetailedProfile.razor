@@ -15,6 +15,7 @@
 @inject IStaffService staffService
 @inject IStaffAdminService staffAdminService
 @inject ISkillsService skillsService
+@inject NavigationManager NavManager
 
 
 @attribute [Authorize (Roles = "Admin")]
@@ -121,14 +122,20 @@
 </MudPaper>
 
 @* Button Section *@
-<div class="d-flex justify-end gap-4">
-    <MudButton OnClick="OnArchiveClicked" 
+<div class="d-flex justify-end gap-4 mt-8">
+    <MudButton OnClick="OnDeleteClicked"
                Size="Size.Large"
                Variant="Variant.Outlined"
-               Color="Color.Warning"
+               Color="Color.Error"
                ButtonType="ButtonType.Reset">
-        @((bool)_staff.IsDeleted ? "Restore" : "Archive")</MudButton>
-    <MudButton OnClick="OnSaveClick" 
+        @((bool)_staff.IsDeleted ? "Restore" : "Delete")</MudButton>
+    <MudSpacer />
+    <MudButton OnClick="OnCancelClicked"
+               Size="Size.Large"
+               Variant="Variant.Filled"
+               Color="Color.Default"
+               ButtonType="ButtonType.Submit">Cancel</MudButton>
+    <MudButton OnClick="OnSaveClick"
                Size="Size.Large"
                Variant="Variant.Filled"
                Color="Color.Primary"
@@ -312,16 +319,21 @@
         _snackbar.Add("User saved", Severity.Success);
     }
 
-    private async Task OnArchiveClicked()
+    private void OnCancelClicked()
     {
-        var isArchiving = !_staff.IsDeleted;
-        var action = isArchiving ? "archive" : "restore";
-        var title = isArchiving ? $"Archive \"{_staff.Name}\"?" : $"Restore \"{_staff.Name}\"?";
-        var contentText = isArchiving 
-            ? "Archiving this profile will hide it from the active profiles list. You can restore it later from the archived profiles."
+        NavManager.NavigateTo("/profiles");
+    }
+
+    private async Task OnDeleteClicked()
+    {
+        var isDeleting = !_staff.IsDeleted;
+        var action = isDeleting ? "delete" : "restore";
+        var title = isDeleting ? $"Delete \"{_staff.Name}\"?" : $"Restore \"{_staff.Name}\"?";
+        var contentText = isDeleting
+            ? "Archiving this profile will hide it from the active profiles list. You can restore it later from the deleted profiles list."
             : "Restoring this profile will make it visible in the active profiles list again.";
-        var buttonText = isArchiving ? "Archive" : "Restore";
-        var dialogType = isArchiving ? SimpleConfirmationDialogType.Warning : SimpleConfirmationDialogType.Info;
+        var buttonText = isDeleting ? "Delete" : "Restore";
+        var dialogType = isDeleting ? SimpleConfirmationDialogType.Danger : SimpleConfirmationDialogType.Info;
 
         var result = await DialogService.Show<SimpleConfirmationDialog>(
             title,
@@ -330,7 +342,7 @@
 
         if (!result.Canceled && (bool)result.Data)
         {
-            if (isArchiving)
+            if (isDeleting)
             {
                 await staffAdminService.DeleteStaffMember(_staff.Id, CancellationToken.None);
             }
