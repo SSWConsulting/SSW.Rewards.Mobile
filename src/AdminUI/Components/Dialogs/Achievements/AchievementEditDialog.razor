@@ -7,7 +7,9 @@
 @using Icons = MudBlazor.Icons
 
 @inject ILeaderboardService leaderboardService
+@inject IAchievementAdminService achievementService
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @inject IJSRuntime JsRuntime
 
 <MudDialog>
@@ -20,41 +22,48 @@
         </div>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
-        <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
-        <MudTextField @bind-Value="@dto.Value" Label="Value" AutoFocus="true" />
-        <MudTextField @bind-Value="@dto.IntegrationId" Label="Integration ID" ReadOnly="true"/>
-        <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
-            @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
-            {
-                <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
-            }
-        </MudSelect>
-        <MudSelect
-            T="@LeaderboardUserDto"
-            @bind-Value="_selectedValue"
-            Label="Assign to User"
-            AnchorOrigin="Origin.BottomCenter"
-            TransformOrigin="Origin.TopCenter"
-            Variant="Variant.Outlined"
-            AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
-            AdornmentColor="Color.Primary">
-            @foreach (var usr in _usersList.OrderBy(u => u.Name))
-            {
-                <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-            }
-        </MudSelect>
-        <MudCheckBox Label="Multi-scan enabled?" @bind-Checked="@dto.IsMultiScanEnabled" />
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="@dto.Code" Label="Code" ReadOnly="true" Disabled="true"/>
+            <MudTextField @bind-Value="@dto.Name" Label="Name" ReadOnly="true" Disabled="true"/>
+            <MudTextField @bind-Value="@dto.Value" Label="Value" AutoFocus="true" />
+            <MudTextField @bind-Value="@dto.IntegrationId" Label="Integration ID" ReadOnly="true"/>
+            <MudSelect @bind-Value="@dto.Type" Label="Achievement Type">
+                @foreach (AchievementType item in Enum.GetValues(typeof(AchievementType)))
+                {
+                    <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Row="true" Spacing="2" Class="align-center">
+                <MudSelect
+                    T="@LeaderboardUserDto"
+                    @bind-Value="_selectedValue"
+                    Label="Assign to User"
+                    AnchorOrigin="Origin.BottomCenter"
+                    TransformOrigin="Origin.TopCenter"
+                    Variant="Variant.Outlined"
+                    AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
+                    AdornmentColor="Color.Primary"
+                    Class="flex-grow-1">
+                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
+                    {
+                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton OnClick="ClaimAchievement" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Claim</MudButton>
+            </MudStack>
+            <MudCheckBox Label="Multi-scan enabled?" @bind-Value="@dto.IsMultiScanEnabled" />
+            <MudDivider Class="my-2" />
+            <MudButton OnClick="ViewUsers" StartIcon="@Icons.Material.Filled.People" Variant="Variant.Text" Color="Color.Primary">View users who claimed this achievement</MudButton>
+        </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="Delete">Delete</MudButton>
+        <MudSpacer />
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton OnClick="ClaimAchievement" Color="Color.Info">Claim Achievement for User</MudButton>
-        <MudButton OnClick="ViewUsers">View users</MudButton>
         <MudButton 
             Variant="Variant.Filled"
             Color="Color.Primary"
-            OnClick="Submit">Ok</MudButton>
+            OnClick="Submit">Save</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -99,18 +108,23 @@
         }
     }
 
-    private void ClaimAchievement()
+    private async Task ClaimAchievement()
     {
         if (_selectedValue == null)
         {
             return;
         }
 
-        MudDialog?.Close(DialogResult.Ok(new AssignReward
+        try
         {
-            Code = dto.Code,
-            Id = _selectedValue.UserId
-        }));
+            await achievementService.ClaimAchievementForUser(dto.Code, _selectedValue.UserId, CancellationToken.None);
+            Snackbar.Add($"Achievement claimed for {_selectedValue.Name}", Severity.Success);
+            _selectedValue = null;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to claim achievement: {ex.Message}", Severity.Error);
+        }
     }
 
     private void ViewUsers()

@@ -41,7 +41,7 @@ public static class AdminPortalMudTheme
                 Info = "#3299ff",
                 Success = "#0bba83",
                 Warning = "#ffa800",
-                Error = "#f64e62",
+                Error = "#ff6161",
                 Dark = "#27272f",
             },
             Typography = new Typography()
