@@ -20,6 +20,7 @@ SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 10 backend API 
 ## Development Setup Commands
 
 ### Initial Setup
+
 ```bash
 # Clone and setup development environment
 git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
@@ -37,6 +38,7 @@ pwsh ./up.ps1
 ```
 
 ### Build Commands
+
 ```bash
 # Build entire solution
 dotnet build SSW.Rewards.sln
@@ -52,6 +54,7 @@ dotnet build SSW.Rewards.sln
 ```
 
 ### Testing Commands
+
 ```bash
 # Run all tests
 dotnet test
@@ -70,6 +73,7 @@ dotnet test --filter "ClassName"
 ```
 
 ### Docker Commands
+
 ```bash
 # Start all services
 docker compose --profile all up -d
@@ -95,6 +99,7 @@ docker compose build
 ```
 
 ### Mobile Development
+
 ```bash
 # For Android (requires dev tunnel for API access)
 devtunnel host -p 5001
@@ -107,6 +112,7 @@ dotnet workload restore
 ```
 
 ### Database Commands
+
 ```bash
 # Create EF migration
 dotnet ef migrations add MigrationName --project src/Infrastructure --startup-project src/WebAPI
@@ -125,17 +131,20 @@ dotnet ef database drop --project src/Infrastructure --startup-project src/WebAP
 The solution follows Clean Architecture with clear separation of concerns:
 
 1. **Domain** (`src/Domain/`): Core business entities, value objects, and domain events
+
    - Entities (User, Achievement, Reward, Quiz, etc.)
    - Common base classes (BaseEntity, BaseAuditableEntity, ValueObject)
    - Domain events and business rules
 
 2. **Application** (`src/Application/`): Business logic and use cases
+
    - CQRS commands and queries using MediatR
    - Application services and interfaces
    - DTOs and view models
    - Cross-cutting behaviors (validation, logging, performance, authorization)
 
 3. **Infrastructure** (`src/Infrastructure/`): External concerns implementation
+
    - Entity Framework data access
    - External service integrations
    - File storage, email services, etc.
@@ -156,6 +165,7 @@ The application uses CQRS (Command Query Responsibility Segregation) with Mediat
 - **Behaviors**: Cross-cutting concerns (validation, logging, authorization)
 
 Example structure:
+
 ```
 Application/
 ├── Users/
@@ -181,6 +191,7 @@ Application/
 ## Development Guidelines
 
 ### Code Organization
+
 - Follow Clean Architecture layering
 - Use CQRS for all business operations
 - Place DTOs in `Shared` project for cross-layer communication
@@ -188,24 +199,28 @@ Application/
 - Use soft delete patterns for data retention and audit trails
 
 ### Naming Conventions
+
 - Commands: `CreateUserCommand`, `UpdateRewardCommand`
 - Queries: `GetUserQuery`, `GetRewardsListQuery`
 - Handlers: `CreateUserCommandHandler`, `GetUserQueryHandler`
 - DTOs: `UserDto`, `RewardListDto`
 
 ### Database Context Usage
+
 - Use `IApplicationDbContext` interface in Application layer
 - Tag queries with `.TagWithContext("MethodName")` for debugging
 - Use `AsNoTracking()` for read-only queries
 - Include related entities explicitly with `.Include()`
 
 ### Mobile Development Specifics
+
 - Update `Constants.cs` with dev tunnel URL for local API testing
 - Use dependency injection pattern consistently
 - Follow MVVM pattern with CommunityToolkit.Mvvm
 - Handle platform-specific code in Platforms folders
 
 ### Testing Guidelines
+
 - Unit tests for domain logic and application handlers
 - Integration tests for API endpoints
 - Use FluentAssertions for readable test assertions
@@ -213,6 +228,7 @@ Application/
 - Test both success and failure scenarios
 
 ### Performance Considerations
+
 - Use async/await consistently
 - Leverage EF Core query optimization
 - Implement caching where appropriate (CacheKeys.cs)
@@ -224,6 +240,7 @@ Application/
 ## Common Development Patterns
 
 ### Adding a New Feature
+
 1. Create domain entity if needed (`src/Domain/Entities/`)
 2. Add EF configuration (`src/Infrastructure/Persistence/Configurations/`)
 3. Create application commands/queries (`src/Application/`)
@@ -232,6 +249,7 @@ Application/
 6. Add comprehensive tests
 
 ### Adding a New API Endpoint
+
 1. Create command/query in Application layer
 2. Add handler with proper validation
 3. Create controller action in WebAPI
@@ -239,6 +257,7 @@ Application/
 5. Add integration tests
 
 ### Database Schema Changes
+
 1. Modify entities in Domain layer
 2. Add/update EF configurations
 3. Create migration: `dotnet ef migrations add MigrationName`
@@ -248,16 +267,20 @@ Application/
 ## Environment Variables & Secrets
 
 ### Required User Secrets (WebAPI)
+
 Add via: `dotnet user-secrets set "Key" "Value" --project src/WebAPI`
 
 Get actual values from: **Client Secrets | SSW | SSW.Rewards | Developer Secrets** in Keeper
 
 ### Development Certificates
+
 Required for HTTPS in Docker. Created via `up.ps1` script or manually:
+
 - Location: `~/.aspnet/https/WebAPI.pfx`
 - Password: `ThisPassword`
 
 ### HangFire Database
+
 HangFire database (`ssw.rewards.hangfire`) is automatically created by the `up.ps1` script if it doesn't exist.
 
 ## Recent Features & Improvements
@@ -274,6 +297,7 @@ The project has undergone several major updates recently:
 ## Troubleshooting
 
 ### Common Issues
+
 - **Certificate errors**: Recreate dev certificates with `dotnet dev-certs https --clean`
 - **Mobile build failures**: Run `dotnet workload restore`
 - **Database connection issues**: Ensure Docker containers are running
@@ -281,6 +305,7 @@ The project has undergone several major updates recently:
 - **HangFire setup issues**: The `up.ps1` script automatically creates the HangFire database
 
 ### Useful Debugging
+
 - API Swagger: https://localhost:5001/swagger/index.html
 - Admin UI: https://localhost:7137
 - Database: Connect to `localhost,1433` with SA user (password: `Rewards.Docker1!`)
