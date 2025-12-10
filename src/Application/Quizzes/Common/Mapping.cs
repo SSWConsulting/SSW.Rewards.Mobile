@@ -10,7 +10,8 @@ public class Mapping : Profile
                 .ForMember(dst => dst.DateCreated, opt => opt.MapFrom(src => src.CreatedUtc))
                 .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.Achievement.Value))
                 .ForMember(dst => dst.ThumbnailImage, opt => opt.MapFrom(src => src.ThumbnailImage))
-                .ForMember(dst => dst.CarouselImage, opt => opt.MapFrom(src => src.CarouselImage));
+                .ForMember(dst => dst.CarouselImage, opt => opt.MapFrom(src => src.CarouselImage))
+                .ForMember(dst => dst.NotifyUsers, opt => opt.Ignore());
 
                 CreateMap<Quiz, QuizDetailsDto>()
                         .ForMember(dst => dst.QuizId, opt => opt.MapFrom(src => src.Id))
@@ -18,13 +19,15 @@ public class Mapping : Profile
                         .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.Achievement.Value));
 
                 CreateMap<QuizQuestion, QuizQuestionDto>()
-                        .ForMember(dst => dst.QuestionId, opt => opt.MapFrom(src => src.Id));
+                        .ForMember(dst => dst.QuestionId, opt => opt.MapFrom(src => src.Id))
+                        .ForMember(dst => dst.Answer, opt => opt.Ignore());
 
                 CreateMap<QuizAnswer, QuestionAnswerDto>()
                         .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id));
 
                 CreateMap<QuizQuestion, QuizQuestionEditDto>()
-                        .ForMember(dst => dst.QuestionId, opt => opt.MapFrom(src => src.Id));
+                        .ForMember(dst => dst.QuestionId, opt => opt.MapFrom(src => src.Id))
+                        .ForMember(dst => dst.IsDeleted, opt => opt.Ignore());
 
                 CreateMap<QuizAnswer, QuestionAnswerEditDto>()
                         .ForMember(dst => dst.QuestionAnswerId, opt => opt.MapFrom(src => src.Id));

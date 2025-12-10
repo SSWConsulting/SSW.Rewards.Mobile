@@ -9,6 +9,8 @@ public class Mapping : Profile
                 .ForMember(dst => dst.ProfilePic, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dst => dst.Points, opt => opt.MapFrom(src => src.UserAchievements.Sum(ua => ua.Achievement.Value)))
                 .ForMember(dst => dst.Balance, opt => opt.Ignore())
+                .ForMember(dst => dst.IsStaff, opt => opt.Ignore())
+                .ForMember(dst => dst.Rank, opt => opt.Ignore())
                 .ForMember(dst => dst.Rewards, opt => opt.MapFrom(src => src.UserRewards))
                 .ForMember(dst => dst.Achievements, opt => opt.MapFrom(src => src.UserAchievements));
     }

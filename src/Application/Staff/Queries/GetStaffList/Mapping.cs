@@ -13,6 +13,7 @@ public class Mapping : Profile
 
         CreateMap<StaffMember, StaffMemberDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.StaffMemberSkills))
+                .ForMember(dest => dest.Points, opt => opt.Ignore())
                 .ForMember(dest => dest.Scanned, opt => opt.Ignore())
                 .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.DeletedUtc != null));
     }
