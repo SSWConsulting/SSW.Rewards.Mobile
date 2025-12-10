@@ -12,12 +12,12 @@
 
 @inject NavigationManager NavManager
 
-<MudText Typo="Typo.h2">Edit quiz <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@((e) => ArchiveQuiz())">Delete quiz</MudButton></MudText>
+<MudText Typo="Typo.h2">Edit quiz</MudText>
 <MudGrid>
     <MudItem lg="12">
         @if (HasQuiz)
         {
-            <QuizDetails Model="_model" OnSaveClicked="DoThing"></QuizDetails>
+            <QuizDetails Model="_model" OnSaveClicked="DoThing" OnDeleteClicked="ArchiveQuiz" OnRestoreClicked="UnarchiveQuiz"></QuizDetails>
         }
     </MudItem>
 </MudGrid>
@@ -32,6 +32,22 @@
     private bool HasQuiz = false;
     private async Task DoThing(bool b)
     {
+        await SaveQuiz();
+    }
+    
+    private async Task ArchiveQuiz(bool confirmed)
+    {
+        if (!confirmed) return;
+        
+        _model.IsArchived = true;
+        await SaveQuiz();
+    }
+    
+    private async Task UnarchiveQuiz(bool confirmed)
+    {
+        if (!confirmed) return;
+        
+        _model.IsArchived = false;
         await SaveQuiz();
     }
     protected override async Task OnInitializedAsync()
@@ -57,12 +73,6 @@
             exception.Redirect();
         }
     }
-    private async Task ArchiveQuiz()
-    {
-        _model.IsArchived = true;
-        await SaveQuiz();
-        //redirect to quizzes page
-        NavManager.NavigateTo("/quizzes");
-    }
+
 
 }

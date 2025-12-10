@@ -11,6 +11,7 @@
 
 @inject ISnackbar Snackbar
 @inject ILeaderboardService leaderboardService
+@inject IRewardAdminService rewardAdminService
 @inject IDialogService DialogService
 
 <MudDialog>
@@ -28,20 +29,24 @@
             </MudStack>
             <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
             <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
-            <MudSelect
-                @bind-Value="_selectedValue"
-                T="@LeaderboardUserDto"
-                Label="Assign to User"
-                AnchorOrigin="Origin.TopCenter"
-                TransformOrigin="Origin.BottomCenter"
-                Variant="Variant.Outlined"
-                AdornmentIcon="@Icons.Material.Filled.Search"
-                AdornmentColor="Color.Primary">
-                @foreach (var usr in _usersList.OrderBy(u => u.Name))
-                {
-                    <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                }
-            </MudSelect>
+            <MudStack Row="true" Spacing="2" Class="align-center">
+                <MudSelect
+                    @bind-Value="_selectedValue"
+                    T="@LeaderboardUserDto"
+                    Label="Assign to User"
+                    AnchorOrigin="Origin.TopCenter"
+                    TransformOrigin="Origin.BottomCenter"
+                    Variant="Variant.Outlined"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    AdornmentColor="Color.Primary"
+                    Class="flex-grow-1">
+                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
+                    {
+                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton OnClick="AssignReward" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Redeem</MudButton>
+            </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
                 @if (!string.IsNullOrEmpty(Dto.ImageUri))
                 {
@@ -111,18 +116,18 @@
                     <MudToggleItem Value="@(RewardType.Physical)" Text="Physical" />
                 </MudToggleGroup>
             </MudStack>
-            <MudStac Row="true">
+            <MudStack Row="true">
                 <MudCheckBox T="bool" Label="Display on Carousel" Class="m-0" @bind-value="@Dto.IsCarousel" Validation="@(new Func<bool, string>(IsCarouselImage))" />
                 <MudCheckBox T="bool" Label="Hidden on Mobile" Class="m-0" @bind-value="@Dto.IsHidden" />
-            </MudStac>
+            </MudStack>
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Error" OnClick="Delete">Delete</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Delete">Delete</MudButton>
+        <MudSpacer />
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton OnClick="AssignReward" Color="Color.Info">Redeem Reward for User</MudButton>
         <MudButton Variant="Variant.Filled"
-                                   Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+                                   Color="Color.Primary" OnClick="Submit">Save</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -227,17 +232,22 @@
         Dto.DeleteCarouselImage = true;
     }
     
-    void AssignReward()
+    async Task AssignReward()
     {
         if (_selectedValue == null)
         {
             return;
         }
 
-        MudDialog?.Close(DialogResult.Ok(new AssignReward
+        try
         {
-            Code = Dto.Code,
-            Id = _selectedValue.UserId
-        }));
+            await rewardAdminService.ClaimForUser(Dto.Code, _selectedValue.UserId, false, CancellationToken.None);
+            Snackbar.Add($"Reward redeemed for {_selectedValue.Name}", Severity.Success);
+            _selectedValue = null;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Failed to redeem reward: {ex.Message}", Severity.Error);
+        }
     }
 }
