@@ -1,4 +1,4 @@
-﻿﻿using SSW.Rewards.Shared.DTOs.Users;
+﻿using SSW.Rewards.Shared.DTOs.Users;
 
 namespace SSW.Rewards.Application.Users.Queries.GetUser;
 public class Mapping : Profile
