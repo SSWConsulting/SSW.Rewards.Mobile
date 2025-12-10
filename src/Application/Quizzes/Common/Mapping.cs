@@ -1,4 +1,4 @@
-﻿﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+﻿using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Application.Quizzes.Common;
 public class Mapping : Profile
