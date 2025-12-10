@@ -4,18 +4,18 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 9 backend API and Blazor admin portal. The app allows users to scan QR codes at SSW events, earn points, complete quizzes, and redeem rewards. The project follows Clean Architecture principles and uses a CQRS pattern with MediatR.
+SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 10 backend API and Blazor admin portal. The app allows users to scan QR codes at SSW events, earn points, complete quizzes, and redeem rewards. The project follows Clean Architecture principles and uses a CQRS pattern with MediatR.
 
 ## Key Technologies
 
-- **Backend**: .NET 9.0, ASP.NET Core Web API, Entity Framework Core
-- **Mobile App**: .NET MAUI (iOS & Android) targeting net9.0-ios and net9.0-android
+- **Backend**: .NET 10.0, ASP.NET Core Web API, Entity Framework Core
+- **Mobile App**: .NET MAUI (iOS & Android) targeting net10.0-ios and net10.0-android
 - **Admin Portal**: Blazor Server
 - **Database**: SQL Server (with Azurite for blob storage in development)
 - **Authentication**: SSW.Identity (external service)
 - **Architecture**: Clean Architecture with CQRS pattern
 - **Testing**: NUnit, FluentAssertions, Moq
-- **SDK Version**: 9.0.305
+- **SDK Version**: 10.0.100
 
 ## Development Setup Commands
 
@@ -99,7 +99,7 @@ docker compose build
 # For Android (requires dev tunnel for API access)
 devtunnel host -p 5001
 # Update Constants.cs ApiBaseUrl with tunnel address
-dotnet build src/MobileUI/MobileUI.csproj -f net9.0-android
+dotnet build src/MobileUI/MobileUI.csproj -f net10.0-android
 
 # Restore MAUI workloads (if needed)
 dotnet workload update

@@ -8,7 +8,7 @@ This file provides AI agents (GitHub Copilot, Cursor, Windsurf, etc.) with essen
 
 - **Mobile App**: .NET MAUI (iOS & Android)
 - **Admin Portal**: Blazor WebAssembly with MudBlazor
-- **Backend API**: ASP.NET Core Web API (.NET 9)
+- **Backend API**: ASP.NET Core Web API (.NET 10)
 - **Database**: SQL Server with EF Core
 - **Authentication**: SSW.Identity (OIDC/OAuth2)
 - **Architecture**: Clean Architecture with CQRS (MediatR)
@@ -105,7 +105,7 @@ Application/Achievements/
 
 ## 🛠️ Technology Stack
 
-### Backend (.NET 9)
+### Backend (.NET 10)
 
 - **Framework**: ASP.NET Core 9.0, Minimal APIs
 - **ORM**: Entity Framework Core 9.0 (SQL Server provider)
@@ -118,14 +118,14 @@ Application/Achievements/
 
 ### Frontend (Blazor WASM)
 
-- **Framework**: Blazor WebAssembly (.NET 9)
+- **Framework**: Blazor WebAssembly (.NET 10)
 - **UI Library**: MudBlazor 6.x
 - **HTTP**: Custom API client with auth handler
 - **State**: Scoped services per session
 
 ### Mobile (.NET MAUI)
 
-- **Framework**: .NET MAUI (.NET 9), targets `net9.0-ios` and `net9.0-android`
+- **Framework**: .NET MAUI (.NET 10), targets `net10.0-ios` and `net10.0-android`
 - **Architecture**: MVVM with `CommunityToolkit.Mvvm`
 - **Navigation**: Shell-based navigation
 - **DI**: Built-in .NET DI container
@@ -146,7 +146,7 @@ Application/Achievements/
 
 ## 📋 Coding Standards & Best Practices
 
-### C# 13 & .NET 9 Conventions
+### C# 13 & .NET 10 Conventions
 
 ```csharp
 // File-scoped namespaces (always)
@@ -373,10 +373,10 @@ dotnet ef migrations add MigrationName --project src/Infrastructure --startup-pr
 dotnet ef database update --project src/Infrastructure --startup-project src/WebAPI
 
 # Mobile (Android)
-dotnet build src/MobileUI/MobileUI.csproj -f net9.0-android
+dotnet build src/MobileUI/MobileUI.csproj -f net10.0-android
 
 # Mobile (iOS) - requires macOS
-dotnet build src/MobileUI/MobileUI.csproj -f net9.0-ios
+dotnet build src/MobileUI/MobileUI.csproj -f net10.0-ios
 ```
 
 ### Docker Services
@@ -641,4 +641,4 @@ When generating code for this project:
 
 ---
 
-**Last Updated**: October 2025 | **Target Framework**: .NET 9.0 | **MAUI Version**: 9.0.21
+**Last Updated**: December 2025 | **Target Framework**: .NET 10.0 | **MAUI Version**: 10.0.x

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>abaa8db5-c195-4a86-bd29-069a802aa8d5</UserSecretsId>
 		<RootNamespace>SSW.Rewards.Admin.UI</RootNamespace>

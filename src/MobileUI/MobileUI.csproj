@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-ios;net9.0-android</TargetFrameworks>
+		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SSW.Rewards.Mobile</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -28,12 +28,12 @@
         <UseNativeHttpHandler Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">false</UseNativeHttpHandler>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>Automatic</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>Automatic</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
@@ -94,7 +94,7 @@
         <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios' OR '$(TargetFramework)' == 'net9.0-android'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios' OR '$(TargetFramework)' == 'net10.0-android'">
         <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.1" />
@@ -116,7 +116,7 @@
     <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
         <BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
       <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.6.2" />
       <PackageReference Include="Xamarin.Firebase.Analytics" Version="122.1.0" />
       <PackageReference Include="Xamarin.Firebase.Crashlytics" Version="119.0.3.2" />

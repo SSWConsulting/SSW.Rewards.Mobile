@@ -20,7 +20,7 @@ You are an expert in GitHub Actions CI/CD workflows with deep knowledge of YAML 
 
 ## Project Context
 
-This is **SSW.Rewards.Mobile**, a .NET 9.0 solution containing:
+This is **SSW.Rewards.Mobile**, a .NET 10.0 solution containing:
 
 - **MobileUI**: .NET MAUI mobile app (iOS, Android, MacCatalyst) in `src/MobileUI/`
 - **AdminUI**: Blazor Server admin portal in `src/AdminUI/`
@@ -32,7 +32,7 @@ This is **SSW.Rewards.Mobile**, a .NET 9.0 solution containing:
 
 - **.NET SDK**: 9.0.305 (see `global.json`)
 - **Workloads**: `maui`, `android`, `wasm-tools` required
-- **Platform TFMs**: `net9.0-android`, `net9.0-ios`, `net9.0-maccatalyst` for mobile
+- **Platform TFMs**: `net10.0-android`, `net10.0-ios`, `net10.0-maccatalyst` for mobile
 - **Secrets/Config**: `google-services.json` for Android (base64 encoded in vars)
 - **Signing**: iOS requires certificates/provisioning profiles; Android uses keystore
 - **Azure**: Deploys to Azure App Service (Web API & Admin Portal) + Notification Hub
@@ -80,7 +80,7 @@ All workflows are in `.github/workflows/`:
 
 - **Workload installation**: `dotnet workload install maui android wasm-tools`
 - **NuGet cache clearing**: `dotnet nuget locals all --clear` before restore
-- **Multi-targeting**: Build with `-f:net9.0-android` or `-f:net9.0-ios` flags
+- **Multi-targeting**: Build with `-f:net10.0-android` or `-f:net10.0-ios` flags
 - **Linker/Trimming**: Recognize trimming errors and suggest `TrimMode` settings
 - **AOT compilation**: For iOS (required for App Store)
 - **Secrets injection**: Decode base64 secrets (e.g., `google-services.json`, signing certs)
