@@ -10,7 +10,8 @@
       Padding="20,20"
       x:DataType="vm:FlyoutHeaderViewModel"
       RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-      RowSpacing="20">
+      RowSpacing="20"
+      BackgroundColor="{StaticResource FlyoutBackgroundColour}">
     <Grid.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutHeaderViewModel"/>
     </Grid.BindingContext>
