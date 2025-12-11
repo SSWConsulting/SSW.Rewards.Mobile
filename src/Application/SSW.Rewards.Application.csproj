@@ -13,7 +13,7 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
         <PackageReference Include="Hangfire.Core" Version="1.8.20" />
         <PackageReference Include="MediatR" Version="12.2.0" />
-		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
+		<PackageReference Include="ExcelDataReader" Version="3.8.0" />
 		<PackageReference Include="morelinq" Version="4.4.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
         <!-- Required for SQL Server query optimizations -->
