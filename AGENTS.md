@@ -107,8 +107,8 @@ Application/Achievements/
 
 ### Backend (.NET 10)
 
-- **Framework**: ASP.NET Core 9.0, Minimal APIs
-- **ORM**: Entity Framework Core 9.0 (SQL Server provider)
+- **Framework**: ASP.NET Core 10.0, Minimal APIs
+- **ORM**: Entity Framework Core 10.0 (SQL Server provider)
 - **CQRS**: MediatR 12.x
 - **Validation**: FluentValidation 11.x
 - **Mapping**: AutoMapper (limited use, prefer manual mapping)
