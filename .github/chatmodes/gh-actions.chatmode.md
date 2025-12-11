@@ -30,7 +30,7 @@ This is **SSW.Rewards.Mobile**, a .NET 10.0 solution containing:
 
 ### Build Characteristics
 
-- **.NET SDK**: 9.0.305 (see `global.json`)
+- **.NET SDK**: 10.0.100 (see `global.json`)
 - **Workloads**: `maui`, `android`, `wasm-tools` required
 - **Platform TFMs**: `net10.0-android`, `net10.0-ios`, `net10.0-maccatalyst` for mobile
 - **Secrets/Config**: `google-services.json` for Android (base64 encoded in vars)
