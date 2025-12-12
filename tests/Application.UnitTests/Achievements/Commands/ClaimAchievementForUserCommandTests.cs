@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
@@ -10,7 +9,6 @@ using SSW.Rewards.Application.Achievements.Notifications;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Enums;
-using SSW.Rewards.Shared.DTOs.Achievements;
 
 namespace SSW.Rewards.Application.UnitTests.Achievements.Commands;
 
@@ -51,7 +49,7 @@ public class ClaimAchievementForUserCommandTests
         SetupUserQuery(userId);
 
         var capturedAchievements = new List<UserAchievement>();
-        var mockUserAchievements = new List<UserAchievement>().AsQueryable().BuildMockDbSet();
+        var mockUserAchievements = new List<UserAchievement>().BuildMockDbSet();
         mockUserAchievements.Setup(x => x.Add(It.IsAny<UserAchievement>()))
             .Callback<UserAchievement>(capturedAchievements.Add);
 
@@ -180,7 +178,7 @@ public class ClaimAchievementForUserCommandTests
         SetupAchievementQuery(achievementId, achievementCode);
         SetupUserQuery(userId);
 
-        var mockUserAchievements = new List<UserAchievement>().AsQueryable().BuildMockDbSet();
+        var mockUserAchievements = new List<UserAchievement>().BuildMockDbSet();
         _contextMock.Setup(x => x.UserAchievements).Returns(mockUserAchievements.Object);
 
         _contextMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -213,7 +211,7 @@ public class ClaimAchievementForUserCommandTests
         SetupAchievementQuery(achievementId, achievementCode);
         SetupUserQuery(userId);
 
-        var mockUserAchievements = new List<UserAchievement>().AsQueryable().BuildMockDbSet();
+        var mockUserAchievements = new List<UserAchievement>().BuildMockDbSet();
         _contextMock.Setup(x => x.UserAchievements).Returns(mockUserAchievements.Object);
         _contextMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
@@ -245,7 +243,7 @@ public class ClaimAchievementForUserCommandTests
         const int achievementId = 20;
 
         var capturedAchievements = new List<UserAchievement>();
-        var mockUserAchievements = new List<UserAchievement>().AsQueryable().BuildMockDbSet();
+        var mockUserAchievements = new List<UserAchievement>().BuildMockDbSet();
         mockUserAchievements.Setup(x => x.Add(It.IsAny<UserAchievement>()))
             .Callback<UserAchievement>(capturedAchievements.Add);
 
@@ -280,7 +278,7 @@ public class ClaimAchievementForUserCommandTests
             ? new List<Achievement> { new() { Id = achievementId.Value, Code = code } }
             : new List<Achievement>();
 
-        var mockDbSet = achievements.AsQueryable().BuildMockDbSet();
+        var mockDbSet = achievements.BuildMockDbSet();
         _contextMock.Setup(x => x.Achievements).Returns(mockDbSet.Object);
     }
 
@@ -290,13 +288,13 @@ public class ClaimAchievementForUserCommandTests
             ? new List<User> { new() { Id = userId.Value } }
             : new List<User>();
 
-        var mockDbSet = users.AsQueryable().BuildMockDbSet();
+        var mockDbSet = users.BuildMockDbSet();
         _contextMock.Setup(x => x.Users).Returns(mockDbSet.Object);
     }
 
     private void SetupUserAchievementsQuery(List<UserAchievement> userAchievements)
     {
-        var mockDbSet = userAchievements.AsQueryable().BuildMockDbSet();
+        var mockDbSet = userAchievements.BuildMockDbSet();
         _contextMock.Setup(x => x.UserAchievements).Returns(mockDbSet.Object);
     }
 }

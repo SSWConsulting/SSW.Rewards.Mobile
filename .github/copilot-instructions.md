@@ -6,7 +6,7 @@ This file provides GitHub Copilot with essential context about the SSW.Rewards.M
 
 ## Quick Reference
 
-**Project Type**: .NET 9 MAUI Mobile App + Blazor WASM Admin + ASP.NET Core API  
+**Project Type**: .NET 10 MAUI Mobile App + Blazor WASM Admin + ASP.NET Core API  
 **Architecture**: Clean Architecture with CQRS (MediatR)  
 **Database**: SQL Server with EF Core  
 **Key Technologies**: .NET MAUI, Blazor, MediatR, FluentValidation, Entity Framework Core
@@ -44,6 +44,7 @@ var orders = await _context.Orders
 ```
 
 **Rules**:
+
 1. ✅ **Always** `.AsNoTracking()` for read-only queries
 2. ✅ **Always** `.TagWithContext()` after `.AsNoTracking()`
 3. ✅ **Always** `.Select()` to project, **never** `Include`/`ThenInclude` for read-only
@@ -94,7 +95,7 @@ public partial class HomeViewModel : ObservableObject
 - **DTOs**: `{Entity}Dto` or `{Entity}ViewModel`
 - **PascalCase**: Classes, methods, properties, public fields
 - **camelCase**: Parameters, local variables
-- **_camelCase**: Private fields
+- **\_camelCase**: Private fields
 - **Async suffix**: All async methods
 
 ## Common Commands
@@ -135,6 +136,7 @@ dotnet run --project src/AdminUI
 ## Documentation
 
 See [`AGENTS.md`](../AGENTS.md) for:
+
 - Complete technology stack details
 - Full architecture documentation
 - Detailed coding standards
@@ -151,4 +153,4 @@ See [`AGENTS.md`](../AGENTS.md) for:
 
 ---
 
-**Last Updated**: November 2025 | **Target Framework**: .NET 9.0 | **MAUI Version**: 9.0.21
+**Last Updated**: December 2025 | **Target Framework**: .NET 10.0 | **MAUI Version**: 10.0.x

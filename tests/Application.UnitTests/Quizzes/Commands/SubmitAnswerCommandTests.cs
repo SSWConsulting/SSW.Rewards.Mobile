@@ -1,6 +1,5 @@
 using FluentAssertions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
@@ -244,14 +243,14 @@ public class SubmitAnswerCommandTests
     private void SetupQuestionQuery(QuizQuestion? question)
     {
         var questions = question != null ? new List<QuizQuestion> { question } : new List<QuizQuestion>();
-        var mockDbSet = questions.AsQueryable().BuildMockDbSet();
+        var mockDbSet = questions.BuildMockDbSet();
         _contextMock.Setup(x => x.QuizQuestions).Returns(mockDbSet.Object);
     }
 
     private void SetupAnswerQuery(QuizAnswer? answer)
     {
         var answers = answer != null ? new List<QuizAnswer> { answer } : new List<QuizAnswer>();
-        var mockDbSet = answers.AsQueryable().BuildMockDbSet();
+        var mockDbSet = answers.BuildMockDbSet();
         _contextMock.Setup(x => x.QuizAnswers).Returns(mockDbSet.Object);
     }
 
