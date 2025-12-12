@@ -53,7 +53,7 @@
     padding: 10px;
     width: 299px;
     height: 598px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     margin: 0 0 0 auto;
@@ -109,7 +109,7 @@
     border-radius: 13px;
     padding: 10px;
     margin: 0 6px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 0 0 0.5px rgba(0, 0, 0, 0.1);
 }
 
 .notification-header {
