@@ -7,11 +7,15 @@
                      x:DataType="vm:FlyoutFooterViewModel"
                      Margin="0,0,0,5"
                      Padding="20,0"
-                     Spacing="10">
+                     Spacing="10"
+                     InputTransparent="False">
     <VerticalStackLayout.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutFooterViewModel"/>
     </VerticalStackLayout.BindingContext>
-    
+    <VerticalStackLayout.GestureRecognizers>
+        <!-- Consume tap events to prevent passthrough -->
+        <TapGestureRecognizer />
+    </VerticalStackLayout.GestureRecognizers>
     <VerticalStackLayout Spacing="10">
         <VerticalStackLayout.Triggers>
             <!-- Setting Opacity to hide here as using IsVisible can mess up the layout -->
