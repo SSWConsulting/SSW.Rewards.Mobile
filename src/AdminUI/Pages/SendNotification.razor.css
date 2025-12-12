@@ -33,6 +33,17 @@
     font-size: 1.25rem !important;
 }
 
+.send-notification-page {
+    width: 100%;
+    max-width: 1400px;
+    overflow-x: hidden;
+    margin-right: auto;
+}
+
+.send-notification-paper {
+    overflow-x: hidden;
+}
+
 /* iPhone notification preview */
 .iphone-preview {
     position: sticky;
@@ -40,25 +51,23 @@
     background: #000;
     border-radius: 32px;
     padding: 10px;
-    width: 260px;
-    height: 520px;
+    width: 299px;
+    height: 598px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
-    /* Scale and center to fill space more deliberately */
-    transform: scale(1.15);
-    margin: 0 auto;
-    transform-origin: center top;
+    margin: 0 0 0 auto;
+    box-sizing: border-box;
 }
 
-/* Hide iPhone preview on mobile/tablet to prevent horizontal overflow */
-@media (max-width: 768px) {
+/* Hide iPhone preview on phones + iPad portrait (keep the form comfortable) */
+@media (max-width: 1024px) {
     .iphone-preview {
         display: none;
     }
 }
 
-/* Hide iPhone preview in mobile landscape mode (insufficient vertical space) */
+/* Hide iPhone preview in very short viewports (insufficient vertical space) */
 @media (max-height: 600px) {
     .iphone-preview {
         display: none;

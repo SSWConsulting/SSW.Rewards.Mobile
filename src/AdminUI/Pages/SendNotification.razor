@@ -10,13 +10,13 @@
 
 <PageTitle>SSW Rewards | Send Notification</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
-    <MudText Typo="Typo.h3" GutterBottom="true" id="page-title">Create Notification</MudText>
+<div class="send-notification-page">
+    <MudText Typo="Typo.h3" id="page-title">Create Notification</MudText>
 
     <MudGrid>
         <!-- Form Column -->
-        <MudItem xs="12" md="9">
-            <MudPaper Class="pa-4 warm-grey-bg" role="form" aria-labelledby="page-title">
+        <MudItem xs="12" md="12" lg="8" Class="send-notification-form">
+            <MudPaper Class="pa-4 mt-4 warm-grey-bg send-notification-paper" aria-labelledby="page-title">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit" onkeypress="return event.keyCode!=13">
                     <DataAnnotationsValidator />
                     <MudGrid Spacing="3">
@@ -125,12 +125,14 @@
                                              SearchFuncWithCancel="@SearchRoles"
                                              ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                              Clearable="true"
-                                            ResetValueOnEmptyText="true"
-                                            Required="@(_model.TargetingOption == Targeting.Role)"
-                                            Disabled="@(_model.TargetingOption != Targeting.Role)"
-                                            data-testid="role-autocomplete"
-                                            aria-label="Search and select required role" />
-                        </MudItem>                        <MudItem xs="12">
+                                             ResetValueOnEmptyText="true"
+                                             Required="@(_model.TargetingOption == Targeting.Role)"
+                                             Disabled="@(_model.TargetingOption != Targeting.Role)"
+                                             data-testid="role-autocomplete"
+                                             aria-label="Search and select required role" />
+                        </MudItem>
+
+                        <MudItem xs="12">
                             <MudText Typo="Typo.h4" Class="mt-4" id="content-section-label">Content</MudText>
                         </MudItem>
 
@@ -177,7 +179,7 @@
                                        Class="ml-auto" 
                                        Disabled="@_isSending"
                                        data-testid="submit-notification"
-                                       aria-label="@(_isSending ? "Sending notification..." : "Submit and create notification")">
+                                       aria-label='@(_isSending ? "Sending notification..." : "Submit and create notification")'>
                                 Create Notification
                             </MudButton>
                         </MudItem>
@@ -185,17 +187,17 @@
                 </EditForm>
             </MudPaper>
         </MudItem>
-        
-        <!-- iPhone Preview Column -->
-        <MudItem xs="12" md="3">
+
+        <!-- iPhone Preview Column (outside the form paper) -->
+        <MudItem xs="12" md="12" lg="4" Class="send-notification-preview">
             <div class="iphone-preview">
                 <div class="iphone-screen">
                     <div class="iphone-notch"></div>
-                    
+
                     <div class="iphone-time">
                         @((MarkupString)GetPreviewTime())
                     </div>
-                    
+
                     <div class="notification-preview">
                         <div class="notification-header">
                             <div class="notification-icon">
@@ -204,7 +206,7 @@
                             <span class="notification-app-name">SSW Rewards</span>
                             <span class="notification-time-badge">now</span>
                         </div>
-                        
+
                         <div class="notification-title">
                             @if (string.IsNullOrWhiteSpace(_model.Title))
                             {
@@ -215,7 +217,7 @@
                                 @_model.Title
                             }
                         </div>
-                        
+
                         <div class="notification-body">
                             @if (string.IsNullOrWhiteSpace(_model.Body))
                             {
@@ -226,11 +228,11 @@
                                 @_model.Body
                             }
                         </div>
-                        
+
                         @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
                         {
-                            <img src="@_model.ImageUrl" 
-                                 alt="Notification image preview" 
+                            <img src="@_model.ImageUrl"
+                                 alt="Notification image preview"
                                  class="notification-image"
                                  loading="lazy" />
                         }
@@ -239,4 +241,4 @@
             </div>
         </MudItem>
     </MudGrid>
-</MudContainer>
+</div>
