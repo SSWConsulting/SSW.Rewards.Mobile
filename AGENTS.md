@@ -146,7 +146,7 @@ Application/Achievements/
 
 ## 📋 Coding Standards & Best Practices
 
-### C# 13 & .NET 10 Conventions
+### C# 14 & .NET 10 Conventions
 
 ```csharp
 // File-scoped namespaces (always)
