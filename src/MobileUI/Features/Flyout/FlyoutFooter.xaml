@@ -6,6 +6,7 @@
                      xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                      x:DataType="vm:FlyoutFooterViewModel"
                      Margin="0,0,0,5"
+                     Padding="20,0"
                      Spacing="10">
     <VerticalStackLayout.BindingContext>
         <resolver:ResolveViewModel x:TypeArguments="vm:FlyoutFooterViewModel"/>
@@ -19,8 +20,7 @@
                 <Setter Property="InputTransparent" Value="True" />
             </DataTrigger>
         </VerticalStackLayout.Triggers>
-        <VerticalStackLayout VerticalOptions="Start"
-                             Padding="20,0">
+        <VerticalStackLayout VerticalOptions="Start">
             <BoxView HorizontalOptions="FillAndExpand"
                      HeightRequest="1"
                      Color="#171717"
@@ -40,7 +40,6 @@
                                       Command="{Binding MyProfileTappedCommand}"/>
             </Grid.GestureRecognizers>
             <Label Grid.Column="0"
-                   Margin="20,0,0,0"
                    HeightRequest="30"
                    WidthRequest="30"
                    VerticalOptions="Center"
@@ -59,8 +58,7 @@
                    Text="My Profile" />
         </Grid>
     </VerticalStackLayout>
-    <VerticalStackLayout VerticalOptions="Start"
-                         Padding="20,0">
+    <VerticalStackLayout VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
                  Color="#171717"
@@ -80,7 +78,6 @@
                                   Command="{Binding MySettingsTappedCommand}"/>
         </Grid.GestureRecognizers>
         <Label Grid.Column="0"
-               Margin="20,0,0,0"
                HeightRequest="30"
                WidthRequest="30"
                VerticalOptions="Center"
@@ -99,8 +96,7 @@
                Text="My Settings" />
     </Grid>
 
-    <VerticalStackLayout VerticalOptions="Start"
-                         Padding="20,0">
+    <VerticalStackLayout VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
                  Color="#171717"
@@ -120,7 +116,6 @@
                                   Command="{Binding LogOutTappedCommand}"/>
         </Grid.GestureRecognizers>
         <Label Grid.Column="0"
-               Margin="20,0,0,0"
                HeightRequest="30"
                WidthRequest="30"
                VerticalOptions="Center"
@@ -140,8 +135,7 @@
                Text="Log Out" />
     </Grid>
 
-    <VerticalStackLayout VerticalOptions="Start"
-                         Padding="20,0">
+    <VerticalStackLayout VerticalOptions="Start">
         <BoxView HorizontalOptions="FillAndExpand"
                  HeightRequest="1"
                  Color="#171717"
