@@ -1,38 +1,61 @@
 @model SSW.Rewards.Application.Users.Commands.Common.DeleteProfileEmail;
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <title></title>
 </head>
 <body>
 <div>
-    <p style="color: #CC4141; font-weight: bold;">Hi @Model.UserName</p>
+    <p style="color: #CC4141; font-weight: bold;">Hi SSW Rewards</p>
 
     <blockquote>
         &gt; 1. Please delete their profile and all associated data from the following systems:
         <ul>
-            <li>SSW.Rewards</li><li>SSW.Identity</li>
+            <li>SSW.Rewards</li>
+            <li>SSW.Identity</li>
         </ul>
-    </blockquote>✅ Done - profile has been deleted
+    </blockquote>
+    <p><strong>✅ Done - profile has been deleted</strong></p>
 
     <p><strong>Important: </strong>You can no longer accumulate points and are ineligible to claim rewards or win prizes.</p>
     <p>You can reply to this email if you have any concerns, and feel free to sign up again any time!</p>
     <p>Thanks,</p>
-    <p>SSW Rewards Notification Service</p><hr/><strong>From:</strong> Verify [SSW] &lt;verify@ssw.com.au&gt;<br><strong>Date:</strong> @Model.RequestDate.ToString("f")<br><strong>To: </strong> SSW Rewards &lt;SSWRewards@ssw.com.au&gt;<br><strong>Cc: </strong> @Model.UserName &lt;@Model.UserEmail&gt;<br><strong>Subject:</strong> Profile deletion request<br><br>
-    <p><span style="color: #CC4141; font-weight: bold;">Hi @Model.UserName,</span><br><strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.</p>
-    <p style="color: #CC4141; font-weight: bold;">Hi SSW Rewards</p>
-    <p>{{username}} has submitted a profile deletion request.</p>
-
-    1. Please delete their profile and all associated data from the following systems:
-    <ul>
-        <li>SSW.Rewards</li><li>SSW.Identity</li>
-    </ul>
-
-    <p>2. Reply all 'done'.</p>
-    <p>Thanks,</p>
     <p>SSW Rewards Notification Service</p>
+
+    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ccc;" />
+
+    <div style="background-color: #f5f5f5; padding: 10px; font-size: 12px; color: #666;">
+        <p style="margin: 5px 0;">
+            <strong>From:</strong> Verify [SSW] &lt;verify@ssw.com.au&gt;<br />
+            <strong>Date:</strong> @Model.RequestDate.ToString("f")<br />
+            <strong>To:</strong> SSW Rewards &lt;SSWRewards@ssw.com.au&gt;<br />
+            <strong>Cc:</strong> @Model.UserName &lt;@Model.UserEmail&gt;<br />
+            <strong>Subject:</strong> Profile deletion request
+        </p>
+    </div>
+
+    <div style="margin-top: 15px; border-left: 3px solid #ccc; padding-left: 10px;">
+        <p style="color: #CC4141; font-weight: bold;">Hi @Model.UserName,</p>
+        <p>
+            <strong>Important: </strong>if you did not request this, please reply to this email letting us know ASAP, and reset your password.
+        </p>
+
+        <p style="color: #CC4141; font-weight: bold;">Hi SSW Rewards</p>
+        <p>@Model.UserName has submitted a profile deletion request.</p>
+
+        <p>
+            1. Please delete their profile and all associated data from the following systems:
+        </p>
+        <ul>
+            <li>SSW.Rewards</li>
+            <li>SSW.Identity</li>
+        </ul>
+
+        <p>2. Reply all 'done'.</p>
+        <p>Thanks,</p>
+        <p>SSW Rewards Notification Service</p>
+    </div>
 </div>
 </body>
 </html>
