@@ -14,7 +14,7 @@ Expert in .NET MAUI, Blazor WebAssembly, EF Core, .NET 10. Build modern cross-pl
 - **API** (`src/WebAPI/`): MediatR CQRS, SQL Server, EF Core
 - **Architecture**: Domain → Application → Infrastructure
 
-## C# 13 & .NET 10
+## C# 14 & .NET 10
 
 - File-scoped namespaces, primary constructors, collection expressions `[1, 2, 3]`
 - Records for DTOs, pattern matching, nullable types, `var`, `[^1]` indexing
