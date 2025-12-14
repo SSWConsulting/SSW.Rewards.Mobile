@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>SSW.Rewards.Application</RootNamespace>
         <AssemblyName>SSW.Rewards.Application</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -10,16 +10,16 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
         <PackageReference Include="Hangfire.Core" Version="1.8.20" />
-        <PackageReference Include="MediatR" Version="12.2.0" />
-		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
+        <PackageReference Include="MediatR" Version="[12.*,13.0)" />
+		<PackageReference Include="ExcelDataReader" Version="3.8.0" />
 		<PackageReference Include="morelinq" Version="4.4.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
         <!-- Required for SQL Server query optimizations -->
-		    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
+		    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
         <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     </ItemGroup>
 

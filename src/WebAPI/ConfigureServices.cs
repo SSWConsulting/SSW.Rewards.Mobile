@@ -1,9 +1,8 @@
 ﻿using FluentValidation.AspNetCore;
-using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.WebAPI.Authorisation;
@@ -84,19 +83,9 @@ public static class ConfigureServices
                 Type = SecuritySchemeType.ApiKey
             });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
             {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
-                }
+                [new OpenApiSecuritySchemeReference("Bearer", document)] = []
             });
         });
 

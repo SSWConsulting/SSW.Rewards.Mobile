@@ -53,10 +53,10 @@ jobs:
 
       - name: Import Provisioning Profile
         run: |
-            echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
+          echo ${{ secrets.APPLE_PROFILE }} | base64 --decode > SSW_Rewards_iOS_Distribution.mobileprovision
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp SSW_Rewards_iOS_Distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
       - name: Copy Entitlements.plist
         run: |
           if [ "${{ inputs.environment }}" == "prod" ]; then
@@ -64,11 +64,11 @@ jobs:
           fi
 
       - name: Build and sign
-        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net9.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
+        run: dotnet publish src/MobileUI/MobileUI.csproj -v:diag -f:net10.0-ios -c:Release /p:ArchiveOnBuild=true /p:RuntimeIdentifier=ios-arm64 /p:CodeSignKey="${{ secrets.APPLE_CERT_NAME }}" /p:CodesignProvision="${{ secrets.APPLE_PROFILE_NAME }}"
 
       - name: Upload iOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-ios-${{ inputs.build_number }}
-          path: | 
-            src/MobileUI/bin/Release/net9.0-ios/ios-arm64/publish/*.ipa
+          path: |
+            src/MobileUI/bin/Release/net10.0-ios/ios-arm64/publish/*.ipa

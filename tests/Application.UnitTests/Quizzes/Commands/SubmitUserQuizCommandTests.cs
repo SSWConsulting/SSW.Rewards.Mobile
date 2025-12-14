@@ -337,7 +337,7 @@ public class SubmitUserQuizCommandTests
 
     private void SetupMocksForQuery(Quiz quiz)
     {
-        var mockDbSet = new List<Quiz> { quiz }.AsQueryable().BuildMockDbSet();
+        var mockDbSet = new List<Quiz> { quiz }.BuildMockDbSet();
         _contextMock.Setup(x => x.Quizzes).Returns(mockDbSet.Object);
     }
 

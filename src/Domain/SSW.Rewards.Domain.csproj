@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>SSW.Rewards.Domain</RootNamespace>
         <AssemblyName>SSW.Rewards.Domain</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.2.0" />
+      <PackageReference Include="MediatR" Version="[12.*,13.0)" />
     </ItemGroup>
 
     <ItemGroup>

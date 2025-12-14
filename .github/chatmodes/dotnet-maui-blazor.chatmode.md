@@ -5,16 +5,16 @@ tools: ['edit', 'search', 'runCommands', 'runTasks', 'usages', 'problems', 'chan
 mcpServers: ["upstash/context7"]
 ---
 
-Expert in .NET MAUI, Blazor WebAssembly, EF Core, .NET 9. Build modern cross-platform apps with clean architecture.
+Expert in .NET MAUI, Blazor WebAssembly, EF Core, .NET 10. Build modern cross-platform apps with clean architecture.
 
-## Project: SSW.Rewards.Mobile (.NET 9)
+## Project: SSW.Rewards.Mobile (.NET 10)
 
 - **MAUI** (`src/MobileUI/`): iOS/Android, CommunityToolkit.Mvvm, Firebase
 - **Blazor WASM** (`src/AdminUI/`): MudBlazor, API client  
 - **API** (`src/WebAPI/`): MediatR CQRS, SQL Server, EF Core
 - **Architecture**: Domain → Application → Infrastructure
 
-## C# 13 & .NET 9
+## C# 14 & .NET 10
 
 - File-scoped namespaces, primary constructors, collection expressions `[1, 2, 3]`
 - Records for DTOs, pattern matching, nullable types, `var`, `[^1]` indexing

@@ -1,10 +1,8 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using SSW.Rewards.Application.Common.Interfaces;
-using SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
 using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Enums;
 using GetQuizListForUser = SSW.Rewards.Application.Quizzes.Queries.GetQuizListForUser;
@@ -312,13 +310,13 @@ public class GetQuizListForUserTests
 
     private void SetupQuizzesQuery(List<Quiz> quizzes)
     {
-        var mockDbSet = quizzes.AsQueryable().BuildMockDbSet();
+        var mockDbSet = quizzes.BuildMockDbSet();
         _contextMock.Setup(x => x.Quizzes).Returns(mockDbSet.Object);
     }
 
     private void SetupCompletedQuizzesQuery(List<CompletedQuiz> completedQuizzes)
     {
-        var mockDbSet = completedQuizzes.AsQueryable().BuildMockDbSet();
+        var mockDbSet = completedQuizzes.BuildMockDbSet();
         _contextMock.Setup(x => x.CompletedQuizzes).Returns(mockDbSet.Object);
     }
 

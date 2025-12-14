@@ -1,6 +1,6 @@
 # SSW Rewards Mobile App!
 
-This is a .NET MAUI app with a .NET 8 backend.
+This is a .NET MAUI app with a .NET 10 backend.
 
 Use this app to scan SSW QR codes, earn SSW Points ⭐, claim rewards and win prizes!
 
@@ -21,7 +21,7 @@ Connect the outside world with SSW at events through awesome rewards!
 
 ## Roadmap
 
-- Upgrade to .NET 9
+- ✅ Upgraded to .NET 10
 - Push notification support - for prize draws 🥳
 - Offline access
 - Better support for white labelling to allow companies to put their own branding to the app
