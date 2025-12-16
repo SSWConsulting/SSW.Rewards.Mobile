@@ -60,15 +60,15 @@ public partial class NetworkPageViewModel : BaseViewModel
                     _ => false
                 };
 
-            // Disable refreshing when done.
-            AdvancedSearchResults.OnCollectionUpdated += OnCollectionUpdated;
-
             // This is to reduce flickering when loading data.
             AdvancedSearchResults.CompareItems = NetworkProfileDto.IsEqual;
-
-            // Handle errors silently, e.g., log them or show a message.
-            AdvancedSearchResults.OnError += OnCollectionError;
         }
+
+        // Disable refreshing when done.
+        AdvancedSearchResults.OnCollectionUpdated += OnCollectionUpdated;
+
+        // Handle errors silently, e.g., log them or show a message.
+        AdvancedSearchResults.OnError += OnCollectionError;
 
         _pageLoaded = true;
 
