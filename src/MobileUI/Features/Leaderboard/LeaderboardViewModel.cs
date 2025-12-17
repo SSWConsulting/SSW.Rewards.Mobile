@@ -15,6 +15,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     private bool _loaded;
 
     private const int PageSize = 50;
+    private const int ScrollDelayMilliseconds = 50;
     private int _page;
     private bool _limitReached;
 
@@ -153,11 +154,9 @@ public partial class LeaderboardViewModel : BaseViewModel
                 LeaderViewModel myCard = Leaders.FirstOrDefault(l => l.IsMe);
                 while (myCard == null)
                 {
-                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
-
-                    if (myCard != null)
+                    if (_limitReached)
                     {
-                        continue;
+                        break;
                     }
 
                     ++_page;
@@ -165,13 +164,17 @@ public partial class LeaderboardViewModel : BaseViewModel
                     var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
                     ProcessLeaders(result);
 
-                    if (_limitReached)
-                    {
-                        break;
-                    }
+                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
                 }
 
-                ScrollToCard(myCard);
+                if (myCard != null)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Task.Delay(ScrollDelayMilliseconds);
+                        ScrollToCard(myCard);
+                    });
+                }
             }
             else
             {
