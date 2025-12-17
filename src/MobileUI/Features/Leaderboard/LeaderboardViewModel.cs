@@ -15,6 +15,7 @@ public partial class LeaderboardViewModel : BaseViewModel
     private bool _loaded;
 
     private const int PageSize = 50;
+    private const int ScrollDelayMilliseconds = 50;
     private int _page;
     private bool _limitReached;
 
@@ -170,7 +171,7 @@ public partial class LeaderboardViewModel : BaseViewModel
                 {
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        await Task.Delay(50);
+                        await Task.Delay(ScrollDelayMilliseconds);
                         ScrollToCard(myCard);
                     });
                 }

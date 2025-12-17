@@ -31,6 +31,13 @@ public partial class LeaderboardPage
         await Animate();
     }
 
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.ScrollTo -= ScrollTo;
+        _viewModel.ReadyEarly -= Animate;
+    }
+
     private void ScrollTo(int i)
     {
         LeadersCollection.ScrollTo(i, position: ScrollToPosition.Center, animate: false);
