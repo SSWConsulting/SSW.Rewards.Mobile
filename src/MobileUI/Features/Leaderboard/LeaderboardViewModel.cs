@@ -153,11 +153,9 @@ public partial class LeaderboardViewModel : BaseViewModel
                 LeaderViewModel myCard = Leaders.FirstOrDefault(l => l.IsMe);
                 while (myCard == null)
                 {
-                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
-
-                    if (myCard != null)
+                    if (_limitReached)
                     {
-                        continue;
+                        break;
                     }
 
                     ++_page;
@@ -165,13 +163,17 @@ public partial class LeaderboardViewModel : BaseViewModel
                     var result = await FetchLeaderboard(CurrentPeriod, _page, PageSize);
                     ProcessLeaders(result);
 
-                    if (_limitReached)
-                    {
-                        break;
-                    }
+                    myCard = Leaders.FirstOrDefault(l => l.IsMe);
                 }
 
-                ScrollToCard(myCard);
+                if (myCard != null)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Task.Delay(50);
+                        ScrollToCard(myCard);
+                    });
+                }
             }
             else
             {
