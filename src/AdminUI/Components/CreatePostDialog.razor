@@ -1,0 +1,272 @@
+@using SSW.Rewards.Shared.DTOs.Posts
+@using Microsoft.AspNetCore.Components.Forms
+@using SSW.Rewards.ApiClient.Services
+
+@inject IPostsService PostsService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" Model="@_model">
+            <MudTextField @bind-Value="_model.Title"
+                          Label="Title"
+                          Required="true"
+                          RequiredError="Title is required"
+                          MaxLength="200"
+                          Counter="200"
+                          Immediate="true"
+                          Variant="Variant.Outlined"
+                          Class="mb-4" />
+
+            <MudTextField @bind-Value="_model.Content"
+                          Label="Content"
+                          Required="true"
+                          RequiredError="Content is required"
+                          Lines="8"
+                          Variant="Variant.Outlined"
+                          Class="mb-4" />
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Image</MudText>
+            <MudRadioGroup @bind-Value="_imageUploadMode" Class="mb-2">
+                <MudRadio Value="ImageUploadMode.Url" Color="Color.Primary">URL</MudRadio>
+                <MudRadio Value="ImageUploadMode.Upload" Color="Color.Primary">Upload</MudRadio>
+            </MudRadioGroup>
+
+            @if (_imageUploadMode == ImageUploadMode.Url)
+            {
+                <MudTextField @bind-Value="_model.ImageUrl"
+                              Label="Image URL (optional)"
+                              Placeholder="https://example.com/image.jpg"
+                              MaxLength="500"
+                              Variant="Variant.Outlined"
+                              Class="mb-4" />
+            }
+            else
+            {
+                <MudFileUpload T="IBrowserFile" 
+                               Accept="image/*"
+                               OnFilesChanged="OnFileSelected"
+                               MaximumFileCount="1">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   FullWidth="true"
+                                   for="@context.Id">
+                            @(_selectedFile != null ? _selectedFile.Name : "Select Image")
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+                
+                @if (_uploadingImage)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-2" />
+                }
+                
+                @if (_selectedFile != null && !string.IsNullOrEmpty(_uploadedImageUrl))
+                {
+                    <MudChip Icon="@Icons.Material.Filled.CheckCircle" 
+                             Color="Color.Success" 
+                             Size="Size.Small"
+                             Class="mt-2">
+                        Image uploaded successfully
+                    </MudChip>
+                }
+            }
+
+            @if (!string.IsNullOrWhiteSpace(_model.ImageUrl) || !string.IsNullOrWhiteSpace(_uploadedImageUrl))
+            {
+                var imageUrl = !string.IsNullOrWhiteSpace(_uploadedImageUrl) ? _uploadedImageUrl : _model.ImageUrl;
+                <MudPaper Class="pa-4 mb-4" Elevation="1">
+                    <MudText Typo="Typo.caption" Class="mb-2">Image Preview:</MudText>
+                    <MudImage Src="@imageUrl" 
+                              Alt="Post image preview" 
+                              Elevation="1" 
+                              Class="rounded-lg"
+                              ObjectFit="ObjectFit.Cover"
+                              Style="max-height: 200px; width: 100%;" />
+                </MudPaper>
+            }
+
+            <MudCheckBox @bind-Value="_model.IsPublished"
+                         Label="Publish immediately"
+                         Color="Color.Primary"
+                         Class="mb-4" />
+
+            @if (!IsEdit)
+            {
+                <MudCheckBox @bind-Value="_model.SendNotification"
+                             Label="Send push notification to users"
+                             Color="Color.Primary"
+                             Class="mb-4" />
+                
+                @if (_model.SendNotification)
+                {
+                    <MudAlert Severity="Severity.Info" Class="mb-4">
+                        A push notification will be sent to all app users when you create this post.
+                    </MudAlert>
+                }
+            }
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" 
+                   Variant="Variant.Filled" 
+                   OnClick="Submit"
+                   Disabled="_processing">
+            @if (_processing)
+            {
+                <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+            }
+            @(IsEdit ? "Update" : "Create")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public int PostId { get; set; }
+
+    [Parameter]
+    public PostDto? ExistingPost { get; set; }
+
+    private MudForm _form;
+    private bool _processing;
+    private PostFormModel _model = new();
+    private ImageUploadMode _imageUploadMode = ImageUploadMode.Url;
+    private IBrowserFile? _selectedFile;
+    private string? _uploadedImageUrl;
+    private bool _uploadingImage;
+
+    public enum ImageUploadMode
+    {
+        Url,
+        Upload
+    }
+
+    protected override void OnInitialized()
+    {
+        if (IsEdit && ExistingPost != null)
+        {
+            _model = new PostFormModel
+            {
+                Title = ExistingPost.Title,
+                Content = ExistingPost.Content,
+                ImageUrl = ExistingPost.ImageUrl,
+                IsPublished = ExistingPost.IsPublished,
+                SendNotification = false
+            };
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        _selectedFile = file;
+        _uploadingImage = true;
+        _uploadedImageUrl = null;
+        
+        try
+        {
+            // Read file bytes
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+
+            // Upload using the service
+            _uploadedImageUrl = await PostsService.UploadImage(fileBytes, file.Name, file.ContentType, CancellationToken.None);
+            Snackbar.Add("Image uploaded successfully", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error uploading image: {ex.Message}", Severity.Error);
+            _selectedFile = null;
+        }
+        finally
+        {
+            _uploadingImage = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        _processing = true;
+        StateHasChanged();
+
+        try
+        {
+            // Use uploaded image URL if available, otherwise use the URL from text field
+            var finalImageUrl = !string.IsNullOrWhiteSpace(_uploadedImageUrl) ? _uploadedImageUrl : _model.ImageUrl;
+
+            if (IsEdit)
+            {
+                var updateDto = new UpdatePostDto
+                {
+                    Id = PostId,
+                    Title = _model.Title,
+                    Content = _model.Content,
+                    ImageUrl = finalImageUrl,
+                    IsPublished = _model.IsPublished
+                };
+
+                await PostsService.UpdatePost(updateDto, CancellationToken.None);
+                Snackbar.Add("Post updated successfully", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                var createDto = new CreatePostDto
+                {
+                    Title = _model.Title,
+                    Content = _model.Content,
+                    ImageUrl = finalImageUrl,
+                    SendNotification = _model.SendNotification,
+                    IsPublished = _model.IsPublished
+                };
+
+                await PostsService.CreatePost(createDto, CancellationToken.None);
+                Snackbar.Add("Post created successfully", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+
+    private class PostFormModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+        public bool SendNotification { get; set; }
+        public bool IsPublished { get; set; }
+    }
+}

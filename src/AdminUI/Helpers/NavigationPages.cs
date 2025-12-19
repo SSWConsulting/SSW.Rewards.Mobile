@@ -28,6 +28,7 @@ public static class NavigationPages
             new() { Href = "achievements", Icon = Icons.Material.Filled.Dashboard, Title = "Achievements" },
             new() { Href = "rewards", Icon = Icons.Material.Filled.Redeem, Title = "Rewards" },
             new() { Href = "quizzes", Icon = Icons.Material.Filled.Quiz, Title = "Quizzes" },
+            new() { Href = "posts", Icon = Icons.Material.Filled.Article, Title = "Activity Feed" },
             new() { Href = "users", Icon = Icons.Material.Filled.People, Title = "Users" },
             new() { Href = "newusers", Icon = Icons.Material.Filled.SupervisedUserCircle, Title = "New Users" },
             new() { Href = "prizedraw", Icon = Icons.Material.Filled.Celebration, Title = "Prize Draw" },

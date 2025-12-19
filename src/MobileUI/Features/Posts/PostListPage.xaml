@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:posts="clr-namespace:SSW.Rewards.Shared.DTOs.Posts;assembly=Shared"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:PostListViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.PostListPage"
+             x:Name="PostList"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <Grid Padding="15,10,15,0">
+        <RefreshView
+            Command="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+                ItemsSource="{Binding Posts}"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                RemainingItemsThreshold="5"
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Spacing="10">
+                        <Label
+                            Text="No posts yet"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray300}" />
+                        <Label
+                            Text="Check back later for updates"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray400}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="posts:PostDto">
+                        <Border
+                            BackgroundColor="{StaticResource MainBackground}"
+                            Stroke="{StaticResource MainBackground}"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="15">
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference PostList}, Path=BindingContext.PostTappedCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+
+                                <!-- Title -->
+                                <Label
+                                    Grid.Row="0"
+                                    Text="{Binding Title}"
+                                    FontSize="20"
+                                    Style="{StaticResource LabelBold}"
+                                    Margin="0,0,0,8" />
+
+                                <!-- Image (if exists) -->
+                                <Image
+                                    Grid.Row="1"
+                                    Source="{Binding ImageUrl}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="200"
+                                    Margin="0,0,0,12"
+                                    IsVisible="{Binding ImageUrl, Converter={mct:IsStringNotNullOrEmptyConverter}}">
+                                    <Image.Clip>
+                                        <RoundRectangleGeometry CornerRadius="8" Rect="0,0,1000,200" />
+                                    </Image.Clip>
+                                </Image>
+
+                                <!-- Content Preview -->
+                                <Label
+                                    Grid.Row="2"
+                                    Text="{Binding Content}"
+                                    FontSize="14"
+                                    MaxLines="3"
+                                    LineBreakMode="TailTruncation"
+                                    Margin="0,0,0,12" />
+
+                                <!-- Stats Row -->
+                                <Grid
+                                    Grid.Row="3"
+                                    ColumnDefinitions="Auto, Auto, Auto, Auto, *"
+                                    ColumnSpacing="15">
+                                    <!-- Like Icon and Count -->
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="&#xf004;"
+                                        FontFamily="FA6Regular"
+                                        FontSize="16"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray300}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding LikesCount}"
+                                        FontSize="14"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray300}" />
+
+                                    <!-- Comment Icon and Count -->
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="&#xf075;"
+                                        FontFamily="FA6Regular"
+                                        FontSize="16"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray300}" />
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding CommentsCount}"
+                                        FontSize="14"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray300}" />
+
+                                    <!-- Published Date -->
+                                    <Label
+                                        Grid.Column="4"
+                                        Text="{Binding PublishedDateUtc, StringFormat='{0:MMM dd, yyyy}'}"
+                                        FontSize="12"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray400}" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="{StaticResource SSWRed}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
+    </Grid>
+</common:BaseContentPage>

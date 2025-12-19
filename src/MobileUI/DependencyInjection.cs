@@ -27,7 +27,7 @@ public static class DependencyInjection
         // We definitely shouldn't be using reflection at startup in a mobile app!!
         // See: https://github.com/matt-goldman/Maui.Plugins.PageResolver/wiki/2-Using-the-dependency-registration-source-generator
 
-        var excludedTypes = new []
+        var excludedTypes = new[]
         {
             typeof(OthersProfilePage),
             typeof(OthersProfileViewModel),
@@ -61,6 +61,10 @@ public static class DependencyInjection
         services.AddTransient<ActivityPageViewModel>();
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<PostListPage>();
+        services.AddTransient<PostListViewModel>();
+        services.AddTransient<PostDetailPage>();
+        services.AddTransient<PostDetailViewModel>();
 
         services.AddSingleton<ILeaderService, LeaderService>();
         services.AddSingleton<IUserService, UserService>();

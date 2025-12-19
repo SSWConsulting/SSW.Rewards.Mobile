@@ -27,11 +27,11 @@
         <RefreshView
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}"
-            Grid.Row="1">
+            Grid.Row="1"
+            IsVisible="{Binding ShowActivityFeed}">
             <CollectionView
                 ItemsSource="{Binding Feed}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
-                IsVisible="True"
                 RemainingItemsThreshold="5"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.ItemsLayout>
@@ -120,8 +120,14 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+
+        <ContentView
+            Grid.Row="1"
+            x:Name="PostsContentView"
+            IsVisible="{Binding ShowPosts}" />
+        
         <ActivityIndicator
-            Grid.Row="2"
+            Grid.Row="1"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"
