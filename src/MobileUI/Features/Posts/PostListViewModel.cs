@@ -69,7 +69,7 @@ public partial class PostListViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, CancellationToken.None);
+            var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, searchTerm: null, sortBy: null, sortDirection: null, CancellationToken.None);
 
             if (result == null || result.Items == null || !result.Items.Any())
             {
