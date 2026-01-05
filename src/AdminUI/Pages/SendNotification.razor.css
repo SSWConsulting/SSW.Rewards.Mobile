@@ -21,6 +21,28 @@
     font-size: 1.25rem !important;
 }
 
+/* Inline radio buttons above their respective dropdowns */
+::deep .radio-group-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin-bottom: 0px;
+}
+
+::deep .radio-group-inline label {
+    font-size: 1rem !important;
+}
+
+/* Reduce spacing for target section items */
+::deep .target-item {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+::deep .target-item-first {
+    padding-bottom: 0 !important;
+}
+
 /* Section headers */
 .section-header {
     font-weight: 500;

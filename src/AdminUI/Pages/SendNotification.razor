@@ -66,23 +66,24 @@
                             </MudSelect>
                         </MudItem>
 
-                        <MudItem xs="12">
+                        <MudItem xs="12" Class="target-item-first">
                             <MudText Typo="Typo.h5" Class="section-header" id="target-section-label">
                                 Target<span class="required-indicator">*</span></MudText>
                             <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
-                                data-testid="target-radio-group" Class="radio-group-large">
+                                data-testid="target-radio-group" Class="radio-group-inline">
                                 <MudRadio Option="@Targeting.Everyone" Color="Color.Primary"
                                     data-testid="target-everyone" aria-label="Send to everyone">Everyone</MudRadio>
-                                <MudRadio Option="@Targeting.Achievement" Color="Color.Primary"
-                                    data-testid="target-achievement"
-                                    aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
-                                <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
-                                    aria-label="Send to users with specific role">Requires Role</MudRadio>
                             </MudRadioGroup>
                         </MudItem>
 
-                        <!-- Always visible achievement selector -->
-                        <MudItem xs="12">
+                        <!-- Achievement selector -->
+                        <MudItem xs="12" Class="target-item">
+                            <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
+                                data-testid="target-radio-group-achievement" Class="radio-group-inline">
+                                <MudRadio Option="@Targeting.Achievement" Color="Color.Primary"
+                                    data-testid="target-achievement"
+                                    aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
+                            </MudRadioGroup>
                             <MudAutocomplete T="AchievementDto" Label="Required Achievement"
                                 @bind-Value="@_model.SelectedAchievement" SearchFunc="@SearchAchievements"
                                 ToStringFunc="@(a => a?.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true"
@@ -92,8 +93,13 @@
                                 aria-label="Search and select required achievement" Variant="Variant.Outlined" />
                         </MudItem>
 
-                        <!-- Always visible role selector -->
-                        <MudItem xs="12">
+                        <!-- Role selector -->
+                        <MudItem xs="12" Class="target-item">
+                            <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
+                                data-testid="target-radio-group-role" Class="radio-group-inline">
+                                <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
+                                    aria-label="Send to users with specific role">Requires Role</MudRadio>
+                            </MudRadioGroup>
                             <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Label="Role"
                                 SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                 ShowProgressIndicator="true" ResetValueOnEmptyText="true"
