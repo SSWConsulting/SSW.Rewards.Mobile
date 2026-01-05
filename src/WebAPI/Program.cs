@@ -36,11 +36,6 @@ app.UseStaticFiles();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-    
-//    settings =>
-//{
-//    settings.SwaggerEndpoint("/api", "v1");
-//});
 
 app.UseRouting();
 

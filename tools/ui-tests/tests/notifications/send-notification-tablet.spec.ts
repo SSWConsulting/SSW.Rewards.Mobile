@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { takeResponsiveScreenshots } from '../../utils/screenshot-helper';
 
 // Configure tablet viewport (iPad Pro dimensions with Chromium)
-// Tablet is essentially "desktop-lite" - has enough width to show iPhone preview
+// iPad Pro portrait: hide iPhone preview to keep the form comfortable
 test.use({ 
   viewport: { width: 1024, height: 1366 }, // iPad Pro portrait
   userAgent: 'Mozilla/5.0 (iPad; CPU OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
@@ -18,8 +18,8 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('verify page loads and iPhone preview is visible on tablet', async ({ page }) => {
-    console.log('\n📱 Test: Tablet Page Load & Preview\n');
+  test('verify page loads and iPhone preview is hidden on tablet portrait', async ({ page }) => {
+    console.log('\n📱 Test: Tablet Page Load (Preview Hidden)\n');
     console.log('='.repeat(70));
     console.log(`📐 Viewport: ${page.viewportSize()?.width}x${page.viewportSize()?.height}`);
 
@@ -28,19 +28,10 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await expect(form).toBeVisible();
     console.log('✅ Form visible on tablet');
 
-    // iPhone preview SHOULD be visible on tablet (enough horizontal space)
+    // iPhone preview should be hidden on iPad portrait to avoid cramped/wide layout
     const iphonePreview = page.locator('.iphone-preview');
-    await expect(iphonePreview).toBeVisible();
-    console.log('✅ iPhone preview visible on tablet');
-
-    // Verify preview is properly sized (scaled to 1.15x for better space utilization)
-    const boundingBox = await iphonePreview.boundingBox();
-    if (boundingBox) {
-      console.log(`📐 Preview: ${boundingBox.width}x${boundingBox.height}px`);
-      expect(boundingBox.width).toBe(299); // 260 * 1.15 = 299 (scaled)
-      expect(boundingBox.height).toBe(598); // 520 * 1.15 = 598 (scaled)
-      console.log('✅ Preview has correct scaled dimensions (1.15x for better visibility)');
-    }
+    await expect(iphonePreview).toBeHidden();
+    console.log('✅ iPhone preview hidden on tablet portrait');
 
     await takeResponsiveScreenshots(
       page,
@@ -87,24 +78,22 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
 
     const titleField = page.locator('[data-testid="notification-title"]');
     const bodyField = page.locator('[data-testid="notification-body"]');
-    const previewTitle = page.locator('.notification-title');
-    const previewBody = page.locator('.notification-body');
 
-    // Verify preview is visible
-    await expect(page.locator('.iphone-preview')).toBeVisible();
-    console.log('✅ Preview visible before input');
+    // Preview is intentionally hidden on tablet portrait
+    await expect(page.locator('.iphone-preview')).toBeHidden();
+    console.log('✅ Preview hidden on tablet portrait');
 
     // Type in title and verify preview updates
     await titleField.tap();
     await titleField.fill('Tablet Test Notification');
-    await expect(previewTitle).toContainText('Tablet Test Notification');
-    console.log('✅ Preview title updates on tablet');
+    await expect(titleField).toHaveValue('Tablet Test Notification');
+    console.log('✅ Title field updates on tablet');
 
     // Type in body and verify preview updates
     await bodyField.tap();
     await bodyField.fill('This notification was created on a tablet device.');
-    await expect(previewBody).toContainText('This notification was created on a tablet device');
-    console.log('✅ Preview body updates on tablet');
+    await expect(bodyField).toHaveValue('This notification was created on a tablet device.');
+    console.log('✅ Body field updates on tablet');
 
     await takeResponsiveScreenshots(
       page,
@@ -238,11 +227,10 @@ test.describe('SendNotification Page - Tablet View (1024x1366)', () => {
     await page.fill('[data-testid="notification-image-url"]', imageUrl);
     await page.waitForTimeout(2000);
 
-    // Verify image appears in preview
-    const previewImage = page.locator('.notification-image');
-    await expect(previewImage).toBeVisible({ timeout: 5000 });
-    await expect(previewImage).toHaveAttribute('src', imageUrl);
-    console.log('✅ Image visible in preview on tablet');
+    // Preview is intentionally hidden on tablet portrait
+    await expect(page.locator('.iphone-preview')).toBeHidden();
+    await expect(page.locator('[data-testid="notification-image-url"]')).toHaveValue(imageUrl);
+    console.log('✅ Image URL set; preview hidden on tablet portrait');
 
     await takeResponsiveScreenshots(
       page,
