@@ -13,9 +13,9 @@
 <div class="send-notification-page">
     <MudText Typo="Typo.h3" id="page-title">Create Notification</MudText>
 
-    <MudGrid>
+    <div class="send-notification-layout">
         <!-- Form Column -->
-        <MudItem xs="12" md="12" lg="8" Class="send-notification-form">
+        <div class="send-notification-form">
             <MudPaper Class="pa-4 mt-4 warm-grey-bg send-notification-paper" aria-labelledby="page-title">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit" onkeypress="return event.keyCode!=13">
                     <DataAnnotationsValidator />
@@ -23,8 +23,8 @@
                         <MudItem xs="12">
                             <MudTooltip
                                 Text="This shows how many users got the notification out of everyone we tried to send it to. Some may not get it if they haven't enabled notifications or their device token expired.">
-                                <MudText Typo="Typo.h4" Style="display: inline; cursor: help;"
-                                    id="delivery-section-label">Delivery*</MudText>
+                                <MudText Typo="Typo.h5" Class="section-header" Style="display: inline; cursor: help;"
+                                    id="delivery-section-label">Delivery<span class="required-indicator">*</span></MudText>
                             </MudTooltip>
                             <MudRadioGroup @bind-Value="@_model.DeliveryOption" aria-labelledby="delivery-section-label"
                                 data-testid="delivery-radio-group" Class="radio-group-large">
@@ -67,8 +67,8 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h4" Style="display: inline; cursor: help;" id="target-section-label">
-                                Target*</MudText>
+                            <MudText Typo="Typo.h5" Class="section-header" id="target-section-label">
+                                Target<span class="required-indicator">*</span></MudText>
                             <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
                                 data-testid="target-radio-group" Class="radio-group-large">
                                 <MudRadio Option="@Targeting.Everyone" Color="Color.Primary"
@@ -103,7 +103,7 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h4" Class="mt-4" id="content-section-label">Content</MudText>
+                            <MudText Typo="Typo.h5" Class="section-header mt-4" id="content-section-label">Content</MudText>
                         </MudItem>
 
                         <MudItem xs="12">
@@ -138,10 +138,10 @@
                     </MudGrid>
                 </EditForm>
             </MudPaper>
-        </MudItem>
+        </div>
 
         <!-- iPhone Preview Column (outside the form paper) -->
-        <MudItem xs="12" md="12" lg="4" Class="send-notification-preview">
+        <div class="send-notification-preview">
             <div class="iphone-preview">
                 <div class="iphone-screen">
                     <div class="iphone-notch"></div>
@@ -189,6 +189,6 @@
                     </div>
                 </div>
             </div>
-        </MudItem>
-    </MudGrid>
+        </div>
+    </div>
 </div>

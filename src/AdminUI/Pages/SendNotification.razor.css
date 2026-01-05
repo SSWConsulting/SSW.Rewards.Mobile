@@ -1,10 +1,10 @@
-/* Larger font for scheduled date/time fields */
-.schedule-field-large input {
-    font-size: 1.5rem !important;
+/* Make Date/Time/Timezone labels and inputs match standard field size */
+.schedule-field-large label {
+    font-size: 1rem !important;
 }
 
-.schedule-field-large label {
-    font-size: 1.25rem !important;
+.schedule-field-large input {
+    font-size: 1rem !important;
 }
 
 /* Ensure Date/Time/Timezone controls are vertically aligned */
@@ -16,32 +16,65 @@
     margin-top: 0 !important;
 }
 
-/* Make MudSelect input text smaller and adjust position to align with Date/Time */
-.schedule-field-large.mud-select input,
-.schedule-field-large.mud-select .mud-input-text {
-    font-size: 1.25em !important;
-    transform: translateY(-1px) !important;
-}
-
-/* Make MudSelect label match the larger font size and adjust position */
-.schedule-field-large.mud-select label {
-    margin-top: -6px;
-}
-
 /* Larger font for radio groups */
 .radio-group-large label {
     font-size: 1.25rem !important;
 }
 
+/* Section headers */
+.section-header {
+    font-weight: 500;
+}
+
+/* Required field indicator - red asterisk */
+.required-indicator {
+    color: #cc4141;
+    margin-left: 2px;
+    font-weight: 600;
+}
+
 .send-notification-page {
     width: 100%;
     max-width: 1400px;
-    overflow-x: hidden;
     margin-right: auto;
 }
 
 .send-notification-paper {
     overflow-x: hidden;
+}
+
+/* Two-column layout: form + preview */
+.send-notification-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+/* Form takes remaining space */
+.send-notification-form {
+    flex: 1;
+    min-width: 400px;
+}
+
+/* Preview column - fixed width */
+.send-notification-preview {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+/* Hide preview when there's not enough space
+   iPad landscape: 1024px+ (visible)
+   iPad portrait: ~768px (hidden)
+   Breakpoint at 1180px ensures comfortable form width + preview */
+@media (max-width: 1179px) {
+    .send-notification-preview {
+        display: none;
+    }
+    
+    .send-notification-form {
+        min-width: 0;
+    }
 }
 
 /* iPhone notification preview */
@@ -60,16 +93,19 @@
     box-sizing: border-box;
 }
 
-/* Hide iPhone preview on phones + iPad portrait (keep the form comfortable) */
-@media (max-width: 1024px) {
-    .iphone-preview {
+/* Hide iPhone preview when there's not enough space
+   iPad landscape: 1024px+ (visible)
+   iPad portrait: ~768px (hidden)
+   We use 1180px as the breakpoint to ensure comfortable form width + preview */
+@media (max-width: 1179px) {
+    .send-notification-preview {
         display: none;
     }
 }
 
 /* Hide iPhone preview in very short viewports (insufficient vertical space) */
 @media (max-height: 600px) {
-    .iphone-preview {
+    .send-notification-preview {
         display: none;
     }
 }
