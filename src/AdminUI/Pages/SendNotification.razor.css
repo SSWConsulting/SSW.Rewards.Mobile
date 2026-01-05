@@ -64,10 +64,11 @@
 }
 
 /* Hide preview when there's not enough space
-   iPad landscape: 1024px+ (visible)
-   iPad portrait: ~768px (hidden)
-   Breakpoint at 1180px ensures comfortable form width + preview */
-@media (max-width: 1179px) {
+   The sidebar is ~250px, so content area = viewport - 250px
+   iPad landscape (1024px viewport): content ~774px - show preview
+   iPad portrait (768px viewport): content ~518px - hide preview
+   Breakpoint at 1024px viewport = ~774px content area */
+@media (max-width: 1023px) {
     .send-notification-preview {
         display: none;
     }
