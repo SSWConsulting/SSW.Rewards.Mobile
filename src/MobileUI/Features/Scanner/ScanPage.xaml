@@ -73,11 +73,14 @@
                         </GraphicsView.Drawable>
                     </GraphicsView>
 
-                    <!-- Cover red dot from library when AimMode=True -->
+                    <!-- Cover red dot from scanning library when AimMode=True -->
                     <BoxView
                         WidthRequest="16"
                         HeightRequest="16"
                         CornerRadius="8"
+                        Color="LightGrey"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
                         InputTransparent="True" />
 
                     <Grid VerticalOptions="Center"
