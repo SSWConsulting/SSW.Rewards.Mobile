@@ -51,11 +51,21 @@ html, body {
 /* Smokey white background for active (focused) inputs */
 :root {
     --smokey-white: #F7F7F7;
+    --ssw-red: #cc4141;
+    --validation-pink: #ff8a8a;
+    --label-grey: rgba(255, 255, 255, 0.5);
 }
 
 /* Generic inputs */
 input:focus, textarea:focus, select:focus {
     background-color: var(--smokey-white);
+}
+
+/* Ensure all inputs have consistent padding */
+input.mud-input-slot,
+textarea.mud-input-slot {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
 }
 
 /* MudTextField - black text on smokey white when focused */
@@ -100,6 +110,57 @@ textarea.mud-input-slot:not(:focus),
 .mud-input-control:not(.mud-input-control-focused) input.mud-input-slot,
 .mud-input-control:not(.mud-input-control-focused) textarea.mud-input-slot {
     background-color: transparent;
+}
+
+/* ======================
+   Label Styling - Keep grey for focused inputs (no red)
+   ====================== */
+/* Override MudBlazor's default red label on focus */
+.mud-input-label,
+.mud-input-label-filled,
+.mud-input-label-outlined,
+.mud-input-control .mud-input-label,
+.mud-input-control.mud-input-control-focused .mud-input-label,
+.mud-input-control:focus-within .mud-input-label {
+    color: var(--label-grey) !important;
+}
+
+/* Remove red underline on focused inputs */
+.mud-input.mud-input-underline:after,
+.mud-input-control-focused .mud-input.mud-input-underline:after {
+    border-bottom-color: transparent !important;
+}
+
+/* Remove red border on outlined focused inputs */
+.mud-input-outlined.mud-focused .mud-input-outlined-border,
+.mud-input-control-focused .mud-input-outlined-border {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Ensure textarea has proper padding when focused */
+textarea.mud-input-slot {
+    padding: 12px !important;
+}
+
+/* ======================
+   Validation Error Styling
+   ====================== */
+/* Error state: SSW red border around the entire field */
+.mud-input-control.mud-input-error .mud-input,
+.mud-input-control.mud-input-error .mud-input-outlined-border {
+    border: 2px solid var(--ssw-red) !important;
+    border-radius: 4px;
+}
+
+/* Error state: light red/pink validation message text */
+.mud-input-helper-text.mud-input-error,
+.mud-input-control.mud-input-error .mud-input-helper-text {
+    color: var(--validation-pink) !important;
+}
+
+/* Error state: label should also be light red/pink */
+.mud-input-control.mud-input-error .mud-input-label {
+    color: var(--validation-pink) !important;
 }
 
 /* Remove red on black background */
