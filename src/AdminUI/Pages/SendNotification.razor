@@ -1,4 +1,4 @@
-﻿@page "/send-notification"
+@page "/send-notification"
 
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
@@ -37,33 +37,33 @@
                         </MudItem>
 
                         <!-- Always visible Date/Time/Timezone; disabled when not scheduling -->
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
-                                For="@(() => _model.ScheduleDate)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
-                                data-testid="schedule-date" aria-label="Schedule date for notification"
-                                Class="schedule-field-large" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
-                                For="@(() => _model.ScheduleTime)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
-                                aria-label="Schedule time for notification" Class="schedule-field-large" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone"
-                                For="@(() => _model.SelectedTimeZone)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
-                                AnchorOrigin="Origin.BottomCenter" data-testid="schedule-timezone"
-                                aria-label="Select timezone for scheduled notification" Class="schedule-field-large">
-                                @foreach (var tz in _timezones)
-                                {
-                                    <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
-                                }
-                            </MudSelect>
+                        <MudItem xs="12">
+                            <div class="schedule-controls-container">
+                                <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
+                                    For="@(() => _model.ScheduleDate)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
+                                    data-testid="schedule-date" aria-label="Schedule date for notification"
+                                    Class="schedule-field-large schedule-date-picker" />
+                                <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
+                                    For="@(() => _model.ScheduleTime)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
+                                    aria-label="Schedule time for notification"
+                                    Class="schedule-field-large schedule-time-picker" />
+                                <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone"
+                                    For="@(() => _model.SelectedTimeZone)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
+                                    AnchorOrigin="Origin.BottomCenter" data-testid="schedule-timezone"
+                                    aria-label="Select timezone for scheduled notification"
+                                    Class="schedule-field-large schedule-timezone-select">
+                                    @foreach (var tz in _timezones)
+                                    {
+                                        <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </div>
                         </MudItem>
 
                         <MudItem xs="12" Class="target-item-first">
