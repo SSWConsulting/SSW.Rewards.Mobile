@@ -21,7 +21,7 @@ public static class AdminPortalMudTheme
                 Black = "#27272f",
                 Background = "#181818",
                 BackgroundGrey = "#27272f",
-                Surface = "#373740",
+                Surface = "#333333",
                 DrawerBackground = "#333333",
                 DrawerText = "#ffffffff",
                 DrawerIcon = "rgba(255,255,255, 0.50)",

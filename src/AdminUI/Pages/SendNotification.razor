@@ -1,4 +1,4 @@
-﻿@page "/send-notification"
+@page "/send-notification"
 
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
@@ -16,7 +16,7 @@
     <div class="send-notification-layout">
         <!-- Form Column -->
         <div class="send-notification-form">
-            <MudPaper Class="pa-4 mt-4 warm-grey-bg send-notification-paper" aria-labelledby="page-title">
+            <MudPaper Class="pa-4 mt-4 send-notification-paper" aria-labelledby="page-title">
                 <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit" onkeypress="return event.keyCode!=13">
                     <DataAnnotationsValidator />
                     <MudGrid Spacing="3">
@@ -37,52 +37,53 @@
                         </MudItem>
 
                         <!-- Always visible Date/Time/Timezone; disabled when not scheduling -->
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
-                                For="@(() => _model.ScheduleDate)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
-                                data-testid="schedule-date" aria-label="Schedule date for notification"
-                                Class="schedule-field-large" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
-                                For="@(() => _model.ScheduleTime)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
-                                aria-label="Schedule time for notification" Class="schedule-field-large" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone"
-                                For="@(() => _model.SelectedTimeZone)"
-                                Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
-                                AnchorOrigin="Origin.BottomCenter" data-testid="schedule-timezone"
-                                aria-label="Select timezone for scheduled notification" Class="schedule-field-large">
-                                @foreach (var tz in _timezones)
-                                {
-                                    <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
-                                }
-                            </MudSelect>
+                        <MudItem xs="12">
+                            <div class="schedule-controls-container">
+                                <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
+                                    For="@(() => _model.ScheduleDate)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
+                                    data-testid="schedule-date" aria-label="Schedule date for notification"
+                                    Class="schedule-field-large schedule-date-picker" />
+                                <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
+                                    For="@(() => _model.ScheduleTime)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
+                                    aria-label="Schedule time for notification"
+                                    Class="schedule-field-large schedule-time-picker" />
+                                <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone"
+                                    For="@(() => _model.SelectedTimeZone)"
+                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)"
+                                    AnchorOrigin="Origin.BottomCenter" data-testid="schedule-timezone"
+                                    aria-label="Select timezone for scheduled notification"
+                                    Class="schedule-field-large schedule-timezone-select">
+                                    @foreach (var tz in _timezones)
+                                    {
+                                        <MudSelectItem Value="@tz.Key">@tz.Value</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </div>
                         </MudItem>
 
-                        <MudItem xs="12">
+                        <MudItem xs="12" Class="target-item-first">
                             <MudText Typo="Typo.h5" Class="section-header" id="target-section-label">
                                 Target<span class="required-indicator">*</span></MudText>
                             <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
-                                data-testid="target-radio-group" Class="radio-group-large">
+                                data-testid="target-radio-group" Class="radio-group-inline">
                                 <MudRadio Option="@Targeting.Everyone" Color="Color.Primary"
                                     data-testid="target-everyone" aria-label="Send to everyone">Everyone</MudRadio>
-                                <MudRadio Option="@Targeting.Achievement" Color="Color.Primary"
-                                    data-testid="target-achievement"
-                                    aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
-                                <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
-                                    aria-label="Send to users with specific role">Requires Role</MudRadio>
                             </MudRadioGroup>
                         </MudItem>
 
-                        <!-- Always visible achievement selector -->
-                        <MudItem xs="12">
+                        <!-- Achievement selector -->
+                        <MudItem xs="12" Class="target-item">
+                            <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
+                                data-testid="target-radio-group-achievement" Class="radio-group-inline">
+                                <MudRadio Option="@Targeting.Achievement" Color="Color.Primary"
+                                    data-testid="target-achievement"
+                                    aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
+                            </MudRadioGroup>
                             <MudAutocomplete T="AchievementDto" Label="Required Achievement"
                                 @bind-Value="@_model.SelectedAchievement" SearchFunc="@SearchAchievements"
                                 ToStringFunc="@(a => a?.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true"
@@ -92,8 +93,13 @@
                                 aria-label="Search and select required achievement" Variant="Variant.Outlined" />
                         </MudItem>
 
-                        <!-- Always visible role selector -->
-                        <MudItem xs="12">
+                        <!-- Role selector -->
+                        <MudItem xs="12" Class="target-item">
+                            <MudRadioGroup @bind-Value="@_model.TargetingOption" aria-labelledby="target-section-label"
+                                data-testid="target-radio-group-role" Class="radio-group-inline">
+                                <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
+                                    aria-label="Send to users with specific role">Requires Role</MudRadio>
+                            </MudRadioGroup>
                             <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Label="Role"
                                 SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                 ShowProgressIndicator="true" ResetValueOnEmptyText="true"

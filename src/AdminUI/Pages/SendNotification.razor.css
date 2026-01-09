@@ -16,9 +16,77 @@
     margin-top: 0 !important;
 }
 
+/* Container for Date/Time/Timezone fields to allow flex layout and offset */
+.schedule-controls-container {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    margin-left: 108px; /* Offset to align with 'Schedule' radio button on desktop */
+}
+
+.schedule-date-picker,
+.schedule-time-picker {
+    flex: 1;
+}
+
+.schedule-timezone-select {
+    flex: 1.5; /* Timezone takes more width space than Date and Time */
+}
+
+/* Remove offset and stack vertically on mobile */
+@media (max-width: 1400px) {
+    .schedule-controls-container {
+        margin-left: 0;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .schedule-date-picker,
+    .schedule-time-picker,
+    .schedule-timezone-select {
+        flex: none;
+        width: 100%;
+    }
+}
+
+/* Mobile-specific layout adjustments */
+@media (max-width: 599px) {
+    .schedule-controls-container {
+        gap: 12px;
+    }
+    
+    /* Stack radio buttons vertically on mobile */
+    ::deep .radio-group-large {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
 /* Larger font for radio groups */
 .radio-group-large label {
     font-size: 1.25rem !important;
+}
+
+/* Inline radio buttons above their respective dropdowns */
+::deep .radio-group-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin-bottom: 0px;
+}
+
+::deep .radio-group-inline label {
+    font-size: 1rem !important;
+}
+
+/* Reduce spacing for target section items */
+::deep .target-item {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+::deep .target-item-first {
+    padding-bottom: 0 !important;
 }
 
 /* Section headers */
@@ -39,8 +107,49 @@
     margin-right: auto;
 }
 
+/* Mobile page adjustments */
+@media (max-width: 599px) {
+    .send-notification-page {
+        padding: 0;
+    }
+    
+    .send-notification-page h3 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+}
+
 .send-notification-paper {
     overflow-x: hidden;
+}
+
+/* Mobile paper adjustments */
+@media (max-width: 599px) {
+    .send-notification-paper {
+        padding: 16px !important;
+        margin-top: 8px !important;
+    }
+}
+
+/* Ensure labels and inputs have consistent margins/padding */
+::deep .send-notification-paper .mud-input-label {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+::deep .send-notification-paper .mud-input-slot {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+/* Ensure the input underline in error state matches normal state style but stays red */
+::deep .send-notification-paper .mud-input.mud-input-underline.mud-input-error::after {
+    border-bottom-width: 1px !important;
+}
+
+::deep .send-notification-paper .mud-input.mud-input-underline.mud-input-error::before {
+    border-bottom-width: 1px !important;
+    border-bottom-color: var(--mud-palette-error) !important;
 }
 
 /* Two-column layout: form + preview */
@@ -216,4 +325,32 @@
 .preview-placeholder {
     color: #8e8e93;
     font-style: italic;
+}
+
+/* Mobile form adjustments */
+@media (max-width: 599px) {
+    /* Reduce section header size on mobile */
+    .section-header {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Full-width button on mobile */
+    ::deep .send-notification-paper .d-flex.justify-end {
+        justify-content: stretch !important;
+    }
+    
+    ::deep .send-notification-paper .d-flex.justify-end button {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+    
+    /* Reduce MudGrid spacing on mobile */
+    ::deep .send-notification-paper .mud-grid {
+        gap: 8px;
+    }
+    
+    /* Reduce MudItem padding on mobile */
+    ::deep .send-notification-paper .mud-grid > .mud-item {
+        padding: 8px 0 !important;
+    }
 }
