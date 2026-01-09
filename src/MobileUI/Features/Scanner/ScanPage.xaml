@@ -75,9 +75,9 @@
 
                     <!-- Cover red dot from scanning library when AimMode=True -->
                     <BoxView
-                        WidthRequest="16"
-                        HeightRequest="16"
-                        CornerRadius="8"
+                        WidthRequest="18"
+                        HeightRequest="18"
+                        CornerRadius="9"
                         Color="LightGrey"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
