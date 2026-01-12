@@ -639,6 +639,14 @@ When generating code for this project:
 - **Database**: Azure SQL Database
 - **Storage**: Azure Blob Storage
 
+# Misc
+
+When we need to kill dotnet apps:
+`sof -ti:7137 | xargs kill -9 2>/dev/null || echo "No process found on port 7137"`
+
+AdminUI - 7137
+API - 5001
+
 ---
 
 **Last Updated**: December 2025 | **Target Framework**: .NET 10.0 | **MAUI Version**: 10.0.x
