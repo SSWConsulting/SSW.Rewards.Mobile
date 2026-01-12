@@ -64,9 +64,9 @@
                     </div>
                 </div>
 
-                @if (!string.IsNullOrWhiteSpace(ImageUrl))
+                @if (!string.IsNullOrWhiteSpace(NotificationImageUrl))
                 {
-                    <img src="@ImageUrl" alt="Notification image preview" class="notification-image" loading="lazy" />
+                    <img src="@NotificationImageUrl" alt="Notification image preview" class="notification-image" loading="lazy" />
                 }
             </div>
         </div>
@@ -98,7 +98,7 @@
     public string? NotificationBody { get; set; }
 
     [Parameter]
-    public string? ImageUrl { get; set; }
+    public string? NotificationImageUrl { get; set; }
 
     private string GetPreviewDate()
         => GetScheduleDateTime().ToString("ddd d MMMM");
