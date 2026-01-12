@@ -182,27 +182,21 @@ public partial class SendNotification
         }
     }
 
-    private static string GetAchievementName(AchievementDto? achievement) => achievement?.Name ?? string.Empty;
+    private static string GetAchievementName(AchievementDto? achievement)
+        => achievement?.Name ?? string.Empty;
 
-    private string GetPreviewTime()
-    {
-        DateTime displayDateTime;
-        
-        if (_model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue)
-        {
-            displayDateTime = _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value;
-        }
-        else
-        {
-            displayDateTime = DateTime.Now;
-        }
-        
-        // Format: "Mon Nov 13  1:30 PM" (iPhone lock screen format with double space)
-        // Return raw HTML with &nbsp; entities for MarkupString rendering
-        string dayMonthDate = displayDateTime.ToString("ddd MMM d");
-        string time = displayDateTime.ToString("h:mm tt");
-        return $"{dayMonthDate}&nbsp;&nbsp;{time}"; // Use HTML entity for MarkupString
-    }
+    private string GetPreviewDate()
+        // Format: "Friday, 17 November" (iOS lock screen format)
+        => GetScheduleDateTime().ToString("dddd, d MMMM");
+
+    private string GetPreviewTimeDisplay()
+        // Format: "10:00" (24-hour iOS lock screen format)
+        => GetScheduleDateTime().ToString("HH:mm");
+
+    private DateTime GetScheduleDateTime()
+        => _model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue
+            ? _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value
+            : DateTime.Now;
 
     private void OnDateChanged(DateTime? date)
     {
