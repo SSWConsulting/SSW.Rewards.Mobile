@@ -28,6 +28,13 @@
     margin-left: 38px;
 }
 
+/* Limit width to 50% on larger screens */
+@media (min-width: 1025px) {
+    .target-autocomplete {
+        width: 50%;
+    }
+}
+
 .schedule-date-picker,
 .schedule-time-picker {
     flex: 1;
