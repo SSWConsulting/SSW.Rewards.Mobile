@@ -185,19 +185,6 @@ public partial class SendNotification
     private static string GetAchievementName(AchievementDto? achievement)
         => achievement?.Name ?? string.Empty;
 
-    private string GetPreviewDate()
-        // Format: "Friday, 17 November" (iOS lock screen format)
-        => GetScheduleDateTime().ToString("dddd, d MMMM");
-
-    private string GetPreviewTimeDisplay()
-        // Format: "10:00" (24-hour iOS lock screen format)
-        => GetScheduleDateTime().ToString("HH:mm");
-
-    private DateTime GetScheduleDateTime()
-        => _model.DeliveryOption == Delivery.Schedule && _model.ScheduleDate.HasValue && _model.ScheduleTime.HasValue
-            ? _model.ScheduleDate.Value.Date + _model.ScheduleTime.Value
-            : DateTime.Now;
-
     private void OnDateChanged(DateTime? date)
     {
         _model.ScheduleDate = date;

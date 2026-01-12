@@ -153,89 +153,12 @@
 
         <!-- iPhone Preview Column (outside the form paper) -->
         <div class="send-notification-preview">
-            <div class="iphone-preview">
-                <div class="iphone-screen">
-                    <div class="iphone-notch"></div>
-                    
-                    <!-- Status bar -->
-                    <div class="iphone-status-bar">
-                        <span class="status-time"> <!-- Placeholder for left side if we want to utilize it in the future --> </span>
-                        <div class="status-icons">
-                            <MudIcon Icon="@Icons.Material.Filled.SignalCellularAlt" Class="status-icon" />
-                            <MudIcon Icon="@Icons.Material.Filled.Wifi" Class="status-icon" />
-                            <MudIcon Icon="@Icons.Material.Filled.BatteryFull" Class="status-icon" />
-                        </div>
-                    </div>
-
-                    <!-- Lock icon -->
-                    <div class="lock-icon">
-                        <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Small" />
-                    </div>
-
-                    <!-- Date -->
-                    <div class="iphone-date">
-                        @GetPreviewDate()
-                    </div>
-
-                    <!-- Time -->
-                    <div class="iphone-time">
-                        @GetPreviewTimeDisplay()
-                    </div>
-
-                    <!-- Notification -->
-                    <div class="notification-preview">
-                        <div class="notification-header">
-                            <div class="notification-icon">
-                                <img src="images/app-icon.png" alt="SSW Rewards" />
-                            </div>
-                            <span class="notification-app-name">SSW REWARDS</span>
-                            <span class="notification-time-badge">now</span>
-                        </div>
-
-                        <div class="notification-content">
-                            <div class="notification-text">
-                                <div class="notification-title">
-                                    @if (string.IsNullOrWhiteSpace(_model.Title))
-                                    {
-                                        <span class="preview-placeholder">Notification Title</span>
-                                    }
-                                    else
-                                    {
-                                        @_model.Title
-                                    }
-                                </div>
-
-                                <div class="notification-body">
-                                    @if (string.IsNullOrWhiteSpace(_model.Body))
-                                    {
-                                        <span class="preview-placeholder">Notification message will appear here...</span>
-                                    }
-                                    else
-                                    {
-                                        @_model.Body
-                                    }
-                                </div>
-                            </div>
-
-                            @if (!string.IsNullOrWhiteSpace(_model.ImageUrl))
-                            {
-                                <img src="@_model.ImageUrl" alt="Notification image preview" class="notification-image" loading="lazy" />
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Bottom icons (flashlight & camera) -->
-                    <div class="iphone-bottom-icons">
-                        <div class="bottom-icon-button">
-                            <MudIcon Icon="@Icons.Material.Filled.FlashlightOn" Size="Size.Small" />
-                        </div>
-                        <div class="home-indicator"></div>
-                        <div class="bottom-icon-button">
-                            <MudIcon Icon="@Icons.Material.Filled.CameraAlt" Size="Size.Small" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <PhonePreview 
+                ScheduledDate="@(_model.DeliveryOption == Delivery.Schedule ? _model.ScheduleDate : null)"
+                ScheduledTime="@(_model.DeliveryOption == Delivery.Schedule ? _model.ScheduleTime : null)"
+                Title="@_model.Title"
+                Body="@_model.Body"
+                ImageUrl="@_model.ImageUrl" />
         </div>
     </div>
 </div>
