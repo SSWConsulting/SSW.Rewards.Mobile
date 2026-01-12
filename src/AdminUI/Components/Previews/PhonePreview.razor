@@ -1,0 +1,113 @@
+@using MudBlazor
+
+<div class="iphone-preview">
+    <div class="iphone-screen">
+        <div class="iphone-notch"></div>
+
+        <!-- Status bar -->
+        <div class="iphone-status-bar">
+            <span class="status-time"></span>
+            <div class="status-icons">
+                <MudIcon Icon="@Icons.Material.Filled.SignalCellularAlt" Class="status-icon" />
+                <MudIcon Icon="@Icons.Material.Filled.Wifi" Class="status-icon" />
+                <MudIcon Icon="@Icons.Material.Filled.BatteryFull" Class="status-icon" />
+            </div>
+        </div>
+
+        <!-- Lock icon -->
+        <div class="lock-icon">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Small" />
+        </div>
+
+        <!-- Date -->
+        <div class="iphone-date">
+            @GetPreviewDate()
+        </div>
+
+        <!-- Time -->
+        <div class="iphone-time">
+            @GetPreviewTimeDisplay()
+        </div>
+
+        <!-- Notification -->
+        <div class="notification-preview">
+            <div class="notification-header">
+                <div class="notification-icon">
+                    <img src="images/app-icon.png" alt="SSW Rewards" />
+                </div>
+                <span class="notification-app-name">SSW REWARDS</span>
+                <span class="notification-time-badge">now</span>
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-text">
+                    <div class="notification-title">
+                        @if (string.IsNullOrWhiteSpace(Title))
+                        {
+                            <span class="preview-placeholder">Notification Title</span>
+                        }
+                        else
+                        {
+                            @Title
+                        }
+                    </div>
+
+                    <div class="notification-body">
+                        @if (string.IsNullOrWhiteSpace(Body))
+                        {
+                            <span class="preview-placeholder">Notification message will appear here...</span>
+                        }
+                        else
+                        {
+                            @Body
+                        }
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(ImageUrl))
+                {
+                    <img src="@ImageUrl" alt="Notification image preview" class="notification-image" loading="lazy" />
+                }
+            </div>
+        </div>
+
+        <!-- Bottom icons (flashlight & camera) -->
+        <div class="iphone-bottom-icons">
+            <div class="bottom-icon-button">
+                <MudIcon Icon="@Icons.Material.Filled.FlashlightOn" Size="Size.Small" />
+            </div>
+            <div class="home-indicator"></div>
+            <div class="bottom-icon-button">
+                <MudIcon Icon="@Icons.Material.Filled.CameraAlt" Size="Size.Small" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DateTime? ScheduledDate { get; set; }
+
+    [Parameter]
+    public TimeSpan? ScheduledTime { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Body { get; set; }
+
+    [Parameter]
+    public string? ImageUrl { get; set; }
+
+    private string GetPreviewDate()
+        => GetScheduleDateTime().ToString("ddd d MMMM");
+
+    private string GetPreviewTimeDisplay()
+        => GetScheduleDateTime().ToString("HH:mm");
+
+    private DateTime GetScheduleDateTime()
+        => ScheduledDate.HasValue && ScheduledTime.HasValue
+            ? ScheduledDate.Value.Date + ScheduledTime.Value
+            : DateTime.Now;
+}
