@@ -84,7 +84,7 @@
                                     data-testid="target-achievement"
                                     aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
                             </MudRadioGroup>
-                            <MudAutocomplete T="AchievementDto" Label="Required Achievement"
+                            <MudAutocomplete T="AchievementDto" Placeholder="Search achievements..."
                                 @bind-Value="@_model.SelectedAchievement" SearchFunc="@SearchAchievements"
                                 ToStringFunc="@(a => a?.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true"
                                 Required="@(_model.TargetingOption == Targeting.Achievement)"
@@ -100,7 +100,7 @@
                                 <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
                                     aria-label="Send to users with specific role">Requires Role</MudRadio>
                             </MudRadioGroup>
-                            <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Label="Role"
+                            <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Placeholder="Search roles..."
                                 SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                 ShowProgressIndicator="true" ResetValueOnEmptyText="true"
                                 Required="@(_model.TargetingOption == Targeting.Role)"
@@ -109,11 +109,11 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudText Typo="Typo.h5" Class="section-header mt-4" id="content-section-label">Content</MudText>
+                            <MudText Typo="Typo.h5" Class="section-header mt-4" id="content-section-label">Notification</MudText>
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Title" Label="Notification Title"
+                            <MudTextField @bind-Value="@_model.Title" Label="Title"
                                 For="@(() => _model.Title)" Required="true" MaxLength="100" Counter="100"
                                 data-testid="notification-title"
                                 aria-label="Enter notification title, maximum 100 characters"
@@ -121,7 +121,7 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Body" Label="Notification Body"
+                            <MudTextField @bind-Value="@_model.Body" Label="Body"
                                 For="@(() => _model.Body)" Required="true" Lines="3" MaxLength="250" Counter="250"
                                 data-testid="notification-body"
                                 aria-label="Enter notification body text, maximum 250 characters"
