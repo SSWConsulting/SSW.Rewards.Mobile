@@ -104,7 +104,6 @@
                             </MudRadioGroup>
                             <div class="target-autocomplete">
                                 <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Placeholder="Search roles..."
-                                    class="target-autocomplete"
                                     SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
                                     ShowProgressIndicator="true" ResetValueOnEmptyText="true"
                                     Required="@(_model.TargetingOption == Targeting.Role)"
