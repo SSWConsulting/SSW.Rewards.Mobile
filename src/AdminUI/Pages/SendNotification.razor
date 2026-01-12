@@ -155,8 +155,8 @@
             <PhonePreview 
                 ScheduledDate="@(_model.DeliveryOption == Delivery.Schedule ? _model.ScheduleDate : null)"
                 ScheduledTime="@(_model.DeliveryOption == Delivery.Schedule ? _model.ScheduleTime : null)"
-                Title="@_model.Title"
-                Body="@_model.Body"
+                NotificationTitle="@_model.Title"
+                NotificationBody="@_model.Body"
                 ImageUrl="@_model.ImageUrl" />
         </div>
     </div>

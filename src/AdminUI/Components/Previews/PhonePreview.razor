@@ -42,24 +42,24 @@
             <div class="notification-content">
                 <div class="notification-text">
                     <div class="notification-title">
-                        @if (string.IsNullOrWhiteSpace(Title))
-                        {
-                            <span class="preview-placeholder">Notification Title</span>
-                        }
-                        else
-                        {
-                            @Title
-                        }
+                    @if (string.IsNullOrWhiteSpace(NotificationTitle))
+                    {
+                        <span class="preview-placeholder">Notification Title</span>
+                    }
+                    else
+                    {
+                        @NotificationTitle
+                    }
                     </div>
 
                     <div class="notification-body">
-                        @if (string.IsNullOrWhiteSpace(Body))
+                        @if (string.IsNullOrWhiteSpace(NotificationBody))
                         {
                             <span class="preview-placeholder">Notification message will appear here...</span>
                         }
                         else
                         {
-                            @Body
+                            @NotificationBody
                         }
                     </div>
                 </div>
@@ -92,10 +92,10 @@
     public TimeSpan? ScheduledTime { get; set; }
 
     [Parameter]
-    public string? Title { get; set; }
+    public string? NotificationTitle { get; set; }
 
     [Parameter]
-    public string? Body { get; set; }
+    public string? NotificationBody { get; set; }
 
     [Parameter]
     public string? ImageUrl { get; set; }
