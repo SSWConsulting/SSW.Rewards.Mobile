@@ -24,6 +24,10 @@
     margin-left: 108px; /* Offset to align with 'Schedule' radio button on desktop */
 }
 
+.target-autocomplete {
+    margin-left: 38px;
+}
+
 .schedule-date-picker,
 .schedule-time-picker {
     flex: 1;

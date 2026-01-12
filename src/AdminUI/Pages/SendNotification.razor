@@ -84,13 +84,15 @@
                                     data-testid="target-achievement"
                                     aria-label="Send to users with specific achievement">Requires Achievement</MudRadio>
                             </MudRadioGroup>
-                            <MudAutocomplete T="AchievementDto" Placeholder="Search achievements..."
-                                @bind-Value="@_model.SelectedAchievement" SearchFunc="@SearchAchievements"
-                                ToStringFunc="@(a => a?.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true"
-                                Required="@(_model.TargetingOption == Targeting.Achievement)"
-                                Disabled="@(_model.TargetingOption != Targeting.Achievement)"
-                                data-testid="achievement-autocomplete"
-                                aria-label="Search and select required achievement" Variant="Variant.Outlined" />
+                            <div class="target-autocomplete">
+                                <MudAutocomplete T="AchievementDto" Placeholder="Search achievements..."
+                                    @bind-Value="@_model.SelectedAchievement" SearchFunc="@SearchAchievements"
+                                    ToStringFunc="@(a => a?.Name)" ShowProgressIndicator="true" ResetValueOnEmptyText="true"
+                                    Required="@(_model.TargetingOption == Targeting.Achievement)"
+                                    Disabled="@(_model.TargetingOption != Targeting.Achievement)"
+                                    data-testid="achievement-autocomplete"
+                                    aria-label="Search and select required achievement" Variant="Variant.Outlined" />
+                            </div>
                         </MudItem>
 
                         <!-- Role selector -->
@@ -100,12 +102,15 @@
                                 <MudRadio Option="@Targeting.Role" Color="Color.Primary" data-testid="target-role"
                                     aria-label="Send to users with specific role">Requires Role</MudRadio>
                             </MudRadioGroup>
-                            <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Placeholder="Search roles..."
-                                SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
-                                ShowProgressIndicator="true" ResetValueOnEmptyText="true"
-                                Required="@(_model.TargetingOption == Targeting.Role)"
-                                Disabled="@(_model.TargetingOption != Targeting.Role)" data-testid="role-autocomplete"
-                                aria-label="Search and select required role" Variant="Variant.Outlined" />
+                            <div class="target-autocomplete">
+                                <MudAutocomplete T="RoleDto" @bind-Value="@_model.SelectedRole" Placeholder="Search roles..."
+                                    class="target-autocomplete"
+                                    SearchFuncWithCancel="@SearchRoles" ToStringFunc="@(role => role?.Name ?? string.Empty)"
+                                    ShowProgressIndicator="true" ResetValueOnEmptyText="true"
+                                    Required="@(_model.TargetingOption == Targeting.Role)"
+                                    Disabled="@(_model.TargetingOption != Targeting.Role)" data-testid="role-autocomplete"
+                                    aria-label="Search and select required role" Variant="Variant.Outlined" />
+                            </div>
                         </MudItem>
 
                         <MudItem xs="12">
