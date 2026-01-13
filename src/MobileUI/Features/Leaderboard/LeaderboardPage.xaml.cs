@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls.Internals;
-
-namespace SSW.Rewards.Mobile.Pages;
+﻿namespace SSW.Rewards.Mobile.Pages;
 
 public partial class LeaderboardPage
 {
@@ -23,14 +21,21 @@ public partial class LeaderboardPage
         base.OnAppearing();
         _firebaseAnalyticsService.Log("LeaderboardPage");
 
+        _viewModel.ScrollTo += ScrollTo;
+
         // Page might be ready a bit earlier due to cached leaderboard
         // while data is refreshed in the background.
         _viewModel.ReadyEarly += Animate;
         await _viewModel.Initialise();
 
         await Animate();
+    }
 
-        _viewModel.ScrollTo += ScrollTo;
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.ScrollTo -= ScrollTo;
+        _viewModel.ReadyEarly -= Animate;
     }
 
     private void ScrollTo(int i)

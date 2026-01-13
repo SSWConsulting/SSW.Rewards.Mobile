@@ -2,7 +2,7 @@ services:
   # SQL Server
   rewards-sqlserver:
     container_name: rewards-sqlserver
-    image: mcr.microsoft.com/mssql/server:latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - MSSQL_SA_PASSWORD=Rewards.Docker1!
       - ACCEPT_EULA=1

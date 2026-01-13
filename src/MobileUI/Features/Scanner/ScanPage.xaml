@@ -60,10 +60,10 @@
                                         MinZoomFactor="{Binding MinZoomFactor, Mode=OneWayToSource}"
                                         MaxZoomFactor="{Binding MaxZoomFactor, Mode=OneWayToSource}"
                                         BarcodeSymbologies="QRCode"
-                                        ViewfinderMode="True"
+                                        AimMode="True"
                                         TapToFocusEnabled="True"
                                         VibrationOnDetected="False" />
-                    <GraphicsView>
+                    <GraphicsView InputTransparent="True">
                         <GraphicsView.Drawable>
                             <controls:InvertedSquare
                                 SquareSize="200"
@@ -72,6 +72,17 @@
                                 Opacity="0.5" />
                         </GraphicsView.Drawable>
                     </GraphicsView>
+
+                    <!-- Cover red dot from scanning library when AimMode=True -->
+                    <BoxView
+                        WidthRequest="18"
+                        HeightRequest="18"
+                        CornerRadius="9"
+                        Color="LightGrey"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        InputTransparent="True" />
+
                     <Grid VerticalOptions="Center"
                           HorizontalOptions="Center">
                         <Image Source="qr_reticle"
