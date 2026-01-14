@@ -22,6 +22,7 @@ public class PostsController : ApiControllerBase
     {
         _postImageStorageProvider = postImageStorageProvider;
     }
+
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(PostListViewModel), (int)HttpStatusCode.OK)]

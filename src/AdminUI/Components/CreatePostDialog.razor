@@ -75,7 +75,7 @@
                 }
             }
 
-            @if (!string.IsNullOrWhiteSpace(_model.ImageUrl) || !string.IsNullOrWhiteSpace(_uploadedImageUrl))
+            @if (!string.IsNullOrWhiteSpace(_uploadedImageUrl) || !string.IsNullOrWhiteSpace(_model.ImageUrl))
             {
                 var imageUrl = !string.IsNullOrWhiteSpace(_uploadedImageUrl) ? _uploadedImageUrl : _model.ImageUrl;
                 <MudPaper Class="pa-4 mb-4" Elevation="1">
@@ -84,8 +84,8 @@
                               Alt="Post image preview" 
                               Elevation="1" 
                               Class="rounded-lg"
-                              ObjectFit="ObjectFit.Cover"
-                              Style="max-height: 200px; width: 100%;" />
+                              ObjectFit="ObjectFit.Contain"
+                              Style="max-height: 400px; width: 100%;" />
                 </MudPaper>
             }
 
@@ -181,19 +181,25 @@
         
         try
         {
-            // Read file bytes
+            var buffer = new byte[file.Size];
+            var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            await stream.ReadAsync(buffer);
+            _uploadedImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+            
+            stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
             using var memoryStream = new MemoryStream();
-            await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(memoryStream);
-            var fileBytes = memoryStream.ToArray();
-
-            // Upload using the service
-            _uploadedImageUrl = await PostsService.UploadImage(fileBytes, file.Name, file.ContentType, CancellationToken.None);
+            await stream.CopyToAsync(memoryStream);
+            var uploadedUrl = await PostsService.UploadImage(memoryStream.ToArray(), file.Name, file.ContentType, CancellationToken.None);
+            
+            _model.ImageUrl = uploadedUrl;
+            
             Snackbar.Add("Image uploaded successfully", Severity.Success);
         }
         catch (Exception ex)
         {
             Snackbar.Add($"Error uploading image: {ex.Message}", Severity.Error);
             _selectedFile = null;
+            _uploadedImageUrl = null;
         }
         finally
         {
@@ -216,8 +222,8 @@
 
         try
         {
-            // Use uploaded image URL if available, otherwise use the URL from text field
-            var finalImageUrl = !string.IsNullOrWhiteSpace(_uploadedImageUrl) ? _uploadedImageUrl : _model.ImageUrl;
+            // _model.ImageUrl contains the blob URL from upload or the text field URL
+            // (upload already sets _model.ImageUrl to the blob URL)
 
             if (IsEdit)
             {
@@ -226,7 +232,7 @@
                     Id = PostId,
                     Title = _model.Title,
                     Content = _model.Content,
-                    ImageUrl = finalImageUrl,
+                    ImageUrl = _model.ImageUrl,
                     IsPublished = _model.IsPublished
                 };
 
@@ -240,7 +246,7 @@
                 {
                     Title = _model.Title,
                     Content = _model.Content,
-                    ImageUrl = finalImageUrl,
+                    ImageUrl = _model.ImageUrl,
                     SendNotification = _model.SendNotification,
                     IsPublished = _model.IsPublished
                 };
