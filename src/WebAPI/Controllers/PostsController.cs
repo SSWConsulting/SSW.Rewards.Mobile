@@ -27,7 +27,7 @@ public class PostsController : ApiControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(PostListViewModel), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<PostListViewModel>> GetPosts(
-        [FromQuery] int page = 1,
+        [FromQuery] int page = 0,
         [FromQuery] int pageSize = 20,
         [FromQuery] bool publishedOnly = true,
         [FromQuery] string? searchTerm = null,

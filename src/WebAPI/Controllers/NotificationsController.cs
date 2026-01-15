@@ -31,7 +31,7 @@ public class NotificationsController : ApiControllerBase
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult<Unit>> RequestPush([Required]RequestNotificationCommand notificationRequest)
+    public async Task<ActionResult<Unit>> RequestPush([Required] RequestNotificationCommand notificationRequest)
     {
         return Ok(await Mediator.Send(notificationRequest));
     }
@@ -78,7 +78,7 @@ public class NotificationsController : ApiControllerBase
     [HttpDelete("{installationId}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute]string installationId)
+    public async Task<ActionResult<Unit>> DeleteInstallation([Required][FromRoute] string installationId)
     {
         return Ok(await Mediator.Send(new DeleteInstallationCommand(installationId)));
     }
