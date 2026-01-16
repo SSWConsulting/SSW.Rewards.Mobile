@@ -46,7 +46,7 @@ services:
       - SigningAuthority=https://app-ssw-ident-staging-api.azurewebsites.net/
     volumes:
       - ${CERTS_PATH}:/https:ro
-    profiles: ["all", "webapi"]
+    profiles: ["all", "webapi", "admin"]
 
   # Admin UI
   rewards-adminui:

@@ -75,16 +75,16 @@ dotnet test --filter "ClassName"
 ### Docker Commands
 
 ```bash
-# Start all services
+# Start all services (API, Admin UI, SQL Server, Azurite)
 docker compose --profile all up -d
 
-# Start only dependencies (for local API/Admin development)
+# Start only dependencies (SQL Server + Azurite for local API/Admin development)
 docker compose --profile tools up -d
 
-# Start only WebAPI
+# Start only WebAPI (includes SQL Server + Azurite)
 docker compose --profile webapi up -d
 
-# Start only Admin UI
+# Start only Admin UI (includes SQL Server, Azurite, and WebAPI)
 docker compose --profile admin up -d
 
 # View logs
