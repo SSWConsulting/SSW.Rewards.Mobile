@@ -11,7 +11,7 @@
 <PageTitle>SSW Rewards | Send Notification</PageTitle>
 
 <div class="send-notification-page">
-    <MudText Typo="Typo.h3" id="page-title">Create Notification</MudText>
+    <MudText Typo="Typo.h3" id="page-title" data-testid="page-title">Create Notification</MudText>
 
     <div class="send-notification-layout">
         <!-- Form Column -->
@@ -21,11 +21,8 @@
                     <DataAnnotationsValidator />
                     <MudGrid Spacing="3">
                         <MudItem xs="12">
-                            <MudTooltip
-                                Text="This shows how many users got the notification out of everyone we tried to send it to. Some may not get it if they haven't enabled notifications or their device token expired.">
-                                <MudText Typo="Typo.h5" Class="section-header" Style="display: inline; cursor: help;"
-                                    id="delivery-section-label">Delivery<span class="required-indicator">*</span></MudText>
-                            </MudTooltip>
+                            <MudText Typo="Typo.h5" Class="section-header" id="delivery-section-label">
+                                Delivery<span class="required-indicator">*</span></MudText>
                             <MudRadioGroup @bind-Value="@_model.DeliveryOption" aria-labelledby="delivery-section-label"
                                 data-testid="delivery-radio-group" Class="radio-group-large">
                                 <MudRadio Option="@Delivery.Now" Color="Color.Primary" data-testid="delivery-now"
@@ -39,18 +36,20 @@
                         <!-- Always visible Date/Time/Timezone; disabled when not scheduling -->
                         <MudItem xs="12">
                             <div class="schedule-controls-container">
-                                <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
-                                    For="@(() => _model.ScheduleDate)"
-                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
-                                    data-testid="schedule-date" aria-label="Schedule date for notification"
-                                    Class="schedule-field-large schedule-date-picker" />
-                                <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
-                                    For="@(() => _model.ScheduleTime)"
-                                    Required="@(_model.DeliveryOption == Delivery.Schedule)"
-                                    Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
-                                    aria-label="Schedule time for notification"
-                                    Class="schedule-field-large schedule-time-picker" />
+                                <div class="schedule-date-time-row">
+                                    <MudDatePicker Label="Date" Date="@_model.ScheduleDate" DateChanged="@OnDateChanged"
+                                        For="@(() => _model.ScheduleDate)"
+                                        Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                        Disabled="@(_model.DeliveryOption != Delivery.Schedule)" MinDate="@DateTime.Today"
+                                        data-testid="schedule-date" aria-label="Schedule date for notification"
+                                        Class="schedule-field-large schedule-date-picker" />
+                                    <MudTimePicker Label="Time" Time="@_model.ScheduleTime" TimeChanged="@OnTimeChanged"
+                                        For="@(() => _model.ScheduleTime)"
+                                        Required="@(_model.DeliveryOption == Delivery.Schedule)"
+                                        Disabled="@(_model.DeliveryOption != Delivery.Schedule)" data-testid="schedule-time"
+                                        aria-label="Schedule time for notification"
+                                        Class="schedule-field-large schedule-time-picker" />
+                                </div>
                                 <MudSelect @bind-Value="@_model.SelectedTimeZone" Label="Timezone"
                                     For="@(() => _model.SelectedTimeZone)"
                                     Required="@(_model.DeliveryOption == Delivery.Schedule)"
@@ -117,25 +116,31 @@
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Title" Label="Title"
+                            <MudText Typo="Typo.body1" Class="notification-field-label">Title<span class="required-indicator">*</span></MudText>
+                            <MudTextField @bind-Value="@_model.Title"
                                 For="@(() => _model.Title)" Required="true" MaxLength="100" Counter="100"
                                 data-testid="notification-title"
                                 aria-label="Enter notification title, maximum 100 characters"
-                                aria-describedby="content-section-label" Immediate="true" />
+                                aria-describedby="content-section-label" Immediate="true"
+                                Variant="Variant.Outlined" Class="notification-input-outlined" />
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.Body" Label="Body"
+                            <MudText Typo="Typo.body1" Class="notification-field-label">Body<span class="required-indicator">*</span></MudText>
+                            <MudTextField @bind-Value="@_model.Body"
                                 For="@(() => _model.Body)" Required="true" Lines="3" MaxLength="250" Counter="250"
                                 data-testid="notification-body"
                                 aria-label="Enter notification body text, maximum 250 characters"
-                                aria-describedby="content-section-label" Immediate="true" />
+                                aria-describedby="content-section-label" Immediate="true"
+                                Variant="Variant.Outlined" Class="notification-input-outlined" />
                         </MudItem>
 
                         <MudItem xs="12">
-                            <MudTextField @bind-Value="@_model.ImageUrl" Label="Notification Image URL (Optional)"
+                            <MudText Typo="Typo.body1" Class="notification-field-label">Notification Image URL (Optional)</MudText>
+                            <MudTextField @bind-Value="@_model.ImageUrl"
                                 For="@(() => _model.ImageUrl)" data-testid="notification-image-url"
-                                aria-label="Enter optional image URL for notification" Immediate="true" />
+                                aria-label="Enter optional image URL for notification" Immediate="true"
+                                Variant="Variant.Outlined" Class="notification-input-outlined" />
                         </MudItem>
 
                         <MudItem xs="12" Class="d-flex justify-end mt-4">

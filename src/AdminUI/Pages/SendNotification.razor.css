@@ -16,12 +16,19 @@
     margin-top: 0 !important;
 }
 
-/* Container for Date/Time/Timezone fields to allow flex layout and offset */
+/* Container for Date/Time/Timezone fields - stacked layout with Timezone below */
 .schedule-controls-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-left: 38px; /* Offset to align with 'Schedule' radio button on desktop */
+}
+
+/* Row for Date and Time fields side by side */
+.schedule-date-time-row {
     display: flex;
     flex-direction: row;
     gap: 24px;
-    margin-left: 108px; /* Offset to align with 'Schedule' radio button on desktop */
 }
 
 .target-autocomplete {
@@ -41,17 +48,21 @@
 }
 
 .schedule-timezone-select {
-    flex: 1.5; /* Timezone takes more width space than Date and Time */
+    width: 100%; /* Timezone takes full width on its own row */
+    margin-left: 0 !important; /* Ensure alignment with date/time row above */
 }
 
 /* Remove offset and stack vertically on mobile */
 @media (max-width: 1400px) {
     .schedule-controls-container {
         margin-left: 0;
+    }
+
+    .schedule-date-time-row {
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .schedule-date-picker,
     .schedule-time-picker,
     .schedule-timezone-select {
@@ -103,6 +114,26 @@
 /* Section headers */
 .section-header {
     font-weight: 500;
+}
+
+/* Notification field labels (Title, Body) - same style as radio labels */
+.notification-field-label {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: white !important;
+}
+
+/* Outlined input styling for notification fields */
+::deep .notification-input-outlined .mud-input-outlined-border {
+    border-color: rgba(255, 255, 255, 0.23) !important;
+}
+
+::deep .notification-input-outlined:hover .mud-input-outlined-border {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+::deep .notification-input-outlined.mud-input-error .mud-input-outlined-border {
+    border-color: var(--mud-palette-error) !important;
 }
 
 /* Required field indicator - red asterisk */
