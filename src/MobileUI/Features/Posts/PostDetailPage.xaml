@@ -169,7 +169,8 @@
                                     <SwipeItems>
                                         <SwipeItemView
                                             Command="{Binding Source={x:Reference PostDetail}, Path=BindingContext.DeleteCommentCommand}"
-                                            CommandParameter="{Binding .}">
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding CanDelete}">
                                             <Border
                                                 BackgroundColor="{StaticResource SSWRed}"
                                                 Padding="20,0"

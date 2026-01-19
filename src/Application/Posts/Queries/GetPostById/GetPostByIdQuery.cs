@@ -15,11 +15,14 @@ public class GetPostByIdQueryHandler(
     public async Task<PostDetailDto> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
     {
         var userEmail = currentUserService.GetUserEmail();
+        var isAdmin = currentUserService.IsInRole("Admin");
 
         var user = await context.Users
             .AsNoTracking()
             .TagWithContext("GetCurrentUserForPostDetail")
             .FirstOrDefaultAsync(u => u.Email == userEmail, cancellationToken);
+
+        var currentUserId = user?.Id ?? 0;
 
         var post = await context.Posts
             .AsNoTracking()
@@ -49,7 +52,8 @@ public class GetPostByIdQueryHandler(
                         UserName = c.User.FullName ?? "",
                         UserAvatar = c.User.Avatar ?? "",
                         Comment = c.Comment,
-                        CreatedUtc = c.CreatedUtc
+                        CreatedUtc = c.CreatedUtc,
+                        CanDelete = isAdmin || c.UserId == currentUserId
                     })
                     .ToList()
             })

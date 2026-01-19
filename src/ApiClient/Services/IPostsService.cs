@@ -10,7 +10,6 @@ public interface IPostsService
     Task<bool> ToggleLike(int postId, CancellationToken cancellationToken);
     Task<int> AddComment(int postId, string comment, CancellationToken cancellationToken);
     Task DeleteComment(int commentId, CancellationToken cancellationToken);
-    Task AdminDeleteComment(int commentId, CancellationToken cancellationToken);
     Task DeletePost(int postId, CancellationToken cancellationToken);
     Task<int> CreatePost(CreatePostDto dto, CancellationToken cancellationToken);
     Task UpdatePost(UpdatePostDto dto, CancellationToken cancellationToken);
@@ -104,17 +103,6 @@ public class PostsService : IPostsService
     public async Task DeleteComment(int commentId, CancellationToken cancellationToken)
     {
         var result = await _httpClient.DeleteAsync($"{_baseRoute}DeleteComment?commentId={commentId}", cancellationToken);
-
-        if (!result.IsSuccessStatusCode)
-        {
-            var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Failed to delete comment: {responseContent}");
-        }
-    }
-
-    public async Task AdminDeleteComment(int commentId, CancellationToken cancellationToken)
-    {
-        var result = await _httpClient.DeleteAsync($"{_baseRoute}AdminDeleteComment?commentId={commentId}", cancellationToken);
 
         if (!result.IsSuccessStatusCode)
         {

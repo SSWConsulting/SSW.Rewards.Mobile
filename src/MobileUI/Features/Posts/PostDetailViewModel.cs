@@ -14,17 +14,12 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     private readonly ILogger<PostDetailViewModel> _logger;
 
     private int _postId;
-    private int _currentUserId;
-    private bool _isStaff;
 
     public PostDetailViewModel(IPostsService postsService, IUserService userService, ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
         _userService = userService;
         _logger = logger;
-
-        _userService.MyUserIdObservable().Subscribe(userId => _currentUserId = userId);
-        _userService.IsStaffObservable().Subscribe(isStaff => _isStaff = isStaff);
     }
 
     [ObservableProperty]
@@ -147,13 +142,6 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         if (IsLoadingAction)
             return;
 
-        // Check if user can delete (own comment or staff)
-        if (!CanDeleteComment(comment))
-        {
-            await Shell.Current.DisplayAlertAsync("Error", "You cannot delete this comment", "OK");
-            return;
-        }
-
         // Confirm deletion
         bool confirm = await Shell.Current.DisplayAlertAsync(
             "Delete Comment",
@@ -167,15 +155,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         IsLoadingAction = true;
         try
         {
-            // Use admin endpoint if staff is deleting another user's comment
-            if (_isStaff && comment.UserId != _currentUserId)
-            {
-                await _postsService.AdminDeleteComment(comment.Id, CancellationToken.None);
-            }
-            else
-            {
-                await _postsService.DeleteComment(comment.Id, CancellationToken.None);
-            }
+            await _postsService.DeleteComment(comment.Id, CancellationToken.None);
 
             // Reload the post to get updated comments
             await LoadPostAsync();
@@ -189,11 +169,5 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         {
             IsLoadingAction = false;
         }
-    }
-
-    public bool CanDeleteComment(PostCommentDto comment)
-    {
-        // Staff can delete any comment, users can only delete their own
-        return _isStaff || comment.UserId == _currentUserId;
     }
 }

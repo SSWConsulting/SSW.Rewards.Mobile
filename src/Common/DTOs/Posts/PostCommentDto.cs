@@ -9,4 +9,5 @@ public class PostCommentDto
     public string UserAvatar { get; set; } = string.Empty;
     public string Comment { get; set; } = string.Empty;
     public DateTime CreatedUtc { get; set; }
+    public bool CanDelete { get; set; }
 }

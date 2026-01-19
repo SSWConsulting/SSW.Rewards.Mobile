@@ -35,8 +35,9 @@ public class DeletePostCommentCommandHandler(
             throw new NotFoundException(nameof(PostComment), request.CommentId);
         }
 
-        // Check if user owns the comment
-        if (comment.UserId != user.Id)
+        // Check if user owns the comment or is an admin
+        var isAdmin = currentUserService.IsInRole("Admin");
+        if (comment.UserId != user.Id && !isAdmin)
         {
             throw new ForbiddenAccessException();
         }
