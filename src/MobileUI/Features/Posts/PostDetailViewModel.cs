@@ -3,20 +3,28 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Shared.DTOs.Posts;
+using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IPostsService _postsService;
+    private readonly IUserService _userService;
     private readonly ILogger<PostDetailViewModel> _logger;
 
     private int _postId;
+    private int _currentUserId;
+    private bool _isStaff;
 
-    public PostDetailViewModel(IPostsService postsService, ILogger<PostDetailViewModel> logger)
+    public PostDetailViewModel(IPostsService postsService, IUserService userService, ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
+        _userService = userService;
         _logger = logger;
+
+        _userService.MyUserIdObservable().Subscribe(userId => _currentUserId = userId);
+        _userService.IsStaffObservable().Subscribe(isStaff => _isStaff = isStaff);
     }
 
     [ObservableProperty]
@@ -64,7 +72,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error loading post details");
-            await Application.Current.MainPage.DisplayAlert("Error", "Failed to load post details", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Failed to load post details", "OK");
         }
         finally
         {
@@ -96,7 +104,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error toggling like");
-            await Application.Current.MainPage.DisplayAlert("Error", "Failed to update like", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Failed to update like", "OK");
         }
         finally
         {
@@ -125,11 +133,67 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding comment");
-            await Application.Current.MainPage.DisplayAlert("Error", "Failed to add comment", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Failed to add comment", "OK");
         }
         finally
         {
             IsLoadingAction = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task DeleteCommentAsync(PostCommentDto comment)
+    {
+        if (IsLoadingAction)
+            return;
+
+        // Check if user can delete (own comment or staff)
+        if (!CanDeleteComment(comment))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "You cannot delete this comment", "OK");
+            return;
+        }
+
+        // Confirm deletion
+        bool confirm = await Shell.Current.DisplayAlertAsync(
+            "Delete Comment",
+            "Are you sure you want to delete this comment?",
+            "Delete",
+            "Cancel");
+
+        if (!confirm)
+            return;
+
+        IsLoadingAction = true;
+        try
+        {
+            // Use admin endpoint if staff is deleting another user's comment
+            if (_isStaff && comment.UserId != _currentUserId)
+            {
+                await _postsService.AdminDeleteComment(comment.Id, CancellationToken.None);
+            }
+            else
+            {
+                await _postsService.DeleteComment(comment.Id, CancellationToken.None);
+            }
+
+            // Reload the post to get updated comments
+            await LoadPostAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting comment");
+            await Shell.Current.DisplayAlertAsync("Error", "Failed to delete comment", "OK");
+        }
+        finally
+        {
+            IsLoadingAction = false;
+        }
+    }
+
+    public bool CanDeleteComment(PostCommentDto comment)
+    {
+        // Staff can delete any comment, users can only delete their own
+        return _isStaff || comment.UserId == _currentUserId;
     }
 }

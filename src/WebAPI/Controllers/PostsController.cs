@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Posts.Commands.AddPostComment;
+using SSW.Rewards.Application.Posts.Commands.AdminDeletePostComment;
 using SSW.Rewards.Application.Posts.Commands.CreatePost;
 using SSW.Rewards.Application.Posts.Commands.DeletePost;
+using SSW.Rewards.Application.Posts.Commands.DeletePostComment;
 using SSW.Rewards.Application.Posts.Commands.TogglePostLike;
 using SSW.Rewards.Application.Posts.Commands.UpdatePost;
 using SSW.Rewards.Application.Posts.Queries.GetPostById;
@@ -121,6 +123,26 @@ public class PostsController : ApiControllerBase
     {
         var commentId = await Mediator.Send(command);
         return Ok(commentId);
+    }
+
+    [HttpDelete]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    public async Task<ActionResult> DeleteComment([FromQuery][Required] int commentId)
+    {
+        await Mediator.Send(new DeletePostCommentCommand { CommentId = commentId });
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<ActionResult> AdminDeleteComment([FromQuery][Required] int commentId)
+    {
+        await Mediator.Send(new AdminDeletePostCommentCommand { CommentId = commentId });
+        return Ok();
     }
 
     [HttpPost]

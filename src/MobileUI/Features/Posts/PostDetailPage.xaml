@@ -5,10 +5,17 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:posts="clr-namespace:SSW.Rewards.Shared.DTOs.Posts;assembly=Shared"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             x:Name="PostDetail"
              x:DataType="viewModels:PostDetailViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.PostDetailPage"
              BackgroundColor="{StaticResource PeopleBackground}"
              ControlTemplate="{DynamicResource PageTemplate}">
+    <common:BaseContentPage.Resources>
+        <ResourceDictionary>
+            <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTime" />
+        </ResourceDictionary>
+    </common:BaseContentPage.Resources>
     <Grid>
         <ScrollView>
             <VerticalStackLayout
@@ -31,7 +38,7 @@
 
                         <!-- Published Date -->
                         <Label
-                            Text="{Binding Post.PublishedDateUtc, StringFormat='Published on {0:MMMM dd, yyyy}'}"
+                            Text="{Binding Post.PublishedDateUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='Published on {0:MMMM dd, yyyy}'}"
                             FontSize="12"
                             TextColor="{StaticResource Gray400}" />
 
@@ -157,39 +164,70 @@
                     </BindableLayout.EmptyView>
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="posts:PostCommentDto">
-                            <Border
-                                BackgroundColor="{StaticResource MainBackground}"
-                                Stroke="{StaticResource MainBackground}"
-                                StrokeShape="RoundRectangle 10"
-                                Padding="15">
-                                <VerticalStackLayout Spacing="8">
-                                    <!-- User Info -->
-                                    <HorizontalStackLayout Spacing="10">
-                                        <mct:AvatarView
-                                            ImageSource="{Binding UserAvatar}"
-                                            WidthRequest="30"
-                                            HeightRequest="30"
-                                            CornerRadius="15"
-                                            BorderWidth="1" />
-                                        <VerticalStackLayout VerticalOptions="Center">
-                                            <Label
-                                                Text="{Binding UserName}"
-                                                FontSize="14"
-                                                Style="{StaticResource LabelBold}" />
-                                            <Label
-                                                Text="{Binding CreatedUtc, StringFormat='{0:MMM dd, yyyy HH:mm}'}"
-                                                FontSize="11"
-                                                TextColor="{StaticResource Gray400}" />
-                                        </VerticalStackLayout>
-                                    </HorizontalStackLayout>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItemView
+                                            Command="{Binding Source={x:Reference PostDetail}, Path=BindingContext.DeleteCommentCommand}"
+                                            CommandParameter="{Binding .}">
+                                            <Border
+                                                BackgroundColor="{StaticResource SSWRed}"
+                                                Padding="20,0"
+                                                WidthRequest="80">
+                                                <VerticalStackLayout
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    Spacing="5">
+                                                    <Label
+                                                        Text="&#xf2ed;"
+                                                        FontFamily="FA6Solid"
+                                                        FontSize="20"
+                                                        TextColor="White"
+                                                        HorizontalOptions="Center" />
+                                                    <Label
+                                                        Text="Delete"
+                                                        FontSize="12"
+                                                        TextColor="White"
+                                                        HorizontalOptions="Center" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </SwipeItemView>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <Border
+                                    BackgroundColor="{StaticResource MainBackground}"
+                                    Stroke="{StaticResource MainBackground}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="15">
+                                    <VerticalStackLayout Spacing="8">
+                                        <!-- User Info -->
+                                        <HorizontalStackLayout Spacing="10">
+                                            <mct:AvatarView
+                                                ImageSource="{Binding UserAvatar}"
+                                                WidthRequest="30"
+                                                HeightRequest="30"
+                                                CornerRadius="15"
+                                                BorderWidth="1" />
+                                            <VerticalStackLayout VerticalOptions="Center">
+                                                <Label
+                                                    Text="{Binding UserName}"
+                                                    FontSize="14"
+                                                    Style="{StaticResource LabelBold}" />
+                                                <Label
+                                                    Text="{Binding CreatedUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='{0:MMM dd, yyyy HH:mm}'}"
+                                                    FontSize="11"
+                                                    TextColor="{StaticResource Gray400}" />
+                                            </VerticalStackLayout>
+                                        </HorizontalStackLayout>
 
-                                    <!-- Comment Text -->
-                                    <Label
-                                        Text="{Binding Comment}"
-                                        FontSize="14"
-                                        LineBreakMode="WordWrap" />
-                                </VerticalStackLayout>
-                            </Border>
+                                        <!-- Comment Text -->
+                                        <Label
+                                            Text="{Binding Comment}"
+                                            FontSize="14"
+                                            LineBreakMode="WordWrap" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </SwipeView>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>

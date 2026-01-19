@@ -26,6 +26,8 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     public ObservableRangeCollection<ActivityFeedItemDto> Feed { get; set; } = [];
 
+    public PostListViewModel PostsViewModel { get; }
+
     public List<Segment> Segments { get; set; } =
     [
         new() { Name = "All", Value = ActivityPageSegments.All },
@@ -53,10 +55,11 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     private int _myUserId;
 
-    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider)
+    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, PostListViewModel postsViewModel)
     {
         _activityService = activityService;
         _serviceProvider = serviceProvider;
+        PostsViewModel = postsViewModel;
 
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
@@ -163,7 +166,12 @@ public partial class ActivityPageViewModel : BaseViewModel
         ShowPosts = CurrentSegment == ActivityPageSegments.Posts;
         ShowActivityFeed = !ShowPosts;
 
-        if (!ShowPosts)
+        if (ShowPosts)
+        {
+            // Load posts when switching to Posts tab
+            await PostsViewModel.InitialiseAsync();
+        }
+        else
         {
             _limitReached = false;
             _skip = 0;

@@ -12,7 +12,7 @@ public partial class PostListViewModel : BaseViewModel
     private readonly ILogger<PostListViewModel> _logger;
 
     private const int PageSize = 20;
-    private int _page = 1;
+    private int _page = 0;
     private bool _limitReached;
 
     public PostListViewModel(IPostsService postsService, ILogger<PostListViewModel> logger)
@@ -30,7 +30,9 @@ public partial class PostListViewModel : BaseViewModel
     public async Task InitialiseAsync()
     {
         if (Posts.Count > 0)
+        {
             return;
+        }
 
         await LoadPostsAsync();
     }
@@ -38,16 +40,21 @@ public partial class PostListViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        IsRefreshing = true;
         try
         {
-            _page = 1;
+            _page = 0;
             _limitReached = false;
             await LoadPostsAsync(replace: true);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error refreshing posts");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlertAsync("Error", "Failed to refresh posts. Please try again.", "OK"));
+        }
         finally
         {
-            IsRefreshing = false;
+            await MainThread.InvokeOnMainThreadAsync(() => IsRefreshing = false);
         }
     }
 
@@ -69,7 +76,10 @@ public partial class PostListViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, searchTerm: null, sortBy: null, sortDirection: null, CancellationToken.None);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, searchTerm: null, sortBy: null, sortDirection: null, cts.Token);
+
+            var itemCount = result?.Items?.Count() ?? 0;
 
             if (result == null || result.Items == null || !result.Items.Any())
             {
@@ -77,14 +87,17 @@ public partial class PostListViewModel : BaseViewModel
                 return;
             }
 
-            if (replace)
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                Posts.ReplaceRange(result.Items);
-            }
-            else
-            {
-                Posts.AddRange(result.Items);
-            }
+                if (replace)
+                {
+                    Posts.ReplaceRange(result.Items);
+                }
+                else
+                {
+                    Posts.AddRange(result.Items);
+                }
+            });
 
             // Check if we've reached the end using IsLastPage
             if (result.IsLastPage)
@@ -92,10 +105,19 @@ public partial class PostListViewModel : BaseViewModel
                 _limitReached = true;
             }
         }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Loading posts timed out");
+            _limitReached = true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+                await Shell.Current.DisplayAlertAsync("Timeout", "The request took too long. Please check your connection.", "OK"));
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error loading posts");
             _limitReached = true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load posts: {ex.Message}", "OK"));
         }
         finally
         {
@@ -109,11 +131,20 @@ public partial class PostListViewModel : BaseViewModel
         if (post == null)
             return;
 
-        var parameters = new Dictionary<string, object>
+        try
         {
-            { "PostId", post.Id }
-        };
+            var parameters = new Dictionary<string, object>
+            {
+                { "PostId", post.Id }
+            };
 
-        await Shell.Current.GoToAsync($"postdetail", parameters);
+            await Shell.Current.GoToAsync($"postdetail", parameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error navigating to post detail");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+                await Shell.Current.DisplayAlertAsync("Error", "Failed to open post", "OK"));
+        }
     }
 }

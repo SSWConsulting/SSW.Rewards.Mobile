@@ -5,20 +5,33 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:posts="clr-namespace:SSW.Rewards.Shared.DTOs.Posts;assembly=Shared"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              x:DataType="viewModels:PostListViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.PostListPage"
              x:Name="PostList"
              BackgroundColor="{StaticResource PeopleBackground}"
              ControlTemplate="{DynamicResource PageTemplate}">
-    <Grid Padding="15,10,15,0">
+    <common:BaseContentPage.Resources>
+        <ResourceDictionary>
+            <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTime" />
+        </ResourceDictionary>
+    </common:BaseContentPage.Resources>
+    <Grid Padding="15,10,15,0"
+          HorizontalOptions="Fill"
+          VerticalOptions="Fill">
         <RefreshView
             Command="{Binding RefreshCommand}"
-            IsRefreshing="{Binding IsRefreshing}">
+            IsRefreshing="{Binding IsRefreshing}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
             <CollectionView
                 ItemsSource="{Binding Posts}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 RemainingItemsThreshold="5"
-                RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+                RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                HorizontalScrollBarVisibility="Never">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                 </CollectionView.ItemsLayout>
@@ -121,7 +134,7 @@
                                     <!-- Published Date -->
                                     <Label
                                         Grid.Column="4"
-                                        Text="{Binding PublishedDateUtc, StringFormat='{0:MMM dd, yyyy}'}"
+                                        Text="{Binding PublishedDateUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='{0:MMM dd, yyyy}'}"
                                         FontSize="12"
                                         HorizontalOptions="End"
                                         VerticalOptions="Center"

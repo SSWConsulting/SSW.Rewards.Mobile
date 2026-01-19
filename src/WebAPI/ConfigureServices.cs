@@ -102,10 +102,21 @@ public static class ConfigureServices
             options.AddPolicy(_allowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins(AllowedOrigin)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    if (AllowedOrigin == "*")
+                    {
+                        // Development mode - allow any origin
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    }
+                    else
+                    {
+                        // Production mode - specific origin with credentials
+                        builder.WithOrigins(AllowedOrigin)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
                 });
         });
 
