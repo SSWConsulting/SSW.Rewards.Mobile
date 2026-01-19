@@ -104,14 +104,6 @@ public static class ConfigureServices
                 {
                     if (AllowedOrigin == "*")
                     {
-                        // Development mode - allow any origin
-                        builder.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    }
-                    else
-                    {
-                        // Production mode - specific origin with credentials
                         builder.WithOrigins(AllowedOrigin)
                             .AllowAnyHeader()
                             .AllowAnyMethod()

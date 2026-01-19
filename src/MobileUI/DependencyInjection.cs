@@ -108,28 +108,6 @@ public static class DependencyInjection
 
         services.AddApiClientServices<AuthHandler>(options.BaseUrl);
 
-#if DEBUG
-        // Configure HttpClient to bypass SSL certificate validation for localhost in debug builds
-        services.ConfigureHttpClientDefaults(httpClientBuilder =>
-        {
-            httpClientBuilder.ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                var handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                {
-                    // Allow localhost with any certificate
-                    if (message.RequestUri?.Host == "localhost" || message.RequestUri?.Host == "127.0.0.1")
-                    {
-                        return true;
-                    }
-                    // Use default validation for all other hosts
-                    return errors == System.Net.Security.SslPolicyErrors.None;
-                };
-                return handler;
-            });
-        });
-#endif
-
         // Configuration that in the future will be modifiable by the user or WebAPI
         services.AddSingleton(new ScannerConfig());
         services.AddSingleton(new SocialMediaConfig());
