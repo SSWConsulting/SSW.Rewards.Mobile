@@ -15,7 +15,13 @@ public class PostImageStorageProvider : IPostImageStorageProvider
 
     public async Task<string> UploadPostImage(byte[] imageArray, string fileName)
     {
-        string id = Guid.NewGuid().ToString() + fileName;
+        var extension = Path.GetExtension(fileName);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            throw new ArgumentException("File name must have a valid extension", nameof(fileName));
+        }
+
+        string id = $"{Guid.NewGuid()}{extension}";
         await _storageProvider.UploadBlob(CONTAINER_NAME, id, imageArray);
 
         var uri = await _storageProvider.GetUri(CONTAINER_NAME, id);

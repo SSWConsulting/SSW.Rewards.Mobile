@@ -43,7 +43,6 @@ public class GetPostByIdQueryHandler(
                 CommentsCount = p.PostComments.Count,
                 CurrentUserLiked = user != null && p.PostLikes.Any(pl => pl.UserId == user.Id),
                 Comments = p.PostComments
-                    .OrderByDescending(c => c.CreatedUtc)
                     .Select(c => new PostCommentDto
                     {
                         Id = c.Id,
@@ -55,6 +54,7 @@ public class GetPostByIdQueryHandler(
                         CreatedUtc = c.CreatedUtc,
                         CanDelete = isAdmin || c.UserId == currentUserId
                     })
+                    .OrderByDescending(c => c.CreatedUtc)
                     .ToList()
             })
             .FirstOrDefaultAsync(cancellationToken);

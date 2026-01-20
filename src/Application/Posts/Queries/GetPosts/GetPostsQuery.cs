@@ -4,7 +4,7 @@ namespace SSW.Rewards.Application.Posts.Queries.GetPosts;
 
 public class GetPostsQuery : IRequest<PostListViewModel>, IPagedRequest
 {
-    public int Page { get; set; } = 1;
+    public int Page { get; set; } = 0;
     public int PageSize { get; set; } = 20;
     public bool PublishedOnly { get; set; } = false;
     public string? SearchTerm { get; set; }

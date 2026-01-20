@@ -79,8 +79,6 @@ public partial class PostListViewModel : BaseViewModel
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, searchTerm: null, sortBy: null, sortDirection: null, cts.Token);
 
-            var itemCount = result?.Items?.Count() ?? 0;
-
             if (result == null || result.Items == null || !result.Items.Any())
             {
                 _limitReached = true;

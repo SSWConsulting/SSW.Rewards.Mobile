@@ -102,13 +102,10 @@ public static class ConfigureServices
             options.AddPolicy(_allowSpecificOrigins,
                 builder =>
                 {
-                    if (AllowedOrigin == "*")
-                    {
-                        builder.WithOrigins(AllowedOrigin)
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();
-                    }
+                    builder.WithOrigins(AllowedOrigin)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
         });
 
