@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using SSW.Rewards.Application.Common.Behaviours;
 using SSW.Rewards.Application.Services;
 using SSW.Rewards.Application.Users.Commands.DeleteMyProfile;
+using SSW.Rewards.Shared.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,9 @@ public static class ConfigureServices
 
         services.Configure<UserServiceOptions>(configuration.GetSection(nameof(UserServiceOptions)));
         services.Configure<DeleteProfileOptions>(configuration.GetSection(nameof(DeleteProfileOptions)));
+
+        // Add TenantSettings with validation
+        services.AddTenantSettings(configuration, validateOnStartup: true);
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRolesService, UserService>();

@@ -1,12 +1,15 @@
 ﻿using BarcodeScanning;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Mopups.Hosting;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
+using SSW.Rewards.Shared.Configuration;
+using System.Reflection;
 
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
@@ -26,6 +29,17 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
+        // Load configuration from embedded appsettings.json
+        var assembly = Assembly.GetExecutingAssembly();
+        using var stream = assembly.GetManifestResourceStream("SSW.Rewards.Mobile.appsettings.json");
+
+        var config = new ConfigurationBuilder()
+            .AddJsonStream(stream!)
+            .Build();
+
+        builder.Configuration.AddConfiguration(config);
+
         builder.UseMauiApp<App>().ConfigureFonts(fonts =>
         {
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -54,6 +68,9 @@ public static class MauiProgram
             handlers.AddHandler(typeof(TableView), typeof(CustomTableViewRenderer));
             handlers.AddHandler(typeof(Shell), typeof(CustomShellHandler));
         });
+
+        // Add TenantSettings with validation
+        builder.Services.AddTenantSettings(builder.Configuration, validateOnStartup: true);
 
         builder.Services.AddDependencies();
         builder.Services.AddSingleton<IFileCacheService, FileCacheService>();
@@ -84,14 +101,14 @@ public static class MauiProgram
 #if IOS
         Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping(nameof(Editor), (handler, editor) =>
         {
-            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
+            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204, 65, 65);
             handler.PlatformView.SmartDashesType = UIKit.UITextSmartDashesType.No;
             handler.PlatformView.SmartQuotesType = UIKit.UITextSmartQuotesType.No;
         });
 
         Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, editor) =>
         {
-            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204,65,65);
+            handler.PlatformView.TintColor = UIKit.UIColor.FromRGB(204, 65, 65);
         });
 #endif
 
@@ -103,7 +120,8 @@ public static class MauiProgram
         builder.ConfigureLifecycleEvents(events =>
         {
 #if IOS
-            events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) => {
+            events.AddiOS(iOS => iOS.WillFinishLaunching((app, launchOptions) =>
+            {
                 CrossFirebase.Initialize();
                 FirebaseCloudMessagingImplementation.Initialize();
                 CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
@@ -130,7 +148,7 @@ public static class MauiProgram
             events.AddiOS(ios =>
             {
                 ios.OpenUrl((app, url, options) => HandleAppLink(url.AbsoluteString));
-                
+
                 ios.FinishedLaunching((app, data)
                     => HandleAppLink(app.UserActivity));
 

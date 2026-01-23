@@ -57,6 +57,11 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+    <!-- Embed appsettings.json as resource -->
+    <ItemGroup>
+        <EmbeddedResource Include="appsettings.json" />
+    </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
         <ProjectReference Include="..\Common\Shared.csproj" />
