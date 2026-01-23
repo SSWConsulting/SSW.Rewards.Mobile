@@ -90,8 +90,8 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
-      # Run the sync command using the SAS token.
-      - name: Sync UI folder to Azure Blob Storage ($web)
+      # Sync files to blob storage (Front Door handles caching rules)
+      - name: Sync files to Azure Blob Storage
         shell: pwsh
         run: |
           az storage blob sync `
@@ -107,16 +107,21 @@ jobs:
         run: |
           az extension add --name front-door
 
-      - name: Purge Azure Front Door Cache
+      # Only purge the entry point files - other files use content hashes and can stay cached
+      - name: Purge Azure Front Door Cache (entry points only)
         shell: pwsh
         run: |
           $resourceGroup = "${{ inputs.frontDoorResourceGroupName }}"
           if ([string]::IsNullOrEmpty($resourceGroup)) {
             $resourceGroup = "${{ inputs.resourceGroupName }}"
           }
+
+          # We won't wait for the purge to complete as it can take 40+ minutes
+          # Instead, we try to have smart caching rules on Front Door to minimise the need for purges
           az afd endpoint purge `
             --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --endpoint-name ${{ inputs.frontDoorEndpointName }} `
-            --content-paths '/*' `
-            --domains ${{ inputs.frontDoorDomain }}
+            --content-paths '/index.html' '/_framework/blazor.webassembly.js' '/_framework/dotnet.js' '/css/*' '/js/*' '/appsettings.json' '/SSW.Rewards.Admin.AdminUI.styles.css' `
+            --domains ${{ inputs.frontDoorDomain }} `
+            --no-wait
