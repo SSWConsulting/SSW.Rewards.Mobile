@@ -101,15 +101,6 @@ public static class TenantSettingsExtensions
             !IsValidHexColor(tenantSettings.Colors.Accent))
             errors.Add($"TenantSettings.Colors.Accent '{tenantSettings.Colors.Accent}' is not a valid hex color (expected format: #RRGGBB)");
 
-        // Feature-dependent validation
-        if (tenantSettings.Features.EnableQuizFeatures &&
-            string.IsNullOrWhiteSpace(tenantSettings.ExternalServices.QuizServiceUrl))
-            errors.Add("TenantSettings.ExternalServices.QuizServiceUrl is required when EnableQuizFeatures is true");
-
-        if (tenantSettings.Features.EnableLinkedInIntegration &&
-            string.IsNullOrWhiteSpace(tenantSettings.SocialMedia.LinkedInUrl))
-            errors.Add("TenantSettings.SocialMedia.LinkedInUrl is required when EnableLinkedInIntegration is true");
-
         if (errors.Any())
         {
             throw new InvalidOperationException(
