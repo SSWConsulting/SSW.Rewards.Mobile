@@ -203,12 +203,18 @@ jobs:
             $resourceGroup = "${{ inputs.resourceGroupName }}"
           }
 
-          # Purge entry points synchronously - only a few files so it's fast (~2-5 min)
-          # Once BlazorCaching rules are associated with route, this becomes less critical
-          # as entry points won't be cached
+          # Purge is submitted instantly but CLI waits for global propagation (15-40 min)
+          # However, cache is actually cleared within ~3 min for most users
+          # So we use --no-wait and sleep 3 min instead of waiting for full propagation
+          Write-Host "Submitting cache purge request..."
           az afd endpoint purge `
             --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --endpoint-name ${{ inputs.frontDoorEndpointName }} `
             --content-paths '/index.html' '/_framework/blazor.webassembly.js' '/_framework/dotnet.js' '/css/*' '/js/*' '/appsettings.json' '/SSW.Rewards.Admin.AdminUI.styles.css' `
-            --domains ${{ inputs.frontDoorDomain }}
+            --domains ${{ inputs.frontDoorDomain }} `
+            --no-wait
+
+          Write-Host "Waiting 3 minutes for cache to propagate..."
+          Start-Sleep -Seconds 180
+          Write-Host "✓ Cache purge submitted and propagation wait complete"
