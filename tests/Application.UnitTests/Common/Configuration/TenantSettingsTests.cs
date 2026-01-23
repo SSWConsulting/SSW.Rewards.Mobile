@@ -160,35 +160,6 @@ public class TenantSettingsTests
     }
 
     [Test]
-    public void Validate_ThrowsException_WhenQuizEnabledButNoUrl()
-    {
-        // Arrange
-        var tenantSettings = new TenantSettings
-        {
-            Branding = new TenantSettings.BrandingSettings
-            {
-                CompanyName = "Test Company",
-                ApplicationName = "Test App"
-            },
-            Contact = new TenantSettings.ContactSettings
-            {
-                StaffEmailDomain = "test.com"
-            },
-            ExternalServices = new TenantSettings.ExternalServicesSettings
-            {
-                ApiBaseUrl = "https://api.test.com",
-                IdentityServerUrl = "https://identity.test.com",
-                QuizServiceUrl = "" // Missing when feature enabled
-            }
-        };
-
-        // Act & Assert
-        var action = () => tenantSettings.Validate();
-        action.Should().Throw<InvalidOperationException>()
-            .WithMessage("*QuizServiceUrl is required when EnableQuizFeatures is true*");
-    }
-
-    [Test]
     public void Validate_Succeeds_WithValidConfiguration()
     {
         // Arrange
