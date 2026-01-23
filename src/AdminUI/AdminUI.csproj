@@ -32,10 +32,11 @@
 
     <!-- Link shared TenantSettings -->
     <ItemGroup>
-        <Content Include="..\Common\Configuration\appsettings.TenantSettings.json" Link="wwwroot\appsettings.TenantSettings.json">
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        <None Include="..\Common\Configuration\appsettings.TenantSettings.json">
+            <Link>wwwroot\appsettings.TenantSettings.json</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
