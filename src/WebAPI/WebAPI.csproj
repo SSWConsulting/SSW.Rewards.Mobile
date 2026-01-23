@@ -19,6 +19,13 @@
       <Compile Include="..\ApiClient\Constants.cs" Link="Telemetry\Constants.cs" />
     </ItemGroup>
     
+    <!-- Link shared TenantSettings -->
+    <ItemGroup>
+        <Content Include="..\Common\Configuration\appsettings.TenantSettings.json" Link="appsettings.TenantSettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
         <PackageReference Include="Azure.Identity" Version="1.17.1" />

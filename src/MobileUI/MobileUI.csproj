@@ -57,9 +57,9 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
-    <!-- Embed appsettings.json as resource -->
+    <!-- Embed shared TenantSettings as resource -->
     <ItemGroup>
-        <EmbeddedResource Include="appsettings.json" />
+        <EmbeddedResource Include="..\Common\Configuration\appsettings.TenantSettings.json" Link="appsettings.json" />
     </ItemGroup>
 
     <ItemGroup>

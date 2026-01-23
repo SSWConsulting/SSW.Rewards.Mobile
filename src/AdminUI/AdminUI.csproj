@@ -30,6 +30,14 @@
         <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.1.1" />
     </ItemGroup>
 
+    <!-- Link shared TenantSettings -->
+    <ItemGroup>
+        <Content Include="..\Common\Configuration\appsettings.TenantSettings.json" Link="wwwroot\appsettings.TenantSettings.json">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
     <ItemGroup>
         <Content Update="wwwroot/appsettings.json">
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>

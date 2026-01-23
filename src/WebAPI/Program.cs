@@ -3,6 +3,9 @@ using SSW.Rewards.WebAPI.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load shared TenantSettings configuration
+builder.Configuration.AddJsonFile("appsettings.TenantSettings.json", optional: false, reloadOnChange: true);
+
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -41,7 +44,7 @@ app.UseRouting();
 
 string _allowSpecificOrigins = "_AllowSpecificOrigins";
 app.UseCors(_allowSpecificOrigins);
-    
+
 app.UseAuthentication();
 app.UseAuthorization();
 
