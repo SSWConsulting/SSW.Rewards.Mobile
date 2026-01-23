@@ -23,6 +23,7 @@
     <ItemGroup>
         <Content Include="..\Common\Configuration\appsettings.TenantSettings.json" Link="appsettings.TenantSettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
     
