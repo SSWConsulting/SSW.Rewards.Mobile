@@ -32,10 +32,18 @@ public static class MauiProgram
 
         // Load configuration from embedded appsettings.json
         var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream("SSW.Rewards.Mobile.appsettings.json");
+        const string resourceName = "SSW.Rewards.Mobile.appsettings.json";
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+
+        if (stream is null)
+        {
+            throw new InvalidOperationException(
+                $"Embedded configuration resource '{resourceName}' was not found. " +
+                "Ensure the file exists, is marked as an EmbeddedResource, and the namespace matches the resource name.");
+        }
 
         var config = new ConfigurationBuilder()
-            .AddJsonStream(stream!)
+            .AddJsonStream(stream)
             .Build();
 
         builder.Configuration.AddConfiguration(config);
