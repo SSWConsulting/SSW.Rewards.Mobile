@@ -33,9 +33,6 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     [ObservableProperty]
     private int _rank;
 
-    [ObservableProperty]
-    private bool _isConnected;
-
     public FlyoutHeaderViewModel(IUserService userService, IPermissionsService permissionsService, IFirebaseAnalyticsService firebaseAnalyticsService, IServiceProvider provider)
     {
         _userService = userService;
@@ -51,7 +48,6 @@ public partial class FlyoutHeaderViewModel : ObservableObject
         userService.MyBalanceObservable().Subscribe(myBalance => Credits = myBalance);
         userService.MyQrCodeObservable().Subscribe(myQrCode => QrCode = myQrCode);
         userService.MyAllTimeRankObservable().Subscribe(myRank => Rank = myRank);
-        userService.IsConnectedObservable().Subscribe(isConnected => IsConnected = isConnected);
     }
 
     [RelayCommand]

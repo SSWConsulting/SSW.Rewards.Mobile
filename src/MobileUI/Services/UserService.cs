@@ -17,7 +17,6 @@ public interface IUserService
     IObservable<string> MyQrCodeObservable();
     IObservable<int> MyAllTimeRankObservable();
     IObservable<bool> IsStaffObservable();
-    IObservable<bool> IsConnectedObservable();
 
     IObservable<string> LinkedInProfileObservable();
     IObservable<string> GitHubProfileObservable();
@@ -47,18 +46,11 @@ public interface IUserService
 
 public class UserService : IUserService
 {
-    private const string UserIdKey = "CachedUserId";
-    private const string UserNameKey = "CachedUserName";
-    private const string UserEmailKey = "CachedUserEmail";
-    private const string UserProfilePicKey = "CachedUserProfilePic";
-    private const string UserPointsKey = "CachedUserPoints";
-    private const string UserBalanceKey = "CachedUserBalance";
-    private const string UserQrCodeKey = "CachedUserQrCode";
-    private const string UserRankKey = "CachedUserRank";
-    private const string UserIsStaffKey = "CachedUserIsStaff";
+    private const string MyCachedProfileKey = "MyUserProfile";
 
     private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
+    private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<UserService> _logger;
 
     private readonly BehaviorSubject<int> _myUserId = new(0);
@@ -70,7 +62,6 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _myQrCode = new(string.Empty);
     private readonly BehaviorSubject<int> _myAllTimeRank = new(0);
     private readonly BehaviorSubject<bool> _isStaff = new(false);
-    private readonly BehaviorSubject<bool> _isConnected = new(true);
 
     /// <summary>
     /// Stores my profile as well as other users
@@ -81,19 +72,16 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _twitterProfile = new(string.Empty);
     private readonly BehaviorSubject<string> _companyUrl = new(string.Empty);
 
-    public UserService(IApiUserService userService, IAuthenticationService authService, ILogger<UserService> logger)
+    public UserService(IApiUserService userService, IAuthenticationService authService, IFileCacheService fileCacheService, ILogger<UserService> logger)
     {
         _userClient = userService;
         _authService = authService;
+        _fileCacheService = fileCacheService;
         _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
 
         // Load cached profile data on startup
         LoadCachedProfileData();
-
-        // Monitor connectivity
-        Connectivity.ConnectivityChanged += OnConnectivityChanged;
-        UpdateConnectivityState();
     }
 
     public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
@@ -105,7 +93,6 @@ public class UserService : IUserService
     public IObservable<string> MyQrCodeObservable() => _myQrCode.AsObservable();
     public IObservable<int> MyAllTimeRankObservable() => _myAllTimeRank.AsObservable();
     public IObservable<bool> IsStaffObservable() => _isStaff.AsObservable();
-    public IObservable<bool> IsConnectedObservable() => _isConnected.AsObservable();
 
     public IObservable<string> LinkedInProfileObservable() => _linkedInProfile.AsObservable();
     public IObservable<string> GitHubProfileObservable() => _gitHubProfile.AsObservable();
@@ -135,27 +122,25 @@ public class UserService : IUserService
         try
         {
             var user = await _userClient.GetCurrentUser();
-            _myUserId.OnNext(user.Id);
-            _myName.OnNext(user.FullName);
-            _myEmail.OnNext(user.Email);
-            _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
-            _myPoints.OnNext(user.Points);
-            _myBalance.OnNext(user.Balance);
-            _myQrCode.OnNext(user.QRCode);
-            _isStaff.OnNext(user.IsStaff);
-            _myAllTimeRank.OnNext(user.Rank);
+            UpdateObservablesFromUser(user);
 
-            // Persist data for offline access
-            SaveProfileDataToCache(user);
-
-            // Update connectivity state on successful API call
-            UpdateConnectivityState();
+            // Persist to file cache for offline access
+            try
+            {
+                var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
+                using var stream = File.Create(filePath);
+                await System.Text.Json.JsonSerializer.SerializeAsync(stream, user);
+                _logger.LogInformation("Saved profile data to cache for user {UserId}", user.Id);
+            }
+            catch (Exception cacheEx)
+            {
+                _logger.LogError(cacheEx, "Failed to save profile data to cache");
+            }
         }
         catch (HttpRequestException ex)
         {
             // Network connectivity issues - silently fail and keep existing data
             _logger.LogWarning(ex, "Network error while updating current user details");
-            UpdateConnectivityState();
         }
     }
 
@@ -366,20 +351,21 @@ public class UserService : IUserService
     {
         try
         {
-            var userId = Preferences.Get(UserIdKey, 0);
-            if (userId == 0) return; // No cached data
+            var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
+            if (!File.Exists(filePath))
+            {
+                _logger.LogInformation("No cached profile data found");
+                return;
+            }
 
-            _myUserId.OnNext(userId);
-            _myName.OnNext(Preferences.Get(UserNameKey, string.Empty));
-            _myEmail.OnNext(Preferences.Get(UserEmailKey, string.Empty));
-            _myProfilePic.OnNext(Preferences.Get(UserProfilePicKey, "v2sophie"));
-            _myPoints.OnNext(Preferences.Get(UserPointsKey, 0));
-            _myBalance.OnNext(Preferences.Get(UserBalanceKey, 0));
-            _myQrCode.OnNext(Preferences.Get(UserQrCodeKey, string.Empty));
-            _myAllTimeRank.OnNext(Preferences.Get(UserRankKey, 0));
-            _isStaff.OnNext(Preferences.Get(UserIsStaffKey, false));
+            using var stream = File.OpenRead(filePath);
+            var cachedUser = System.Text.Json.JsonSerializer.Deserialize<CurrentUserDto>(stream);
 
-            _logger.LogInformation("Loaded cached profile data for user {UserId}", userId);
+            if (cachedUser != null)
+            {
+                UpdateObservablesFromUser(cachedUser);
+                _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
+            }
         }
         catch (Exception ex)
         {
@@ -387,37 +373,16 @@ public class UserService : IUserService
         }
     }
 
-    private void SaveProfileDataToCache(CurrentUserDto user)
+    private void UpdateObservablesFromUser(CurrentUserDto user)
     {
-        try
-        {
-            Preferences.Set(UserIdKey, user.Id);
-            Preferences.Set(UserNameKey, user.FullName ?? string.Empty);
-            Preferences.Set(UserEmailKey, user.Email ?? string.Empty);
-            Preferences.Set(UserProfilePicKey, user.ProfilePic ?? "v2sophie");
-            Preferences.Set(UserPointsKey, user.Points);
-            Preferences.Set(UserBalanceKey, user.Balance);
-            Preferences.Set(UserQrCodeKey, user.QRCode ?? string.Empty);
-            Preferences.Set(UserRankKey, user.Rank);
-            Preferences.Set(UserIsStaffKey, user.IsStaff);
-
-            _logger.LogInformation("Saved profile data to cache for user {UserId}", user.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to save profile data to cache");
-        }
-    }
-
-    private void UpdateConnectivityState()
-    {
-        var networkAccess = Connectivity.Current.NetworkAccess;
-        var isConnected = networkAccess == NetworkAccess.Internet;
-        _isConnected.OnNext(isConnected);
-    }
-
-    private void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-    {
-        UpdateConnectivityState();
+        _myUserId.OnNext(user.Id);
+        _myName.OnNext(user.FullName ?? string.Empty);
+        _myEmail.OnNext(user.Email ?? string.Empty);
+        _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
+        _myPoints.OnNext(user.Points);
+        _myBalance.OnNext(user.Balance);
+        _myQrCode.OnNext(user.QRCode ?? string.Empty);
+        _isStaff.OnNext(user.IsStaff);
+        _myAllTimeRank.OnNext(user.Rank);
     }
 }

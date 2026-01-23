@@ -170,8 +170,7 @@
         Grid.Row="4"
         ColumnDefinitions="Auto,*"
         RowDefinitions="Auto"
-        ColumnSpacing="8"
-        IsVisible="{Binding IsConnected}">
+        ColumnSpacing="8">
         <Label Grid.Row="0"
                Grid.Column="0"
                TextColor="{StaticResource SSWRed}"
