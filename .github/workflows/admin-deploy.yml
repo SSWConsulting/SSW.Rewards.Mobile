@@ -15,6 +15,8 @@ on:
         type: string
       frontDoorDomain:
         type: string
+      frontDoorRouteName:
+        type: string
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -124,62 +126,73 @@ jobs:
             --profile-name $profileName `
             --rule-set-name $ruleSetName 2>$null
 
-          if ($exists) {
-            Write-Host "Rule set '$ruleSetName' already exists - skipping configuration"
-            exit 0
+          if (-not $exists) {
+            Write-Host "Creating rule set: $ruleSetName"
+            az afd rule-set create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName
+
+            Write-Host "Creating rule: NoCacheEntryPoints (bypass cache for .html)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "NoCacheEntryPoints" `
+              --order 1 `
+              --match-variable UrlFileExtension `
+              --operator Equal `
+              --match-values "html" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior Disabled
+
+            Write-Host "Creating rule: NoCacheBootstrap (bypass cache for bootstrap JS)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "NoCacheBootstrap" `
+              --order 2 `
+              --match-variable UrlPath `
+              --operator Contains `
+              --match-values "blazor.webassembly.js" "dotnet.js" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior Disabled
+
+            Write-Host "Creating rule: LongCacheFramework (7 day cache for /_framework/)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "LongCacheFramework" `
+              --order 3 `
+              --match-variable UrlPath `
+              --operator BeginsWith `
+              --match-values "/_framework/" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior OverrideAlways `
+              --cache-duration "7.00:00:00"
+          } else {
+            Write-Host "Rule set '$ruleSetName' already exists - skipping rule creation"
           }
 
-          Write-Host "Creating rule set: $ruleSetName"
-          az afd rule-set create `
-            --resource-group $resourceGroup `
-            --profile-name $profileName `
-            --rule-set-name $ruleSetName
-
-          Write-Host "Creating rule: NoCacheEntryPoints (bypass cache for .html)"
-          az afd rule create `
-            --resource-group $resourceGroup `
-            --profile-name $profileName `
-            --rule-set-name $ruleSetName `
-            --rule-name "NoCacheEntryPoints" `
-            --order 1 `
-            --match-variable UrlFileExtension `
-            --operator Equal `
-            --match-values "html" `
-            --action-name RouteConfigurationOverride `
-            --cache-behavior Disabled
-
-          Write-Host "Creating rule: NoCacheBootstrap (bypass cache for bootstrap JS)"
-          az afd rule create `
-            --resource-group $resourceGroup `
-            --profile-name $profileName `
-            --rule-set-name $ruleSetName `
-            --rule-name "NoCacheBootstrap" `
-            --order 2 `
-            --match-variable UrlPath `
-            --operator Contains `
-            --match-values "blazor.webassembly.js" "dotnet.js" `
-            --action-name RouteConfigurationOverride `
-            --cache-behavior Disabled
-
-          Write-Host "Creating rule: LongCacheFramework (7 day cache for /_framework/)"
-          az afd rule create `
-            --resource-group $resourceGroup `
-            --profile-name $profileName `
-            --rule-set-name $ruleSetName `
-            --rule-name "LongCacheFramework" `
-            --order 3 `
-            --match-variable UrlPath `
-            --operator BeginsWith `
-            --match-values "/_framework/" `
-            --action-name RouteConfigurationOverride `
-            --cache-behavior OverrideAlways `
-            --cache-duration "7.00:00:00"
-
-          Write-Host ""
-          Write-Host "✓ Front Door caching rules configured"
-          Write-Host ""
-          Write-Host "ACTION REQUIRED: Associate '$ruleSetName' rule set with your route in Azure Portal:"
-          Write-Host "  Front Door > Endpoints > Routes > Edit > Rule sets > Add '$ruleSetName'"
+          # Always try to associate rule set with route (in case previous attempt failed)
+          $routeName = "${{ inputs.frontDoorRouteName }}"
+          $endpointName = "${{ inputs.frontDoorEndpointName }}"
+          if ($routeName) {
+            Write-Host "Associating rule set with route: $routeName"
+            az afd route update `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --endpoint-name $endpointName `
+              --route-name $routeName `
+              --rule-sets $ruleSetName 2>$null
+            Write-Host "✓ Rule set associated with route (or already associated)"
+          } else {
+            Write-Host ""
+            Write-Host "⚠ No frontDoorRouteName provided - manual association required:"
+            Write-Host "  Front Door > Endpoints > Routes > Edit > Rule sets > Add '$ruleSetName'"
+          }
 
       # Purge cache after deployment
       - name: Purge Azure Front Door Cache

@@ -30,6 +30,7 @@ jobs:
        frontDoorProfileName: rewards
        frontDoorEndpointName: staging-sswrewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: staging.rewards.ssw.com.au
+       frontDoorRouteName: staging-sswrewards # Route name from Azure Portal
      secrets: inherit
 
   deploy_prod:
@@ -42,4 +43,5 @@ jobs:
        frontDoorProfileName: rewards
        frontDoorEndpointName: sswrewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: rewards.ssw.com.au
+       frontDoorRouteName: sswrewards # Route name from Azure Portal (verify this in portal)
      secrets: inherit
