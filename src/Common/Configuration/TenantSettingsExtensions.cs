@@ -5,13 +5,12 @@ using Microsoft.Extensions.Options;
 namespace SSW.Rewards.Shared.Configuration;
 
 /// <summary>
-/// Extension methods for configuring TenantSettings with Azure Key Vault support
+/// Extension methods for configuring TenantSettings.
 /// </summary>
 public static class TenantSettingsExtensions
 {
     /// <summary>
-    /// Adds TenantSettings to the service collection with optional Azure Key Vault integration.
-    /// Loads configuration from appsettings.json and overrides with Key Vault secrets if configured.
+    /// Adds TenantSettings to the service collection by binding from configuration and optionally validating on startup.
     /// </summary>
     /// <param name="services">The service collection</param>
     /// <param name="configuration">The configuration instance</param>
