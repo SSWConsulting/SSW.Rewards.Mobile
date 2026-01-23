@@ -43,5 +43,5 @@ jobs:
        frontDoorProfileName: rewards
        frontDoorEndpointName: sswrewards # CLI needs the short name without .azureedge.net
        frontDoorDomain: rewards.ssw.com.au
-       frontDoorRouteName: sswrewards # Route name from Azure Portal (verify this in portal)
+       frontDoorRouteName: sswrewards # Route name from Azure Portal
      secrets: inherit
