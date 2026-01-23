@@ -203,12 +203,12 @@ jobs:
             $resourceGroup = "${{ inputs.resourceGroupName }}"
           }
 
-          # We won't wait for the purge to complete as it can take 40+ minutes
-          # Instead, we try to have smart caching rules on Front Door to minimise the need for purges
+          # Purge entry points synchronously - only a few files so it's fast (~2-5 min)
+          # Once BlazorCaching rules are associated with route, this becomes less critical
+          # as entry points won't be cached
           az afd endpoint purge `
             --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --endpoint-name ${{ inputs.frontDoorEndpointName }} `
             --content-paths '/index.html' '/_framework/blazor.webassembly.js' '/_framework/dotnet.js' '/css/*' '/js/*' '/appsettings.json' '/SSW.Rewards.Admin.AdminUI.styles.css' `
-            --domains ${{ inputs.frontDoorDomain }} `
-            --no-wait
+            --domains ${{ inputs.frontDoorDomain }}
