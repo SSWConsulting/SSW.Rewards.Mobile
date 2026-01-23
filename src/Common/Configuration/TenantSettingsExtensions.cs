@@ -30,11 +30,16 @@ public static class TenantSettingsExtensions
         // Validate on startup if requested
         if (validateOnStartup)
         {
-            var tenantSettings = configuration.GetSection(TenantSettings.SectionName).Get<TenantSettings>();
-            if (tenantSettings != null)
+            var section = configuration.GetSection(TenantSettings.SectionName);
+            var tenantSettings = section.Get<TenantSettings>();
+            if (tenantSettings == null)
             {
-                tenantSettings.Validate();
+                throw new InvalidOperationException(
+                    $"Configuration section '{TenantSettings.SectionName}' is missing or empty. " +
+                    "This section is required when validateOnStartup is enabled.");
             }
+
+            tenantSettings.Validate();
         }
 
         return services;
