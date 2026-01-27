@@ -236,3 +236,10 @@ a, .btn-link {
 /*.preview-light-grey-bg {*/
 /*    background-color: #FAF9F7 !important; !* Lighter warm grey for preview elevation *!*/
 /*}*/
+
+/* ======================
+   Settings Page Tab Bar
+   ====================== */
+.settings-tabs .mud-tabs-toolbar {
+  background-color: #181818 !important;
+}

@@ -1,4 +1,4 @@
-﻿@page "/deletion-approvals"
+@page "/settings"
 
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components
@@ -10,39 +10,44 @@
 @inject IDialogService DialogService
 @inject ISnackbar SnackBar
 
-@attribute [Authorize(Roles = "Staff, Admin")]
+@attribute [Authorize(Roles = "Admin")]
 
-<MudText Typo="Typo.h2">Account Deletion Approvals</MudText>
-<MudText Typo="Typo.body1">As per the GDPR rules, users have the right to ask to be deleted. Pending requests are listed below.</MudText>
+<MudText Typo="Typo.h2">Settings</MudText>
 
-
-<Table TItem="ProfileDeletionRequestDto"
-       Items="@(_model)"
-       IsLoading="@_loading"
-       OnRowClick="OnRowClicked">
-    <HeadingTemplate>
-        <MudTh>
-            Id
-        </MudTh>
-        <MudTh>
-            Name
-        </MudTh>
-        <MudTh>
-            When requested
-        </MudTh>
-    </HeadingTemplate>
-    <RowTemplate>
-        <MudTd>
-            @context.UserId
-        </MudTd>
-        <MudTd DataLabel="Name">
-            @context.UserName
-        </MudTd>
-        <MudTd DataLabel="Requested">
-            @context.Requested
-        </MudTd>
-    </RowTemplate>
-</Table>
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6" Class="settings-tabs">
+    <MudTabPanel Text="Account Deletion" Icon="@Icons.Material.Filled.PersonRemove">
+        <MudText Typo="Typo.h5" Class="mb-2">Account Deletion Approvals</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4">As per the GDPR rules, users have the right to ask to be deleted. Pending requests are listed below.</MudText>
+        
+        <Table TItem="ProfileDeletionRequestDto"
+               Items="@(_model)"
+               IsLoading="@_loading"
+               OnRowClick="OnRowClicked">
+            <HeadingTemplate>
+                <MudTh>
+                    Id
+                </MudTh>
+                <MudTh>
+                    Name
+                </MudTh>
+                <MudTh>
+                    When requested
+                </MudTh>
+            </HeadingTemplate>
+            <RowTemplate>
+                <MudTd>
+                    @context.UserId
+                </MudTd>
+                <MudTd DataLabel="Name">
+                    @context.UserName
+                </MudTd>
+                <MudTd DataLabel="Requested">
+                    @context.Requested
+                </MudTd>
+            </RowTemplate>
+        </Table>
+    </MudTabPanel>
+</MudTabs>
 
 @code {
     private List<ProfileDeletionRequestDto> _model = new();
