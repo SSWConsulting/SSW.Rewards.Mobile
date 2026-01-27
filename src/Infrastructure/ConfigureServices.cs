@@ -72,7 +72,7 @@ public static class ConfigureServices
         services.AddOptions<NotificationHubOptions>()
                 .Configure(configuration.GetSection("NotificationHub").Bind)
                 .ValidateDataAnnotations();
-        
+
         services.AddOptions<AzureMapsOptions>()
                 .Configure(configuration.GetSection("AzureMaps").Bind)
                 .ValidateDataAnnotations();
@@ -91,6 +91,7 @@ public static class ConfigureServices
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
         services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
         services.AddScoped<ISkillPicStorageProvider, SkillPicStorageProvider>();
+        services.AddScoped<IPostImageStorageProvider, PostImageStorageProvider>();
         services.AddSingleton<IAddressLookupService, AddressLookupService>();
 
         services.AddScoped<IEmailService, EmailService>();
@@ -120,7 +121,7 @@ public static class ConfigureServices
             options.Audience = "rewards";
             options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
         });
-        
+
         return services;
     }
 }

@@ -5,12 +5,19 @@
              xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:activityFeed="clr-namespace:SSW.Rewards.Shared.DTOs.ActivityFeed;assembly=Shared"
+             xmlns:posts="clr-namespace:SSW.Rewards.Shared.DTOs.Posts;assembly=Shared"
              xmlns:enums="clr-namespace:SSW.Rewards.Enums;assembly=SSW.Rewards.Enums"
              xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
              x:DataType="viewModels:ActivityPageViewModel"
              x:Class="SSW.Rewards.Mobile.Pages.ActivityPage"
              x:Name="Activity"
              ControlTemplate="{DynamicResource PageTemplate}">
+    <common:BaseContentPage.Resources>
+        <ResourceDictionary>
+            <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTime" />
+        </ResourceDictionary>
+    </common:BaseContentPage.Resources>
     <Grid RowDefinitions="45, *" Padding="15,10,15,0" RowSpacing="10">
         <Grid RowDefinitions="45" Grid.Row="0">
             <controls:SegmentedControl
@@ -27,11 +34,11 @@
         <RefreshView
             Command="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}"
-            Grid.Row="1">
+            Grid.Row="1"
+            IsVisible="{Binding ShowActivityFeed}">
             <CollectionView
                 ItemsSource="{Binding Feed}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
-                IsVisible="True"
                 RemainingItemsThreshold="5"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
                 <CollectionView.ItemsLayout>
@@ -120,8 +127,130 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+
+        <RefreshView
+            Grid.Row="1"
+            Command="{Binding PostsViewModel.RefreshCommand}"
+            IsRefreshing="{Binding PostsViewModel.IsRefreshing, Mode=TwoWay}"
+            IsVisible="{Binding ShowPosts}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+            <CollectionView
+                ItemsSource="{Binding PostsViewModel.Posts}"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                RemainingItemsThreshold="5"
+                RemainingItemsThresholdReachedCommand="{Binding PostsViewModel.LoadMoreCommand}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                HorizontalScrollBarVisibility="Never"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Spacing="10">
+                        <Label
+                            Text="No posts yet"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray300}" />
+                        <Label
+                            Text="Check back later for updates"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray400}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="posts:PostDto">
+                        <Border
+                            BackgroundColor="{StaticResource MainBackground}"
+                            Stroke="{StaticResource MainBackground}"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="15">
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference Activity}, Path=BindingContext.PostsViewModel.PostTappedCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+
+                                <Label
+                                    Grid.Row="0"
+                                    Text="{Binding Title}"
+                                    FontSize="20"
+                                    Style="{StaticResource LabelBold}"
+                                    Margin="0,0,0,8" />
+
+                                <Image
+                                    Grid.Row="1"
+                                    Source="{Binding ImageUrl}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="200"
+                                    Margin="0,0,0,12"
+                                    IsVisible="{Binding ImageUrl, Converter={mct:IsStringNotNullOrEmptyConverter}}">
+                                    <Image.Clip>
+                                        <RoundRectangleGeometry CornerRadius="8" Rect="0,0,1000,200" />
+                                    </Image.Clip>
+                                </Image>
+
+                                <Label
+                                    Grid.Row="2"
+                                    Text="{Binding Content}"
+                                    FontSize="14"
+                                    LineBreakMode="WordWrap"
+                                    MaxLines="3"
+                                    Margin="0,0,0,12" />
+
+                                <Grid
+                                    Grid.Row="3"
+                                    ColumnDefinitions="Auto,Auto,*,Auto"
+                                    ColumnSpacing="20">
+                                    <Label
+                                        Grid.Column="0"
+                                        FontSize="14"
+                                        TextColor="{StaticResource Gray400}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="&#xf004;" FontFamily="FA6Regular" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding LikesCount}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="14"
+                                        TextColor="{StaticResource Gray400}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="&#xf075;" FontFamily="FA6Regular" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding CommentsCount}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding PublishedDateUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='{0:MMM dd, yyyy}'}"
+                                        FontSize="12"
+                                        TextColor="{StaticResource Gray400}"
+                                        HorizontalOptions="End" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        
         <ActivityIndicator
-            Grid.Row="2"
+            Grid.Row="1"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Color="{StaticResource SSWRed}"

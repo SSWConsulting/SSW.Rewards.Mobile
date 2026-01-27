@@ -20,4 +20,6 @@ public class User : BaseEntity
     public ICollection<Quiz> CreatedQuizzes { get; set; } = new HashSet<Quiz>();
     public ICollection<PendingRedemption> PendingRedemptions { get; set; } = new HashSet<PendingRedemption>();
     public ICollection<DeviceToken> DeviceTokens { get; set; } = new HashSet<DeviceToken>();
+    public ICollection<PostLike> PostLikes { get; set; } = new HashSet<PostLike>();
+    public ICollection<PostComment> PostComments { get; set; } = new HashSet<PostComment>();
 }

@@ -1,0 +1,225 @@
+@page "/posts"
+
+@using SSW.Rewards.Shared.DTOs.Posts
+@using SSW.Rewards.Admin.UI.Components
+@using SSW.Rewards.ApiClient.Services
+@inject NavigationManager Navigation
+@inject IPostsService PostsService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>SSW Rewards | Activity Feed</PageTitle>
+
+<MudText Typo="Typo.h3">Activity Feed</MudText>
+<MudText Typo="Typo.h6">Manage posts and announcements</MudText>
+
+<MudPaper Class="pa-4 mt-4">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+        <MudTextField @bind-Value="_searchString"
+                      Placeholder="Search posts..."
+                      Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Immediate="true"
+                      DebounceInterval="300"
+                      OnDebounceIntervalElapsed="OnSearch"
+                      Class="flex-grow-1" />
+        
+        <MudButton Variant="Variant.Filled" 
+                   Color="Color.Primary" 
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="OpenCreateDialog">
+            Create Post
+        </MudButton>
+    </MudStack>
+
+    <MudTable T="PostDto" 
+              ServerData="LoadPosts" 
+              Loading="@_loading" 
+              Dense="true" 
+              Hover="true" 
+              Bordered="true" 
+              Striped="true" 
+              @ref="_table">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortLabel="Title" T="PostDto">Title</MudTableSortLabel></MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh><MudTableSortLabel SortLabel="PublishedDateUtc" T="PostDto">Published Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="LikesCount" T="PostDto">Likes</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="CommentsCount" T="PostDto">Comments</MudTableSortLabel></MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">
+                <div>
+                    <MudText Typo="Typo.body1">@context.Title</MudText>
+                    @if (!string.IsNullOrEmpty(context.ImageUrl))
+                    {
+                        <MudChip Size="Size.Small" Icon="@Icons.Material.Filled.Image" Color="Color.Default">Has Image</MudChip>
+                    }
+                </div>
+            </MudTd>
+            <MudTd DataLabel="Status">
+                @if (context.IsPublished)
+                {
+                    <MudChip Color="Color.Success" Size="Size.Small">Published</MudChip>
+                }
+                else
+                {
+                    <MudChip Color="Color.Default" Size="Size.Small">Draft</MudChip>
+                }
+            </MudTd>
+            <MudTd DataLabel="Published Date">
+                @if (context.PublishedDateUtc.HasValue)
+                {
+                    @context.PublishedDateUtc.Value.ToLocalTime().ToString("MMM dd, yyyy HH:mm")
+                }
+                else
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Default">Not published</MudText>
+                }
+            </MudTd>
+            <MudTd DataLabel="Likes">
+                <MudChip Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Small">@context.LikesCount</MudChip>
+            </MudTd>
+            <MudTd DataLabel="Comments">
+                <MudChip Icon="@Icons.Material.Filled.Comment" Size="Size.Small">@context.CommentsCount</MudChip>
+            </MudTd>
+            <MudTd DataLabel="Actions">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                               Size="Size.Small" 
+                               OnClick="@(() => OpenEditDialog(context))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                               Size="Size.Small" 
+                               Color="Color.Error"
+                               OnClick="@(() => DeletePost(context.Id))" />
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+@code {
+    private MudTable<PostDto> _table;
+    private string _searchString = "";
+    private bool _loading = true;
+
+    private async Task<TableData<PostDto>> LoadPosts(TableState state)
+    {
+        _loading = true;
+        StateHasChanged();
+
+        try
+        {
+            var sortBy = state.SortLabel;
+            var sortDirection = state.SortDirection == SortDirection.Descending ? "desc" : "asc";
+            
+            var response = await PostsService.GetPosts(
+                page: state.Page,
+                pageSize: state.PageSize,
+                publishedOnly: false,
+                searchTerm: _searchString,
+                sortBy: sortBy,
+                sortDirection: sortDirection,
+                cancellationToken: CancellationToken.None);
+
+            if (response == null)
+            {
+                return new TableData<PostDto> { Items = [], TotalItems = 0 };
+            }
+
+            return new TableData<PostDto>
+            {
+                Items = response.Items,
+                TotalItems = response.Count
+            };
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading posts: {ex.Message}", Severity.Error);
+            return new TableData<PostDto> { Items = [], TotalItems = 0 };
+        }
+        finally
+        {
+            _loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnSearch()
+    {
+        await _table.ReloadServerData();
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "IsEdit", false }
+        };
+
+        var options = new DialogOptions 
+        { 
+            MaxWidth = MaxWidth.Medium, 
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<CreatePostDialog>("Create New Post", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task OpenEditDialog(PostDto post)
+    {
+        var parameters = new DialogParameters
+        {
+            { "IsEdit", true },
+            { "PostId", post.Id },
+            { "ExistingPost", post }
+        };
+
+        var options = new DialogOptions 
+        { 
+            MaxWidth = MaxWidth.Medium, 
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<CreatePostDialog>("Edit Post", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private async Task DeletePost(int postId)
+    {
+        var confirm = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            "Are you sure you want to delete this post? This action cannot be undone.",
+            yesText: "Delete",
+            cancelText: "Cancel");
+
+        if (confirm == true)
+        {
+            try
+            {
+                await PostsService.DeletePost(postId, CancellationToken.None);
+                Snackbar.Add("Post deleted successfully", Severity.Success);
+                await _table.ReloadServerData();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error deleting post: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}

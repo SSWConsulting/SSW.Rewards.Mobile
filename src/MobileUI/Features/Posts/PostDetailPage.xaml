@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<common:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common"
+             xmlns:viewModels="clr-namespace:SSW.Rewards.Mobile.ViewModels"
+             xmlns:posts="clr-namespace:SSW.Rewards.Shared.DTOs.Posts;assembly=Shared"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:SSW.Rewards.Mobile.Converters"
+             x:Name="PostDetail"
+             x:DataType="viewModels:PostDetailViewModel"
+             x:Class="SSW.Rewards.Mobile.Pages.PostDetailPage"
+             BackgroundColor="{StaticResource PeopleBackground}"
+             ControlTemplate="{DynamicResource PageTemplate}">
+    <common:BaseContentPage.Resources>
+        <ResourceDictionary>
+            <converters:UtcToLocalTimeConverter x:Key="UtcToLocalTime" />
+        </ResourceDictionary>
+    </common:BaseContentPage.Resources>
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="15"
+                Spacing="15"
+                IsVisible="{Binding Post, Converter={mct:IsNotNullConverter}}">
+
+                <!-- Post Content Card -->
+                <Border
+                    BackgroundColor="{StaticResource MainBackground}"
+                    Stroke="{StaticResource MainBackground}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="15">
+                    <VerticalStackLayout Spacing="12">
+                        <!-- Title -->
+                        <Label
+                            Text="{Binding Post.Title}"
+                            FontSize="24"
+                            Style="{StaticResource LabelBold}" />
+
+                        <!-- Published Date -->
+                        <Label
+                            Text="{Binding Post.PublishedDateUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='Published on {0:MMMM dd, yyyy}'}"
+                            FontSize="12"
+                            TextColor="{StaticResource Gray400}" />
+
+                        <!-- Image (if exists) -->
+                        <Image
+                            Source="{Binding Post.ImageUrl}"
+                            Aspect="AspectFill"
+                            HeightRequest="250"
+                            IsVisible="{Binding Post.ImageUrl, Converter={mct:IsStringNotNullOrEmptyConverter}}">
+                            <Image.Clip>
+                                <RoundRectangleGeometry CornerRadius="8" Rect="0,0,1000,250" />
+                            </Image.Clip>
+                        </Image>
+
+                        <!-- Content -->
+                        <Label
+                            Text="{Binding Post.Content}"
+                            FontSize="16"
+                            LineBreakMode="WordWrap" />
+
+                        <!-- Action Bar -->
+                        <Grid
+                            ColumnDefinitions="Auto, Auto, Auto, *"
+                            ColumnSpacing="20"
+                            Margin="0,8,0,0">
+                            <!-- Like Button -->
+                            <Border
+                                Grid.Column="0"
+                                BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                                Stroke="{StaticResource FlyoutBackgroundColour}"
+                                StrokeShape="RoundRectangle 20"
+                                Padding="12,6">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleLikeCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label
+                                        FontFamily="FA6Solid"
+                                        FontSize="16"
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsLiked}" Value="True">
+                                                <Setter Property="Text" Value="&#xf004;" />
+                                                <Setter Property="TextColor" Value="{StaticResource SSWRed}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsLiked}" Value="False">
+                                                <Setter Property="Text" Value="&#xf004;" />
+                                                <Setter Property="TextColor" Value="{StaticResource Gray300}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label
+                                        Text="{Binding LikesCount}"
+                                        FontSize="14"
+                                        VerticalOptions="Center"
+                                        TextColor="{StaticResource Gray200}" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Comment Count -->
+                            <HorizontalStackLayout
+                                Grid.Column="1"
+                                Spacing="8">
+                                <Label
+                                    Text="&#xf075;"
+                                    FontFamily="FA6Regular"
+                                    FontSize="16"
+                                    VerticalOptions="Center"
+                                    TextColor="{StaticResource Gray300}" />
+                                <Label
+                                    Text="{Binding Post.CommentsCount}"
+                                    FontSize="14"
+                                    VerticalOptions="Center"
+                                    TextColor="{StaticResource Gray300}" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Comments Section -->
+                <Label
+                    Text="Comments"
+                    FontSize="20"
+                    Style="{StaticResource LabelBold}"
+                    Margin="0,8,0,0" />
+
+                <!-- Add Comment -->
+                <Border
+                    BackgroundColor="{StaticResource MainBackground}"
+                    Stroke="{StaticResource MainBackground}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="15">
+                    <VerticalStackLayout Spacing="10">
+                        <Entry
+                            Text="{Binding NewComment}"
+                            Placeholder="Write a comment..."
+                            MaxLength="1000"
+                            FontSize="14"
+                            BackgroundColor="{StaticResource FlyoutBackgroundColour}"
+                            TextColor="{StaticResource Gray100}" />
+                        <Button
+                            Text="Post Comment"
+                            Command="{Binding AddCommentCommand}"
+                            BackgroundColor="{StaticResource SSWRed}"
+                            TextColor="White"
+                            HeightRequest="40"
+                            CornerRadius="8"
+                            IsEnabled="{Binding NewComment, Converter={mct:IsStringNotNullOrEmptyConverter}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Comments List -->
+                <VerticalStackLayout
+                    BindableLayout.ItemsSource="{Binding Post.Comments}"
+                    Spacing="10">
+                    <BindableLayout.EmptyView>
+                        <Label
+                            Text="No comments yet. Be the first to comment!"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray400}"
+                            Margin="0,20,0,0" />
+                    </BindableLayout.EmptyView>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="posts:PostCommentDto">
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItemView
+                                            Command="{Binding Source={x:Reference PostDetail}, Path=BindingContext.DeleteCommentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding CanDelete}">
+                                            <Border
+                                                BackgroundColor="{StaticResource SSWRed}"
+                                                Padding="20,0"
+                                                WidthRequest="80">
+                                                <VerticalStackLayout
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    Spacing="5">
+                                                    <Label
+                                                        Text="&#xf2ed;"
+                                                        FontFamily="FA6Solid"
+                                                        FontSize="20"
+                                                        TextColor="White"
+                                                        HorizontalOptions="Center" />
+                                                    <Label
+                                                        Text="Delete"
+                                                        FontSize="12"
+                                                        TextColor="White"
+                                                        HorizontalOptions="Center" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </SwipeItemView>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <Border
+                                    BackgroundColor="{StaticResource MainBackground}"
+                                    Stroke="{StaticResource MainBackground}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Padding="15">
+                                    <VerticalStackLayout Spacing="8">
+                                        <!-- User Info -->
+                                        <HorizontalStackLayout Spacing="10">
+                                            <mct:AvatarView
+                                                ImageSource="{Binding UserAvatar}"
+                                                WidthRequest="30"
+                                                HeightRequest="30"
+                                                CornerRadius="15"
+                                                BorderWidth="1" />
+                                            <VerticalStackLayout VerticalOptions="Center">
+                                                <Label
+                                                    Text="{Binding UserName}"
+                                                    FontSize="14"
+                                                    Style="{StaticResource LabelBold}" />
+                                                <Label
+                                                    Text="{Binding CreatedUtc, Converter={StaticResource UtcToLocalTime}, StringFormat='{0:MMM dd, yyyy HH:mm}'}"
+                                                    FontSize="11"
+                                                    TextColor="{StaticResource Gray400}" />
+                                            </VerticalStackLayout>
+                                        </HorizontalStackLayout>
+
+                                        <!-- Comment Text -->
+                                        <Label
+                                            Text="{Binding Comment}"
+                                            FontSize="14"
+                                            LineBreakMode="WordWrap" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid
+            IsVisible="{Binding IsBusy}"
+            BackgroundColor="#80000000"
+            InputTransparent="False">
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsRunning="{Binding IsBusy}" />
+        </Grid>
+    </Grid>
+</common:BaseContentPage>

@@ -17,16 +17,13 @@ public class AzureStorageProvider : IStorageProvider
     {
         var container = _client.GetBlobContainerClient(containerName);
 
-        if (await container.ExistsAsync())
-        {
-            var blob = container.GetBlobClient(filename);
+        await container.CreateIfNotExistsAsync();
 
-            await blob.UploadAsync(new MemoryStream(contents));
-        }
-        else
-        {
-            throw new BlobNotFoundException(containerName, filename);
-        }
+        var blob = container.GetBlobClient(filename);
+
+        using var ms = new MemoryStream(contents);
+
+        await blob.UploadAsync(ms);
     }
 
     public async Task<byte[]> DownloadBlob(string containerName, string blobName)

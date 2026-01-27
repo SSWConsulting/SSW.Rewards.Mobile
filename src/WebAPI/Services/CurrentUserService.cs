@@ -28,5 +28,7 @@ public class CurrentUserService : ICurrentUserService
         return null;
     }
 
+    public bool IsInRole(string role) => GetUser()?.IsInRole(role) ?? false;
+
     private ClaimsPrincipal? GetUser() => _httpContextAccessor.HttpContext?.User;
 }
