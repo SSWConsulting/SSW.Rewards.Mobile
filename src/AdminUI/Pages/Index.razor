@@ -1,12 +1,160 @@
-﻿@page "/"
+@page "/"
 @using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.UI.Helpers
+@using SSW.Rewards.Admin.UI.Components.Dialogs
 @attribute [Authorize]
-<PageTitle>Index</PageTitle>
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>SSW Rewards Admin</PageTitle>
 
 <AuthorizeView>
-    <MudText Typo="Typo.h3" GutterBottom="true">Hello, @context.User.Identity?.Name </MudText>
-    <MudText Class="mb-8">Welcome to the SSW.Rewards Admin Portal!</MudText>
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudText Typo="Typo.h3">Hello, @context.User.GetDisplayName()</MudText>
+        <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Default">@context.User.GetUserRole()</MudChip>
+    </MudStack>
+    <MudText Class="mb-6">Welcome to the SSW.Rewards Admin Portal</MudText>
 </AuthorizeView>
 
+<MudCard Elevation="2" Class="pa-4 pa-sm-5 mb-4" Style="background: var(--mud-palette-surface); border-left: 4px solid var(--mud-palette-primary);">
+    <MudGrid>
+        <MudItem xs="12" sm="8">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Leaderboard" Size="Size.Large" Color="Color.Primary"/>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h6">Kiosk Leaderboard</MudText>
+                    <MudText Typo="Typo.body2">Display the live leaderboard at your booth</MudText>
+                </MudStack>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" sm="4" Class="d-flex align-center justify-end">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Medium"
+                       EndIcon="@Icons.Material.Filled.OpenInNew"
+                       Href="kiosk-leaderboard"
+                       Target="_blank"
+                       FullWidth="true"
+                       Class="flex-grow-1 flex-sm-grow-0">
+                Launch Kiosk
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudCard>
 
-<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+<MudText Typo="Typo.h5" Class="mb-4">Download the App</MudText>
+<MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap" Class="mb-8">
+    <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+        <MudButton Href="@PlayStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Google" Style="border-color: rgba(255,255,255,0.3);">
+            Google Play
+        </MudButton>
+        <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(PlayStoreUrl, "Google Play"))" Style="border-color: rgba(255,255,255,0.3);" />
+    </MudButtonGroup>
+    <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+        <MudButton Href="@AppStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Apple" Style="border-color: rgba(255,255,255,0.3);">
+            App Store
+        </MudButton>
+        <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(AppStoreUrl, "App Store"))" Style="border-color: rgba(255,255,255,0.3);" />
+    </MudButtonGroup>
+</MudStack>
+
+<AuthorizeView Roles="Admin, Staff">
+    <MudText Typo="Typo.h5" Class="mb-4">Quick Access</MudText>
+    <MudSimpleTable Hover="true" Dense="true" Striped="true" Class="quick-access-table">
+        <tbody>
+            <tr @onclick="@(() => Navigate("prizedraw"))" style="cursor: pointer;">
+                <td style="width: 40px;"><MudIcon Icon="@Icons.Material.Filled.Celebration" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Prize Draw</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Run prize drawings for users</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("notifications"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.Chat" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Notifications</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Send push notifications to users</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("achievements"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Achievements</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Configure achievements and points</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("leaderboard"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Leaderboard</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">View user rankings and points</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("profiles"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Profiles</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Manage staff profiles</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("rewards"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.Redeem" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Rewards</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Manage available rewards</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("quizzes"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.Quiz" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Quizzes</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Create and manage quizzes</MudText></td>
+            </tr>
+            <tr @onclick="@(() => Navigate("skills"))" style="cursor: pointer;">
+                <td><MudIcon Icon="@Icons.Material.Filled.WorkspacePremium" Color="Color.Default"/></td>
+                <td><MudText Typo="Typo.subtitle1">Skills</MudText></td>
+                <td class="d-none d-sm-table-cell"><MudText Typo="Typo.body2">Manage skill categories</MudText></td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+</AuthorizeView>
+
+<MudDivider Class="my-8" />
+
+<MudStack Row="true" Spacing="4" AlignItems="AlignItems.Center">
+    <MudLink Href="https://www.ssw.com.au/products/rewards" Target="_blank" Typo="Typo.body2" Color="Color.Default">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Filled.Language" Size="Size.Small" />
+            <span>ssw.com.au/products/rewards</span>
+        </MudStack>
+    </MudLink>
+    <MudLink Href="https://github.com/SSWConsulting/SSW.Rewards.Mobile" Target="_blank" Typo="Typo.body2" Color="Color.Default">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Custom.Brands.GitHub" Size="Size.Small" />
+            <span>GitHub</span>
+        </MudStack>
+    </MudLink>
+</MudStack>
+
+@code {
+    private const string PlayStoreUrl = "https://play.google.com/store/apps/details?id=com.ssw.consulting&hl=en_AU";
+    private const string AppStoreUrl = "https://apps.apple.com/au/app/ssw-rewards/id1482994853";
+
+    private async Task ShowQrCode(string url, string storeName)
+    {
+        var qrCodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={Uri.EscapeDataString(url)}";
+
+        var parameters = new DialogParameters<QrCodeDialog>
+        {
+            { x => x.QrCodeUrl, qrCodeUrl },
+            { x => x.StoreName, storeName },
+            { x => x.StoreUrl, url }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small
+        };
+
+        await DialogService.ShowAsync<QrCodeDialog>($"Download from {storeName}", parameters, options);
+    }
+
+    private void Navigate(string url) => NavigationManager.NavigateTo(url);
+}
+
+<style>
+    .quick-access-table.mud-table-striped tbody tr:nth-child(odd) {
+        background-color: var(--mud-palette-background-grey);
+    }
+    .quick-access-table.mud-table-striped tbody tr:nth-child(even) {
+        background-color: transparent;
+    }
+</style>

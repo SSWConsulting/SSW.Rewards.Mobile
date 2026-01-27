@@ -11,7 +11,7 @@ public partial class FlyoutHeaderViewModel : ObservableObject
     private readonly IPermissionsService _permissionsService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
     private readonly IServiceProvider _provider;
-    
+
     [ObservableProperty]
     private string _profilePic;
 

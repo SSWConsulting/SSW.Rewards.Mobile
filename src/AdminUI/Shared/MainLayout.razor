@@ -14,14 +14,17 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
         <MudText Typo="Typo.h4">@_title</MudText>
     </MudAppBar>
-    <MudDrawer ClipMode="DrawerClipMode.Never" 
-    @bind-Open="_drawerOpen" 
-    Elevation="1" 
-    Variant="DrawerVariant.Mini" 
-    OpenMiniOnHover="true" 
+    <MudDrawer ClipMode="DrawerClipMode.Never"
+    @bind-Open="_drawerOpen"
+    @bind-Open:after="OnDrawerOpenChanged"
+    Elevation="1"
+    Variant="DrawerVariant.Mini"
+    OpenMiniOnHover="true"
     Style="height: 100vh; overflow: hidden">
         <MudDrawerHeader Style="padding: 0; justify-content: space-around;">
-                <MudImage Src="@_titleImage" />
+            <MudLink Href="/">
+                <MudImage Src="@_titleImage" Style="cursor: pointer;" />
+            </MudLink>
         </MudDrawerHeader>
         <NavMenu IsOpen="@_drawerOpen"/>
     </MudDrawer>
@@ -39,26 +42,24 @@
 
     private string _title = "";
     private string _titleImage = "/images/ssw-rewards-logo.svg";
-    
+
     [CascadingParameter]
     protected Task<AuthenticationState> AuthStat { get; set; } = null!;
 
-    bool _drawerOpen = true;
+    private bool _drawerOpen = true;
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
-
-        if (_drawerOpen)
-        {
-            _titleImage = "/images/ssw-rewards-logo.svg";
-        }
-        else
-        {
-            _titleImage = "/images/ssw-rewards-logo-collapsed.svg";
-        }
     }
-    
+
+    private void OnDrawerOpenChanged()
+    {
+        _titleImage = _drawerOpen
+            ? "/images/ssw-rewards-logo.svg"
+            : "/images/ssw-rewards-logo-collapsed.svg";
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && _mudThemeProvider is not null)
