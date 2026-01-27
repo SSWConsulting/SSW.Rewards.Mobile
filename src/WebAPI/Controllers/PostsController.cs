@@ -88,7 +88,8 @@ public class PostsController : ApiControllerBase
             Title = dto.Title,
             Content = dto.Content,
             ImageUrl = dto.ImageUrl,
-            IsPublished = dto.IsPublished
+            IsPublished = dto.IsPublished,
+            SendNotification = dto.SendNotification
         };
 
         await Mediator.Send(command);

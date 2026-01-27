@@ -107,6 +107,20 @@
                     </MudAlert>
                 }
             }
+            else if (IsEdit && !_model.IsPublished && ExistingPost != null && !ExistingPost.IsPublished)
+            {
+                // If editing a draft, show the notification option only when publishing
+                <MudCheckBox @bind-Value="_model.SendNotification"
+                             Label="Send push notification when publishing"
+                             Color="Color.Primary"
+                             Class="mb-4" />
+                @if (_model.SendNotification)
+                {
+                    <MudAlert Severity="Severity.Info" Class="mb-4">
+                        A push notification will be sent to all app users when you publish this post.
+                    </MudAlert>
+                }
+            }
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -232,7 +246,8 @@
                     Title = _model.Title,
                     Content = _model.Content,
                     ImageUrl = _model.ImageUrl,
-                    IsPublished = _model.IsPublished
+                    IsPublished = _model.IsPublished,
+                    SendNotification = _model.SendNotification
                 };
 
                 await PostsService.UpdatePost(updateDto, CancellationToken.None);
