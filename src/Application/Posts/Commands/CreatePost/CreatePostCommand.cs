@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using SSW.Rewards.Application.Common.Models;
 
 namespace SSW.Rewards.Application.Posts.Commands.CreatePost;
 
@@ -56,6 +55,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, int>
                     Title = post.Title,
                     Body = post.Content,
                     ImageUrl = post.ImageUrl,
+                    Action = $"post:{post.Id}"
                 };
                 await _sender.Send(command, cancellationToken);
             }

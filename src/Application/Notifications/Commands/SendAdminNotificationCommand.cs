@@ -33,6 +33,8 @@ public class SendAdminNotificationCommand : IRequest<NotificationSentResponse>
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int? NotificationId { get; set; }
+
+    public string? Action { get; set; }
 }
 
 public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNotificationCommand, NotificationSentResponse>
@@ -116,6 +118,10 @@ public class SendAdminNotificationCommandHandler : IRequestHandler<SendAdminNoti
         if (!string.IsNullOrWhiteSpace(request.ImageUrl))
         {
             payload.Add("image", request.ImageUrl);
+        }
+        if (!string.IsNullOrWhiteSpace(request.Action))
+        {
+            payload["action"] = request.Action;
         }
 
         if (request.NotificationId is null)
