@@ -91,7 +91,28 @@ public partial class PostListViewModel : BaseViewModel, IDisposable
         IsBusy = true;
         try
         {
-            await Posts.LoadAsync(async ct => await FetchPostsData(ct), reload: replace);
+            // Only use caching for the first page (most recent posts)
+            // Additional pages are loaded fresh each time
+            if (_page == 0 && replace)
+            {
+                await Posts.LoadAsync(async ct => await FetchPostsData(ct), reload: true);
+            }
+            else if (_page == 0 && !replace && !Posts.IsLoaded)
+            {
+                await Posts.LoadAsync(async ct => await FetchPostsData(ct), reload: false);
+            }
+            else
+            {
+                // For subsequent pages, fetch directly without caching
+                var morePosts = await FetchPostsData(default);
+                if (morePosts.Any())
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        Posts.Collection.AddRange(morePosts);
+                    });
+                }
+            }
         }
         catch (Exception ex)
         {

@@ -24,8 +24,10 @@ public class PostDto
                a.Title == b.Title &&
                a.Content == b.Content &&
                a.ImageUrl == b.ImageUrl &&
+               a.SendNotification == b.SendNotification &&
                a.IsPublished == b.IsPublished &&
                a.PublishedDateUtc == b.PublishedDateUtc &&
+               a.CreatedUtc == b.CreatedUtc &&
                a.LastModifiedUtc == b.LastModifiedUtc &&
                a.LikesCount == b.LikesCount &&
                a.CommentsCount == b.CommentsCount &&
