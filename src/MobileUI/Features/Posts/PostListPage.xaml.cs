@@ -16,4 +16,10 @@ public partial class PostListPage
         base.OnAppearing();
         await _viewModel.InitialiseAsync();
     }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.OnDisappearing();
+    }
 }

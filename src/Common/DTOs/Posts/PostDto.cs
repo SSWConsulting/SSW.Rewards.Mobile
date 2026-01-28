@@ -14,4 +14,21 @@ public class PostDto
     public int LikesCount { get; set; }
     public int CommentsCount { get; set; }
     public bool CurrentUserLiked { get; set; }
+
+    public static bool IsEqual(PostDto? a, PostDto? b)
+    {
+        if (a is null && b is null) return true;
+        if (a is null || b is null) return false;
+
+        return a.Id == b.Id &&
+               a.Title == b.Title &&
+               a.Content == b.Content &&
+               a.ImageUrl == b.ImageUrl &&
+               a.IsPublished == b.IsPublished &&
+               a.PublishedDateUtc == b.PublishedDateUtc &&
+               a.LastModifiedUtc == b.LastModifiedUtc &&
+               a.LikesCount == b.LikesCount &&
+               a.CommentsCount == b.CommentsCount &&
+               a.CurrentUserLiked == b.CurrentUserLiked;
+    }
 }
