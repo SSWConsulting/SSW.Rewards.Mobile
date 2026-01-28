@@ -8,7 +8,6 @@ using Mopups.Hosting;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
-using SSW.Rewards.Shared.Configuration;
 using System.Reflection;
 
 #if IOS
@@ -77,8 +76,6 @@ public static class MauiProgram
             handlers.AddHandler(typeof(Shell), typeof(CustomShellHandler));
         });
 
-        // Add TenantSettings with validation
-        builder.Services.AddTenantSettings(builder.Configuration, validateOnStartup: true);
 
         builder.Services.AddDependencies();
         builder.Services.AddSingleton<IFileCacheService, FileCacheService>();
