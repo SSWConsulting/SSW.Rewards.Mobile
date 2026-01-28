@@ -57,7 +57,6 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
-
     <ItemGroup>
         <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
         <ProjectReference Include="..\Common\Shared.csproj" />
