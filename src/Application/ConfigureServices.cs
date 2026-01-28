@@ -21,7 +21,6 @@ public static class ConfigureServices
         services.Configure<UserServiceOptions>(configuration.GetSection(nameof(UserServiceOptions)));
         services.Configure<DeleteProfileOptions>(configuration.GetSection(nameof(DeleteProfileOptions)));
 
-
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRolesService, UserService>();
 

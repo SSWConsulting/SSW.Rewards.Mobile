@@ -3,7 +3,6 @@ using SSW.Rewards.WebAPI.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -42,7 +41,6 @@ app.UseRouting();
 
 string _allowSpecificOrigins = "_AllowSpecificOrigins";
 app.UseCors(_allowSpecificOrigins);
-
 app.UseAuthentication();
 app.UseAuthorization();
 

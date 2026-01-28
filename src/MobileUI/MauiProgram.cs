@@ -1,14 +1,12 @@
 ﻿using BarcodeScanning;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Mopups.Hosting;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SSW.Rewards.Mobile.Renderers;
-using System.Reflection;
 
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
@@ -28,24 +26,6 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-
-        // Load configuration from embedded appsettings.json
-        var assembly = Assembly.GetExecutingAssembly();
-        const string resourceName = "SSW.Rewards.Mobile.appsettings.json";
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-
-        if (stream is null)
-        {
-            throw new InvalidOperationException(
-                $"Embedded configuration resource '{resourceName}' was not found. " +
-                "Ensure the file exists, is marked as an EmbeddedResource, and the namespace matches the resource name.");
-        }
-
-        var config = new ConfigurationBuilder()
-            .AddJsonStream(stream)
-            .Build();
-
-        builder.Configuration.AddConfiguration(config);
 
         builder.UseMauiApp<App>().ConfigureFonts(fonts =>
         {
