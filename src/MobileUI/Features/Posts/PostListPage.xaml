@@ -25,7 +25,7 @@
             HorizontalOptions="Fill"
             VerticalOptions="Fill">
             <CollectionView
-                ItemsSource="{Binding Posts}"
+                ItemsSource="{Binding Posts.Collection}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 RemainingItemsThreshold="5"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}"
