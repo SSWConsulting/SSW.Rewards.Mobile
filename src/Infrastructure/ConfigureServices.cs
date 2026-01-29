@@ -58,13 +58,13 @@ public static class ConfigureServices
 
         services.AddHangfireServer();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContextPool<ApplicationDbContext>(options =>
         {
 #if DEBUG
             options.EnableSensitiveDataLogging();
 #endif
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
@@ -72,7 +72,7 @@ public static class ConfigureServices
         services.AddOptions<NotificationHubOptions>()
                 .Configure(configuration.GetSection("NotificationHub").Bind)
                 .ValidateDataAnnotations();
-        
+
         services.AddOptions<AzureMapsOptions>()
                 .Configure(configuration.GetSection("AzureMaps").Bind)
                 .ValidateDataAnnotations();
@@ -120,7 +120,7 @@ public static class ConfigureServices
             options.Audience = "rewards";
             options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
         });
-        
+
         return services;
     }
 }
