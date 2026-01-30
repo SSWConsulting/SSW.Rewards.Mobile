@@ -14,6 +14,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly ISnackbarService _snackbarService;
         private readonly IUserService _userService;
         private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+        private readonly IAlertService _alertService;
         private int _quizId;
         private int _submissionId;
 
@@ -32,7 +33,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private string _quizDescription;
-        
+
         [ObservableProperty]
         private Color _scoreBackground;
 
@@ -50,7 +51,7 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         [ObservableProperty]
         private bool _testPassed;
-        
+
         [ObservableProperty]
         private bool _showConfetti;
 
@@ -83,19 +84,20 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;
             _userService = userService;
             _firebaseAnalyticsService = firebaseAnalyticsService;
+            _alertService = alertService;
         }
 
         public async Task Initialise(int quizId)
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Device Offline", "You must be online to start a quiz.", "OK");
+                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -154,7 +156,9 @@ namespace SSW.Rewards.Mobile.ViewModels
             {
                 await _quizService.SubmitAnswer(new SubmitQuizAnswerDto
                 {
-                    AnswerText = CurrentQuestion.Answer, QuestionId = CurrentQuestion.QuestionId, SubmissionId = _submissionId
+                    AnswerText = CurrentQuestion.Answer,
+                    QuestionId = CurrentQuestion.QuestionId,
+                    SubmissionId = _submissionId
                 });
 
                 if (question != null)
@@ -172,7 +176,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
+                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
                 return;
             }
 
@@ -194,7 +198,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     IsBusy = false;
                     await MopupService.Instance.RemovePageAsync(popup);
-                    await Shell.Current.DisplayAlert("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
+                    await _alertService.DisplayAlertAsync("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
                     return;
                 }
 
@@ -205,7 +209,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                await Shell.Current.DisplayAlert("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
+                await _alertService.DisplayAlertAsync("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
             }
         }
 
@@ -323,7 +327,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             CurrentQuestion.Answer = args.NewTextValue;
         }
-        
+
         [RelayCommand]
         private async Task Restart()
         {
@@ -333,7 +337,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             await Initialise(_quizId);
             MoveTo(0);
         }
-        
+
         [RelayCommand]
         private static async Task Done()
         {

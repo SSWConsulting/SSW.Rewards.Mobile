@@ -8,8 +8,9 @@ public partial class OthersProfileViewModel(
     IDevService devService,
     IServiceProvider provider,
     IFileCacheService fileCacheService,
+    IAlertService alertService,
     ILogger<ProfileViewModelBase> logger)
-    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService, logger)
+    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService, alertService, logger)
 {
     public async Task Initialise()
     {

@@ -15,6 +15,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
     private readonly ISnackbarService _snackbarService;
     private readonly ILogger<AddSocialMediaViewModel> _logger;
     private readonly SocialMediaConfig _configuration;
+    private readonly IAlertService _alertService;
     private int _platformId;
     private Regex _validationPattern;
 
@@ -24,7 +25,7 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
     [ObservableProperty]
     private string _placeholder = string.Empty;
-    
+
     [ObservableProperty]
     private string _url = string.Empty;
 
@@ -41,14 +42,14 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
     [ObservableProperty]
     private string _errorText = string.Empty;
-    
+
     [ObservableProperty]
     private string _currentUrl = string.Empty;
-    
+
     [ObservableProperty]
     private string _icon = string.Empty;
 
-    public string CompleteUrl => 
+    public string CompleteUrl =>
         string.IsNullOrEmpty(InputText) ? $"{Url}{Placeholder}" : $"{Url}{InputText}";
 
     public bool IsUrlValid
@@ -66,12 +67,14 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         IUserService userService,
         ISnackbarService snackbarService,
         ILogger<AddSocialMediaViewModel> logger,
-        SocialMediaConfig configuration)
+        SocialMediaConfig configuration,
+        IAlertService alertService)
     {
         _userService = userService;
         _snackbarService = snackbarService;
         _logger = logger;
         _configuration = configuration;
+        _alertService = alertService;
     }
 
     public async Task InitialiseAsync(string currentUrl, int socialMediaPlatformId)
@@ -253,14 +256,14 @@ public partial class AddSocialMediaViewModel : BaseViewModel
         };
     }
 
-    private static async Task ShowErrorAndClose(string message)
+    private async Task ShowErrorAndClose(string message)
     {
         await ShowAlert("Error", message);
         await ClosePage();
     }
 
-    private static async Task ShowAlert(string title, string message)
+    private async Task ShowAlert(string title, string message)
     {
-        await Shell.Current.DisplayAlert(title, message, "OK");
+        await _alertService.DisplayAlertAsync(title, message, "OK");
     }
 }

@@ -8,6 +8,7 @@ public partial class LoginPageViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
     private readonly ILogger<LoginPageViewModel> _logger;
+    private readonly IAlertService _alertService;
 
     private const string DefaultButtonText = "Sign up / Log in";
 
@@ -20,10 +21,11 @@ public partial class LoginPageViewModel : BaseViewModel
     [ObservableProperty]
     private string _buttonText;
 
-    public LoginPageViewModel(IAuthenticationService authService, ILogger<LoginPageViewModel> logger)
+    public LoginPageViewModel(IAuthenticationService authService, ILogger<LoginPageViewModel> logger, IAlertService alertService)
     {
         _authService = authService;
         _logger = logger;
+        _alertService = alertService;
         ButtonText = DefaultButtonText;
     }
 
@@ -45,7 +47,7 @@ public partial class LoginPageViewModel : BaseViewModel
             if (status != ApiStatus.CancelledByUser)
             {
                 await WaitForWindowClose();
-                await ShowErrorForStatus(status);
+                await ShowErrorForStatus(status, _alertService);
             }
         }
         finally
@@ -61,7 +63,7 @@ public partial class LoginPageViewModel : BaseViewModel
         ButtonText = isLoading ? "Logging you in..." : DefaultButtonText;
     }
 
-    private static async Task ShowErrorForStatus(ApiStatus status)
+    private static async Task ShowErrorForStatus(ApiStatus status, IAlertService alertService)
     {
         var statusAlerts = new Dictionary<ApiStatus, (string Title, string Message)>
         {
@@ -71,7 +73,7 @@ public partial class LoginPageViewModel : BaseViewModel
         };
 
         var alert = statusAlerts.GetValueOrDefault(status, ("Error", "An unexpected error occurred."));
-        await App.Current.MainPage.DisplayAlert(alert.Item1, alert.Item2, "OK");
+        await alertService.DisplayAlertAsync(alert.Item1, alert.Item2, "OK");
     }
 
     private async static Task WaitForWindowClose()
@@ -121,7 +123,7 @@ public partial class LoginPageViewModel : BaseViewModel
         {
             _logger.LogError(e, "Error during refresh");
             await WaitForWindowClose();
-            await Shell.Current.DisplayAlert("Login Error",
+            await _alertService.DisplayAlertAsync("Login Error",
                 "There was a problem accessing your account. Please try logging in again.", "OK");
         }
         finally

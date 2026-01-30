@@ -1,4 +1,5 @@
 ﻿using Mopups.Services;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.PopupPages;
 
@@ -11,7 +12,7 @@ public partial class AboutSswPage
         _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
     }
-    
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -32,7 +33,7 @@ public partial class AboutSswPage
         }
         catch (Exception)
         {
-            await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            await IPlatformApplication.Current.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
         }
     }
 }

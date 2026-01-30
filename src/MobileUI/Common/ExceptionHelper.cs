@@ -1,4 +1,5 @@
 using System.Net;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.Helpers;
 
@@ -27,7 +28,7 @@ public static class ExceptionHandler
 
     private static async Task NavigateToLoginPage()
     {
-        await Shell.Current.DisplayAlert("Authentication Failure", "Your session has expired. Please log in again.", "OK");
+        await IPlatformApplication.Current.DisplayAlertAsync("Authentication Failure", "Your session has expired. Please log in again.", "OK");
         App.NavigateToLoginPage();
     }
 }

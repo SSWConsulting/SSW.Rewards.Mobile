@@ -16,7 +16,8 @@ public partial class RedeemRewardViewModel(
     IUserService userService,
     IRewardService rewardService,
     IAddressService addressService,
-    IFirebaseAnalyticsService firebaseAnalyticsService) : BaseViewModel
+    IFirebaseAnalyticsService firebaseAnalyticsService,
+    IAlertService alertService) : BaseViewModel
 {
     private Reward _reward;
     private float _defaultBrightness;
@@ -39,7 +40,7 @@ public partial class RedeemRewardViewModel(
 
     [ObservableProperty]
     private int _userBalance;
-    
+
     [ObservableProperty]
     private bool _isHeaderVisible = true;
 
@@ -112,7 +113,7 @@ public partial class RedeemRewardViewModel(
     private void ShowQrCode(string qrCode = null)
     {
         ScreenBrightness.Default.Brightness = MaxBrightness;
-        
+
         IsHeaderVisible = false;
         IsBalanceVisible = false;
         ConfirmEnabled = false;
@@ -155,7 +156,7 @@ public partial class RedeemRewardViewModel(
             { "reward_value", _reward.Cost.ToString() }
         });
     }
-    
+
     [RelayCommand]
     private async Task SearchAddress(string addressQuery)
     {
@@ -234,7 +235,7 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task RedeemDigitalClicked()
     {
-        var isConfirmed = await ViewPage.DisplayAlert(
+        var isConfirmed = await alertService.DisplayConfirmationAsync(
             "Confirm Digital Redemption",
             $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis digital reward will be sent to your email address.",
             "Yes, Redeem",
@@ -265,7 +266,7 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task CancelPendingRedemptionClicked()
     {
-        var isConfirmed = await ViewPage.DisplayAlert("Cancel",
+        var isConfirmed = await alertService.DisplayConfirmationAsync("Cancel",
             "Are you sure you want to cancel the pending redemption?", "Yes", "No");
 
         if (!isConfirmed)
@@ -291,7 +292,7 @@ public partial class RedeemRewardViewModel(
             return;
         }
 
-        var isConfirmed = await ViewPage.DisplayAlert(
+        var isConfirmed = await alertService.DisplayConfirmationAsync(
             "Confirm Physical Reward",
             $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis reward will be shipped to:\n{SelectedAddress.freeformAddress}, Australia",
             "Yes, Ship It",
