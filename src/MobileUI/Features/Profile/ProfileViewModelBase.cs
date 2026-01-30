@@ -18,6 +18,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<ProfileViewModelBase> _logger;
+    private readonly IAlertService _alertService;
 
     [ObservableProperty]
     private string _profilePic;
@@ -92,6 +93,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         IDevService devService,
         IServiceProvider provider,
         IFileCacheService fileCacheService,
+        IAlertService alertService,
         ILogger<ProfileViewModelBase> logger)
     {
         IsMe = isMe;
@@ -100,6 +102,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         _provider = provider;
         _fileCacheService = fileCacheService;
         _logger = logger;
+        _alertService = alertService;
     }
 
     protected async Task _initialise()
@@ -138,7 +141,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             if (!hasCachedData)
             {
                 _logger.LogError("Profile loading error: {Message}", ex.Message);
-                await Shell.Current.DisplayAlert("Oops...", "There was an error loading this profile", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There was an error loading this profile", "OK");
                 await ClosePage();
             }
             else
@@ -264,7 +267,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to open profile picture page");
-                await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+                await _alertService.ShowAlertAsync("Error", "There was an error trying to open the popup.", "OK");
             }
         });
     }
@@ -319,7 +322,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to open add social media popup");
-                    await Shell.Current.DisplayAlert("Error", "There was an error trying to open the popup.", "OK");
+                    await _alertService.ShowAlertAsync("Error", "There was an error trying to open the popup.", "OK");
                 }
             });
 
@@ -334,7 +337,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.",
+                await _alertService.ShowAlertAsync("Error", "There was an error trying to launch the default browser.",
                     "OK");
             }
         }

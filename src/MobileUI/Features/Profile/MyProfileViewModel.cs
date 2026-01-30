@@ -7,8 +7,9 @@ public class MyProfileViewModel(
     IDevService devService,
     IServiceProvider provider,
     IFileCacheService fileCacheService,
+    IAlertService alertService,
     ILogger<ProfileViewModelBase> logger)
-    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService, logger)
+    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService, alertService, logger)
 {
     private readonly IUserService _userService = userService;
 

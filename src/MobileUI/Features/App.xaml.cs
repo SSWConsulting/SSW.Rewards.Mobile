@@ -56,13 +56,13 @@ public partial class App : Application
     {
         // Handle when your app resumes
     }
-    
+
     protected override async void OnAppLinkRequestReceived(Uri uri)
     {
         try
         {
             base.OnAppLinkRequestReceived(uri);
-            
+
             if (IsAutoLoginRequest(uri))
             {
                 await HandleAutoLoginRequestAsync(uri);
@@ -107,10 +107,15 @@ public partial class App : Application
 
             if (!isCompatible)
             {
-                await Shell.Current.DisplayAlert(
-                    "Update Required",
-                    "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
-                    "OK");
+                var serviceProvider = IPlatformApplication.Current?.Services;
+                var alertService = serviceProvider?.GetService<IAlertService>();
+                if (alertService != null)
+                {
+                    await alertService.ShowAlertAsync(
+                        "Update Required",
+                        "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
+                        "OK");
+                }
             }
         }
         catch (Exception ex)
@@ -118,13 +123,13 @@ public partial class App : Application
             _logger.LogError(ex, "Error checking API compatibility");
         }
     }
-    
+
     private static bool IsAutoLoginRequest(Uri uri) =>
         $"{uri.Scheme}://{uri.Host}" == Constants.AutologinRedirectUrl;
 
     private static bool IsRedeemRequest(Uri uri) =>
         uri is { Scheme: ApiClientConstants.RewardsQRCodeProtocol, Host: "redeem" } or
-            { Host: ApiClientConstants.RewardsWebDomain, AbsolutePath: "/redeem" };
+        { Host: ApiClientConstants.RewardsWebDomain, AbsolutePath: "/redeem" };
 
     private async Task HandleAutoLoginRequestAsync(Uri uri)
     {

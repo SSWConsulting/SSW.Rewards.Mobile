@@ -23,10 +23,12 @@ public interface IQuizService
 public class QuizService : IQuizService
 {
     private readonly IApiQuizService _quizClient;
+    private readonly IAlertService _alertService;
 
-    public QuizService(IApiQuizService quizService)
+    public QuizService(IApiQuizService quizService, IAlertService alertService)
     {
         _quizClient = quizService;
+        _alertService = alertService;
     }
 
     public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
@@ -37,9 +39,9 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
             }
 
             return null;
@@ -54,7 +56,7 @@ public class QuizService : IQuizService
 
             var apiQuizzes = await _quizClient.GetQuizzes(CancellationToken.None);
 
-            foreach(var quiz in apiQuizzes)
+            foreach (var quiz in apiQuizzes)
             {
                 quizzes.Add(quiz);
             }
@@ -68,9 +70,9 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
             }
 
             return null;
@@ -85,15 +87,15 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
             }
 
             return null;
         }
     }
-    
+
     public async Task<BeginQuizDto> BeginQuiz(int quizId)
     {
         try
@@ -102,15 +104,15 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem beginning the quiz. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem beginning the quiz. Please try again soon.", "OK");
             }
         }
 
         return null;
     }
-    
+
     public async Task SubmitAnswer(SubmitQuizAnswerDto dto)
     {
         try
@@ -119,13 +121,13 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem submitting your answer. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem submitting your answer. Please try again soon.", "OK");
             }
         }
     }
-    
+
     public async Task<bool?> CheckQuizCompletion(int submissionId)
     {
         try
@@ -134,15 +136,15 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
             }
 
             return null;
         }
     }
-    
+
     public async Task<QuizResultDto> GetQuizResults(int submissionId)
     {
         try
@@ -151,9 +153,9 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the quiz results. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the quiz results. Please try again soon.", "OK");
             }
 
             return null;

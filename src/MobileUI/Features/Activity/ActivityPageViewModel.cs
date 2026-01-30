@@ -20,9 +20,10 @@ public partial class ActivityPageViewModel : BaseViewModel
 {
     private readonly IActivityFeedService _activityService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IAlertService _alertService;
 
     private ActivityPageSegments CurrentSegment { get; set; }
-    
+
     public ObservableRangeCollection<ActivityFeedItemDto> Feed { get; set; } = [];
 
     public List<Segment> Segments { get; set; } =
@@ -33,7 +34,7 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     [ObservableProperty]
     private Segment? _selectedSegment;
-    
+
     [ObservableProperty]
     private bool _isRefreshing;
 
@@ -42,17 +43,17 @@ public partial class ActivityPageViewModel : BaseViewModel
     private const int Take = 50;
     private int _skip;
     private bool _limitReached;
-    
+
     private int _myUserId;
 
-    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider)
+    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, IAlertService alertService)
     {
         _activityService = activityService;
         _serviceProvider = serviceProvider;
-
+        _alertService = alertService;
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
-    
+
     private static string GetMessage(UserAchievementDto achievement)
     {
         string name = achievement.AchievementName;
@@ -88,15 +89,15 @@ public partial class ActivityPageViewModel : BaseViewModel
     {
         _skip = 0;
         var feed = await GetFeedData();
-        
+
         Feed.ReplaceRange(feed);
         _loaded = true;
     }
-    
+
     private async Task<List<ActivityFeedItemDto>> GetFeedData()
     {
         List<ActivityFeedItemDto> feed = [];
-        
+
         try
         {
             feed = (CurrentSegment == ActivityPageSegments.Friends
@@ -114,15 +115,15 @@ public partial class ActivityPageViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
             }
         }
 
         return feed;
     }
-    
+
     [RelayCommand]
     private async Task LoadMore()
     {
@@ -131,13 +132,13 @@ public partial class ActivityPageViewModel : BaseViewModel
 
         _skip += Take;
         var feed = await GetFeedData();
-        
+
         if (feed.Count == 0)
         {
             _limitReached = true;
             return;
         }
-        
+
         Feed.AddRange(feed);
     }
 
@@ -148,21 +149,21 @@ public partial class ActivityPageViewModel : BaseViewModel
         {
             return;
         }
-        
+
         CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
         _limitReached = false;
         _skip = 0;
-        
+
         await LoadFeed();
     }
-    
+
     [RelayCommand]
     private async Task Refresh()
     {
         await LoadFeed();
         IsRefreshing = false;
     }
-    
+
     [RelayCommand]
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
@@ -177,7 +178,7 @@ public partial class ActivityPageViewModel : BaseViewModel
             await Shell.Current.Navigation.PushAsync(page);
         }
     }
-    
+
     [RelayCommand]
     private static async Task ClosePage()
     {

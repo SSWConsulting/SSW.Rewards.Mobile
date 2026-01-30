@@ -11,7 +11,7 @@ public partial class AboutSswPage
         _firebaseAnalyticsService = firebaseAnalyticsService;
         InitializeComponent();
     }
-    
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -32,7 +32,12 @@ public partial class AboutSswPage
         }
         catch (Exception)
         {
-            await Shell.Current.DisplayAlert("Error", "There was an error trying to launch the default browser.", "OK");
+            var serviceProvider = IPlatformApplication.Current?.Services;
+            var alertService = serviceProvider?.GetService<IAlertService>();
+            if (alertService != null)
+            {
+                await alertService.ShowAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
+            }
         }
     }
 }

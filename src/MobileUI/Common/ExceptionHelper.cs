@@ -27,7 +27,12 @@ public static class ExceptionHandler
 
     private static async Task NavigateToLoginPage()
     {
-        await Shell.Current.DisplayAlert("Authentication Failure", "Your session has expired. Please log in again.", "OK");
+        var serviceProvider = IPlatformApplication.Current?.Services;
+        var alertService = serviceProvider?.GetService<IAlertService>();
+        if (alertService != null)
+        {
+            await alertService.ShowAlertAsync("Authentication Failure", "Your session has expired. Please log in again.", "OK");
+        }
         App.NavigateToLoginPage();
     }
 }

@@ -7,7 +7,7 @@ public partial class DeleteProfilePage
 {
     private readonly IUserService _userService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
-    
+
     private string _userEmail;
 
     public string UserEmail
@@ -22,10 +22,10 @@ public partial class DeleteProfilePage
             OnPropertyChanged();
         }
     }
-    
+
     private Color _profileBackgroundColour;
     private Color _sswRedColour;
-    
+
     public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
     {
         InitializeComponent();
@@ -33,10 +33,10 @@ public partial class DeleteProfilePage
         _firebaseAnalyticsService = firebaseAnalyticsService;
 
         GetColors();
-        
+
         _userService.MyEmailObservable().Subscribe(x => UserEmail = x);
     }
-    
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -54,9 +54,15 @@ public partial class DeleteProfilePage
         {
             return;
         }
-        
+
         await MopupService.Instance.PopAllAsync();
-        var sure = await Shell.Current.DisplayAlert("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+        var serviceProvider = IPlatformApplication.Current?.Services;
+        var alertService = serviceProvider?.GetService<IAlertService>();
+        var sure = false;
+        if (alertService != null)
+        {
+            sure = await alertService.ShowConfirmationAsync("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+        }
 
         if (sure)
         {
@@ -68,12 +74,18 @@ public partial class DeleteProfilePage
 
             if (requestSubmitted)
             {
-                await Shell.Current.DisplayAlert("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                if (alertService != null)
+                {
+                    await alertService.ShowAlertAsync("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                }
                 App.NavigateToLoginPage();
             }
             else
             {
-                await Shell.Current.DisplayAlert("Error", "There was an error submitting your request. Please try again later.", "OK");
+                if (alertService != null)
+                {
+                    await alertService.ShowAlertAsync("Error", "There was an error submitting your request. Please try again later.", "OK");
+                }
             }
         }
     }
@@ -90,12 +102,12 @@ public partial class DeleteProfilePage
     {
         return string.Equals(EmailEntry.Text, UserEmail, StringComparison.CurrentCultureIgnoreCase);
     }
-    
+
     private void GetColors()
     {
         Application.Current.Resources.TryGetValue("ProfileBackground", out var profileBackground);
         Application.Current.Resources.TryGetValue("SSWRed", out var sswRed);
-        
+
         _profileBackgroundColour = (Color)profileBackground;
         _sswRedColour = (Color)sswRed;
     }

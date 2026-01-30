@@ -8,6 +8,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
 {
     private readonly IUserService _userService;
     private readonly IPermissionsService _permissionsService;
+    private readonly IAlertService _alertService;
 
     [ObservableProperty]
     private bool _useButtonEnabled;
@@ -22,10 +23,11 @@ public partial class ProfilePictureViewModel : BaseViewModel
     private bool _isUploading;
 
 
-    public ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService)
+    public ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService, IAlertService alertService)
     {
         _userService = userService;
         _permissionsService = permissionsService;
+        _alertService = alertService;
         userService.MyProfilePicObservable().Subscribe(myProfilePic => _profilePicture = myProfilePic);
     }
 
@@ -39,7 +41,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
             if (!storageGranted)
                 return;
         }
-        
+
         var cameraGranted = await _permissionsService.CheckAndRequestPermission<Permissions.Camera>();
         if (!cameraGranted)
             return;
@@ -71,7 +73,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         }
         else
         {
-            await Shell.Current.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
+            await _alertService.ShowAlertAsync("No Camera", "We cannot seem to access the Camera", "OK");
         }
     }
 
@@ -80,7 +82,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
     {
         IsUploading = true;
         var imageStream = await _imageFile.OpenReadAsync();
-        
+
         try
         {
             await _userService.UploadImageAsync(imageStream, _imageFile.FileName);
@@ -90,7 +92,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
+                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
             }
         }
     }
@@ -137,7 +139,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
         }
         else
         {
-            await Shell.Current.DisplayAlert("No Camera", "We cannot seem to access the Camera", "OK");
+            await _alertService.ShowAlertAsync("No Camera", "We cannot seem to access the Camera", "OK");
         }
     }
 

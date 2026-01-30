@@ -14,26 +14,27 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
     private readonly IDispatcherTimer _timer;
-    
+    private readonly IAlertService _alertService;
+
     private const int AutoScrollInterval = 6;
     private const string CacheKey = "QuizzesList";
-    
+
     [ObservableProperty]
     private bool _isRefreshing;
-    
+
     [ObservableProperty]
     private int _carouselPosition;
 
     public AdvancedObservableCollection<QuizItemViewModel> Quizzes { get; } = new();
     public ObservableRangeCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = [];
 
-    public QuizViewModel(IQuizService quizService, IServiceProvider provider, IFileCacheService fileCacheService)
+    public QuizViewModel(IQuizService quizService, IServiceProvider provider, IFileCacheService fileCacheService, IAlertService alertService)
     {
         _quizService = quizService;
         _provider = provider;
         _fileCacheService = fileCacheService;
+        _alertService = alertService;
         WeakReferenceMessenger.Default.Register(this);
-        
         _timer = Application.Current.Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
     }
@@ -108,7 +109,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
                     userMessage = "An unexpected error occurred while loading quizzes. Please try again later.";
                 }
 
-                await Shell.Current.DisplayAlert("Oops...", userMessage, "OK");
+                await _alertService.ShowAlertAsync("Oops...", userMessage, "OK");
             }
 
             IsBusy = false;
@@ -117,26 +118,26 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         });
         return true;
     }
-    
+
     private void BeginAutoScroll()
     {
         _timer.Tick += OnScrollTick;
         _timer.Start();
     }
-    
+
     private void OnScrollTick(object sender, object args)
     {
         MainThread.BeginInvokeOnMainThread(Scroll);
     }
-    
+
     private void Scroll()
     {
         var count = CarouselQuizzes.Count;
-        
+
         if (count > 0)
             CarouselPosition = (CarouselPosition + 1) % count;
     }
-    
+
     [RelayCommand]
     private void CarouselScrolled()
     {
@@ -144,7 +145,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         _timer.Stop();
         _timer.Start();
     }
-    
+
     [RelayCommand]
     private async Task RefreshQuizzes()
     {
@@ -156,7 +157,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await Shell.Current.DisplayAlert("Device Offline", "You must be online to start a quiz.", "OK");
+            await _alertService.ShowAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
             return;
         }
 
