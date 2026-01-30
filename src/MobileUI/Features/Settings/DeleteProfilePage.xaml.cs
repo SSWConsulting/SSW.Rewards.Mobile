@@ -7,6 +7,7 @@ public partial class DeleteProfilePage
 {
     private readonly IUserService _userService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
+    private readonly IAlertService _alertService;
 
     private string _userEmail;
 
@@ -26,11 +27,12 @@ public partial class DeleteProfilePage
     private Color _profileBackgroundColour;
     private Color _sswRedColour;
 
-    public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService)
+    public DeleteProfilePage(IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService)
     {
         InitializeComponent();
         _userService = userService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
+        _alertService = alertService;
 
         GetColors();
 
@@ -56,13 +58,7 @@ public partial class DeleteProfilePage
         }
 
         await MopupService.Instance.PopAllAsync();
-        var serviceProvider = IPlatformApplication.Current?.Services;
-        var alertService = serviceProvider?.GetService<IAlertService>();
-        var sure = false;
-        if (alertService != null)
-        {
-            sure = await alertService.DisplayConfirmationAsync("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
-        }
+        var sure = await _alertService.DisplayConfirmationAsync("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
 
         if (sure)
         {
@@ -74,18 +70,12 @@ public partial class DeleteProfilePage
 
             if (requestSubmitted)
             {
-                if (alertService != null)
-                {
-                    await alertService.DisplayAlertAsync("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
-                }
+                await _alertService.DisplayAlertAsync("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
                 App.NavigateToLoginPage();
             }
             else
             {
-                if (alertService != null)
-                {
-                    await alertService.DisplayAlertAsync("Error", "There was an error submitting your request. Please try again later.", "OK");
-                }
+                await _alertService.DisplayAlertAsync("Error", "There was an error submitting your request. Please try again later.", "OK");
             }
         }
     }
