@@ -1,4 +1,5 @@
 using System.Net;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.Helpers;
 
