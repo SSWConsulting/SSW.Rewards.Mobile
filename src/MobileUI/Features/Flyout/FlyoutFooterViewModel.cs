@@ -43,7 +43,7 @@ public partial class FlyoutFooterViewModel : ObservableObject
     [RelayCommand]
     private async Task LogOutTapped()
     {
-        var sure = await _alertService.ShowConfirmationAsync("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
+        var sure = await _alertService.DisplayConfirmationAsync("Logout", "Are you sure you want to log out of SSW Rewards?", "Yes", "No");
         if (sure)
         {
             await _authService.SignOut();

@@ -187,7 +187,7 @@ public partial class RedeemViewModel : BaseViewModel
                     userMessage = "An unexpected error occurred while loading rewards. Please try again later.";
                 }
 
-                await _alertService.ShowAlertAsync("Oops...", userMessage, "OK");
+                await _alertService.DisplayAlertAsync("Oops...", userMessage, "OK");
             }
 
             IsBusy = false;
@@ -251,7 +251,7 @@ public partial class RedeemViewModel : BaseViewModel
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await _alertService.ShowAlertAsync("Device Offline", "You must be online to redeem a reward.", "OK");
+            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to redeem a reward.", "OK");
             return;
         }
 

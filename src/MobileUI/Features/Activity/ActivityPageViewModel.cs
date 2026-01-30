@@ -117,7 +117,7 @@ public partial class ActivityPageViewModel : BaseViewModel
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await _alertService.ShowAlertAsync("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
             }
         }
 

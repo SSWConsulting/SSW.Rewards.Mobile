@@ -89,7 +89,7 @@ public class AuthenticationService : IAuthenticationService
                     await Task.Delay(1000);
                 }
 
-                await _alertService.ShowAlertAsync("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                await _alertService.DisplayAlertAsync("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
             }
         }
         catch (Exception ex)

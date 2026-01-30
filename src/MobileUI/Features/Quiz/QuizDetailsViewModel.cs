@@ -97,7 +97,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
-                await _alertService.ShowAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
+                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -176,7 +176,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
-                await _alertService.ShowAlertAsync("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
+                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
                 return;
             }
 
@@ -198,7 +198,7 @@ namespace SSW.Rewards.Mobile.ViewModels
                 {
                     IsBusy = false;
                     await MopupService.Instance.RemovePageAsync(popup);
-                    await _alertService.ShowAlertAsync("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
+                    await _alertService.DisplayAlertAsync("Pending Results", $"Your quiz results are still being processed. Please try again soon.", "OK");
                     return;
                 }
 
@@ -209,7 +209,7 @@ namespace SSW.Rewards.Mobile.ViewModels
             }
             else
             {
-                await _alertService.ShowAlertAsync("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
+                await _alertService.DisplayAlertAsync("Incomplete Quiz", $"Some questions have not been answered. Please answer all questions to submit the quiz.", "OK");
             }
         }
 

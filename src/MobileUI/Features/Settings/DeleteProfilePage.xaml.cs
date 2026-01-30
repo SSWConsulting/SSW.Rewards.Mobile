@@ -61,7 +61,7 @@ public partial class DeleteProfilePage
         var sure = false;
         if (alertService != null)
         {
-            sure = await alertService.ShowConfirmationAsync("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
+            sure = await alertService.DisplayConfirmationAsync("Delete Profile", "Are you sure you want to delete your profile and all associated data?", "Yes", "No");
         }
 
         if (sure)
@@ -76,7 +76,7 @@ public partial class DeleteProfilePage
             {
                 if (alertService != null)
                 {
-                    await alertService.ShowAlertAsync("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
+                    await alertService.DisplayAlertAsync("Request Submitted", "Your request has been received and you will be contacted within 5 business days. You will now be logged out.", "OK");
                 }
                 App.NavigateToLoginPage();
             }
@@ -84,7 +84,7 @@ public partial class DeleteProfilePage
             {
                 if (alertService != null)
                 {
-                    await alertService.ShowAlertAsync("Error", "There was an error submitting your request. Please try again later.", "OK");
+                    await alertService.DisplayAlertAsync("Error", "There was an error submitting your request. Please try again later.", "OK");
                 }
             }
         }

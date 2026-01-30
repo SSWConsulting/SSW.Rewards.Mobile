@@ -31,7 +31,7 @@ public static class ExceptionHandler
         var alertService = serviceProvider?.GetService<IAlertService>();
         if (alertService != null)
         {
-            await alertService.ShowAlertAsync("Authentication Failure", "Your session has expired. Please log in again.", "OK");
+            await alertService.DisplayAlertAsync("Authentication Failure", "Your session has expired. Please log in again.", "OK");
         }
         App.NavigateToLoginPage();
     }

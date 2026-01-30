@@ -111,7 +111,7 @@ public partial class App : Application
                 var alertService = serviceProvider?.GetService<IAlertService>();
                 if (alertService != null)
                 {
-                    await alertService.ShowAlertAsync(
+                    await alertService.DisplayAlertAsync(
                         "Update Required",
                         "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
                         "OK");

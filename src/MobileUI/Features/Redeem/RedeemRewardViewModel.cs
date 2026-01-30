@@ -235,7 +235,7 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task RedeemDigitalClicked()
     {
-        var isConfirmed = await alertService.ShowConfirmationAsync(
+        var isConfirmed = await alertService.DisplayConfirmationAsync(
             "Confirm Digital Redemption",
             $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis digital reward will be sent to your email address.",
             "Yes, Redeem",
@@ -266,7 +266,7 @@ public partial class RedeemRewardViewModel(
     [RelayCommand]
     private async Task CancelPendingRedemptionClicked()
     {
-        var isConfirmed = await alertService.ShowConfirmationAsync("Cancel",
+        var isConfirmed = await alertService.DisplayConfirmationAsync("Cancel",
             "Are you sure you want to cancel the pending redemption?", "Yes", "No");
 
         if (!isConfirmed)
@@ -292,7 +292,7 @@ public partial class RedeemRewardViewModel(
             return;
         }
 
-        var isConfirmed = await alertService.ShowConfirmationAsync(
+        var isConfirmed = await alertService.DisplayConfirmationAsync(
             "Confirm Physical Reward",
             $"Are you sure you want to redeem '{_reward.Name}' for {_reward.Cost:n0} points?\n\nThis reward will be shipped to:\n{SelectedAddress.freeformAddress}, Australia",
             "Yes, Ship It",

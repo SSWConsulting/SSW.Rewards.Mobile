@@ -264,6 +264,6 @@ public partial class AddSocialMediaViewModel : BaseViewModel
 
     private async Task ShowAlert(string title, string message)
     {
-        await _alertService.ShowAlertAsync(title, message, "OK");
+        await _alertService.DisplayAlertAsync(title, message, "OK");
     }
 }

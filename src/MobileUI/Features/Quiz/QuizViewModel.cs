@@ -109,7 +109,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
                     userMessage = "An unexpected error occurred while loading quizzes. Please try again later.";
                 }
 
-                await _alertService.ShowAlertAsync("Oops...", userMessage, "OK");
+                await _alertService.DisplayAlertAsync("Oops...", userMessage, "OK");
             }
 
             IsBusy = false;
@@ -157,7 +157,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await _alertService.ShowAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
+            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
             return;
         }
 

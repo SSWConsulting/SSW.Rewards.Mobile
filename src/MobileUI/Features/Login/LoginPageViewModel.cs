@@ -73,7 +73,7 @@ public partial class LoginPageViewModel : BaseViewModel
         };
 
         var alert = statusAlerts.GetValueOrDefault(status, ("Error", "An unexpected error occurred."));
-        await alertService.ShowAlertAsync(alert.Item1, alert.Item2, "OK");
+        await alertService.DisplayAlertAsync(alert.Item1, alert.Item2, "OK");
     }
 
     private async static Task WaitForWindowClose()
@@ -123,7 +123,7 @@ public partial class LoginPageViewModel : BaseViewModel
         {
             _logger.LogError(e, "Error during refresh");
             await WaitForWindowClose();
-            await _alertService.ShowAlertAsync("Login Error",
+            await _alertService.DisplayAlertAsync("Login Error",
                 "There was a problem accessing your account. Please try logging in again.", "OK");
         }
         finally

@@ -141,7 +141,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             if (!hasCachedData)
             {
                 _logger.LogError("Profile loading error: {Message}", ex.Message);
-                await _alertService.ShowAlertAsync("Oops...", "There was an error loading this profile", "OK");
+                await _alertService.DisplayAlertAsync("Oops...", "There was an error loading this profile", "OK");
                 await ClosePage();
             }
             else
@@ -267,7 +267,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to open profile picture page");
-                await _alertService.ShowAlertAsync("Error", "There was an error trying to open the popup.", "OK");
+                await _alertService.DisplayAlertAsync("Error", "There was an error trying to open the popup.", "OK");
             }
         });
     }
@@ -322,7 +322,7 @@ public partial class ProfileViewModelBase : BaseViewModel
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to open add social media popup");
-                    await _alertService.ShowAlertAsync("Error", "There was an error trying to open the popup.", "OK");
+                    await _alertService.DisplayAlertAsync("Error", "There was an error trying to open the popup.", "OK");
                 }
             });
 
@@ -337,7 +337,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             }
             catch (Exception)
             {
-                await _alertService.ShowAlertAsync("Error", "There was an error trying to launch the default browser.",
+                await _alertService.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.",
                     "OK");
             }
         }

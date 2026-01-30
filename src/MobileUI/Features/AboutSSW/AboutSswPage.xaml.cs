@@ -36,7 +36,7 @@ public partial class AboutSswPage
             var alertService = serviceProvider?.GetService<IAlertService>();
             if (alertService != null)
             {
-                await alertService.ShowAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
+                await alertService.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
             }
         }
     }
