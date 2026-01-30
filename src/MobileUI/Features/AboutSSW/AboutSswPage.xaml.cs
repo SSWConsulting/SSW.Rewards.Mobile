@@ -1,4 +1,5 @@
 ﻿using Mopups.Services;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.PopupPages;
 
@@ -32,12 +33,7 @@ public partial class AboutSswPage
         }
         catch (Exception)
         {
-            var serviceProvider = IPlatformApplication.Current?.Services;
-            var alertService = serviceProvider?.GetService<IAlertService>();
-            if (alertService != null)
-            {
-                await alertService.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
-            }
+            await IPlatformApplication.Current.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
         }
     }
 }

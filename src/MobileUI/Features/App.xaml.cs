@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Mopups.Services;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile;
 
@@ -107,15 +108,10 @@ public partial class App : Application
 
             if (!isCompatible)
             {
-                var serviceProvider = IPlatformApplication.Current?.Services;
-                var alertService = serviceProvider?.GetService<IAlertService>();
-                if (alertService != null)
-                {
-                    await alertService.DisplayAlertAsync(
+                await IPlatformApplication.Current.DisplayAlertAsync(
                         "Update Required",
                         "Looks like you're using an older version of the app. You can continue, but some features may not function as expected.",
                         "OK");
-                }
             }
         }
         catch (Exception ex)
