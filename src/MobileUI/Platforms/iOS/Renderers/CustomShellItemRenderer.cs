@@ -26,27 +26,34 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
     private void AddStatusBarWorkaround()
     {
         const int statusBarTag = 9999;
-        var window = View?.Window;
-        if (window != null)
+
+        if (View is null) return;
+        
+        var topPadding = View.Window?.SafeAreaInsets.Top ?? 0;
+        var existingBar = View.ViewWithTag(statusBarTag);
+        var backgroundColor = GetBackgroundColour();
+
+        if (topPadding <= 0 || existingBar is not null || backgroundColor is null)
         {
-            var topPadding = window.SafeAreaInsets.Top;
-            if (topPadding > 0)
-            {
-                var existing = View.ViewWithTag(statusBarTag);
-                if (existing == null)
-                {
-                    if (Application.Current?.Resources.TryGetValue("Background", out var background) == true && background is Color backgroundColor)
-                    {
-                        var statusBar = new UIView(new CGRect(0, 0, UIKit.UIScreen.MainScreen.Bounds.Size.Width, topPadding))
-                        {
-                            BackgroundColor = UIColor.FromRGB(backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue),
-                            Tag = statusBarTag
-                        };
-                        View.AddSubview(statusBar);
-                    }
-                }
-            }
+            return;
         }
+
+        var statusBar = new UIView(new CGRect(0, 0, UIKit.UIScreen.MainScreen.Bounds.Size.Width, topPadding))
+        {
+            BackgroundColor = UIColor.FromRGB(backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue),
+            Tag = statusBarTag
+        };
+        View.AddSubview(statusBar);
+    }
+
+    private static Color GetBackgroundColour()
+    {
+        if (Application.Current?.Resources.TryGetValue("Background", out var background) == true && background is Color backgroundColor)
+        {
+            return backgroundColor;
+        }
+
+        return null;
     }
 
     private async Task AddOrUpdateMiddleViewAsync()
