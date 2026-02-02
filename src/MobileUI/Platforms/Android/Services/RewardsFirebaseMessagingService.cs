@@ -12,7 +12,7 @@ public class RewardsFirebaseMessagingService : FirebaseMessagingService
     private IServiceProvider? _serviceProvider;
     private ILogger<RewardsFirebaseMessagingService>? _logger;
 
-    private IServiceProvider ServiceProvider =>
+    private IServiceProvider ServiceProvider => 
         _serviceProvider ??= IPlatformApplication.Current?.Services;
 
     private ILogger<RewardsFirebaseMessagingService> Logger =>
@@ -25,7 +25,7 @@ public class RewardsFirebaseMessagingService : FirebaseMessagingService
         try
         {
             var authStorageService = ServiceProvider?.GetService<IAuthStorageService>();
-
+            
             if (authStorageService == null)
             {
                 Logger?.LogWarning("IAuthStorageService not available, unable to store device token");
@@ -34,29 +34,12 @@ public class RewardsFirebaseMessagingService : FirebaseMessagingService
 
             await authStorageService.StoreDeviceTokenAsync(token);
             authStorageService.SetDeviceTokenLastUpdated(DateTime.MinValue);
-
+            
             Logger?.LogInformation("Device token updated successfully");
         }
         catch (Exception ex)
         {
             Logger?.LogError(ex, "Failed to store device token: {Token}", token);
-        }
-    }
-    public override void OnMessageReceived(RemoteMessage message)
-    {
-        base.OnMessageReceived(message);
-
-        if (message.Data != null && message.Data.TryGetValue("action", out var actionValue))
-        {
-            var serviceProvider = IPlatformApplication.Current?.Services;
-            var handler = serviceProvider?.GetService<INotificationActionHandler>();
-            if (handler != null && !string.IsNullOrEmpty(actionValue))
-            {
-                Microsoft.Maui.Controls.Application.Current?.Dispatcher.Dispatch(async () =>
-                {
-                    await handler.HandleNotificationActionAsync(actionValue);
-                });
-            }
         }
     }
 }

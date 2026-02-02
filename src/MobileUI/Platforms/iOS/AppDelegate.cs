@@ -23,7 +23,7 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
 
         ConfigureFirebaseMessaging();
         ConfigurePushNotifications();
-
+        
         return base.FinishedLaunching(app, options);
     }
 
@@ -36,7 +36,7 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
     private void ConfigurePushNotifications()
     {
         var authOptions = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound;
-
+        
         UNUserNotificationCenter.Current.RequestAuthorization(authOptions, (granted, error) =>
         {
             if (error is not null)
@@ -56,7 +56,7 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
         UNUserNotificationCenter.Current.Delegate = this;
         UIApplication.SharedApplication.RegisterForRemoteNotifications();
     }
-
+    
     [Export("messaging:didReceiveRegistrationToken:")]
     public async void DidReceiveRegistrationToken(Messaging message, string token)
     {
@@ -70,45 +70,12 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
 
             await _authStorageService.StoreDeviceTokenAsync(token);
             _authStorageService.SetDeviceTokenLastUpdated(DateTime.MinValue);
-
+            
             _logger?.LogInformation("Firebase registration token received and stored");
         }
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Failed to store Firebase registration token");
-        }
-    }
-    // Handle notification tap (deep link)
-    [Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
-    public void DidReceiveNotificationResponse(UNUserNotificationCenter center, UNNotificationResponse response, Action completionHandler)
-    {
-        try
-        {
-            var userInfo = response.Notification.Request.Content.UserInfo;
-            if (userInfo != null && userInfo.ContainsKey(new NSString("action")))
-            {
-                var actionValue = userInfo["action"]?.ToString();
-                if (!string.IsNullOrEmpty(actionValue))
-                {
-                    var serviceProvider = IPlatformApplication.Current?.Services;
-                    var handler = serviceProvider?.GetService<SSW.Rewards.Mobile.Services.INotificationActionHandler>();
-                    if (handler != null)
-                    {
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            await handler.HandleNotificationActionAsync(actionValue);
-                        });
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger?.LogError(ex, "Error handling notification tap for post deep link");
-        }
-        finally
-        {
-            completionHandler?.Invoke();
         }
     }
 }

@@ -1,4 +1,6 @@
+
 using SSW.Rewards.Application.Common.Exceptions;
+using SSW.Rewards.Application.Common.Models;
 using Microsoft.Extensions.Logging;
 
 namespace SSW.Rewards.Application.Posts.Commands.UpdatePost;
@@ -70,7 +72,6 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, Unit>
                     Title = post.Title,
                     Body = post.Content,
                     ImageUrl = post.ImageUrl,
-                    Action = $"post:{post.Id}"
                 };
                 await _sender.Send(command, cancellationToken);
             }
