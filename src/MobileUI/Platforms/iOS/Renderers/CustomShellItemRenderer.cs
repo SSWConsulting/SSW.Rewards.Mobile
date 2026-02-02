@@ -16,6 +16,49 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
     public override async void ViewDidLayoutSubviews()
     {
         base.ViewDidLayoutSubviews();
+        if (View is null)
+            return;
+
+        AddStatusBarWorkaround();
+        await AddOrUpdateMiddleViewAsync();
+    }
+
+    private void AddStatusBarWorkaround()
+    {
+        const int statusBarTag = 9999;
+
+        if (View is null) return;
+        
+        var topPadding = View.Window?.SafeAreaInsets.Top ?? 0;
+        var width = View.Bounds.Width;
+        var existingBar = View.ViewWithTag(statusBarTag);
+        var backgroundColor = GetBackgroundColour();
+
+        if (topPadding <= 0 || existingBar is not null || backgroundColor is null)
+        {
+            return;
+        }
+
+        var statusBar = new UIView(new CGRect(0, 0, width, topPadding))
+        {
+            BackgroundColor = backgroundColor.ToPlatform(),
+            Tag = statusBarTag
+        };
+        View.AddSubview(statusBar);
+    }
+
+    private static Color GetBackgroundColour()
+    {
+        if (Application.Current?.Resources.TryGetValue("Background", out var background) is true && background is Color backgroundColor)
+        {
+            return backgroundColor;
+        }
+
+        return null;
+    }
+
+    private async Task AddOrUpdateMiddleViewAsync()
+    {
         if (View is null || ShellItem is not CustomTabBar { CenterViewVisible: true } tabBar)
         {
             return;
@@ -48,7 +91,7 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
             _middleView.TouchUpInside += delegate
             {
                 tabBar.CenterView_Tapped();
-            };;
+            };
         }
 
         _middleView.Center = new CGPoint(View.Bounds.GetMidX(), TabBar.Frame.Top + BorderWidth);
