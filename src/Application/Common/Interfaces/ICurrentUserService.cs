@@ -6,4 +6,5 @@ public interface ICurrentUserService
     string GetUserEmail();
     string GetUserFullName();
     string? GetUserProfilePic();
+    bool IsInRole(string role);
 }

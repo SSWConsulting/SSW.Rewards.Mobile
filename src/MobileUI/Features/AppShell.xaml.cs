@@ -12,8 +12,11 @@ public partial class AppShell
     {
         BindingContext = this;
         InitializeComponent();
+
+        // Register routes for navigation
+        Routing.RegisterRoute("postdetail", typeof(PostDetailPage));
     }
-    
+
     protected override bool OnBackButtonPressed()
     {
         // Close the flyout if it's open instead of closing the app
@@ -32,16 +35,16 @@ public partial class AppShell
 
         return base.OnBackButtonPressed();
     }
-    
+
     private void Button_Clicked(object sender, EventArgs e)
     {
         Current.GoToAsync("//scan");
     }
-    
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
-		
+
 #if IOS
         // Workaround for filling the gap above our custom top bar on iOS
         // See: https://github.com/drasticactions/MauiRepros/blob/main/StatusBarHack/MainPage.xaml.cs#L30-L52
@@ -52,7 +55,7 @@ public partial class AppShell
 
         var topPadding = window?.SafeAreaInsets.Top ?? 0;
         Application.Current.Resources.TryGetValue("Background", out var background);
-        
+
         if (background is not Color backgroundColor)
         {
             return;

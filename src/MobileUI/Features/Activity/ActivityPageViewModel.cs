@@ -13,7 +13,8 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public enum ActivityPageSegments
 {
     All,
-    Friends
+    Friends,
+    Posts
 }
 
 public partial class ActivityPageViewModel : BaseViewModel
@@ -26,10 +27,13 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     public ObservableRangeCollection<ActivityFeedItemDto> Feed { get; set; } = [];
 
+    public PostListViewModel PostsViewModel { get; }
+
     public List<Segment> Segments { get; set; } =
     [
         new() { Name = "All", Value = ActivityPageSegments.All },
-        new() { Name = "Friends", Value = ActivityPageSegments.Friends }
+        new() { Name = "Friends", Value = ActivityPageSegments.Friends },
+        new() { Name = "Posts", Value = ActivityPageSegments.Posts }
     ];
 
     [ObservableProperty]
@@ -37,6 +41,12 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     [ObservableProperty]
     private bool _isRefreshing;
+
+    [ObservableProperty]
+    private bool _showActivityFeed = true;
+
+    [ObservableProperty]
+    private bool _showPosts;
 
     private bool _loaded;
 
@@ -46,11 +56,13 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     private int _myUserId;
 
-    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, IAlertService alertService)
+    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, PostListViewModel postsViewModel, IAlertService alertService)
     {
         _activityService = activityService;
         _serviceProvider = serviceProvider;
         _alertService = alertService;
+        PostsViewModel = postsViewModel;
+        
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
@@ -151,10 +163,22 @@ public partial class ActivityPageViewModel : BaseViewModel
         }
 
         CurrentSegment = (ActivityPageSegments)SelectedSegment.Value;
-        _limitReached = false;
-        _skip = 0;
 
-        await LoadFeed();
+        // Update visibility based on selected segment
+        ShowPosts = CurrentSegment == ActivityPageSegments.Posts;
+        ShowActivityFeed = !ShowPosts;
+
+        if (ShowPosts)
+        {
+            // Load posts when switching to Posts tab
+            await PostsViewModel.InitialiseAsync();
+        }
+        else
+        {
+            _limitReached = false;
+            _skip = 0;
+            await LoadFeed();
+        }
     }
 
     [RelayCommand]

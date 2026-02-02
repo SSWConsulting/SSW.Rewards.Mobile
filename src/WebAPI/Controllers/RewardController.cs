@@ -67,7 +67,7 @@ public class RewardController : ApiControllerBase
             CarouselImageFileName = dto.CarouselImageFileName,
             IsCarousel = dto.IsCarousel
         };
-        
+
         return Ok(await Mediator.Send(command));
     }
 
@@ -90,7 +90,7 @@ public class RewardController : ApiControllerBase
             ClaimInPerson = claim.InPerson
         }));
     }
-    
+
     [HttpPost]
     [Authorize(Policy = Policies.MobileApp)]
     public async Task<ActionResult<CreatePendingRedemptionResult>> CreatePendingRedemption(CreatePendingRedemptionDto claim)
@@ -100,7 +100,7 @@ public class RewardController : ApiControllerBase
             Id = claim.Id,
         }));
     }
-    
+
     [HttpPost]
     [Authorize(Policy = Policies.MobileApp)]
     public async Task<ActionResult<CancelPendingRedemptionResult>> CancelPendingRedemption(CancelPendingRedemptionDto claim)
