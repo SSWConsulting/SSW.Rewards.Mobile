@@ -81,6 +81,7 @@ public static class DependencyInjection
         services.AddSingleton<IRewardAdminService, RewardAdminService>();
         services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
         services.AddSingleton<IFirstRunService, FirstRunService>();
+        services.AddSingleton<IAlertService, AlertService>();
 
         // Configure authentication options
         services.Configure<AuthenticationOptions>(options =>

@@ -21,6 +21,7 @@ public partial class ActivityPageViewModel : BaseViewModel
 {
     private readonly IActivityFeedService _activityService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IAlertService _alertService;
 
     private ActivityPageSegments CurrentSegment { get; set; }
 
@@ -55,12 +56,13 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     private int _myUserId;
 
-    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, PostListViewModel postsViewModel)
+    public ActivityPageViewModel(IActivityFeedService activityService, IUserService userService, IServiceProvider serviceProvider, PostListViewModel postsViewModel, IAlertService alertService)
     {
         _activityService = activityService;
         _serviceProvider = serviceProvider;
+        _alertService = alertService;
         PostsViewModel = postsViewModel;
-
+        
         userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
@@ -127,7 +129,7 @@ public partial class ActivityPageViewModel : BaseViewModel
         {
             if (!await ExceptionHandler.HandleApiException(e))
             {
-                await Shell.Current.DisplayAlert("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
+                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the activity feed. Please try again soon.", "OK");
             }
         }
 
