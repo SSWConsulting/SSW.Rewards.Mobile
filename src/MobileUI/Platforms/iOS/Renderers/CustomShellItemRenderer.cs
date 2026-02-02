@@ -30,6 +30,7 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
         if (View is null) return;
         
         var topPadding = View.Window?.SafeAreaInsets.Top ?? 0;
+        var width = View.Bounds.Width;
         var existingBar = View.ViewWithTag(statusBarTag);
         var backgroundColor = GetBackgroundColour();
 
@@ -38,9 +39,9 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
             return;
         }
 
-        var statusBar = new UIView(new CGRect(0, 0, UIKit.UIScreen.MainScreen.Bounds.Size.Width, topPadding))
+        var statusBar = new UIView(new CGRect(0, 0, width, topPadding))
         {
-            BackgroundColor = UIColor.FromRGB(backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue),
+            BackgroundColor = backgroundColor.ToPlatform(),
             Tag = statusBarTag
         };
         View.AddSubview(statusBar);
@@ -48,7 +49,7 @@ internal class CustomShellItemRenderer(IShellContext context) : ShellItemRendere
 
     private static Color GetBackgroundColour()
     {
-        if (Application.Current?.Resources.TryGetValue("Background", out var background) == true && background is Color backgroundColor)
+        if (Application.Current?.Resources.TryGetValue("Background", out var background) is true && background is Color backgroundColor)
         {
             return backgroundColor;
         }
