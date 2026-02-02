@@ -6,6 +6,9 @@ public partial class AppShell
     {
         BindingContext = this;
         InitializeComponent();
+
+        // Register routes for navigation
+        Routing.RegisterRoute("postdetail", typeof(PostDetailPage));
     }
     
     protected override bool OnBackButtonPressed()
