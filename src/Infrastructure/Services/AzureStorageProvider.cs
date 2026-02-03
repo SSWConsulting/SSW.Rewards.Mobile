@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using SSW.Rewards.Application.Common.Exceptions;
 using SSW.Rewards.Application.Common.Interfaces;
 
@@ -17,7 +18,7 @@ public class AzureStorageProvider : IStorageProvider
     {
         var container = _client.GetBlobContainerClient(containerName);
 
-        await container.CreateIfNotExistsAsync();
+        await container.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
         var blob = container.GetBlobClient(filename);
 
