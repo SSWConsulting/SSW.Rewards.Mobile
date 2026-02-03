@@ -107,9 +107,9 @@
                     </MudAlert>
                 }
             }
-            else if (IsEdit && !_model.IsPublished && ExistingPost != null && !ExistingPost.IsPublished)
+            else if (IsEdit && _model.IsPublished && ExistingPost != null && !ExistingPost.IsPublished)
             {
-                // If editing a draft, show the notification option only when publishing
+                // If editing a draft and now publishing it, show the notification option
                 <MudCheckBox @bind-Value="_model.SendNotification"
                              Label="Send push notification when publishing"
                              Color="Color.Primary"
