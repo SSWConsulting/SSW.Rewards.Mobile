@@ -1,4 +1,4 @@
-﻿using Maui.BindableProperty.Generator.Core;
+﻿using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -8,11 +8,19 @@ public partial class Podium : ContentView
 	{
 		InitializeComponent();
 	}
+    
+    [BindableProperty(PropertyChangedMethodName = nameof(OnLeaderChanged))]
+    public partial LeaderViewModel Leader { get; set; }
 
-	[AutoBindable(OnChanged = nameof(LeaderChanged))]
-	private LeaderViewModel _leader;
+	private static void OnLeaderChanged(BindableObject bindable, object oldValue, object newValue)
+	{
+		var control = (Podium)bindable;
+		var leader = (LeaderViewModel)newValue;
+		
+		_ = control.UpdateLeaderAsync(leader);
+	}
 
-	private async Task LeaderChanged(LeaderViewModel leader)
+	private async Task UpdateLeaderAsync(LeaderViewModel leader)
 	{
 		if (leader is null)
 		{

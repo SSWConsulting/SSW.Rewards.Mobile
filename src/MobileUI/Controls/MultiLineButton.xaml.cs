@@ -1,26 +1,35 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
 public partial class MultiLineButton
 {
-    [CommunityToolkit.Maui.BindableProperty]
+    private static readonly Lazy<Color> DefaultBackgroundColor = new(() =>
+        App.Current?.Resources.TryGetValue("SSWRed", out var color) == true && color is Color c
+            ? c
+            : Colors.Red); // Fallback color if resource not found
+
+    [BindableProperty]
     public partial string Text { get; set; }
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial Color TextColor { get; set; } = Colors.White;
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial int FontSize { get; set; } = 14;
-    
-    [CommunityToolkit.Maui.BindableProperty]
-    public new partial Color BackgroundColor { get; set; } = App.Current.Resources["SSWRed"] as Color;
-    
-    [CommunityToolkit.Maui.BindableProperty]
+
+    [BindableProperty]
+    public new partial Color BackgroundColor { get; set; }
+
+    [BindableProperty]
     public partial ICommand Command { get; set; }
-    
+
     public MultiLineButton()
     {
         InitializeComponent();
+        
+        // Set default background color after initialization
+        BackgroundColor ??= DefaultBackgroundColor.Value;
     }
 }

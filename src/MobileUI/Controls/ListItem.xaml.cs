@@ -1,40 +1,41 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class ListItem
+public partial class ListItem : Border
 {
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial string ThumbnailImage { get; set; }
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial string PlaceholderGlyph { get; set; } = "\uf03e";
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial string Title { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial string Description { get; set; }
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial int Points { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial string ButtonText { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial IAsyncRelayCommand ButtonCommand { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial bool ShowTick { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial bool IsDisabled { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial bool IsButtonDisabled { get; set; }
 
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial int ItemId { get; set; } = -1;
 
     public ListItem()

@@ -1,4 +1,4 @@
-﻿
+﻿using CommunityToolkit.Maui;
 using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.Controls;
@@ -8,19 +8,19 @@ public partial class Search
     private const string DismissIcon = "\ue4c3";
     private const string SearchIcon = "\uea7c";
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial Color BorderColor { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial Color TextColor { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial ICommand Command { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty]
+    [BindableProperty]
     public partial bool ClearSearch { get; set; }
     
-    [CommunityToolkit.Maui.BindableProperty(PropertyChangedMethodName = nameof(OnPlaceholderChanged))]
+    [BindableProperty(PropertyChangedMethodName = nameof(OnPlaceholderChanged))]
     public partial string Placeholder { get; set; }
     
     private static void OnPlaceholderChanged(BindableObject bindable, object oldValue, object newValue)
@@ -31,7 +31,7 @@ public partial class Search
         search.SearchEntry.Placeholder = placeholder;
     }
     
-    [CommunityToolkit.Maui.BindableProperty(PropertyChangedMethodName = nameof(OnIsSearchingChanged))]
+    [BindableProperty(PropertyChangedMethodName = nameof(OnIsSearchingChanged))]
     public partial bool IsSearching { get; set; }
 
     private static void OnIsSearchingChanged(BindableObject bindable, object oldValue, object newValue)
