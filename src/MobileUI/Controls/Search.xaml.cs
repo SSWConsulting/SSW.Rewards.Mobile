@@ -12,9 +12,6 @@ public partial class Search : Border
     public partial Color BorderColor { get; set; }
     
     [BindableProperty]
-    public partial Color TextColor { get; set; }
-    
-    [BindableProperty]
     public partial ICommand Command { get; set; }
     
     [BindableProperty]

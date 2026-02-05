@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using AsyncAwaitBestPractices;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -17,7 +18,7 @@ public partial class Podium : ContentView
 		var control = (Podium)bindable;
 		var leader = (LeaderViewModel)newValue;
 		
-		_ = control.UpdateLeaderAsync(leader);
+        control.UpdateLeaderAsync(leader).SafeFireAndForget();
 	}
 
 	private async Task UpdateLeaderAsync(LeaderViewModel leader)
@@ -45,7 +46,7 @@ public partial class Podium : ContentView
 		await RunAnimations(leader.Rank);
 	}
 
-	private string GetIcon(int rank)
+	private static string GetIcon(int rank)
 	{
         return rank switch
 		{
@@ -56,7 +57,7 @@ public partial class Podium : ContentView
         };
     }
 
-	private string GetName(string name)
+	private static string GetName(string name)
 	{
 		var names = name.Split(' ');
 		if (names.Length > 1)
@@ -69,7 +70,7 @@ public partial class Podium : ContentView
         }
 	}
 
-	private double GetFontSize(int rank)
+	private static double GetFontSize(int rank)
 	{
 		return rank switch
 		{

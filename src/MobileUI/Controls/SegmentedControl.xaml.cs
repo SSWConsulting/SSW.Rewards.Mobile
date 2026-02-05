@@ -66,7 +66,7 @@ public partial class SegmentedControl : ContentView
 
     private void SetSelected(Segment segment)
     {
-        if (segment == null)
+        if (segment == null || Segments == null)
         {
             return;
         }
