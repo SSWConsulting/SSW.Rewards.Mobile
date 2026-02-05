@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class Search
+public partial class Search : Border
 {
     private const string DismissIcon = "\ue4c3";
     private const string SearchIcon = "\uea7c";
