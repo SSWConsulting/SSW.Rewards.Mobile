@@ -4,74 +4,20 @@ namespace SSW.Rewards.Mobile.Controls;
 
 public partial class MultiLineButton
 {
-    public string Text
-    {
-        get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
+    [CommunityToolkit.Maui.BindableProperty]
+    public partial string Text { get; set; }
 
-    public static readonly BindableProperty TextProperty =
-        BindableProperty.Create(
-            nameof(Text),
-            typeof(string),
-            typeof(MultiLineButton),
-            string.Empty
-        );
+    [CommunityToolkit.Maui.BindableProperty]
+    public partial Color TextColor { get; set; } = Colors.White;
+
+    [CommunityToolkit.Maui.BindableProperty]
+    public partial int FontSize { get; set; } = 14;
     
-    public Color TextColor
-    {
-        get => (Color)GetValue(TextColorProperty);
-        set => SetValue(TextColorProperty, value);
-    }
-
-    public static readonly BindableProperty TextColorProperty =
-        BindableProperty.Create(
-            nameof(TextColor),
-            typeof(Color),
-            typeof(MultiLineButton),
-            Colors.White
-        );
+    [CommunityToolkit.Maui.BindableProperty]
+    public new partial Color BackgroundColor { get; set; } = App.Current.Resources["SSWRed"] as Color;
     
-    public int FontSize
-    {
-        get => (int)GetValue(FontSizeProperty);
-        set => SetValue(FontSizeProperty, value);
-    }
-
-    public static readonly BindableProperty FontSizeProperty =
-        BindableProperty.Create(
-            nameof(FontSize),
-            typeof(int),
-            typeof(MultiLineButton),
-            14
-        );
-    
-    public new Color BackgroundColor
-    {
-        get => (Color)GetValue(BackgroundColorProperty);
-        set => SetValue(BackgroundColorProperty, value);
-    }
-
-    public new static readonly BindableProperty BackgroundColorProperty =
-        BindableProperty.Create(
-            nameof(BackgroundColor),
-            typeof(Color),
-            typeof(MultiLineButton),
-            App.Current.Resources["SSWRed"] as Color
-        );
-    
-    public ICommand Command
-    {
-        get => (ICommand)GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
-    }
-
-    public static readonly BindableProperty CommandProperty =
-        BindableProperty.Create(
-            nameof(Command),
-            typeof(ICommand),
-            typeof(MultiLineButton)
-        );
+    [CommunityToolkit.Maui.BindableProperty]
+    public partial ICommand Command { get; set; }
     
     public MultiLineButton()
     {
