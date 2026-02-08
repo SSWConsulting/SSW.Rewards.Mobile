@@ -1,9 +1,8 @@
 
 namespace SSW.Rewards.Domain.Entities;
 
-public class TenantSettings
+public class TenantSettings : BaseAuditableEntity
 {
-    public int Id { get; set; }
     public int TenantId { get; set; }
     public Tenant Tenant { get; set; } = null!;
 
