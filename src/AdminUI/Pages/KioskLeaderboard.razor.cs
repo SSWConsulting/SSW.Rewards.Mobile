@@ -7,7 +7,7 @@ using SSW.Rewards.Shared.DTOs.Leaderboard;
 
 namespace SSW.Rewards.Admin.UI.Pages;
 
-public partial class KioskLeaderboard : IDisposable
+public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 {
     private const int DefaultPageSize = 30;
     private const int MinPageSize = 10;
@@ -32,6 +32,9 @@ public partial class KioskLeaderboard : IDisposable
     private int _totalPages = 1;
     private double _scrollProgress;
     private int _resolvedPageSize = DefaultPageSize;
+    private bool _disposed;
+    private DotNetObjectReference<KioskLeaderboard>? _dotNetRef;
+    private string? _viewportSubscriptionId;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
 
@@ -113,6 +116,14 @@ public partial class KioskLeaderboard : IDisposable
         }
 
         await ResolvePageSizeAsync();
+
+        if (!Rows.HasValue)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            _viewportSubscriptionId = await JsRuntime.InvokeAsync<string>(
+                "kioskLeaderboard.subscribeViewportChanges", _dotNetRef);
+        }
+
         await LoadLeaderboard();
     }
 
@@ -209,6 +220,28 @@ public partial class KioskLeaderboard : IDisposable
         return Math.Clamp(rows, MinPageSize, MaxPageSize);
     }
 
+    [JSInvokable]
+    public async Task OnViewportChanged(int width, int height)
+    {
+        if (Rows.HasValue)
+        {
+            return;
+        }
+
+        var newPageSize = CalculateAutoPageSize(width, height);
+        if (newPageSize == _resolvedPageSize)
+        {
+            return;
+        }
+
+        _resolvedPageSize = newPageSize;
+        _currentPage = 0;
+        _totalPages = 1;
+        _scrollProgress = 0;
+
+        await LoadLeaderboard();
+    }
+
     private async Task OnTabChanged(int tabIndex)
     {
         _activeTabIndex = tabIndex;
@@ -244,6 +277,11 @@ public partial class KioskLeaderboard : IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _refreshTimer?.Stop();
         _refreshTimer?.Dispose();
         _countdownTimer?.Stop();
@@ -252,6 +290,25 @@ public partial class KioskLeaderboard : IDisposable
         _scrollTimer?.Dispose();
         _progressTimer?.Stop();
         _progressTimer?.Dispose();
+        _dotNetRef?.Dispose();
+        _disposed = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (!_disposed && !string.IsNullOrWhiteSpace(_viewportSubscriptionId))
+        {
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("kioskLeaderboard.unsubscribeViewportChanges", _viewportSubscriptionId);
+            }
+            catch (JSDisconnectedException)
+            {
+                // JS runtime disconnected during teardown; safe to ignore.
+            }
+        }
+
+        Dispose();
     }
 
     private class ViewportSize
