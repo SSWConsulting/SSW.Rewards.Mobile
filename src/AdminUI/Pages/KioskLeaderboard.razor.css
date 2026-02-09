@@ -28,11 +28,8 @@
 }
 
 .kiosk-table-wrapper {
-    flex: 1;
-    min-height: 0;
     display: flex;
     justify-content: center;
-    overflow: hidden;
 }
 
 .kiosk-user-meta {

@@ -6,7 +6,7 @@
 
 @inject SSW.Rewards.ApiClient.Services.ILeaderboardService leaderboardService
 
-<MudPaper Class="kiosk-leaderboard" Style="padding: 1rem 2rem; height: 100vh; background: #121212; color: #fafafa; display: flex; flex-direction: column; overflow: hidden;">
+<MudPaper Class="kiosk-leaderboard" Style="padding: 1rem 2rem; min-height: 100vh; background: #121212; color: #fafafa;">
     <div class="kiosk-header">
         <div class="kiosk-header-center">
             <MudImage Src="/images/ssw-rewards-logo.svg" Style="height: 60px;" />
@@ -59,6 +59,7 @@
                     </MudTd>
                     <MudTd Style="width: 160px; text-align: center;" DataLabel="Points">@row.Points.ToString("N0")</MudTd>
                 </RowTemplate>
+                <PagerContent></PagerContent>
             </MudTable>
             @if (_totalPages > 1)
             {

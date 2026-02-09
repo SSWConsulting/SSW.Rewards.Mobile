@@ -9,7 +9,7 @@ namespace SSW.Rewards.Admin.UI.Pages;
 
 public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 {
-    private const int DefaultPageSize = 30;
+    private const int DefaultPageSize = 15;
     private const int MinPageSize = 10;
     private const int MaxPageSize = 40;
     private const int RefreshIntervalSeconds = 60;
@@ -186,15 +186,25 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             return;
         }
 
-        try
+        // Retry up to 5 times (scripts may not be loaded yet on first render)
+        for (var attempt = 0; attempt < 5; attempt++)
         {
-            var viewport = await JsRuntime.InvokeAsync<ViewportSize>("kioskLeaderboard.getViewport");
-            _resolvedPageSize = CalculateAutoPageSize(viewport.Width, viewport.Height);
+            try
+            {
+                var viewport = await JsRuntime.InvokeAsync<ViewportSize>("kioskLeaderboard.getViewport");
+                _resolvedPageSize = CalculateAutoPageSize(viewport.Width, viewport.Height);
+                return;
+            }
+            catch
+            {
+                if (attempt < 4)
+                {
+                    await Task.Delay(100);
+                }
+            }
         }
-        catch
-        {
-            _resolvedPageSize = DefaultPageSize;
-        }
+
+        _resolvedPageSize = DefaultPageSize;
     }
 
     private static int CalculateAutoPageSize(int width, int height)
