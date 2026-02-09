@@ -36,8 +36,10 @@
 .kiosk-user-meta {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 0.05rem;
     min-width: 0;
+    height: 3rem;
 }
 
 .kiosk-x-handle {
@@ -114,6 +116,8 @@
 ::deep .kiosk-leaderboard-table .mud-table-cell {
     font-size: 1rem;
     padding: 0.7rem;
+    height: 52px;
+    box-sizing: border-box;
 }
 
 .scroll-progress-container {
