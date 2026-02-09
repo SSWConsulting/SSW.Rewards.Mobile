@@ -29,6 +29,49 @@
     line-height: 1.1;
 }
 
+.kiosk-download-widget {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    width: 210px;
+    background: linear-gradient(180deg, #1b202a, #131821);
+    border: 1px solid #3a4659;
+    border-bottom: 2px solid #CC4141;
+    border-radius: 12px;
+    padding: 0.55rem 0.55rem 0.45rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+    z-index: 40;
+}
+
+.kiosk-download-title {
+    display: block;
+    color: #dfe7f4;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+    margin-bottom: 0.4rem;
+}
+
+.kiosk-download-qr {
+    width: 100%;
+    border-radius: 8px;
+    background: #fff;
+    padding: 0.3rem;
+    display: block;
+}
+
+.kiosk-download-link {
+    display: block;
+    margin-top: 0.38rem;
+    color: #8db5ff !important;
+    font-size: 0.69rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 ::deep .kiosk-tabs .mud-tabs-toolbar {
     justify-content: center;
     background: #222;
@@ -121,5 +164,11 @@
         flex-direction: column;
         align-items: center;
         gap: 0.35rem;
+    }
+
+    .kiosk-download-widget {
+        width: 180px;
+        right: 0.65rem;
+        bottom: 0.65rem;
     }
 }

@@ -9,6 +9,8 @@ namespace SSW.Rewards.Admin.UI.Pages;
 
 public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 {
+    private const string SmartDownloadUrl = "https://rewards.ssw.com.au/download/app";
+    private const string SmartDownloadDisplayUrl = "rewards.ssw.com.au/download/app";
     private const int DefaultPageSize = 30;
     private const int MinPageSize = 10;
     private const int MaxPageSize = 40;
@@ -316,4 +318,7 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         public int Width { get; set; }
         public int Height { get; set; }
     }
+
+    private static string DownloadQrCodeUrl =>
+        $"https://api.qrserver.com/v1/create-qr-code/?size=320x320&data={Uri.EscapeDataString(SmartDownloadUrl)}";
 }

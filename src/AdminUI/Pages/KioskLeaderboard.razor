@@ -82,4 +82,15 @@
             }
         </div>
     }
+    <div class="kiosk-download-widget">
+        <MudText Typo="Typo.caption" Class="kiosk-download-title">GET THE APP</MudText>
+        <MudImage Src="@DownloadQrCodeUrl" Alt="Download SSW Rewards app" Class="kiosk-download-qr" />
+        <MudLink Href="@SmartDownloadUrl"
+                 Target="_blank"
+                 Rel="noopener noreferrer"
+                 Typo="Typo.caption"
+                 Class="kiosk-download-link">
+            @SmartDownloadDisplayUrl
+        </MudLink>
+    </div>
 </MudPaper>
