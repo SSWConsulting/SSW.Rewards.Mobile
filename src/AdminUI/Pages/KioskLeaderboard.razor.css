@@ -1,3 +1,22 @@
+.kiosk-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.75rem;
+    text-align: center;
+    margin-top: 0.25rem;
+}
+
+.kiosk-title {
+    color: #fafafa;
+    font-weight: 700;
+}
+
+.kiosk-tagline {
+    color: #aaa;
+}
+
 ::deep .kiosk-tabs .mud-tabs-toolbar {
     justify-content: center;
     background: #222;
@@ -83,4 +102,12 @@
     background: #CC4141;
     border-radius: 0 0 0 16px;
     transition: width 100ms linear;
+}
+
+@media (max-width: 768px) {
+    .kiosk-title-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+    }
 }

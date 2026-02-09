@@ -1,4 +1,5 @@
 using MudBlazor;
+using Microsoft.AspNetCore.Components;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
@@ -7,7 +8,9 @@ namespace SSW.Rewards.Admin.UI.Pages;
 
 public partial class KioskLeaderboard : IDisposable
 {
-    private const int PageSize = 30;
+    private const int DefaultPageSize = 30;
+    private const int MinPageSize = 5;
+    private const int MaxPageSize = 100;
     private const int RefreshIntervalSeconds = 60;
     private const int ScrollIntervalSeconds = 10;
 
@@ -29,6 +32,11 @@ public partial class KioskLeaderboard : IDisposable
     private double _scrollProgress;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
+
+    [SupplyParameterFromQuery(Name = "rows")]
+    public int? Rows { get; set; }
+
+    private int PageSize => Math.Clamp(Rows ?? DefaultPageSize, MinPageSize, MaxPageSize);
 
     protected override async Task OnInitializedAsync()
     {
