@@ -1,4 +1,5 @@
-﻿using Maui.BindableProperty.Generator.Core;
+﻿using AsyncAwaitBestPractices;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -8,11 +9,19 @@ public partial class Podium : ContentView
 	{
 		InitializeComponent();
 	}
+    
+    [BindableProperty(PropertyChangedMethodName = nameof(OnLeaderChanged))]
+    public partial LeaderViewModel Leader { get; set; }
 
-	[AutoBindable(OnChanged = nameof(LeaderChanged))]
-	private LeaderViewModel _leader;
+	private static void OnLeaderChanged(BindableObject bindable, object oldValue, object newValue)
+	{
+		var control = (Podium)bindable;
+		var leader = (LeaderViewModel)newValue;
+		
+        control.UpdateLeaderAsync(leader).SafeFireAndForget();
+	}
 
-	private async Task LeaderChanged(LeaderViewModel leader)
+	private async Task UpdateLeaderAsync(LeaderViewModel leader)
 	{
 		if (leader is null)
 		{
@@ -37,7 +46,7 @@ public partial class Podium : ContentView
 		await RunAnimations(leader.Rank);
 	}
 
-	private string GetIcon(int rank)
+	private static string GetIcon(int rank)
 	{
         return rank switch
 		{
@@ -48,7 +57,7 @@ public partial class Podium : ContentView
         };
     }
 
-	private string GetName(string name)
+	private static string GetName(string name)
 	{
 		var names = name.Split(' ');
 		if (names.Length > 1)
@@ -61,7 +70,7 @@ public partial class Podium : ContentView
         }
 	}
 
-	private double GetFontSize(int rank)
+	private static double GetFontSize(int rank)
 	{
 		return rank switch
 		{
