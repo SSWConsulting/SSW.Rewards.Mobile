@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .kiosk-header-center {

@@ -9,8 +9,6 @@ namespace SSW.Rewards.Admin.UI.Pages;
 
 public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 {
-    private const string SmartDownloadUrl = "https://rewards.ssw.com.au/download/app";
-    private const string SmartDownloadDisplayUrl = "rewards.ssw.com.au/download/app";
     private const int DefaultPageSize = 30;
     private const int MinPageSize = 10;
     private const int MaxPageSize = 40;
@@ -29,6 +27,7 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
     private DateTime? _lastUpdated;
     private bool _hasErrorsOnUpdate;
     private int _secondsUntilRefresh = RefreshIntervalSeconds;
+    private bool _isRefreshingNow;
 
     private int _currentPage;
     private int _totalPages = 1;
@@ -200,24 +199,15 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 
     private static int CalculateAutoPageSize(int width, int height)
     {
-        var rows = height switch
-        {
-            >= 1800 => 35,
-            >= 1300 => 30,
-            >= 1100 => 27,
-            >= 900 => 24,
-            _ => 20
-        };
+        // Chrome: header (~90px) + tabs (~60px) + footer (~70px) + padding (~40px)
+        const int chromeHeight = 260;
+        // Table header row + progress bar
+        const int tableChrome = 48;
+        // Each data row: avatar + padding
+        const int rowHeight = 44;
 
-        if (width < 1200)
-        {
-            rows -= 2;
-        }
-
-        if (width < 900)
-        {
-            rows -= 2;
-        }
+        var availableHeight = height - chromeHeight - tableChrome;
+        var rows = Math.Max(MinPageSize, availableHeight / rowHeight);
 
         return Math.Clamp(rows, MinPageSize, MaxPageSize);
     }
@@ -267,6 +257,14 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         await LoadLeaderboard();
     }
 
+    private string GetPeriodLabel() => _selectedFilter switch
+    {
+        LeaderboardFilter.ThisWeek => "this week",
+        LeaderboardFilter.ThisMonth => "this month",
+        LeaderboardFilter.ThisYear => "this year",
+        _ => "yet"
+    };
+
     private string GetTimeAgoText()
     {
         if (_lastUpdated is null) return "never";
@@ -275,6 +273,34 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         if (elapsed.TotalSeconds < 30) return "just now";
         if (elapsed.TotalMinutes < 1.5) return "1 minute ago";
         return $"{(int)elapsed.TotalMinutes} minutes ago";
+    }
+
+    private string GetLastRefreshedDateText()
+        => _lastUpdated?.ToString("dd MMM yyyy HH:mm:ss") ?? "never";
+
+    private string GetNextRefreshDateText()
+        => DateTime.Now.AddSeconds(Math.Max(0, _secondsUntilRefresh)).ToString("dd MMM yyyy HH:mm:ss");
+
+    private async Task UpdateNowAsync()
+    {
+        if (_isRefreshingNow)
+        {
+            return;
+        }
+
+        _isRefreshingNow = true;
+        try
+        {
+            _secondsUntilRefresh = RefreshIntervalSeconds;
+            _currentPage = 0;
+            _scrollProgress = 0;
+            await LoadLeaderboard();
+        }
+        finally
+        {
+            _isRefreshingNow = false;
+            StateHasChanged();
+        }
     }
 
     public void Dispose()
@@ -319,6 +345,4 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         public int Height { get; set; }
     }
 
-    private static string DownloadQrCodeUrl =>
-        $"https://api.qrserver.com/v1/create-qr-code/?size=320x320&data={Uri.EscapeDataString(SmartDownloadUrl)}";
 }
