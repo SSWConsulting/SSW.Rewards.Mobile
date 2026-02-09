@@ -7,16 +7,14 @@
 @inject SSW.Rewards.ApiClient.Services.ILeaderboardService leaderboardService
 
 <MudPaper Class="kiosk-leaderboard" Style="padding: 2rem; margin-top: 0.5rem; min-height: 100vh; background: #121212; color: #fafafa;">
-    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.25rem;">
-        <MudImage Src="/images/ssw-rewards-logo.svg" Class="mb-2" Style="height: 60px; margin: 0 auto; display: block;" />
-        <div class="kiosk-title-row">
-            <MudText Typo="Typo.h6" Class="kiosk-title">
-                Rewards (Mobile app)
-            </MudText>
-            <MudText Typo="Typo.subtitle2" Class="kiosk-tagline">
-                Use this app to scan SSW QR codes, earn SSW Points, claim rewards and win prizes!
+    <div class="kiosk-header">
+        <div class="kiosk-header-center">
+            <MudImage Src="/images/ssw-rewards-logo.svg" Style="height: 60px;" />
+            <MudText Typo="Typo.caption" Class="kiosk-tagline">
+                Scan QR codes, earn points, win prizes!
             </MudText>
         </div>
+        <KioskDownloadPanel Compact="true" Class="kiosk-header-qr" />
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
         <div style="width: 600px; max-width: 100%;">
@@ -36,6 +34,11 @@
                     <MudTh Style="width: 320px;">Name</MudTh>
                     <MudTh Style="width: 160px; text-align: center;">Points</MudTh>
                 </HeaderContent>
+                <NoRecordsContent>
+                    <MudText Typo="Typo.body1" Align="Align.Center" Style="padding: 2rem; color: #aaa;">
+                        No one has earned points @GetPeriodLabel() — be the first!
+                    </MudText>
+                </NoRecordsContent>
                 <RowTemplate Context="row">
                     <MudTd Style="width: 80px; text-align: center;" DataLabel="Rank">@row.Rank</MudTd>
                     <MudTd Style="width: 320px;" DataLabel="Name">
@@ -67,30 +70,39 @@
     </div>
     @if (!_hasErrorsOnUpdate)
     {
-        <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #ccc;">
-            Last refreshed: @GetTimeAgoText() (refreshing in @_secondsUntilRefresh seconds)
+        <div class="kiosk-refresh-info">
+            <div>
+                Last refreshed: @GetLastRefreshedDateText() (@GetTimeAgoText())
+            </div>
+            <div>
+                Next update: @GetNextRefreshDateText() (in @_secondsUntilRefresh seconds)
+            </div>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Default"
+                       Size="Size.Small"
+                       Disabled="@_isRefreshingNow"
+                       OnClick="UpdateNowAsync"
+                       Class="kiosk-update-now-btn">
+                Update now
+            </MudButton>
         </div>
     }
     else
     {
-        <div style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #FF7A7A;">
+        <div class="kiosk-refresh-info kiosk-refresh-error">
             Could not refresh the leaderboard. Retrying in @_secondsUntilRefresh seconds.
             @if (_lastUpdated != null)
             {
-                <br />
-                <span>Last successful refresh: @GetTimeAgoText()</span>
+                <div>Last successful refresh: @GetLastRefreshedDateText() (@GetTimeAgoText())</div>
             }
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Default"
+                       Size="Size.Small"
+                       Disabled="@_isRefreshingNow"
+                       OnClick="UpdateNowAsync"
+                       Class="kiosk-update-now-btn">
+                Update now
+            </MudButton>
         </div>
     }
-    <div class="kiosk-download-widget">
-        <MudText Typo="Typo.caption" Class="kiosk-download-title">GET THE APP</MudText>
-        <MudImage Src="@DownloadQrCodeUrl" Alt="Download SSW Rewards app" Class="kiosk-download-qr" />
-        <MudLink Href="@SmartDownloadUrl"
-                 Target="_blank"
-                 Rel="noopener noreferrer"
-                 Typo="Typo.caption"
-                 Class="kiosk-download-link">
-            @SmartDownloadDisplayUrl
-        </MudLink>
-    </div>
 </MudPaper>
