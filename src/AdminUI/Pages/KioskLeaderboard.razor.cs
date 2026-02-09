@@ -11,7 +11,7 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 {
     private const int DefaultPageSize = 15;
     private const int MinPageSize = 10;
-    private const int MaxPageSize = 40;
+    private const int MaxPageSize = 22;
     private const int RefreshIntervalSeconds = 60;
     private const int ScrollIntervalSeconds = 10;
 
