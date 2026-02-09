@@ -223,15 +223,17 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
 
     private static int CalculateAutoPageSize(int width, int height)
     {
-        // Chrome: header (~90px) + tabs (~60px) + footer (~70px) + padding (~40px)
-        const int chromeHeight = 260;
+        // Header with QR panel (~200px) + tabs (~50px) + footer (~35px) + page padding (~32px)
+        const int chromeHeight = 320;
         // Table header row + progress bar
         const int tableChrome = 48;
-        // Each data row: avatar + padding
-        const int rowHeight = 44;
+        // Each data row: avatar (40px) + cell padding (12px) = ~52px
+        const int rowHeight = 52;
 
         var availableHeight = height - chromeHeight - tableChrome;
-        var rows = Math.Max(MinPageSize, availableHeight / rowHeight);
+        var rows = availableHeight / rowHeight;
+
+        Console.WriteLine($"[Kiosk] CalculateAutoPageSize: {width}x{height}, available={availableHeight}px, rows={rows}");
 
         return Math.Clamp(rows, MinPageSize, MaxPageSize);
     }
@@ -245,6 +247,8 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         }
 
         var newPageSize = CalculateAutoPageSize(width, height);
+        Console.WriteLine($"[Kiosk] OnViewportChanged: {width}x{height} → {newPageSize} rows (was {_resolvedPageSize})");
+
         if (newPageSize == _resolvedPageSize)
         {
             return;
