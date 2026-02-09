@@ -6,7 +6,7 @@
 
 @inject SSW.Rewards.ApiClient.Services.ILeaderboardService leaderboardService
 
-<MudPaper Class="kiosk-leaderboard" Style="padding: 1rem 2rem; min-height: 100vh; background: #121212; color: #fafafa;">
+<MudPaper Class="kiosk-leaderboard" Style="padding: 0.25rem 2rem 1rem; min-height: 100vh; background: #121212; color: #fafafa;">
     <div class="kiosk-header">
         <div class="kiosk-header-center">
             <MudImage Src="/images/ssw-rewards-logo.svg" Style="height: 60px;" />
@@ -16,7 +16,7 @@
         </div>
         <KioskDownloadPanel Compact="true" Class="kiosk-header-qr" />
     </div>
-    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 0.5rem;">
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 0.25rem;">
         <div style="width: 600px; max-width: 100%;">
             <MudTabs Rounded="true" Centered="true" Class="kiosk-tabs" Style="background: transparent; box-shadow: none; width: 100%;" ActivePanelIndex="@_activeTabIndex">
                 <MudTabPanel Text="Week" OnClick="eventArgs => OnTabChanged(0)" />
@@ -69,6 +69,16 @@
             }
         </div>
     </div>
+    @* Preload profile images to prevent flickering and re-downloading on page
+       changes — the kiosk re-renders the table every 10s (scroll) and 60s (refresh),
+       and external image hosts have inconsistent caching rules. These hidden imgs
+       keep images in the browser's memory cache so MudAvatar loads them instantly. *@
+    <div style="display:none;" aria-hidden="true">
+        @foreach (var url in _preloadedImageUrls)
+        {
+            <img src="@url" @key="url" />
+        }
+    </div>
     <div class="kiosk-refresh-info @(_hasErrorsOnUpdate ? "kiosk-refresh-error" : "")">
         @if (_hasErrorsOnUpdate)
         {
@@ -76,7 +86,8 @@
         }
         else
         {
-            <span>Updated @GetTimeAgoText() · refreshing in @_secondsUntilRefresh s</span>
+            <span>Last refreshed: @GetLastRefreshedDateText()</span>
+            <span>Refreshing in @_secondsUntilRefresh s</span>
         }
         <MudButton Variant="Variant.Text"
                    Color="Color.Default"

@@ -38,6 +38,7 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
     private string? _viewportSubscriptionId;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
+    private readonly HashSet<string> _preloadedImageUrls = new();
 
     [SupplyParameterFromQuery(Name = "rows")]
     public int? Rows { get; set; }
@@ -116,9 +117,7 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             return;
         }
 
-        Console.WriteLine($"[Kiosk] OnAfterRenderAsync: resolving page size (current={_resolvedPageSize})");
         await ResolvePageSizeAsync();
-        Console.WriteLine($"[Kiosk] Page size resolved to: {_resolvedPageSize}");
 
         if (!Rows.HasValue)
         {
@@ -134,20 +133,14 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
     {
         try
         {
-            Console.WriteLine($"[Kiosk] ServerReload: page={_currentPage}, pageSize={_resolvedPageSize}, filter={_selectedFilter}");
-
             var result = await leaderboardService.GetMobilePaginatedLeaderboard(
                 _currentPage, _resolvedPageSize, _selectedFilter, CancellationToken.None);
-
-            Console.WriteLine($"[Kiosk] API returned: {result.Items.Count()} items, Count={result.Count}");
 
             _lastUpdated = DateTime.Now;
             _hasErrorsOnUpdate = false;
 
             // Filter to users with points > 0
             var usersWithPoints = result.Items.Where(u => u.Points > 0).ToList();
-
-            Console.WriteLine($"[Kiosk] After filter: {usersWithPoints.Count} users with points");
 
             // Determine total pages from the full count of users with points
             if (usersWithPoints.Count < _resolvedPageSize)
@@ -163,7 +156,14 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             // MudTable renders ALL items in the callback result — limit to page size
             var pageItems = usersWithPoints.Take(_resolvedPageSize).ToList();
 
-            Console.WriteLine($"[Kiosk] Displaying {pageItems.Count} rows (totalPages={_totalPages})");
+            // Track all seen profile pics so hidden <img> tags can preload them
+            foreach (var item in pageItems)
+            {
+                if (!string.IsNullOrWhiteSpace(item.ProfilePic))
+                {
+                    _preloadedImageUrls.Add(item.ProfilePic);
+                }
+            }
 
             _lastTableCache = new TableData<MobileLeaderboardUserDto>
             {
@@ -174,7 +174,6 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         catch (Exception ex)
         {
             _hasErrorsOnUpdate = true;
-            Console.WriteLine($"[Kiosk] Error in ServerReload: {ex.Message}");
         }
 
         StateHasChanged();
@@ -204,12 +203,10 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             {
                 var viewport = await JsRuntime.InvokeAsync<ViewportSize>("kioskLeaderboard.getViewport");
                 _resolvedPageSize = CalculateAutoPageSize(viewport.Width, viewport.Height);
-                Console.WriteLine($"[Kiosk] Viewport: {viewport.Width}x{viewport.Height} → {_resolvedPageSize} rows (attempt {attempt + 1})");
                 return;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Kiosk] getViewport attempt {attempt + 1} failed: {ex.Message}");
                 if (attempt < 4)
                 {
                     await Task.Delay(100);
@@ -217,7 +214,6 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             }
         }
 
-        Console.WriteLine($"[Kiosk] All viewport attempts failed, using default: {DefaultPageSize}");
         _resolvedPageSize = DefaultPageSize;
     }
 
@@ -233,8 +229,6 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         var availableHeight = height - chromeHeight - tableChrome;
         var rows = availableHeight / rowHeight;
 
-        Console.WriteLine($"[Kiosk] CalculateAutoPageSize: {width}x{height}, available={availableHeight}px, rows={rows}");
-
         return Math.Clamp(rows, MinPageSize, MaxPageSize);
     }
 
@@ -247,8 +241,6 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
         }
 
         var newPageSize = CalculateAutoPageSize(width, height);
-        Console.WriteLine($"[Kiosk] OnViewportChanged: {width}x{height} → {newPageSize} rows (was {_resolvedPageSize})");
-
         if (newPageSize == _resolvedPageSize)
         {
             return;
