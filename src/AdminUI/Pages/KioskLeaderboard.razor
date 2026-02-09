@@ -6,7 +6,7 @@
 
 @inject SSW.Rewards.ApiClient.Services.ILeaderboardService leaderboardService
 
-<MudPaper Class="kiosk-leaderboard" Style="padding: 1rem 2rem; min-height: 100vh; background: #121212; color: #fafafa;">
+<MudPaper Class="kiosk-leaderboard" Style="padding: 1rem 2rem; height: 100vh; background: #121212; color: #fafafa; display: flex; flex-direction: column; overflow: hidden;">
     <div class="kiosk-header">
         <div class="kiosk-header-center">
             <MudImage Src="/images/ssw-rewards-logo.svg" Style="height: 60px;" />
@@ -26,7 +26,7 @@
             </MudTabs>
         </div>
     </div>
-    <div style="display: flex; justify-content: center;">
+    <div class="kiosk-table-wrapper">
         <div style="width: 600px; max-width: 100%;">
             <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;" RowsPerPage="@_resolvedPageSize">
                 <HeaderContent>
@@ -68,41 +68,22 @@
             }
         </div>
     </div>
-    @if (!_hasErrorsOnUpdate)
-    {
-        <div class="kiosk-refresh-info">
-            <div>
-                Last refreshed: @GetLastRefreshedDateText() (@GetTimeAgoText())
-            </div>
-            <div>
-                Next update: @GetNextRefreshDateText() (in @_secondsUntilRefresh seconds)
-            </div>
-            <MudButton Variant="Variant.Text"
-                       Color="Color.Default"
-                       Size="Size.Small"
-                       Disabled="@_isRefreshingNow"
-                       OnClick="UpdateNowAsync"
-                       Class="kiosk-update-now-btn">
-                Update now
-            </MudButton>
-        </div>
-    }
-    else
-    {
-        <div class="kiosk-refresh-info kiosk-refresh-error">
-            Could not refresh the leaderboard. Retrying in @_secondsUntilRefresh seconds.
-            @if (_lastUpdated != null)
-            {
-                <div>Last successful refresh: @GetLastRefreshedDateText() (@GetTimeAgoText())</div>
-            }
-            <MudButton Variant="Variant.Text"
-                       Color="Color.Default"
-                       Size="Size.Small"
-                       Disabled="@_isRefreshingNow"
-                       OnClick="UpdateNowAsync"
-                       Class="kiosk-update-now-btn">
-                Update now
-            </MudButton>
-        </div>
-    }
+    <div class="kiosk-refresh-info @(_hasErrorsOnUpdate ? "kiosk-refresh-error" : "")">
+        @if (_hasErrorsOnUpdate)
+        {
+            <span>Could not refresh. Retrying in @_secondsUntilRefresh seconds.</span>
+        }
+        else
+        {
+            <span>Updated @GetTimeAgoText() · refreshing in @_secondsUntilRefresh s</span>
+        }
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Default"
+                   Size="Size.Small"
+                   Disabled="@_isRefreshingNow"
+                   OnClick="UpdateNowAsync"
+                   Class="kiosk-update-now-btn">
+            Update now
+        </MudButton>
+    </div>
 </MudPaper>
