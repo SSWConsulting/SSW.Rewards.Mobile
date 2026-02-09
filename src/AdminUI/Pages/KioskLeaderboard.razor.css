@@ -17,6 +17,18 @@
     color: #aaa;
 }
 
+.kiosk-user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+}
+
+.kiosk-x-handle {
+    color: #9ca3af;
+    line-height: 1.1;
+}
+
 ::deep .kiosk-tabs .mud-tabs-toolbar {
     justify-content: center;
     background: #222;

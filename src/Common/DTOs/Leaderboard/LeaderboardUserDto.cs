@@ -25,4 +25,6 @@ public class LeaderboardUserDto
     public int Balance => TotalPoints - PointsClaimed;
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Title { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string XHandle { get; set; }
 }

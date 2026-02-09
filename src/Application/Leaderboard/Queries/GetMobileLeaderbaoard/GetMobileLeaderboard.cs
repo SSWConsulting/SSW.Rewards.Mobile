@@ -57,6 +57,7 @@ internal class GetMobileLeaderboardQueryHandler(ILeaderboardService leaderboardS
             Name = user.Name,
             Rank = user.Rank,
             Title = user.Title,
+            XHandle = user.XHandle,
             UserId = user.UserId,
             Points = selectedPoints,
             ProfilePic = user.ProfilePic,

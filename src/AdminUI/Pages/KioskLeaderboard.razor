@@ -30,7 +30,7 @@
     </div>
     <div style="display: flex; justify-content: center;">
         <div style="width: 600px; max-width: 100%;">
-            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;" RowsPerPage="@PageSize">
+            <MudTable @ref="table" TItem="MobileLeaderboardUserDto" ServerData="@ServerReload" FixedHeader="true" Dense="false" Hover="true" Bordered="false" Striped="false" Class="kiosk-leaderboard-table" Style="border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); overflow: hidden; background: #181818;" RowsPerPage="@_resolvedPageSize">
                 <HeaderContent>
                     <MudTh Style="width: 80px; text-align: center;">Rank</MudTh>
                     <MudTh Style="width: 320px;">Name</MudTh>
@@ -41,7 +41,13 @@
                     <MudTd Style="width: 320px;" DataLabel="Name">
                         <div class="d-flex flex-nowrap gap-2 align-center">
                             <Avatar Url="@row.ProfilePic" />
-                            <MudText Typo="Typo.body1">@row.Name</MudText>
+                            <div class="kiosk-user-meta">
+                                <MudText Typo="Typo.body1">@row.Name</MudText>
+                                @if (!string.IsNullOrWhiteSpace(row.XHandle))
+                                {
+                                    <MudText Typo="Typo.caption" Class="kiosk-x-handle">@($"@{row.XHandle}")</MudText>
+                                }
+                            </div>
                             @if (row.Rank == 1)
                             {
                                 <MudText Typo="Typo.body1">&#x1F451;</MudText>

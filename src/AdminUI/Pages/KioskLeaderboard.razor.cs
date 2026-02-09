@@ -1,5 +1,6 @@
 using MudBlazor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Enums;
 using SSW.Rewards.Shared.DTOs.Leaderboard;
@@ -9,8 +10,8 @@ namespace SSW.Rewards.Admin.UI.Pages;
 public partial class KioskLeaderboard : IDisposable
 {
     private const int DefaultPageSize = 30;
-    private const int MinPageSize = 5;
-    private const int MaxPageSize = 100;
+    private const int MinPageSize = 10;
+    private const int MaxPageSize = 40;
     private const int RefreshIntervalSeconds = 60;
     private const int ScrollIntervalSeconds = 10;
 
@@ -30,18 +31,18 @@ public partial class KioskLeaderboard : IDisposable
     private int _currentPage;
     private int _totalPages = 1;
     private double _scrollProgress;
+    private int _resolvedPageSize = DefaultPageSize;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
 
     [SupplyParameterFromQuery(Name = "rows")]
     public int? Rows { get; set; }
 
-    private int PageSize => Math.Clamp(Rows ?? DefaultPageSize, MinPageSize, MaxPageSize);
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadLeaderboard();
-
         // Refresh data from API every 60 seconds
         _refreshTimer = new System.Timers.Timer(RefreshIntervalSeconds * 1000);
         _refreshTimer.Elapsed += async (_, _) =>
@@ -104,12 +105,23 @@ public partial class KioskLeaderboard : IDisposable
         _progressTimer.Start();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await ResolvePageSizeAsync();
+        await LoadLeaderboard();
+    }
+
     private async Task<TableData<MobileLeaderboardUserDto>> ServerReload(TableState state)
     {
         try
         {
             var result = await leaderboardService.GetMobilePaginatedLeaderboard(
-                _currentPage, PageSize, _selectedFilter, CancellationToken.None);
+                _currentPage, _resolvedPageSize, _selectedFilter, CancellationToken.None);
 
             _lastUpdated = DateTime.Now;
             _hasErrorsOnUpdate = false;
@@ -119,7 +131,7 @@ public partial class KioskLeaderboard : IDisposable
 
             // Determine total pages: if this page has fewer users with points than PageSize,
             // this is the last meaningful page
-            if (usersWithPoints.Count < PageSize)
+            if (usersWithPoints.Count < _resolvedPageSize)
             {
                 _totalPages = Math.Max(1, _currentPage + 1);
             }
@@ -127,7 +139,7 @@ public partial class KioskLeaderboard : IDisposable
             {
                 // Full page of users with points - estimate from total count
                 _totalPages = Math.Max(_currentPage + 2,
-                    (int)Math.Ceiling((double)result.Count / PageSize));
+                    (int)Math.Ceiling((double)result.Count / _resolvedPageSize));
             }
 
             _lastTableCache = new TableData<MobileLeaderboardUserDto>
@@ -152,6 +164,49 @@ public partial class KioskLeaderboard : IDisposable
         {
             await table.ReloadServerData();
         }
+    }
+
+    private async Task ResolvePageSizeAsync()
+    {
+        if (Rows.HasValue)
+        {
+            _resolvedPageSize = Math.Clamp(Rows.Value, MinPageSize, MaxPageSize);
+            return;
+        }
+
+        try
+        {
+            var viewport = await JsRuntime.InvokeAsync<ViewportSize>("kioskLeaderboard.getViewport");
+            _resolvedPageSize = CalculateAutoPageSize(viewport.Width, viewport.Height);
+        }
+        catch
+        {
+            _resolvedPageSize = DefaultPageSize;
+        }
+    }
+
+    private static int CalculateAutoPageSize(int width, int height)
+    {
+        var rows = height switch
+        {
+            >= 1800 => 35,
+            >= 1300 => 30,
+            >= 1100 => 27,
+            >= 900 => 24,
+            _ => 20
+        };
+
+        if (width < 1200)
+        {
+            rows -= 2;
+        }
+
+        if (width < 900)
+        {
+            rows -= 2;
+        }
+
+        return Math.Clamp(rows, MinPageSize, MaxPageSize);
     }
 
     private async Task OnTabChanged(int tabIndex)
@@ -197,5 +252,11 @@ public partial class KioskLeaderboard : IDisposable
         _scrollTimer?.Dispose();
         _progressTimer?.Stop();
         _progressTimer?.Dispose();
+    }
+
+    private class ViewportSize
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }
