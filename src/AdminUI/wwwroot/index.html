@@ -20,11 +20,91 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-    <script src="js/kiosk.js"></script>
-    <script src="js/download-app.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+        (function () {
+            const normalizedPath = (window.location.pathname || "/").replace(/\/+$/, "") || "/";
+            if (normalizedPath !== "/download/app") {
+                return;
+            }
+
+            const playStoreUrl = "https://play.google.com/store/apps/details?id=com.ssw.consulting&hl=en_AU";
+            const appStoreUrl = "https://apps.apple.com/au/app/ssw-rewards/id1482994853";
+            const userAgent = (navigator.userAgent || "").toLowerCase();
+            const platform = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "").toLowerCase();
+            const touchPoints = navigator.maxTouchPoints || 0;
+
+            const isAndroid = userAgent.includes("android");
+            const isIos = /iphone|ipad|ipod/.test(userAgent) || (platform.includes("mac") && touchPoints > 1);
+
+            if (isAndroid) {
+                window.location.replace(playStoreUrl);
+                return;
+            }
+
+            if (isIos) {
+                window.location.replace(appStoreUrl);
+                return;
+            }
+
+            const playQr = "https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=" + encodeURIComponent(playStoreUrl);
+            const iosQr = "https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=" + encodeURIComponent(appStoreUrl);
+            const app = document.getElementById("app");
+            if (!app) {
+                return;
+            }
+
+            app.innerHTML = "\
+                <div style='min-height:100vh;background:radial-gradient(1200px 600px at 50% -30%, #1f2533, #11151d 55%);padding:24px;color:#f4f7fb;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;'>\
+                    <div style='max-width:1200px;margin:0 auto;text-align:center;'>\
+                        <img src='/images/ssw-rewards-logo.svg' alt='SSW Rewards' style='height:54px;margin:10px auto 22px;display:block;'/>\
+                        <h1 style='margin:0;font-size:42px;font-weight:700;'>Download SSW Rewards</h1>\
+                        <p style='margin:12px 0 28px;color:#b5c0d0;font-size:20px;'>Scan your store QR code or use the direct link below it.</p>\
+                        <div style='display:flex;flex-wrap:wrap;justify-content:center;gap:22px;'>\
+                            <div style='width:360px;max-width:100%;background:linear-gradient(180deg,#1c2432,#141b26);border:1px solid #2b374b;border-radius:16px;padding:18px 18px 14px;'>\
+                                <div style='font-size:12px;font-weight:700;letter-spacing:0.4px;color:#9cb3d6;margin-bottom:10px;'>ANDROID</div>\
+                                <img src='" + playQr + "' alt='Google Play QR' style='width:100%;background:#fff;border-radius:10px;padding:8px;display:block;'/>\
+                                <div style='margin-top:12px;font-size:16px;font-weight:600;'>Google Play</div>\
+                                <a href='" + playStoreUrl + "' target='_blank' rel='noopener noreferrer' style='display:block;margin-top:6px;color:#7db4ff;word-break:break-all;font-size:13px;line-height:1.3;'>" + playStoreUrl + "</a>\
+                            </div>\
+                            <div style='width:360px;max-width:100%;background:linear-gradient(180deg,#1c2432,#141b26);border:1px solid #2b374b;border-radius:16px;padding:18px 18px 14px;'>\
+                                <div style='font-size:12px;font-weight:700;letter-spacing:0.4px;color:#c2bfdc;margin-bottom:10px;'>iOS</div>\
+                                <img src='" + iosQr + "' alt='App Store QR' style='width:100%;background:#fff;border-radius:10px;padding:8px;display:block;'/>\
+                                <div style='margin-top:12px;font-size:16px;font-weight:600;'>App Store</div>\
+                                <a href='" + appStoreUrl + "' target='_blank' rel='noopener noreferrer' style='display:block;margin-top:6px;color:#7db4ff;word-break:break-all;font-size:13px;line-height:1.3;'>" + appStoreUrl + "</a>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>";
+
+            const errorUi = document.getElementById("blazor-error-ui");
+            if (errorUi) {
+                errorUi.style.display = "none";
+            }
+
+            window.__skipBlazorBoot = true;
+        })();
+    </script>
+    <script>
+        (function () {
+            if (window.__skipBlazorBoot === true) {
+                return;
+            }
+
+            const scripts = [
+                "_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js",
+                "js/kiosk.js",
+                "js/download-app.js",
+                "_framework/blazor.webassembly.js",
+                "_content/MudBlazor/MudBlazor.min.js"
+            ];
+
+            for (const source of scripts) {
+                const script = document.createElement("script");
+                script.src = source;
+                document.body.appendChild(script);
+            }
+        })();
+    </script>
 </body>
 
 </html>
