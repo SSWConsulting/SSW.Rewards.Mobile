@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Helpers
 @using SSW.Rewards.Admin.UI.Components.Dialogs
+@using QRCoder
 @attribute [Authorize]
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
@@ -129,11 +130,11 @@
 
     private async Task ShowQrCode(string url, string storeName)
     {
-        var qrCodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={Uri.EscapeDataString(url)}";
+        var qrDataUri = GenerateQrDataUri(url);
 
         var parameters = new DialogParameters<QrCodeDialog>
         {
-            { x => x.QrCodeUrl, qrCodeUrl },
+            { x => x.QrCodeUrl, qrDataUri },
             { x => x.StoreName, storeName },
             { x => x.StoreUrl, url }
         };
@@ -145,6 +146,15 @@
         };
 
         await DialogService.ShowAsync<QrCodeDialog>($"Download from {storeName}", parameters, options);
+    }
+
+    private static string GenerateQrDataUri(string url)
+    {
+        using var generator = new QRCodeGenerator();
+        using var data = generator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+        using var qrCode = new PngByteQRCode(data);
+        var pngBytes = qrCode.GetGraphic(10);
+        return $"data:image/png;base64,{Convert.ToBase64String(pngBytes)}";
     }
 
     private void Navigate(string url) => NavigationManager.NavigateTo(url);

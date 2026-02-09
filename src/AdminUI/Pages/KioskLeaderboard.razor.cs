@@ -38,7 +38,6 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
     private string? _viewportSubscriptionId;
 
     private TableData<MobileLeaderboardUserDto> _lastTableCache = new() { TotalItems = 0, Items = [] };
-    private readonly HashSet<string> _preloadedImageUrls = new();
 
     [SupplyParameterFromQuery(Name = "rows")]
     public int? Rows { get; set; }
@@ -156,13 +155,15 @@ public partial class KioskLeaderboard : IDisposable, IAsyncDisposable
             // MudTable renders ALL items in the callback result — limit to page size
             var pageItems = usersWithPoints.Take(_resolvedPageSize).ToList();
 
-            // Track all seen profile pics so hidden <img> tags can preload them
-            foreach (var item in pageItems)
+            // Preload profile images into browser memory cache via JS
+            var imageUrls = pageItems
+                .Where(u => !string.IsNullOrWhiteSpace(u.ProfilePic))
+                .Select(u => u.ProfilePic!)
+                .Distinct()
+                .ToArray();
+            if (imageUrls.Length > 0)
             {
-                if (!string.IsNullOrWhiteSpace(item.ProfilePic))
-                {
-                    _preloadedImageUrls.Add(item.ProfilePic);
-                }
+                await JsRuntime.InvokeVoidAsync("kioskLeaderboard.preloadImages", (object)imageUrls);
             }
 
             _lastTableCache = new TableData<MobileLeaderboardUserDto>

@@ -69,16 +69,6 @@
             }
         </div>
     </div>
-    @* Preload profile images to prevent flickering and re-downloading on page
-       changes — the kiosk re-renders the table every 10s (scroll) and 60s (refresh),
-       and external image hosts have inconsistent caching rules. These hidden imgs
-       keep images in the browser's memory cache so MudAvatar loads them instantly. *@
-    <div style="display:none;" aria-hidden="true">
-        @foreach (var url in _preloadedImageUrls)
-        {
-            <img src="@url" @key="url" />
-        }
-    </div>
     <div class="kiosk-refresh-info @(_hasErrorsOnUpdate ? "kiosk-refresh-error" : "")">
         @if (_hasErrorsOnUpdate)
         {

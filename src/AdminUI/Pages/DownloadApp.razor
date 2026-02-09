@@ -1,11 +1,13 @@
 @page "/download/app"
 @using Microsoft.AspNetCore.Authorization
 @using SSW.Rewards.Admin.UI.Components.Dialogs
+@using QRCoder
 @layout StandaloneLayout
 @attribute [AllowAnonymous]
-@inject IJSRuntime JsRuntime
-@inject NavigationManager NavigationManager
 @inject IDialogService DialogService
+
+@* Mobile users are redirected to the app store before Blazor boots (see index.html).
+   This page only renders for desktop users who need QR codes to scan. *@
 
 <MudThemeProvider IsDarkMode="true" Theme="AdminPortalMudTheme.Theme" />
 
@@ -13,91 +15,36 @@
     <MudPaper Elevation="3" Class="pa-8 d-flex flex-column align-center download-app-shell">
         <MudImage Src="/images/ssw-rewards-logo.svg" Alt="SSW Rewards" Style="width: 260px;" Class="mb-5" />
 
-        @if (!_showFallback)
-        {
-            <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" Class="mb-3" />
-            <MudText Typo="Typo.h6">Detecting your device and redirecting...</MudText>
-        }
-        else
-        {
-            <MudText Typo="Typo.h4" Class="mb-2">Download the App</MudText>
-            <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-6 text-center">
-                Choose your store below.
-            </MudText>
+        <MudText Typo="Typo.h4" Class="mb-2">Download the App</MudText>
+        <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-6 text-center">
+            Choose your store below.
+        </MudText>
 
-            <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap" Class="mb-2 justify-center">
-                <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
-                    <MudButton Href="@ApiClientConstants.PlayStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Google" Style="border-color: rgba(255,255,255,0.3);">
-                        Google Play
-                    </MudButton>
-                    <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.PlayStoreUrl, "Google Play"))" Style="border-color: rgba(255,255,255,0.3);" />
-                </MudButtonGroup>
-                <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
-                    <MudButton Href="@ApiClientConstants.AppStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Apple" Style="border-color: rgba(255,255,255,0.3);">
-                        App Store
-                    </MudButton>
-                    <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.AppStoreUrl, "App Store"))" Style="border-color: rgba(255,255,255,0.3);" />
-                </MudButtonGroup>
-            </MudStack>
-        }
+        <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap" Class="mb-2 justify-center">
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+                <MudButton Href="@ApiClientConstants.PlayStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Google" Style="border-color: rgba(255,255,255,0.3);">
+                    Google Play
+                </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.PlayStoreUrl, "Google Play"))" Style="border-color: rgba(255,255,255,0.3);" />
+            </MudButtonGroup>
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+                <MudButton Href="@ApiClientConstants.AppStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Apple" Style="border-color: rgba(255,255,255,0.3);">
+                    App Store
+                </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.AppStoreUrl, "App Store"))" Style="border-color: rgba(255,255,255,0.3);" />
+            </MudButtonGroup>
+        </MudStack>
     </MudPaper>
 </MudContainer>
 
 @code {
-    private bool _showFallback;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        try
-        {
-            var target = await JsRuntime.InvokeAsync<string>("downloadApp.detectTarget");
-            switch (target)
-            {
-                case "android":
-                    await TryRedirectToStoreAsync(ApiClientConstants.PlayStoreUrl);
-                    return;
-                case "ios":
-                    await TryRedirectToStoreAsync(ApiClientConstants.AppStoreUrl);
-                    return;
-                default:
-                    _showFallback = true;
-                    StateHasChanged();
-                    return;
-            }
-        }
-        catch
-        {
-            _showFallback = true;
-            StateHasChanged();
-        }
-    }
-
-    private async Task TryRedirectToStoreAsync(string storeUrl)
-    {
-        var currentUrl = NavigationManager.Uri;
-        NavigationManager.NavigateTo(storeUrl, true);
-
-        // If external navigation is blocked by the browser/runtime, fall back gracefully.
-        await Task.Delay(1500);
-        if (NavigationManager.Uri == currentUrl)
-        {
-            _showFallback = true;
-            StateHasChanged();
-        }
-    }
-
     private async Task ShowQrCode(string url, string storeName)
     {
-        var qrCodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={Uri.EscapeDataString(url)}";
+        var qrDataUri = GenerateQrDataUri(url);
 
         var parameters = new DialogParameters<QrCodeDialog>
         {
-            { x => x.QrCodeUrl, qrCodeUrl },
+            { x => x.QrCodeUrl, qrDataUri },
             { x => x.StoreName, storeName },
             { x => x.StoreUrl, url }
         };
@@ -109,6 +56,15 @@
         };
 
         await DialogService.ShowAsync<QrCodeDialog>($"Download from {storeName}", parameters, options);
+    }
+
+    private static string GenerateQrDataUri(string url)
+    {
+        using var generator = new QRCodeGenerator();
+        using var data = generator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+        using var qrCode = new PngByteQRCode(data);
+        var pngBytes = qrCode.GetGraphic(10);
+        return $"data:image/png;base64,{Convert.ToBase64String(pngBytes)}";
     }
 }
 

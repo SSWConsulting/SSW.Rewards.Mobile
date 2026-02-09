@@ -1,5 +1,23 @@
 window.kioskLeaderboard = window.kioskLeaderboard || {};
 
+// Image preload cache — the kiosk re-renders the MudTable every 10s (page
+// scroll) and 60s (data refresh), which recreates <img> DOM elements each
+// time. External hosts (GitHub raw, Azure Blob) have inconsistent cache
+// headers, causing visible flickering as images re-download. Keeping Image
+// objects alive here ensures the browser serves them from memory cache.
+window.kioskLeaderboard._preloadedImages = window.kioskLeaderboard._preloadedImages || {};
+
+window.kioskLeaderboard.preloadImages = function (urls) {
+    var cache = window.kioskLeaderboard._preloadedImages;
+    for (var i = 0; i < urls.length; i++) {
+        if (urls[i] && !cache[urls[i]]) {
+            var img = new Image();
+            img.src = urls[i];
+            cache[urls[i]] = img;
+        }
+    }
+};
+
 window.kioskLeaderboard.getViewport = function () {
     return {
         width: window.innerWidth || 0,
