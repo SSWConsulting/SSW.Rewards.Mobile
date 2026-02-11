@@ -1,3 +1,5 @@
+using SSW.Rewards.Application.Common.Exceptions;
+
 namespace SSW.Rewards.Application.Posts.Commands.AddPostComment;
 
 public class AddPostCommentCommand : IRequest<int>
@@ -19,12 +21,12 @@ public class AddPostCommentCommandHandler(
 
         if (post == null)
         {
-            throw new Common.Exceptions.NotFoundException(nameof(Post), request.PostId);
+            throw new NotFoundException(nameof(Post), request.PostId);
         }
 
         if (post.CommentsDisabled)
         {
-            throw new Common.Exceptions.ForbiddenAccessException();
+            throw new ForbiddenAccessException();
         }
 
         var userEmail = currentUserService.GetUserEmail();
