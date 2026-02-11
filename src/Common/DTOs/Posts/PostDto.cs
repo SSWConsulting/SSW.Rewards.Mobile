@@ -13,5 +13,6 @@ public class PostDto
     public DateTime LastModifiedUtc { get; set; }
     public int LikesCount { get; set; }
     public int CommentsCount { get; set; }
+    public bool CommentsDisabled { get; set; }
     public bool CurrentUserLiked { get; set; }
 }

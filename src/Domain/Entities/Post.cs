@@ -12,6 +12,8 @@ public class Post : BaseAuditableEntity
 
     public bool IsPublished { get; set; }
 
+    public bool CommentsDisabled { get; set; }
+
     public DateTime? PublishedDateUtc { get; set; }
 
     public ICollection<PostLike> PostLikes { get; set; } = new HashSet<PostLike>();

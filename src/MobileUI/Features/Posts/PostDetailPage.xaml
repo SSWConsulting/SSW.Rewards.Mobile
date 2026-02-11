@@ -101,7 +101,8 @@
                             <!-- Comment Count -->
                             <HorizontalStackLayout
                                 Grid.Column="1"
-                                Spacing="8">
+                                Spacing="8"
+                                IsVisible="{Binding Post.CommentsDisabled, Converter={mct:InvertedBoolConverter}}">
                                 <Label
                                     Text="&#xf075;"
                                     FontFamily="FA6Regular"
@@ -123,14 +124,25 @@
                     Text="Comments"
                     FontSize="20"
                     Style="{StaticResource LabelBold}"
-                    Margin="0,8,0,0" />
+                    Margin="0,8,0,0"
+                    IsVisible="{Binding Post.CommentsDisabled, Converter={mct:InvertedBoolConverter}}" />
+
+                <!-- Comments Disabled Notice -->
+                <Label
+                    Text="Comments are disabled for this post."
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    TextColor="{StaticResource Gray400}"
+                    Margin="0,12,0,0"
+                    IsVisible="{Binding Post.CommentsDisabled}" />
 
                 <!-- Add Comment -->
                 <Border
                     BackgroundColor="{StaticResource MainBackground}"
                     Stroke="{StaticResource MainBackground}"
                     StrokeShape="RoundRectangle 10"
-                    Padding="15">
+                    Padding="15"
+                    IsVisible="{Binding Post.CommentsDisabled, Converter={mct:InvertedBoolConverter}}">
                     <VerticalStackLayout Spacing="10">
                         <Entry
                             Text="{Binding NewComment}"
@@ -153,7 +165,8 @@
                 <!-- Comments List -->
                 <VerticalStackLayout
                     BindableLayout.ItemsSource="{Binding Post.Comments}"
-                    Spacing="10">
+                    Spacing="10"
+                    IsVisible="{Binding Post.CommentsDisabled, Converter={mct:InvertedBoolConverter}}">
                     <BindableLayout.EmptyView>
                         <Label
                             Text="No comments yet. Be the first to comment!"

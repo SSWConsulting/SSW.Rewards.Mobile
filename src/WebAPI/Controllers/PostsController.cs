@@ -68,7 +68,8 @@ public class PostsController : ApiControllerBase
             Content = dto.Content,
             ImageUrl = dto.ImageUrl,
             SendNotification = dto.SendNotification,
-            IsPublished = dto.IsPublished
+            IsPublished = dto.IsPublished,
+            CommentsDisabled = dto.CommentsDisabled
         };
 
         var postId = await Mediator.Send(command);
@@ -89,7 +90,8 @@ public class PostsController : ApiControllerBase
             Content = dto.Content,
             ImageUrl = dto.ImageUrl,
             IsPublished = dto.IsPublished,
-            SendNotification = dto.SendNotification
+            SendNotification = dto.SendNotification,
+            CommentsDisabled = dto.CommentsDisabled
         };
 
         await Mediator.Send(command);

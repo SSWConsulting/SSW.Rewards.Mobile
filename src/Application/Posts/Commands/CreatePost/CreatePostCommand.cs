@@ -10,6 +10,7 @@ public class CreatePostCommand : IRequest<int>
     public string? ImageUrl { get; set; }
     public bool SendNotification { get; set; }
     public bool IsPublished { get; set; }
+    public bool CommentsDisabled { get; set; }
 }
 
 public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, int>
@@ -40,6 +41,7 @@ public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, int>
             ImageUrl = request.ImageUrl,
             SendNotification = request.SendNotification,
             IsPublished = request.IsPublished,
+            CommentsDisabled = request.CommentsDisabled,
             PublishedDateUtc = request.IsPublished ? _dateTime.Now : null
         };
 

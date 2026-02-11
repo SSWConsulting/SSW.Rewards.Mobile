@@ -13,6 +13,7 @@ public class UpdatePostCommand : IRequest<Unit>
     public string? ImageUrl { get; set; }
     public bool IsPublished { get; set; }
     public bool SendNotification { get; set; }
+    public bool CommentsDisabled { get; set; }
 }
 
 public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, Unit>
@@ -51,6 +52,7 @@ public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, Unit>
         post.Title = request.Title;
         post.Content = request.Content;
         post.ImageUrl = request.ImageUrl;
+        post.CommentsDisabled = request.CommentsDisabled;
 
         // If changing from unpublished to published, set the published date
         if (request.IsPublished && !post.IsPublished)

@@ -123,13 +123,15 @@
                                         FontFamily="FA6Regular"
                                         FontSize="16"
                                         VerticalOptions="Center"
-                                        TextColor="{StaticResource Gray300}" />
+                                        TextColor="{StaticResource Gray300}"
+                                        IsVisible="{Binding CommentsDisabled, Converter={mct:InvertedBoolConverter}}" />
                                     <Label
                                         Grid.Column="3"
                                         Text="{Binding CommentsCount}"
                                         FontSize="14"
                                         VerticalOptions="Center"
-                                        TextColor="{StaticResource Gray300}" />
+                                        TextColor="{StaticResource Gray300}"
+                                        IsVisible="{Binding CommentsDisabled, Converter={mct:InvertedBoolConverter}}" />
 
                                     <!-- Published Date -->
                                     <Label

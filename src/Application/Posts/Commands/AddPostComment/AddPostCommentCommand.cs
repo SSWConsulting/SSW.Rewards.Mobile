@@ -12,6 +12,21 @@ public class AddPostCommentCommandHandler(
 {
     public async Task<int> Handle(AddPostCommentCommand request, CancellationToken cancellationToken)
     {
+        var post = await context.Posts
+            .AsNoTracking()
+            .TagWithContext("GetPostForComment")
+            .FirstOrDefaultAsync(p => p.Id == request.PostId, cancellationToken);
+
+        if (post == null)
+        {
+            throw new Common.Exceptions.NotFoundException(nameof(Post), request.PostId);
+        }
+
+        if (post.CommentsDisabled)
+        {
+            throw new Common.Exceptions.ForbiddenAccessException();
+        }
+
         var userEmail = currentUserService.GetUserEmail();
 
         var user = await context.Users

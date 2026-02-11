@@ -23,6 +23,9 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
 
         builder.HasIndex(p => p.IsPublished);
 
+        builder.Property(p => p.CommentsDisabled)
+            .HasDefaultValue(false);
+
         builder.HasSoftDelete();
     }
 }
