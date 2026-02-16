@@ -57,14 +57,16 @@ public static class ConfigureServices
             }));
 
         services.AddHangfireServer();
-
-        services.AddDbContextPool<ApplicationDbContext>(options =>
+        
+        services.AddDbContextPool<ApplicationDbContext>((serviceProvider, options) =>
         {
 #if DEBUG
             options.EnableSensitiveDataLogging();
 #endif
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-            builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.AddInterceptors(
+                serviceProvider.GetRequiredService<AuditableEntitySaveChangesInterceptor>(),
+                serviceProvider.GetRequiredService<AchievementIntegrationIdInterceptor>());
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
