@@ -48,10 +48,11 @@ public class UserController : ApiControllerBase
     {
         return Ok(await Mediator.Send(new GetSocialMediaIdQuery
         {
-            UserId = userId, SocialMediaPlatformId = socialMediaPlatformId
+            UserId = userId,
+            SocialMediaPlatformId = socialMediaPlatformId
         }));
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<UserSocialMediaIdDto>> SocialMedia(int userId)
     {

@@ -91,6 +91,7 @@ public static class ConfigureServices
         services.AddScoped<IRewardPicStorageProvider, RewardPicStorageProvider>();
         services.AddScoped<IQuizImageStorageProvider, QuizImageStorageProvider>();
         services.AddScoped<ISkillPicStorageProvider, SkillPicStorageProvider>();
+        services.AddScoped<IPostImageStorageProvider, PostImageStorageProvider>();
         services.AddSingleton<IAddressLookupService, AddressLookupService>();
 
         services.AddScoped<IEmailService, EmailService>();

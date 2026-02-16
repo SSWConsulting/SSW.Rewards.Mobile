@@ -23,6 +23,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IServiceProvider _serviceProvider;
     private readonly IAuthStorageService _authStorage;
     private readonly ILogger<AuthenticationService> _logger;
+    private readonly IAlertService _alertService;
 
     public event EventHandler DetailsUpdated;
     public bool HasCachedAccount => _authStorage.HasCachedAccount;
@@ -33,13 +34,15 @@ public class AuthenticationService : IAuthenticationService
         IOidcAuthenticationProvider oidcProvider,
         IServiceProvider serviceProvider,
         IAuthStorageService authStorage,
-        ILogger<AuthenticationService> logger)
+        ILogger<AuthenticationService> logger,
+        IAlertService alertService)
     {
         _tokenManager = tokenManager;
         _oidcProvider = oidcProvider;
         _serviceProvider = serviceProvider;
         _authStorage = authStorage;
         _logger = logger;
+        _alertService = alertService;
 
         _tokenManager.TokensCleared += (_, _) =>
         {
@@ -86,7 +89,7 @@ public class AuthenticationService : IAuthenticationService
                     await Task.Delay(1000);
                 }
 
-                await Shell.Current.DisplayAlert("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
+                await _alertService.DisplayAlertAsync("Login Failure", "There seems to have been a problem logging you in. Please try again.", "OK");
             }
         }
         catch (Exception ex)

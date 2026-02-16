@@ -25,5 +25,8 @@ public interface IApplicationDbContext
     DbSet<UnclaimedAchievement> UnclaimedAchievements { get; set; }
     DbSet<OpenProfileDeletionRequest> OpenProfileDeletionRequests { get; set; }
     DbSet<PendingRedemption> PendingRedemptions { get; set; }
+    DbSet<Post> Posts { get; set; }
+    DbSet<PostLike> PostLikes { get; set; }
+    DbSet<PostComment> PostComments { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -20,6 +20,7 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IFileCacheService _fileCacheService;
     private readonly IDispatcherTimer _timer;
     private readonly Subject<string> _searchSubject = new();
+    private readonly IAlertService _alertService;
 
     private const int AutoScrollInterval = 6;
     private const int DebounceInterval = 300;
@@ -44,7 +45,7 @@ public partial class RedeemViewModel : BaseViewModel
     private bool _isSearching;
 
     public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService,
-        IFirebaseAnalyticsService firebaseAnalyticsService, IFileCacheService fileCacheService)
+        IFirebaseAnalyticsService firebaseAnalyticsService, IFileCacheService fileCacheService, IAlertService alertService)
     {
         Title = "Rewards";
         _rewardService = rewardService;
@@ -52,6 +53,7 @@ public partial class RedeemViewModel : BaseViewModel
         _addressService = addressService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
         _fileCacheService = fileCacheService;
+        _alertService = alertService;
 
         _userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
@@ -62,9 +64,9 @@ public partial class RedeemViewModel : BaseViewModel
         // Set up reactive search with debouncing
         _searchSubject
             .DistinctUntilChanged()
-            .Throttle(TimeSpan.FromMilliseconds(DebounceInterval))
-            .ObserveOn(SynchronizationContext.Current)
-            .Subscribe(_ => Rewards.RefreshCollectionWithOfflineFilter());
+                .Throttle(TimeSpan.FromMilliseconds(DebounceInterval))
+                .ObserveOn(SynchronizationContext.Current)
+                .Subscribe(_ => Rewards.RefreshCollectionWithOfflineFilter());
     }
 
     partial void OnSearchTextChanged(string value)
@@ -185,7 +187,7 @@ public partial class RedeemViewModel : BaseViewModel
                     userMessage = "An unexpected error occurred while loading rewards. Please try again later.";
                 }
 
-                await Shell.Current.DisplayAlert("Oops...", userMessage, "OK");
+                await _alertService.DisplayAlertAsync("Oops...", userMessage, "OK");
             }
 
             IsBusy = false;
@@ -249,7 +251,7 @@ public partial class RedeemViewModel : BaseViewModel
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await Shell.Current.DisplayAlert("Device Offline", "You must be online to redeem a reward.", "OK");
+            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to redeem a reward.", "OK");
             return;
         }
 
@@ -258,7 +260,7 @@ public partial class RedeemViewModel : BaseViewModel
         {
             var popup = new RedeemRewardPage(
                 _firebaseAnalyticsService,
-                new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService),
+                new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService, _alertService),
                 reward);
             EventHandler<object> handler = null;
             handler = async (_, __) =>

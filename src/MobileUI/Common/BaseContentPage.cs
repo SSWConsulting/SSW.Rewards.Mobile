@@ -1,11 +1,11 @@
-using Maui.BindableProperty.Generator.Core;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Common;
 
 public partial class BaseContentPage : ContentPage
 {
-    [AutoBindable]
-    private bool _showBackButton = false;
+    [BindableProperty]
+    public partial bool ShowBackButton { get; set; }
 
     protected override void OnAppearing()
     {

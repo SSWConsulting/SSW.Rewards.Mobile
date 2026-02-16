@@ -46,6 +46,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<UnclaimedAchievement> UnclaimedAchievements { get; set; }
     public DbSet<OpenProfileDeletionRequest> OpenProfileDeletionRequests { get; set; }
     public DbSet<PendingRedemption> PendingRedemptions { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<PostLike> PostLikes { get; set; }
+    public DbSet<PostComment> PostComments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,33 +1,33 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Maui.BindableProperty.Generator.Core;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
 public partial class CarouselItem
 {
-    [AutoBindable]
-    private readonly string _carouselImage;
+    [BindableProperty]
+    public partial string CarouselImage { get; set; }
     
-    [AutoBindable]
-    private readonly string _description;
+    [BindableProperty]
+    public partial string Description { get; set; }
     
-    [AutoBindable]
-    private readonly int _points;
+    [BindableProperty]
+    public partial int Points { get; set; }
     
-    [AutoBindable]
-    private readonly string _buttonText;
+    [BindableProperty]
+    public partial string ButtonText { get; set; }
     
-    [AutoBindable]
-    private readonly IAsyncRelayCommand _buttonCommand;
+    [BindableProperty]
+    public partial IAsyncRelayCommand ButtonCommand { get; set; }
     
-    [AutoBindable]
-    private readonly int _itemId;
+    [BindableProperty]
+    public partial int ItemId { get; set; }
     
-    [AutoBindable]
-    private readonly bool _isButtonDisabled;
+    [BindableProperty]
+    public partial bool IsButtonDisabled { get; set; }
     
-    [AutoBindable]
-    private readonly string _ribbonText;
+    [BindableProperty]
+    public partial string RibbonText { get; set; }
 
     private object _cachedBindingContext;
 
