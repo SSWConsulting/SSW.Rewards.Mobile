@@ -29,8 +29,8 @@ public static class ConfigureServices
         services.AddMemoryCache();
         services.AddScoped<ICacheService, CacheService>();
 
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddScoped<AchievementIntegrationIdInterceptor>();
+        services.AddSingleton<AuditableEntitySaveChangesInterceptor>();
+        services.AddSingleton<AchievementIntegrationIdInterceptor>();
 
         // ChatGPT config
         services.AddOptions<GPTServiceOptions>()
@@ -114,7 +114,7 @@ public static class ConfigureServices
 
         string signingAuthority = configuration.GetValue<string>(nameof(signingAuthority));
 
-        services.AddTransient<IDateTime, DateTimeService>();
+        services.AddSingleton<IDateTime, DateTimeService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
