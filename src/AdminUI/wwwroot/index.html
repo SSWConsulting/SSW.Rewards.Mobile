@@ -20,9 +20,44 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <!-- /download/app — Mobile-only fast redirect
+         Mobile users (Android/iOS) are redirected to the app store immediately,
+         before Blazor WASM boots, so they never wait for the ~2MB runtime download.
+         Desktop users fall through and see the DownloadApp.razor Blazor page instead,
+         which generates QR codes locally via QRCoder (no external API dependency). -->
+    <script>
+        (function () {
+            var path = (window.location.pathname || "/").replace(/\/+$/, "") || "/";
+            if (path !== "/download/app") return;
+
+            var ua = (navigator.userAgent || "").toLowerCase();
+            var platform = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "").toLowerCase();
+            var isAndroid = ua.includes("android");
+            var isIos = /iphone|ipad|ipod/.test(ua) || (platform.includes("mac") && (navigator.maxTouchPoints || 0) > 1);
+
+            if (isAndroid) {
+                window.location.replace("https://play.google.com/store/apps/details?id=com.ssw.consulting&hl=en_AU");
+            } else if (isIos) {
+                window.location.replace("https://apps.apple.com/au/app/ssw-rewards/id1482994853");
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            const scripts = [
+                "_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js",
+                "js/kiosk.js",
+                "_framework/blazor.webassembly.js",
+                "_content/MudBlazor/MudBlazor.min.js"
+            ];
+
+            for (const source of scripts) {
+                const script = document.createElement("script");
+                script.src = source;
+                document.body.appendChild(script);
+            }
+        })();
+    </script>
 </body>
 
 </html>

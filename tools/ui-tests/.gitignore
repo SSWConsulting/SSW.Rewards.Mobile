@@ -10,7 +10,7 @@ playwright/.cache/
 tests/tmp/
 
 # Screenshots (generated during tests)
-screenshots/
+screenshots*/
 
 # Authentication state (contains session data)
 .auth/

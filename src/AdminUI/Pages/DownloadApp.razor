@@ -1,0 +1,76 @@
+@page "/download/app"
+@using Microsoft.AspNetCore.Authorization
+@using SSW.Rewards.Admin.UI.Components.Dialogs
+@using QRCoder
+@layout StandaloneLayout
+@attribute [AllowAnonymous]
+@inject IDialogService DialogService
+
+@* Mobile users are redirected to the app store before Blazor boots (see index.html).
+   This page only renders for desktop users who need QR codes to scan. *@
+
+<MudThemeProvider IsDarkMode="true" Theme="AdminPortalMudTheme.Theme" />
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex align-center justify-center" Style="min-height: 100vh;">
+    <MudPaper Elevation="3" Class="pa-8 d-flex flex-column align-center download-app-shell">
+        <MudImage Src="/images/ssw-rewards-logo.svg" Alt="SSW Rewards" Style="width: 260px;" Class="mb-5" />
+
+        <MudText Typo="Typo.h4" Class="mb-2">Download the App</MudText>
+        <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-6 text-center">
+            Choose your store below.
+        </MudText>
+
+        <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap" Class="mb-2 justify-center">
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+                <MudButton Href="@ApiClientConstants.PlayStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Google" Style="border-color: rgba(255,255,255,0.3);">
+                    Google Play
+                </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.PlayStoreUrl, "Google Play"))" Style="border-color: rgba(255,255,255,0.3);" />
+            </MudButtonGroup>
+            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Default" Style="border-color: rgba(255,255,255,0.3);">
+                <MudButton Href="@ApiClientConstants.AppStoreUrl" Target="_blank" StartIcon="@Icons.Custom.Brands.Apple" Style="border-color: rgba(255,255,255,0.3);">
+                    App Store
+                </MudButton>
+                <MudIconButton Icon="@Icons.Material.Filled.QrCode2" OnClick="@(() => ShowQrCode(ApiClientConstants.AppStoreUrl, "App Store"))" Style="border-color: rgba(255,255,255,0.3);" />
+            </MudButtonGroup>
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private async Task ShowQrCode(string url, string storeName)
+    {
+        var qrDataUri = GenerateQrDataUri(url);
+
+        var parameters = new DialogParameters<QrCodeDialog>
+        {
+            { x => x.QrCodeUrl, qrDataUri },
+            { x => x.StoreName, storeName },
+            { x => x.StoreUrl, url }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small
+        };
+
+        await DialogService.ShowAsync<QrCodeDialog>($"Download from {storeName}", parameters, options);
+    }
+
+    private static string GenerateQrDataUri(string url)
+    {
+        using var generator = new QRCodeGenerator();
+        using var data = generator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+        using var qrCode = new PngByteQRCode(data);
+        var pngBytes = qrCode.GetGraphic(10);
+        return $"data:image/png;base64,{Convert.ToBase64String(pngBytes)}";
+    }
+}
+
+<style>
+    .download-app-shell {
+        width: 100%;
+        max-width: 720px;
+    }
+</style>
