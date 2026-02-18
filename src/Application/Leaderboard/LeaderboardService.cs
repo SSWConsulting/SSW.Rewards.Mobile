@@ -73,6 +73,11 @@ public class LeaderboardService : ILeaderboardService
                     .Where(s => s.SocialMediaPlatform.Name == "Company")
                     .Select(s => s.SocialMediaUserId)
                     .FirstOrDefault()
+                    ?? "",
+                XHandle = x.SocialMediaIds
+                    .Where(s => s.SocialMediaPlatform.Name == "Twitter" || s.SocialMediaPlatform.Name == "X")
+                    .Select(s => s.SocialMediaUserId)
+                    .FirstOrDefault()
                     ?? ""
             })
             .ToListAsync(cancellationToken);
@@ -90,6 +95,7 @@ public class LeaderboardService : ILeaderboardService
                 _ when user.Email?.EndsWith("ssw.com.au") == true => "SSW",
                 _ => "Community"
             };
+            user.XHandle = ParseXHandle(user.XHandle);
 
             if (string.IsNullOrEmpty(user.ProfilePic) && defaultProfilePictureUrl != null)
             {
@@ -98,5 +104,23 @@ public class LeaderboardService : ILeaderboardService
         }
 
         return users;
+    }
+
+    private static string ParseXHandle(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = value.Trim();
+        var extracted = RegexHelpers.TwitterRegex().ExtractHandle(trimmed);
+
+        if (!string.IsNullOrWhiteSpace(extracted))
+        {
+            return extracted.TrimStart('@');
+        }
+
+        return trimmed.TrimStart('@');
     }
 }
