@@ -15,7 +15,7 @@ SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 10 backend API 
 - **Authentication**: SSW.Identity (external service)
 - **Architecture**: Clean Architecture with CQRS pattern
 - **Testing**: NUnit, FluentAssertions, Moq
-- **SDK Version**: 10.0.100
+- **SDK Version**: 10.0.103
 
 ## Development Setup Commands
 
@@ -131,20 +131,17 @@ dotnet ef database drop --project src/Infrastructure --startup-project src/WebAP
 The solution follows Clean Architecture with clear separation of concerns:
 
 1. **Domain** (`src/Domain/`): Core business entities, value objects, and domain events
-
    - Entities (User, Achievement, Reward, Quiz, etc.)
    - Common base classes (BaseEntity, BaseAuditableEntity, ValueObject)
    - Domain events and business rules
 
 2. **Application** (`src/Application/`): Business logic and use cases
-
    - CQRS commands and queries using MediatR
    - Application services and interfaces
    - DTOs and view models
    - Cross-cutting behaviors (validation, logging, performance, authorization)
 
 3. **Infrastructure** (`src/Infrastructure/`): External concerns implementation
-
    - Entity Framework data access
    - External service integrations
    - File storage, email services, etc.

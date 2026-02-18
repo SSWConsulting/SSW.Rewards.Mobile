@@ -46,6 +46,7 @@ public class GetPostsQueryHandler(
                 LastModifiedUtc = p.LastModifiedUtc,
                 LikesCount = p.PostLikes.Count,
                 CommentsCount = p.PostComments.Count,
+                CommentsDisabled = p.CommentsDisabled,
                 CurrentUserLiked = user != null && p.PostLikes.Any(pl => pl.UserId == user.Id)
             });
 

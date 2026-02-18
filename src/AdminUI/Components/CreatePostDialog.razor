@@ -93,6 +93,11 @@
                          Color="Color.Primary"
                          Class="mb-4" />
 
+            <MudCheckBox @bind-Value="_model.CommentsDisabled"
+                         Label="Disable comments"
+                         Color="Color.Primary"
+                         Class="mb-4" />
+
             @if (!IsEdit)
             {
                 <MudCheckBox @bind-Value="_model.SendNotification"
@@ -175,6 +180,7 @@
                 Content = ExistingPost.Content,
                 ImageUrl = ExistingPost.ImageUrl,
                 IsPublished = ExistingPost.IsPublished,
+                CommentsDisabled = ExistingPost.CommentsDisabled,
                 SendNotification = false
             };
         }
@@ -247,7 +253,8 @@
                     Content = _model.Content,
                     ImageUrl = _model.ImageUrl,
                     IsPublished = _model.IsPublished,
-                    SendNotification = _model.SendNotification
+                    SendNotification = _model.SendNotification,
+                    CommentsDisabled = _model.CommentsDisabled
                 };
 
                 await PostsService.UpdatePost(updateDto, CancellationToken.None);
@@ -262,7 +269,8 @@
                     Content = _model.Content,
                     ImageUrl = _model.ImageUrl,
                     SendNotification = _model.SendNotification,
-                    IsPublished = _model.IsPublished
+                    IsPublished = _model.IsPublished,
+                    CommentsDisabled = _model.CommentsDisabled
                 };
 
                 await PostsService.CreatePost(createDto, CancellationToken.None);
@@ -288,5 +296,6 @@
         public string? ImageUrl { get; set; }
         public bool SendNotification { get; set; }
         public bool IsPublished { get; set; }
+        public bool CommentsDisabled { get; set; }
     }
 }

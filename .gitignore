@@ -561,4 +561,9 @@ src/WebAPI/ClientApp/package-lock.json
 .env
 
 /**/.sandbox/
+
+# Workaround MSBuild incorrectly creating literal "bin\Debug" folders on macOS/Linux
+bin\\
+bin\\*/
+
 dry-run

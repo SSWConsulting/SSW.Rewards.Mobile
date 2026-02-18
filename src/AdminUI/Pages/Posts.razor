@@ -83,6 +83,10 @@
             </MudTd>
             <MudTd DataLabel="Comments">
                 <MudChip Icon="@Icons.Material.Filled.Comment" Size="Size.Small">@context.CommentsCount</MudChip>
+                @if (context.CommentsDisabled)
+                {
+                    <MudChip Icon="@Icons.Material.Filled.CommentsDisabled" Size="Size.Small" Color="Color.Warning">Off</MudChip>
+                }
             </MudTd>
             <MudTd DataLabel="Actions">
                 <MudIconButton Icon="@Icons.Material.Filled.Edit" 

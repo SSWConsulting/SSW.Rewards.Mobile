@@ -41,8 +41,11 @@ public class GetPostByIdQueryHandler(
                 LastModifiedUtc = p.LastModifiedUtc,
                 LikesCount = p.PostLikes.Count,
                 CommentsCount = p.PostComments.Count,
+                CommentsDisabled = p.CommentsDisabled,
                 CurrentUserLiked = user != null && p.PostLikes.Any(pl => pl.UserId == user.Id),
-                Comments = p.PostComments
+                Comments = p.CommentsDisabled
+                    ? new List<PostCommentDto>()
+                    : p.PostComments
                     .Select(c => new PostCommentDto
                     {
                         Id = c.Id,

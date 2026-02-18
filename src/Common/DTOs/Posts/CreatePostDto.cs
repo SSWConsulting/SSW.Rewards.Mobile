@@ -7,4 +7,5 @@ public class CreatePostDto
     public string? ImageUrl { get; set; }
     public bool SendNotification { get; set; }
     public bool IsPublished { get; set; }
+    public bool CommentsDisabled { get; set; }
 }
