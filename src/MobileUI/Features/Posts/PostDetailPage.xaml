@@ -21,6 +21,7 @@
             <VerticalStackLayout
                 Padding="15"
                 Spacing="15"
+                Margin="0,0,0,50"
                 IsVisible="{Binding Post, Converter={mct:IsNotNullConverter}}">
 
                 <!-- Post Content Card -->
