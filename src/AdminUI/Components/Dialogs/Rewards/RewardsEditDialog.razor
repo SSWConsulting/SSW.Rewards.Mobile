@@ -10,7 +10,6 @@
 @using Icons = MudBlazor.Icons
 
 @inject ISnackbar Snackbar
-@inject ILeaderboardService leaderboardService
 @inject IRewardAdminService rewardAdminService
 @inject IDialogService DialogService
 
@@ -29,23 +28,10 @@
             </MudStack>
             <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
             <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
-            <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudAutocomplete
-                    T="LeaderboardUserDto"
-                    @bind-Value="_selectedValue"
-                    Label="Assign to User"
-                    SearchFunc="@SearchUsers"
-                    ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
-                    Variant="Variant.Outlined"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    AdornmentColor="Color.Primary"
-                    ResetValueOnEmptyText="true"
-                    CoerceText="false"
-                    CoerceValue="false"
-                    Class="flex-grow-1">
-                </MudAutocomplete>
-                <MudButton OnClick="AssignReward" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Redeem</MudButton>
-            </MudStack>
+            <UserAutocomplete 
+                @bind-SelectedUser="_selectedValue" 
+                ButtonText="Redeem" 
+                OnButtonClick="AssignReward" />
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
                 @if (!string.IsNullOrEmpty(Dto.ImageUri))
                 {
@@ -138,31 +124,6 @@
     [Parameter]
     public RewardEditDto Dto { get; set; } = new();
     private LeaderboardUserDto? _selectedValue;
-    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-        Console.WriteLine($"On init - reward type is {Dto.RewardType}");
-    }
-
-    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
-    {
-        // If text is null or empty, return all users
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return Task.FromResult(_usersList);
-        }
-
-        // Filter users by name or email containing the search text
-        var filteredUsers = _usersList
-            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(u => u.Name)
-            .AsEnumerable();
-
-        return Task.FromResult(filteredUsers);
-    }
 
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
 

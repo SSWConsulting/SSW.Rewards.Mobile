@@ -6,7 +6,6 @@
 @using SSW.Rewards.ApiClient.Services
 @using Icons = MudBlazor.Icons
 
-@inject ILeaderboardService leaderboardService
 @inject IAchievementAdminService achievementService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -33,23 +32,10 @@
                     <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
                 }
             </MudSelect>
-            <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudAutocomplete
-                    T="LeaderboardUserDto"
-                    @bind-Value="_selectedValue"
-                    Label="Assign to User"
-                    SearchFunc="@SearchUsers"
-                    ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
-                    Variant="Variant.Outlined"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    AdornmentColor="Color.Primary"
-                    ResetValueOnEmptyText="true"
-                    CoerceText="false"
-                    CoerceValue="false"
-                    Class="flex-grow-1">
-                </MudAutocomplete>
-                <MudButton OnClick="ClaimAchievement" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Claim</MudButton>
-            </MudStack>
+            <UserAutocomplete 
+                @bind-SelectedUser="_selectedValue" 
+                ButtonText="Claim" 
+                OnButtonClick="ClaimAchievement" />
             <MudCheckBox Label="Multi-scan enabled?" @bind-Value="@dto.IsMultiScanEnabled" />
             <MudDivider Class="my-2" />
             <MudButton OnClick="ViewUsers" StartIcon="@Icons.Material.Filled.People" Variant="Variant.Text" Color="Color.Primary">View users who claimed this achievement</MudButton>
@@ -68,36 +54,12 @@
 
 @code {
     private LeaderboardUserDto? _selectedValue;
-    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter]
     public AchievementAdminDto dto { get; set; } = new();
-    
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-    }
-
-    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
-    {
-        // If text is null or empty, return all users
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return Task.FromResult(_usersList);
-        }
-
-        // Filter users by name or email containing the search text
-        var filteredUsers = _usersList
-            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(u => u.Name)
-            .AsEnumerable();
-
-        return Task.FromResult(filteredUsers);
-    }
 
     void Submit()
     {

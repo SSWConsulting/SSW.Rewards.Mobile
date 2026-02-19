@@ -1,0 +1,76 @@
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.ApiClient.Services
+
+@inject ILeaderboardService leaderboardService
+
+<MudStack Row="true" Spacing="2" Class="align-center">
+    <MudAutocomplete
+        T="LeaderboardUserDto"
+        @bind-Value="SelectedUser"
+        Label="@Label"
+        SearchFunc="@SearchUsers"
+        ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
+        Variant="Variant.Outlined"
+        AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
+        AdornmentColor="Color.Primary"
+        ResetValueOnEmptyText="true"
+        CoerceText="false"
+        CoerceValue="false"
+        Class="flex-grow-1">
+    </MudAutocomplete>
+    <MudButton 
+        OnClick="OnButtonClick" 
+        Color="@ButtonColor" 
+        Variant="Variant.Filled" 
+        Disabled="@(SelectedUser == null || ButtonDisabled)">
+        @ButtonText
+    </MudButton>
+</MudStack>
+
+@code {
+    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
+
+    [Parameter]
+    public LeaderboardUserDto? SelectedUser { get; set; }
+
+    [Parameter]
+    public EventCallback<LeaderboardUserDto?> SelectedUserChanged { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Assign to User";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Assign";
+
+    [Parameter]
+    public Color ButtonColor { get; set; } = Color.Info;
+
+    [Parameter]
+    public bool ButtonDisabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnButtonClick { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+    }
+
+    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
+    {
+        // If text is null or empty, return all users
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Task.FromResult(_usersList);
+        }
+
+        // Filter users by name containing the search text
+        var filteredUsers = _usersList
+            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(u => u.Name)
+            .AsEnumerable();
+
+        return Task.FromResult(filteredUsers);
+    }
+}
