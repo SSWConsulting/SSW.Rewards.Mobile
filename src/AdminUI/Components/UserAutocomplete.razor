@@ -1,7 +1,7 @@
 @using SSW.Rewards.Shared.DTOs.Leaderboard
 @using SSW.Rewards.ApiClient.Services
 
-@inject ILeaderboardService leaderboardService
+@inject ILeaderboardService LeaderboardService
 
 <MudStack Row="true" Spacing="2" Class="align-center">
     <MudAutocomplete
@@ -11,7 +11,7 @@
         SearchFunc="@SearchUsers"
         ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
         Variant="Variant.Outlined"
-        AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
+        AdornmentIcon="@Icons.Material.Filled.Search"
         AdornmentColor="Color.Primary"
         ResetValueOnEmptyText="true"
         CoerceText="false"
@@ -54,7 +54,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+        _usersList = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
     }
 
     private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
@@ -67,7 +67,7 @@
 
         // Filter users by name containing the search text
         var filteredUsers = _usersList
-            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+            .Where(u => u.Name != null && u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
             .OrderBy(u => u.Name)
             .AsEnumerable();
 
