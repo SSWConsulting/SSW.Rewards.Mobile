@@ -2,6 +2,7 @@
 @using SSW.Rewards.ApiClient.Services
 
 @inject ILeaderboardService LeaderboardService
+@inject ISnackbar Snackbar
 
 <MudStack Row="true" Spacing="2" Class="align-center">
     <MudAutocomplete
@@ -31,7 +32,7 @@
 </MudStack>
 
 @code {
-    private IEnumerable<LeaderboardUserDto> _usersList = [];
+    private List<LeaderboardUserDto> _usersList = [];
 
     [Parameter]
     public LeaderboardUserDto? SelectedUser { get; set; }
@@ -60,7 +61,20 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _usersList = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+        
+        try
+        {
+            var users = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+            
+            _usersList = users
+                .OrderBy(u => u.Name)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            _usersList = [];
+            Snackbar.Add($"Failed to load users: {ex.Message}", Severity.Error);
+        }
     }
 
     private async Task OnSelectedUserChanged(LeaderboardUserDto? value)
@@ -86,9 +100,9 @@
 
         var filteredUsers = _usersList
             .Where(u => u.Name != null && u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(u => u.Name)
-            .Take(MaxItems);
+            .Take(MaxItems)
+            .ToList();
 
-        return Task.FromResult(filteredUsers);
+        return Task.FromResult<IEnumerable<LeaderboardUserDto>>(filteredUsers);
     }
 }
