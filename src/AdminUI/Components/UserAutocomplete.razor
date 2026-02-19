@@ -6,7 +6,8 @@
 <MudStack Row="true" Spacing="2" Class="align-center">
     <MudAutocomplete
         T="LeaderboardUserDto"
-        @bind-Value="SelectedUser"
+        Value="@SelectedUser"
+        ValueChanged="@OnSelectedUserChanged"
         Label="@Label"
         SearchFunc="@SearchUsers"
         ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
@@ -16,10 +17,12 @@
         ResetValueOnEmptyText="true"
         CoerceText="false"
         CoerceValue="false"
+        MinCharacters="MinCharacters"
+        MaxItems="MaxItems"
         Class="flex-grow-1">
     </MudAutocomplete>
     <MudButton 
-        OnClick="OnButtonClick" 
+        OnClick="HandleButtonClick" 
         Color="@ButtonColor" 
         Variant="Variant.Filled" 
         Disabled="@(SelectedUser == null || ButtonDisabled)">
@@ -50,6 +53,9 @@
 
     [Parameter]
     public EventCallback OnButtonClick { get; set; }
+    
+    private const int MinCharacters = 2;
+    private const int MaxItems = 50;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,19 +63,31 @@
         _usersList = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
     }
 
+    private async Task OnSelectedUserChanged(LeaderboardUserDto? value)
+    {
+        SelectedUser = value;
+        await SelectedUserChanged.InvokeAsync(value);
+    }
+
+    private async Task HandleButtonClick()
+    {
+        if (OnButtonClick.HasDelegate)
+        {
+            await OnButtonClick.InvokeAsync();
+        }
+    }
+
     private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
     {
-        // If text is null or empty, return all users
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value) || value.Length < MinCharacters)
         {
-            return Task.FromResult(_usersList);
+            return Task.FromResult(Enumerable.Empty<LeaderboardUserDto>());
         }
 
-        // Filter users by name containing the search text
         var filteredUsers = _usersList
             .Where(u => u.Name != null && u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
             .OrderBy(u => u.Name)
-            .AsEnumerable();
+            .Take(MaxItems);
 
         return Task.FromResult(filteredUsers);
     }
