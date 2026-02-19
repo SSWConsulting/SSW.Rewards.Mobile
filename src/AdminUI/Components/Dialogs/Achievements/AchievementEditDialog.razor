@@ -34,21 +34,20 @@
                 }
             </MudSelect>
             <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudSelect
-                    T="@LeaderboardUserDto"
+                <MudAutocomplete
+                    T="LeaderboardUserDto"
                     @bind-Value="_selectedValue"
                     Label="Assign to User"
-                    AnchorOrigin="Origin.BottomCenter"
-                    TransformOrigin="Origin.TopCenter"
+                    SearchFunc="@SearchUsers"
+                    ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
                     Variant="Variant.Outlined"
                     AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
                     AdornmentColor="Color.Primary"
+                    ResetValueOnEmptyText="true"
+                    CoerceText="false"
+                    CoerceValue="false"
                     Class="flex-grow-1">
-                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
-                    {
-                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                    }
-                </MudSelect>
+                </MudAutocomplete>
                 <MudButton OnClick="ClaimAchievement" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Claim</MudButton>
             </MudStack>
             <MudCheckBox Label="Multi-scan enabled?" @bind-Value="@dto.IsMultiScanEnabled" />
@@ -81,6 +80,23 @@
     {
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+    }
+
+    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
+    {
+        // If text is null or empty, return all users
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Task.FromResult(_usersList);
+        }
+
+        // Filter users by name or email containing the search text
+        var filteredUsers = _usersList
+            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(u => u.Name)
+            .AsEnumerable();
+
+        return Task.FromResult(filteredUsers);
     }
 
     void Submit()

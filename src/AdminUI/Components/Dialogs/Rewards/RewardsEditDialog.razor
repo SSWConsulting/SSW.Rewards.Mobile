@@ -30,21 +30,20 @@
             <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
             <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
             <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudSelect
+                <MudAutocomplete
+                    T="LeaderboardUserDto"
                     @bind-Value="_selectedValue"
-                    T="@LeaderboardUserDto"
                     Label="Assign to User"
-                    AnchorOrigin="Origin.TopCenter"
-                    TransformOrigin="Origin.BottomCenter"
+                    SearchFunc="@SearchUsers"
+                    ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
                     Variant="Variant.Outlined"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
                     AdornmentColor="Color.Primary"
+                    ResetValueOnEmptyText="true"
+                    CoerceText="false"
+                    CoerceValue="false"
                     Class="flex-grow-1">
-                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
-                    {
-                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                    }
-                </MudSelect>
+                </MudAutocomplete>
                 <MudButton OnClick="AssignReward" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Redeem</MudButton>
             </MudStack>
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
@@ -146,6 +145,23 @@
         await base.OnInitializedAsync();
         _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
         Console.WriteLine($"On init - reward type is {Dto.RewardType}");
+    }
+
+    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
+    {
+        // If text is null or empty, return all users
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Task.FromResult(_usersList);
+        }
+
+        // Filter users by name or email containing the search text
+        var filteredUsers = _usersList
+            .Where(u => u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(u => u.Name)
+            .AsEnumerable();
+
+        return Task.FromResult(filteredUsers);
     }
 
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
