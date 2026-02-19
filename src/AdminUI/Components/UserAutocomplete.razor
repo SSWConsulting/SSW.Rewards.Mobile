@@ -28,7 +28,7 @@
 </MudStack>
 
 @code {
-    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
+    private IEnumerable<LeaderboardUserDto> _usersList = [];
 
     [Parameter]
     public LeaderboardUserDto? SelectedUser { get; set; }
