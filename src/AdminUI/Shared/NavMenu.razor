@@ -28,6 +28,13 @@
                             Icon="@adminPage.Icon">@adminPage.Title</MudNavLink>
                 <div class="nav-divider"></div>
             }
+            @foreach (var settingsPage in NavigationPages.SettingsPages())
+            {
+                <MudNavLink Href="@settingsPage.Href"
+                            Match="NavLinkMatch.Prefix" 
+                            Icon="@settingsPage.Icon">@settingsPage.Title</MudNavLink>
+                <div class="nav-divider"></div>
+            }
         </AuthorizeView>
 
         <!-- Used for Kiosk mode and does not need roles -->

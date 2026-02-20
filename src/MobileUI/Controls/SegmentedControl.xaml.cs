@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Maui.BindableProperty.Generator.Core;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
@@ -14,34 +14,44 @@ public partial class SegmentedControl : ContentView
 
 	public event EventHandler<Segment> SelectionChanged;
 
-	[AutoBindable(DefaultBindingMode = "TwoWay", OnChanged = nameof(SegmentChanged))]
-	private Segment? _selectedSegment;
+    [BindableProperty(DefaultBindingMode = BindingMode.TwoWay, PropertyChangedMethodName = nameof(SegmentChanged))]
+    public partial Segment SelectedSegment { get; set; }
 
-    private void SegmentChanged(Segment segment)
+    private static void SegmentChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        SetSelected(segment);
+        var control = (SegmentedControl)bindable;
+        var segment = (Segment)newValue;
+    
+        control.SetSelected(segment);
     }
 
-    [AutoBindable(OnChanged = nameof(SegmentsChanged))]
-    private List<Segment> _segments;
-    private void SegmentsChanged(List<Segment> segments)
+    
+    [BindableProperty(PropertyChangedMethodName = nameof(SegmentsChanged))]
+    public partial List<Segment> Segments { get; set; }
+
+    private static void SegmentsChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        if (Segments == null)
+        var control = (SegmentedControl)bindable;
+        var segments = (List<Segment>)newValue;
+    
+        if (segments == null)
             return;
-        
-        if (Segments.Count > 0)
+
+        control.InternalSegments.Clear();
+
+        if (segments.Count > 0)
         {
-            Segments[0].IsSelected = true;
-            SelectedSegment = Segments[0];
-            SelectionChanged?.Invoke(this, Segments[0]);
+            segments[0].IsSelected = true;
+            control.SelectedSegment = segments[0];
+            control.SelectionChanged?.Invoke(control, segments[0]);
         }
 
-        foreach (var segment in Segments)
+        foreach (var segment in segments)
         {
-            InternalSegments.Add(segment);
+            control.InternalSegments.Add(segment);
         }
     }
-
+    
     public ObservableCollection<Segment> InternalSegments { get; set; } = new ();
     
     private void Segment_Tapped(object sender, TappedEventArgs e)
@@ -56,7 +66,7 @@ public partial class SegmentedControl : ContentView
 
     private void SetSelected(Segment segment)
     {
-        if (segment == null)
+        if (segment == null || Segments == null)
         {
             return;
         }

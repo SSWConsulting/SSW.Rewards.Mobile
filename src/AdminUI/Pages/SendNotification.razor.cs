@@ -145,11 +145,11 @@ public partial class SendNotification
 
             if (_model.DeliveryOption == Delivery.Schedule)
             {
-                Snackbar.Add($"Notification SCHEDULED for: {command.ScheduleAt:g} ({_model.SelectedTimeZone}). Title: '{_model.Title}'", Severity.Success, options => { options.VisibleStateDuration = 10000; });
+                Snackbar.Add($"Notification scheduled for: {command.ScheduleAt:g} ({_model.SelectedTimeZone}). Title: '{_model.Title}'", Severity.Success, options => { options.VisibleStateDuration = 10000; });
             }
             else
             {
-                Snackbar.Add($"Notification SENT. Title: '{_model.Title}'", Severity.Success, options => { options.VisibleStateDuration = 10000; });
+                Snackbar.Add($"Notification sent. Title: '{_model.Title}'", Severity.Success, options => { options.VisibleStateDuration = 10000; });
             }
 
             _model = new NotificationViewModel { SelectedTimeZone = TimeZoneInfo.Local.Id };

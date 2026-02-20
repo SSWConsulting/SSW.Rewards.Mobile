@@ -45,6 +45,7 @@ public static class ConfigureServices
         services.AddSingleton<IUserService, UserService>();
         services.AddSingleton<IAddressService, AddressService>();
         services.AddSingleton<IActivityFeedService, ActivityFeedService>();
+        services.AddSingleton<IPostsService, PostsService>();
 
         return services;
     }

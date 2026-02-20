@@ -21,6 +21,8 @@ public class MobileLeaderboardUserDto
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? ProfilePic { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? XHandle { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int Points { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

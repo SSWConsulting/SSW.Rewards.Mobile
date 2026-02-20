@@ -1,0 +1,36 @@
+@namespace SSW.Rewards.Admin.UI.Components.Dialogs
+
+<MudDialog>
+    <DialogContent>
+        <MudStack AlignItems="AlignItems.Center" Spacing="4" Class="pa-4">
+            <MudImage Src="@QrCodeUrl" Alt="QR Code" Width="200" Height="200" Class="rounded" />
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Scan to download from @StoreName
+            </MudText>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" Href="@StoreUrl" Target="_blank">
+            Open in Browser
+        </MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public string QrCodeUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public string StoreName { get; set; } = string.Empty;
+
+    [Parameter]
+    public string StoreUrl { get; set; } = string.Empty;
+
+    private void Close() => MudDialog.Close();
+}

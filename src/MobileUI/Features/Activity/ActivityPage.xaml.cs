@@ -10,7 +10,7 @@ public partial class ActivityPage
         _viewModel = viewModel;
         _viewModel.Navigation = Navigation;
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        
+
         BindingContext = _viewModel;
         Title = "Activity";
         InitializeComponent();

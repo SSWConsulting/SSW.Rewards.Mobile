@@ -1,96 +1,44 @@
-﻿
+﻿using CommunityToolkit.Maui;
 using System.Windows.Input;
 
 namespace SSW.Rewards.Mobile.Controls;
 
-public partial class Search
+public partial class Search : Border
 {
     private const string DismissIcon = "\ue4c3";
     private const string SearchIcon = "\uea7c";
-
-    public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(
-        nameof(BorderColor),
-        typeof(Color),
-        typeof(Search));
-    public Color BorderColor
-    {
-        get => (Color)GetValue(BorderColorProperty);
-        set => SetValue(BorderColorProperty, value);
-    }
-
-    public static readonly BindableProperty TextColorProperty = BindableProperty.Create(
-        nameof(TextColor),
-        typeof(Color),
-        typeof(Search));
-
-    public Color TextColor
-    {
-        get => (Color)GetValue(TextColorProperty);
-        set => SetValue(TextColorProperty, value);
-    }
-
-    public static readonly BindableProperty CommandProperty = BindableProperty.Create(
-        nameof(Command),
-        typeof(ICommand),
-        typeof(Search));
-
-    public ICommand Command
-    {
-        get => (ICommand)GetValue(CommandProperty);
-        set => SetValue(CommandProperty, value);
-    }
-
-    public static readonly BindableProperty ClearSearchProperty = BindableProperty.Create(
-        nameof(ClearSearch),
-        typeof(bool),
-        typeof(Search));
-
-    public bool ClearSearch
-    {
-        get => (bool)GetValue(ClearSearchProperty);
-        set => SetValue(ClearSearchProperty, value);
-    }
     
-    public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
-        nameof(Placeholder),
-        typeof(string),
-        typeof(Search),
-        propertyChanged: OnPlaceholderChanged);
-
-    private static void OnPlaceholderChanged(BindableObject bindable, object oldvalue, object newvalue)
+    [BindableProperty]
+    public partial Color BorderColor { get; set; }
+    
+    [BindableProperty]
+    public partial ICommand Command { get; set; }
+    
+    [BindableProperty]
+    public partial bool ClearSearch { get; set; }
+    
+    [BindableProperty(PropertyChangedMethodName = nameof(OnPlaceholderChanged))]
+    public partial string Placeholder { get; set; }
+    
+    private static void OnPlaceholderChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        var placeholder = (string)newvalue;
+        var placeholder = (string)newValue;
         var search = (Search)bindable;
         
         search.SearchEntry.Placeholder = placeholder;
     }
-
-    public string Placeholder
-    {
-        get => (string)GetValue(PlaceholderProperty);
-        set => SetValue(PlaceholderProperty, value);
-    }
     
-    public static readonly BindableProperty IsSearchingProperty = BindableProperty.Create(
-        nameof(IsSearching),
-        typeof(bool),
-        typeof(Search),
-        propertyChanged: OnIsSearchingChanged);
+    [BindableProperty(PropertyChangedMethodName = nameof(OnIsSearchingChanged))]
+    public partial bool IsSearching { get; set; }
 
-    private static void OnIsSearchingChanged(BindableObject bindable, object oldvalue, object newvalue)
+    private static void OnIsSearchingChanged(BindableObject bindable, object oldValue, object newValue)
     {
-        var isSearching = (bool)newvalue;
+        var isSearching = (bool)newValue;
         var search = (Search)bindable;
 
         search.ActivityIndicator.IsVisible = isSearching;
         search.ActivityIndicator.IsRunning = isSearching;
         search.Icon.IsVisible = !isSearching;
-    }
-
-    public bool IsSearching
-    {
-        get => (bool)GetValue(IsSearchingProperty);
-        set => SetValue(IsSearchingProperty, value);
     }
 
     public Search()

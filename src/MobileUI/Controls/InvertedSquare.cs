@@ -1,20 +1,20 @@
-using Maui.BindableProperty.Generator.Core;
+using CommunityToolkit.Maui;
 
 namespace SSW.Rewards.Mobile.Controls;
 
 public partial class InvertedSquare : BindableObject, IDrawable
 {
-    [AutoBindable]
-    private readonly float _squareSize = 200f;
-
-    [AutoBindable]
-    private readonly float _cornerRadius = 0f;
-
-    [AutoBindable]
-    private readonly Color _backgroundColor = Colors.Black;
-
-    [AutoBindable]
-    private readonly float _opacity = 1f;
+    [BindableProperty]
+    public partial float SquareSize { get; set; } = 200f;
+    
+    [BindableProperty]
+    public partial float CornerRadius { get; set; } = 0f;
+    
+    [BindableProperty]
+    public partial Color BackgroundColor { get; set; } = Colors.Black;
+    
+    [BindableProperty]
+    public partial float Opacity { get; set; } = 1f;
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {

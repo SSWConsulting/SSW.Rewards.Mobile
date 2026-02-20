@@ -28,10 +28,15 @@ public static class NavigationPages
             new() { Href = "achievements", Icon = Icons.Material.Filled.Dashboard, Title = "Achievements" },
             new() { Href = "rewards", Icon = Icons.Material.Filled.Redeem, Title = "Rewards" },
             new() { Href = "quizzes", Icon = Icons.Material.Filled.Quiz, Title = "Quizzes" },
+            new() { Href = "posts", Icon = Icons.Material.Filled.Article, Title = "Activity Feed" },
             new() { Href = "users", Icon = Icons.Material.Filled.People, Title = "Users" },
             new() { Href = "newusers", Icon = Icons.Material.Filled.SupervisedUserCircle, Title = "New Users" },
             new() { Href = "prizedraw", Icon = Icons.Material.Filled.Celebration, Title = "Prize Draw" },
-            new() { Href = "notifications", Icon = Icons.Material.Filled.Chat, Title = "Notifications" },
-            new() { Href = "deletion-approvals", Icon = Icons.Material.Filled.AssignmentLate, Title = "Account Deletion Approvals" }
+            new() { Href = "notifications", Icon = Icons.Material.Filled.Chat, Title = "Notifications" }
+        ];
+
+    public static List<NavigationPage> SettingsPages() =>
+        [
+            new() { Href = "settings", Icon = Icons.Material.Filled.Settings, Title = "Settings" }
         ];
 }

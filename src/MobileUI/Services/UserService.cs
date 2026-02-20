@@ -22,7 +22,7 @@ public interface IUserService
     IObservable<string> GitHubProfileObservable();
     IObservable<string> TwitterProfileObservable();
     IObservable<string> CompanyUrlObservable();
-    
+
     // auth methods
 
     // user details
@@ -46,8 +46,11 @@ public interface IUserService
 
 public class UserService : IUserService
 {
+    private const string MyCachedProfileKey = "MyUserProfile";
+
     private readonly IApiUserService _userClient;
     private readonly IAuthenticationService _authService;
+    private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<UserService> _logger;
 
     private readonly BehaviorSubject<int> _myUserId = new(0);
@@ -69,12 +72,16 @@ public class UserService : IUserService
     private readonly BehaviorSubject<string> _twitterProfile = new(string.Empty);
     private readonly BehaviorSubject<string> _companyUrl = new(string.Empty);
 
-    public UserService(IApiUserService userService, IAuthenticationService authService, ILogger<UserService> logger)
+    public UserService(IApiUserService userService, IAuthenticationService authService, IFileCacheService fileCacheService, ILogger<UserService> logger)
     {
         _userClient = userService;
         _authService = authService;
+        _fileCacheService = fileCacheService;
         _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
+
+        // Load cached profile data on startup
+        LoadCachedProfileData();
     }
 
     public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
@@ -115,15 +122,20 @@ public class UserService : IUserService
         try
         {
             var user = await _userClient.GetCurrentUser();
-            _myUserId.OnNext(user.Id);
-            _myName.OnNext(user.FullName);
-            _myEmail.OnNext(user.Email);
-            _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
-            _myPoints.OnNext(user.Points);
-            _myBalance.OnNext(user.Balance);
-            _myQrCode.OnNext(user.QRCode);
-            _isStaff.OnNext(user.IsStaff);
-            _myAllTimeRank.OnNext(user.Rank);
+            UpdateObservablesFromUser(user);
+
+            // Persist to file cache for offline access
+            try
+            {
+                var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
+                using var stream = File.Create(filePath);
+                await System.Text.Json.JsonSerializer.SerializeAsync(stream, user);
+                _logger.LogInformation("Saved profile data to cache for user {UserId}", user.Id);
+            }
+            catch (Exception cacheEx)
+            {
+                _logger.LogError(cacheEx, "Failed to save profile data to cache");
+            }
         }
         catch (HttpRequestException ex)
         {
@@ -131,7 +143,7 @@ public class UserService : IUserService
             _logger.LogWarning(ex, "Network error while updating current user details");
         }
     }
-    
+
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
     {
         return await GetAchievementsForUserAsync(_myUserId.Value);
@@ -263,7 +275,7 @@ public class UserService : IUserService
         try
         {
             var socialMedia = await _userClient.GetSocialMedia(userId);
-            
+
             if (socialMedia == null || socialMedia.SocialMedia.Count == 0)
             {
                 return;
@@ -333,5 +345,44 @@ public class UserService : IUserService
         {
             return false;
         }
+    }
+
+    private void LoadCachedProfileData()
+    {
+        try
+        {
+            var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
+            if (!File.Exists(filePath))
+            {
+                _logger.LogInformation("No cached profile data found");
+                return;
+            }
+
+            using var stream = File.OpenRead(filePath);
+            var cachedUser = System.Text.Json.JsonSerializer.Deserialize<CurrentUserDto>(stream);
+
+            if (cachedUser != null)
+            {
+                UpdateObservablesFromUser(cachedUser);
+                _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to load cached profile data");
+        }
+    }
+
+    private void UpdateObservablesFromUser(CurrentUserDto user)
+    {
+        _myUserId.OnNext(user.Id);
+        _myName.OnNext(user.FullName ?? string.Empty);
+        _myEmail.OnNext(user.Email ?? string.Empty);
+        _myProfilePic.OnNext(user.ProfilePic ?? "v2sophie");
+        _myPoints.OnNext(user.Points);
+        _myBalance.OnNext(user.Balance);
+        _myQrCode.OnNext(user.QRCode ?? string.Empty);
+        _isStaff.OnNext(user.IsStaff);
+        _myAllTimeRank.OnNext(user.Rank);
     }
 }

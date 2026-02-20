@@ -15,6 +15,8 @@ on:
         type: string
       frontDoorDomain:
         type: string
+      frontDoorRouteName:
+        type: string
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -90,8 +92,8 @@ jobs:
             --expiry $expiry --https-only --permissions dlrw -o tsv
           Write-Output "::set-output name=sastoken::$($token)"
 
-      # Run the sync command using the SAS token.
-      - name: Sync UI folder to Azure Blob Storage ($web)
+      # Sync files to blob storage (Front Door handles caching rules)
+      - name: Sync files to Azure Blob Storage
         shell: pwsh
         run: |
           az storage blob sync `
@@ -107,6 +109,92 @@ jobs:
         run: |
           az extension add --name front-door
 
+      # Configure Front Door caching rules (skipped if already exists)
+      - name: Configure Front Door Caching Rules
+        shell: pwsh
+        run: |
+          $resourceGroup = "${{ inputs.frontDoorResourceGroupName }}"
+          if ([string]::IsNullOrEmpty($resourceGroup)) {
+            $resourceGroup = "${{ inputs.resourceGroupName }}"
+          }
+          $profileName = "${{ inputs.frontDoorProfileName }}"
+          $ruleSetName = "BlazorCaching"
+
+          # Check if rule set already exists
+          $exists = az afd rule-set show `
+            --resource-group $resourceGroup `
+            --profile-name $profileName `
+            --rule-set-name $ruleSetName 2>$null
+
+          if (-not $exists) {
+            Write-Host "Creating rule set: $ruleSetName"
+            az afd rule-set create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName
+
+            Write-Host "Creating rule: NoCacheEntryPoints (bypass cache for .html)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "NoCacheEntryPoints" `
+              --order 1 `
+              --match-variable UrlFileExtension `
+              --operator Equal `
+              --match-values "html" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior Disabled
+
+            Write-Host "Creating rule: NoCacheBootstrap (bypass cache for bootstrap JS)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "NoCacheBootstrap" `
+              --order 2 `
+              --match-variable UrlPath `
+              --operator Contains `
+              --match-values "blazor.webassembly.js" "dotnet.js" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior Disabled
+
+            Write-Host "Creating rule: LongCacheFramework (7 day cache for /_framework/)"
+            az afd rule create `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --rule-set-name $ruleSetName `
+              --rule-name "LongCacheFramework" `
+              --order 3 `
+              --match-variable UrlPath `
+              --operator BeginsWith `
+              --match-values "/_framework/" `
+              --action-name RouteConfigurationOverride `
+              --cache-behavior OverrideAlways `
+              --cache-duration "7.00:00:00"
+          } else {
+            Write-Host "Rule set '$ruleSetName' already exists - skipping rule creation"
+          }
+
+          # Always try to associate rule set with route (in case previous attempt failed)
+          $routeName = "${{ inputs.frontDoorRouteName }}"
+          $endpointName = "${{ inputs.frontDoorEndpointName }}"
+          if ($routeName) {
+            Write-Host "Associating rule set with route: $routeName"
+            az afd route update `
+              --resource-group $resourceGroup `
+              --profile-name $profileName `
+              --endpoint-name $endpointName `
+              --route-name $routeName `
+              --rule-sets $ruleSetName 2>$null
+            Write-Host "✓ Rule set associated with route (or already associated)"
+          } else {
+            Write-Host ""
+            Write-Host "⚠ No frontDoorRouteName provided - manual association required:"
+            Write-Host "  Front Door > Endpoints > Routes > Edit > Rule sets > Add '$ruleSetName'"
+          }
+
+      # Purge cache after deployment
       - name: Purge Azure Front Door Cache
         shell: pwsh
         run: |
@@ -114,9 +202,19 @@ jobs:
           if ([string]::IsNullOrEmpty($resourceGroup)) {
             $resourceGroup = "${{ inputs.resourceGroupName }}"
           }
+
+          # Purge is submitted instantly but CLI waits for global propagation (15-40 min)
+          # However, cache is actually cleared within ~3 min for most users
+          # So we use --no-wait and sleep 3 min instead of waiting for full propagation
+          Write-Host "Submitting cache purge request..."
           az afd endpoint purge `
             --resource-group $resourceGroup `
             --profile-name ${{ inputs.frontDoorProfileName }} `
             --endpoint-name ${{ inputs.frontDoorEndpointName }} `
-            --content-paths '/*' `
-            --domains ${{ inputs.frontDoorDomain }}
+            --content-paths '/index.html' '/_framework/blazor.webassembly.js' '/_framework/dotnet.js' '/css/*' '/js/*' '/appsettings.json' '/SSW.Rewards.Admin.AdminUI.styles.css' `
+            --domains ${{ inputs.frontDoorDomain }} `
+            --no-wait
+
+          Write-Host "Waiting 3 minutes for cache to propagate..."
+          Start-Sleep -Seconds 180
+          Write-Host "✓ Cache purge submitted and propagation wait complete"
