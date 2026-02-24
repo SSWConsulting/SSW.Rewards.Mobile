@@ -17,7 +17,7 @@ public class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
         // MessageHandler for adding the JWT to outbound requests to the API
-        builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
+        builder.Services.AddTransient<RetryAuthorizationMessageHandler>();
 
         builder.Services.AddTransient<IDateTime, DateTimeService>();
 
@@ -38,7 +38,7 @@ public class Program
                 o.BaseAddress = new Uri(identityUrl);
                 o.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
+            .AddHttpMessageHandler(sp => sp.GetRequiredService<RetryAuthorizationMessageHandler>());
 
         string? apiBaseUrl = builder.Configuration["RewardsApiUrl"];
         if (apiBaseUrl == null)
@@ -46,7 +46,7 @@ public class Program
             throw new NullReferenceException("No API base URL provided");
         }
 
-        builder.Services.AddApiClientServices<CustomAuthorizationMessageHandler>(apiBaseUrl, true);
+        builder.Services.AddApiClientServices<RetryAuthorizationMessageHandler>(apiBaseUrl, true);
 
         builder.Services.AddMudServices(config =>
         {
@@ -82,7 +82,7 @@ public class Program
         // don't receive proper role claims in JWT tokens. This needs to be fixed in SSW.Identity.
         // See: WebRolesClaimsPrincipalFactory.cs for detailed documentation.
         .AddAccountClaimsPrincipalFactory<WebRolesClaimsPrincipalFactory>();
-        
+
         Console.WriteLine("[DEBUG] Using WebRolesClaimsPrincipalFactory - roles will be fetched from database");
         Console.WriteLine("[DEBUG] This is a workaround for only @ssw.com.au email getting proper roles assigned");
 #endif
