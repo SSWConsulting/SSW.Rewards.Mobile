@@ -109,6 +109,8 @@ class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGP
 3. Get the Secrets from Keeper
    1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
    2. Add them as .NET User Secrets for `WebAPI.csproj`
+   3. Copy `google-services.json` to `src/MobileUI/Platforms/Android/google-services.json`
+   4. Copy `GoogleService-Info.plist` to `src/MobileUI/Platforms/iOS/GoogleService-Info.plist`
 4. Create a Developer Certificate with command below
    1. Make sure you have folder `.aspnet\https` in your home directory
    1. Run the script below (You can change change this, but the `docker-compose.yml` should be updated appropriately)
