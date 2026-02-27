@@ -28,7 +28,7 @@ The original solution was built using React (Create-react-app) template, however
   - More experience with Xamarin ✅
   - Allows devs to work on a Xamarin project ✅
   - Cross platform ✅
-  - Able to share a lot of code around the multiple projects ✅what ddddd
+  - Able to share a lot of code around the multiple projects ✅
   - Not light-weight vs React Native (XAML vs Typescript) ❌
 
 - Option 2. **React native**
