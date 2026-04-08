@@ -56,5 +56,36 @@ test.describe('Refresh token issuance', () => {
     expect(body.scope, 'scope should include offline_access').toContain('offline_access');
 
     console.log('✅ refresh_token issued — #1522 fix verified end-to-end');
+
+    // --- Exercise the refresh flow directly ---
+    // Take the refresh_token we just got and POST it to /connect/token with
+    // grant_type=refresh_token. This is exactly what oidc-client-ts does under
+    // the hood when the access token nears expiry. Proves the full exchange
+    // works server-side without waiting for the real access token to expire.
+    const tokenEndpoint = new URL('/connect/token', response.url()).toString();
+    const clientId = 'ssw-rewards-admin-portal';
+
+    const refreshed = await page.request.post(tokenEndpoint, {
+      form: {
+        grant_type: 'refresh_token',
+        client_id: clientId,
+        refresh_token: body.refresh_token,
+      },
+    });
+
+    expect(refreshed.ok(), `refresh_token grant should return 2xx (got ${refreshed.status()})`).toBeTruthy();
+    const refreshedBody = await refreshed.json();
+    console.log('🔄 refresh_token grant response keys:', Object.keys(refreshedBody));
+
+    expect(refreshedBody.access_token, 'new access_token on refresh').toBeTruthy();
+    expect(refreshedBody.refresh_token, 'refresh_token still present after refresh').toBeTruthy();
+    expect(refreshedBody.token_type?.toLowerCase()).toBe('bearer');
+
+    // Rotation is a server-side config concern (Duende grace period vs Reuse vs
+    // OneTimeOnly) — not something we're verifying here. What matters is that
+    // the refresh_token grant returns a usable access_token.
+    const rotated = refreshedBody.refresh_token !== body.refresh_token;
+    console.log(`🔄 refresh_token rotated: ${rotated} (informational — not asserted)`);
+    console.log('✅ refresh_token grant exchange works — full refresh flow verified');
   });
 });
