@@ -82,7 +82,7 @@ public class Program
         // don't receive proper role claims in JWT tokens. This needs to be fixed in SSW.Identity.
         // See: WebRolesClaimsPrincipalFactory.cs for detailed documentation.
         .AddAccountClaimsPrincipalFactory<WebRolesClaimsPrincipalFactory>();
-        
+
         Console.WriteLine("[DEBUG] Using WebRolesClaimsPrincipalFactory - roles will be fetched from database");
         Console.WriteLine("[DEBUG] This is a workaround for only @ssw.com.au email getting proper roles assigned");
 #endif
