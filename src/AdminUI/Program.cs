@@ -17,7 +17,7 @@ public class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
         // MessageHandler for adding the JWT to outbound requests to the API
-        builder.Services.AddTransient<RetryAuthorizationMessageHandler>();
+        builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
 
         builder.Services.AddTransient<IDateTime, DateTimeService>();
 
@@ -38,7 +38,7 @@ public class Program
                 o.BaseAddress = new Uri(identityUrl);
                 o.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddHttpMessageHandler(sp => sp.GetRequiredService<RetryAuthorizationMessageHandler>());
+            .AddHttpMessageHandler(sp => sp.GetRequiredService<CustomAuthorizationMessageHandler>());
 
         string? apiBaseUrl = builder.Configuration["RewardsApiUrl"];
         if (apiBaseUrl == null)
@@ -46,7 +46,7 @@ public class Program
             throw new NullReferenceException("No API base URL provided");
         }
 
-        builder.Services.AddApiClientServices<RetryAuthorizationMessageHandler>(apiBaseUrl, true);
+        builder.Services.AddApiClientServices<CustomAuthorizationMessageHandler>(apiBaseUrl, true);
 
         builder.Services.AddMudServices(config =>
         {
