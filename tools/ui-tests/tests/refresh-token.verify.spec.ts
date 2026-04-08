@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const TEST_USERNAME = process.env.TEST_USERNAME || 'jernej.kavka@gmail.com';
+const TEST_USERNAME = process.env.TEST_USERNAME;
 const TEST_PASSWORD = process.env.TEST_PASSWORD;
 
 /**
@@ -26,7 +26,7 @@ test.describe('Refresh token issuance', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test('/connect/token response contains refresh_token after login', async ({ page }) => {
-    test.skip(!TEST_PASSWORD, 'TEST_PASSWORD env var not set');
+    test.skip(!TEST_USERNAME || !TEST_PASSWORD, 'TEST_USERNAME / TEST_PASSWORD env vars not set');
 
     const tokenResponse = page.waitForResponse(
       (res) => res.url().includes('/connect/token') && res.request().method() === 'POST',
@@ -36,7 +36,7 @@ test.describe('Refresh token issuance', () => {
     await page.goto('https://localhost:7137');
     await page.waitForURL(/app-ssw-ident-staging-api\.azurewebsites\.net/, { timeout: 30_000 });
 
-    await page.fill('input[type="email"]#Input_Username', TEST_USERNAME);
+    await page.fill('input[type="email"]#Input_Username', TEST_USERNAME!);
     await page.fill('input[type="password"]#Input_Password', TEST_PASSWORD!);
     await page.click('button[name="Input.Button"][value="login"]');
 
