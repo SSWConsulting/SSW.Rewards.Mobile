@@ -1,7 +1,9 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
+using SSW.Rewards.Application.Common.Constants;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Leaderboard;
 using SSW.Rewards.Domain.Entities;
@@ -155,5 +157,55 @@ public class LeaderboardServiceTests
             It.IsAny<string>(),
             It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()), Times.Once);
     }
-}
 
+    [Test]
+    public async Task GetFullLeaderboard_WhenGenerating_ShouldCountThisMonthAsLastThirtyDaysAndKeepThisYear()
+    {
+        // Arrange
+        var utcNow = new DateTime(2026, 1, 2, 12, 0, 0, DateTimeKind.Utc);
+        _dateTimeMock.Setup(x => x.UtcNow).Returns(utcNow);
+
+        var users = new List<User>
+        {
+            new()
+            {
+                Id = 1,
+                FullName = "Monthly User",
+                Email = "monthly@example.com",
+                Activated = true,
+                UserAchievements =
+                [
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow.AddDays(-18),
+                        Achievement = new Achievement { Value = 10 }
+                    },
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow.AddDays(-1),
+                        Achievement = new Achievement { Value = 20 }
+                    },
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow.AddDays(-33),
+                        Achievement = new Achievement { Value = 30 }
+                    }
+                ]
+            }
+        };
+
+        _contextMock.Setup(x => x.Users).Returns(users.BuildMockDbSet().Object);
+        _cacheServiceMock.Setup(x => x.GetOrAddAsync(
+                CacheKeys.Leaderboard,
+                It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()))
+            .Returns<string, Func<Task<List<LeaderboardUserDto>>>>((_, factory) => factory());
+
+        // Act
+        var result = await _service.GetFullLeaderboard(CancellationToken.None);
+
+        // Assert
+        var user = result.Should().ContainSingle().Subject;
+        user.PointsThisMonth.Should().Be(30);
+        user.PointsThisYear.Should().Be(20);
+    }
+}

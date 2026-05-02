@@ -40,6 +40,8 @@ public class LeaderboardService : ILeaderboardService
     private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
     {
         DateTime utcNow = _dateTime.UtcNow;
+        DateTime lastSevenDaysUtc = utcNow.AddDays(-7);
+        DateTime lastThirtyDaysUtc = utcNow.AddDays(-30);
 
         var users = await _context.Users
             .AsNoTracking()
@@ -61,10 +63,10 @@ public class LeaderboardService : ILeaderboardService
                         ua.AwardedAt.Day == utcNow.Day)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisWeek = x.UserAchievements
-                    .Where(ua => utcNow.AddDays(-7) <= ua.AwardedAt && ua.AwardedAt <= utcNow)
+                    .Where(ua => lastSevenDaysUtc <= ua.AwardedAt && ua.AwardedAt <= utcNow)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisMonth = x.UserAchievements
-                    .Where(ua => ua.AwardedAt.Year == utcNow.Year && ua.AwardedAt.Month == utcNow.Month)
+                    .Where(ua => lastThirtyDaysUtc <= ua.AwardedAt && ua.AwardedAt <= utcNow)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisYear = x.UserAchievements
                     .Where(ua => ua.AwardedAt.Year == utcNow.Year)
