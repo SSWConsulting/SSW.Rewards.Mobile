@@ -90,8 +90,7 @@ public class LeaderboardService : ILeaderboardService
         int rank = 0;
         foreach (LeaderboardUserDto? user in users
             .OrderByDescending(lud => lud.TotalPoints)
-            .ThenBy(lud => lud.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(lud => lud.UserId))
+            .ThenBy(lud => lud.Name))
         {
             user.Rank = ++rank;
             user.Title = user.Title switch
@@ -114,8 +113,7 @@ public class LeaderboardService : ILeaderboardService
     private static IOrderedEnumerable<LeaderboardUserDto> OrderByAllTimeRank(IEnumerable<LeaderboardUserDto> users)
         => users
             .OrderBy(user => user.Rank)
-            .ThenBy(user => user.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(user => user.UserId);
+            .ThenBy(user => user.Name);
 
     private static string ParseXHandle(string? value)
     {
