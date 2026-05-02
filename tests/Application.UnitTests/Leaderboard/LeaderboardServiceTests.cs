@@ -208,4 +208,74 @@ public class LeaderboardServiceTests
         user.PointsThisMonth.Should().Be(30);
         user.PointsThisYear.Should().Be(20);
     }
+
+    [Test]
+    public async Task GetFullLeaderboard_WhenGenerating_ShouldReturnUsersOrderedByRankWithStableTieBreakers()
+    {
+        // Arrange
+        var utcNow = new DateTime(2026, 1, 2, 12, 0, 0, DateTimeKind.Utc);
+        _dateTimeMock.Setup(x => x.UtcNow).Returns(utcNow);
+
+        var users = new List<User>
+        {
+            new()
+            {
+                Id = 3,
+                FullName = "Charlie",
+                Email = "charlie@example.com",
+                Activated = true,
+                UserAchievements =
+                [
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow,
+                        Achievement = new Achievement { Value = 50 }
+                    }
+                ]
+            },
+            new()
+            {
+                Id = 2,
+                FullName = "Bravo",
+                Email = "bravo@example.com",
+                Activated = true,
+                UserAchievements =
+                [
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow,
+                        Achievement = new Achievement { Value = 100 }
+                    }
+                ]
+            },
+            new()
+            {
+                Id = 1,
+                FullName = "Alpha",
+                Email = "alpha@example.com",
+                Activated = true,
+                UserAchievements =
+                [
+                    new UserAchievement
+                    {
+                        AwardedAt = utcNow,
+                        Achievement = new Achievement { Value = 100 }
+                    }
+                ]
+            }
+        };
+
+        _contextMock.Setup(x => x.Users).Returns(users.BuildMockDbSet().Object);
+        _cacheServiceMock.Setup(x => x.GetOrAddAsync(
+                CacheKeys.Leaderboard,
+                It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()))
+            .Returns<string, Func<Task<List<LeaderboardUserDto>>>>((_, factory) => factory());
+
+        // Act
+        var result = await _service.GetFullLeaderboard(CancellationToken.None);
+
+        // Assert
+        result.Select(user => user.Name).Should().Equal("Alpha", "Bravo", "Charlie");
+        result.Select(user => user.Rank).Should().Equal(1, 2, 3);
+    }
 }

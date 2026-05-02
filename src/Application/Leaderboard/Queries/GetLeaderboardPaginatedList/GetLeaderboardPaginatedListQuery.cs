@@ -21,15 +21,7 @@ internal class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, Leade
     public async Task<LeaderboardViewModel> Handle(GetLeaderboardPaginatedListQuery request, CancellationToken cancellationToken)
     {
         List<LeaderboardUserDto> users = await _leaderboardService.GetFullLeaderboard(cancellationToken);
-        var query = users.AsQueryable();
-        query = request.CurrentPeriod switch
-        {
-            LeaderboardFilter.ThisMonth => query.OrderByDescending(x => x.PointsThisMonth),
-            LeaderboardFilter.ThisYear => query.OrderByDescending(x => x.PointsThisYear),
-            LeaderboardFilter.Forever => query.OrderByDescending(x => x.TotalPoints),
-            LeaderboardFilter.ThisWeek => query.OrderByDescending(x => x.PointsThisWeek),
-            _ => query.OrderByDescending(x => x.TotalPoints),
-        };
+        var query = OrderByLeaderboardPeriod(users, request.CurrentPeriod);
 
         return new LeaderboardViewModel
         {
@@ -39,4 +31,26 @@ internal class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, Leade
                 .ToArray()
         };
     }
+
+    private static IOrderedEnumerable<LeaderboardUserDto> OrderByLeaderboardPeriod(IEnumerable<LeaderboardUserDto> users, LeaderboardFilter currentPeriod)
+        => currentPeriod switch
+        {
+            LeaderboardFilter.ThisMonth => OrderByPeriodPoints(users, user => user.PointsThisMonth),
+            LeaderboardFilter.ThisYear => OrderByPeriodPoints(users, user => user.PointsThisYear),
+            LeaderboardFilter.ThisWeek => OrderByPeriodPoints(users, user => user.PointsThisWeek),
+            _ => OrderByAllTimeRank(users),
+        };
+
+    private static IOrderedEnumerable<LeaderboardUserDto> OrderByPeriodPoints(IEnumerable<LeaderboardUserDto> users, Func<LeaderboardUserDto, int> periodPoints)
+        => users
+            .OrderByDescending(periodPoints)
+            .ThenBy(user => user.Rank)
+            .ThenBy(user => user.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(user => user.UserId);
+
+    private static IOrderedEnumerable<LeaderboardUserDto> OrderByAllTimeRank(IEnumerable<LeaderboardUserDto> users)
+        => users
+            .OrderBy(user => user.Rank)
+            .ThenBy(user => user.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(user => user.UserId);
 }

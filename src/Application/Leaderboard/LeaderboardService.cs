@@ -34,7 +34,7 @@ public class LeaderboardService : ILeaderboardService
     {
         var users = await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(cancellationToken));
 
-        return users;
+        return OrderByAllTimeRank(users).ToList();
     }
 
     private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
@@ -88,7 +88,10 @@ public class LeaderboardService : ILeaderboardService
 
         // Post-processing
         int rank = 0;
-        foreach (LeaderboardUserDto? user in users.OrderByDescending(lud => lud.TotalPoints))
+        foreach (LeaderboardUserDto? user in users
+            .OrderByDescending(lud => lud.TotalPoints)
+            .ThenBy(lud => lud.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(lud => lud.UserId))
         {
             user.Rank = ++rank;
             user.Title = user.Title switch
@@ -105,8 +108,14 @@ public class LeaderboardService : ILeaderboardService
             }
         }
 
-        return users;
+        return OrderByAllTimeRank(users).ToList();
     }
+
+    private static IOrderedEnumerable<LeaderboardUserDto> OrderByAllTimeRank(IEnumerable<LeaderboardUserDto> users)
+        => users
+            .OrderBy(user => user.Rank)
+            .ThenBy(user => user.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(user => user.UserId);
 
     private static string ParseXHandle(string? value)
     {
