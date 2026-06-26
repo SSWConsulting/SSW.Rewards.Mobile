@@ -12,8 +12,7 @@ config/secret **materialization** and tunnel wiring, not running the app.
 
 ## First run
 ```bash
-cd src/AppHost
-aspire run
+aspire run   # from the repo root — .aspire/settings.json points the CLI at src/AppHost
 ```
 On first launch Aspire prompts (once) for the secret parameters and stores them in **this
 AppHost's** user-secrets (id `F76E3E10-…`). To seed them non-interactively instead:

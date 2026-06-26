@@ -11,7 +11,7 @@ backend to talk to. Full guide: `_docs/Aspire-Local-Dev.md`.
 ## Step 0 — have a backend (prerequisite)
 
 The app needs an API + identity. Either:
-- run the local stack (**setup-admin-api** skill / `cd src/AppHost && aspire run`), **or**
+- run the local stack (**setup-admin-api** skill / `aspire run` from the repo root), **or**
 - just point at **staging** (works with no local backend — simplest for "does it run").
 
 > The emulator can't reach the host's `localhost`, so for the mobile app use **staging** or a

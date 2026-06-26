@@ -1,6 +1,6 @@
 # The F5 Experience
 
-> **Local dev now runs on .NET Aspire.** `cd src/AppHost && aspire run` brings up SQL Server +
+> **Local dev now runs on .NET Aspire.** `aspire run` (from the repo root) brings up SQL Server +
 > Azurite + WebAPI + AdminUI with one command (replacing `up.ps1` + `docker compose`). See the full
 > guide: **[Aspire-Local-Dev.md](Aspire-Local-Dev.md)**. This page covers the end-to-end setup,
 > including mobile and iOS signing.
@@ -121,8 +121,7 @@ class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGP
 4. Start the local stack with Aspire (Docker must be running):
 
    ```bash
-   cd src/AppHost
-   aspire run
+   aspire run   # from the repo root (.aspire/settings.json targets src/AppHost)
    ```
 
    On the **first** run Aspire prompts once for the secret parameters and stores them in the

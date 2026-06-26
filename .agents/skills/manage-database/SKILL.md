@@ -6,7 +6,7 @@ description: Back up, restore, and migrate the local SSW.Rewards SQL Server data
 # Managing the local database (backup / restore / migrations)
 
 Locally the database runs as a **.NET Aspire**-managed SQL Server 2022 container (`rewards-sql`).
-Get the stack up first with `cd src/AppHost && aspire run` (see `_docs/Aspire-Local-Dev.md`).
+Get the stack up first with `aspire run` (from the repo root; see `_docs/Aspire-Local-Dev.md`).
 
 ## Applying migrations (not a restore)
 

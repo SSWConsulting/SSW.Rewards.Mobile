@@ -16,8 +16,7 @@ One command brings up SQL Server + Azurite + WebAPI + AdminUI. Full guide: `_doc
 ## Run it
 
 ```bash
-cd src/AppHost
-aspire run
+aspire run   # from the repo root — .aspire/settings.json targets src/AppHost
 ```
 
 The dashboard opens automatically. SQL Server + Azurite come up as **persistent** containers with
