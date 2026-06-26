@@ -40,6 +40,16 @@ src/
 └── MobileUI/        # .NET MAUI + CommunityToolkit.Mvvm
 ```
 
+## Skills (`.agents/skills/`)
+
+Task playbooks (symlinked into `.claude/skills/` for Claude Code):
+
+| Skill | Use it to |
+|-------|-----------|
+| [setup-admin-api](.agents/skills/setup-admin-api/SKILL.md) | Run the backend (WebAPI + AdminUI) locally via Aspire |
+| [setup-mobile](.agents/skills/setup-mobile/SKILL.md) | Build & run the MAUI mobile app (needs the API) |
+| [manage-database](.agents/skills/manage-database/SKILL.md) | Back up / restore / migrate the local DB |
+
 ## Resources
 
 - [Instructions-Compile.md](_docs/Instructions-Compile.md) — F5 experience

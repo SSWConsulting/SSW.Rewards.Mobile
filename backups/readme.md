@@ -1,1 +1,1 @@
-Read `/_docs/Managing-DB.md` for doing backups and restores.
+Read the `manage-database` skill (`/.agents/skills/manage-database/SKILL.md`) for backups and restores.

@@ -5,7 +5,7 @@
 > guide: **[Aspire-Local-Dev.md](Aspire-Local-Dev.md)**. This page covers the end-to-end setup,
 > including mobile and iOS signing.
 
-**NOTE:** ⚠️ From 07/07/2025 we moved from Azure SQL Edge to SQL Server 2022! If you set up SSW.Rewards before that date, back up your DB and restore it afterwards (see [Managing-DB.md](Managing-DB.md)).
+**NOTE:** ⚠️ From 07/07/2025 we moved from Azure SQL Edge to SQL Server 2022! If you set up SSW.Rewards before that date, back up your DB and restore it afterwards (see [manage-database skill](../.agents/skills/manage-database/SKILL.md)).
 
 ## Local architecture
 
@@ -144,11 +144,11 @@ WebAPI + AdminUI start once SQL is healthy (EF migrations apply on WebAPI startu
 
 > Full guide, dashboard commands, and the `rewards-dev` target switcher: **[Aspire-Local-Dev.md](Aspire-Local-Dev.md)**.
 
-5. Check [Managing-DB.md](Managing-DB.md) if you want to restore an existing DB.
+5. Check [manage-database skill](../.agents/skills/manage-database/SKILL.md) if you want to restore an existing DB.
 
 **TODO: Current seeding might not fully work for development. [Tech-Debt - #540](https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/540)**
 
-Currently, we need to restore the DB like for instance from staging or another developer. Follow `Managing-DB.md` for backup and restore instructions.
+Currently, we need to restore the DB like for instance from staging or another developer. Follow the `manage-database` skill (`.agents/skills/manage-database/SKILL.md`) for backup and restore instructions.
 
 ## Mobile UI
 
