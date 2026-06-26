@@ -20,6 +20,7 @@ public static class Constants
 
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
     public const string AutologinRedirectUrl = "sswrewards://autologin";
+    public const string TinaCmsStoreUrl = "";
 
 #if DEBUG
     public const string AuthorityUri = "https://identity.ssw.com.au";

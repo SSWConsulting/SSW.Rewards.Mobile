@@ -261,7 +261,8 @@ public partial class RedeemViewModel : BaseViewModel
             var popup = new RedeemRewardPage(
                 _firebaseAnalyticsService,
                 new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService, _alertService),
-                reward);
+                reward,
+                Credits);
             EventHandler<object> handler = null;
             handler = async (_, __) =>
             {

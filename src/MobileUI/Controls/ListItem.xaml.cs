@@ -46,7 +46,7 @@ public partial class ListItem : Border
     [RelayCommand]
     private async Task ButtonClicked()
     {
-        if (!IsButtonDisabled && ButtonCommand != null)
+        if (ButtonCommand != null)
         {
             await ButtonCommand.ExecuteAsync(ItemId);
         }
