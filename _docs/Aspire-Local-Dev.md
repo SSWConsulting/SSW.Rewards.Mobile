@@ -26,6 +26,10 @@ The dashboard opens automatically. SQL Server + Azurite come up as **persistent*
 with data volumes (`ssw-rewards-sql-data`, `ssw-rewards-azurite-data`), so your data survives
 restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI startup.
 
+> Both containers are grouped under an **SSW.Rewards** project/folder in Docker Desktop & OrbStack
+> (instead of cluttering the top level). Aspire stamps `com.docker.compose.project=SSW.Rewards` +
+> `com.docker.compose.service=<name>` labels via `InDockerProject()` in `Hosts/DockerGrouping.cs`.
+
 > Secrets now flow **only** from the AppHost. WebAPI/AdminUI no longer carry their own
 > `UserSecretsId`. Aspire injects `ConnectionStrings:DefaultConnection` / `:HangfireConnection`,
 > `CloudBlobProviderOptions:ContentStorageConnectionString` (→ Azurite), `Firebase:FirebaseCredentials`,
