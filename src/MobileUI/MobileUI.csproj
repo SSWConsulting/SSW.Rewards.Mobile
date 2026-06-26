@@ -94,6 +94,16 @@
         <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
     </ItemGroup>
 
+    <!-- Local-dev API/identity overrides: prefer the git-ignored Constants.LocalDev.cs (written by the
+         `rewards-dev` CLI / Aspire commands); otherwise fall back to the committed Constants.LocalDev.Default.cs.
+         Exactly one is compiled, so a fresh clone / CI builds with safe defaults and no hand-editing. -->
+    <ItemGroup>
+        <Compile Remove="Constants.LocalDev.cs" />
+        <Compile Remove="Constants.LocalDev.Default.cs" />
+        <Compile Include="Constants.LocalDev.cs" Condition="Exists('$(MSBuildProjectDirectory)/Constants.LocalDev.cs')" />
+        <Compile Include="Constants.LocalDev.Default.cs" Condition="!Exists('$(MSBuildProjectDirectory)/Constants.LocalDev.cs')" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios' OR '$(TargetFramework)' == 'net10.0-android'">
         <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
