@@ -6,7 +6,7 @@ Gamified engagement platform: .NET MAUI mobile app + Blazor WASM admin + ASP.NET
 
 - **Framework**: .NET 10 | **Architecture**: Clean Architecture with CQRS (MediatR)
 - **Build**: `dotnet build SSW.Rewards.sln` | **Test**: `dotnet test`
-- **Setup**: `pwsh ./up.ps1` (creates certs, starts Docker)
+- **Setup**: `cd src/AppHost && aspire run` (.NET Aspire orchestrates SQL + Azurite + WebAPI + AdminUI; secrets prompted once into the AppHost user-secrets). See [Aspire-Local-Dev.md](_docs/Aspire-Local-Dev.md).
 
 ## Critical Rules
 

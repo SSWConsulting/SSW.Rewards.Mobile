@@ -15,7 +15,8 @@ SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 10 backend API 
 - **Authentication**: SSW.Identity (external service)
 - **Architecture**: Clean Architecture with CQRS pattern
 - **Testing**: NUnit, FluentAssertions, Moq
-- **SDK Version**: 10.0.103
+- **SDK Version**: 10.0.301 (pinned in `global.json`, no `workloadVersion` pin)
+- **Local orchestration**: .NET Aspire (`src/AppHost`) — runs SQL + Azurite + WebAPI + AdminUI
 
 ## Development Setup Commands
 
@@ -26,16 +27,19 @@ SSW Rewards Mobile is a .NET MAUI mobile application with a .NET 10 backend API 
 git clone https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
 cd SSW.Rewards.Mobile
 
-# Create dev certificates (required for HTTPS in Docker)
-# Windows:
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\WebAPI.pfx -p ThisPassword
-# macOS/Linux:
-dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
+# Install the Aspire CLI (one-time)
+dotnet tool install -g aspire   # or: dotnet tool update -g aspire
+
+# Trust the dev HTTPS cert (one-time; also available as a dashboard command)
 dotnet dev-certs https --trust
 
-# Start development environment
-pwsh ./up.ps1
+# Start the full local stack (SQL + Azurite + WebAPI + AdminUI) — Docker must be running.
+# First run prompts once for the secret parameters (stored in the AppHost user-secrets).
+cd src/AppHost && aspire run
 ```
+
+> Full local-dev guide: [_docs/Aspire-Local-Dev.md](_docs/Aspire-Local-Dev.md). Replaces the
+> old `up.ps1` + `docker compose` flow.
 
 ### Build Commands
 
@@ -72,43 +76,28 @@ dotnet test --filter "TestName"
 dotnet test --filter "ClassName"
 ```
 
-### Docker Commands
+### Running the Stack (Aspire)
 
 ```bash
-# Start all services
-docker compose --profile all up -d
+# Start the full local stack: SQL + Azurite + WebAPI + AdminUI (Docker must be running)
+cd src/AppHost && aspire run
 
-# Start only dependencies (for local API/Admin development)
-docker compose --profile tools up -d
-
-# Start only WebAPI
-docker compose --profile webapi up -d
-
-# Start only Admin UI
-docker compose --profile admin up -d
-
-# View logs
-docker compose logs -f rewards-webapi
-docker compose logs -f rewards-adminui
-
-# Stop all services
-docker compose down
-
-# Rebuild images
-docker compose build
+# Stop: Ctrl+C in the aspire run terminal. SQL/Azurite are persistent containers and
+# keep their data volumes; stop them from the Aspire dashboard or `docker stop <container>`.
+# Per-resource logs, traces, and command buttons are in the auto-opened dashboard.
 ```
 
 ### Mobile Development
 
 ```bash
-# For Android (requires dev tunnel for API access)
-devtunnel host -p 5001
-# Update Constants.cs ApiBaseUrl with tunnel address
-dotnet build src/MobileUI/MobileUI.csproj -f net10.0-android
+# Point the app at a backend (emulators can't reach localhost → use staging or tailscale):
+dotnet run --project tools/RewardsDev -- env staging        # do NOT hand-edit Constants.cs
 
-# Restore MAUI workloads (if needed)
-dotnet workload update
-dotnet workload restore
+# Build + deploy to a running emulator (-t:Run pushes Fast-Deployment assemblies):
+dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug
+
+# Install MAUI workloads (one-time; needs sudo on a system-wide .NET install)
+dotnet workload install maui
 ```
 
 ### Database Commands
@@ -263,22 +252,31 @@ Application/
 
 ## Environment Variables & Secrets
 
-### Required User Secrets (WebAPI)
+### Secret Parameters (AppHost)
 
-Add via: `dotnet user-secrets set "Key" "Value" --project src/WebAPI`
+Secrets now live in the **AppHost** user-secrets (not `src/WebAPI`). WebAPI/AdminUI no longer
+carry their own `UserSecretsId`; Aspire injects config into them at run time.
 
-Get actual values from: **Client Secrets | SSW | SSW.Rewards | Developer Secrets** in Keeper
+`aspire run` prompts once for any missing parameter. To seed non-interactively:
+
+```bash
+dotnet user-secrets set --id F76E3E10-FABB-4543-B949-549EEC500823 "Parameters:<name>" "<value>"
+# names: sql-sa-password, firebase-credentials, sendgrid-api-key, email-user, email-password,
+#        signing-authority, mobile-google-services-json, mobile-google-service-info-plist
+```
+
+Get actual values from: **Client Secrets | SSW | SSW.Rewards | Developer Secrets** in Keeper.
 
 ### Development Certificates
 
-Required for HTTPS in Docker. Created via `up.ps1` script or manually:
-
-- Location: `~/.aspnet/https/WebAPI.pfx`
-- Password: `ThisPassword`
+Trust the local HTTPS cert with `dotnet dev-certs https --trust` (also available as the
+**Tools: Trust dev HTTPS cert** dashboard command). Aspire manages the per-resource certs; the
+old `~/.aspnet/https/WebAPI.pfx` from `up.ps1` is no longer required.
 
 ### HangFire Database
 
-HangFire database (`ssw.rewards.hangfire`) is automatically created by the `up.ps1` script if it doesn't exist.
+The HangFire database (`ssw.rewards.hangfire`) is provisioned by the AppHost alongside the main
+`ssw.rewards` database when you run `aspire run`.
 
 ## Recent Features & Improvements
 
@@ -295,18 +293,20 @@ The project has undergone several major updates recently:
 
 ### Common Issues
 
-- **Certificate errors**: Recreate dev certificates with `dotnet dev-certs https --clean`
-- **Mobile build failures**: Run `dotnet workload restore`
-- **Database connection issues**: Ensure Docker containers are running
-- **Mobile API access**: Verify dev tunnel is running and Constants.cs is updated
-- **HangFire setup issues**: The `up.ps1` script automatically creates the HangFire database
+- **Certificate errors**: Recreate dev certificates with `dotnet dev-certs https --clean` then `--trust`
+- **Mobile build failures**: Install the MAUI workload — `dotnet workload install maui` (or `maui-android`)
+- **`MSB4242` / workload-version errors**: `global.json` must pin SDK `10.0.301` with no `workloadVersion`
+- **Database connection issues**: Ensure Docker is running and `aspire run` shows SQL healthy in the dashboard
+- **Mobile API access**: Set the target with `dotnet run --project tools/RewardsDev -- api <staging|tailscale>` (don't hand-edit `Constants.cs`); emulators can't reach `localhost`
+- **HangFire setup issues**: The HangFire database is provisioned by the AppHost on `aspire run`
 
 ### Useful Debugging
 
+- Aspire dashboard: opens automatically on `aspire run` (resource graph, logs, traces, commands)
 - API Swagger: https://localhost:5001/swagger/index.html
 - Admin UI: https://localhost:7137
-- Database: Connect to `localhost,1433` with SA user (password: `Rewards.Docker1!`)
-- Container logs: `docker compose logs -f [service-name]`
+- Database: SA user, mapped port shown on the `rewards-sql` resource in the dashboard; password is the AppHost `sql-sa-password` parameter (`docker ps` to find the container + host port)
+- Container logs: view per-resource in the Aspire dashboard, or `docker logs <container>`
 - HangFire Dashboard: Available through the API when running
 - Azurite Storage Explorer: Connect to `DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;`
 

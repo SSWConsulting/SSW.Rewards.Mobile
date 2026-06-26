@@ -5,9 +5,10 @@ The MAUI mobile app still runs the normal way (emulator/device) — Aspire's job
 config/secret **materialization** and tunnel wiring, not running the app.
 
 ## Prerequisites (one-time)
-- .NET 10 SDK (repo pins via `global.json`).
+- .NET 10 SDK — `global.json` pins `10.0.301` (no `workloadVersion` pin, so the resolver doesn't fail).
 - Aspire CLI ≥ **13.4.6**: `dotnet tool install -g aspire` (or `dotnet tool update -g aspire`).
 - Docker running.
+- For the **mobile app** only: MAUI workloads — `dotnet workload install maui` (or `maui-android` for Android-only). On a system-wide .NET install this needs `sudo`.
 
 ## First run
 ```bash
@@ -35,23 +36,47 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 - **Tools: Install/upgrade dotnet-ef**, **MAUI workload restore**, **Trust dev HTTPS cert**
 - **Mobile: Materialize Firebase secrets** — writes `google-services.json` + `GoogleService-Info.plist`
   from the secret parameters (these files are git-ignored; only `*.template` is committed)
-- **Mobile: Switch identity / API target…** — shells out to the `rewards-dev` CLI (below)
+- **Switch identity / API target…** — shells out to the `rewards-dev` CLI (below), which
+  switches **all** apps, not just mobile
 
-## Mobile config switching — the `rewards-dev` CLI
-Stop hand-editing `Constants.cs`. The DEBUG API/identity URLs come from a **git-ignored**
-`src/MobileUI/Constants.LocalDev.cs`; when absent (fresh clone / CI) the committed
-`Constants.LocalDev.Default.cs` supplies safe defaults.
+## Switching dev targets — the `rewards-dev` CLI
+Stop hand-editing `Constants.cs` and the AdminUI `appsettings`. One command switches the
+identity authority and/or API URL across **all apps**, in sync, via **git-ignored** overrides:
+
+| App | Override file (git-ignored) | Falls back to |
+|---|---|---|
+| Mobile | `src/MobileUI/Constants.LocalDev.cs` | committed `Constants.LocalDev.Default.cs` |
+| AdminUI | `src/AdminUI/wwwroot/appsettings.Local.json` | committed `appsettings(.Development).json` |
+| WebAPI | AppHost user-secret `Parameters:signing-authority` | prompted at `aspire run` |
 
 ```bash
-dotnet run --project tools/RewardsDev -- api local        # https://localhost:5001
-dotnet run --project tools/RewardsDev -- api staging
-dotnet run --project tools/RewardsDev -- api tailscale     # stable phone URL (see below)
-dotnet run --project tools/RewardsDev -- identity local    # https://localhost:14330
-dotnet run --project tools/RewardsDev -- show              # print current
-dotnet run --project tools/RewardsDev -- reset             # back to committed defaults
+# identity → Mobile + AdminUI + WebAPI ;  api → Mobile + AdminUI ;  env → both
+dotnet run --project tools/RewardsDev -- env staging        # everything → staging (safe default)
+dotnet run --project tools/RewardsDev -- api local          # https://localhost:5001 (AdminUI + Mobile)
+dotnet run --project tools/RewardsDev -- api tailscale      # stable phone URL (see below)
+dotnet run --project tools/RewardsDev -- identity local     # https://localhost:14330 (all apps)
+dotnet run --project tools/RewardsDev -- show --json        # current effective targets (machine-readable)
+dotnet run --project tools/RewardsDev -- reset              # remove overrides → committed defaults
 ```
-The same logic is callable head-less (AI / scripts) and from the Aspire dashboard commands.
-Rebuild the mobile app to pick up a change.
+`api`/`identity` change only their own dimension and leave the other untouched. The same logic
+runs head-less (AI / scripts) and from the Aspire dashboard commands. Rebuild the mobile app and
+restart `aspire run` (AdminUI refresh + WebAPI) to pick up a change.
+
+> Code lives in `tools/RewardsDev/`: `Core/` (presets, repo paths, state, process helpers) and
+> `Apps/` (one config writer per app — `MobileConfig`, `AdminUiConfig`, `WebApiConfig`).
+
+## Build & run the mobile app
+Aspire does **not** run the MAUI app — it runs on an emulator/device the usual way.
+1. Install the MAUI workload once (above).
+2. Pick a backend: `dotnet run --project tools/RewardsDev -- env staging` (emulators can't reach
+   `localhost`, so use `staging` or `api tailscale` — not `local` — when running on a device/emulator).
+3. Ensure Firebase config exists (git-ignored): grab `google-services.json` /
+   `GoogleService-Info.plist` from Keeper, or use the **Materialize Firebase secrets** dashboard command.
+4. Build + deploy to a running emulator:
+   ```bash
+   dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <emulator-id>"
+   ```
+   (`-t:Run` pushes the Fast-Deployment assemblies; a plain `adb install` of the Debug APK won't run.)
 
 ## Phone dev with Tailscale (stable URL, real HTTPS cert)
 Dev tunnels / ngrok give a new URL every session and an untrusted cert on iOS. Tailscale fixes both:
