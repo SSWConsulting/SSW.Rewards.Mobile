@@ -9,7 +9,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <!-- Brand-new id so the existing WebAPI .NET user-secrets are left untouched. -->
     <UserSecretsId>F76E3E10-FABB-4543-B949-549EEC500823</UserSecretsId>
     <!-- IInteractionService (command-time masked prompts) is experimental in Aspire 13.4.6. -->
     <NoWarn>$(NoWarn);ASPIREINTERACTION001</NoWarn>
