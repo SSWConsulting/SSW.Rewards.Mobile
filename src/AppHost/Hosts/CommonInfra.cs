@@ -13,13 +13,16 @@ public static class CommonInfraExtensions
 
         var sql = builder.AddSqlServer("rewards-sql", password: saPassword)
             .WithLifetime(ContainerLifetime.Persistent)
-            .WithDataVolume("ssw-rewards-sql-data");
+            .WithDataVolume("ssw-rewards-sql-data")
+            .InDockerProject(); // group under "SSW.Rewards" in Docker Desktop / OrbStack
 
         var rewardsDb = sql.AddDatabase("rewards-db", "ssw.rewards");
         var hangfireDb = sql.AddDatabase("hangfire-db", "ssw.rewards.hangfire");
 
         var storage = builder.AddAzureStorage("rewards-storage")
-            .RunAsEmulator(e => e.WithDataVolume("ssw-rewards-azurite-data"));
+            .RunAsEmulator(e => e
+                .WithDataVolume("ssw-rewards-azurite-data")
+                .InDockerProject());
         var blobs = storage.AddBlobs("blobs");
 
         return new CommonInfra(sql, rewardsDb, hangfireDb, blobs);
