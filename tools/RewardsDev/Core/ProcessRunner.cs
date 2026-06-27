@@ -16,9 +16,20 @@ public static class ProcessRunner
             { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
             using var p = Process.Start(psi);
             if (p is null) return (false, $"could not start {file}");
-            var outp = p.StandardOutput.ReadToEnd();
-            var err = p.StandardError.ReadToEnd();
-            p.WaitForExit(timeoutMs);
+
+            // Read both streams concurrently so a chatty child can't deadlock by
+            // filling one buffer while we block on the other.
+            var outTask = p.StandardOutput.ReadToEndAsync();
+            var errTask = p.StandardError.ReadToEndAsync();
+
+            if (!p.WaitForExit(timeoutMs))
+            {
+                try { p.Kill(entireProcessTree: true); } catch { /* already gone */ }
+                return (false, $"{file} timed out after {timeoutMs}ms");
+            }
+
+            var outp = outTask.GetAwaiter().GetResult();
+            var err = errTask.GetAwaiter().GetResult();
             return (p.ExitCode == 0, outp + err);
         }
         catch (Exception ex) { return (false, ex.Message); }

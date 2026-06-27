@@ -29,8 +29,14 @@ public class Program
             {
                 builder.Configuration.AddJsonStream(await localResp.Content.ReadAsStreamAsync());
             }
+            // Non-success (e.g. 404) → no local override present, use committed appsettings.
         }
-        catch { /* no local override present — use committed appsettings */ }
+        catch (Exception ex)
+        {
+            // A network/parse failure here shouldn't be silent — it usually means a
+            // malformed appsettings.Local.json. Log it so the misconfig is diagnosable.
+            Console.Error.WriteLine($"[WARN] Failed to load appsettings.Local.json override: {ex.Message}");
+        }
 
         // MessageHandler for adding the JWT to outbound requests to the API
         builder.Services.AddTransient<CustomAuthorizationMessageHandler>();

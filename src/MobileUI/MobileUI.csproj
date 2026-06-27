@@ -94,6 +94,15 @@
         <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
     </ItemGroup>
 
+	<!-- The real Firebase config files are git-ignored (see .gitignore). Fail fast with a clear
+	     instruction instead of a cryptic build error when they're missing on a fresh clone / CI. -->
+	<Target Name="EnsureFirebaseConfig" BeforeTargets="BeforeBuild">
+	    <Error Condition="$(TargetFramework.Contains('android')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/Android/google-services.json')"
+	           Text="Missing Platforms/Android/google-services.json. Run the Aspire 'Mobile: Materialize Firebase secrets' command, or copy it from Keeper (template: google-services.json.template)." />
+	    <Error Condition="$(TargetFramework.Contains('-ios')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/iOS/GoogleService-Info.plist')"
+	           Text="Missing Platforms/iOS/GoogleService-Info.plist. Run the Aspire 'Mobile: Materialize Firebase secrets' command, or copy it from Keeper (template: GoogleService-Info.plist.template)." />
+	</Target>
+
     <!-- Local-dev API/identity overrides: prefer the git-ignored Constants.LocalDev.cs (written by the
          `rewards-dev` CLI / Aspire commands); otherwise fall back to the committed Constants.LocalDev.Default.cs.
          Exactly one is compiled, so a fresh clone / CI builds with safe defaults and no hand-editing. -->

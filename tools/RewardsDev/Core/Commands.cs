@@ -12,7 +12,8 @@ public static class Commands
         Console.WriteLine("  identity local | staging | prod              (Mobile + AdminUI + WebAPI)");
         Console.WriteLine("  api      local | staging | prod | tailscale  (Mobile + AdminUI)");
         Console.WriteLine("  env      local | staging | prod              (both of the above)");
-        return 0;
+        // Non-zero so scripts / AI callers can detect that no valid command was given.
+        return 1;
     }
 
     public static int Fail(string msg)
