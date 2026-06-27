@@ -25,6 +25,13 @@ The dashboard opens automatically. SQL Server + Azurite come up as **persistent*
 with data volumes (`ssw-rewards-sql-data`, `ssw-rewards-azurite-data`), so your data survives
 restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI startup.
 
+<img src="imgs/aspire-dashboard-resources.png" alt="Aspire dashboard Resources view showing rewards-storage, rewards-sql, rewards-adminui, rewards-webapi and the virtual mobile-app resource" width="900" />
+
+> The **Graph** tab gives the same model as a topology view — handy to see how `rewards-webapi`
+> wires up to SQL, Azurite, the secret parameters and the mobile config files:
+>
+> <img src="imgs/aspire-graph.png" alt="Aspire dashboard Graph view showing the resource topology" width="900" />
+
 > Both containers are grouped under an **SSW.Rewards** project/folder in Docker Desktop & OrbStack
 > (instead of cluttering the top level). Aspire stamps `com.docker.compose.project=SSW.Rewards` +
 > `com.docker.compose.service=<name>` labels via `InDockerProject()` in `Hosts/DockerGrouping.cs`.
@@ -37,12 +44,20 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
+<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets and MAUI workload restore" width="900" />
+
+Commands that need input (e.g. **Switch API target…**) open a masked prompt right in the dashboard:
+
+<img src="imgs/aspire-command-dialog.png" alt="Switch mobile API dialog prompting for the target: local, staging, prod or tailscale" width="900" />
+
 **On `rewards-sql` (database + tooling):**
 - **DB: Apply migrations** / **Add migration…** — EF update / add (prompts for the name)
 - **Tools: Install/upgrade dotnet-ef**, **Trust dev HTTPS cert**
 
 **On `mobile-app` (a virtual, lifetime-less resource for the MAUI app — Aspire doesn't run it,
 but it gives the mobile chores a home):**
+
+<img src="imgs/aspire-mobile-details.png" alt="mobile-app resource detail panel showing Display name and the Runs on device emulator state" width="900" />
 - **Show current target** — `rewards-dev show` (prints the API + identity the apps point at)
 - **Switch API target…** / **API → Tailscale (one-click)** / **Switch identity target…** — shell out
   to the `rewards-dev` CLI (below), which switches **all** apps, not just mobile
