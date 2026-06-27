@@ -70,10 +70,14 @@ Secrets flow **only** from the AppHost — `WebAPI`/`AdminUI` no longer carry th
 Aspire injects the connection strings (`ConnectionStrings:DefaultConnection`/`:HangfireConnection`),
 the Azurite blob string, Firebase/SendGrid/SMTP, and `SigningAuthority` as env vars.
 
-## Dashboard commands (Actions ▸ Commands on `rewards-sql`)
+## Dashboard commands
 
-DB: Apply migrations / Add migration… · Install dotnet-ef · MAUI workload restore · Trust dev HTTPS
-cert · Materialize Firebase secrets · Switch identity / API target (shells out to `rewards-dev`).
+**On `rewards-sql`** (DB + tooling): DB: Apply migrations / Add migration… · Install dotnet-ef ·
+Trust dev HTTPS cert.
+
+**On `mobile-app`** (virtual lifetime-less resource for the MAUI app): Show current target ·
+Switch API / identity target… · API → Tailscale (one-click) · Tailscale: Status · Materialize
+Firebase secrets · MAUI workload restore. The switch commands shell out to `rewards-dev`.
 
 ## Switch which identity / API the apps use
 

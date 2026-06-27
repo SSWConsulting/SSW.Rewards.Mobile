@@ -35,8 +35,8 @@ dotnet run --project tools/RewardsDev -- env staging      # API + identity → s
 
 `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) are git-ignored; only
 `*.template` placeholders are committed. The Android build **fails** if `google-services.json` is the
-placeholder. Get the real files from Keeper, or use the dashboard **Mobile: Materialize Firebase
-secrets** command.
+placeholder. Get the real files from Keeper, or use the **Materialize Firebase secrets** command on
+the dashboard `mobile-app` resource.
 
 ## Step 4 — build & deploy to a running emulator
 

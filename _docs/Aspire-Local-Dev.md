@@ -34,13 +34,22 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 > `CloudBlobProviderOptions:ContentStorageConnectionString` (→ Azurite), `Firebase:FirebaseCredentials`,
 > `SendGridAPIKey`, `EmailUser`, `EmailPassword`, `SigningAuthority` as env vars.
 
-## Dashboard commands (Actions ▸ Commands on the `rewards-sql` resource)
+## Dashboard commands
+The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
+
+**On `rewards-sql` (database + tooling):**
 - **DB: Apply migrations** / **Add migration…** — EF update / add (prompts for the name)
-- **Tools: Install/upgrade dotnet-ef**, **MAUI workload restore**, **Trust dev HTTPS cert**
-- **Mobile: Materialize Firebase secrets** — writes `google-services.json` + `GoogleService-Info.plist`
+- **Tools: Install/upgrade dotnet-ef**, **Trust dev HTTPS cert**
+
+**On `mobile-app` (a virtual, lifetime-less resource for the MAUI app — Aspire doesn't run it,
+but it gives the mobile chores a home):**
+- **Show current target** — `rewards-dev show` (prints the API + identity the apps point at)
+- **Switch API target…** / **API → Tailscale (one-click)** / **Switch identity target…** — shell out
+  to the `rewards-dev` CLI (below), which switches **all** apps, not just mobile
+- **Tailscale: Status** — `tailscale status` (verify connectivity before using the tailscale target)
+- **Materialize Firebase secrets** — writes `google-services.json` + `GoogleService-Info.plist`
   from the secret parameters (these files are git-ignored; only `*.template` is committed)
-- **Switch identity / API target…** — shells out to the `rewards-dev` CLI (below), which
-  switches **all** apps, not just mobile
+- **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
 
 ## Switching dev targets — the `rewards-dev` CLI
 Stop hand-editing `Constants.cs` and the AdminUI `appsettings`. One command switches the

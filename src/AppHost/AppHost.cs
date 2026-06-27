@@ -20,8 +20,13 @@ var api = builder.AddWebApiHost(common);
 // AdminUI (Blazor WASM dev server) points at the API.
 builder.AddAdminUiHost(api);
 
-// Dashboard command buttons for the common dev chores (EF migrate, materialize
-// mobile secrets, switch identity/API, …) — grouped on the SQL resource.
+// Virtual (lifetime-less) resource for the MAUI mobile app. Aspire doesn't run the
+// mobile app, but this gives it a dashboard home for the mobile chores: switch API/
+// identity target, flip to Tailscale, materialize Firebase secrets, MAUI restore.
+builder.AddMobileApp();
+
+// Dashboard command buttons for the database + tooling chores (EF migrate, dev cert,
+// install dotnet-ef) — grouped on the SQL resource.
 common.SqlServer.AddDevCommands();
 
 builder.Build().Run();
