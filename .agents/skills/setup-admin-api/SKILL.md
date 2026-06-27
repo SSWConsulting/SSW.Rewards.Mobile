@@ -25,6 +25,34 @@ data volumes; WebAPI + AdminUI start once SQL is healthy; EF migrations apply on
 - **AdminUI** → https://localhost:7137 (redirects to SSW Identity to sign in)
 - **WebAPI** → https://localhost:5001 — health `https://localhost:5001/health`, Swagger `/swagger`
 
+## Aspire CLI — agent guardrails (distilled)
+
+`aspire run` is the **human** flow (foreground, opens the dashboard, blocks the terminal). When an
+**AI agent** drives the AppHost, use the background lifecycle instead so you don't block and so locks
+release cleanly. CLI is **≥ 13.4.6**; all verbs below exist there.
+
+```bash
+aspire start --non-interactive          # background; --isolated in a git worktree (random ports + isolated secrets)
+aspire wait <resource> --non-interactive # block until ready — NEVER curl-poll a health endpoint
+aspire ps                               # list running AppHosts/resources (--include-hidden for proxies/migrations)
+aspire describe [<resource>]            # inspect state/endpoints  ·  aspire logs <resource>  ·  aspire otel
+aspire resource <resource> restart      # one resource changed → restart/rebuild IT, don't bounce the whole AppHost
+aspire stop                             # release file locks + ports when done
+```
+
+**Rules that prevent agent self-harm:**
+
+- **Never** `dotnet run` an AppHost — it bypasses orchestration (no dashboard, no `wait`/`logs`, orphaned procs). Use `aspire start`/`aspire run`.
+- **File-lock build errors (`MSB3491` / `CS2012`, "file in use") = Aspire is running**, not a broken project. Fix: `aspire stop` first, then rebuild. **Don't** delete `bin/`/`obj/`, `kill` dotnet, or "reboot".
+- **"Port already in use"** → `aspire stop` then `aspire start`.
+- This is a **worktree** — prefer `aspire start --isolated` so it won't collide with another checkout's instance.
+- `aspire doctor` diagnoses a broken environment (missing SDK/Docker/cert).
+
+> We deliberately **don't** vendor Microsoft's `aspire-skills` plugin (init/aspireify/deployment are
+> irrelevant — our AppHost is wired and we deploy via Azure pipelines, not `aspire publish`). The
+> guardrails above are the only genuinely useful distillation. Devs who want full Aspire CLI fluency
+> can install it per-machine: `copilot plugin install aspire@aspire-skills`.
+
 ## Secrets
 
 On the first `aspire run`, Aspire **prompts once** for the unresolved secret parameters and stores
