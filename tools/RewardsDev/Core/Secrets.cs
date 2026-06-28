@@ -129,14 +129,19 @@ public static class Secrets
         return 1;
     }
 
-    // Empty, whitespace, or one of the committed placeholder markers = "not really set".
+    // Empty, whitespace, or a short single-line "<…>" token (e.g. "<PASTE FROM KEEPER: …>") =
+    // "not really set". A real plist value legitimately starts with "<?xml" and is multi-line, so
+    // only treat a SHORT, single-line angle-bracket token as a placeholder — never real XML.
     private static bool IsPlaceholder(string v)
     {
         if (string.IsNullOrWhiteSpace(v)) return true;
         var t = v.Trim();
-        return t.StartsWith('<')
-            || t.Contains("Copy from Keeper", StringComparison.OrdinalIgnoreCase)
-            || t.Contains("placeholder", StringComparison.OrdinalIgnoreCase)
-            || t.Contains("REPLACE", StringComparison.Ordinal);
+        if (t.Contains("Copy from Keeper", StringComparison.OrdinalIgnoreCase)) return true;
+        if (t.Contains("REPLACE:", StringComparison.OrdinalIgnoreCase)) return true;
+        if (t.Contains("PASTE FROM KEEPER", StringComparison.OrdinalIgnoreCase)) return true;
+        return t.Length < 120
+            && !t.Contains('\n')
+            && t.StartsWith('<') && t.EndsWith('>')
+            && !t.StartsWith("<?xml", StringComparison.OrdinalIgnoreCase);
     }
 }
