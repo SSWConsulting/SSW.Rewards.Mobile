@@ -13,6 +13,7 @@ public static class CommonInfraExtensions
 
         var sql = builder.AddSqlServer("rewards-sql", password: saPassword)
             .WithLifetime(ContainerLifetime.Persistent)
+            .WithContainerName("ssw-rewards-sql")   // stable name → every clone/worktree reuses ONE container (no cross-clone volume lock)
             .WithDataVolume("ssw-rewards-sql-data")
             .InDockerProject(); // group under "SSW.Rewards" in Docker Desktop / OrbStack
 
@@ -21,6 +22,7 @@ public static class CommonInfraExtensions
 
         var storage = builder.AddAzureStorage("rewards-storage")
             .RunAsEmulator(e => e
+                .WithContainerName("ssw-rewards-azurite")   // stable name, same reasoning as SQL above
                 .WithDataVolume("ssw-rewards-azurite-data")
                 .InDockerProject());
         var blobs = storage.AddBlobs("blobs");

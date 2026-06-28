@@ -27,7 +27,7 @@ On a system-wide .NET install this needs `sudo`.
 ## Step 2 — point the app at a backend
 
 ```bash
-./rewards-dev env staging      # API + identity → staging   (run from the repo root)
+./rewards-dev api staging      # API → staging (leaves your local identity/WebAPI untouched)
 # or: ./rewards-dev api tailscale   (stable phone URL + auto `tailscale serve`; see _docs/Aspire-Local-Dev.md)
 # `./rewards-dev help` is fully self-teaching; it wraps `dotnet run --project tools/RewardsDev`.
 ```
@@ -46,20 +46,27 @@ the dashboard `mobile-app` resource.
 ~/Library/Android/sdk/emulator/emulator -list-avds
 ~/Library/Android/sdk/emulator/emulator -avd <avd-name> &
 
-# build + deploy + launch (-t:Run pushes the Fast-Deployment assemblies)
-dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <emulator-id>"
+# build + deploy + launch — Android-only, no iOS workload needed
+./rewards-dev mobile android
+# (= dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android \
+#      -p:MobileTargetFrameworks=net10.0-android)
 ```
+
+`./rewards-dev mobile android` (and the dashboard **Build & Run (Android)** command) is the supported
+Android-only path. To target a specific emulator with the raw dotnet form, add
+`-p:AdbTarget="-s <emulator-id>"`.
 
 ## Troubleshooting
 
 - **App installs but crashes instantly: `No assemblies found … Fast Deployment`** — you did a raw
-  `adb install` of the Debug APK. Use `dotnet build -t:Run` instead (it pushes the override assemblies).
+  `adb install` of the Debug APK. Use `dotnet build -t:Run` (or `rewards-dev mobile android`) instead.
 - **Build error in `ProcessGoogleServicesJson` / XML parse** — `google-services.json` is the
   `// Copy from Keeper` placeholder. Materialize the real one (Step 3).
-- **`NETSDK1147: workload "ios" must be installed`** — the project multi-targets iOS + Android.
-  For an Android-only build, pass `-f net10.0-android` (already above). iOS needs the `maui-ios`
-  workload and Mac signing.
-- **`NETSDK1005: … doesn't have a target for 'net10.0'` in referenced libs** — don't pass
-  `-p:TargetFrameworks=…` globally; it leaks into referenced projects. Use `-f net10.0-android`.
+- **`NETSDK1147: workload "ios" must be installed` / restore demands the iOS workload** — the project
+  multi-targets iOS + Android. Use `rewards-dev mobile android`, which passes
+  `-p:MobileTargetFrameworks=net10.0-android` so restore is Android-only. `maui-android` is enough.
+- **`NETSDK1005: … doesn't have a target for 'net10.0'` in referenced libs** — don't override the
+  well-known `-p:TargetFrameworks=…`; it leaks into referenced projects. Use the custom
+  `-p:MobileTargetFrameworks=net10.0-android` (what `rewards-dev mobile android` does).
 - **API calls fail from the emulator** — you're pointed at `local` (`localhost`), which the emulator
   can't reach. Switch with `./rewards-dev api staging` (or tailscale).

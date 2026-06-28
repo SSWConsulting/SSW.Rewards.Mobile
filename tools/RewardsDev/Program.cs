@@ -7,6 +7,7 @@ using SSW.Rewards.DevTool.Core;
 //   rewards-dev api      <local|staging|prod|tailscale>  Mobile + AdminUI
 //   rewards-dev env      <local|staging|prod>            both of the above
 //   rewards-dev secrets  <check|edit|path|sync-mobile>   AppHost store + isolated mobile store
+//   rewards-dev mobile   <android|android-build>         build/run MAUI on Android (no iOS workload needed)
 //   rewards-dev show [--json] | reset
 //
 // This file is just arg-parsing + dispatch. Command implementations live in Core/Commands.cs;
@@ -24,6 +25,7 @@ var cmd = first;
 if (cmd == "show") return Commands.Show(paths, args.Contains("--json"));
 if (cmd == "reset") return Commands.Reset(paths);
 if (cmd == "secrets") return Secrets.Dispatch(paths, args);
+if (cmd == "mobile") return Mobile.Dispatch(paths, args);
 
 // The mobile override is the canonical current state; preserve the dimension a command isn't changing.
 var current = MobileConfig.ReadCurrent(paths);
@@ -52,5 +54,5 @@ switch (cmd)
         return Commands.Apply(paths, new TargetState(a, au), changeIdentity: true);
 
     default:
-        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | secrets | show | reset.");
+        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | secrets | mobile | show | reset.");
 }

@@ -64,7 +64,15 @@ public static class Secrets
 
         var dir = System.IO.Path.GetDirectoryName(file)!;
         Directory.CreateDirectory(dir);
-        if (!File.Exists(file)) File.WriteAllText(file, "{\n}\n");
+        if (!File.Exists(file))
+        {
+            // Fresh machine: seed a skeleton with every expected key empty, so the dev either pastes
+            // the whole Keeper record over it, or fills values key-by-key and `secrets check` shows
+            // exactly what's still missing.
+            var skeleton = new Dictionary<string, string>();
+            foreach (var (key, _) in Required) skeleton[key] = "";
+            File.WriteAllText(file, JsonSerializer.Serialize(skeleton, new JsonSerializerOptions { WriteIndented = true }));
+        }
 
         Console.WriteLine($"secrets file: {file}");
         Console.WriteLine("Paste the \"SSW.Rewards — Aspire Dev Secrets\" record from Keeper, save, then run: rewards-dev secrets check");

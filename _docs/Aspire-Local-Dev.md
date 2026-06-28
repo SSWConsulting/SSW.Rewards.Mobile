@@ -22,8 +22,13 @@ on-device testing.
 
 - **MAUI workloads** — only to build/run the **mobile app**:
   ```bash
-  dotnet workload install maui      # or `maui-android` for Android-only; needs sudo on a system-wide SDK
+  dotnet workload install maui          # iOS + Android
+  dotnet workload install maui-android  # Android only — then build with `rewards-dev mobile android`
+  #                                        (needs sudo on a system-wide SDK)
   ```
+  Android-only is fully supported: the MobileUI project multi-targets iOS + Android, but
+  `rewards-dev mobile android` (and the dashboard **Build & Run (Android)** command) pass
+  `-p:MobileTargetFrameworks=net10.0-android` so restore never demands the iOS workload.
   Or use the dashboard: **mobile-app ▸ MAUI workload restore** / **Update .NET workloads**.
 - **Tailscale** — only for **on-device** phone testing against your local API (stable URL + trusted
   HTTPS cert). Install from <https://tailscale.com/download>, then `tailscale up` on the Mac **and**
@@ -127,6 +132,9 @@ but it gives the mobile chores a home):**
   Firebase client-config keys into MobileUI's own isolated user-secrets store, then writes
   `google-services.json` + `GoogleService-Info.plist` (git-ignored; only `*.template` is committed).
   Backend secrets are never copied — nothing sensitive can reach the APK.
+- **Build & Run (Android)** — `rewards-dev mobile android`: builds the MAUI app **Android-only**
+  (no iOS workload needed) and deploys to a running emulator/device. Start an emulator and pick a
+  reachable backend (`api staging`/`api tailscale`) first.
 - **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
 - **Update .NET workloads** — `dotnet workload update` (keep MAUI/iOS/Android workloads current)
 
@@ -163,15 +171,22 @@ restart `aspire run` (AdminUI refresh + WebAPI) to pick up a change.
 
 ## Build & run the mobile app
 Aspire does **not** run the MAUI app — it runs on an emulator/device the usual way.
-1. Install the MAUI workload once (above).
-2. Pick a backend: `./rewards-dev env staging` (emulators can't reach
-   `localhost`, so use `staging` or `api tailscale` — not `local` — when running on a device/emulator).
+1. Install the MAUI workload once (above). Android-only? `maui-android` is enough.
+2. Pick a backend: `./rewards-dev api staging` (emulators can't reach `localhost`, so use
+   `api staging` or `api tailscale` — not `api local` — on a device/emulator). Use `api` (not `env`)
+   so you only repoint the API and leave your local identity/WebAPI untouched.
 3. Ensure Firebase config exists (git-ignored): run `rewards-dev secrets sync-mobile` (or the
    **mobile-app ▸ Sync mobile secrets (isolated)** dashboard command). It isolates the two Firebase
    keys into the mobile store and writes `google-services.json` / `GoogleService-Info.plist`.
-4. Build + deploy to a running emulator:
+4. Build + deploy to a running emulator — one command (no iOS workload needed):
    ```bash
-   dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <emulator-id>"
+   ./rewards-dev mobile android      # = dotnet build -t:Run -f net10.0-android -p:MobileTargetFrameworks=net10.0-android
+   ```
+   Or the raw dotnet form (note `-p:MobileTargetFrameworks` — the project multi-targets iOS+Android,
+   and overriding the well-known `TargetFrameworks` would break referenced libraries):
+   ```bash
+   dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug \
+     -p:MobileTargetFrameworks=net10.0-android -p:AdbTarget="-s <emulator-id>"
    ```
    (`-t:Run` pushes the Fast-Deployment assemblies; a plain `adb install` of the Debug APK won't run.)
 
@@ -201,3 +216,9 @@ No more per-session URL churn in `Constants.cs`.
   is suppressed in the AppHost csproj.
 - `docker-compose.yml` / `up.ps1` can be retired for local dev (kept for now if any pure-container
   CI path still relies on them).
+- **Two clones/worktrees on one machine** share the persistent SQL + Azurite **data volumes**. The
+  containers use **stable names** (`ssw-rewards-sql`, `ssw-rewards-azurite`) so every clone reuses the
+  *same* container instead of spawning a second one on the same volume. Only run `aspire run` from
+  **one** clone at a time. Symptom if you ever see a second container fighting for the volume: SQL
+  logs `Setup FAILED copying system data file … Access is denied` and exits 255 — stop the other
+  `ssw-rewards-sql*` container (`docker stop ssw-rewards-sql`) and re-run.

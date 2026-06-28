@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
+		<!-- Default to both mobile platforms. Android-only devs (no iOS workload) can build with:
+		       dotnet build -p:MobileTargetFrameworks=net10.0-android
+		     This custom property name is deliberate: overriding the well-known `TargetFrameworks`
+		     on the CLI leaks into referenced libraries (ApiClient/Shared/Enums) and breaks them
+		     (NETSDK1005). `MobileTargetFrameworks` is read only here, so it can't leak. -->
+		<MobileTargetFrameworks Condition="'$(MobileTargetFrameworks)' == ''">net10.0-ios;net10.0-android</MobileTargetFrameworks>
+		<TargetFrameworks>$(MobileTargetFrameworks)</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SSW.Rewards.Mobile</RootNamespace>
 		<UseMaui>true</UseMaui>
