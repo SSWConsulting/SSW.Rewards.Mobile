@@ -81,8 +81,10 @@ Firebase secrets · MAUI workload restore. The switch commands shell out to `rew
 
 ## Switch which identity / API the apps use
 
-`dotnet run --project tools/RewardsDev -- env <local|staging|prod>` (or `identity` / `api`,
-`api tailscale`). Writes git-ignored overrides for Mobile + AdminUI + WebAPI. `… -- show` prints current.
+`./rewards-dev env <local|staging|prod>` (or `identity` / `api`, `api tailscale`) from the repo root.
+Writes git-ignored overrides for Mobile + AdminUI + WebAPI. `./rewards-dev show --json` prints the
+current effective targets (machine-readable); `./rewards-dev help` is fully self-teaching.
+`./rewards-dev` is a wrapper over `dotnet run --project tools/RewardsDev`.
 
 ## Troubleshooting
 

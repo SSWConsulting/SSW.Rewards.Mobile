@@ -27,8 +27,9 @@ On a system-wide .NET install this needs `sudo`.
 ## Step 2 — point the app at a backend
 
 ```bash
-dotnet run --project tools/RewardsDev -- env staging      # API + identity → staging
-# or: ... -- api tailscale   (stable phone URL; see _docs/Aspire-Local-Dev.md → Tailscale)
+./rewards-dev env staging      # API + identity → staging   (run from the repo root)
+# or: ./rewards-dev api tailscale   (stable phone URL + auto `tailscale serve`; see _docs/Aspire-Local-Dev.md)
+# `./rewards-dev help` is fully self-teaching; it wraps `dotnet run --project tools/RewardsDev`.
 ```
 
 ## Step 3 — Firebase config (git-ignored)
@@ -61,4 +62,4 @@ dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:
 - **`NETSDK1005: … doesn't have a target for 'net10.0'` in referenced libs** — don't pass
   `-p:TargetFrameworks=…` globally; it leaks into referenced projects. Use `-f net10.0-android`.
 - **API calls fail from the emulator** — you're pointed at `local` (`localhost`), which the emulator
-  can't reach. Switch with `… rewards-dev -- api staging` (or tailscale).
+  can't reach. Switch with `./rewards-dev api staging` (or tailscale).

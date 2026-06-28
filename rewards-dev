@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# rewards-dev — thin wrapper so you can type `./rewards-dev <cmd>` from the repo root
+# instead of the long `dotnet run --project tools/RewardsDev -- <cmd>`.
+#
+# Tip: add an alias to call it from anywhere —
+#   alias rewards-dev="$(git -C . rev-parse --show-toplevel)/rewards-dev"
+#
+# Switches which backend ALL SSW.Rewards apps point at. Run `./rewards-dev help`.
+set -euo pipefail
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec dotnet run --project "$here/tools/RewardsDev" --verbosity quiet -- "$@"

@@ -13,10 +13,13 @@ using SSW.Rewards.DevTool.Core;
 
 if (args.Length == 0) return Commands.Usage();
 
+var first = args[0].ToLowerInvariant();
+if (first is "help" or "-h" or "--help" or "-?" or "/?") return Commands.Help();
+
 var paths = RepoPaths.Discover();
 if (paths is null) return Commands.Fail("could not locate the repo root (no SSW.Rewards.sln above cwd or tool dir).");
 
-var cmd = args[0].ToLowerInvariant();
+var cmd = first;
 if (cmd == "show") return Commands.Show(paths, args.Contains("--json"));
 if (cmd == "reset") return Commands.Reset(paths);
 
@@ -28,7 +31,11 @@ switch (cmd)
     case "api":
         if (args.Length < 2) return Commands.Fail("api needs a target: local | staging | prod | tailscale");
         var apiUrl = Commands.ResolveApi(args[1]);
-        return apiUrl is null ? 1 : Commands.Apply(paths, current with { Api = apiUrl }, changeIdentity: false);
+        if (apiUrl is null) return 1;
+        // Switching to tailscale is only useful if the HTTPS proxy is up — start it for the user.
+        if (args[1].Equals("tailscale", StringComparison.OrdinalIgnoreCase))
+            Commands.EnsureTailscaleServe(Presets.ApiPort);
+        return Commands.Apply(paths, current with { Api = apiUrl }, changeIdentity: false);
 
     case "identity":
         if (args.Length < 2) return Commands.Fail("identity needs a target: local | staging | prod");

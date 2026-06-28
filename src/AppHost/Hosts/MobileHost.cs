@@ -60,8 +60,9 @@ public static class MobileHostExtensions
         mobile.WithCommand("mobile-switch-api", "Switch API target…",
             executeCommand: async ctx =>
             {
-                var target = await CommandHelpers.PromptText(ctx, "Switch mobile API",
-                    "Choose the API base URL for the mobile app", "Target (local | staging | prod | tailscale)");
+                var target = await CommandHelpers.PromptChoice(ctx, "Switch mobile API",
+                    "Choose the API base URL for the mobile app", "Target",
+                    "local", "staging", "prod", "tailscale");
                 if (target is null) return CommandResults.Canceled();
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- api {target.Trim()}");
                 return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
@@ -74,13 +75,14 @@ public static class MobileHostExtensions
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- api tailscale");
                 return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
             },
-            commandOptions: Always("CloudLink", "rewards-dev api tailscale — point mobile at this machine's Tailscale URL"));
+            commandOptions: Always("CloudLink", "rewards-dev api tailscale — point mobile at this machine's Tailscale URL + start `tailscale serve`"));
 
         mobile.WithCommand("mobile-switch-identity", "Switch identity target…",
             executeCommand: async ctx =>
             {
-                var target = await CommandHelpers.PromptText(ctx, "Switch mobile identity",
-                    "Choose the identity authority for the mobile app", "Target (local | staging | prod)");
+                var target = await CommandHelpers.PromptChoice(ctx, "Switch mobile identity",
+                    "Choose the identity authority for the mobile app", "Target",
+                    "local", "staging", "prod");
                 if (target is null) return CommandResults.Canceled();
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- identity {target.Trim()}");
                 return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);

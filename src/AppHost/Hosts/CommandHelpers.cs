@@ -22,6 +22,28 @@ internal static class CommandHelpers
         return result.Data.First(i => i.Name == "value").Value;
     }
 
+    // Prompt for one value from a fixed set (a dropdown). Returns null when the user
+    // cancels. A dropdown beats free text for known targets: no typos for humans, and an
+    // unambiguous, machine-checkable choice for AI callers.
+    public static async Task<string?> PromptChoice(
+        ExecuteCommandContext ctx, string title, string message, string label, params string[] options)
+    {
+        var interaction = ctx.ServiceProvider.GetRequiredService<IInteractionService>();
+        var result = await interaction.PromptInputsAsync(title, message,
+        [
+            new InteractionInput
+            {
+                Name = "value",
+                Label = label,
+                InputType = InputType.Choice,
+                Required = true,
+                Options = options.Select(o => new KeyValuePair<string, string>(o, o)).ToList(),
+            }
+        ]);
+        if (result.Canceled) return null;
+        return result.Data.First(i => i.Name == "value").Value;
+    }
+
     // Run a process, append its combined output to the dashboard resource log,
     // and return (exit, combined output).
     public static async Task<(int exit, string log)> RunProcess(ExecuteCommandContext ctx, string file, string args)

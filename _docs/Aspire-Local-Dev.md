@@ -66,9 +66,11 @@ but it gives the mobile chores a home):**
   from the secret parameters (these files are git-ignored; only `*.template` is committed)
 - **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
 
-## Switching dev targets — the `rewards-dev` CLI
+## Switching dev targets — the `rewards-dev` command
 Stop hand-editing `Constants.cs` and the AdminUI `appsettings`. One command switches the
-identity authority and/or API URL across **all apps**, in sync, via **git-ignored** overrides:
+identity authority and/or API URL across **all apps**, in sync, via **git-ignored** overrides.
+Run it from the repo root with the `./rewards-dev` wrapper (or add an alias —
+`alias rewards-dev="$(git rev-parse --show-toplevel)/rewards-dev"` — to call it from anywhere).
 
 | App | Override file (git-ignored) | Falls back to |
 |---|---|---|
@@ -78,24 +80,26 @@ identity authority and/or API URL across **all apps**, in sync, via **git-ignore
 
 ```bash
 # identity → Mobile + AdminUI + WebAPI ;  api → Mobile + AdminUI ;  env → both
-dotnet run --project tools/RewardsDev -- env staging        # everything → staging (safe default)
-dotnet run --project tools/RewardsDev -- api local          # https://localhost:5001 (AdminUI + Mobile)
-dotnet run --project tools/RewardsDev -- api tailscale      # stable phone URL (see below)
-dotnet run --project tools/RewardsDev -- identity local     # https://localhost:14330 (all apps)
-dotnet run --project tools/RewardsDev -- show --json        # current effective targets (machine-readable)
-dotnet run --project tools/RewardsDev -- reset              # remove overrides → committed defaults
+./rewards-dev help                  # full self-teaching usage (targets, examples, files)
+./rewards-dev env staging           # everything → staging (safe default)
+./rewards-dev api local             # https://localhost:5001 (AdminUI + Mobile)
+./rewards-dev api tailscale         # stable phone URL + auto `tailscale serve` (see below)
+./rewards-dev identity local        # https://localhost:14330 (all apps)
+./rewards-dev show --json           # current effective targets (machine-readable)
+./rewards-dev reset                 # remove overrides → committed defaults
 ```
 `api`/`identity` change only their own dimension and leave the other untouched. The same logic
 runs head-less (AI / scripts) and from the Aspire dashboard commands. Rebuild the mobile app and
 restart `aspire run` (AdminUI refresh + WebAPI) to pick up a change.
 
-> Code lives in `tools/RewardsDev/`: `Core/` (presets, repo paths, state, process helpers) and
-> `Apps/` (one config writer per app — `MobileConfig`, `AdminUiConfig`, `WebApiConfig`).
+> `./rewards-dev` is a thin wrapper over `dotnet run --project tools/RewardsDev`. Code lives in
+> `tools/RewardsDev/`: `Core/` (presets, repo paths, state, process helpers) and `Apps/` (one config
+> writer per app — `MobileConfig`, `AdminUiConfig`, `WebApiConfig`).
 
 ## Build & run the mobile app
 Aspire does **not** run the MAUI app — it runs on an emulator/device the usual way.
 1. Install the MAUI workload once (above).
-2. Pick a backend: `dotnet run --project tools/RewardsDev -- env staging` (emulators can't reach
+2. Pick a backend: `./rewards-dev env staging` (emulators can't reach
    `localhost`, so use `staging` or `api tailscale` — not `local` — when running on a device/emulator).
 3. Ensure Firebase config exists (git-ignored): grab `google-services.json` /
    `GoogleService-Info.plist` from Keeper, or use the **Materialize Firebase secrets** dashboard command.
@@ -108,17 +112,17 @@ Aspire does **not** run the MAUI app — it runs on an emulator/device the usual
 ## Phone dev with Tailscale (stable URL, real HTTPS cert)
 Dev tunnels / ngrok give a new URL every session and an untrusted cert on iOS. Tailscale fixes both:
 1. Install Tailscale on the Mac **and** the phone; sign both into the same tailnet (`tailscale up`).
-2. Give the phone a trusted HTTPS endpoint to the API:
+2. Point the mobile app at the stable hostname (this also starts the HTTPS proxy for you):
    ```bash
-   tailscale serve --bg https / https+insecure://localhost:5001
+   ./rewards-dev api tailscale
    ```
-   This terminates TLS with a real Let's Encrypt cert for your `*.ts.net` name — iOS trusts it, no
-   dev-cert sideloading.
-3. Point the mobile app at the stable hostname **once**:
-   ```bash
-   dotnet run --project tools/RewardsDev -- api tailscale
-   ```
-   (auto-detects your MagicDNS name, e.g. `https://<machine>.<tailnet>.ts.net:5001`).
+   It auto-detects your MagicDNS name (e.g. `https://<machine>.<tailnet>.ts.net:5001`) **and** runs
+   `tailscale serve --bg --https 5001 https+insecure://localhost:5001` so the phone gets a real
+   Let's Encrypt cert for your `*.ts.net` name — iOS trusts it, no dev-cert sideloading.
+   > First-time setup can be slow (cert issuance), and your tailnet must have **HTTPS enabled** in the
+   > admin console (Settings → Keys / HTTPS Certificates). If auto-serve can't start, `rewards-dev`
+   > still switches the URL and prints the manual command to run once:
+   > `tailscale serve --bg --https 5001 https+insecure://localhost:5001`.
 No more per-session URL churn in `Constants.cs`.
 
 ## Notes / gotchas
