@@ -139,6 +139,13 @@
     <PropertyGroup Condition="$(Configuration.Contains('Release')) And $(TargetFramework.Contains('ios'))">
         <MtouchInterpreter>-all,System.Collections.Immutable</MtouchInterpreter>
     </PropertyGroup>
+
+    <!-- .NET for iOS 26.5 ships the same SDK as Xcode 26.6 but its build-time check only
+         recognises Xcode 26.5. Skip the check so builds work on Xcode 26.6 (dotnet/macios#25658).
+         Remove once a workload that formally validates Xcode 26.6 is adopted. -->
+    <PropertyGroup Condition="$(TargetFramework.Contains('ios'))">
+        <ValidateXcodeVersion>false</ValidateXcodeVersion>
+    </PropertyGroup>
     
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <WarningLevel>4</WarningLevel>

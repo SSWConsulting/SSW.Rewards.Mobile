@@ -208,6 +208,17 @@ app targets **both iOS and Android**; build one platform at a time.
 > non-interactive shell (script/CI/agent), use `nohup ~/.../emulator -avd <avd-name> &` so it
 > survives the shell session, and wait for `adb wait-for-device shell getprop sys.boot_completed`.
 
+### iOS build troubleshooting (Xcode 26.6)
+- **`This version of .NET for iOS (26.5.xxxxx) requires Xcode 26.5. The current version of Xcode is
+  26.6.`** — version check only: dropping the `global.json` workload pin resolves the iOS workload
+  to SDK 26.5, whose build-time check doesn't yet recognise Xcode 26.6, even though the two SDKs are
+  identical ([dotnet/macios#25658](https://github.com/dotnet/macios/issues/25658)). `MobileUI.csproj`
+  sets `<ValidateXcodeVersion>false</ValidateXcodeVersion>` for iOS, so this is already handled —
+  remove that property once a workload that formally validates Xcode 26.6 is adopted.
+- **`actool error: No simulator runtime version ... available to use with iphonesimulator SDK
+  version`** — the matching iOS simulator runtime isn't installed. Install it with
+  `xcodebuild -downloadPlatform iOS` (~8.5 GB), then confirm with `xcrun simctl runtime list`.
+
 ## Phone dev with Tailscale (stable URL, real HTTPS cert)
 Dev tunnels / ngrok give a new URL every session and an untrusted cert on iOS. Tailscale fixes both:
 1. Install Tailscale on the Mac **and** the phone; sign both into the same tailnet (`tailscale up`).
