@@ -23,10 +23,6 @@ public static class MobileHostExtensions
         var devTool = Path.Combine(repoRoot, "tools", "RewardsDev", "RewardsDev.csproj");
         var mobileProject = Path.Combine(repoRoot, "src", "MobileUI", "MobileUI.csproj");
 
-        // Real Firebase config files, materialized on demand by the command below.
-        var googleServicesJson = builder.AddParameter("mobile-google-services-json", secret: true);
-        var googleServiceInfoPlist = builder.AddParameter("mobile-google-service-info-plist", secret: true);
-
         var mobile = builder.AddResource(new MobileAppResource("mobile-app"))
             .WithInitialState(new CustomResourceSnapshot
             {
@@ -115,23 +111,18 @@ public static class MobileHostExtensions
             },
             commandOptions: Always("CloudCheckmark", "tailscale status — verify connectivity before using the tailscale target"));
 
-        mobile.WithCommand("mobile-materialize-secrets", "Materialize Firebase secrets",
+        mobile.WithCommand("mobile-materialize-secrets", "Sync mobile secrets (isolated)",
             executeCommand: async ctx =>
             {
-                var logger = ctx.ServiceProvider.GetRequiredService<ResourceLoggerService>().GetLogger(ctx.ResourceName);
-                var json = await googleServicesJson.Resource.GetValueAsync(ctx.CancellationToken);
-                var plist = await googleServiceInfoPlist.Resource.GetValueAsync(ctx.CancellationToken);
-                if (string.IsNullOrWhiteSpace(json) || string.IsNullOrWhiteSpace(plist))
-                    return CommandResults.Failure("Set the mobile-google-services-json / mobile-google-service-info-plist parameters first.");
-                var androidPath = Path.Combine(repoRoot, "src", "MobileUI", "Platforms", "Android", "google-services.json");
-                var iosPath = Path.Combine(repoRoot, "src", "MobileUI", "Platforms", "iOS", "GoogleService-Info.plist");
-                await File.WriteAllTextAsync(androidPath, json, ctx.CancellationToken);
-                await File.WriteAllTextAsync(iosPath, plist, ctx.CancellationToken);
-                logger.LogInformation("Wrote {Android} and {Ios}", androidPath, iosPath);
-                return CommandResults.Success();
+                // Routes through `rewards-dev secrets sync-mobile`: copies ONLY the two Firebase
+                // client-config keys from the AppHost store into MobileUI's OWN isolated user-secrets
+                // store, then writes the git-ignored google-services.json + GoogleService-Info.plist.
+                // Backend secrets are never copied, so nothing sensitive can reach the APK.
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- secrets sync-mobile");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
             },
             commandOptions: Always("PhoneKey",
-                "Write google-services.json + GoogleService-Info.plist from the secret parameters",
+                "Copy ONLY mobile Firebase secrets into the isolated mobile store + write the config files",
                 "Overwrite the local mobile Firebase config files?"));
 
         mobile.WithCommand("mobile-maui-restore", "MAUI workload restore",

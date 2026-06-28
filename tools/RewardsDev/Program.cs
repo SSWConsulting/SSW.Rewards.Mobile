@@ -6,7 +6,7 @@ using SSW.Rewards.DevTool.Core;
 //   rewards-dev identity <local|staging|prod>            Mobile + AdminUI + WebAPI
 //   rewards-dev api      <local|staging|prod|tailscale>  Mobile + AdminUI
 //   rewards-dev env      <local|staging|prod>            both of the above
-//   rewards-dev secrets  <check|edit|path>               the one AppHost secrets store
+//   rewards-dev secrets  <check|edit|path|sync-mobile>   AppHost store + isolated mobile store
 //   rewards-dev show [--json] | reset
 //
 // This file is just arg-parsing + dispatch. Command implementations live in Core/Commands.cs;

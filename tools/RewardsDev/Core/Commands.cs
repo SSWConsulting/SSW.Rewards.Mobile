@@ -12,7 +12,7 @@ public static class Commands
         Console.WriteLine("  identity local | staging | prod              (Mobile + AdminUI + WebAPI)");
         Console.WriteLine("  api      local | staging | prod | tailscale  (Mobile + AdminUI)");
         Console.WriteLine("  env      local | staging | prod              (both of the above)");
-        Console.WriteLine("  secrets  check | edit | path                 (the one AppHost secrets store)");
+        Console.WriteLine("  secrets  check | edit | path | sync-mobile   (AppHost store; sync-mobile → isolated mobile store)");
         // Non-zero so scripts / AI callers can detect that no valid command was given.
         return 1;
     }
@@ -31,7 +31,7 @@ COMMANDS
   identity <target>   Set the identity authority   → Mobile + AdminUI + WebAPI
   api      <target>   Set the API base URL          → Mobile + AdminUI
   env      <target>   Set both identity AND api      → all of the above
-  secrets  <action>   Manage the one AppHost secrets store (check | edit | path)
+  secrets  <action>   Manage secrets (check | edit | path | sync-mobile)
   show     [--json]   Print the current effective targets (and where each comes from)
   reset               Delete the local override files → back to committed defaults
   help                Show this help
@@ -56,9 +56,12 @@ EXAMPLES
 SECRETS (one store for the whole stack — Keeper is the only external resource)
   All stack secrets live in the AppHost user-secrets. Copy the single
   "SSW.Rewards — Aspire Dev Secrets" record from Keeper ▸ SSW.Rewards, then:
-    rewards-dev secrets edit     # opens secrets.json — paste, save
-    rewards-dev secrets check    # confirms every required key is present + real
-    rewards-dev secrets path     # just print the file path
+    rewards-dev secrets edit         # opens secrets.json — paste, save
+    rewards-dev secrets check        # confirms every required key is present + real
+    rewards-dev secrets path         # just print the file path
+    rewards-dev secrets sync-mobile  # copy ONLY the 2 Firebase keys → isolated mobile
+                                     # store + write the git-ignored mobile config files.
+                                     # Backend secrets are never copied (no APK bleed).
 
 WHAT IT WRITES (all git-ignored, per-developer)
   Mobile   src/MobileUI/Constants.LocalDev.cs        (falls back to Constants.LocalDev.Default.cs)

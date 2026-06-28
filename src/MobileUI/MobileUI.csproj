@@ -9,6 +9,12 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 
+		<!-- Mobile-only secrets store, ISOLATED from the backend (AppHost) store so backend
+		     credentials (SQL/SendGrid/email/Firebase service-account) can never bleed into the
+		     mobile project. Populated by: rewards-dev secrets sync-mobile (copies ONLY the two
+		     Firebase client-config blobs). Never paste the Keeper record here. -->
+		<UserSecretsId>704f0060-ad84-4cd3-910b-31bff8d019db</UserSecretsId>
+
 		<!-- Display name -->
 		<ApplicationTitle>SSW Rewards</ApplicationTitle>
 

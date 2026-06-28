@@ -26,6 +26,15 @@ public static class Secrets
         ("Parameters:mobile-google-service-info-plist","Keeper ▸ GoogleService-Info.plist (STAGING) — iOS Firebase"),
     ];
 
+    // The subset of keys the MOBILE app needs — the Firebase client config that ends up bundled
+    // in the APK/IPA. These (and ONLY these) are copied into the isolated mobile store. Backend
+    // secrets (sql/sendgrid/email/firebase-credentials/signing-authority) must NEVER be here.
+    public static readonly (string Key, string FileRelPath)[] MobileKeys =
+    [
+        ("Parameters:mobile-google-services-json",     "src/MobileUI/Platforms/Android/google-services.json"),
+        ("Parameters:mobile-google-service-info-plist","src/MobileUI/Platforms/iOS/GoogleService-Info.plist"),
+    ];
+
     public static int Dispatch(RepoPaths paths, string[] args)
     {
         var sub = (args.Length > 1 ? args[1] : "check").ToLowerInvariant();
@@ -34,7 +43,8 @@ public static class Secrets
             "check" or "validate" or "doctor" => Check(paths),
             "edit" or "open"                  => Edit(paths),
             "path" or "where"                 => Path(paths),
-            _ => Commands.Fail($"unknown secrets sub-command '{sub}'. Use: check | edit | path"),
+            "sync-mobile" or "mobile"         => SyncMobile(paths),
+            _ => Commands.Fail($"unknown secrets sub-command '{sub}'. Use: check | edit | path | sync-mobile"),
         };
     }
 
@@ -93,17 +103,8 @@ public static class Secrets
             return 1;
         }
 
-        try
-        {
-            // BOM-safe: dotnet user-secrets writes UTF-8, sometimes with a BOM.
-            using var doc = JsonDocument.Parse(File.ReadAllText(file));
-            values = doc.RootElement.EnumerateObject()
-                .ToDictionary(p => p.Name, p => p.Value.ValueKind == JsonValueKind.String ? p.Value.GetString() ?? "" : p.Value.GetRawText());
-        }
-        catch (Exception ex)
-        {
-            return Commands.Fail($"secrets file is not valid JSON ({ex.Message}). Fix it: rewards-dev secrets edit");
-        }
+        if (!Load(file, out values, out var loadErr))
+            return Commands.Fail(loadErr);
 
         var missing = new List<(string Key, string Source)>();
         Console.WriteLine($"Secrets store: {file}");
@@ -127,6 +128,71 @@ public static class Secrets
         Console.WriteLine("    rewards-dev secrets edit   # paste it, save");
         Console.WriteLine("    rewards-dev secrets check  # re-validate");
         return 1;
+    }
+
+    // Copy ONLY the mobile Firebase keys from the AppHost (paste-target) store into the ISOLATED
+    // mobile user-secrets store, then write the git-ignored Firebase files from those values.
+    // By construction this never touches backend secrets, so the mobile store / APK can't leak them.
+    public static int SyncMobile(RepoPaths paths)
+    {
+        var source = paths.UserSecretsFile();
+        if (source is null) return Commands.Fail("AppHost has no <UserSecretsId> — cannot locate the source secrets file.");
+        var dest = paths.MobileUserSecretsFile();
+        if (dest is null) return Commands.Fail("MobileUI has no <UserSecretsId> — add one to MobileUI.csproj.");
+
+        if (!Load(source, out var values, out var err))
+        {
+            Console.WriteLine($"✗ {err}");
+            Console.WriteLine("  Run `rewards-dev secrets edit`, paste the Keeper record, then re-try.");
+            return 1;
+        }
+
+        // Validate the 2 mobile keys are present + real BEFORE writing anything.
+        var missing = MobileKeys
+            .Where(k => !(values.TryGetValue(k.Key, out var v) && !IsPlaceholder(v)))
+            .Select(k => k.Key.Replace("Parameters:", ""))
+            .ToList();
+        if (missing.Count > 0)
+        {
+            Console.WriteLine($"✗ mobile secrets not set in the AppHost store: {string.Join(", ", missing)}");
+            Console.WriteLine("  Paste the full Keeper record (`rewards-dev secrets edit`), then re-run sync-mobile.");
+            return 1;
+        }
+
+        // Build the isolated store with ONLY the mobile keys — nothing else, ever.
+        var mobileOnly = MobileKeys.ToDictionary(k => k.Key, k => values[k.Key]);
+        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(dest)!);
+        File.WriteAllText(dest, JsonSerializer.Serialize(mobileOnly, new JsonSerializerOptions { WriteIndented = true }));
+
+        // Materialize the git-ignored Firebase files the MAUI build needs.
+        File.WriteAllText(paths.AndroidFirebaseFile, values["Parameters:mobile-google-services-json"]);
+        File.WriteAllText(paths.IosFirebaseFile,     values["Parameters:mobile-google-service-info-plist"]);
+
+        Console.WriteLine("✓ mobile secrets isolated + materialized (no backend secrets copied):");
+        Console.WriteLine($"    store : {dest}  (2 keys only)");
+        Console.WriteLine($"    files : {paths.Rel(paths.AndroidFirebaseFile)}");
+        Console.WriteLine($"            {paths.Rel(paths.IosFirebaseFile)}");
+        return 0;
+    }
+
+    // Read a user-secrets file into a flat string map. BOM-safe (dotnet writes UTF-8 ± BOM).
+    private static bool Load(string file, out Dictionary<string, string> values, out string error)
+    {
+        values = new();
+        if (!File.Exists(file)) { error = $"no secrets file yet: {file}"; return false; }
+        try
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(file));
+            values = doc.RootElement.EnumerateObject()
+                .ToDictionary(p => p.Name, p => p.Value.ValueKind == JsonValueKind.String ? p.Value.GetString() ?? "" : p.Value.GetRawText());
+            error = "";
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = $"secrets file is not valid JSON ({ex.Message}). Fix it: rewards-dev secrets edit";
+            return false;
+        }
     }
 
     // Empty, whitespace, or a short single-line "<…>" token (e.g. "<PASTE FROM KEEPER: …>") =

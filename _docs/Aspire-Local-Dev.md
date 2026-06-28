@@ -31,8 +31,8 @@ on-device testing.
 
 ## Secrets — one record from Keeper, paste once
 **Keeper is the only external resource you need.** Every stack secret (SQL password, Firebase,
-SendGrid, SMTP, identity authority, mobile Firebase config) flows from **one** store: the AppHost
-user-secrets. No per-project `UserSecretsId`, no copying files around.
+SendGrid, SMTP, identity authority, mobile Firebase config) flows from **one** store the dev pastes
+into: the AppHost user-secrets. No copying files around, no per-project pasting.
 
 ```bash
 rewards-dev secrets edit     # opens the AppHost secrets.json in your editor
@@ -48,6 +48,21 @@ get it**. You can also drive both from the dashboard: **mobile-app ▸ Secrets: 
 
 > The Keeper record body is the literal `secrets.json` (flat `Parameters:*` keys). Aspire adds its
 > own per-machine `AppHost:*` keys on first run — those are **not** in Keeper.
+
+### Mobile secrets are isolated (no APK bleed)
+
+The mobile app gets its **own** user-secrets store (`MobileUI.csproj` has a separate
+`<UserSecretsId>`), so backend credentials can never leak into the mobile project / APK. You still
+paste only the one Keeper record into the AppHost store; the mobile store is **derived**:
+
+```bash
+rewards-dev secrets sync-mobile   # copies ONLY the 2 Firebase client-config keys → mobile store,
+                                  # then writes the git-ignored google-services.json + plist
+```
+
+This copies *only* `mobile-google-services-json` + `mobile-google-service-info-plist` — never the
+SQL/SendGrid/email/Firebase-service-account secrets. The dashboard button **mobile-app ▸ Sync mobile
+secrets (isolated)** runs the same thing.
 
 ## First run
 ```bash
@@ -108,8 +123,10 @@ but it gives the mobile chores a home):**
 - **Switch API target…** / **API → Tailscale (one-click)** / **Switch identity target…** — shell out
   to the `rewards-dev` CLI (below), which switches **all** apps, not just mobile
 - **Tailscale: Status** — `tailscale status` (verify connectivity before using the tailscale target)
-- **Materialize Firebase secrets** — writes `google-services.json` + `GoogleService-Info.plist`
-  from the secret parameters (these files are git-ignored; only `*.template` is committed)
+- **Sync mobile secrets (isolated)** — `rewards-dev secrets sync-mobile`: copies ONLY the two
+  Firebase client-config keys into MobileUI's own isolated user-secrets store, then writes
+  `google-services.json` + `GoogleService-Info.plist` (git-ignored; only `*.template` is committed).
+  Backend secrets are never copied — nothing sensitive can reach the APK.
 - **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
 - **Update .NET workloads** — `dotnet workload update` (keep MAUI/iOS/Android workloads current)
 
@@ -149,9 +166,9 @@ Aspire does **not** run the MAUI app — it runs on an emulator/device the usual
 1. Install the MAUI workload once (above).
 2. Pick a backend: `./rewards-dev env staging` (emulators can't reach
    `localhost`, so use `staging` or `api tailscale` — not `local` — when running on a device/emulator).
-3. Ensure Firebase config exists (git-ignored): it materializes from the **same Keeper secrets** —
-   use the **Materialize Firebase secrets** dashboard command (writes `google-services.json` /
-   `GoogleService-Info.plist`), or grab those files directly from Keeper.
+3. Ensure Firebase config exists (git-ignored): run `rewards-dev secrets sync-mobile` (or the
+   **mobile-app ▸ Sync mobile secrets (isolated)** dashboard command). It isolates the two Firebase
+   keys into the mobile store and writes `google-services.json` / `GoogleService-Info.plist`.
 4. Build + deploy to a running emulator:
    ```bash
    dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <emulator-id>"
