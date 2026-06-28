@@ -163,7 +163,7 @@ Follow Microsoft Learn’s step-by-step guide to get your first .NET MAUI projec
 1. Install the MAUI workload (one-time): `dotnet workload install maui` (or `maui-android`).
 2. Make sure the Firebase config files exist (git-ignored): copy `google-services.json` /
    `GoogleService-Info.plist` from Keeper into `src/MobileUI/Platforms/{Android,iOS}/`, or use the
-   **Mobile: Materialize Firebase secrets** dashboard command. Only `*.template` placeholders are committed.
+   **Mobile: Sync mobile secrets (isolated)** dashboard command. Only `*.template` placeholders are committed.
 3. Point the app at a backend (emulators **can't** reach `localhost`, so use `staging` or `tailscale`):
 
    ```bash
