@@ -5,22 +5,58 @@ The MAUI mobile app still runs the normal way (emulator/device) — Aspire's job
 config/secret **materialization** and tunnel wiring, not running the app.
 
 ## Prerequisites (one-time)
-- .NET 10 SDK — `global.json` pins `10.0.301` (no `workloadVersion` pin, so the resolver doesn't fail).
-- Aspire CLI ≥ **13.4.6**: `dotnet tool install -g aspire` (or `dotnet tool update -g aspire`).
-- Docker running.
-- For the **mobile app** only: MAUI workloads — `dotnet workload install maui` (or `maui-android` for Android-only). On a system-wide .NET install this needs `sudo`.
+You need **three** things installed, plus **one** Keeper record. That's it.
+
+| # | Install | Command | Who needs it |
+|---|---|---|---|
+| 1 | **.NET 10 SDK** | from <https://dot.net> — `global.json` pins `10.0.301` | everyone |
+| 2 | **Aspire CLI** ≥ 13.4.6 | `dotnet tool install -g aspire` (update: `dotnet tool update -g aspire`) | everyone |
+| 3 | **Docker** running | Docker Desktop / OrbStack | everyone |
+
+> Steps 2 + 3 can also be done from the dashboard later: **rewards-sql ▸ Tools: Install/upgrade
+> Aspire CLI** and **Tools: Diagnose (aspire doctor)** check your machine in one click.
+
+### Optional dependencies (only for the people who need them)
+Most backend devs **don't** need these — skip unless you're building the mobile app or doing
+on-device testing.
+
+- **MAUI workloads** — only to build/run the **mobile app**:
+  ```bash
+  dotnet workload install maui      # or `maui-android` for Android-only; needs sudo on a system-wide SDK
+  ```
+  Or use the dashboard: **mobile-app ▸ MAUI workload restore** / **Update .NET workloads**.
+- **Tailscale** — only for **on-device** phone testing against your local API (stable URL + trusted
+  HTTPS cert). Install from <https://tailscale.com/download>, then `tailscale up` on the Mac **and**
+  the phone (same tailnet). See *Phone dev with Tailscale* below. Not needed for emulator + staging.
+
+## Secrets — one record from Keeper, paste once
+**Keeper is the only external resource you need.** Every stack secret (SQL password, Firebase,
+SendGrid, SMTP, identity authority, mobile Firebase config) flows from **one** store: the AppHost
+user-secrets. No per-project `UserSecretsId`, no copying files around.
+
+```bash
+rewards-dev secrets edit     # opens the AppHost secrets.json in your editor
+# → paste the whole "SSW.Rewards — Aspire Dev Secrets" record from Keeper ▸ SSW.Rewards, save
+rewards-dev secrets check    # ✓/✗ for every required key — tells you exactly what's missing
+```
+
+`secrets check` lists each required key and, for anything missing/placeholder, **where in Keeper to
+get it**. You can also drive both from the dashboard: **mobile-app ▸ Secrets: Open file** and
+**Secrets: Validate**. Prefer a raw command? `rewards-dev secrets path` prints the file location
+(macOS/Linux `~/.microsoft/usersecrets/<id>/secrets.json`, Windows
+`%APPDATA%\Microsoft\UserSecrets\<id>\secrets.json`) — open it with `open`/`notepad` and paste.
+
+> The Keeper record body is the literal `secrets.json` (flat `Parameters:*` keys). Aspire adds its
+> own per-machine `AppHost:*` keys on first run — those are **not** in Keeper.
 
 ## First run
 ```bash
-aspire run   # from the repo root — .aspire/settings.json points the CLI at src/AppHost
+rewards-dev secrets check   # make sure the Keeper blob is in place (see above)
+aspire run                  # from the repo root — .aspire/settings.json points the CLI at src/AppHost
 ```
-On first launch Aspire prompts (once) for the secret parameters and stores them in **this
-AppHost's** user-secrets (id `F76E3E10-…`). To seed them non-interactively instead:
-```bash
-dotnet user-secrets set --id F76E3E10-FABB-4543-B949-549EEC500823 "Parameters:sql-sa-password" "<pick-a-strong-pw>"
-# …firebase-credentials, sendgrid-api-key, email-user, email-password, signing-authority,
-#   mobile-google-services-json, mobile-google-service-info-plist (from Keeper)
-```
+If a secret is missing, Aspire reports the parameter as *ValueMissing* and SQL won't start — run
+`rewards-dev secrets edit`, paste, and re-run.
+
 The dashboard opens automatically. SQL Server + Azurite come up as **persistent** containers
 with data volumes (`ssw-rewards-sql-data`, `ssw-rewards-azurite-data`), so your data survives
 restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI startup.
@@ -36,15 +72,16 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 > (instead of cluttering the top level). Aspire stamps `com.docker.compose.project=SSW.Rewards` +
 > `com.docker.compose.service=<name>` labels via `InDockerProject()` in `Hosts/DockerGrouping.cs`.
 
-> Secrets now flow **only** from the AppHost. WebAPI/AdminUI no longer carry their own
-> `UserSecretsId`. Aspire injects `ConnectionStrings:DefaultConnection` / `:HangfireConnection`,
-> `CloudBlobProviderOptions:ContentStorageConnectionString` (→ Azurite), `Firebase:FirebaseCredentials`,
-> `SendGridAPIKey`, `EmailUser`, `EmailPassword`, `SigningAuthority` as env vars.
+> Secrets now flow **only** from the AppHost — one store, see *Secrets* above. WebAPI/AdminUI no
+> longer carry their own `UserSecretsId`. Aspire injects `ConnectionStrings:DefaultConnection` /
+> `:HangfireConnection`, `CloudBlobProviderOptions:ContentStorageConnectionString` (→ Azurite),
+> `Firebase:FirebaseCredentials`, `SendGridAPIKey`, `EmailUser`, `EmailPassword`, `SigningAuthority`
+> as env vars.
 
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
-<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets, MAUI workload restore and Update .NET workloads" width="900" />
+<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Secrets Validate, Secrets Open file, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets, MAUI workload restore and Update .NET workloads" width="900" />
 
 Commands that need input (e.g. **Switch API target…**) open a prompt right in the dashboard. Target
 pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, valid by construction:
@@ -64,6 +101,9 @@ pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, val
 but it gives the mobile chores a home):**
 
 <img src="imgs/aspire-mobile-details.png" alt="mobile-app resource detail panel showing Display name and the Runs on device emulator state" width="900" />
+
+- **Secrets: Validate** / **Secrets: Open file** — `rewards-dev secrets check` / `edit`: confirm the
+  one AppHost secrets store is complete, or open `secrets.json` to paste the Keeper record (see *Secrets* above)
 - **Show current target** — `rewards-dev show` (prints the API + identity the apps point at)
 - **Switch API target…** / **API → Tailscale (one-click)** / **Switch identity target…** — shell out
   to the `rewards-dev` CLI (below), which switches **all** apps, not just mobile
@@ -88,6 +128,7 @@ Run it from the repo root with the `./rewards-dev` wrapper (or add an alias —
 ```bash
 # identity → Mobile + AdminUI + WebAPI ;  api → Mobile + AdminUI ;  env → both
 ./rewards-dev help                  # full self-teaching usage (targets, examples, files)
+./rewards-dev secrets check         # validate the one AppHost secrets store (Keeper blob)
 ./rewards-dev env staging           # everything → staging (safe default)
 ./rewards-dev api local             # https://localhost:5001 (AdminUI + Mobile)
 ./rewards-dev api tailscale         # stable phone URL + auto `tailscale serve` (see below)
@@ -108,8 +149,9 @@ Aspire does **not** run the MAUI app — it runs on an emulator/device the usual
 1. Install the MAUI workload once (above).
 2. Pick a backend: `./rewards-dev env staging` (emulators can't reach
    `localhost`, so use `staging` or `api tailscale` — not `local` — when running on a device/emulator).
-3. Ensure Firebase config exists (git-ignored): grab `google-services.json` /
-   `GoogleService-Info.plist` from Keeper, or use the **Materialize Firebase secrets** dashboard command.
+3. Ensure Firebase config exists (git-ignored): it materializes from the **same Keeper secrets** —
+   use the **Materialize Firebase secrets** dashboard command (writes `google-services.json` /
+   `GoogleService-Info.plist`), or grab those files directly from Keeper.
 4. Build + deploy to a running emulator:
    ```bash
    dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug -p:AdbTarget="-s <emulator-id>"

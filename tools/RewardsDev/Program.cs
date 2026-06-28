@@ -6,6 +6,7 @@ using SSW.Rewards.DevTool.Core;
 //   rewards-dev identity <local|staging|prod>            Mobile + AdminUI + WebAPI
 //   rewards-dev api      <local|staging|prod|tailscale>  Mobile + AdminUI
 //   rewards-dev env      <local|staging|prod>            both of the above
+//   rewards-dev secrets  <check|edit|path>               the one AppHost secrets store
 //   rewards-dev show [--json] | reset
 //
 // This file is just arg-parsing + dispatch. Command implementations live in Core/Commands.cs;
@@ -22,6 +23,7 @@ if (paths is null) return Commands.Fail("could not locate the repo root (no SSW.
 var cmd = first;
 if (cmd == "show") return Commands.Show(paths, args.Contains("--json"));
 if (cmd == "reset") return Commands.Reset(paths);
+if (cmd == "secrets") return Secrets.Dispatch(paths, args);
 
 // The mobile override is the canonical current state; preserve the dimension a command isn't changing.
 var current = MobileConfig.ReadCurrent(paths);
@@ -50,5 +52,5 @@ switch (cmd)
         return Commands.Apply(paths, new TargetState(a, au), changeIdentity: true);
 
     default:
-        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | show | reset.");
+        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | secrets | show | reset.");
 }

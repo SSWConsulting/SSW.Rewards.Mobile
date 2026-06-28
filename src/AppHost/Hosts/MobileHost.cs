@@ -57,6 +57,23 @@ public static class MobileHostExtensions
             },
             commandOptions: Always("Info", "rewards-dev show — prints the API + identity the apps point at"));
 
+        // Setup gate: validate / open the ONE AppHost secrets store (paste the Keeper blob).
+        mobile.WithCommand("secrets-check", "Secrets: Validate",
+            executeCommand: async ctx =>
+            {
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- secrets check");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: Always("ShieldCheckmark", "rewards-dev secrets check — confirm every required secret is set (from Keeper)"));
+
+        mobile.WithCommand("secrets-edit", "Secrets: Open file",
+            executeCommand: async ctx =>
+            {
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- secrets edit");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: Always("DocumentKey", "rewards-dev secrets edit — open secrets.json to paste the Keeper record"));
+
         mobile.WithCommand("mobile-switch-api", "Switch API target…",
             executeCommand: async ctx =>
             {

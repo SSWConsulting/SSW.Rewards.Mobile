@@ -8,10 +8,11 @@ public static class Commands
 {
     public static int Usage()
     {
-        Console.WriteLine("usage: rewards-dev <identity|api|env|show|reset> [target]   (try `rewards-dev help`)");
+        Console.WriteLine("usage: rewards-dev <identity|api|env|secrets|show|reset> [target]   (try `rewards-dev help`)");
         Console.WriteLine("  identity local | staging | prod              (Mobile + AdminUI + WebAPI)");
         Console.WriteLine("  api      local | staging | prod | tailscale  (Mobile + AdminUI)");
         Console.WriteLine("  env      local | staging | prod              (both of the above)");
+        Console.WriteLine("  secrets  check | edit | path                 (the one AppHost secrets store)");
         // Non-zero so scripts / AI callers can detect that no valid command was given.
         return 1;
     }
@@ -30,6 +31,7 @@ COMMANDS
   identity <target>   Set the identity authority   → Mobile + AdminUI + WebAPI
   api      <target>   Set the API base URL          → Mobile + AdminUI
   env      <target>   Set both identity AND api      → all of the above
+  secrets  <action>   Manage the one AppHost secrets store (check | edit | path)
   show     [--json]   Print the current effective targets (and where each comes from)
   reset               Delete the local override files → back to committed defaults
   help                Show this help
@@ -46,8 +48,17 @@ EXAMPLES
   rewards-dev api local          # AdminUI + Mobile → https://localhost:5001
   rewards-dev api tailscale      # stable phone URL + auto `tailscale serve`
   rewards-dev identity local     # all apps → local SSW Identity
+  rewards-dev secrets check      # validate the AppHost secrets store (Keeper blob)
+  rewards-dev secrets edit       # open secrets.json to paste the Keeper record
   rewards-dev show --json        # machine-readable current state (for scripts / AI)
   rewards-dev reset              # remove overrides
+
+SECRETS (one store for the whole stack — Keeper is the only external resource)
+  All stack secrets live in the AppHost user-secrets. Copy the single
+  "SSW.Rewards — Aspire Dev Secrets" record from Keeper ▸ SSW.Rewards, then:
+    rewards-dev secrets edit     # opens secrets.json — paste, save
+    rewards-dev secrets check    # confirms every required key is present + real
+    rewards-dev secrets path     # just print the file path
 
 WHAT IT WRITES (all git-ignored, per-developer)
   Mobile   src/MobileUI/Constants.LocalDev.cs        (falls back to Constants.LocalDev.Default.cs)

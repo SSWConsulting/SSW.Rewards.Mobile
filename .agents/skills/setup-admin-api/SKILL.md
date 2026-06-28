@@ -53,31 +53,36 @@ aspire stop                             # release file locks + ports when done
 > guardrails above are the only genuinely useful distillation. Devs who want full Aspire CLI fluency
 > can install it per-machine: `copilot plugin install aspire@aspire-skills`.
 
-## Secrets
+## Secrets — one Keeper record, paste once
 
-On the first `aspire run`, Aspire **prompts once** for the unresolved secret parameters and stores
-them in the **AppHost** user-secrets (id `F76E3E10-FABB-4543-B949-549EEC500823`). Get the values from
-Keeper (**Client Secrets | SSW | SSW.Rewards | Developer Secrets**). To seed non-interactively
-(scripts / CI / `--non-interactive`):
+**Keeper is the only external resource.** Every stack secret flows from **one** store: the AppHost
+user-secrets (id `F76E3E10-FABB-4543-B949-549EEC500823`). `WebAPI`/`AdminUI` have **no**
+`UserSecretsId` of their own. Copy the single **`SSW.Rewards ▸ SSW.Rewards — Aspire Dev Secrets`**
+record from Keeper, then:
 
 ```bash
-dotnet user-secrets set --id F76E3E10-FABB-4543-B949-549EEC500823 "Parameters:sql-sa-password" "<pick-a-strong-pw>"
-# names: sql-sa-password, firebase-credentials, sendgrid-api-key, email-user, email-password,
-#        signing-authority, mobile-google-services-json, mobile-google-service-info-plist
+rewards-dev secrets edit     # opens secrets.json — paste the Keeper record, save
+rewards-dev secrets check    # ✓/✗ per required key; names exactly what's missing + its Keeper source
+rewards-dev secrets path     # just print the file path (open with open/notepad to paste manually)
 ```
 
-Secrets flow **only** from the AppHost — `WebAPI`/`AdminUI` no longer carry their own `UserSecretsId`.
+`secrets check` exits non-zero until every key is present + non-placeholder — gate `aspire run` on it.
+Same actions on the dashboard: **mobile-app ▸ Secrets: Validate** / **Secrets: Open file**. Required
+keys: `firebase-credentials`, `sendgrid-api-key`, `email-user`, `email-password`, `signing-authority`,
+`sql-sa-password`, `mobile-google-services-json`, `mobile-google-service-info-plist`. Aspire's own
+`AppHost:*` keys are generated per-machine — **not** in Keeper.
+
 Aspire injects the connection strings (`ConnectionStrings:DefaultConnection`/`:HangfireConnection`),
-the Azurite blob string, Firebase/SendGrid/SMTP, and `SigningAuthority` as env vars.
+the Azurite blob string, Firebase/SendGrid/SMTP, and `SigningAuthority` into WebAPI as env vars.
 
 ## Dashboard commands
 
 **On `rewards-sql`** (DB + tooling): DB: Apply migrations / Add migration… · Install dotnet-ef ·
 Install/upgrade Aspire CLI · Trust dev HTTPS cert · Diagnose (aspire doctor).
 
-**On `mobile-app`** (virtual lifetime-less resource for the MAUI app): Show current target ·
-Switch API / identity target… · API → Tailscale (one-click) · Tailscale: Status · Materialize
-Firebase secrets · MAUI workload restore · Update .NET workloads. The switch commands shell out to `rewards-dev`.
+**On `mobile-app`** (virtual lifetime-less resource for the MAUI app): Secrets: Validate / Open file ·
+Show current target · Switch API / identity target… · API → Tailscale (one-click) · Tailscale: Status ·
+Materialize Firebase secrets · MAUI workload restore · Update .NET workloads. The switch commands shell out to `rewards-dev`.
 
 ## Switch which identity / API the apps use
 

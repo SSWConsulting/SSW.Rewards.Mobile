@@ -118,22 +118,24 @@ class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGP
    (Also available later as the **Tools: Trust dev HTTPS cert** dashboard command. If you get
    "A valid HTTPS certificate is already present", run `dotnet dev-certs https --clean` first.)
 
+   Before the first run, put the secrets in place — **Keeper is the only external resource**. Every
+   stack secret lives in one store (the AppHost user-secrets); copy the single
+   **`SSW.Rewards ▸ SSW.Rewards — Aspire Dev Secrets`** Keeper record, then:
+
+   ```bash
+   ./rewards-dev secrets edit    # opens secrets.json — paste the Keeper record, save
+   ./rewards-dev secrets check   # ✓/✗ per key; tells you what's missing + where in Keeper
+   ```
+
 4. Start the local stack with Aspire (Docker must be running):
 
    ```bash
    aspire run   # from the repo root (.aspire/settings.json targets src/AppHost)
    ```
 
-   On the **first** run Aspire prompts once for the secret parameters and stores them in the
-   **AppHost** user-secrets — `WebAPI`/`AdminUI` no longer carry their own secrets. Get the values
-   from Keeper (**Client Secrets | SSW | SSW.Rewards | Developer Secrets**). To seed them
-   non-interactively instead:
-
-   ```bash
-   dotnet user-secrets set --id F76E3E10-FABB-4543-B949-549EEC500823 "Parameters:sql-sa-password" "<pick-a-strong-pw>"
-   # …firebase-credentials, sendgrid-api-key, email-user, email-password, signing-authority,
-   #   mobile-google-services-json, mobile-google-service-info-plist
-   ```
+   `WebAPI`/`AdminUI` no longer carry their own secrets — everything is injected from the AppHost.
+   If a secret is missing, Aspire reports *ValueMissing* and SQL won't start; run
+   `./rewards-dev secrets edit`, paste, and re-run.
 
 The dashboard opens automatically. SQL Server + Azurite come up as **persistent** containers, then
 WebAPI + AdminUI start once SQL is healthy (EF migrations apply on WebAPI startup):
