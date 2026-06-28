@@ -101,7 +101,7 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
-<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Secrets Validate, Secrets Open file, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Sync mobile secrets (isolated), MAUI workload restore and Update .NET workloads" width="900" />
+<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Secrets Validate, Secrets Open file, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Sync mobile secrets (isolated), Build & Run (Android), MAUI workload restore and Update .NET workloads" width="900" />
 
 Commands that need input (e.g. **Switch API target…**) open a prompt right in the dashboard. Target
 pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, valid by construction:
@@ -189,6 +189,10 @@ Aspire does **not** run the MAUI app — it runs on an emulator/device the usual
      -p:MobileTargetFrameworks=net10.0-android -p:AdbTarget="-s <emulator-id>"
    ```
    (`-t:Run` pushes the Fast-Deployment assemblies; a plain `adb install` of the Debug APK won't run.)
+
+> Boot an emulator first: `~/Library/Android/sdk/emulator/emulator -avd <avd-name> &`. In a
+> non-interactive shell (script/CI/agent), use `nohup ~/.../emulator -avd <avd-name> &` so it
+> survives the shell session, and wait for `adb wait-for-device shell getprop sys.boot_completed`.
 
 ## Phone dev with Tailscale (stable URL, real HTTPS cert)
 Dev tunnels / ngrok give a new URL every session and an untrusted cert on iOS. Tailscale fixes both:
