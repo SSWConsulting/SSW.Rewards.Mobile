@@ -13,7 +13,7 @@ public static class Commands
         Console.WriteLine("  api      local | staging | prod | tailscale  (Mobile + AdminUI)");
         Console.WriteLine("  env      local | staging | prod              (both of the above)");
         Console.WriteLine("  secrets  check | edit | path | sync-mobile   (AppHost store; sync-mobile → isolated mobile store)");
-        Console.WriteLine("  mobile   android | android-build             (build/run MAUI on Android — no iOS workload needed)");
+        Console.WriteLine("  mobile   android | ios | android-build | ios-build   (build/run MAUI one platform at a time)");
         // Non-zero so scripts / AI callers can detect that no valid command was given.
         return 1;
     }
@@ -33,7 +33,7 @@ COMMANDS
   api      <target>   Set the API base URL          → Mobile + AdminUI
   env      <target>   Set both identity AND api      → all of the above
   secrets  <action>   Manage secrets (check | edit | path | sync-mobile)
-  mobile   <action>   Build/run MAUI on Android (android | android-build)
+  mobile   <action>   Build/run MAUI for one platform (android | android-build | ios | ios-build)
   show     [--json]   Print the current effective targets (and where each comes from)
   reset               Delete the local override files → back to committed defaults
   help                Show this help
@@ -54,6 +54,7 @@ EXAMPLES
   rewards-dev secrets edit       # open secrets.json to paste the Keeper record
   rewards-dev secrets sync-mobile # isolate the 2 Firebase keys + write mobile config files
   rewards-dev mobile android     # build + run on a connected Android emulator/device
+  rewards-dev mobile ios         # build + run on a running iOS simulator (Mac + Xcode)
   rewards-dev show --json        # machine-readable current state (for scripts / AI)
   rewards-dev reset              # remove overrides
 

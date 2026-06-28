@@ -7,7 +7,7 @@ using SSW.Rewards.DevTool.Core;
 //   rewards-dev api      <local|staging|prod|tailscale>  Mobile + AdminUI
 //   rewards-dev env      <local|staging|prod>            both of the above
 //   rewards-dev secrets  <check|edit|path|sync-mobile>   AppHost store + isolated mobile store
-//   rewards-dev mobile   <android|android-build>         build/run MAUI on Android (no iOS workload needed)
+//   rewards-dev mobile   <android|ios>                    build/run MAUI for one platform
 //   rewards-dev show [--json] | reset
 //
 // This file is just arg-parsing + dispatch. Command implementations live in Core/Commands.cs;

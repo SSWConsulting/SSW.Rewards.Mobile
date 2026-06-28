@@ -20,16 +20,22 @@ You need **three** things installed, plus **one** Keeper record. That's it.
 Most backend devs **don't** need these — skip unless you're building the mobile app or doing
 on-device testing.
 
-- **MAUI workloads** — only to build/run the **mobile app**:
+- **MAUI workloads** — only to build/run the **mobile app**. The app ships for **both iOS and
+  Android**, so for full coverage install both:
   ```bash
-  dotnet workload install maui          # iOS + Android
-  dotnet workload install maui-android  # Android only — then build with `rewards-dev mobile android`
-  #                                        (needs sudo on a system-wide SDK)
+  dotnet workload install maui          # iOS + Android (needs sudo on a system-wide SDK)
   ```
-  Android-only is fully supported: the MobileUI project multi-targets iOS + Android, but
-  `rewards-dev mobile android` (and the dashboard **Build & Run (Android)** command) pass
-  `-p:MobileTargetFrameworks=net10.0-android` so restore never demands the iOS workload.
-  Or use the dashboard: **mobile-app ▸ MAUI workload restore** / **Update .NET workloads**.
+  You can also install just one platform's workload if that's all you build (e.g. you test on an
+  Android device and don't have an iPhone):
+  ```bash
+  dotnet workload install maui-android  # Android only  → `rewards-dev mobile android`
+  dotnet workload install maui-ios      # iOS only      → `rewards-dev mobile ios`  (Mac + Xcode)
+  ```
+  The MobileUI project multi-targets iOS + Android; `rewards-dev mobile <android|ios>` (and the
+  dashboard **Build & Run (Android)** / **Build & Run (iOS)** commands) pass
+  `-p:MobileTargetFrameworks=net10.0-<platform>` so a single-platform build only needs that
+  platform's workload. Or use the dashboard: **mobile-app ▸ MAUI workload restore** /
+  **Update .NET workloads**.
 - **Tailscale** — only for **on-device** phone testing against your local API (stable URL + trusted
   HTTPS cert). Install from <https://tailscale.com/download>, then `tailscale up` on the Mac **and**
   the phone (same tailnet). See *Phone dev with Tailscale* below. Not needed for emulator + staging.
@@ -132,9 +138,11 @@ but it gives the mobile chores a home):**
   Firebase client-config keys into MobileUI's own isolated user-secrets store, then writes
   `google-services.json` + `GoogleService-Info.plist` (git-ignored; only `*.template` is committed).
   Backend secrets are never copied — nothing sensitive can reach the APK.
-- **Build & Run (Android)** — `rewards-dev mobile android`: builds the MAUI app **Android-only**
-  (no iOS workload needed) and deploys to a running emulator/device. Start an emulator and pick a
-  reachable backend (`api staging`/`api tailscale`) first.
+- **Build & Run (Android)** — `rewards-dev mobile android`: builds the MAUI app for Android and
+  deploys to a running emulator/device. Only the `maui-android` workload is needed. Start an
+  emulator and pick a reachable backend (`api staging`/`api tailscale`) first.
+- **Build & Run (iOS)** — `rewards-dev mobile ios`: builds for iOS and deploys to a running
+  simulator. Needs the `maui-ios` workload + a Mac with Xcode.
 - **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
 - **Update .NET workloads** — `dotnet workload update` (keep MAUI/iOS/Android workloads current)
 
@@ -170,20 +178,26 @@ restart `aspire run` (AdminUI refresh + WebAPI) to pick up a change.
 > writer per app — `MobileConfig`, `AdminUiConfig`, `WebApiConfig`).
 
 ## Build & run the mobile app
-Aspire does **not** run the MAUI app — it runs on an emulator/device the usual way.
-1. Install the MAUI workload once (above). Android-only? `maui-android` is enough.
-2. Pick a backend: `./rewards-dev api staging` (emulators can't reach `localhost`, so use
-   `api staging` or `api tailscale` — not `api local` — on a device/emulator). Use `api` (not `env`)
-   so you only repoint the API and leave your local identity/WebAPI untouched.
+Aspire does **not** run the MAUI app — it runs on an emulator/simulator/device the usual way. The
+app targets **both iOS and Android**; build one platform at a time.
+1. Install the MAUI workload once (above). Building only one platform? `maui-android` or `maui-ios`
+   is enough for that platform.
+2. Pick a backend: `./rewards-dev api staging` (emulators/simulators can't reach `localhost`, so use
+   `api staging` or `api tailscale` — not `api local` — on a device). Use `api` (not `env`) so you
+   only repoint the API and leave your local identity/WebAPI untouched.
 3. Ensure Firebase config exists (git-ignored): run `rewards-dev secrets sync-mobile` (or the
    **mobile-app ▸ Sync mobile secrets (isolated)** dashboard command). It isolates the two Firebase
    keys into the mobile store and writes `google-services.json` / `GoogleService-Info.plist`.
-4. Build + deploy to a running emulator — one command (no iOS workload needed):
+4. Build + deploy with one command:
    ```bash
-   ./rewards-dev mobile android      # = dotnet build -t:Run -f net10.0-android -p:MobileTargetFrameworks=net10.0-android
+   ./rewards-dev mobile android   # Android emulator/device
+   ./rewards-dev mobile ios       # iOS simulator (Mac + Xcode)
    ```
-   Or the raw dotnet form (note `-p:MobileTargetFrameworks` — the project multi-targets iOS+Android,
-   and overriding the well-known `TargetFrameworks` would break referenced libraries):
+   Each wraps `dotnet build -t:Run -f net10.0-<platform> -p:MobileTargetFrameworks=net10.0-<platform>`.
+   The `-p:MobileTargetFrameworks` override matters — the project multi-targets iOS+Android, and
+   overriding the well-known `TargetFrameworks` instead would break referenced libraries. Building a
+   single platform also means you only need that platform's workload (handy when you test on Android
+   and don't want the iOS/Apple toolchain). Raw dotnet form, e.g. to target a specific emulator:
    ```bash
    dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug \
      -p:MobileTargetFrameworks=net10.0-android -p:AdbTarget="-s <emulator-id>"

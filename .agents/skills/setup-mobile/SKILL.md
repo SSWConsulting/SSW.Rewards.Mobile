@@ -19,9 +19,19 @@ The app needs an API + identity. Either:
 
 ## Step 1 — MAUI workloads (one-time)
 
+The app targets **both iOS and Android**. Install both for full coverage:
+
 ```bash
-dotnet workload install maui        # or maui-android for Android only
+dotnet workload install maui            # iOS + Android
 ```
+
+Or just one platform if that's all you build (e.g. you test on an Android device, no iPhone):
+
+```bash
+dotnet workload install maui-android    # Android only  → `./rewards-dev mobile android`
+dotnet workload install maui-ios        # iOS only      → `./rewards-dev mobile ios` (Mac + Xcode)
+```
+
 On a system-wide .NET install this needs `sudo`.
 
 ## Step 2 — point the app at a backend
@@ -39,22 +49,28 @@ On a system-wide .NET install this needs `sudo`.
 placeholder. Get the real files from Keeper, or use the **Sync mobile secrets (isolated)** command on
 the dashboard `mobile-app` resource.
 
-## Step 4 — build & deploy to a running emulator
+## Step 4 — build & deploy (Android emulator or iOS simulator)
+
+The app builds for both platforms. Build one platform at a time — only that platform's workload is
+needed. (Tip: testing on a physical Android device is the common path here.)
 
 ```bash
-# list emulators / boot one
-~/Library/Android/sdk/emulator/emulator -list-avds
-~/Library/Android/sdk/emulator/emulator -avd <avd-name> &
-
-# build + deploy + launch — Android-only, no iOS workload needed
+# --- Android ---
+~/Library/Android/sdk/emulator/emulator -list-avds          # list AVDs
+~/Library/Android/sdk/emulator/emulator -avd <avd-name> &   # boot one
 ./rewards-dev mobile android
 # (= dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android \
 #      -p:MobileTargetFrameworks=net10.0-android)
+
+# --- iOS (Mac + Xcode + booted simulator) ---
+./rewards-dev mobile ios
+# (= dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-ios \
+#      -p:MobileTargetFrameworks=net10.0-ios)
 ```
 
-`./rewards-dev mobile android` (and the dashboard **Build & Run (Android)** command) is the supported
-Android-only path. To target a specific emulator with the raw dotnet form, add
-`-p:AdbTarget="-s <emulator-id>"`.
+`./rewards-dev mobile <android|ios>` (and the dashboard **Build & Run (Android)** / **Build & Run
+(iOS)** commands) are the supported single-platform paths. To target a specific Android emulator
+with the raw dotnet form, add `-p:AdbTarget="-s <emulator-id>"`.
 
 ## Troubleshooting
 
@@ -62,11 +78,13 @@ Android-only path. To target a specific emulator with the raw dotnet form, add
   `adb install` of the Debug APK. Use `dotnet build -t:Run` (or `rewards-dev mobile android`) instead.
 - **Build error in `ProcessGoogleServicesJson` / XML parse** — `google-services.json` is the
   `// Copy from Keeper` placeholder. Materialize the real one (Step 3).
-- **`NETSDK1147: workload "ios" must be installed` / restore demands the iOS workload** — the project
-  multi-targets iOS + Android. Use `rewards-dev mobile android`, which passes
-  `-p:MobileTargetFrameworks=net10.0-android` so restore is Android-only. `maui-android` is enough.
+- **`NETSDK1147: workload "ios" (or "android") must be installed`** — the project multi-targets iOS +
+  Android, so a build that restores both demands both workloads. Build one platform at a time with
+  `rewards-dev mobile <android|ios>` (it passes `-p:MobileTargetFrameworks=net10.0-<platform>`), and
+  install just that workload (`maui-android` or `maui-ios`). This is the intended path when you only
+  want Android and don't want to deal with the iOS/Apple toolchain.
 - **`NETSDK1005: … doesn't have a target for 'net10.0'` in referenced libs** — don't override the
   well-known `-p:TargetFrameworks=…`; it leaks into referenced projects. Use the custom
-  `-p:MobileTargetFrameworks=net10.0-android` (what `rewards-dev mobile android` does).
-- **API calls fail from the emulator** — you're pointed at `local` (`localhost`), which the emulator
-  can't reach. Switch with `./rewards-dev api staging` (or tailscale).
+  `-p:MobileTargetFrameworks=net10.0-<platform>` (what `rewards-dev mobile <android|ios>` does).
+- **API calls fail from the emulator/simulator** — you're pointed at `local` (`localhost`), which the
+  device can't reach. Switch with `./rewards-dev api staging` (or tailscale).

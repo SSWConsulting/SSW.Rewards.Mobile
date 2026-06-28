@@ -128,14 +128,25 @@ public static class MobileHostExtensions
         mobile.WithCommand("mobile-build-android", "Build & Run (Android)",
             executeCommand: async ctx =>
             {
-                // Wraps `rewards-dev mobile android`: builds Android-only (no iOS workload needed)
-                // and deploys to a running emulator/device. Make sure an emulator is up and the API
-                // target is reachable (staging/tailscale) first.
+                // Wraps `rewards-dev mobile android`: builds for Android only (so an Android-only
+                // box with no iOS workload still works) and deploys to a running emulator/device.
+                // Make sure an emulator is up and the API target is reachable (staging/tailscale) first.
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- mobile android");
                 return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
             },
             commandOptions: Always("PhoneArrowRight",
-                "rewards-dev mobile android — build + deploy to a running Android emulator (no iOS workload needed)"));
+                "rewards-dev mobile android — build + deploy to a running Android emulator (only the maui-android workload is needed)"));
+
+        mobile.WithCommand("mobile-build-ios", "Build & Run (iOS)",
+            executeCommand: async ctx =>
+            {
+                // Wraps `rewards-dev mobile ios`: builds for iOS only and deploys to a running
+                // simulator/device. Needs the maui-ios workload + a Mac with Xcode signing.
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", $"run --project \"{devTool}\" -- mobile ios");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: Always("PhoneTablet",
+                "rewards-dev mobile ios — build + deploy to a running iOS simulator (needs the maui-ios workload + Xcode)"));
 
         mobile.WithCommand("mobile-maui-restore", "MAUI workload restore",
             executeCommand: async ctx =>
