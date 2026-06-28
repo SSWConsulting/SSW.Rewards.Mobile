@@ -46,9 +46,10 @@ The dashboard groups the local-dev chores under two resources (Actions ▸ Comma
 
 <img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets and MAUI workload restore" width="900" />
 
-Commands that need input (e.g. **Switch API target…**) open a masked prompt right in the dashboard:
+Commands that need input (e.g. **Switch API target…**) open a prompt right in the dashboard. Target
+pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, valid by construction:
 
-<img src="imgs/aspire-command-dialog.png" alt="Switch mobile API dialog prompting for the target: local, staging, prod or tailscale" width="900" />
+<img src="imgs/aspire-command-dialog.png" alt="Switch mobile API dialog with a Target dropdown expanded showing the options local, staging, prod and tailscale" width="900" />
 
 **On `rewards-sql` (database + tooling):**
 - **DB: Apply migrations** / **Add migration…** — EF update / add (prompts for the name)
