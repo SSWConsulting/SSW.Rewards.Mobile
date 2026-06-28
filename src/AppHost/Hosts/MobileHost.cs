@@ -125,6 +125,14 @@ public static class MobileHostExtensions
             },
             commandOptions: Always("PhoneLaptop", "dotnet workload restore (iOS/Android prereqs)"));
 
+        mobile.WithCommand("mobile-workload-update", "Update .NET workloads",
+            executeCommand: async ctx =>
+            {
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", "workload update");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: Always("ArrowSync", "dotnet workload update — upgrade installed workloads (MAUI etc.)"));
+
         return mobile;
     }
 }

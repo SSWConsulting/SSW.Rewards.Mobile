@@ -44,7 +44,7 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
-<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets and MAUI workload restore" width="900" />
+<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Materialize Firebase secrets, MAUI workload restore and Update .NET workloads" width="900" />
 
 Commands that need input (e.g. **Switch API target…**) open a prompt right in the dashboard. Target
 pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, valid by construction:
@@ -52,8 +52,13 @@ pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, val
 <img src="imgs/aspire-command-dialog.png" alt="Switch mobile API dialog with a Target dropdown expanded showing the options local, staging, prod and tailscale" width="900" />
 
 **On `rewards-sql` (database + tooling):**
+
+<img src="imgs/aspire-sql-commands.png" alt="rewards-sql Actions menu expanded showing the Commands flyout with DB Apply migrations, DB Add migration, Tools Install/upgrade dotnet-ef, Tools Install/upgrade Aspire CLI, Tools Trust dev HTTPS cert and Tools Diagnose aspire doctor" width="900" />
+
 - **DB: Apply migrations** / **Add migration…** — EF update / add (prompts for the name)
 - **Tools: Install/upgrade dotnet-ef**, **Trust dev HTTPS cert**
+- **Tools: Install/upgrade Aspire CLI** — `dotnet tool update aspire --global` (installs if missing)
+- **Tools: Diagnose (aspire doctor)** — `aspire doctor` health check (CLI / SDK / Docker / dev-cert)
 
 **On `mobile-app` (a virtual, lifetime-less resource for the MAUI app — Aspire doesn't run it,
 but it gives the mobile chores a home):**
@@ -66,6 +71,7 @@ but it gives the mobile chores a home):**
 - **Materialize Firebase secrets** — writes `google-services.json` + `GoogleService-Info.plist`
   from the secret parameters (these files are git-ignored; only `*.template` is committed)
 - **MAUI workload restore** — `dotnet workload restore` for the iOS/Android prereqs
+- **Update .NET workloads** — `dotnet workload update` (keep MAUI/iOS/Android workloads current)
 
 ## Switching dev targets — the `rewards-dev` command
 Stop hand-editing `Constants.cs` and the AdminUI `appsettings`. One command switches the

@@ -73,11 +73,11 @@ the Azurite blob string, Firebase/SendGrid/SMTP, and `SigningAuthority` as env v
 ## Dashboard commands
 
 **On `rewards-sql`** (DB + tooling): DB: Apply migrations / Add migration… · Install dotnet-ef ·
-Trust dev HTTPS cert.
+Install/upgrade Aspire CLI · Trust dev HTTPS cert · Diagnose (aspire doctor).
 
 **On `mobile-app`** (virtual lifetime-less resource for the MAUI app): Show current target ·
 Switch API / identity target… · API → Tailscale (one-click) · Tailscale: Status · Materialize
-Firebase secrets · MAUI workload restore. The switch commands shell out to `rewards-dev`.
+Firebase secrets · MAUI workload restore · Update .NET workloads. The switch commands shell out to `rewards-dev`.
 
 ## Switch which identity / API the apps use
 

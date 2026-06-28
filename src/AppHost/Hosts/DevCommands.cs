@@ -52,6 +52,15 @@ public static class DevCommands
             },
             commandOptions: new CommandOptions { IconName = "Wrench", Description = "dotnet tool update dotnet-ef -g" });
 
+        sql.WithCommand("install-aspire", "Tools: Install/upgrade Aspire CLI",
+            executeCommand: async ctx =>
+            {
+                // `tool update` installs the tool if it's missing, so this doubles as first-time install.
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet", "tool update aspire --global");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: new CommandOptions { IconName = "Wrench", Description = "dotnet tool update aspire -g (needs ≥ 13.4.6)" });
+
         sql.WithCommand("dev-cert", "Tools: Trust dev HTTPS cert",
             executeCommand: async ctx =>
             {
@@ -59,6 +68,15 @@ public static class DevCommands
                 return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
             },
             commandOptions: new CommandOptions { IconName = "Certificate", Description = "dotnet dev-certs https --trust" });
+
+        sql.WithCommand("aspire-doctor", "Tools: Diagnose (aspire doctor)",
+            executeCommand: async ctx =>
+            {
+                // Read-only environment check (SDK / Docker / cert / CLI version) — output lands in the log.
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "aspire", "doctor --non-interactive --nologo");
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: new CommandOptions { IconName = "Stethoscope", Description = "aspire doctor — verify SDK, Docker, dev cert, CLI version" });
 
         return sql;
     }
