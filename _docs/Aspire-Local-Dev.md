@@ -107,7 +107,7 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
-<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Secrets Validate, Secrets Open file, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Sync mobile secrets (isolated), Build & Run (Android), MAUI workload restore and Update .NET workloads" width="900" />
+<img src="imgs/aspire-mobile-commands.png" alt="mobile-app Actions menu expanded showing the Commands flyout with Show current target, Secrets Validate, Secrets Open file, Switch API target, API to Tailscale, Switch identity target, Tailscale Status, Sync mobile secrets (isolated), Build & Run (Android), Build & Run (iOS), MAUI workload restore and Update .NET workloads" width="900" />
 
 Commands that need input (e.g. **Switch API target…**) open a prompt right in the dashboard. Target
 pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, valid by construction:
