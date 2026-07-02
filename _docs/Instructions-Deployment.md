@@ -4,14 +4,16 @@
 
 Only three workflows are run by humans — the ones pinned in the Actions tab. Everything named
 "(Automation)" is internal machinery (reusable workflows the pinned ones call, or CI that
-triggers itself) and should never be run directly.
+triggers itself) and doesn't need to be run directly. Some automations — "Build and Test" and
+"CI" — can be run manually for debugging purposes; the rest can only be invoked by the
+workflows that call them.
 
 | Workflow | Who runs it | Purpose |
 | --- | --- | --- |
 | **API - Main (Build & deploy)** | 👤 You (Run workflow) | Deploy Web API + infrastructure → staging, then approve → production |
 | **Admin - Main (Build & Deploy)** | 👤 You (Run workflow) | Deploy Admin Portal → staging, then approve → production |
 | **Mobile - Main (Build & Deploy)** | 🤖 Auto on mobile changes to `main` (or manually) | Build + ship the mobile app to Google Play / TestFlight |
-| Build and Test (Automation) | 🤖 Auto on every PR | PR quality gate — build + tests |
+| Build and Test (Automation) | 🤖 Auto on every PR to `main` | PR quality gate — build + tests |
 | Everything else "(Automation)" | 🤖 Never run directly | Build/deploy steps invoked by the workflows above |
 
 ### Web API / Infrastructure
@@ -106,7 +108,7 @@ For manual purge steps and access notes, see Deployment Troubleshooting → [Adm
 
 - Workflow: "Build and Test (Automation)"
 - YAML: `.github/workflows/build-and-test.yml`
-- Trigger: Automatic on PRs and pushes
+- Trigger: Automatic on PRs targeting `main` (manual `workflow_dispatch` available for debugging)
 - Purpose: Builds Mobile, Admin, and Web API; runs tests; does not deploy
 
 # High-level production dependencies
@@ -205,7 +207,7 @@ Use these from GitHub → Actions tab. Where noted, Production requires manual a
 - Build & Test (no deployment)
   - Workflow: "Build and Test (Automation)"
   - File: `.github/workflows/build-and-test.yml`
-  - Trigger: Automatic (PRs and pushes)
+  - Trigger: Automatic (PRs targeting `main`)
 
 How to run (manual workflows):
 
