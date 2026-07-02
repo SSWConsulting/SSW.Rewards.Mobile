@@ -1,4 +1,4 @@
-name: Build iOS app
+name: Build iOS app (Automation)
 
 on:
   workflow_call:
