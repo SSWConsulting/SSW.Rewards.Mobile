@@ -567,3 +567,15 @@ bin\\
 bin\\*/
 
 dry-run
+
+# --- SSW.Rewards local-dev secrets / overrides (Aspire flow) ---
+# Real mobile Firebase config: written from Keeper / the Aspire "Materialize Firebase secrets"
+# command. Only the *.template stubs are committed.
+src/MobileUI/Platforms/Android/google-services.json
+src/MobileUI/Platforms/iOS/GoogleService-Info.plist
+# Mobile API/identity overrides written by `rewards-dev`. Committed default lives in
+# Constants.LocalDev.Default.cs; this generated file is per-developer.
+src/MobileUI/Constants.LocalDev.cs
+
+# AdminUI local dev override written by rewards-dev (per-developer)
+src/AdminUI/wwwroot/appsettings.Local.json

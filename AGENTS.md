@@ -6,7 +6,7 @@ Gamified engagement platform: .NET MAUI mobile app + Blazor WASM admin + ASP.NET
 
 - **Framework**: .NET 10 | **Architecture**: Clean Architecture with CQRS (MediatR)
 - **Build**: `dotnet build SSW.Rewards.sln` | **Test**: `dotnet test`
-- **Setup**: `pwsh ./up.ps1` (creates certs, starts Docker)
+- **Setup**: `aspire run` (from the repo root — `.aspire/settings.json` targets `src/AppHost`; .NET Aspire orchestrates SQL + Azurite + WebAPI + AdminUI). Secrets come from **one** Keeper record into the AppHost user-secrets — paste once with `rewards-dev secrets edit`, verify with `rewards-dev secrets check`. See [Aspire-Local-Dev.md](_docs/Aspire-Local-Dev.md).
 
 ## Critical Rules
 
@@ -40,6 +40,16 @@ src/
 └── MobileUI/        # .NET MAUI + CommunityToolkit.Mvvm
 ```
 
+## Skills (`.agents/skills/`)
+
+Task playbooks (symlinked into `.claude/skills/` for Claude Code):
+
+| Skill | Use it to |
+|-------|-----------|
+| [setup-admin-api](.agents/skills/setup-admin-api/SKILL.md) | Run the backend (WebAPI + AdminUI) locally via Aspire |
+| [setup-mobile](.agents/skills/setup-mobile/SKILL.md) | Build & run the MAUI mobile app (needs the API) |
+| [manage-database](.agents/skills/manage-database/SKILL.md) | Back up / restore / migrate the local DB |
+
 ## Resources
 
 - [Instructions-Compile.md](_docs/Instructions-Compile.md) — F5 experience
@@ -62,7 +72,6 @@ src/
 4. **PUSH TO REMOTE** - This is MANDATORY:
    ```bash
    git pull --rebase
-   bd sync
    git push
    git status  # MUST show "up to date with origin"
    ```

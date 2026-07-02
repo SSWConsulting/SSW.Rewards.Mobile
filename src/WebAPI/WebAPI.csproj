@@ -7,7 +7,8 @@
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <UserSecretsId>aspnet-SSW.Consulting-116EE6F2-C844-46F8-A58B-6C88A6F3588C</UserSecretsId>
+        <!-- Local-dev secrets now flow in from the Aspire AppHost (src/AppHost) as injected
+             config/env vars, not from per-project .NET user-secrets. See _docs/Aspire-Local-Dev.md. -->
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 

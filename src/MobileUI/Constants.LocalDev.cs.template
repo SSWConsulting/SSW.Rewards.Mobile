@@ -1,0 +1,11 @@
+// TEMPLATE — copy to Constants.LocalDev.cs (git-ignored) or, better, let the tooling write it:
+//   dotnet run --project tools/RewardsDev -- api local
+//   dotnet run --project tools/RewardsDev -- identity local
+// The Aspire dashboard "Mobile: Switch API/identity target…" commands do the same thing.
+namespace SSW.Rewards;
+
+public static partial class Constants
+{
+    private const string LocalApiBaseUrl = "https://localhost:5001";
+    private const string LocalAuthorityUri = "https://identity.ssw.com.au";
+}

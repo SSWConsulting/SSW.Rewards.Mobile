@@ -1,13 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
+		<!-- Default to both mobile platforms. Android-only devs (no iOS workload) can build with:
+		       dotnet build -p:MobileTargetFrameworks=net10.0-android
+		     This custom property name is deliberate: overriding the well-known `TargetFrameworks`
+		     on the CLI leaks into referenced libraries (ApiClient/Shared/Enums) and breaks them
+		     (NETSDK1005). `MobileTargetFrameworks` is read only here, so it can't leak. -->
+		<MobileTargetFrameworks Condition="'$(MobileTargetFrameworks)' == ''">net10.0-ios;net10.0-android</MobileTargetFrameworks>
+		<TargetFrameworks>$(MobileTargetFrameworks)</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SSW.Rewards.Mobile</RootNamespace>
 		<UseMaui>true</UseMaui>
         <MauiVersion>9.0.21</MauiVersion>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Mobile-only secrets store, ISOLATED from the backend (AppHost) store so backend
+		     credentials (SQL/SendGrid/email/Firebase service-account) can never bleed into the
+		     mobile project. Populated by: rewards-dev secrets sync-mobile (copies ONLY the two
+		     Firebase client-config blobs). Never paste the Keeper record here. -->
+		<UserSecretsId>704f0060-ad84-4cd3-910b-31bff8d019db</UserSecretsId>
 
 		<!-- Display name -->
 		<ApplicationTitle>SSW Rewards</ApplicationTitle>
@@ -94,6 +106,25 @@
         <BundleResource Include="Platforms/iOS/GoogleService-Info.plist" Link="GoogleService-Info.plist" />
     </ItemGroup>
 
+	<!-- The real Firebase config files are git-ignored (see .gitignore). Fail fast with a clear
+	     instruction instead of a cryptic build error when they're missing on a fresh clone / CI. -->
+	<Target Name="EnsureFirebaseConfig" BeforeTargets="BeforeBuild">
+	    <Error Condition="$(TargetFramework.Contains('android')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/Android/google-services.json')"
+	           Text="Missing Platforms/Android/google-services.json. Run 'rewards-dev secrets sync-mobile' (or the Aspire 'Sync mobile secrets (isolated)' command), or copy it from Keeper (template: google-services.json.template)." />
+	    <Error Condition="$(TargetFramework.Contains('-ios')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/iOS/GoogleService-Info.plist')"
+	           Text="Missing Platforms/iOS/GoogleService-Info.plist. Run 'rewards-dev secrets sync-mobile' (or the Aspire 'Sync mobile secrets (isolated)' command), or copy it from Keeper (template: GoogleService-Info.plist.template)." />
+	</Target>
+
+    <!-- Local-dev API/identity overrides: prefer the git-ignored Constants.LocalDev.cs (written by the
+         `rewards-dev` CLI / Aspire commands); otherwise fall back to the committed Constants.LocalDev.Default.cs.
+         Exactly one is compiled, so a fresh clone / CI builds with safe defaults and no hand-editing. -->
+    <ItemGroup>
+        <Compile Remove="Constants.LocalDev.cs" />
+        <Compile Remove="Constants.LocalDev.Default.cs" />
+        <Compile Include="Constants.LocalDev.cs" Condition="Exists('$(MSBuildProjectDirectory)/Constants.LocalDev.cs')" />
+        <Compile Include="Constants.LocalDev.Default.cs" Condition="!Exists('$(MSBuildProjectDirectory)/Constants.LocalDev.cs')" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios' OR '$(TargetFramework)' == 'net10.0-android'">
         <PackageReference Include="Plugin.Firebase.Analytics" Version="3.1.2" />
         <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
@@ -107,6 +138,13 @@
     
     <PropertyGroup Condition="$(Configuration.Contains('Release')) And $(TargetFramework.Contains('ios'))">
         <MtouchInterpreter>-all,System.Collections.Immutable</MtouchInterpreter>
+    </PropertyGroup>
+
+    <!-- .NET for iOS 26.5 ships the same SDK as Xcode 26.6 but its build-time check only
+         recognises Xcode 26.5. Skip the check so builds work on Xcode 26.6 (dotnet/macios#25658).
+         Remove once a workload that formally validates Xcode 26.6 is adopted. -->
+    <PropertyGroup Condition="$(TargetFramework.Contains('ios'))">
+        <ValidateXcodeVersion>false</ValidateXcodeVersion>
     </PropertyGroup>
     
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

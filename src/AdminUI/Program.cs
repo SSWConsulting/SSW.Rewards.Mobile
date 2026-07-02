@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
 using MudBlazor;
 using MudBlazor.Services;
 using SSW.Rewards.Admin.UI.Services;
@@ -15,6 +16,27 @@ public class Program
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
+
+        // Local dev override (git-ignored), written by the `rewards-dev` CLI.
+        // Lets a dev switch identity authority / API URL without editing the
+        // committed appsettings. Absent on a fresh clone / CI → committed
+        // appsettings.Development.json (staging) is used unchanged.
+        try
+        {
+            using var cfgHttp = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+            var localResp = await cfgHttp.GetAsync("appsettings.Local.json");
+            if (localResp.IsSuccessStatusCode)
+            {
+                builder.Configuration.AddJsonStream(await localResp.Content.ReadAsStreamAsync());
+            }
+            // Non-success (e.g. 404) → no local override present, use committed appsettings.
+        }
+        catch (Exception ex)
+        {
+            // A network/parse failure here shouldn't be silent — it usually means a
+            // malformed appsettings.Local.json. Log it so the misconfig is diagnosable.
+            Console.Error.WriteLine($"[WARN] Failed to load appsettings.Local.json override: {ex.Message}");
+        }
 
         // MessageHandler for adding the JWT to outbound requests to the API
         builder.Services.AddTransient<CustomAuthorizationMessageHandler>();
