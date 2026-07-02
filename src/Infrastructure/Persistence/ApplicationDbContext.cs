@@ -6,23 +6,9 @@ using SSW.Rewards.Infrastructure.Persistence.Interceptors;
 
 namespace SSW.Rewards.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : DbContext(options), IApplicationDbContext
 {
-    //private readonly IMediator _mediator;
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-    private readonly AchievementIntegrationIdInterceptor _achievementIntegrationIdInterceptor;
-
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
-        AchievementIntegrationIdInterceptor achievementIntegrationIdInterceptor
-        )
-        : base(options)
-    {
-        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-        _achievementIntegrationIdInterceptor = achievementIntegrationIdInterceptor;
-    }
-
     public DbSet<StaffMember> StaffMembers { get; set; }
     public DbSet<StaffMemberSkill> StaffMemberSkills { get; set; }
     public DbSet<Skill> Skills { get; set; }
@@ -55,12 +41,5 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(modelBuilder);
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(
-            _auditableEntitySaveChangesInterceptor,
-            _achievementIntegrationIdInterceptor);
     }
 }
