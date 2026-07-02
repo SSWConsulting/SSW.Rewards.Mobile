@@ -11,8 +11,6 @@ public static partial class Constants
     public const string AppCenterAndroidId = "285df68b-ea1b-4afb-94c3-2581613c6880";
     public const string AppCenterIOSId = "71ea37dd-20c5-40ca-9d68-81b743d81337";
 
-#elif QA
-    public string ApiBaseUrl = "https://sswconsulting-dev.azurewebsites.net";
 #else
     public const string ApiBaseUrl = "https://api.rewards.ssw.com.au";
     public const string AppCenterAndroidId = "d6f591ec-8cef-44d7-96c0-08f31f91fb74";
