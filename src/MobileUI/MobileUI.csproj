@@ -110,9 +110,9 @@
 	     instruction instead of a cryptic build error when they're missing on a fresh clone / CI. -->
 	<Target Name="EnsureFirebaseConfig" BeforeTargets="BeforeBuild">
 	    <Error Condition="$(TargetFramework.Contains('android')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/Android/google-services.json')"
-	           Text="Missing Platforms/Android/google-services.json. Run the Aspire 'Mobile: Materialize Firebase secrets' command, or copy it from Keeper (template: google-services.json.template)." />
+	           Text="Missing Platforms/Android/google-services.json. Run 'rewards-dev secrets sync-mobile' (or the Aspire 'Sync mobile secrets (isolated)' command), or copy it from Keeper (template: google-services.json.template)." />
 	    <Error Condition="$(TargetFramework.Contains('-ios')) AND !Exists('$(MSBuildProjectDirectory)/Platforms/iOS/GoogleService-Info.plist')"
-	           Text="Missing Platforms/iOS/GoogleService-Info.plist. Run the Aspire 'Mobile: Materialize Firebase secrets' command, or copy it from Keeper (template: GoogleService-Info.plist.template)." />
+	           Text="Missing Platforms/iOS/GoogleService-Info.plist. Run 'rewards-dev secrets sync-mobile' (or the Aspire 'Sync mobile secrets (isolated)' command), or copy it from Keeper (template: GoogleService-Info.plist.template)." />
 	</Target>
 
     <!-- Local-dev API/identity overrides: prefer the git-ignored Constants.LocalDev.cs (written by the
