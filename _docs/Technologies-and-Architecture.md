@@ -18,7 +18,7 @@
 [Production](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Rewards.Prod/overview)
 
 ### Telemetry
-[Staging](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Rewards.Staging/providers/microsoft.insights/components/ai-sswrewards-staging/overview)
+[Staging](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Rewards.Staging/providers/Microsoft.Insights/components/ai-sswrewards-staging/overview)
 [Production](https://portal.azure.com/#@sswcom.onmicrosoft.com/resource/subscriptions/b8b18dcf-d83b-47e2-9886-00c2e983629e/resourceGroups/SSW.Rewards.Prod/providers/Microsoft.Insights/components/ai-sswrewards-prod/overview)
 
 ### Auth
