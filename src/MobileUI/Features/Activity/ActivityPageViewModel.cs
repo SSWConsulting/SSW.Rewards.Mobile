@@ -19,8 +19,12 @@ public enum ActivityPageSegments
 
 public partial class ActivityPageViewModel : BaseViewModel
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IAlertService _alertService;
+    private const string FeedTitle = "Activity Feed";
+    private const string OfflineMessage = "You're offline. The activity feed will load once you're back online.";
+    private const string GenericMessage = "There seems to be a problem loading the activity feed. Please try again soon.";
+
+    private readonly IAppNavigator _navigator;
+    private readonly OfflineAwareListErrorHandler _errorHandler;
 
     private ActivityPageSegments _currentSegment;
     private int _myUserId;
@@ -52,13 +56,13 @@ public partial class ActivityPageViewModel : BaseViewModel
     public ActivityPageViewModel(
         IActivityFeedService activityService,
         IUserService userService,
-        IServiceProvider serviceProvider,
         PostListViewModel postsViewModel,
-        IAlertService alertService,
+        IAppNavigator navigator,
+        OfflineAwareListErrorHandler errorHandler,
         IFileCacheService fileCacheService)
     {
-        _serviceProvider = serviceProvider;
-        _alertService = alertService;
+        _navigator = navigator;
+        _errorHandler = errorHandler;
         PostsViewModel = postsViewModel;
         ShowActivityFeed = true;
 
@@ -86,11 +90,8 @@ public partial class ActivityPageViewModel : BaseViewModel
         var result = await Feed.RefreshAsync();
         _loaded = true;
 
-        // A failed background refresh behind cached content stays quiet.
-        if (result.Error is not null && !result.HasContent)
-        {
-            await ShowLoadFailedAlert(result.Error);
-        }
+        // Background refresh: a failure behind cached content stays quiet.
+        await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
     }
 
     [RelayCommand]
@@ -123,39 +124,24 @@ public partial class ActivityPageViewModel : BaseViewModel
 
         var result = await Feed.RefreshAsync();
 
-        // The user asked for different data — tell them when it couldn't load,
-        // even though the previous segment's items are still visible.
-        if (result.Error is not null)
-        {
-            await ShowLoadFailedAlert(result.Error);
-        }
-    }
-
-    private async Task ShowLoadFailedAlert(Exception error)
-    {
-        if (await ExceptionHandler.HandleApiException(error))
-        {
-            return;
-        }
-
-        string message = Connectivity.Current.NetworkAccess != NetworkAccess.Internet
-            ? "You're offline. The activity feed will load once you're back online."
-            : "There seems to be a problem loading the activity feed. Please try again soon.";
-        await _alertService.DisplayAlertAsync("Activity Feed", message, "OK");
+        // The user asked for different data — report a failure even though the
+        // previous segment's items are still visible.
+        await _errorHandler.HandleAsync(result, userRequestedNewData: true, FeedTitle, OfflineMessage, GenericMessage);
     }
 
     [RelayCommand]
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
-        var page = _myUserId == item.UserId
-            ? (Page)ActivatorUtilities.CreateInstance<MyProfilePage>(_serviceProvider)
-            : ActivatorUtilities.CreateInstance<OthersProfilePage>(_serviceProvider, item.UserId);
-        await Shell.Current.Navigation.PushAsync(page);
+        if (_myUserId == item.UserId)
+        {
+            await _navigator.GoToMyProfileAsync();
+        }
+        else
+        {
+            await _navigator.GoToUserProfileAsync(item.UserId);
+        }
     }
 
     [RelayCommand]
-    private static async Task ClosePage()
-    {
-        await Shell.Current.Navigation.PopModalAsync();
-    }
+    private Task ClosePage() => _navigator.PopModalAsync();
 }
