@@ -82,6 +82,9 @@ public static class DependencyInjection
         services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
         services.AddSingleton<IFirstRunService, FirstRunService>();
         services.AddSingleton<IAlertService, AlertService>();
+        services.AddSingleton<IConnectivityService, MauiConnectivityService>();
+        services.AddSingleton<IAppNavigator, AppNavigator>();
+        services.AddSingleton<IApiExceptionHandler, ApiExceptionHandler>();
 
         // Configure authentication options
         services.Configure<AuthenticationOptions>(options =>

@@ -1,11 +1,5 @@
 namespace SSW.Rewards.Mobile.Services;
 
-public interface IAlertService
-{
-    Task DisplayAlertAsync(string title, string message, string cancel);
-    Task<bool> DisplayConfirmationAsync(string title, string message, string accept, string cancel);
-}
-
 public class AlertService : IAlertService
 {
     public Task DisplayAlertAsync(string title, string message, string cancel)
