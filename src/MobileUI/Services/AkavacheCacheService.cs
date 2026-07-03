@@ -56,6 +56,20 @@ public class AkavacheCacheService : IFileCacheService
         }
     }
 
+    public async Task ResetAsync()
+    {
+        try
+        {
+            await CacheDatabase.LocalMachine.InvalidateAll().FirstAsync();
+            await CacheDatabase.LocalMachine.Flush().FirstAsync();
+        }
+        catch (Exception e)
+        {
+            // Logout must never fail because the cache couldn't be cleared.
+            _logger.LogError(e, "Failed to reset the cache");
+        }
+    }
+
     /// <summary>
     /// Reads any cached value first (invoking <paramref name="dataCallback"/> only when found), then
     /// fetches fresh data, caches it and invokes the callback again. Fetch failures are logged and rethrown.

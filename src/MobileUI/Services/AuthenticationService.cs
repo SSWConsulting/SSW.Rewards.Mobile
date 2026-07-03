@@ -22,6 +22,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IOidcAuthenticationProvider _oidcProvider;
     private readonly IServiceProvider _serviceProvider;
     private readonly IAuthStorageService _authStorage;
+    private readonly IFileCacheService _cacheService;
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IAlertService _alertService;
 
@@ -34,6 +35,7 @@ public class AuthenticationService : IAuthenticationService
         IOidcAuthenticationProvider oidcProvider,
         IServiceProvider serviceProvider,
         IAuthStorageService authStorage,
+        IFileCacheService cacheService,
         ILogger<AuthenticationService> logger,
         IAlertService alertService)
     {
@@ -41,6 +43,7 @@ public class AuthenticationService : IAuthenticationService
         _oidcProvider = oidcProvider;
         _serviceProvider = serviceProvider;
         _authStorage = authStorage;
+        _cacheService = cacheService;
         _logger = logger;
         _alertService = alertService;
 
@@ -150,6 +153,9 @@ public class AuthenticationService : IAuthenticationService
     {
         _logger.LogInformation("Signing out user");
         await _tokenManager.ClearTokensAsync();
+
+        // No cached user data may outlive the session (see #1527).
+        await _cacheService.ResetAsync();
     }
 
     public void NavigateToLoginPage()

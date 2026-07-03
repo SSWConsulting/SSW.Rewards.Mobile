@@ -32,6 +32,12 @@ public class PagedListSourceTests
             return Task.CompletedTask;
         }
 
+        public Task ResetAsync()
+        {
+            Store.Clear();
+            return Task.CompletedTask;
+        }
+
         public Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Func<T, bool, object?, Task> dataCallback, object? tag = null)
             => throw new NotSupportedException("Legacy path not under test.");
     }
