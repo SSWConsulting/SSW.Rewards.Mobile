@@ -118,6 +118,22 @@ public class DemoDataSeederTests
     }
 
     [Test]
+    public async Task Seed_FlagshipUser_IsNearTheTopOfTheAllTimeLeaderboard()
+    {
+        await Seed(Today, years: 3);
+
+        await using var context = CreateContext();
+        var ranked = await context.Users
+            .Select(u => new { u.FullName, Points = u.UserAchievements.Sum(ua => (int?)ua.Achievement.Value) ?? 0 })
+            .OrderByDescending(u => u.Points)
+            .Take(3)
+            .ToListAsync();
+
+        ranked.Should().Contain(u => u.FullName == DemoDataSet.Flagship.Name,
+            "the boss attends everything — he belongs at the top of the demo leaderboard");
+    }
+
+    [Test]
     public async Task Seed_PlayableQuizzesHaveNoCompletions()
     {
         await Seed(Today);

@@ -414,11 +414,14 @@ public class DemoDataSeeder
             if (firstStaffScan is not null)
                 Award(user, achievements.ByName(MilestoneAchievements.MeetSSW), firstStaffScan.Value);
 
-            // Event clusters — cohort bursts on the event date.
+            // Event clusters — cohort bursts on the event date. The flagship founder
+            // attends practically everything, which keeps him on top of the leaderboard.
             DateTime? firstUg = null, firstHack = null, firstWorkshop = null;
+            var isFlagship = person.Key == DemoDataSet.Flagship.Key;
             foreach (var e in events.Where(e => e.Date >= join))
             {
-                if (Frac($"event:{email}:{e.Slug}") >= e.Attendance * (0.5 + person.Activity / 2)) continue;
+                var attendProbability = isFlagship ? 0.95 : e.Attendance * (0.5 + person.Activity / 2);
+                if (Frac($"event:{email}:{e.Slug}") >= attendProbability) continue;
                 var at = e.Date.AddHours(18);
                 Award(user, achievements.ByCode($"demo:event:{e.Slug}"), at);
                 if (e.Slug.StartsWith("ug-")) firstUg ??= at;
