@@ -74,19 +74,23 @@ cache-implementation-agnostic: pages only ever see `IFileCacheService`.
 
 Rules:
 
-1. **Handle `result.Error`.** Route through `ExceptionHandler.HandleApiException` first (401 →
-   login), then alert with an offline-aware message. Alert policy: a failed **initial/pull-to-refresh
-   load behind cached content stays silent**; a failed **segment/filter switch always alerts** (the
-   visible items aren't what the user asked for).
-2. **`RefreshAsync` replaces, `LoadMoreAsync` appends.** Pagination is network-only and can't
+1. **Handle `result.Error` via `OfflineAwareListErrorHandler`** (Core, DI-registered, unit-tested) —
+   don't hand-roll the policy. It runs the API exception handler first (401 → login), stays silent when
+   a background refresh fails behind cached content, and otherwise shows your offline/generic message.
+   Pass `userRequestedNewData: true` for segment/filter switches (those always alert).
+2. **No MAUI statics in ViewModels.** Use the Core seams: `IConnectivityService` (not
+   `Connectivity.Current`), `IAppNavigator` (not `Shell.Current` + `ActivatorUtilities`),
+   `IApiExceptionHandler` (not the static `ExceptionHandler`), `IAlertService`. This is what keeps
+   ViewModel logic host-testable.
+3. **`RefreshAsync` replaces, `LoadMoreAsync` appends.** Pagination is network-only and can't
    duplicate page 1 while cached data is shown; only a successful short/empty page marks the end.
-3. **`PrepareItem` is for display-only fields** (relative timestamps, avatar fallbacks) — it runs
+4. **`PrepareItem` is for display-only fields** (relative timestamps, avatar fallbacks) — it runs
    for cached and fresh items alike, so never put it in the fetch path yourself.
-4. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
+5. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
    stale-data indicators (global offline banner lands with #1567).
-5. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
+6. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
    user why they're blocked — never let the action throw.
-6. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+7. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
    version of this pattern — don't use it for new pages; those pages migrate to
    `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 
