@@ -71,6 +71,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ApiClient\ApiClient.csproj" />
+        <ProjectReference Include="..\MobileUI.Core\MobileUI.Core.csproj" />
         <ProjectReference Include="..\Common\Shared.csproj" />
     </ItemGroup>
 

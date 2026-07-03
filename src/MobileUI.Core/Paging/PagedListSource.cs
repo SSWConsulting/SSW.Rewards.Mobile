@@ -1,6 +1,5 @@
-#nullable enable
-
 using CommunityToolkit.Mvvm.ComponentModel;
+using SSW.Rewards.Mobile.Helpers;
 
 namespace SSW.Rewards.Mobile.Common;
 
@@ -170,31 +169,4 @@ public sealed partial class PagedListSource<T> : ObservableObject
         _cts = new CancellationTokenSource();
         return _cts.Token;
     }
-}
-
-/// <summary>Configuration for a <see cref="PagedListSource{T}"/>. Only FetchPage is required.</summary>
-public sealed class PagedListSourceOptions<T>
-{
-    public required Func<int, int, CancellationToken, Task<List<T>>> FetchPage { get; init; }
-
-    public int PageSize { get; init; } = 50;
-
-    /// <summary>Display preparation applied to every item, cached or fresh (relative timestamps, fallbacks).</summary>
-    public Action<T>? PrepareItem { get; init; }
-
-    /// <summary>Item equality for the anti-flicker check. Omit to always redraw on refresh.</summary>
-    public Func<T, T, bool>? AreSame { get; init; }
-
-    public IFileCacheService? Cache { get; init; }
-    public string? CacheKey { get; init; }
-
-    /// <summary>Extra cache gate, e.g. only the default segment of a segmented page.</summary>
-    public Func<bool>? ShouldUseCache { get; init; }
-}
-
-/// <summary>Outcome of a load. <see cref="Error"/> is null on success or cancellation.</summary>
-public readonly record struct ListLoadResult(bool HasContent, bool FromCache, Exception? Error)
-{
-    public static ListLoadResult Ok(bool hasContent, bool fromCache) => new(hasContent, fromCache, null);
-    public static ListLoadResult Fail(Exception error, bool hasContent) => new(hasContent, false, error);
 }
