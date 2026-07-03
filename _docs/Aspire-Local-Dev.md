@@ -104,6 +104,35 @@ restarts. WebAPI + AdminUI start once SQL is healthy; migrations apply on WebAPI
 > `Firebase:FirebaseCredentials`, `SendGridAPIKey`, `EmailUser`, `EmailPassword`, `SigningAuthority`
 > as env vars.
 
+## Demo data — seed & reset (no backup needed)
+
+A fresh database is a desert: empty leaderboard, no rewards, no quizzes. You do **not** need a
+`.bak` from another dev — seed the fictional **Northwind Traders** dataset instead:
+
+```bash
+./rewards-dev db seed --dev-email you@ssw.com.au    # idempotent — re-run any time to top up
+./rewards-dev db reset                              # drop DBs → migrate → seed (asks to confirm)
+```
+
+What you get: ~60 real-sounding fictional users with generated avatars (Bob Northwind and the
+classic Northwind crew), staff profiles with skills and scannable QR achievements, a rewards
+catalog, quizzes, and **3 years of activity history** (scans, event clusters like *Northwind
+DevCon*, monthly user groups, hack days, quiz passes, reward claims) so every leaderboard filter
+— Today / Week / Month / Year / All time — looks alive. No user is ever seeded into a negative
+points balance.
+
+- `--dev-email` is required: the seeder pre-creates **your** user (with history and its own QR
+  achievement) keyed on that email, so the app binds to it the first time you log in.
+  (Admin access still comes from the identity provider's role claims, not the database.)
+- **Re-runs are safe and gap-filling.** Every decision is a stable hash of (person, calendar
+  date) — running it again after months away tops up the missing weeks without duplicating
+  anything (`--years N` widens the history window, default 3).
+- `db reset` force-drops `ssw.rewards` + `ssw.rewards.hangfire` (even while the stack is
+  running), re-applies migrations and reseeds. **Restart `rewards-webapi` afterwards** so it
+  reconnects cleanly. Add `--yes` to skip the prompt, `--no-seed` for an empty schema.
+- Both are dashboard buttons too: **rewards-sql ▸ DB: Seed demo data / DB: Reset + reseed**.
+- Avatars/reward images upload to the local Azurite `demo-assets` container on first seed.
+
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
 
@@ -118,6 +147,8 @@ pickers are **dropdowns** (local / staging / prod / tailscale) — no typos, val
 
 <img src="imgs/aspire-sql-commands.png" alt="rewards-sql Actions menu expanded showing the Commands flyout with DB Apply migrations, DB Add migration, Tools Install/upgrade dotnet-ef, Tools Install/upgrade Aspire CLI, Tools Trust dev HTTPS cert and Tools Diagnose aspire doctor" width="900" />
 
+- **DB: Seed demo data** — Northwind demo dataset (prompts for your dev email; idempotent, see *Demo data* above)
+- **DB: Reset + reseed** — drop → migrate → seed, with a confirmation dialog
 - **DB: Apply migrations** / **Add migration…** — EF update / add (prompts for the name)
 - **Tools: Install/upgrade dotnet-ef**, **Trust dev HTTPS cert**
 - **Tools: Install/upgrade Aspire CLI** — `dotnet tool update aspire --global` (installs if missing)

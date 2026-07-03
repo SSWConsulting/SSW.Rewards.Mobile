@@ -1,12 +1,27 @@
 ---
 name: manage-database
-description: Back up, restore, and migrate the local SSW.Rewards SQL Server database (the Aspire-managed `rewards-sql` container). Use when someone needs to back up or restore the dev DB, seed real data from staging/another dev, or apply EF migrations locally.
+description: Seed demo data, reset, back up, restore, and migrate the local SSW.Rewards SQL Server database (the Aspire-managed `rewards-sql` container). Use when someone needs a working local dataset (rewards-dev db seed/reset), to back up or restore the dev DB, or to apply EF migrations locally.
 ---
 
-# Managing the local database (backup / restore / migrations)
+# Managing the local database (seed / reset / backup / restore / migrations)
 
 Locally the database runs as a **.NET Aspire**-managed SQL Server 2022 container (`rewards-sql`).
 Get the stack up first with `aspire run` (from the repo root; see `_docs/Aspire-Local-Dev.md`).
+
+## Seeding demo data (no backup needed)
+
+For a working local environment you usually do NOT need a backup — seed the fictional
+Northwind demo dataset (users + avatars, staff, rewards, quizzes, 3 years of scan/event
+history, your own dev user):
+
+```sh
+./rewards-dev db seed --dev-email you@ssw.com.au   # idempotent; re-run any time to top up gaps
+./rewards-dev db reset                             # drop DBs → migrate → seed (asks to confirm; --yes to skip)
+```
+
+Both exist as Aspire dashboard buttons on `rewards-sql` (**DB: Seed demo data**,
+**DB: Reset + reseed**). After a reset, restart `rewards-webapi`. Use the backup/restore steps
+below only when you need REAL data (e.g. reproducing a production issue).
 
 ## Applying migrations (not a restore)
 
