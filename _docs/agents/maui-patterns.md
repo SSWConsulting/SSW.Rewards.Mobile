@@ -2,7 +2,7 @@
 
 ## MVVM with CommunityToolkit.Mvvm — partial properties
 
-Use `[ObservableProperty]` on **partial properties** (CommunityToolkit.Mvvm 8.4+, C# 13+), not on
+Use `[ObservableProperty]` on **partial properties** (CommunityToolkit.Mvvm 8.4.2+, C# 13+), not on
 private fields. Same generated `INotifyPropertyChanged` plumbing, but no `_field` vs `Property`
 duality, natural nullability annotations, and "find all references" works.
 
@@ -27,51 +27,64 @@ public partial class HomeViewModel : BaseViewModel
   ViewModels — migrate opportunistically when touching a file; generated property names don't
   change, so XAML is unaffected.
 
-## Offline-ready list pages — `AdvancedObservableCollection<T>`
+## Offline-ready list pages — `PagedListSource<T>`
 
-**Every list page must render from cache when offline.** The pattern (exemplar:
-`Features/Activity/ActivityPageViewModel.cs`; also `Features/Network/NetworkPageViewModel.cs`):
+**Every list page must render from cache when offline.** `PagedListSource<T>`
+(`Common/PagedListSource.cs`) owns the whole load lifecycle so the ViewModel only declares intent:
+cache-then-network initial load, pull-to-refresh, network-only pagination with end-of-list
+detection, per-item display preparation, anti-flicker replace, and stale-load cancellation.
+
+Exemplar: `Features/Activity/ActivityPageViewModel.cs`.
 
 ```csharp
-public AdvancedObservableCollection<ActivityFeedItemDto> Feed { get; } = new();
+public PagedListSource<ActivityFeedItemDto> Feed { get; }
 
-public MyViewModel(IFileCacheService fileCacheService, ...)
+public MyViewModel(IActivityFeedService service, IFileCacheService fileCacheService, ...)
 {
-    // 1. Cache the initial load (first page); pagination/secondary segments stay network-only.
-    Feed.InitializeInitialCaching(fileCacheService, "MyPageCache", () => _skip == 0);
-
-    // 2. Anti-flicker: skip the UI replace when cache and network data are identical.
-    Feed.CompareItems = AreSameItem;
-
-    // 3. Per-item display fields (relative timestamps, fallbacks) — runs for BOTH cache and
-    //    network results, so cached items are re-enriched fresh.
-    Feed.OnDataReceived += OnDataReceived;
-
-    // 4. Track state; `isFromCache` here is the truth for "showing cached data".
-    Feed.OnCollectionUpdated += (items, isFromCache) => { IsShowingCachedData = isFromCache; IsRefreshing = false; };
-
-    // 5. MANDATORY. Without OnError, a failed background refresh RETHROWS and crashes the app.
-    Feed.OnError += OnError;
+    Feed = new PagedListSource<ActivityFeedItemDto>(new()
+    {
+        FetchPage = async (skip, take, ct) => (await service.GetAllActivities(take, skip, ct)).Feed.ToList(),
+        PrepareItem = item => item.PrepareForDisplay(),          // display fields, cached AND fresh
+        AreSame = (a, b) => a.UserId == b.UserId && a.AwardedAt == b.AwardedAt,  // anti-flicker
+        Cache = fileCacheService,
+        CacheKey = "MyPageCache",
+        ShouldUseCache = () => _currentSegment == MySegments.Default,  // optional extra gate
+    });
 }
 
-public Task LoadFeed() => Feed.LoadAsync(FetchPage, reload: true);   // initial/refresh: replace
-// pagination: Feed.LoadAsync(FetchPage) — append, no cache
+public async Task LoadFeed()
+{
+    var result = await Feed.RefreshAsync();
+    if (result.Error is not null && !result.HasContent)     // quiet behind cached content
+    {
+        await ShowLoadFailedAlert(result.Error);            // ExceptionHandler first, then offline-aware message
+    }
+}
+
+[RelayCommand] private Task LoadMore() => Feed.LoadMoreAsync();
+```
+
+```xml
+<CollectionView ItemsSource="{Binding Feed.Items}" ... />
 ```
 
 Rules:
 
-1. **`OnError` is mandatory** — wire it before shipping any page that uses the collection.
-   Alert only when nothing is on screen (`Feed.Collection.Count == 0`); a failed background
-   refresh behind cached data stays silent. Route through `ExceptionHandler.HandleApiException`
-   first (401 → login).
-2. **Initial load and pull-to-refresh use `reload: true`** — the cache-then-network double
-   callback otherwise appends the first page twice.
-3. **Pagination is network-only** (`shouldUseCache` returns false past page 1) and only a
-   **successful empty page** may set the "limit reached" flag — an offline failure must not
-   latch it (track the last network fetch count via `OnDataReceived`'s `!isFromCache` branch).
-4. **XAML binds the inner collection**: `ItemsSource="{Binding Feed.Collection}"`.
+1. **Handle `result.Error`.** Route through `ExceptionHandler.HandleApiException` first (401 →
+   login), then alert with an offline-aware message. Alert policy: a failed **initial/pull-to-refresh
+   load behind cached content stays silent**; a failed **segment/filter switch always alerts** (the
+   visible items aren't what the user asked for).
+2. **`RefreshAsync` replaces, `LoadMoreAsync` appends.** Pagination is network-only and can't
+   duplicate page 1 while cached data is shown; only a successful short/empty page marks the end.
+3. **`PrepareItem` is for display-only fields** (relative timestamps, avatar fallbacks) — it runs
+   for cached and fresh items alike, so never put it in the fetch path yourself.
+4. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
+   stale-data indicators (global offline banner lands with #1567).
 5. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
    user why they're blocked — never let the action throw.
+6. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+   version of this pattern — don't use it for new pages; those pages migrate to
+   `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 
 ## XAML with Compiled Bindings
 
@@ -88,7 +101,7 @@ Rules:
 1. **Always** use `x:DataType` for compiled bindings
 2. **Always** use `[ObservableProperty]` (partial-property form) for bindable properties
 3. **Always** use `[RelayCommand]` for commands
-4. List pages **must** work offline via `AdvancedObservableCollection<T>` (see above)
+4. List pages **must** work offline via `PagedListSource<T>` (see above)
 5. Navigation uses Shell-based navigation
 6. DI uses built-in .NET DI container
 

@@ -37,7 +37,7 @@
             Grid.Row="1"
             IsVisible="{Binding ShowActivityFeed}">
             <CollectionView
-                ItemsSource="{Binding Feed.Collection}"
+                ItemsSource="{Binding Feed.Items}"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 RemainingItemsThreshold="5"
                 RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
