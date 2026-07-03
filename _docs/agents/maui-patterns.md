@@ -68,6 +68,10 @@ public async Task LoadFeed()
 <CollectionView ItemsSource="{Binding Feed.Items}" ... />
 ```
 
+The cache behind `IFileCacheService` is **Akavache v11** (SQLite `LocalMachine` store) — pass an
+`expiry` to `SetAsync` for data that goes stale; reads/writes never throw. The pattern stays
+cache-implementation-agnostic: pages only ever see `IFileCacheService`.
+
 Rules:
 
 1. **Handle `result.Error`.** Route through `ExceptionHandler.HandleApiException` first (401 →
