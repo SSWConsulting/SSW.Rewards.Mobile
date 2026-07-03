@@ -86,6 +86,9 @@
       <BuildType Solution="QA|iPhone" Project="Release" />
       <BuildType Solution="QA|iPhoneSimulator" Project="Release" />
     </Project>
+    <Project Path="tests/MobileUI.Core.IntegrationTests/MobileUI.Core.IntegrationTests.csproj">
+      <BuildType Solution="QA|*" Project="Debug" />
+    </Project>
     <Project Path="tests/MobileUI.Core.UnitTests/MobileUI.Core.UnitTests.csproj">
       <BuildType Solution="QA|*" Project="Debug" />
     </Project>
