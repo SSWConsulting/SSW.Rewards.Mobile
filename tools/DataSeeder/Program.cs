@@ -46,6 +46,9 @@ if (sqlConn is null)
 if (verb == "reset")
 {
     var target = new SqlConnectionStringBuilder(sqlConn);
+    // Never drop a non-local server by accident (e.g. a staging conn string left in env).
+    if (!ConnectionResolver.IsLocalDataSource(sqlConn) && !Flag("--allow-remote"))
+        return Fail($"refusing to reset non-local server '{target.DataSource}'. Pass --allow-remote if you REALLY mean it.");
     if (!Flag("--yes"))
     {
         Console.WriteLine($"About to DROP '{RewardsDb}' and '{HangfireDb}' on {target.DataSource} and re-create from migrations.");
@@ -141,8 +144,10 @@ int Usage()
         SSW.Rewards demo data seeder (usually via `rewards-dev db …` or the Aspire dashboard)
 
           seed  --dev-email <email> [--dev-name <name>] [--years N]     idempotent demo seed (re-run to top up)
-          reset [--yes] [--no-seed] [seed options]                      drop DBs → migrate → seed
+          reset [--yes] [--no-seed] [seed options]                      drop DBs → migrate → seed (local servers only)
 
+          --dev-email is part of the seed identity: keep using the same address. A different
+          email seeds an additional developer user rather than renaming the previous one.
           --connection-string / --blob-connection-string override auto-discovery (env vars:
           ConnectionStrings__DefaultConnection, CloudBlobProviderOptions__ContentStorageConnectionString).
         """);

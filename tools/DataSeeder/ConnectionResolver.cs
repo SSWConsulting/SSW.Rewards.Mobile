@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
 
 namespace SSW.Rewards.DataSeeder;
 
@@ -12,7 +13,8 @@ namespace SSW.Rewards.DataSeeder;
 /// </summary>
 public static partial class ConnectionResolver
 {
-    private const string AppHostUserSecretsId = "F76E3E10-FABB-4543-B949-549EEC500823";
+    // Fallback for when the repo layout can't be located; normally parsed from the csproj.
+    private const string AppHostUserSecretsIdFallback = "F76E3E10-FABB-4543-B949-549EEC500823";
     private const string SqlContainerName = "ssw-rewards-sql";
     private const string AzuriteContainerName = "ssw-rewards-azurite";
 
@@ -32,7 +34,26 @@ public static partial class ConnectionResolver
         var password = ReadSaPasswordFromAppHostSecrets();
         if (port is null || password is null) return null;
 
-        return $"Server=127.0.0.1,{port};Database={database};User ID=sa;Password={password};TrustServerCertificate=True";
+        return new SqlConnectionStringBuilder
+        {
+            DataSource = $"127.0.0.1,{port}",
+            InitialCatalog = database,
+            UserID = "sa",
+            Password = password,
+            TrustServerCertificate = true,
+        }.ConnectionString;
+    }
+
+    /// <summary>True when the connection targets a local machine — the reset guard.</summary>
+    public static bool IsLocalDataSource(string connectionString)
+    {
+        var source = new SqlConnectionStringBuilder(connectionString).DataSource;
+        var host = source.Split(',')[0].Split('\\')[0].Replace("tcp:", "", StringComparison.OrdinalIgnoreCase).Trim();
+        return host.Length == 0
+            || host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+            || host is "127.0.0.1" or "::1" or "." or "(local)"
+            || host.StartsWith("(localdb)", StringComparison.OrdinalIgnoreCase)
+            || host.Equals("host.docker.internal", StringComparison.OrdinalIgnoreCase);
     }
 
     public static string? ResolveBlob(string? cliValue)
@@ -71,13 +92,30 @@ public static partial class ConnectionResolver
 
     private static string? ReadSaPasswordFromAppHostSecrets()
     {
+        var id = AppHostUserSecretsId();
         var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var path = OperatingSystem.IsWindows()
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft", "UserSecrets", AppHostUserSecretsId, "secrets.json")
-            : Path.Combine(home, ".microsoft", "usersecrets", AppHostUserSecretsId, "secrets.json");
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft", "UserSecrets", id, "secrets.json")
+            : Path.Combine(home, ".microsoft", "usersecrets", id, "secrets.json");
         if (!File.Exists(path)) return null;
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         return doc.RootElement.TryGetProperty("Parameters:sql-sa-password", out var value) ? value.GetString() : null;
+    }
+
+    // Parse the AppHost <UserSecretsId> from the repo (walk up to SSW.Rewards.sln) so a
+    // rotated id can't silently break discovery; fall back to the known id otherwise.
+    private static string AppHostUserSecretsId()
+    {
+        for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
+        {
+            if (!File.Exists(Path.Combine(dir.FullName, "SSW.Rewards.sln"))) continue;
+            var csproj = Path.Combine(dir.FullName, "src", "AppHost", "SSW.Rewards.AppHost.csproj");
+            if (!File.Exists(csproj)) break;
+            var match = Regex.Match(File.ReadAllText(csproj), @"<UserSecretsId>\s*([^<\s]+)\s*</UserSecretsId>");
+            if (match.Success) return match.Groups[1].Value;
+            break;
+        }
+        return AppHostUserSecretsIdFallback;
     }
 
     [GeneratedRegex(@":(\d+)\s*$", RegexOptions.Multiline)]

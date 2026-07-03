@@ -198,9 +198,18 @@ public class DemoDataSeeder
             var (prefix, value) = person.IsStaff
                 ? ("demo:staff:", DemoDataSet.StaffScanValue)
                 : ("demo:user:", DemoDataSet.UserScanValue);
-            await achievements.EnsureByCode($"{prefix}{person.Key}", person.Name, value, AchievementType.Scanned, Icons.QRCode, ct);
+            await achievements.EnsureByCode(ScanCode(person), person.Name, value, AchievementType.Scanned, Icons.QRCode, ct);
         }
     }
+
+    // The dev's own QR achievement is keyed by email so a different --dev-email gets its
+    // own achievement instead of sharing one row across two developer users.
+    private string ScanCode(DemoPerson person) => person.Key switch
+    {
+        "demo-dev" => $"demo:user:dev:{_devEmail}",
+        _ when person.IsStaff => $"demo:staff:{person.Key}",
+        _ => $"demo:user:{person.Key}",
+    };
 
     private async Task<List<Quiz>> EnsureQuizzes(AchievementLookup achievements, CancellationToken ct)
     {
@@ -259,7 +268,7 @@ public class DemoDataSeeder
             staff.Profile = $"{person.Name} is part of the Northwind Traders crew as {person.Title}.";
             staff.TwitterUsername = person.Twitter;
             staff.GitHubUsername = person.GitHub;
-            staff.StaffAchievement ??= achievements.ByCode($"demo:staff:{person.Key}");
+            staff.StaffAchievement ??= achievements.ByCode(ScanCode(person));
             if (string.IsNullOrEmpty(staff.ProfilePhoto) && _assets is not null)
                 staff.ProfilePhoto = await _assets.GetAssetUriAsync(person.Key, ct);
 
@@ -300,7 +309,7 @@ public class DemoDataSeeder
             }
             user.FullName = person.Name;
             user.Activated = true;
-            user.Achievement ??= achievements.ByCode(person.IsStaff ? $"demo:staff:{person.Key}" : $"demo:user:{person.Key}");
+            user.Achievement ??= achievements.ByCode(ScanCode(person));
             if (string.IsNullOrEmpty(user.Avatar) && person.Key != "demo-dev" && _assets is not null)
                 user.Avatar = await _assets.GetAssetUriAsync(person.Key, ct);
             if (!user.Roles.Any(r => ReferenceEquals(r.Role, userRole) || (userRole.Id != 0 && r.RoleId == userRole.Id)))
@@ -368,8 +377,7 @@ public class DemoDataSeeder
 
         var scanTargets = people.Where(p => p.Key != "demo-dev")
             .OrderBy(p => p.Key, StringComparer.Ordinal)
-            .Select(p => (p.Key, Achievement: achievements.ByCode(p.IsStaff ? $"demo:staff:{p.Key}" : $"demo:user:{p.Key}"),
-                          p.IsStaff))
+            .Select(p => (p.Key, Achievement: achievements.ByCode(ScanCode(p)), p.IsStaff))
             .ToList();
 
         foreach (var person in people)
@@ -463,12 +471,13 @@ public class DemoDataSeeder
                 .Select(ur => new { ur.UserId, ur.RewardId, ur.AwardedAt })
                 .ToListAsync(ct))
             .Select(x => (x.UserId, x.RewardId, x.AwardedAt.Date)).ToHashSet();
-        var usersWithPending = (await _context.PendingRedemptions.AsNoTracking()
+        var pendingCostByUser = (await _context.PendingRedemptions.AsNoTracking()
                 .TagWithContext()
                 .Where(pr => userIds.Contains(pr.UserId) && !pr.Completed && !pr.CancelledByUser && !pr.CancelledByAdmin)
-                .Select(pr => pr.UserId)
+                .Select(pr => new { pr.UserId, pr.Reward.Cost })
                 .ToListAsync(ct))
-            .ToHashSet();
+            .GroupBy(x => x.UserId)
+            .ToDictionary(g => g.Key, g => g.Sum(x => x.Cost));
 
         var claimAchievement = await _context.Achievements.IgnoreQueryFilters()
             .FirstAsync(a => a.Name == MilestoneAchievements.ClaimPrize, ct);
@@ -500,6 +509,9 @@ public class DemoDataSeeder
 
             // Walk the grant timeline chronologically; claim only while the running
             // balance covers the cost, so no ordering of claims can go negative.
+            // Claims persisted by earlier runs replay with identical bookkeeping; NEW
+            // claims must additionally leave any open pending redemption cost covered.
+            var reserved = pendingCostByUser.GetValueOrDefault(user.Id);
             int balance = 0, claimed = 0;
             DateTime? firstClaim = null;
             foreach (var (at, value) in timeline)
@@ -510,15 +522,22 @@ public class DemoDataSeeder
 
                 var affordable = rewards.Where(r => r.Cost <= balance).ToList();
                 var reward = affordable[(int)(Frac($"claimpick:{email}:{at:yyyyMMddHHmm}") * affordable.Count)];
+                var claimDate = at.AddHours(1);
+
+                if (existingClaims.Contains((user.Id, reward.Id, claimDate.Date)))
+                {
+                    balance -= reward.Cost;
+                    claimed++;
+                    firstClaim ??= claimDate;
+                    continue;
+                }
+                if (balance - reward.Cost < reserved) continue;
+
+                existingClaims.Add((user.Id, reward.Id, claimDate.Date));
+                _context.UserRewards.Add(new UserReward { UserId = user.Id, RewardId = reward.Id, AwardedAt = claimDate });
                 balance -= reward.Cost;
                 claimed++;
-                var claimDate = at.AddHours(1);
                 firstClaim ??= claimDate;
-
-                // Balance bookkeeping above must replay identically on re-runs, so the
-                // dedupe check only guards the INSERT, never the decision stream.
-                if (!existingClaims.Add((user.Id, reward.Id, claimDate.Date))) continue;
-                _context.UserRewards.Add(new UserReward { UserId = user.Id, RewardId = reward.Id, AwardedAt = claimDate });
                 claims++;
             }
 
@@ -535,7 +554,7 @@ public class DemoDataSeeder
 
             // A few open pending redemptions for the AdminUI screens — only when the
             // remaining balance still covers the pending cost (PLAN invariant #5).
-            if (Frac($"pending:{email}") < 0.08 && !usersWithPending.Contains(user.Id))
+            if (Frac($"pending:{email}") < 0.08 && !pendingCostByUser.ContainsKey(user.Id))
             {
                 var affordable = rewards.Where(r => r.Cost <= balance).ToList();
                 if (affordable.Count > 0)
