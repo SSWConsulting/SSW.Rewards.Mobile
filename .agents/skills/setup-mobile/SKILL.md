@@ -50,10 +50,10 @@ placeholder. Get the real files from Keeper, or use the **Sync mobile secrets (i
 the dashboard `mobile-app` resource.
 
 > **Fresh git worktree?** These files are materialized *into the working tree*, so each new worktree
-> needs them even if another worktree on the machine already has them. Run `rewards-dev secrets
-> sync-mobile` once in the new worktree (idempotent). See the **New worktree bootstrap** note in
-> [Aspire-Local-Dev.md](../../../_docs/Aspire-Local-Dev.md) so you don't chase a build that fails only
-> on Firebase.
+> needs them even if another worktree on the machine already has them. Run
+> `rewards-dev secrets sync-mobile` once in the new worktree (idempotent). See the **New worktree
+> bootstrap** note in [Aspire-Local-Dev.md](../../../_docs/Aspire-Local-Dev.md) so you don't chase a
+> build that fails only on Firebase.
 
 ## Step 4 — build & deploy (Android emulator or iOS simulator)
 
