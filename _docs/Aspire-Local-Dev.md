@@ -251,3 +251,15 @@ No more per-session URL churn in `Constants.cs`.
   **one** clone at a time. Symptom if you ever see a second container fighting for the volume: SQL
   logs `Setup FAILED copying system data file … Access is denied` and exits 255 — stop the other
   `ssw-rewards-sql*` container (`docker stop ssw-rewards-sql`) and re-run.
+- **New worktree bootstrap** — machine-global state (MAUI workloads, the AppHost + isolated mobile
+  user-secrets stores) is shared across worktrees, but the **git-ignored Firebase files**
+  (`src/MobileUI/Platforms/{Android/google-services.json, iOS/GoogleService-Info.plist}`) are
+  materialized *into the working tree*, so a fresh worktree doesn't have them even if another worktree
+  on the machine does. In every new worktree, run once:
+  ```bash
+  rewards-dev secrets sync-mobile   # writes the two Firebase files into THIS worktree
+  ```
+  That's the whole mobile fix (idempotent; safe to re-run). Prereq: the machine's AppHost store must
+  already hold the Keeper record — a one-time-per-machine `rewards-dev secrets edit`, not per-worktree.
+  Building the full `SSW.Rewards.sln` compiles MobileUI, so skipping this makes the *solution* build
+  fail on Firebase even though the backend projects build and test fine.
