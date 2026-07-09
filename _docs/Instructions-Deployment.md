@@ -12,7 +12,7 @@ workflows that call them.
 | --- | --- | --- |
 | **API - Main (Build & deploy)** | 👤 You (Run workflow) | Deploy Web API + infrastructure → staging, then approve → production |
 | **Admin - Main (Build & Deploy)** | 👤 You (Run workflow) | Deploy Admin Portal → staging, then approve → production |
-| **Mobile - Main (Build & Deploy)** | 🤖 Auto on mobile changes to `main` (or manually) | Build + ship the mobile app to Google Play / TestFlight |
+| **Mobile - Main (Build & Deploy)** | 🤖 Auto on mobile changes to `main` (or manually) | Build + ship the mobile app to Google Play / TestFlight; for iOS certificate/signing failures see [Deployment Troubleshooting](Instructions-Deployment-Troubleshooting.md#mobile-ios-signing-certificate-expired) |
 | Build and Test (Automation) | 🤖 Auto on every PR to `main` | PR quality gate — build + tests |
 | Everything else "(Automation)" | 🤖 Never run directly | Build/deploy steps invoked by the workflows above |
 
@@ -102,7 +102,8 @@ For manual purge steps and access notes, see Deployment Troubleshooting → [Adm
    - iOS build to TestFlight.
 3. Testers on those tracks receive the update automatically (no manual upload required).
 4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
-5. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
+5. If the iOS build fails in `Build and sign` with certificate, provisioning profile, or keychain errors, see Deployment Troubleshooting → [Mobile iOS Signing Certificate Expired](Instructions-Deployment-Troubleshooting.md#mobile-ios-signing-certificate-expired).
+6. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
 
 ### Build & Test (no deployment)
 
