@@ -34,12 +34,14 @@ public class LeaderboardService : ILeaderboardService
     {
         var users = await _cacheService.GetOrAddAsync(CacheKeys.Leaderboard, () => GenerateLeaderboard(cancellationToken));
 
-        return users;
+        return OrderByAllTimeRank(users).ToList();
     }
 
     private async Task<List<LeaderboardUserDto>> GenerateLeaderboard(CancellationToken cancellationToken)
     {
         DateTime utcNow = _dateTime.UtcNow;
+        DateTime lastSevenDaysUtc = utcNow.AddDays(-7);
+        DateTime lastThirtyDaysUtc = utcNow.AddDays(-30);
 
         var users = await _context.Users
             .AsNoTracking()
@@ -61,10 +63,10 @@ public class LeaderboardService : ILeaderboardService
                         ua.AwardedAt.Day == utcNow.Day)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisWeek = x.UserAchievements
-                    .Where(ua => utcNow.AddDays(-7) <= ua.AwardedAt && ua.AwardedAt <= utcNow)
+                    .Where(ua => lastSevenDaysUtc <= ua.AwardedAt && ua.AwardedAt <= utcNow)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisMonth = x.UserAchievements
-                    .Where(ua => ua.AwardedAt.Year == utcNow.Year && ua.AwardedAt.Month == utcNow.Month)
+                    .Where(ua => lastThirtyDaysUtc <= ua.AwardedAt && ua.AwardedAt <= utcNow)
                     .Sum(ua => ua.Achievement.Value),
                 PointsThisYear = x.UserAchievements
                     .Where(ua => ua.AwardedAt.Year == utcNow.Year)
@@ -86,7 +88,9 @@ public class LeaderboardService : ILeaderboardService
 
         // Post-processing
         int rank = 0;
-        foreach (LeaderboardUserDto? user in users.OrderByDescending(lud => lud.TotalPoints))
+        foreach (LeaderboardUserDto? user in users
+            .OrderByDescending(lud => lud.TotalPoints)
+            .ThenBy(lud => lud.Name))
         {
             user.Rank = ++rank;
             user.Title = user.Title switch
@@ -103,8 +107,13 @@ public class LeaderboardService : ILeaderboardService
             }
         }
 
-        return users;
+        return OrderByAllTimeRank(users).ToList();
     }
+
+    private static IOrderedEnumerable<LeaderboardUserDto> OrderByAllTimeRank(IEnumerable<LeaderboardUserDto> users)
+        => users
+            .OrderBy(user => user.Rank)
+            .ThenBy(user => user.Name);
 
     private static string ParseXHandle(string? value)
     {

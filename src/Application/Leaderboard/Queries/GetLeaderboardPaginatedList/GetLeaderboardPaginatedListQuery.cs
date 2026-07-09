@@ -22,14 +22,14 @@ internal class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, Leade
     {
         List<LeaderboardUserDto> users = await _leaderboardService.GetFullLeaderboard(cancellationToken);
         var query = users.AsQueryable();
-        query = request.CurrentPeriod switch
+        query = (request.CurrentPeriod switch
         {
             LeaderboardFilter.ThisMonth => query.OrderByDescending(x => x.PointsThisMonth),
             LeaderboardFilter.ThisYear => query.OrderByDescending(x => x.PointsThisYear),
             LeaderboardFilter.Forever => query.OrderByDescending(x => x.TotalPoints),
             LeaderboardFilter.ThisWeek => query.OrderByDescending(x => x.PointsThisWeek),
             _ => query.OrderByDescending(x => x.TotalPoints),
-        };
+        }).ThenBy(x => x.Name);
 
         return new LeaderboardViewModel
         {
