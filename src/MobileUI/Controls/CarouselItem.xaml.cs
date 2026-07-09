@@ -55,7 +55,7 @@ public partial class CarouselItem
     [RelayCommand]
     private async Task ButtonClicked()
     {
-        if (!IsButtonDisabled && ButtonCommand != null)
+        if (ButtonCommand != null)
         {
             await ButtonCommand.ExecuteAsync(ItemId);
         }
