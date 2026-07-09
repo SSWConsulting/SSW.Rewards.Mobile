@@ -19,7 +19,7 @@ var first = args[0].ToLowerInvariant();
 if (first is "help" or "-h" or "--help" or "-?" or "/?") return Commands.Help();
 
 var paths = RepoPaths.Discover();
-if (paths is null) return Commands.Fail("could not locate the repo root (no SSW.Rewards.sln above cwd or tool dir).");
+if (paths is null) return Commands.Fail("could not locate the repo root (no SSW.Rewards.slnx above cwd or tool dir).");
 
 var cmd = first;
 if (cmd == "show") return Commands.Show(paths, args.Contains("--json"));

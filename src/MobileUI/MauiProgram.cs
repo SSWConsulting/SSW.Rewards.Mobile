@@ -1,4 +1,8 @@
-﻿using BarcodeScanning;
+﻿using System.Reactive.Linq;
+using Akavache;
+using Akavache.SystemTextJson;
+using Akavache.Sqlite3;
+using BarcodeScanning;
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using Microsoft.Extensions.Logging;
@@ -6,6 +10,7 @@ using Microsoft.Maui.LifecycleEvents;
 using Mopups.Hosting;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Splat.Builder;
 using SSW.Rewards.Mobile.Renderers;
 
 #if IOS
@@ -25,6 +30,14 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        // Initialise Akavache (v11 builder pattern) before anything resolves the cache service.
+        AppBuilder.CreateSplatBuilder()
+            .WithAkavacheCacheDatabase<SystemJsonSerializer>(cache =>
+                cache.WithApplicationName("SSW.Rewards")
+                     .WithSqliteProvider()
+                     .UseForcedDateTimeKind(DateTimeKind.Utc)
+                     .WithSqliteDefaults());
+
         var builder = MauiApp.CreateBuilder();
         builder.UseMauiApp<App>().ConfigureFonts(fonts =>
         {
@@ -56,7 +69,9 @@ public static class MauiProgram
         });
 
         builder.Services.AddDependencies();
-        builder.Services.AddSingleton<IFileCacheService, FileCacheService>();
+        builder.Services.AddSingleton<IFileCacheService, AkavacheCacheService>();
+
+        builder.RegisterCacheFlushOnBackground();
 
 #if DEBUG
         builder.Logging.AddDebug();
@@ -97,6 +112,24 @@ public static class MauiProgram
 
         return builder.Build();
     }
+
+    // Akavache buffers writes in memory; flush them to disk when the app is backgrounded so
+    // cached data survives an OS-initiated process kill. (v11 recommends Flush before backgrounding.)
+    private static MauiAppBuilder RegisterCacheFlushOnBackground(this MauiAppBuilder builder)
+    {
+        builder.ConfigureLifecycleEvents(events =>
+        {
+#if IOS
+            events.AddiOS(ios => ios.DidEnterBackground(_ => FlushCache()));
+#elif ANDROID
+            events.AddAndroid(android => android.OnStop(_ => FlushCache()));
+#endif
+        });
+
+        return builder;
+    }
+
+    private static void FlushCache() => CacheDatabase.LocalMachine.Flush().Subscribe(_ => { }, _ => { });
 
     private static MauiAppBuilder RegisterFirebase(this MauiAppBuilder builder)
     {
