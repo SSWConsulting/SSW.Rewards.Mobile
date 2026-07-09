@@ -39,6 +39,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Post> Posts { get; set; }
     public DbSet<PostLike> PostLikes { get; set; }
     public DbSet<PostComment> PostComments { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<TenantSettings> TenantSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
