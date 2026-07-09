@@ -1,0 +1,108 @@
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.ApiClient.Services
+
+@inject ILeaderboardService LeaderboardService
+@inject ISnackbar Snackbar
+
+<MudStack Row="true" Spacing="2" Class="align-center">
+    <MudAutocomplete
+        T="LeaderboardUserDto"
+        Value="@SelectedUser"
+        ValueChanged="@OnSelectedUserChanged"
+        Label="@Label"
+        SearchFunc="@SearchUsers"
+        ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
+        Variant="Variant.Outlined"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        AdornmentColor="Color.Primary"
+        ResetValueOnEmptyText="true"
+        CoerceText="false"
+        CoerceValue="false"
+        MinCharacters="MinCharacters"
+        MaxItems="MaxItems"
+        Class="flex-grow-1">
+    </MudAutocomplete>
+    <MudButton 
+        OnClick="HandleButtonClick" 
+        Color="@ButtonColor" 
+        Variant="Variant.Filled" 
+        Disabled="@(SelectedUser == null || ButtonDisabled)">
+        @ButtonText
+    </MudButton>
+</MudStack>
+
+@code {
+    private List<LeaderboardUserDto> _usersList = [];
+
+    [Parameter]
+    public LeaderboardUserDto? SelectedUser { get; set; }
+
+    [Parameter]
+    public EventCallback<LeaderboardUserDto?> SelectedUserChanged { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Assign to User";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Assign";
+
+    [Parameter]
+    public Color ButtonColor { get; set; } = Color.Info;
+
+    [Parameter]
+    public bool ButtonDisabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnButtonClick { get; set; }
+    
+    private const int MinCharacters = 2;
+    private const int MaxItems = 50;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        try
+        {
+            var users = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+            
+            _usersList = users
+                .OrderBy(u => u.Name)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            _usersList = [];
+            Snackbar.Add($"Failed to load users: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnSelectedUserChanged(LeaderboardUserDto? value)
+    {
+        SelectedUser = value;
+        await SelectedUserChanged.InvokeAsync(value);
+    }
+
+    private async Task HandleButtonClick()
+    {
+        if (OnButtonClick.HasDelegate)
+        {
+            await OnButtonClick.InvokeAsync();
+        }
+    }
+
+    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < MinCharacters)
+        {
+            return Task.FromResult(Enumerable.Empty<LeaderboardUserDto>());
+        }
+
+        var filteredUsers = _usersList
+            .Where(u => u.Name != null && u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
+            .Take(MaxItems)
+            .ToList();
+
+        return Task.FromResult<IEnumerable<LeaderboardUserDto>>(filteredUsers);
+    }
+}

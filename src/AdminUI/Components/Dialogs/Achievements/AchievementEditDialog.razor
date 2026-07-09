@@ -6,7 +6,6 @@
 @using SSW.Rewards.ApiClient.Services
 @using Icons = MudBlazor.Icons
 
-@inject ILeaderboardService leaderboardService
 @inject IAchievementAdminService achievementService
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -33,24 +32,10 @@
                     <MudSelectItem Value="@item">@item.ToString()</MudSelectItem>
                 }
             </MudSelect>
-            <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudSelect
-                    T="@LeaderboardUserDto"
-                    @bind-Value="_selectedValue"
-                    Label="Assign to User"
-                    AnchorOrigin="Origin.BottomCenter"
-                    TransformOrigin="Origin.TopCenter"
-                    Variant="Variant.Outlined"
-                    AdornmentIcon="@MudBlazor.Icons.Material.Filled.Search"
-                    AdornmentColor="Color.Primary"
-                    Class="flex-grow-1">
-                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
-                    {
-                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudButton OnClick="ClaimAchievement" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Claim</MudButton>
-            </MudStack>
+            <UserAutocomplete 
+                @bind-SelectedUser="_selectedValue" 
+                ButtonText="Claim" 
+                OnButtonClick="ClaimAchievement" />
             <MudCheckBox Label="Multi-scan enabled?" @bind-Value="@dto.IsMultiScanEnabled" />
             <MudDivider Class="my-2" />
             <MudButton OnClick="ViewUsers" StartIcon="@Icons.Material.Filled.People" Variant="Variant.Text" Color="Color.Primary">View users who claimed this achievement</MudButton>
@@ -69,19 +54,12 @@
 
 @code {
     private LeaderboardUserDto? _selectedValue;
-    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter]
     public AchievementAdminDto dto { get; set; } = new();
-    
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-    }
 
     void Submit()
     {
