@@ -125,7 +125,7 @@ GitHub secrets are write-only, so verify the local files before uploading them.
 ```bash
 repo="<owner>/<repo>"
 
-base64 -i apple-distribution.p12 | tr -d '\n' |
+base64 < apple-distribution.p12 | tr -d '\n' |
   gh secret set APPLE_CERT -R "$repo"
 
 read -rsp "p12 export password: " APPLE_CERT_PASSWORD
@@ -137,7 +137,7 @@ unset APPLE_CERT_PASSWORD
 printf '%s' "Apple Distribution: <Company Name> (<Team ID>)" |
   gh secret set APPLE_CERT_NAME -R "$repo"
 
-base64 -i "<App Store Profile>.mobileprovision" | tr -d '\n' |
+base64 < "<App Store Profile>.mobileprovision" | tr -d '\n' |
   gh secret set APPLE_PROFILE -R "$repo"
 
 printf '%s' "<profile-name>" |

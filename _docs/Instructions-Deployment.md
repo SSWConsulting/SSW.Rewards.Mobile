@@ -97,7 +97,7 @@ For manual purge steps and access notes, see Deployment Troubleshooting → [Adm
 - YAML: `.github/workflows/mobile-main.yml`
 - Trigger: Automatic on changes to the mobile app in `main`
 
-2. Pipeline builds Android & iOS artifacts. After the approval gate is granted it automatically uploads:
+2. Pipeline builds Android & iOS artifacts. After the approval gate is granted, it automatically uploads:
    - Android build to the configured Google Play testing track. Today this workflow targets `internal`.
    - iOS build to TestFlight.
 3. Testers on those tracks receive the update automatically (no manual upload required).

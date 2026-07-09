@@ -8,7 +8,7 @@ Give developers, QA, Product Owner, and other stakeholders access to pre‑relea
 
 1. Developer merges PR into `main`.
 2. CI pipeline builds Android (AAB) + iOS (IPA) artifacts.
-3. A manual approval gate from the project maintainers in the CD pipeline is evaluated.
+3. A manual approval gate in the CD pipeline is evaluated by the project maintainers.
 4. On approval the pipeline automatically:
    - Uploads Android AAB to the configured Google Play testing track (`internal` in the current workflow).
    - Uploads iOS build to App Store Connect / TestFlight.
