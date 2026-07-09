@@ -35,6 +35,34 @@ public class DbContextPoolingTests
     }
 
     [Test]
+    public async Task PooledContextShouldUseCurrentUserForConcurrentScopes()
+    {
+        var (provider, currentUserService) = BuildServiceProvider();
+        using (provider)
+        {
+            var savedSkills = await Task.WhenAll(Enumerable.Range(1, 20).Select(index => Task.Run(async () =>
+            {
+                var userId = $"concurrent-user-{index}";
+                currentUserService.UserId = userId;
+
+                var skillId = await AddSkillAsync(provider, $"Concurrent pooling test {index}");
+
+                return new { skillId, userId };
+            })));
+
+            using var assertionScope = provider.CreateScope();
+            var context = assertionScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            foreach (var savedSkill in savedSkills)
+            {
+                var skill = await context.Skills.SingleAsync(s => s.Id == savedSkill.skillId);
+
+                skill.CreatedBy.Should().Be(savedSkill.userId);
+            }
+        }
+    }
+
+    [Test]
     public async Task PooledContextShouldRunAchievementIntegrationIdInterceptor()
     {
         var (provider, _) = BuildServiceProvider();
@@ -88,7 +116,13 @@ public class DbContextPoolingTests
 
     private sealed class TestCurrentUserService : ICurrentUserService
     {
-        public string UserId { get; set; } = string.Empty;
+        private readonly AsyncLocal<string?> _userId = new();
+
+        public string UserId
+        {
+            get => _userId.Value ?? string.Empty;
+            set => _userId.Value = value;
+        }
 
         public string GetUserId() => UserId;
 
