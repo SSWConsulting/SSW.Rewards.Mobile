@@ -97,13 +97,15 @@ For manual purge steps and access notes, see Deployment Troubleshooting → [Adm
 - YAML: `.github/workflows/mobile-main.yml`
 - Trigger: Automatic on changes to the mobile app in `main`
 
-2. Pipeline builds Android & iOS artifacts. After the beta approval gate is granted it automatically uploads:
-   - Android build to the configured Google Play beta/internal track.
+2. Pipeline builds Android & iOS artifacts. After the approval gate is granted it automatically uploads:
+   - Android build to the configured Google Play testing track. Today this workflow targets `internal`.
    - iOS build to TestFlight.
 3. Testers on those tracks receive the update automatically (no manual upload required).
-4. After beta validation passes, a separate Production approval gate promotes the build to the public stores.
+4. After beta validation passes, promote the build to open testing or production in the relevant store
+   console, or add a dedicated workflow for that target track.
 5. If the iOS build fails in `Build and sign` with certificate, provisioning profile, or keychain errors, see Deployment Troubleshooting → [Mobile iOS Signing Certificate Expired](Instructions-Deployment-Troubleshooting.md#mobile-ios-signing-certificate-expired).
-6. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md)
+6. If the Android build fails around keystore signing or Play upload, see Deployment Troubleshooting → [Mobile Android Signing Keystore](Instructions-Deployment-Troubleshooting.md#mobile-android-signing-keystore).
+7. For tester management and promotion specifics see [Beta Testing Guide](Instructions-Beta-Testing.md).
 
 ### Build & Test (no deployment)
 

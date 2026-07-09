@@ -8,22 +8,22 @@ Give developers, QA, Product Owner, and other stakeholders access to pre‑relea
 
 1. Developer merges PR into `main`.
 2. CI pipeline builds Android (AAB) + iOS (IPA) artifacts.
-3. A manual approval gate (SSW Rewards Maintainers) in the CD pipeline is evaluated.
+3. A manual approval gate from the project maintainers in the CD pipeline is evaluated.
 4. On approval the pipeline automatically:
-   - Uploads Android AAB to Google Play (Beta / Internal Testing).
-   - Uploads iOS build to App Store Connect and enables it for designated TestFlight groups.
+   - Uploads Android AAB to the configured Google Play testing track (`internal` in the current workflow).
+   - Uploads iOS build to App Store Connect / TestFlight.
 5. Testers on those beta tracks receive updates automatically (Play Store auto-update / TestFlight notification depending on their settings).
 6. Sanity / regression tests executed (see "Sanity / Smoke Test Checklist").
-7. When criteria met, the same (or a subsequent) build is promoted to Production (separate approval gate – see `Instructions-Deployment.md`).
+7. When criteria are met, promote the same build to open testing or production in the store console, or use a dedicated release workflow if one exists.
 
 ## CI/CD Pipeline Overview
 
 | Stage                 | Trigger            | Action                                            | Manual Gate            | Outputs                    |
 | --------------------- | ------------------ | ------------------------------------------------- | ---------------------- | -------------------------- |
 | Build                 | Push to `main`     | Compile, run unit tests, produce AAB + IPA        | No                     | Build artifacts            |
-| Beta Deploy (Android) | Post-build success | (Pending until gate) Upload AAB to Play track     | Yes (Approve)          | Play Store beta available  |
-| Beta Deploy (iOS)     | Post-build success | (Pending until gate) Upload to App Store Connect  | Yes (Approve)          | TestFlight build available |
-| Prod Release          | Manual trigger     | Promotes approved beta build to Production stores | Yes (Release approval) | Public store release       |
+| Beta Deploy (Android) | Post-build success | (Pending until gate) Upload AAB to configured Play track | Yes (Approve)          | Play Store testing release |
+| Beta Deploy (iOS)     | Post-build success | (Pending until gate) Upload to App Store Connect / TestFlight | Yes (Approve)          | TestFlight build available |
+| Public Release        | Manual store action or dedicated workflow | Promote approved build to open testing or production | Store-dependent | Public tester or store release |
 
 ## Requesting Beta Access (New Users)
 
@@ -31,7 +31,7 @@ If you are not yet a tester but need beta access:
 
 1. Confirm you actually need pre-release features (otherwise use Production store build).
 2. Email the Product Owner (PO) or post in the Teams channel with:
-   - Subject: "Beta Access Request – SSW Rewards (Android/iOS)"
+   - Subject: "Beta Access Request – <App Name> (Android/iOS)"
    - Platforms required (Android, iOS, or both)
    - Relevant account email (Google, Apple, etc.)
 3. PO approves and adds you to the relevant tester lists (see Adding a New Tester) and confirms back.
@@ -45,17 +45,26 @@ If you are not yet a tester but need beta access:
 - Platform(s) required (Android, iOS, or both)
 - Email address
 
-### 2. Android – Add to Play Beta
+### 2. Android – Add to Play Testing
 
-1. Google Play Console > `SSW Rewards` > Testing > Internal testing.
-2. Add tester email to the Testers list.
-3. Provide tester the opt‑in link if first time.
+1. Google Play Console > your app > **Testing**.
+2. Choose the track used by your workflow or release plan:
+   - **Internal testing**: small, invite-only group; the current workflow uploads here.
+   - **Closed testing**: controlled named groups or lists.
+   - **Open testing**: public opt-in testers from the Play Store listing.
+3. Add tester emails or groups where the track requires them.
+4. Provide the opt-in link if the tester has not joined that track before.
+
+The current Android workflow uploads to `internal`. Publishing the same build to open testing or
+production requires a Play Console promotion/release step unless the workflow is changed to target
+that track.
 
 ### 3. iOS – Add to TestFlight Group
 
 1. App Store Connect > Users and Access: add internal user if needed.
-2. TestFlight tab > Add tester to internal testing group.
-3. After build processing finishes the tester automatically gets access.
+2. TestFlight tab > add the tester to the relevant internal or external testing group.
+3. External TestFlight testing may require Apple beta app review before testers can install the build.
+4. After build processing and any required review finishes, testers receive access based on their group.
 
 ## Promotion Steps (Automated)
 
@@ -64,14 +73,18 @@ If you are not yet a tester but need beta access:
 1. Merge -> build pipeline runs.
 2. Approver reviews change summary & test results at the approval gate.
 3. On approval pipeline uploads AAB to configured track and starts rollout (usually 100% instantly for test tracks).
-4. Monitor Play Console release for status / crashes (supplement with Firebase Crashlytics).
+4. If you need broader public testers, promote the release from internal testing to open testing in
+   Play Console and complete any required review.
+5. Monitor Play Console release for status / crashes (supplement with Firebase Crashlytics).
 
 ### iOS
 
 1. Merge -> build pipeline runs.
 2. Approver grants beta deployment stage.
 3. Pipeline uploads build to App Store Connect (processing may take several minutes).
-4. Monitor TestFlight metrics & Firebase Crashlytics for issues.
+4. Add the processed build to the intended TestFlight group if the workflow or App Store Connect
+   settings do not do that automatically.
+5. Monitor TestFlight metrics & Firebase Crashlytics for issues.
 
 ## Release Notes Template (Keep concise)
 
@@ -123,5 +136,6 @@ Gold plating:
 - [Deployment Steps](Instructions-Deployment.md)
 - Apple TestFlight docs: https://developer.apple.com/testflight/
 - Google Play testing tracks: https://support.google.com/googleplay/android-developer/answer/9845334
+- Google Play release rollout docs: https://support.google.com/googleplay/android-developer/answer/9859348
 - Firebase Analytics: https://firebase.google.com/docs/analytics
 - Firebase Crashlytics: https://firebase.google.com/docs/crashlytics
