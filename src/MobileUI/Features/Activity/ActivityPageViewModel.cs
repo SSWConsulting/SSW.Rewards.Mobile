@@ -76,7 +76,7 @@ public partial class ActivityPageViewModel : BaseViewModel
                 return result.Feed.ToList();
             },
             PrepareItem = item => item.PrepareForDisplay(),
-            AreSame = (a, b) => a.UserId == b.UserId && a.AwardedAt == b.AwardedAt,
+            AreSame = (a, b) => a.HasSameDisplayAs(b),
             Cache = fileCacheService,
             CacheKey = "ActivityFeedCache",
             ShouldUseCache = () => _currentSegment == ActivityPageSegments.All,
@@ -102,7 +102,13 @@ public partial class ActivityPageViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private Task LoadMore() => Feed.LoadMoreAsync();
+    private async Task LoadMore()
+    {
+        var result = await Feed.LoadMoreAsync();
+
+        // Loaded items stay on screen, so only a session expiry interrupts scrolling.
+        await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
+    }
 
     [RelayCommand]
     private async Task FilterBySegment()
@@ -122,7 +128,7 @@ public partial class ActivityPageViewModel : BaseViewModel
             return;
         }
 
-        var result = await Feed.RefreshAsync();
+        var result = await Feed.RefreshAsync(queryChanged: true);
 
         // The user asked for different data — report a failure even though the
         // previous segment's items are still visible.

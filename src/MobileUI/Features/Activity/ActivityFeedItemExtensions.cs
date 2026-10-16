@@ -22,6 +22,17 @@ public static class ActivityFeedItemExtensions
         }
     }
 
+    /// <summary>Compares every rendered field — matching items are kept on refresh, so a newly bound field belongs here.</summary>
+    public static bool HasSameDisplayAs(this ActivityFeedItemDto item, ActivityFeedItemDto other) =>
+        item.UserId == other.UserId
+        && item.AwardedAt == other.AwardedAt
+        && item.UserName == other.UserName
+        && item.UserTitle == other.UserTitle
+        && item.UserAvatar == other.UserAvatar
+        && item.TimeElapsed == other.TimeElapsed
+        && item.AchievementMessage == other.AchievementMessage
+        && item.Achievement?.AchievementType == other.Achievement?.AchievementType;
+
     private static string BuildAchievementMessage(UserAchievementDto achievement)
     {
         string name = achievement.AchievementName;
