@@ -13,7 +13,6 @@ namespace SSW.Rewards.Application.UnitTests.Persistence;
 public class TenantSoftDeleteTests
 {
     private DbContextOptions<ApplicationDbContext> _options = null!;
-    private AuditableEntitySaveChangesInterceptor _auditInterceptor = null!;
 
     [SetUp]
     public void Setup()
@@ -21,9 +20,11 @@ public class TenantSoftDeleteTests
         var dateTime = new Mock<IDateTime>();
         dateTime.Setup(x => x.UtcNow).Returns(new DateTime(2026, 2, 20, 12, 0, 0, DateTimeKind.Utc));
 
-        _auditInterceptor = new AuditableEntitySaveChangesInterceptor(Mock.Of<ICurrentUserService>(), dateTime.Object);
         _options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .AddInterceptors(
+                new AuditableEntitySaveChangesInterceptor(Mock.Of<ICurrentUserService>(), dateTime.Object),
+                new AchievementIntegrationIdInterceptor())
             .Options;
     }
 
@@ -53,6 +54,5 @@ public class TenantSoftDeleteTests
         (await freshContext.TenantSettings.IgnoreQueryFilters().SingleAsync(s => s.Id == settingsId)).DeletedUtc.Should().NotBeNull();
     }
 
-    private ApplicationDbContext CreateContext() =>
-        new(_options, _auditInterceptor, new AchievementIntegrationIdInterceptor());
+    private ApplicationDbContext CreateContext() => new(_options);
 }
